@@ -313,7 +313,7 @@
     },
     {
       "id": 26,
-      "question": "Which forms are based on the concept of functional dependency?",
+      "question": "Which normal form specifically eliminates partial functional dependencies?",
       "options": {
         "a": "1NF",
         "b": "2NF",
@@ -512,8 +512,8 @@
         "c": "SELECT NAME FROM EMPLOYEE WHERE SALARY = NULL;",
         "d": "None of the above"
       },
-      "correct_answer": "d",
-      "correct_answer_text": "None of the above"
+      "correct_answer": "b",
+      "correct_answer_text": "SELECT NAME FROM EMPLOYEE;"
     },
     {
       "id": 43,
@@ -560,8 +560,8 @@
         "c": "A is a Primary Key",
         "d": "Both (A) and (C)"
       },
-      "correct_answer": "a",
-      "correct_answer_text": "A is a candidate key"
+      "correct_answer": "b",
+      "correct_answer_text": "A is not a candidate key"
     },
     {
       "id": 47,
@@ -649,7 +649,7 @@
     },
     {
       "id": 54,
-      "question": "A table on the many side of a one to many or many to many relationship must:",
+      "question": "The junction table in a many-to-many relationship typically has:",
       "options": {
         "a": "Be in Second Normal Form (2NF)",
         "b": "Be in Third Normal Form (3NF)",

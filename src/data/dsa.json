@@ -435,7 +435,7 @@
       "options": {
         "a": "Depth Limited",
         "b": "With First",
-        "c": "Breath First",
+        "c": "Breadth First",
         "d": "Depth First"
       },
       "correct_answer": "d",

@@ -201,8 +201,8 @@
         "c": "713",
         "d": "Syntax error"
       },
-      "correct_answer": "b",
-      "correct_answer_text": "1289"
+      "correct_answer": "d",
+      "correct_answer_text": "Syntax error"
     },
     {
       "id": 17,
@@ -254,9 +254,9 @@
     },
     {
       "id": 21,
-      "question": "What will be the output of: int x[4] = {1,2,3}; printf(\"%d %d %D\", x[3], x[2], x[1]);",
+      "question": "What will be the output of: int x[4] = {1,2,3}; printf(\"%d%d%d\", x[3], x[2], x[1]);",
       "options": {
-        "a": "03%D",
+        "a": "321",
         "b": "000",
         "c": "032",
         "d": "None of the above"
@@ -330,8 +330,8 @@
       "options": {
         "a": "gets()",
         "b": "fgets()",
-        "c": "==",
-        "d": "=="
+        "c": "Both are equally safe",
+        "d": "Depends on the compiler"
       },
       "correct_answer": "b",
       "correct_answer_text": "fgets()"
@@ -340,7 +340,7 @@
       "id": 28,
       "question": "Specify the 2 library functions to dynamically allocate memory?",
       "options": {
-        "a": "malloc() and memalloc()",
+        "a": "malloc() and realloc()",
         "b": "malloc() and memalloc()",
         "c": "malloc() and calloc()",
         "d": "memalloc() and faralloc()"

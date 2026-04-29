@@ -231,8 +231,8 @@
         "c": "CDC-1604",
         "d": "ICL-2900"
       },
-      "correct_answer": "b",
-      "correct_answer_text": "IBM-1401"
+      "correct_answer": "a",
+      "correct_answer_text": "EDSAC"
     },
     {
       "id": 19,
@@ -252,11 +252,11 @@
       "options": {
         "a": "J.H Van Tassel",
         "b": "J.C Perrier",
-        "c": "W.L. Judson",
+        "c": "Seymour Cray",
         "d": "A.J. Garneing"
       },
       "correct_answer": "c",
-      "correct_answer_text": "W.L. Judson"
+      "correct_answer_text": "Seymour Cray"
     },
     {
       "id": 21,
@@ -379,18 +379,6 @@
       "correct_answer_text": "machine language"
     },
     {
-      "id": 32,
-      "question": "Which of the following registers is loaded with the contents of memory location pointed by the PC?",
-      "options": {
-        "a": "memory address registers",
-        "b": "memory data registers",
-        "c": "instruction register",
-        "d": "program counter"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "instruction register"
-    },
-    {
       "id": 31,
       "question": "Which of the following is machine independence program?",
       "options": {
@@ -401,6 +389,18 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "high level language"
+    },
+    {
+      "id": 32,
+      "question": "Which of the following registers is loaded with the contents of memory location pointed by the PC?",
+      "options": {
+        "a": "memory address registers",
+        "b": "memory data registers",
+        "c": "instruction register",
+        "d": "program counter"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "instruction register"
     }
   ]
 }
