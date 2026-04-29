@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="14" fill="#0d0f18"/>
+  <!-- Outer glow ring -->
+  <rect width="64" height="64" rx="14" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.4"/>
+  <!-- Lightning bolt -->
+  <path d="M36 8 L20 34 H30 L28 56 L48 26 H37 Z"
+        fill="#22d3ee"
+        stroke="#22d3ee"
+        stroke-width="1"
+        stroke-linejoin="round"/>
+</svg>

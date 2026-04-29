@@ -44,6 +44,7 @@ body {
   color: var(--text);
   font-family: 'Nunito', sans-serif;
   min-height: 100vh;
+  min-height: 100svh;
   -webkit-font-smoothing: antialiased;
   transition: background 0.25s, color 0.25s;
 }
@@ -53,8 +54,8 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* ── Theme Toggle ──────────────────────── */
 .theme-toggle {
   position: fixed;
-  top: 18px;
-  right: 22px;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
   z-index: 200;
   width: 40px;
   height: 40px;
@@ -88,9 +89,9 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .back-btn:hover { color: var(--text); border-color: var(--border-bright); background: var(--elevated); }
 
 /* ── Home Screen ───────────────────────── */
-.home { padding: 52px 20px 80px; max-width: 1020px; margin: 0 auto; }
+.home { padding: 36px 16px 60px; max-width: 1020px; margin: 0 auto; }
 
-.home-header { text-align: center; margin-bottom: 52px; }
+.home-header { text-align: center; margin-bottom: 36px; }
 
 .logo-row {
   display: inline-flex;
@@ -101,7 +102,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .logo-zap { color: #22d3ee; }
 .logo-title {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 2.3rem;
+  font-size: clamp(1.7rem, 6vw, 2.3rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   background: var(--logo-grad);
@@ -135,7 +136,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 
 .topics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
@@ -188,7 +189,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .topic-card:hover .tc-arrow { transform: translateX(4px); color: var(--c, #22d3ee); }
 
 /* ── Mode Select ───────────────────────── */
-.mode-page { max-width: 620px; margin: 0 auto; padding: 44px 20px 80px; }
+.mode-page { max-width: 620px; margin: 0 auto; padding: 28px 16px 60px; }
 
 .mode-topic-hero { text-align: center; margin: 36px 0 40px; }
 .mode-icon-circle {
@@ -207,7 +208,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 .mode-topic-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; color: var(--text-3); }
 
-.mode-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.mode-cards { display: grid; grid-template-columns: 1fr; gap: 14px; }
 
 .mode-card {
   display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
@@ -234,11 +235,13 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .mode-card-cta { font-size: 0.82rem; font-weight: 700; margin-top: 4px; font-family: 'Plus Jakarta Sans', sans-serif; }
 
 /* ── Quiz Mode ─────────────────────────── */
-.quiz-page { max-width: 680px; margin: 0 auto; padding: 24px 20px 80px; }
+.quiz-page { max-width: 680px; margin: 0 auto; padding: 16px 16px 60px; }
 
 .quiz-topbar {
   display: flex; align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 16px;
 }
 .quiz-topic-pill {
@@ -287,7 +290,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 32px 28px;
+  padding: 22px 18px;
   box-shadow: var(--shadow-md);
 }
 
@@ -330,7 +333,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   flex-shrink: 0;
   transition: background 0.15s, color 0.15s;
 }
-.opt-text { flex: 1; line-height: 1.45; }
+.opt-text { flex: 1; min-width: 0; line-height: 1.45; }
 .opt-icon { flex-shrink: 0; }
 
 .opt-btn.correct { border-color: var(--c, #22d3ee); background: rgba(128,128,200,0.04); }
@@ -358,6 +361,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* ── Score Screen ──────────────────────── */
 .score-page {
   min-height: 100vh;
+  min-height: 100svh;
   display: flex; align-items: center; justify-content: center;
   padding: 20px;
 }
@@ -365,7 +369,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 48px 40px;
+  padding: 36px 24px;
   text-align: center;
   max-width: 420px;
   width: 100%;
@@ -381,7 +385,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 .score-fraction {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 4rem; font-weight: 800; line-height: 1; margin-bottom: 4px;
+  font-size: clamp(2.5rem, 10vw, 4rem); font-weight: 800; line-height: 1; margin-bottom: 4px;
 }
 .score-total { font-size: 2rem; color: var(--text-2); }
 .score-pct { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-2); margin-bottom: 10px; }
@@ -406,16 +410,21 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .score-home:hover { opacity: 0.88; }
 
 /* ── Study Mode ────────────────────────── */
-.study-page { max-width: 740px; margin: 0 auto; padding: 24px 20px 80px; }
+.study-page { max-width: 740px; margin: 0 auto; padding: 16px 16px 60px; }
 
 .study-topbar {
   display: flex; align-items: center;
   justify-content: space-between;
+  gap: 10px;
   margin-bottom: 26px;
 }
 .study-title {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700; font-size: 1rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .study-home-btn {
   width: 36px; height: 36px;
@@ -487,7 +496,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   flex-shrink: 0;
 }
 .study-opt.correct .study-opt-key { background: var(--c); color: #fff; }
-.study-opt-text { flex: 1; line-height: 1.45; }
+.study-opt-text { flex: 1; min-width: 0; line-height: 1.45; }
 
 /* ── Explanation Box ───────────────────── */
 .explanation-box {
