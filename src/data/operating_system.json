@@ -1,0 +1,111 @@
+{
+  "topic": "Operating System",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Paging",
+      "options": {
+        "a": "Solve the memory fragmentation problem",
+        "b": "allows modular programming",
+        "c": "allows structured programming",
+        "d": "avoids deadlock"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Solve the memory fragmentation problem",
+      "page": "Memory Management"
+    },
+    {
+      "id": 2,
+      "question": "An assembler is used to translate a program written in",
+      "options": {
+        "a": "A low level language",
+        "b": "Machine language",
+        "c": "A high level language",
+        "d": "Assembly language",
+        "e": "None of these"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Assembly language",
+      "page": "OS Basics"
+    },
+    {
+      "id": 3,
+      "question": "The capability of the operating system to enable two or more than two programs to execute simultaneously in a single computer system by using a single processor is",
+      "options": {
+        "a": "Multiprocessing",
+        "b": "Multitasking",
+        "c": "Multiprogramming",
+        "d": "Multiexecution",
+        "e": "None of these"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Multitasking",
+      "page": "OS Concepts"
+    },
+    {
+      "id": 4,
+      "question": "Physical base address of each page in physical memory is associated with?",
+      "options": {
+        "a": "Main memory",
+        "b": "Virtual memory",
+        "c": "Page table",
+        "d": "Cache memory"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Page table",
+      "page": "Memory Management"
+    },
+    {
+      "id": 5,
+      "question": "Virtual memory is commonly implemented by...",
+      "options": {
+        "a": "Segmentation",
+        "b": "Swapping",
+        "c": "Demand Paging",
+        "d": "None"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Demand Paging",
+      "page": "Memory Management"
+    },
+    {
+      "id": 6,
+      "question": "CPU scheduling is the basis of ___",
+      "options": {
+        "a": "multiprogramming operating systems",
+        "b": "larger memory sized systems",
+        "c": "multiprocessor systems",
+        "d": "none of the mentioned"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "multiprogramming operating systems",
+      "page": "CPU Scheduling"
+    },
+    {
+      "id": 7,
+      "question": "The minimum number of page frames that must be allocated to a running process in virtual memory environment is determined by",
+      "options": {
+        "a": "the instruction set architecture",
+        "b": "page size",
+        "c": "physical memory size",
+        "d": "number of processes in memory"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "the instruction set architecture",
+      "page": "Memory Management"
+    },
+    {
+      "id": 8,
+      "question": "Banker's algorithm is applied for",
+      "options": {
+        "a": "Deadlock detection",
+        "b": "Deadlock avoidance",
+        "c": "Deadlock recovery",
+        "d": "Both a and c"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Deadlock avoidance",
+      "page": 352
+    }
+  ]
+}

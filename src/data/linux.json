@@ -1,0 +1,399 @@
+{
+  "topic": "Linux",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which one is an embedded operating system?",
+      "options": {
+        "a": "UNIX",
+        "b": "MS Windows XP",
+        "c": "Windows CE",
+        "d": "Windows NET"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Windows CE",
+      "page": "OS Types"
+    },
+    {
+      "id": 2,
+      "question": "Which term describes the interpreter that executes commands typed as strings?",
+      "options": {
+        "a": "Command",
+        "b": "Console",
+        "c": "Shell",
+        "d": "Terminal"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Shell",
+      "page": "Linux Basics"
+    },
+    {
+      "id": 3,
+      "question": "Which term describes the visual cue that indicates an interactive shell is waiting for the user to type a command?",
+      "options": {
+        "a": "Argument",
+        "b": "Command",
+        "c": "Option",
+        "d": "Prompt"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Prompt",
+      "page": "Linux Basics"
+    },
+    {
+      "id": 4,
+      "question": "Which term describes the name of a program to run?",
+      "options": {
+        "a": "Argument",
+        "b": "Command",
+        "c": "Option",
+        "d": "Prompt"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Command",
+      "page": "Linux Basics"
+    },
+    {
+      "id": 5,
+      "question": "Which term describes the part of the command line that adjusts the behavior of a command?",
+      "options": {
+        "a": "Argument",
+        "b": "Command",
+        "c": "Option",
+        "d": "Prompt"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Option",
+      "page": "Linux Basics"
+    },
+    {
+      "id": 6,
+      "question": "Which term describes the hardware display and keyboard used to interact with a system?",
+      "options": {
+        "a": "Physical Console",
+        "b": "Virtual Console",
+        "c": "Shell",
+        "d": "Terminal"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Physical Console",
+      "page": 363
+    },
+    {
+      "id": 7,
+      "question": "Which term describes one of multiple logical consoles that can each support an independent login session?",
+      "options": {
+        "a": "Physical Console",
+        "b": "Virtual Console",
+        "c": "Shell",
+        "d": "Terminal"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Virtual Console",
+      "page": 363
+    },
+    {
+      "id": 8,
+      "question": "Which term describes an interface that provides a display for output and a keyboard for input to a shell session?",
+      "options": {
+        "a": "Console",
+        "b": "Virtual Console",
+        "c": "Shell",
+        "d": "Terminal"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Terminal",
+      "page": 363
+    },
+    {
+      "id": 9,
+      "question": "Which Bash shortcut or command separates commands on the same line?",
+      "options": {
+        "a": "Pressing Tab",
+        "b": "history",
+        "c": ";",
+        "d": "!string",
+        "e": "Pressing Esc+"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": ";",
+      "page": "Bash"
+    },
+    {
+      "id": 10,
+      "question": "Which Bash shortcut or command is used to clear characters from the cursor to the end of the command line?",
+      "options": {
+        "a": "Pressing Ctrl+LeftArrow",
+        "b": "Pressing Ctrl+K",
+        "c": "Pressing Ctrl+A",
+        "d": ";",
+        "e": "Pressing Esc+"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Pressing Ctrl+K",
+      "page": "Bash"
+    },
+    {
+      "id": 11,
+      "question": "Which directory contains persistent, system-specific configuration data?",
+      "options": {
+        "a": "/etc",
+        "b": "/root",
+        "c": "/run",
+        "d": "/usr"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "/etc",
+      "page": "Linux Filesystem"
+    },
+    {
+      "id": 12,
+      "question": "Which directory is the top of the system's file system hierarchy?",
+      "options": {
+        "a": "/etc",
+        "b": "/",
+        "c": "/home/root",
+        "d": "/root"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "/",
+      "page": "Linux Filesystem"
+    },
+    {
+      "id": 13,
+      "question": "Which directory contains dynamic data, such as for databases and websites?",
+      "options": {
+        "a": "/etc",
+        "b": "/run",
+        "c": "/usr",
+        "d": "/var"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "/var",
+      "page": "Linux Filesystem"
+    },
+    {
+      "id": 14,
+      "question": "Which directory contains regular commands and utilities?",
+      "options": {
+        "a": "/commands",
+        "b": "/run",
+        "c": "/usr/bin",
+        "d": "/usr/sbin"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "/usr/bin",
+      "page": "Linux Filesystem"
+    },
+    {
+      "id": 15,
+      "question": "Which directory contains installed software programs and libraries?",
+      "options": {
+        "a": "/etc",
+        "b": "/lib",
+        "c": "/usr",
+        "d": "/var"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "/usr",
+      "page": "Linux Filesystem"
+    },
+    {
+      "id": 16,
+      "question": "Which command will always return you to the working directory used prior to the current working directory?",
+      "options": {
+        "a": "cd -",
+        "b": "cd -p",
+        "c": "cd ~",
+        "d": "cd .."
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "cd -",
+      "page": "Linux Commands"
+    },
+    {
+      "id": 17,
+      "question": "Which pattern will match only filenames where the first character is not \"b\"?",
+      "options": {
+        "a": "b*",
+        "b": "*b",
+        "c": "*b*",
+        "d": "[!b]*"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "[!b]*",
+      "page": "Linux Globbing"
+    },
+    {
+      "id": 18,
+      "question": "Which pattern will match only filenames that contain a number?",
+      "options": {
+        "a": "*#*",
+        "b": "*[[:digit:]]*",
+        "c": "*[digit]*",
+        "d": "[0-9]"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "*[[:digit:]]*",
+      "page": "Linux Globbing"
+    },
+    {
+      "id": 19,
+      "question": "Which pattern will match only filenames that begin with an uppercase letter?",
+      "options": {
+        "a": "^?*",
+        "b": "^*",
+        "c": "[upper]*",
+        "d": "[[:upper:]]*",
+        "e": "[[CAP]]*"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "[[:upper:]]*",
+      "page": "Linux Globbing"
+    },
+    {
+      "id": 20,
+      "question": "Which answer displays output to a terminal and ignores all errors?",
+      "options": {
+        "a": "&>file",
+        "b": "2> &>file",
+        "c": "2>/dev/null",
+        "d": "1>/dev/null"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "2>/dev/null",
+      "page": "Linux Redirection"
+    },
+    {
+      "id": 21,
+      "question": "Which answer sends output to a file and sends errors to a different file?",
+      "options": {
+        "a": ">file 2>file2",
+        "b": ">file 1>file2",
+        "c": ">file &2>file2",
+        "d": "| tee file"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": ">file 2>file2",
+      "page": "Linux Redirection"
+    },
+    {
+      "id": 22,
+      "question": "Which of these log files stores most syslog messages, with the exception of those that are related to authentication, mail, scheduled jobs, and debugging?",
+      "options": {
+        "a": "/var/log/maillog",
+        "b": "/var/log/boot.log",
+        "c": "/var/log/messages",
+        "d": "/var/log/secure"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "/var/log/messages",
+      "page": "Linux Logs"
+    },
+    {
+      "id": 23,
+      "question": "Which directory accommodates the human-readable syslog files?",
+      "options": {
+        "a": "/sys/kernel/debug",
+        "b": "/var/log/journal",
+        "c": "/run/log/journal",
+        "d": "/var/log"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "/var/log",
+      "page": "Linux Logs"
+    },
+    {
+      "id": 24,
+      "question": "Which file stores syslog messages related to the mail server?",
+      "options": {
+        "a": "/var/log/lastlog",
+        "b": "/var/log/maillog",
+        "c": "/var/log/tallylog",
+        "d": "/var/log/boot.log"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "/var/log/maillog",
+      "page": "Linux Logs"
+    },
+    {
+      "id": 25,
+      "question": "Which item represents a number that identifies the user at the most fundamental level?",
+      "options": {
+        "a": "primary user",
+        "b": "UID",
+        "c": "GID",
+        "d": "Username"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "UID",
+      "page": "Linux Users"
+    },
+    {
+      "id": 26,
+      "question": "Which item represents the program that provides the user's command-line prompt?",
+      "options": {
+        "a": "primary shell",
+        "b": "home directory",
+        "c": "login shell",
+        "d": "command name"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "login shell",
+      "page": "Linux Users"
+    },
+    {
+      "id": 27,
+      "question": "Which item or file represents the location of the local group information?",
+      "options": {
+        "a": "home directory",
+        "b": "/etc/passwd",
+        "c": "/etc/GID",
+        "d": "/etc/group"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "/etc/group",
+      "page": "Linux Users"
+    },
+    {
+      "id": 28,
+      "question": "Which item represents a number that identifies the group at the most fundamental level?",
+      "options": {
+        "a": "primary group",
+        "b": "UID",
+        "c": "GID",
+        "d": "groupid"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "GID",
+      "page": "Linux Users"
+    },
+    {
+      "id": 29,
+      "question": "Which item or file represents the location of the local user account information?",
+      "options": {
+        "a": "home directory",
+        "b": "/etc/passwd",
+        "c": "/etc/UID",
+        "d": "/etc/group"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "/etc/passwd",
+      "page": "Linux Users"
+    },
+    {
+      "id": 30,
+      "question": "Which state represents a process that has been stopped or suspended?",
+      "options": {
+        "a": "D",
+        "b": "R",
+        "c": "S",
+        "d": "T",
+        "e": "Z"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "T",
+      "page": "Linux Processes"
+    }
+  ]
+}

@@ -1,0 +1,406 @@
+{
+  "topic": "Computer Fundamental",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which was the most popular first-generation computer?",
+      "options": {
+        "a": "IBM 650",
+        "b": "IBM 360",
+        "c": "IBM 1130",
+        "d": "IBM 2700"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "IBM 650",
+      "page": 8
+    },
+    {
+      "id": 2,
+      "question": "On which aspect the analog computers are better than digital?",
+      "options": {
+        "a": "Speed",
+        "b": "Accuracy",
+        "c": "Reliability",
+        "d": "Automatic"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Speed",
+      "page": 8
+    },
+    {
+      "id": 3,
+      "question": "In plasma display, gas is electrified by grid of ______.",
+      "options": {
+        "a": "electronics",
+        "b": "phosphors",
+        "c": "electrons",
+        "d": "electrodes"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "electrodes",
+      "page": 9
+    },
+    {
+      "id": 4,
+      "question": "Which of the following contain configuration information of a window?",
+      "options": {
+        "a": ".exe",
+        "b": ".ini",
+        "c": ".dll",
+        "d": ".ehn"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": ".ini",
+      "page": 9
+    },
+    {
+      "id": 5,
+      "question": "In a spreadsheet ______ can help you make sense of a worksheet contains.",
+      "options": {
+        "a": "value",
+        "b": "labels",
+        "c": "formula",
+        "d": "macros"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "labels",
+      "page": 9
+    },
+    {
+      "id": 6,
+      "question": "Which of the following uses the flip-flop circuit in a memory cell?",
+      "options": {
+        "a": "DRAM",
+        "b": "EEPROM",
+        "c": "SDRAM",
+        "d": "SRAM"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "SRAM",
+      "page": 14
+    },
+    {
+      "id": 7,
+      "question": "1 (one) nibble equal to",
+      "options": {
+        "a": "1 bit",
+        "b": "2 bit",
+        "c": "4 bit",
+        "d": "8 bit"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "4 bit",
+      "page": 20
+    },
+    {
+      "id": 8,
+      "question": "Magnetic tape can serve as--",
+      "options": {
+        "a": "Secondary storage media",
+        "b": "Output media",
+        "c": "Input media",
+        "d": "All of them"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "All of them",
+      "page": 20
+    },
+    {
+      "id": 9,
+      "question": "How many bits in Unicode?",
+      "options": {
+        "a": "4",
+        "b": "8",
+        "c": "16",
+        "d": "32"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "16",
+      "page": 20
+    },
+    {
+      "id": 10,
+      "question": "What is smallest unit of information?",
+      "options": {
+        "a": "A nibble",
+        "b": "A word",
+        "c": "A bit",
+        "d": "A byte"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "A bit",
+      "page": "Exercise"
+    },
+    {
+      "id": 11,
+      "question": "The central processing unit is located in the ______.",
+      "options": {
+        "a": "Hard disk",
+        "b": "System unit",
+        "c": "Memory unit",
+        "d": "Monitor"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "System unit",
+      "page": "Exercise"
+    },
+    {
+      "id": 12,
+      "question": "Input Devices that use a special ink that contains magnetizable particles of iron oxide are ______.",
+      "options": {
+        "a": "Optical disks",
+        "b": "Magnetic disks",
+        "c": "MICR",
+        "d": "Magnetic drives"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "MICR",
+      "page": "Exercise"
+    },
+    {
+      "id": 13,
+      "question": "When we mention the prototype of a function?",
+      "options": {
+        "a": "Defining",
+        "b": "Declaring",
+        "c": "Prototyping",
+        "d": "Calling"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Declaring",
+      "page": "Exercise"
+    },
+    {
+      "id": 14,
+      "question": "Which one is TRUE for RFID?",
+      "options": {
+        "a": "Secondary storage media",
+        "b": "Output media",
+        "c": "Input media",
+        "d": "All of them"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Input media",
+      "page": 30
+    },
+    {
+      "id": 15,
+      "question": "The only language which the computer understands is ______.",
+      "options": {
+        "a": "Assembly Language",
+        "b": "Binary Language",
+        "c": "C Language",
+        "d": "Structural"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Binary Language",
+      "page": 30
+    },
+    {
+      "id": 16,
+      "question": "1 yottabyte =",
+      "options": {
+        "a": "1024 TB",
+        "b": "1024 EB",
+        "c": "1024 ZB",
+        "d": "1024 PB"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "1024 ZB",
+      "page": 30
+    },
+    {
+      "id": 17,
+      "question": "Rotation of the disk must vary ______ with the radius of the disk.",
+      "options": {
+        "a": "directly",
+        "b": "inversely",
+        "c": "concurrently",
+        "d": "accordingly"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "inversely",
+      "page": 30
+    },
+    {
+      "id": 18,
+      "question": "Which of the following is the first generation of computer?",
+      "options": {
+        "a": "EDSAC",
+        "b": "IBM-1401",
+        "c": "CDC-1604",
+        "d": "ICL-2900"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "IBM-1401"
+    },
+    {
+      "id": 19,
+      "question": "One of the main feature that distinguish microprocessors from micro-computers is",
+      "options": {
+        "a": "words are usually larger in microprocessors",
+        "b": "words are shorter in microprocessors",
+        "c": "microprocessors does not contain I/O devices",
+        "d": "exactly the same as the machine cycle time"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "microprocessors does not contain I/O devices"
+    },
+    {
+      "id": 20,
+      "question": "Super Computer was invented by",
+      "options": {
+        "a": "J.H Van Tassel",
+        "b": "J.C Perrier",
+        "c": "W.L. Judson",
+        "d": "A.J. Garneing"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "W.L. Judson"
+    },
+    {
+      "id": 21,
+      "question": "A term associated with the comparison of processing speed of computer is",
+      "options": {
+        "a": "EFTS",
+        "b": "MPG",
+        "c": "MIPS",
+        "d": "CFPS"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "MIPS"
+    },
+    {
+      "id": 22,
+      "question": "Which of the following code used in present day computer developed by IBM Corporation?",
+      "options": {
+        "a": "ASCII",
+        "b": "Hollerith Code",
+        "c": "Baudot Code",
+        "d": "EBCDIC Code"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "EBCDIC Code"
+    },
+    {
+      "id": 23,
+      "question": "The special files of DOS are",
+      "options": {
+        "a": "COM",
+        "b": "EXE",
+        "c": "BATCH",
+        "d": "all of them"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "all of them"
+    },
+    {
+      "id": 24,
+      "question": "Who invented the microprocessor?",
+      "options": {
+        "a": "Marcian E Huff",
+        "b": "Herman H Goldstein",
+        "c": "Joseph Jacquard",
+        "d": "all of them"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Marcian E Huff"
+    },
+    {
+      "id": 25,
+      "question": "A dumb terminal has",
+      "options": {
+        "a": "an embedded microcomputer",
+        "b": "extensive memory",
+        "c": "independent processing",
+        "d": "a keyboard and screen"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "a keyboard and screen"
+    },
+    {
+      "id": 26,
+      "question": "In analog computer",
+      "options": {
+        "a": "input is first converted to digital form",
+        "b": "input is never converted to digital form",
+        "c": "output is displayed in digital form",
+        "d": "all of them"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "input is never converted to digital form"
+    },
+    {
+      "id": 27,
+      "question": "The act of retrieving existing data from memory is called",
+      "options": {
+        "a": "read-out",
+        "b": "read from",
+        "c": "read",
+        "d": "all of them"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "all of them"
+    },
+    {
+      "id": 28,
+      "question": "All modern computer operate on",
+      "options": {
+        "a": "information",
+        "b": "floppies",
+        "c": "data",
+        "d": "word"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "data"
+    },
+    {
+      "id": 29,
+      "question": "Two kinds of main memory are",
+      "options": {
+        "a": "primary and secondary",
+        "b": "random and sequential",
+        "c": "ROM and RAM",
+        "d": "all of them"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "ROM and RAM"
+    },
+    {
+      "id": 30,
+      "question": "Easily reloadable language is",
+      "options": {
+        "a": "machine language",
+        "b": "assembly language",
+        "c": "high level language",
+        "d": "medium level language"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "machine language"
+    },
+    {
+      "id": 32,
+      "question": "Which of the following registers is loaded with the contents of memory location pointed by the PC?",
+      "options": {
+        "a": "memory address registers",
+        "b": "memory data registers",
+        "c": "instruction register",
+        "d": "program counter"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "instruction register"
+    },
+    {
+      "id": 31,
+      "question": "Which of the following is machine independence program?",
+      "options": {
+        "a": "high level language",
+        "b": "low level language",
+        "c": "assembly language",
+        "d": "machine language"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "high level language"
+    }
+  ]
+}

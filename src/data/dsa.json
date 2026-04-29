@@ -1,0 +1,445 @@
+{
+  "topic": "DSA",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Suppose you want to insert n elements into an empty linked list while maintaining the sorted order. What is the worst case time?",
+      "options": {
+        "a": "O(n)",
+        "b": "O(n logn)",
+        "c": "O(1)",
+        "d": "O(n²)"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "O(n²)",
+      "page": "Linked List"
+    },
+    {
+      "id": 2,
+      "question": "What does the following function do for a given linked list with first node as head? [if(head==NULL) return; fun1(head->next); printf(\"%d\", head->data)]",
+      "options": {
+        "a": "Prints all nodes of linked list",
+        "b": "Prints all nodes in reverse order",
+        "c": "Print alternate nodes of linked list",
+        "d": "Print alternate nodes in reverse order"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Prints all nodes in reverse order",
+      "page": "Linked List"
+    },
+    {
+      "id": 3,
+      "question": "In a circular linked list, the next pointer of the last node points to?",
+      "options": {
+        "a": "NULL",
+        "b": "The previous node",
+        "c": "The first node",
+        "d": "Itself"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "The first node",
+      "page": "Linked List"
+    },
+    {
+      "id": 4,
+      "question": "What can be said about the array representation of a circular queue when it contains only one element?",
+      "options": {
+        "a": "Front = rear - 1",
+        "b": "Front = rear + 1",
+        "c": "Front = rear ≠ null",
+        "d": "Front = rear = null"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Front = rear ≠ null",
+      "page": 150
+    },
+    {
+      "id": 5,
+      "question": "Which is very useful in situation when data have to be stored and then retrieved in reverse order?",
+      "options": {
+        "a": "Stack",
+        "b": "Queue",
+        "c": "Link list",
+        "d": "Trees"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Stack",
+      "page": 150
+    },
+    {
+      "id": 6,
+      "question": "Queue can be used to implement",
+      "options": {
+        "a": "radix sort",
+        "b": "Quick Sort",
+        "c": "recursion",
+        "d": "depth first search"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "radix sort",
+      "page": 150
+    },
+    {
+      "id": 7,
+      "question": "Which of the following statement is/are true for an undirected graph? P: Number of odd degree vertices is even. Q: Sum of degrees of all vertices is even.",
+      "options": {
+        "a": "P only",
+        "b": "Q only",
+        "c": "Both P and Q",
+        "d": "Neither P nor Q"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Both P and Q",
+      "page": "Graph"
+    },
+    {
+      "id": 8,
+      "question": "What is the number of edges in a complete graph with 5 nodes?",
+      "options": {
+        "a": "1",
+        "b": "4",
+        "c": "5",
+        "d": "10"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "10",
+      "page": "Graph"
+    },
+    {
+      "id": 9,
+      "question": "Which of the following is not an in-place algorithm?",
+      "options": {
+        "a": "Insertion sort",
+        "b": "Selection sort",
+        "c": "Merge sort",
+        "d": "Heap sort"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Merge sort",
+      "page": "Sorting"
+    },
+    {
+      "id": 10,
+      "question": "Which of the following is an example of dynamic programming approach?",
+      "options": {
+        "a": "Fibonacci series",
+        "b": "Tower of Hanoi",
+        "c": "Dijkstra shortest path",
+        "d": "None of this"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Fibonacci series",
+      "page": "Dynamic Programming"
+    },
+    {
+      "id": 11,
+      "question": "To implement Dijkstra's shortest path algorithm on unweighted graph so that it runs in linear time, the data structure to be used is",
+      "options": {
+        "a": "Stack",
+        "b": "Queue",
+        "c": "Heap",
+        "d": "B-Tree"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Queue",
+      "page": "Graph"
+    },
+    {
+      "id": 12,
+      "question": "Suppose you have a complete undirected graph with 4 nodes. What is the maximum number of Minimum Spanning Tree (MST) you can form?",
+      "options": {
+        "a": "4",
+        "b": "8",
+        "c": "16",
+        "d": "1"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "16",
+      "page": "Graph"
+    },
+    {
+      "id": 13,
+      "question": "Which of the following is non-linear?",
+      "options": {
+        "a": "Stacks",
+        "b": "List",
+        "c": "Strings",
+        "d": "Trees"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Trees",
+      "page": 191
+    },
+    {
+      "id": 14,
+      "question": "Header node is used as sentinel in ____",
+      "options": {
+        "a": "Graphs",
+        "b": "Stacks",
+        "c": "Binary tree",
+        "d": "Queues"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Binary tree",
+      "page": 191
+    },
+    {
+      "id": 15,
+      "question": "What would be the asymptotic time complexity to find an element in the linked list?",
+      "options": {
+        "a": "O(1)",
+        "b": "O(n)",
+        "c": "O(n²)",
+        "d": "O(n⁴)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(n)",
+      "page": 191
+    },
+    {
+      "id": 16,
+      "question": "What is the time complexity to insert a node based on position in a priority queue?",
+      "options": {
+        "a": "O(n logn)",
+        "b": "O(logn)",
+        "c": "O(n)",
+        "d": "O(n²)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(logn)",
+      "page": 191
+    },
+    {
+      "id": 17,
+      "question": "A problem in NP is NP complete if",
+      "options": {
+        "a": "it can be reduced to the 3-sat problem in polynomial time",
+        "b": "The 3-sat problem can be reduced to it in polynomial time",
+        "c": "it can be reduced to any other problems NP in polynomial time",
+        "d": "some problems in NP can be reduced to it in polynomial time"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "The 3-sat problem can be reduced to it in polynomial time",
+      "page": 192
+    },
+    {
+      "id": 18,
+      "question": "Bellman Ford algorithm does not work for graphs",
+      "options": {
+        "a": "none of the above",
+        "b": "that contains negative-weight edges",
+        "c": "that contains more than one articulation points",
+        "d": "that contains negative-weight cycles"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "that contains negative-weight cycles",
+      "page": 192
+    },
+    {
+      "id": 19,
+      "question": "An hash table with chaining as a collision resolution technique degenerates to a",
+      "options": {
+        "a": "queue",
+        "b": "tree",
+        "c": "linked list",
+        "d": "array"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "linked list",
+      "page": 192
+    },
+    {
+      "id": 20,
+      "question": "Running time of Bellman Ford algorithm is",
+      "options": {
+        "a": "O(V²)",
+        "b": "O(V+E log₂ V)",
+        "c": "O(VE)",
+        "d": "None"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(VE)",
+      "page": 192
+    },
+    {
+      "id": 21,
+      "question": "Which of the following case does not exist in complexity theory?",
+      "options": {
+        "a": "Best case",
+        "b": "Worst case",
+        "c": "Average case",
+        "d": "Null case"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Null case"
+    },
+    {
+      "id": 22,
+      "question": "What is the time complexity of the following code: for(i=n/2; i<=n; i++) { for(j=2; j<=n; j=j*2) { k=k+n/2; } }",
+      "options": {
+        "a": "O(n)",
+        "b": "O(n logn)",
+        "c": "O(n^2)",
+        "d": "O(n^2 logn)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(n logn)"
+    },
+    {
+      "id": 23,
+      "question": "What are the disadvantages of arrays?",
+      "options": {
+        "a": "Data structure like queue or stack cannot be implemented",
+        "b": "There are chances of wastage of memory space if elements inserted in an array are lesser than the allocated size",
+        "c": "Index value of an array can be negative",
+        "d": "Elements are sequentially accessed"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "There are chances of wastage of memory space if elements inserted in an array are lesser than the allocated size"
+    },
+    {
+      "id": 24,
+      "question": "Elements in an array are accessed ____",
+      "options": {
+        "a": "randomly",
+        "b": "sequentially",
+        "c": "exponentially",
+        "d": "logarithmically"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "randomly"
+    },
+    {
+      "id": 25,
+      "question": "A linear list of elements in which deletion can be done from one end (front) and insertion can take place only at the other end (rear) is known as a?",
+      "options": {
+        "a": "Queue",
+        "b": "Stack",
+        "c": "Tree",
+        "d": "Linked list"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Queue"
+    },
+    {
+      "id": 26,
+      "question": "The data structure required for Breadth First Traversal on a graph is?",
+      "options": {
+        "a": "Stack",
+        "b": "Array",
+        "c": "Queue",
+        "d": "Tree"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Queue"
+    },
+    {
+      "id": 27,
+      "question": "Circular Queue is also known as",
+      "options": {
+        "a": "Ring Buffer",
+        "b": "Square Buffer",
+        "c": "Rectangle Buffer",
+        "d": "Curve Buffer"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Ring Buffer"
+    },
+    {
+      "id": 28,
+      "question": "If the elements 'A', 'B', 'C' and 'D' are placed in a queue and are deleted one at a time, in what order will they be removed?",
+      "options": {
+        "a": "ABCD",
+        "b": "DCBA",
+        "c": "DCAB",
+        "d": "ABDC"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "ABCD"
+    },
+    {
+      "id": 29,
+      "question": "The concatenation of two lists can be performed in O(1) time. Which of the following variation of linked list can be used?",
+      "options": {
+        "a": "Singly linked list",
+        "b": "Doubly linked list",
+        "c": "Circular doubly linked list",
+        "d": "Array implementation of list"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Circular doubly linked list"
+    },
+    {
+      "id": 30,
+      "question": "Linked lists are not suitable to for the implementation of?",
+      "options": {
+        "a": "Insertion sort",
+        "b": "Radix sort",
+        "c": "Polynomial manipulation",
+        "d": "Binary search"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Binary search"
+    },
+    {
+      "id": 31,
+      "question": "Linked list is considered as an example of",
+      "options": {
+        "a": "Dynamic",
+        "b": "Static",
+        "c": "Compile time",
+        "d": "Heap"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Dynamic"
+    },
+    {
+      "id": 32,
+      "question": "What differentiates a circular linked list from a normal linked list?",
+      "options": {
+        "a": "You cannot have the 'next' pointer point to null in a circular linked list",
+        "b": "It is faster to traverse the circular linked list",
+        "c": "You may or may not traverse the circular linked list",
+        "d": "Head node is known"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "You cannot have the 'next' pointer point to null in a circular linked list"
+    },
+    {
+      "id": 33,
+      "question": "To represent hierarchical relationships between elements, which data structure is suitable?",
+      "options": {
+        "a": "Graph",
+        "b": "Tree",
+        "c": "Dequeue",
+        "d": "Priority"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Tree"
+    },
+    {
+      "id": 34,
+      "question": "While evaluating a prefix expression, the string is read from?",
+      "options": {
+        "a": "left to right",
+        "b": "right to left",
+        "c": "center to right",
+        "d": "center to left to right"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "right to left"
+    },
+    {
+      "id": 35,
+      "question": "In the ........ traversal we process all of a vertex's descendants before we move to an adjacent vertex",
+      "options": {
+        "a": "Depth Limited",
+        "b": "With First",
+        "c": "Breath First",
+        "d": "Depth First"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Depth First"
+    }
+  ]
+}

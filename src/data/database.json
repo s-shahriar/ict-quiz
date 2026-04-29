@@ -1,0 +1,699 @@
+{
+  "topic": "Database",
+  "questions": [
+    {
+      "id": 1,
+      "question": "The subset of super key is a candidate key under what condition?",
+      "options": {
+        "a": "No proper subset is a super key",
+        "b": "All subsets are super keys",
+        "c": "Subset is a super key",
+        "d": "Each subset is a super key"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "No proper subset is a super key",
+      "page": "Keys"
+    },
+    {
+      "id": 2,
+      "question": "Which of the following operations is based on relational algebra?",
+      "options": {
+        "a": "rename and union",
+        "b": "select and union",
+        "c": "only union",
+        "d": "rename, select and union"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "rename, select and union",
+      "page": "Relational Algebra"
+    },
+    {
+      "id": 3,
+      "question": "Which one of the following is a set of one or more attributes taken collectively to uniquely identify a record?",
+      "options": {
+        "a": "Candidate key",
+        "b": "Sub key",
+        "c": "Super key",
+        "d": "Foreign key"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Super key",
+      "page": "Keys"
+    },
+    {
+      "id": 4,
+      "question": "In SQL, which command is used to add a column/integrity constraint to a table?",
+      "options": {
+        "a": "ADD COLUMN",
+        "b": "INSERT COLUMN",
+        "c": "MODIFY TABLE",
+        "d": "ALTER TABLE"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "ALTER TABLE",
+      "page": "SQL"
+    },
+    {
+      "id": 5,
+      "question": "Which normal form is concerned with removing transitive dependency?",
+      "options": {
+        "a": "1NF",
+        "b": "2NF",
+        "c": "3NF",
+        "d": "BCN"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "3NF",
+      "page": "Normalization"
+    },
+    {
+      "id": 6,
+      "question": "Which command is used to enable/disable/drop an integrity constraint in SQL?",
+      "options": {
+        "a": "DEFINE TABLE",
+        "b": "MODIFY TABLE",
+        "c": "ALTER TABLE",
+        "d": "All of the above"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "ALTER TABLE",
+      "page": "SQL"
+    },
+    {
+      "id": 7,
+      "question": "An attribute A of datatype varchar(20) has the value 'Avi'. The attribute B of datatype char(20) has value 'Reed'. Here attribute A has ___ spaces and attribute B has ___ spaces.",
+      "options": {
+        "a": "3, 20",
+        "b": "20, 4",
+        "c": "20, 20",
+        "d": "3, 4"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "3, 20",
+      "page": "SQL",
+      "note": "varchar stores only actual chars (3 for 'Avi'), char pads to full width (20 for 'Reed' in char(20))"
+    },
+    {
+      "id": 8,
+      "question": "Functional dependency are a generalization of",
+      "options": {
+        "a": "key dependencies",
+        "b": "relational dependencies",
+        "c": "database dependencies",
+        "d": "none"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "key dependencies",
+      "page": "Functional Dependency"
+    },
+    {
+      "id": 9,
+      "question": "When a transaction has completed all its operations and is waiting for commit/rollback action, the state of transaction is",
+      "options": {
+        "a": "Partially commit",
+        "b": "Ready commit",
+        "c": "Half commit",
+        "d": "Commit and rollback"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Partially commit",
+      "page": "Transaction"
+    },
+    {
+      "id": 10,
+      "question": "An attribute in a relation is a foreign key if the _______ key from one relation is used as an attribute in that relation.",
+      "options": {
+        "a": "Candidate",
+        "b": "Primary",
+        "c": "Super",
+        "d": "Sub"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Primary",
+      "page": "Keys"
+    },
+    {
+      "id": 11,
+      "question": "What type of join is needed when you wish to include rows that do not have matching values?",
+      "options": {
+        "a": "Equi-join",
+        "b": "Natural join",
+        "c": "Outer join",
+        "d": "Inner join"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Outer join",
+      "page": "SQL"
+    },
+    {
+      "id": 12,
+      "question": "Table programmer has 10 records. It has a non-NULL SALARY column which is also unique. What will be the output: SELECT COUNT(*) FROM programmer WHERE SALARY > ALL (SELECT SALARY FROM programmer)?",
+      "options": {
+        "a": "0",
+        "b": "5",
+        "c": "9",
+        "d": "10"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "0",
+      "page": "SQL",
+      "note": "No salary can be greater than ALL salaries (i.e. greater than the maximum), so result is 0"
+    },
+    {
+      "id": 13,
+      "question": "In SQL, aggregate functions can be used in the select list or the ___ clause. They cannot be used in a ___ clause.",
+      "options": {
+        "a": "Where, having",
+        "b": "Having, where",
+        "c": "Group by, Having",
+        "d": "Group by, Where"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Having, where",
+      "page": "SQL"
+    },
+    {
+      "id": 14,
+      "type": "open-ended",
+      "question": "Write a SQL query to find the employee whose average salary is more than 20000 in the same department.",
+      "answer": "SELECT department_id, AVG(salary) FROM employee GROUP BY department_id HAVING AVG(salary) > 20000;",
+      "page": "SQL"
+    },
+    {
+      "id": 15,
+      "type": "open-ended",
+      "question": "Write a query to select top 10% row from grade table.",
+      "answer": "SELECT TOP 10 PERCENT * FROM grade; -- (SQL Server) OR SELECT * FROM grade LIMIT (SELECT CEIL(0.1 * COUNT(*)) FROM grade); -- (MySQL)",
+      "page": "SQL"
+    },
+    {
+      "id": 16,
+      "type": "open-ended",
+      "question": "Given: Customer(cust_id, Name, Address, Sales_id), Order(Order_id, cust_id, Date, Sales_id), Salesman(Sales_id, commision). i) Find customer details for salesmen with commission > 12%. ii) Count salesmen by order_id and date.",
+      "answer": "i) SELECT c.* FROM Customer c, Order o, Salesman s WHERE c.cust_id=o.cust_id AND o.Sales_id=s.Sales_id AND s.commision > 0.12; ii) SELECT o.Order_id, o.Date, COUNT(s.Sales_id) FROM Order o, Salesman s WHERE o.Sales_id=s.Sales_id GROUP BY o.Order_id, o.Date;",
+      "page": "SQL"
+    },
+    {
+      "id": 17,
+      "question": "Which one is not a unary operation in relational algebra?",
+      "options": {
+        "a": "Select",
+        "b": "Project",
+        "c": "Union",
+        "d": "Rename"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Union",
+      "page": "Relational Algebra",
+      "note": "Union is a binary operation (needs two relations). Select, Project, Rename are unary."
+    },
+    {
+      "id": 18,
+      "question": "First file of database is most useful for ____.",
+      "options": {
+        "a": "Large scale users",
+        "b": "Banking",
+        "c": "Small-group situation",
+        "d": "Chain stores"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Small-group situation",
+      "page": "Database Basics"
+    },
+    {
+      "id": 19,
+      "question": "A primary key must also be ----------------",
+      "options": {
+        "a": "Foreign key",
+        "b": "Unique",
+        "c": "Identical",
+        "d": "Case sensitive"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Unique",
+      "page": "Keys"
+    },
+    {
+      "id": 20,
+      "question": "The language used in application programs to request data from the DBMS is referred to as the-",
+      "options": {
+        "a": "DML",
+        "b": "DDL",
+        "c": "query language",
+        "d": "All of these above"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "DML",
+      "page": "Database Basics"
+    },
+    {
+      "id": 21,
+      "question": "A database management system might consist of application programs and a software package called",
+      "options": {
+        "a": "FORTRAN",
+        "b": "AUTOFLOW",
+        "c": "BPL",
+        "d": "TOTAL"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "TOTAL",
+      "page": "Database Basics"
+    },
+    {
+      "id": 22,
+      "question": "Triggers are supported in",
+      "options": {
+        "a": "Delete",
+        "b": "Update",
+        "c": "Views",
+        "d": "All of the mentioned"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "All of the mentioned",
+      "page": "SQL"
+    },
+    {
+      "id": 23,
+      "question": "Which of the following command(s) is used to recompile a stored procedure in SQL?",
+      "options": {
+        "a": "COMPILE PROCEDURE",
+        "b": "ALTER PROCEDURE",
+        "c": "MODIFY PROCEDURE",
+        "d": "All of the above"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "ALTER PROCEDURE",
+      "page": "SQL"
+    },
+    {
+      "id": 24,
+      "question": "A stored procedure in SQL is a ____",
+      "options": {
+        "a": "Block of functions",
+        "b": "Group of Transact-SQL statements compiled into a single execution plan",
+        "c": "Group of distinct SQL statements",
+        "d": "None of the mentioned"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Group of Transact-SQL statements compiled into a single execution plan",
+      "page": "SQL"
+    },
+    {
+      "id": 25,
+      "question": "A computer file contains several records. What does each record contain?",
+      "options": {
+        "a": "Bytes",
+        "b": "Words",
+        "c": "Fields",
+        "d": "Database"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Fields",
+      "page": "Database Basics"
+    },
+    {
+      "id": 26,
+      "question": "Which forms are based on the concept of functional dependency?",
+      "options": {
+        "a": "1NF",
+        "b": "2NF",
+        "c": "3NF",
+        "d": "4NF"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "2NF"
+    },
+    {
+      "id": 27,
+      "question": "The view of total database content is",
+      "options": {
+        "a": "Conceptual view",
+        "b": "Internal view",
+        "c": "External view",
+        "d": "Physical View"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Conceptual view"
+    },
+    {
+      "id": 28,
+      "question": "In the relational model, cardinality is termed as:",
+      "options": {
+        "a": "A number of tuples",
+        "b": "A number of attributes",
+        "c": "A number of constraints",
+        "d": "A number of tables"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "A number of tuples"
+    },
+    {
+      "id": 29,
+      "question": "Relational calculus is a",
+      "options": {
+        "a": "Procedural language",
+        "b": "Non-Procedural language",
+        "c": "Data definition language",
+        "d": "High-level language"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Non-Procedural language"
+    },
+    {
+      "id": 30,
+      "question": "Cartesian product in relational algebra is",
+      "options": {
+        "a": "a Unary operator",
+        "b": "a Binary operator",
+        "c": "a Ternary operator",
+        "d": "not defined"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "a Binary operator"
+    },
+    {
+      "id": 31,
+      "question": "ODBC stands for",
+      "options": {
+        "a": "Oracle Database Connectivity",
+        "b": "Oral Database Connectivity",
+        "c": "Object Database Connectivity",
+        "d": "Open Database Connectivity"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Open Database Connectivity"
+    },
+    {
+      "id": 32,
+      "question": "A logical schema",
+      "options": {
+        "a": "describes the entire database",
+        "b": "is a standard way of organizing information on disk",
+        "c": "is the entire database",
+        "d": "both (A) and (C)"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "describes the entire database"
+    },
+    {
+      "id": 33,
+      "question": "The property/properties of a database is/are:",
+      "options": {
+        "a": "It is an integrated collection of logically related records",
+        "b": "It consolidates separate files into a common pool of data records",
+        "c": "Data stored in a database is independent of the application programs using it",
+        "d": "All of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "All of the above"
+    },
+    {
+      "id": 34,
+      "question": "The DBMS language component which can be embedded in a program is",
+      "options": {
+        "a": "DDL",
+        "b": "DML",
+        "c": "DCL",
+        "d": "Query language"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "DML"
+    },
+    {
+      "id": 35,
+      "question": "Count function in SQL returns the number of",
+      "options": {
+        "a": "values",
+        "b": "distinct values",
+        "c": "groups",
+        "d": "columns"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "values"
+    },
+    {
+      "id": 36,
+      "question": "Which one of the following statements about data dictionary is false?",
+      "options": {
+        "a": "The data dictionary is normally maintained by the database administrator",
+        "b": "Data elements in the database can be modified by changing the data dictionary",
+        "c": "The data dictionary contains the name and description of each data element",
+        "d": "A data dictionary is a tool used exclusively by the database administrator"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Data elements in the database can be modified by changing the data dictionary"
+    },
+    {
+      "id": 37,
+      "question": "E-R model uses this symbol to represent a weak entity set?",
+      "options": {
+        "a": "Dotted rectangle",
+        "b": "Diamond",
+        "c": "Doubly outlined rectangle",
+        "d": "None of these"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Doubly outlined rectangle"
+    },
+    {
+      "id": 38,
+      "question": "SET concept is used in:",
+      "options": {
+        "a": "Network Model",
+        "b": "Hierarchical Model",
+        "c": "Relational Model",
+        "d": "None of these"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Network Model"
+    },
+    {
+      "id": 39,
+      "question": "Relational Algebra is",
+      "options": {
+        "a": "Data Definition Language",
+        "b": "Meta Language",
+        "c": "Procedural Query Language",
+        "d": "None of the above"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Procedural Query Language"
+    },
+    {
+      "id": 40,
+      "question": "Key to represent the relationship between tables is called",
+      "options": {
+        "a": "Primary Key",
+        "b": "Secondary Key",
+        "c": "Foreign Key",
+        "d": "None of these"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Foreign Key"
+    },
+    {
+      "id": 41,
+      "question": "Which of the following is a valid SQL type?",
+      "options": {
+        "a": "CHARACTER",
+        "b": "NUMERIC",
+        "c": "FLOAT",
+        "d": "All of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "All of the above"
+    },
+    {
+      "id": 42,
+      "question": "Which of the following is a legal expression in SQL?",
+      "options": {
+        "a": "SELECT NULL FROM EMPLOYEE;",
+        "b": "SELECT NAME FROM EMPLOYEE;",
+        "c": "SELECT NAME FROM EMPLOYEE WHERE SALARY = NULL;",
+        "d": "None of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "None of the above"
+    },
+    {
+      "id": 43,
+      "question": "Which of the following is a comparison operator in SQL?",
+      "options": {
+        "a": "=",
+        "b": "LIKE",
+        "c": "BETWEEN",
+        "d": "All of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "All of the above"
+    },
+    {
+      "id": 44,
+      "question": "A set of possible data values is called",
+      "options": {
+        "a": "attribute",
+        "b": "degree",
+        "c": "tuple",
+        "d": "domain"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "domain"
+    },
+    {
+      "id": 45,
+      "question": "A data dictionary is a special file that contains:",
+      "options": {
+        "a": "The name of all fields in all files",
+        "b": "The width of all fields in all files",
+        "c": "The data type of all fields in all files",
+        "d": "All of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "All of the above"
+    },
+    {
+      "id": 46,
+      "question": "An instance of relational schema R(A, B, C) has distinct values of A, including NULL values. Which one of the following is true?",
+      "options": {
+        "a": "A is a candidate key",
+        "b": "A is not a candidate key",
+        "c": "A is a Primary Key",
+        "d": "Both (A) and (C)"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "A is a candidate key"
+    },
+    {
+      "id": 47,
+      "question": "The natural join is equal to:",
+      "options": {
+        "a": "Cartesian Product",
+        "b": "Combination of Union and Cartesian product",
+        "c": "Combination of selection and Cartesian product",
+        "d": "Combination of projection and Cartesian product"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Combination of selection and Cartesian product"
+    },
+    {
+      "id": 48,
+      "question": "In SQL the statement select * from R, S is equivalent to",
+      "options": {
+        "a": "Select * from R natural join S",
+        "b": "Select * from R union join S",
+        "c": "Select * from R cross join S",
+        "d": "Select * from R inner join S"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Select * from R cross join S"
+    },
+    {
+      "id": 49,
+      "question": "A ___ consists of a sequence of query and/or update statements.",
+      "options": {
+        "a": "Transaction",
+        "b": "Commit",
+        "c": "Rollback",
+        "d": "Flashback"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Transaction"
+    },
+    {
+      "id": 50,
+      "question": "Which of the following makes the transaction permanent in the database?",
+      "options": {
+        "a": "View",
+        "b": "Commit",
+        "c": "Rollback",
+        "d": "Flashback"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Commit"
+    },
+    {
+      "id": 51,
+      "question": "In case of any shut down during a transaction before commit, which of the following statements is done automatically?",
+      "options": {
+        "a": "View",
+        "b": "Commit",
+        "c": "Rollback",
+        "d": "Flashback"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Rollback"
+    },
+    {
+      "id": 52,
+      "question": "Which is a bottom-up approach to database design that design by examining the relationship between attributes?",
+      "options": {
+        "a": "Functional dependency",
+        "b": "Database modeling",
+        "c": "Normalization",
+        "d": "Decomposition"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Normalization"
+    },
+    {
+      "id": 53,
+      "question": "In the ___ normal form, a composite attribute is converted to individual attributes.",
+      "options": {
+        "a": "First",
+        "b": "Second",
+        "c": "Third",
+        "d": "Fourth"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "First"
+    },
+    {
+      "id": 54,
+      "question": "A table on the many side of a one to many or many to many relationship must:",
+      "options": {
+        "a": "Be in Second Normal Form (2NF)",
+        "b": "Be in Third Normal Form (3NF)",
+        "c": "Have a single attribute key",
+        "d": "Have a composite key"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Have a composite key"
+    },
+    {
+      "id": 55,
+      "question": "Functional Dependencies are the types of constraints that are based on",
+      "options": {
+        "a": "Key",
+        "b": "Key revisited",
+        "c": "Superset key",
+        "d": "None of the mentioned"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Key"
+    },
+    {
+      "id": 56,
+      "question": "We indicate roles in E-R diagrams by labeling the lines that connect ___ to ___",
+      "options": {
+        "a": "Diamond, diamond",
+        "b": "Rectangle, diamond",
+        "c": "Rectangle, rectangle",
+        "d": "Diamond, rectangle"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Diamond, rectangle"
+    },
+    {
+      "id": 57,
+      "question": "Which of the following is an Open Source DBMS?",
+      "options": {
+        "a": "MySQL",
+        "b": "Microsoft SQL Server",
+        "c": "Microsoft Access",
+        "d": "Oracle"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "MySQL"
+    }
+  ]
+}

@@ -1,0 +1,352 @@
+{
+  "topic": "C Programming",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which type of following errors is generated when the program is being executed?",
+      "options": {
+        "a": "Syntax error",
+        "b": "Semantic error",
+        "c": "Run-time error",
+        "d": "Linker error"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Run-time error",
+      "page": 38
+    },
+    {
+      "id": 2,
+      "question": "Which one of following is not a valid identifier?",
+      "options": {
+        "a": "-mysum",
+        "b": "mysun",
+        "c": "my_sun",
+        "d": "_my_sun"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "-mysum",
+      "page": 38
+    },
+    {
+      "id": 3,
+      "question": "Which one is the first high-level programming language?",
+      "options": {
+        "a": "C",
+        "b": "COBOL",
+        "c": "FORTRAN",
+        "d": "C++"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "FORTRAN",
+      "page": 38
+    },
+    {
+      "id": 4,
+      "question": "Which of the following pairs of statements are not treated as identical by the compiler?",
+      "options": {
+        "a": "int foo(int *i); int foo(int i[])",
+        "b": "a[i]=5; i[a]=5;",
+        "c": "char c[10]; char *c;",
+        "d": "void bar(int); void bar(int x)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "char c[10]; char *c;",
+      "page": "Previous Year Question"
+    },
+    {
+      "id": 5,
+      "question": "Which of the following is correct to initialize array in C?",
+      "options": {
+        "a": "int array = (1,2,3,4,5)",
+        "b": "int array() = {1,2,3,4,5}",
+        "c": "int array() = (1,2,3,4,5)",
+        "d": "int array[5] = {1,2,3,4,5}"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "int array[5] = {1,2,3,4,5}",
+      "page": "Previous Year Question"
+    },
+    {
+      "id": 6,
+      "question": "What is the access methodology in arrays?",
+      "options": {
+        "a": "Sequential",
+        "b": "Random",
+        "c": "Relational",
+        "d": "Stochastic"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Random",
+      "page": "Previous Year Question"
+    },
+    {
+      "id": 7,
+      "question": "For 16-bit compiler allowable range for integer constants is ______.",
+      "options": {
+        "a": "-3.4e38 to 3.4e38",
+        "b": "-32768 to 32767",
+        "c": "-32668 to 32667",
+        "d": "None of these"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "-32768 to 32767",
+      "page": 66
+    },
+    {
+      "id": 8,
+      "question": "Which one of the following is not a valid identifier?",
+      "options": {
+        "a": "_examveda",
+        "b": "1examveda",
+        "c": "exam_veda",
+        "d": "examveda1"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "1examveda",
+      "page": 66
+    },
+    {
+      "id": 9,
+      "question": "Which of following function is more appropriate for reading in a multi-word string?",
+      "options": {
+        "a": "scanf()",
+        "b": "gets()",
+        "c": "printf()",
+        "d": "puts()"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "gets()",
+      "page": "Exercise"
+    },
+    {
+      "id": 10,
+      "question": "int a[5] = {1, 2, 3} What is the value of a[4]?",
+      "options": {
+        "a": "3",
+        "b": "1",
+        "c": "2",
+        "d": "0"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "0",
+      "page": "Exercise"
+    },
+    {
+      "id": 11,
+      "question": "In C programming language, which of the following type of operators have the highest precedence?",
+      "options": {
+        "a": "Relational",
+        "b": "Equality operators",
+        "c": "Logical operators",
+        "d": "Arithmetic operators"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Arithmetic operators",
+      "page": "Exercise"
+    },
+    {
+      "id": 12,
+      "question": "C was primarily developed as",
+      "options": {
+        "a": "System programming language",
+        "b": "General purpose language",
+        "c": "Data processing language",
+        "d": "None of the above"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "System programming language"
+    },
+    {
+      "id": 13,
+      "question": "A C variable cannot start with",
+      "options": {
+        "a": "An alphabet",
+        "b": "A number",
+        "c": "A special symbol other than underscore",
+        "d": "both (b) and (c)"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "both (b) and (c)"
+    },
+    {
+      "id": 14,
+      "question": "Which of the following is allowed in a C Arithmetic instruction",
+      "options": {
+        "a": "[]",
+        "b": "{}",
+        "c": "()",
+        "d": "None of the above"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "()"
+    },
+    {
+      "id": 15,
+      "question": "Which is the right way to declare constant in C?",
+      "options": {
+        "a": "int constant var = 10;",
+        "b": "int const var = 10;",
+        "c": "const int var = 10;",
+        "d": "B & C Both"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "B & C Both"
+    },
+    {
+      "id": 16,
+      "question": "Find the output of the following program. void main() { int i=01289; printf(\"%d\", i); }",
+      "options": {
+        "a": "0289",
+        "b": "1289",
+        "c": "713",
+        "d": "Syntax error"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "1289"
+    },
+    {
+      "id": 17,
+      "question": "What is the difference between a declaration and a definition of a variable?",
+      "options": {
+        "a": "Both can occur multiple times, but a declaration must occur first",
+        "b": "A definition occurs once, but a declaration may occur many times",
+        "c": "Both can occur multiple times, but a definition must occur first",
+        "d": "A declaration occurs once, but a definition may occur many times"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "A definition occurs once, but a declaration may occur many times"
+    },
+    {
+      "id": 18,
+      "question": "Which of the following shows the correct hierarchy of arithmetic operations in C",
+      "options": {
+        "a": "/+*-",
+        "b": "*-/+",
+        "c": "+-/*",
+        "d": "*/+-"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "*/+-"
+    },
+    {
+      "id": 19,
+      "question": "What is right way to initialize an array?",
+      "options": {
+        "a": "int num[6] = {2, 4, 12, 5, 45, 5};",
+        "b": "int n{} = {2, 4, 12, 5, 45, 5};",
+        "c": "int n{6} = {2, 4, 12};",
+        "d": "int n(6) = {2, 4, 12, 5, 45, 5};"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "int num[6] = {2, 4, 12, 5, 45, 5};"
+    },
+    {
+      "id": 20,
+      "question": "An array elements are always stored in _____ memory locations.",
+      "options": {
+        "a": "Sequential",
+        "b": "Random",
+        "c": "Sequential and Random",
+        "d": "None of the above"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Sequential"
+    },
+    {
+      "id": 21,
+      "question": "What will be the output of: int x[4] = {1,2,3}; printf(\"%d %d %D\", x[3], x[2], x[1]);",
+      "options": {
+        "a": "03%D",
+        "b": "000",
+        "c": "032",
+        "d": "None of the above"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "032"
+    },
+    {
+      "id": 22,
+      "question": "Bitwise operators can operate upon?",
+      "options": {
+        "a": "double and chars",
+        "b": "floats and doubles",
+        "c": "ints and floats",
+        "d": "ints and chars"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "ints and chars"
+    },
+    {
+      "id": 23,
+      "question": "What will be the output of: void main(){ int a=36, b=9; printf(\"%d\", a>>a/b-2); }",
+      "options": {
+        "a": "9",
+        "b": "7",
+        "c": "5",
+        "d": "none of these"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "9"
+    },
+    {
+      "id": 24,
+      "question": "int testarray[3][2][2] = {1,2,3,4,5,6,7,8,9,10,11,12}; What value does testarray[2][1][0] contain?",
+      "options": {
+        "a": "11",
+        "b": "7",
+        "c": "5",
+        "d": "9"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "11"
+    },
+    {
+      "id": 25,
+      "question": "Which one is not a reserve keyword in C Language?",
+      "options": {
+        "a": "auto",
+        "b": "main",
+        "c": "case",
+        "d": "register"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "main"
+    },
+    {
+      "id": 26,
+      "question": "Prototype of a function means ____",
+      "options": {
+        "a": "Name of Function",
+        "b": "Output of Function",
+        "c": "Declaration of Function",
+        "d": "Input of a Function"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Declaration of Function"
+    },
+    {
+      "id": 27,
+      "question": "Out of fgets() and gets() which function is safe to use?",
+      "options": {
+        "a": "gets()",
+        "b": "fgets()",
+        "c": "==",
+        "d": "=="
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "fgets()"
+    },
+    {
+      "id": 28,
+      "question": "Specify the 2 library functions to dynamically allocate memory?",
+      "options": {
+        "a": "malloc() and memalloc()",
+        "b": "malloc() and memalloc()",
+        "c": "malloc() and calloc()",
+        "d": "memalloc() and faralloc()"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "malloc() and calloc()"
+    }
+  ]
+}

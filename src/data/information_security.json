@@ -1,0 +1,292 @@
+{
+  "topic": "Information Security",
+  "questions": [
+    {
+      "id": 1,
+      "question": "An attacker sits between the sender and the receiver and captures the information and retransmits the receiver after some times without altering the information. The attack is called as----",
+      "options": {
+        "a": "Replay attack",
+        "b": "Denial of service attack",
+        "c": "Masquerade attack",
+        "d": "Complex attack"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Replay attack",
+      "page": "Security Attacks"
+    },
+    {
+      "id": 2,
+      "question": "___ is an assault on a service from a single source that floods it with so many requests that it becomes overwhelmed and it is either stopped completely or operates at a significantly reduced rate.",
+      "options": {
+        "a": "Simple attack",
+        "b": "Spoofing attack",
+        "c": "Cross-site scripting (XSS) attack",
+        "d": "Denial-of-services (DoS) attack"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Denial-of-services (DoS) attack",
+      "page": "Security Attacks"
+    },
+    {
+      "id": 3,
+      "question": "Viruses that take up residence in the computer's memory and making hard to detect is called:",
+      "options": {
+        "a": "Cluster Virus",
+        "b": "Self-Encrypting Virus",
+        "c": "Stealth Virus",
+        "d": "Macro Virus"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Stealth Virus",
+      "page": "Malware"
+    },
+    {
+      "id": 4,
+      "question": "SHA-1 has a message digest of",
+      "options": {
+        "a": "160 bits",
+        "b": "512 bits",
+        "c": "628 bits",
+        "d": "820 bits"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "160 bits",
+      "page": "Cryptography"
+    },
+    {
+      "id": 5,
+      "question": "Message authentication is a service beyond",
+      "options": {
+        "a": "Message Confidentiality",
+        "b": "Message Integrity",
+        "c": "Message Splashing",
+        "d": "Message Sending"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Message Confidentiality",
+      "page": "Cryptography"
+    },
+    {
+      "id": 6,
+      "question": "In Message Confidentiality, transmitted message must make sense to only intended",
+      "options": {
+        "a": "Receiver",
+        "b": "Sender",
+        "c": "Modulor",
+        "d": "Translator"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Receiver",
+      "page": "Cryptography"
+    },
+    {
+      "id": 7,
+      "question": "A hash function guarantees integrity of a message. It guarantees that message has not be",
+      "options": {
+        "a": "Replaced",
+        "b": "Over view",
+        "c": "Changed",
+        "d": "Violated"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Changed",
+      "page": "Cryptography"
+    },
+    {
+      "id": 8,
+      "question": "To check integrity of a message, or document, receiver creates the",
+      "options": {
+        "a": "Hash-Table",
+        "b": "Hash Tag",
+        "c": "Hyper Text",
+        "d": "Finger Print"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Finger Print",
+      "page": "Cryptography"
+    },
+    {
+      "id": 9,
+      "question": "A digital signature needs a",
+      "options": {
+        "a": "Private-key system",
+        "b": "Shared-key system",
+        "c": "Public-key system",
+        "d": "All of them"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Public-key system",
+      "page": "Cryptography"
+    },
+    {
+      "id": 10,
+      "question": "One way to preserve integrity of a document is through use of a",
+      "options": {
+        "a": "Eye-Rays",
+        "b": "Finger Print",
+        "c": "Biometric",
+        "d": "X-Rays"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Finger Print",
+      "page": "Cryptography"
+    },
+    {
+      "id": 11,
+      "question": "Compromising confidential information comes under ___",
+      "options": {
+        "a": "Bug",
+        "b": "Threat",
+        "c": "Vulnerability",
+        "d": "Attack"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Threat",
+      "page": "Security Concepts"
+    },
+    {
+      "id": 12,
+      "question": "VIRUS stands for",
+      "options": {
+        "a": "Versatile Information Research Under Seize",
+        "b": "Vital Information Resource Under Seize",
+        "c": "Volume of information Resource under Seize",
+        "d": "Video Information Resource Under Seize"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Vital Information Resource Under Seize",
+      "page": "Malware"
+    },
+    {
+      "id": 13,
+      "question": "Which of the following is not a web server attack type?",
+      "options": {
+        "a": "DOS attack",
+        "b": "Website Defacement using SQLi",
+        "c": "Directory Traversal",
+        "d": "Password guessing"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Password guessing",
+      "page": "Security Attacks"
+    },
+    {
+      "id": 14,
+      "question": "___ a means of regaining access to a compromised system by installing software or configuring existing software to enable remote access under attacker-defined conditions.",
+      "options": {
+        "a": "Spyware",
+        "b": "Ransomware",
+        "c": "Cross-site Scripting",
+        "d": "Backdoor"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Backdoor",
+      "page": "Malware"
+    },
+    {
+      "id": 15,
+      "question": "Encryption and decryption provide secrecy, or confidentiality, but not",
+      "options": {
+        "a": "Authentication",
+        "b": "Integrity",
+        "c": "Privacy",
+        "d": "All of the above"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Authentication",
+      "page": "Cryptography"
+    },
+    {
+      "id": 16,
+      "question": "Who deploy Malwares to a system or network?",
+      "options": {
+        "a": "Criminal organizations, Black hat hackers, malware developers, cyber-terrorists",
+        "b": "Criminal organizations, White hat hackers, malware developers, cyber-terrorists",
+        "c": "Criminal organizations, Black hat hackers, software developers, cyber-terrorists",
+        "d": "Criminal organizations, gray hat hackers, Malware developers, Penetration testers"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Criminal organizations, Black hat hackers, malware developers, cyber-terrorists",
+      "page": "Malware"
+    },
+    {
+      "id": 17,
+      "question": "When you use the word ___ it means you are protecting your data from getting disclosed.",
+      "options": {
+        "a": "Confidentiality",
+        "b": "Integrity",
+        "c": "Authentication",
+        "d": "Availability"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Confidentiality",
+      "page": "Security Concepts"
+    },
+    {
+      "id": 18,
+      "question": "When integrity is lacking in a security system, ___ occurs.",
+      "options": {
+        "a": "Database hacking",
+        "b": "Data deletion",
+        "c": "Data tampering",
+        "d": "Data leakage"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Data tampering",
+      "page": "Security Concepts"
+    },
+    {
+      "id": 19,
+      "question": "___ ensures the integrity and security of data that are passing over a network.",
+      "options": {
+        "a": "Firewall",
+        "b": "Antivirus",
+        "c": "Pentesting Tools",
+        "d": "Network-security protocols"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Network-security protocols",
+      "page": "Network Security"
+    },
+    {
+      "id": 20,
+      "question": "Digital signature is a cryptographic method that ensures.",
+      "options": {
+        "a": "Data confidentiality, integrity, availability",
+        "b": "data integrity, authentication, nonrepudiation",
+        "c": "data privacy, integrity, accessibility",
+        "d": "Data privacy integrity, approachability"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "data integrity, authentication, nonrepudiation",
+      "page": "Cryptography"
+    },
+    {
+      "id": 21,
+      "question": "Which of the following is the bit size of AES?",
+      "options": {
+        "a": "128",
+        "b": "192",
+        "c": "256",
+        "d": "all"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "all",
+      "page": "Cryptography",
+      "note": "AES supports 128, 192, and 256-bit key sizes"
+    },
+    {
+      "id": 22,
+      "question": "Which of the following is an example of a hash function?",
+      "options": {
+        "a": "SHA-1",
+        "b": "RSA",
+        "c": "AES",
+        "d": "Diffie-Hellman"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "SHA-1",
+      "page": "Cryptography"
+    }
+  ]
+}

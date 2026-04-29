@@ -1,0 +1,226 @@
+{
+  "topic": "Microprocessor",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Physical connection between Microprocessor Memory and other parts is called—",
+      "options": {
+        "a": "Address bus",
+        "b": "Data Bus",
+        "c": "path",
+        "d": "Hub"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Data Bus",
+      "page": 387
+    },
+    {
+      "id": 2,
+      "question": "The situation where in the data of operands are not available is called ___",
+      "options": {
+        "a": "Data hazard",
+        "b": "Stock",
+        "c": "Deadlock",
+        "d": "Structural hazard"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Data hazard",
+      "page": 387
+    },
+    {
+      "id": 3,
+      "question": "During the execution of a program which gets initialized first?",
+      "options": {
+        "a": "MDR",
+        "b": "IR",
+        "c": "PC",
+        "d": "MAR"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "PC",
+      "page": "Registers"
+    },
+    {
+      "id": 4,
+      "question": "___ is used to store data in registers.",
+      "options": {
+        "a": "D flip flop",
+        "b": "JK flip flop",
+        "c": "RS flip flop",
+        "d": "None of the mentioned"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "D flip flop",
+      "page": "Registers"
+    },
+    {
+      "id": 5,
+      "question": "Any condition that causes a processor to stall is called as ___",
+      "options": {
+        "a": "Hazard",
+        "b": "Page fault",
+        "c": "System error",
+        "d": "None of the mentioned"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Hazard",
+      "page": "Pipelining"
+    },
+    {
+      "id": 6,
+      "question": "___ Bus structure is usually used to connect I/O devices.",
+      "options": {
+        "a": "Single bus",
+        "b": "Multiple bus",
+        "c": "Star bus",
+        "d": "Rambus"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Multiple bus",
+      "page": "Bus"
+    },
+    {
+      "id": 7,
+      "question": "To reduce the memory access time we generally make use of ___",
+      "options": {
+        "a": "Heaps",
+        "b": "Higher capacity RAM's",
+        "c": "SDRAM's",
+        "d": "Cache's"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Cache's",
+      "page": "Memory"
+    },
+    {
+      "id": 8,
+      "question": "CPU fetches the instruction from memory according to value of",
+      "options": {
+        "a": "Program counter",
+        "b": "status register",
+        "c": "instruction register",
+        "d": "program status word"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Program counter",
+      "page": "Registers"
+    },
+    {
+      "id": 9,
+      "question": "An n bit microprocessor has-",
+      "options": {
+        "a": "n-bit program counter",
+        "b": "n-bit address register",
+        "c": "n-bit ALU",
+        "d": "n-bit instruction register"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "n-bit ALU",
+      "page": 386
+    },
+    {
+      "id": 10,
+      "question": "The decoded instruction is stored in ___",
+      "options": {
+        "a": "IR",
+        "b": "PC",
+        "c": "Registers",
+        "d": "MDR"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "IR",
+      "page": 386
+    },
+    {
+      "id": 11,
+      "question": "Floating point representation is used to store",
+      "options": {
+        "a": "Boolean Value",
+        "b": "Whole number",
+        "c": "real integer",
+        "d": "Integer"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "real integer",
+      "page": 386
+    },
+    {
+      "id": 12,
+      "question": "The instruction, MOV AX, 0005H belongs to the address mode",
+      "options": {
+        "a": "register",
+        "b": "direct",
+        "c": "immediate",
+        "d": "register relative"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "immediate",
+      "page": "Addressing Modes"
+    },
+    {
+      "id": 13,
+      "question": "The instruction, MOV AX, 1234H is an example of",
+      "options": {
+        "a": "register addressing mode",
+        "b": "direct addressing mode",
+        "c": "immediate addressing mode",
+        "d": "based indexed addressing mode"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "direct addressing mode",
+      "page": "Addressing Modes"
+    },
+    {
+      "id": 14,
+      "question": "If the data is present in a register and it is referred using the particular register, then it is",
+      "options": {
+        "a": "direct addressing mode",
+        "b": "register addressing mode",
+        "c": "indexed addressing mode",
+        "d": "immediate addressing mode"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "register addressing mode",
+      "page": "Addressing Modes"
+    },
+    {
+      "id": 15,
+      "question": "The instruction, MOV AX,[BX] is an example of",
+      "options": {
+        "a": "direct addressing mode",
+        "b": "register addressing mode",
+        "c": "register relative addressing mode",
+        "d": "register indirect addressing mode"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "register indirect addressing mode",
+      "page": "Addressing Modes"
+    },
+    {
+      "id": 16,
+      "question": "The addressing mode, where you directly specify the operand value is ___",
+      "options": {
+        "a": "Immediate",
+        "b": "Direct",
+        "c": "Definite",
+        "d": "Relative"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Immediate",
+      "page": "Addressing Modes"
+    },
+    {
+      "id": 17,
+      "question": "In the following indexed addressing mode instruction, MOV 5(R1),LOC the effective address is",
+      "options": {
+        "a": "EA = 5+R1",
+        "b": "EA = R1",
+        "c": "EA = [R1]",
+        "d": "EA = 5+[R1]"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "EA = 5+R1",
+      "page": "Addressing Modes"
+    }
+  ]
+}

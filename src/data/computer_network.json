@@ -1,0 +1,416 @@
+{
+  "topic": "Computer Network",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which of the following device take data sent from one network device and forward to the destination node based on MAC address?",
+      "options": {
+        "a": "HUB",
+        "b": "MODEM",
+        "c": "Switch",
+        "d": "Gateway"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Switch",
+      "page": 421
+    },
+    {
+      "id": 2,
+      "question": "Which information is wrong for Switch?",
+      "options": {
+        "a": "Stores mac address table",
+        "b": "Operates on data link layer",
+        "c": "Forward the packet to intend computer",
+        "d": "Has no memory"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Has no memory",
+      "page": 421,
+      "note": "Switch DOES have memory to store MAC address table"
+    },
+    {
+      "id": 3,
+      "question": "Which of the following is a private IP address?",
+      "options": {
+        "a": "12.0.0.1",
+        "b": "168.172.19.39",
+        "c": "172.15.14.36",
+        "d": "192.168.24.43"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "192.168.24.43",
+      "page": "IP Addressing"
+    },
+    {
+      "id": 4,
+      "question": "Which of the following pairs is an example of intra-domain routing protocol?",
+      "options": {
+        "a": "ALOHA, RIP",
+        "b": "OSPF, RIP",
+        "c": "RIP, FTP",
+        "d": "BGP, SMTP"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "OSPF, RIP",
+      "page": "Routing"
+    },
+    {
+      "id": 5,
+      "question": "Different computers are connected to a LAN by a cable and ___",
+      "options": {
+        "a": "modem",
+        "b": "interface card",
+        "c": "special wires",
+        "d": "telephone lines"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "interface card",
+      "page": "LAN"
+    },
+    {
+      "id": 6,
+      "question": "The topology with highest reliability is",
+      "options": {
+        "a": "bus topology",
+        "b": "star topology",
+        "c": "ring topology",
+        "d": "mesh topology"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "mesh topology",
+      "page": "Network Topology"
+    },
+    {
+      "id": 7,
+      "question": "In a fully connected mesh network with d devices, there are ___ physical channels to link all devices.",
+      "options": {
+        "a": "d*(d-1)/2",
+        "b": "d*(d+1)/2*c",
+        "c": "(2*d+2*c)/2",
+        "d": "2*(d+1)+c"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "d*(d-1)/2",
+      "page": "Network Topology"
+    },
+    {
+      "id": 8,
+      "question": "In context of OSI or TCP/IP computer network models, which of the following is FALSE?",
+      "options": {
+        "a": "Besides span of geographical area, the other major difference between LAN and WAN is that the later uses switching element",
+        "b": "A repeater is used just to forward bits from one network to another one",
+        "c": "IP layer is connected oriented layer in TCP/IP",
+        "d": "A gateway is used to connect incompatible networks"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "IP layer is connected oriented layer in TCP/IP",
+      "page": "OSI Model",
+      "note": "IP is CONNECTIONLESS, not connection-oriented"
+    },
+    {
+      "id": 9,
+      "question": "Where is a hub specified in the OSI model?",
+      "options": {
+        "a": "Session layer",
+        "b": "Physical layer",
+        "c": "Data Link layer",
+        "d": "Application layer"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Physical layer",
+      "page": "OSI Model"
+    },
+    {
+      "id": 10,
+      "question": "How many broadcast domains are created when you segment a network with a 12-port switch?",
+      "options": {
+        "a": "1",
+        "b": "2",
+        "c": "5",
+        "d": "12"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "1",
+      "page": "Switching",
+      "note": "A switch without VLANs creates 1 broadcast domain but 12 collision domains"
+    },
+    {
+      "id": 11,
+      "question": "Which class of IP address has the most host addresses available by default?",
+      "options": {
+        "a": "A",
+        "b": "B",
+        "c": "C",
+        "d": "A and B"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "A",
+      "page": "IP Addressing"
+    },
+    {
+      "id": 12,
+      "question": "The total number of wired links required to establish a fully connected mesh network of 9 nodes will be",
+      "options": {
+        "a": "36",
+        "b": "56",
+        "c": "72",
+        "d": "64"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "36",
+      "page": "Network Topology",
+      "note": "n*(n-1)/2 = 9*8/2 = 36"
+    },
+    {
+      "id": 13,
+      "question": "What does a VLAN do?",
+      "options": {
+        "a": "Acts as the fastest port to all servers",
+        "b": "Provides multiple collision domains on one switch port",
+        "c": "Breaks up broadcast domains in a layer 2 switch internetwork",
+        "d": "Provides multiple broadcast domains within a single collision domain"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Breaks up broadcast domains in a layer 2 switch internetwork",
+      "page": "VLAN"
+    },
+    {
+      "id": 14,
+      "question": "What is the main reason the OSI model was created?",
+      "options": {
+        "a": "To create a layered model larger than the DoD model",
+        "b": "So application developers can change only one layer's protocols at a time",
+        "c": "So different networks could communicate",
+        "d": "So Cisco could use the model"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "So different networks could communicate",
+      "page": "OSI Model"
+    },
+    {
+      "id": 15,
+      "question": "How many collision domains are created when you segment a network with a 12-port switch?",
+      "options": {
+        "a": "1",
+        "b": "2",
+        "c": "5",
+        "d": "12"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "12",
+      "page": "Switching",
+      "note": "Each switch port = one collision domain"
+    },
+    {
+      "id": 16,
+      "question": "Which of the following is considered to be the address after translation?",
+      "options": {
+        "a": "Inside local",
+        "b": "Outside local",
+        "c": "Inside global",
+        "d": "Outside global"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Inside global",
+      "page": "NAT"
+    },
+    {
+      "id": 17,
+      "question": "Which switching technology reduces the size of a broadcast domain?",
+      "options": {
+        "a": "ISL",
+        "b": "802.1Q",
+        "c": "VLANs",
+        "d": "STP"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "VLANs",
+      "page": "VLAN"
+    },
+    {
+      "id": 18,
+      "question": "Which class of IP addresses is used for multicasting?",
+      "options": {
+        "a": "Class E",
+        "b": "Class C",
+        "c": "Class A",
+        "d": "Class D"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Class D",
+      "page": "IP Addressing"
+    },
+    {
+      "id": 19,
+      "question": "Gateway operates at ___ layers.",
+      "options": {
+        "a": "All layers except physical and application layer",
+        "b": "All the seven layers",
+        "c": "Only on session, transport and network layers",
+        "d": "Same layer"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "All the seven layers",
+      "page": "Network Devices"
+    },
+    {
+      "id": 20,
+      "question": "Which of the following is considered to be the destination host after translation?",
+      "options": {
+        "a": "Inside local",
+        "b": "Outside local",
+        "c": "Inside global",
+        "d": "Outside global"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Outside local",
+      "page": "NAT"
+    },
+    {
+      "id": 21,
+      "question": "Segmentation of a data stream happens at which layer of the OSI model?",
+      "options": {
+        "a": "Physical",
+        "b": "Data Link",
+        "c": "Network",
+        "d": "Transport"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Transport",
+      "page": "OSI Model"
+    },
+    {
+      "id": 22,
+      "question": "You need to determine whether the configuration is initialized or a duplicate IP address is configured on your NT workstation. Which utility should you use?",
+      "options": {
+        "a": "arp.exe",
+        "b": "ipconfig.exe",
+        "c": "nutstat.exe",
+        "d": "ping.exe"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "ipconfig.exe",
+      "page": "Network Utilities"
+    },
+    {
+      "id": 23,
+      "question": "Which of the following protocols is used to monitor network devices such as hubs, switches, and routes?",
+      "options": {
+        "a": "SMTP",
+        "b": "RIP",
+        "c": "SNMP",
+        "d": "OSPF"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "SNMP",
+      "page": "Network Protocols"
+    },
+    {
+      "id": 24,
+      "question": "Which of the following is the broadcast address for a Class B network ID using default subnetmask?",
+      "options": {
+        "a": "172.16.10.255",
+        "b": "255.255.255.255",
+        "c": "172.16.255.255",
+        "d": "172.255.255.255"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "172.16.255.255",
+      "page": "Subnetting",
+      "note": "Class B default mask 255.255.0.0 → broadcast = 172.16.255.255"
+    },
+    {
+      "id": 25,
+      "question": "The combination of ___ and ___ is often termed the local address of the local portion of the IP address.",
+      "options": {
+        "a": "Network number and host number",
+        "b": "Network number and subnet number",
+        "c": "Subnet number and host number",
+        "d": "Host number"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Subnet number and host number",
+      "page": "Subnetting"
+    },
+    {
+      "id": 26,
+      "question": "___ implies that all subnets obtained from the same subnet mask.",
+      "options": {
+        "a": "Static subnetting",
+        "b": "Dynamic subnetting",
+        "c": "Variable subnetting",
+        "d": "Dynamic length subnetting"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Static subnetting",
+      "page": "Subnetting"
+    },
+    {
+      "id": 27,
+      "question": "You have an IP address of 172.16.13.5 with a 255.255.255.128 subnet mask. What is your class of address, subnet address, and broadcast address?",
+      "options": {
+        "a": "Class A, Subnet 172.16.13.0, Broadcast 172.16.13.127",
+        "b": "Class B, Subnet 172.16.13.0, Broadcast 172.16.13.127",
+        "c": "Class B, Subnet 172.16.13.0, Broadcast 172.16.13.255",
+        "d": "Class B, Subnet 172.16.0.0, Broadcast 172.16.255.255"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Class B, Subnet 172.16.13.0, Broadcast 172.16.13.127",
+      "page": "Subnetting"
+    },
+    {
+      "id": 28,
+      "question": "What is the maximum number of IP addresses that can be assigned to hosts on a local subnet that uses the 255.255.255.224 subnet mask?",
+      "options": {
+        "a": "14",
+        "b": "15",
+        "c": "16",
+        "d": "30"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "30",
+      "page": "Subnetting",
+      "note": "/27 mask → 5 host bits → 2^5-2 = 30 usable hosts"
+    },
+    {
+      "id": 29,
+      "question": "If an Ethernet port on a router were assigned an IP address of 172.16.112.1/25, what would be the valid subnet address of this host?",
+      "options": {
+        "a": "172.16.112.0",
+        "b": "172.16.0.0",
+        "c": "172.16.96.0",
+        "d": "172.16.255.0"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "172.16.112.0",
+      "page": "Subnetting"
+    },
+    {
+      "id": 30,
+      "question": "Given an IP address 201.14.78.65 and the subnet mask 255.255.255.224. What is the subnet address?",
+      "options": {
+        "a": "201.14.78.64",
+        "b": "20.14.78.65",
+        "c": "201.14.77.64",
+        "d": "201.14.77.66"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "201.14.78.64",
+      "page": "Subnetting",
+      "note": "65 AND 224 = 01000001 AND 11100000 = 01000000 = 64"
+    },
+    {
+      "id": 31,
+      "question": "Subnet mask is the portion of IP address that identifies",
+      "options": {
+        "a": "a particular network",
+        "b": "a particular computer",
+        "c": "a particular person",
+        "d": "the particular location of the computer"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "the particular location of the computer",
+      "page": 444
+    }
+  ]
+}

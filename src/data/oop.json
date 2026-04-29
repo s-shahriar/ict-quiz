@@ -1,0 +1,432 @@
+{
+  "topic": "Object Oriented Programming",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which information is not correct for any constructor of a java class?",
+      "options": {
+        "a": "Constructor is not inherited",
+        "b": "Constructor has no return type",
+        "c": "Constructor can be final",
+        "d": "Constructor can be overloaded"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Constructor can be final",
+      "page": "Constructor"
+    },
+    {
+      "id": 2,
+      "question": "Which of the following is the destructor of class Vehicle?",
+      "options": {
+        "a": "*Vehicle()",
+        "b": "~Vehicle()",
+        "c": "-Vehicle(int value)",
+        "d": "*Vehicle(int value)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "~Vehicle()",
+      "page": "Constructor"
+    },
+    {
+      "id": 3,
+      "question": "Which of the following is not an operator in Java?",
+      "options": {
+        "a": "instanceof",
+        "b": "sizeof",
+        "c": "new",
+        "d": "All of this"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "sizeof",
+      "page": "Java Basics",
+      "note": "There is no sizeof operator in Java"
+    },
+    {
+      "id": 4,
+      "question": "Object being passed to a copy constructor ----",
+      "options": {
+        "a": "Must be passed by reference",
+        "b": "Must be passed by value",
+        "c": "Must be passed with integer type",
+        "d": "Must not be mentioned in parameter list"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Must be passed by reference",
+      "page": "Constructor"
+    },
+    {
+      "id": 5,
+      "question": "Does constructor overloading include different return types for constructors to be overloaded?",
+      "options": {
+        "a": "Yes, if return types are different, signature becomes different",
+        "b": "Yes, because return types can differentiate two functions",
+        "c": "No, return type can't differentiate two functions",
+        "d": "No, constructors doesn't have any return type"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "No, constructors doesn't have any return type",
+      "page": "Constructor"
+    },
+    {
+      "id": 6,
+      "question": "Which of the following format is a correct format for declaration of function?",
+      "options": {
+        "a": "return-type function-name(argument type);",
+        "b": "return-type function-name(argument type){}",
+        "c": "return-type (argument type) function-name;",
+        "d": "return-type {} function-name"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "return-type function-name(argument type){}",
+      "page": "Functions"
+    },
+    {
+      "id": 7,
+      "question": "A function having more than one distinct meaning is called --------- function.",
+      "options": {
+        "a": "Parameter",
+        "b": "Prototype",
+        "c": "Overloaded",
+        "d": "Polymorphism"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Overloaded",
+      "page": "Polymorphism"
+    },
+    {
+      "id": 8,
+      "question": "What is the process of defining two or more methods within the same class that have the same name but different parameters declaration?",
+      "options": {
+        "a": "Method Overloading",
+        "b": "Method Overriding",
+        "c": "Encapsulation",
+        "d": "Abstraction"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Method Overloading",
+      "page": "Polymorphism"
+    },
+    {
+      "id": 9,
+      "question": "Which of the following methods can be used to stop method overriding?",
+      "options": {
+        "a": "Final",
+        "b": "Static",
+        "c": "Default",
+        "d": "None of the above"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Final",
+      "page": "Inheritance"
+    },
+    {
+      "id": 10,
+      "question": "___ is used to declare and initialize an object from another object of same class in C++.",
+      "options": {
+        "a": "Copy constructor",
+        "b": "Default constructor",
+        "c": "Overloaded constructor",
+        "d": "Non-parameterized constructor"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Copy constructor",
+      "page": "Constructor"
+    },
+    {
+      "id": 11,
+      "question": "Use of virtual function implies ____",
+      "options": {
+        "a": "Overloading",
+        "b": "Overriding",
+        "c": "Static binding",
+        "d": "Dynamic binding"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Dynamic binding",
+      "page": "Polymorphism"
+    },
+    {
+      "id": 12,
+      "question": "What is the name of the feature in which we enforce the definitions of the function at the compile time?",
+      "options": {
+        "a": "Dynamic Polymorphism",
+        "b": "Static Polymorphism",
+        "c": "Dynamic or Static Polymorphism according to need",
+        "d": "Polymorphism"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Static Polymorphism",
+      "page": "Polymorphism"
+    },
+    {
+      "id": 13,
+      "question": "Overloaded functions are required to",
+      "options": {
+        "a": "have the same return type",
+        "b": "have the same number of parameters",
+        "c": "perform the same basic functions",
+        "d": "have the same parameter types"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "perform the same basic functions",
+      "page": "Polymorphism"
+    },
+    {
+      "id": 14,
+      "question": "Which of these inheritances is shown in case we inherit some base class from another class, then one of the classes derives it?",
+      "options": {
+        "a": "Single",
+        "b": "Multiple",
+        "c": "Multi-level",
+        "d": "Hierarchical"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Multi-level",
+      "page": "Inheritance"
+    },
+    {
+      "id": 15,
+      "question": "A base class may also be called a",
+      "options": {
+        "a": "child class",
+        "b": "subclass",
+        "c": "derived class",
+        "d": "parent class"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "parent class",
+      "page": "Inheritance"
+    },
+    {
+      "id": 16,
+      "question": "When you omit parameters from a function call, values can be provided by",
+      "options": {
+        "a": "formal parameters",
+        "b": "reference parameters",
+        "c": "overloaded parameters",
+        "d": "default parameters"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "default parameters",
+      "page": "Functions"
+    },
+    {
+      "id": 17,
+      "question": "The first element in a string is",
+      "options": {
+        "a": "the name of the string",
+        "b": "the first character in the string",
+        "c": "the length of the string",
+        "d": "the name of the array holding the string"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "the first character in the string",
+      "page": "Strings"
+    },
+    {
+      "id": 18,
+      "question": "Variables declared outside a block are called ______",
+      "options": {
+        "a": "global",
+        "b": "universal",
+        "c": "stellar",
+        "d": "external"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "global",
+      "page": "Variables"
+    },
+    {
+      "id": 19,
+      "question": "OOPs is invented by",
+      "options": {
+        "a": "Andrea Ferro",
+        "b": "Dennis Ritchie",
+        "c": "Adele Goldberg",
+        "d": "Alan Kay"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Alan Kay"
+    },
+    {
+      "id": 20,
+      "question": "Which of the following does not have a body",
+      "options": {
+        "a": "An Interface",
+        "b": "A Class",
+        "c": "An Abstract Method",
+        "d": "none of above"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "An Abstract Method"
+    },
+    {
+      "id": 21,
+      "question": "In oops public, private & protected are",
+      "options": {
+        "a": "Classes",
+        "b": "Access Modifiers",
+        "c": "Interfaces",
+        "d": "Method signature"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Access Modifiers"
+    },
+    {
+      "id": 22,
+      "question": "A private member of a class is visible to",
+      "options": {
+        "a": "every where",
+        "b": "in sub class",
+        "c": "members to same package",
+        "d": "only members of same class"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "only members of same class"
+    },
+    {
+      "id": 23,
+      "question": "Which of the following is correct for copy constructor",
+      "options": {
+        "a": "The argument object is passed by reference",
+        "b": "It can be defined with zero arguments",
+        "c": "Used when an object is passed by value to a function",
+        "d": "Used when a function returns an object"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Used when a function returns an object"
+    },
+    {
+      "id": 24,
+      "question": "Which Feature of OOP encourages the code reusability?",
+      "options": {
+        "a": "Polymorphism",
+        "b": "Inheritance",
+        "c": "Abstraction",
+        "d": "Encapsulation"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Inheritance"
+    },
+    {
+      "id": 25,
+      "question": "Which of the following is not the member of class?",
+      "options": {
+        "a": "Static function",
+        "b": "Friend function",
+        "c": "Const function",
+        "d": "Virtual function"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Friend function"
+    },
+    {
+      "id": 26,
+      "question": "How many catch blocks can you use with a single Try block?",
+      "options": {
+        "a": "Only 2",
+        "b": "Only 1",
+        "c": "Maximum 256",
+        "d": "As many as required"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "As many as required"
+    },
+    {
+      "id": 27,
+      "question": "Which of the following is not a type of constructor?",
+      "options": {
+        "a": "Copy constructor",
+        "b": "Friend constructor",
+        "c": "Default constructor",
+        "d": "Parameterized constructor"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Friend constructor"
+    },
+    {
+      "id": 28,
+      "question": "Which of the following is correct about class and structure?",
+      "options": {
+        "a": "class can have member functions while structure cannot",
+        "b": "class data members are public by default while that of structure are private",
+        "c": "Pointer to structure or classes cannot be declared",
+        "d": "class data members are private by default while that of structure are public by default"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "class data members are private by default while that of structure are public by default"
+    },
+    {
+      "id": 29,
+      "question": "Which of the following concepts means waiting until runtime to determine which function to call?",
+      "options": {
+        "a": "Data hiding",
+        "b": "Dynamic casting",
+        "c": "Dynamic binding",
+        "d": "Dynamic loading"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Dynamic binding"
+    },
+    {
+      "id": 30,
+      "question": "Which of the following is a mechanism of static polymorphism?",
+      "options": {
+        "a": "Operator overloading",
+        "b": "Function overloading",
+        "c": "Templates",
+        "d": "All of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "All of the above"
+    },
+    {
+      "id": 31,
+      "question": "Which of the following is not a type of inheritance?",
+      "options": {
+        "a": "Multiple",
+        "b": "Multilevel",
+        "c": "Distributive",
+        "d": "Hierarchical"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Distributive"
+    },
+    {
+      "id": 32,
+      "question": "Which inheritance type is used in the class given below? class A : public X, public Y {}",
+      "options": {
+        "a": "Multilevel inheritance",
+        "b": "Multiple inheritance",
+        "c": "Hybrid inheritance",
+        "d": "Hierarchical Inheritance"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Multiple inheritance"
+    },
+    {
+      "id": 33,
+      "question": "What is correct about the static data member of a class?",
+      "options": {
+        "a": "A static member function can access only static data members of a class",
+        "b": "A static data member is shared among all the object of the class",
+        "c": "A static data member can be accessed directly from main()",
+        "d": "Both A and B"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Both A and B"
+    },
+    {
+      "id": 34,
+      "question": "Which of the following statements is correct?",
+      "options": {
+        "a": "Class is an instance of an object",
+        "b": "Object is an instance of a class",
+        "c": "Class is an instance of data type",
+        "d": "None"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Object is an instance of a class"
+    }
+  ]
+}

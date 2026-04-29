@@ -1,0 +1,318 @@
+{
+  "topic": "Software Engineering",
+  "questions": [
+    {
+      "id": 1,
+      "question": "The most important feature of spiral model is",
+      "options": {
+        "a": "Requirement analysis",
+        "b": "Risk management",
+        "c": "Quality management",
+        "d": "Configuration management"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Risk management",
+      "page": "SDLC Models"
+    },
+    {
+      "id": 2,
+      "question": "Testing of software with actual data and in actual environment is called",
+      "options": {
+        "a": "Alpha testing",
+        "b": "Beta testing",
+        "c": "Regression testing",
+        "d": "None of the above"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Beta testing",
+      "page": "Testing"
+    },
+    {
+      "id": 3,
+      "question": "Validation means",
+      "options": {
+        "a": "Are we building the product right",
+        "b": "Are we building the right product",
+        "c": "Certification of fields",
+        "d": "None of the above"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Are we building the right product",
+      "page": "Testing"
+    },
+    {
+      "id": 4,
+      "question": "Software measurement is useful to",
+      "options": {
+        "a": "indicate quality of the product",
+        "b": "track progress",
+        "c": "form a baseline for estimation and prediction",
+        "d": "all of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "all of the above",
+      "page": "Software Metrics"
+    },
+    {
+      "id": 5,
+      "question": "Software testing is",
+      "options": {
+        "a": "The process of establishing that errors are not present",
+        "b": "The process of establishing confidence that a program does what it is supposed to do",
+        "c": "The process of executing a program to show that it is working as per specifications",
+        "d": "The process of executing a program with the intent of finding errors"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "The process of executing a program with the intent of finding errors",
+      "page": "Testing"
+    },
+    {
+      "id": 6,
+      "question": "A COCOMO model is",
+      "options": {
+        "a": "Common Cost Estimation Model",
+        "b": "Constructive Cost Model",
+        "c": "Comprehensive Cost Oriented Model",
+        "d": "None of the above"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Constructive Cost Model",
+      "page": "Software Estimation"
+    },
+    {
+      "id": 7,
+      "question": "Black-box testing is also called",
+      "options": {
+        "a": "Specification-based testing",
+        "b": "Structural testing",
+        "c": "Verification",
+        "d": "Unit testing"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Specification-based testing",
+      "page": "Testing"
+    },
+    {
+      "id": 8,
+      "question": "Project risk factor is considered in?",
+      "options": {
+        "a": "Spiral model",
+        "b": "Waterfall model",
+        "c": "Prototyping model",
+        "d": "Iterative enhancement model"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Spiral model",
+      "page": "SDLC Models"
+    },
+    {
+      "id": 9,
+      "question": "\"Are we building the right product?\" This statement refers to",
+      "options": {
+        "a": "Verification",
+        "b": "Validation",
+        "c": "Testing",
+        "d": "Software quality assurance"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Validation",
+      "page": "Testing"
+    },
+    {
+      "id": 10,
+      "question": "The Linear Sequential or Classic Life Cycle is also called",
+      "options": {
+        "a": "Waterfall Model",
+        "b": "Incremental Model",
+        "c": "Spiral model",
+        "d": "Prototyping Model"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Waterfall Model",
+      "page": "SDLC Models"
+    },
+    {
+      "id": 11,
+      "question": "The waterfall model of the software process considers each process activity as a ______",
+      "options": {
+        "a": "separate",
+        "b": "discrete",
+        "c": "Both a and b options",
+        "d": "None of the above"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Both a and b options",
+      "page": "SDLC Models"
+    },
+    {
+      "id": 12,
+      "question": "Planning the modular program structure & control relationships between modules is called",
+      "options": {
+        "a": "Architectural Design",
+        "b": "High Level Design",
+        "c": "System Design",
+        "d": "all of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "all of the above",
+      "page": "Software Design"
+    },
+    {
+      "id": 13,
+      "question": "Designers should aim to produce strongly _____ and weakly _____ designs",
+      "options": {
+        "a": "coupled, functional",
+        "b": "maintainable, cohesive",
+        "c": "cohesive, coupled",
+        "d": "coupled, cohesive"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "cohesive, coupled",
+      "page": "Software Design"
+    },
+    {
+      "id": 14,
+      "question": "If two modules are coupled without exchange of data or control information then they exhibit",
+      "options": {
+        "a": "Normal Coupling",
+        "b": "Stamp Coupling",
+        "c": "Control Coupling",
+        "d": "Common Coupling"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Normal Coupling",
+      "page": "Software Design"
+    },
+    {
+      "id": 15,
+      "question": "Use of global data areas or global variables may lead to",
+      "options": {
+        "a": "Stamp Coupling",
+        "b": "Common Coupling",
+        "c": "Content Coupling",
+        "d": "Control Coupling"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Common Coupling",
+      "page": "Software Design"
+    },
+    {
+      "id": 16,
+      "question": "Which of the following is a graphical tool for software design?",
+      "options": {
+        "a": "Data Flow Diagram",
+        "b": "Structure Chart",
+        "c": "Decision Tree",
+        "d": "all of the above"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "all of the above",
+      "page": "Software Design"
+    },
+    {
+      "id": 17,
+      "question": "Which of the following is NOT true about comments?",
+      "options": {
+        "a": "Comments should use problem domain terminology",
+        "b": "They should explain the code at crucial places only",
+        "c": "They should be used to document changes to the code",
+        "d": "They add up to the LOC size of the software"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "They should be used to document changes to the code",
+      "page": "Coding",
+      "note": "Version control systems should track changes, not code comments"
+    },
+    {
+      "id": 18,
+      "question": "Equivalence partitioning is a _______ method that divides the input domain of a program into classes of data from which test cases can be derived.",
+      "options": {
+        "a": "White-box testing",
+        "b": "Black-box testing",
+        "c": "Grey-box testing",
+        "d": "Unit testing"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Black-box testing",
+      "page": "Testing"
+    },
+    {
+      "id": 19,
+      "question": "The model in which the requirements are implemented by category is",
+      "options": {
+        "a": "Evolutionary development model",
+        "b": "Waterfall model",
+        "c": "Prototyping",
+        "d": "Iterative enhancement model"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Iterative enhancement model",
+      "page": "SDLC Models"
+    },
+    {
+      "id": 20,
+      "question": "Which one of the following is a fault base testing technique?",
+      "options": {
+        "a": "Unit testing",
+        "b": "Beta testing",
+        "c": "Stress testing",
+        "d": "Mutation testing"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Mutation testing",
+      "page": "Testing"
+    },
+    {
+      "id": 21,
+      "question": "A Language for which no DFA exist is a ______",
+      "options": {
+        "a": "Regular Language",
+        "b": "Non-Regular Language",
+        "c": "May be Regular",
+        "d": "Cannot be said"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Non-Regular Language",
+      "page": "Automata Theory"
+    },
+    {
+      "id": 22,
+      "question": "A DFA cannot be represented in the following format",
+      "options": {
+        "a": "Transition graph",
+        "b": "Transition Table",
+        "c": "C code",
+        "d": "None of the mentioned"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "C code",
+      "page": "Automata Theory"
+    },
+    {
+      "id": 23,
+      "question": "In NFA, this very state is like dead-end non final state:",
+      "options": {
+        "a": "ACCEPT",
+        "b": "REJECT",
+        "c": "DISTINCT",
+        "d": "START"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "REJECT",
+      "page": "Automata Theory"
+    },
+    {
+      "id": 24,
+      "question": "Lexemes can be referred to as:",
+      "options": {
+        "a": "elements of lexicography",
+        "b": "sequence of alphanumeric characters in a token",
+        "c": "lexical errors",
+        "d": "none of the mentioned"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "sequence of alphanumeric characters in a token",
+      "page": "Compiler Design"
+    }
+  ]
+}
