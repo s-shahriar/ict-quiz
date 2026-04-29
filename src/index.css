@@ -569,11 +569,19 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .anim-fade { animation: fadeIn 0.25s ease; }
 .anim-slide { animation: slideUp 0.25s ease; }
 
-/* ── Responsive ────────────────────────── */
-@media (max-width: 600px) {
-  .topics-grid { grid-template-columns: 1fr; }
-  .mode-cards { grid-template-columns: 1fr; }
-  .quiz-card { padding: 22px 18px; }
-  .score-card { padding: 36px 24px; }
-  .theme-toggle { top: 12px; right: 12px; }
+/* ── Responsive (mobile-first: base = mobile, ≥600px = tablet/desktop) ── */
+@media (min-width: 600px) {
+  .home { padding: 52px 20px 80px; }
+  .home-header { margin-bottom: 52px; }
+  .topics-grid { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+  .mode-page { padding: 44px 20px 80px; }
+  .mode-cards { grid-template-columns: 1fr 1fr; }
+  .quiz-page { padding: 24px 20px 80px; }
+  .quiz-card { padding: 32px 28px; }
+  .score-card { padding: 48px 40px; }
+  .study-page { padding: 24px 20px 80px; }
+  .theme-toggle {
+    top: max(18px, env(safe-area-inset-top));
+    right: max(22px, env(safe-area-inset-right));
+  }
 }
