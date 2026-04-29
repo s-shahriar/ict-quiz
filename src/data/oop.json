@@ -12,7 +12,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Constructor can be final",
-      "page": "Constructor"
+      "page": "Constructor",
+      "explanation": "Java তে constructor কে final করা যায় না কারণ final মেথড override করা যায় না, কিন্তু constructor আসলে inherit বা override হয় না। Constructor শুধুমাত্র overload করা যায়, final ঘোষণা করার কোনো অর্থ নেই।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "~Vehicle()",
-      "page": "Constructor"
+      "page": "Constructor",
+      "explanation": "C++ এ destructor এর নামের আগে tilde (~) চিহ্ন ব্যবহার করা হয়। ~Vehicle() হলো Vehicle ক্লাসের destructor যা অবজেক্ট নষ্ট হওয়ার সময় স্বয়ংক্রিয়ভাবে মেমরি মুক্ত করে।"
     },
     {
       "id": 3,
@@ -39,7 +41,8 @@
       "correct_answer": "b",
       "correct_answer_text": "sizeof",
       "page": "Java Basics",
-      "note": "There is no sizeof operator in Java"
+      "note": "There is no sizeof operator in Java",
+      "explanation": "Java তে sizeof অপারেটর নেই কারণ Java তে সব ডেটা টাইপের আকার পূর্বনির্ধারিত এবং প্ল্যাটফর্ম-স্বাধীন। C/C++ এ sizeof আছে, কিন্তু Java তে এর প্রয়োজন হয় না।"
     },
     {
       "id": 4,
@@ -52,7 +55,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Must be passed by reference",
-      "page": "Constructor"
+      "page": "Constructor",
+      "explanation": "Copy constructor এ অবজেক্ট অবশ্যই reference দিয়ে পাস করতে হয় কারণ value দিয়ে পাস করলে আবার copy constructor ডাকা হতো, যা infinite recursion তৈরি করত।"
     },
     {
       "id": 5,
@@ -65,7 +69,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "No, constructors doesn't have any return type",
-      "page": "Constructor"
+      "page": "Constructor",
+      "explanation": "Constructor এর কোনো return type নেই, এমনকি void ও না। তাই constructor overloading শুধুমাত্র parameter এর সংখ্যা বা ধরনের পার্থক্যের উপর নির্ভর করে, return type এর উপর নয়।"
     },
     {
       "id": 6,
@@ -78,7 +83,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "return-type function-name(argument type){}",
-      "page": "Functions"
+      "page": "Functions",
+      "explanation": "একটি সম্পূর্ণ function definition এর সঠিক ফরম্যাট হলো: প্রথমে return type, তারপর function নাম, প্যারেন্থেসিসে argument, এবং curly braces {} এ function body। অপশন (a) হলো function prototype/declaration, সম্পূর্ণ definition নয়।"
     },
     {
       "id": 7,
@@ -91,7 +97,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Overloaded",
-      "page": "Polymorphism"
+      "page": "Polymorphism",
+      "explanation": "Overloaded function হলো এমন একটি function যার একই নামে একাধিক সংজ্ঞা থাকে কিন্তু ভিন্ন parameter। এটি compile-time polymorphism এর একটি উদাহরণ।"
     },
     {
       "id": 8,
@@ -104,7 +111,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Method Overloading",
-      "page": "Polymorphism"
+      "page": "Polymorphism",
+      "explanation": "Method Overloading হলো একই ক্লাসে একই নামের একাধিক মেথড তৈরি করা যেখানে parameter এর সংখ্যা বা ধরন আলাদা। এটি compile-time polymorphism এবং কোড পুনর্ব্যবহারযোগ্যতা বাড়ায়।"
     },
     {
       "id": 9,
@@ -117,7 +125,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Final",
-      "page": "Inheritance"
+      "page": "Inheritance",
+      "explanation": "Java তে কোনো মেথডকে final ঘোষণা করলে সেটি subclass এ override করা যায় না। final keyword মেথডটিকে চূড়ান্ত করে দেয় যা inheritance chain এ পরিবর্তন করা সম্ভব হয় না।"
     },
     {
       "id": 10,
@@ -130,7 +139,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Copy constructor",
-      "page": "Constructor"
+      "page": "Constructor",
+      "explanation": "Copy constructor ব্যবহার করা হয় একই ক্লাসের একটি বিদ্যমান অবজেক্ট থেকে নতুন অবজেক্ট তৈরি এবং initialize করতে। এটি deep copy নিশ্চিত করতে বিশেষভাবে গুরুত্বপূর্ণ।"
     },
     {
       "id": 11,
@@ -143,7 +153,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Dynamic binding",
-      "page": "Polymorphism"
+      "page": "Polymorphism",
+      "explanation": "Virtual function ব্যবহার করলে runtime এ কোন function call হবে তা নির্ধারিত হয়, এটিকে dynamic binding বলে। Base class pointer দিয়ে derived class এর overridden function কল করা যায়।"
     },
     {
       "id": 12,
@@ -156,7 +167,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Static Polymorphism",
-      "page": "Polymorphism"
+      "page": "Polymorphism",
+      "explanation": "Static Polymorphism (compile-time polymorphism) এ function এর সংজ্ঞা compile এর সময়ই নির্ধারিত হয়। Method overloading এবং operator overloading হলো static polymorphism এর উদাহরণ।"
     },
     {
       "id": 13,
@@ -169,7 +181,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "perform the same basic functions",
-      "page": "Polymorphism"
+      "page": "Polymorphism",
+      "explanation": "Overloaded functions এর মূল উদ্দেশ্য একই রকম কাজ করা, তবে বিভিন্ন ধরনের বা সংখ্যার parameter নিয়ে। Return type বা parameter type আলাদা হতে পারে, কিন্তু মূল কার্যকারিতা একই হওয়া উচিত।"
     },
     {
       "id": 14,
@@ -182,7 +195,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Multi-level",
-      "page": "Inheritance"
+      "page": "Inheritance",
+      "explanation": "Multi-level inheritance হলো যখন একটি class অন্য একটি derived class থেকে inherit করে, যেমন A → B → C। এখানে C, B থেকে এবং B, A থেকে inherit করে, ফলে একটি শৃঙ্খল তৈরি হয়।"
     },
     {
       "id": 15,
@@ -195,7 +209,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "parent class",
-      "page": "Inheritance"
+      "page": "Inheritance",
+      "explanation": "Base class কে parent class বলা হয় কারণ এটি অন্য class গুলোর (derived/child class) উৎস। Derived class সবসময় base/parent class থেকে বৈশিষ্ট্য ও মেথড inherit করে।"
     },
     {
       "id": 16,
@@ -208,7 +223,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "default parameters",
-      "page": "Functions"
+      "page": "Functions",
+      "explanation": "Default parameters ব্যবহার করলে function call করার সময় সেই argument না দিলেও চলে, কারণ function definition এ আগে থেকে একটি default মান নির্ধারিত থাকে।"
     },
     {
       "id": 17,
@@ -221,7 +237,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "the first character in the string",
-      "page": "Strings"
+      "page": "Strings",
+      "explanation": "String এর প্রথম উপাদান হলো সেই string এর প্রথম character, যা index 0 এ অবস্থিত। প্রোগ্রামিংয়ে array এবং string উভয়ই 0 index থেকে শুরু হয়।"
     },
     {
       "id": 18,
@@ -234,7 +251,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "global",
-      "page": "Variables"
+      "page": "Variables",
+      "explanation": "কোনো block বা function এর বাইরে declare করা variable কে global variable বলে। Global variable প্রোগ্রামের যেকোনো জায়গা থেকে access করা যায় এবং পুরো প্রোগ্রাম চলার সময় মেমরিতে থাকে।"
     },
     {
       "id": 19,
@@ -246,7 +264,8 @@
         "d": "Alan Kay"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Alan Kay"
+      "correct_answer_text": "Alan Kay",
+      "explanation": "OOP (Object-Oriented Programming) এর ধারণা মূলত Alan Kay উদ্ভাবন করেন, যিনি Smalltalk প্রোগ্রামিং ভাষা তৈরিতেও গুরুত্বপূর্ণ ভূমিকা রেখেছিলেন। Dennis Ritchie ছিলেন C এর জনক।"
     },
     {
       "id": 20,
@@ -258,7 +277,8 @@
         "d": "none of above"
       },
       "correct_answer": "c",
-      "correct_answer_text": "An Abstract Method"
+      "correct_answer_text": "An Abstract Method",
+      "explanation": "Abstract method এর কোনো body বা implementation থাকে না, শুধু signature থাকে। Abstract method কে subclass এ অবশ্যই override করে implement করতে হয়।"
     },
     {
       "id": 21,
@@ -270,7 +290,8 @@
         "d": "Method signature"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Access Modifiers"
+      "correct_answer_text": "Access Modifiers",
+      "explanation": "public, private এবং protected হলো access modifier যা class এর member এর accessibility নিয়ন্ত্রণ করে। public সর্বত্র, protected subclass এ এবং private শুধু নিজ class এ accessible।"
     },
     {
       "id": 22,
@@ -282,7 +303,8 @@
         "d": "only members of same class"
       },
       "correct_answer": "d",
-      "correct_answer_text": "only members of same class"
+      "correct_answer_text": "only members of same class",
+      "explanation": "Private member শুধুমাত্র সেই class এর ভেতরের মেথড ও variable থেকে access করা যায়। Subclass বা অন্য কোনো class থেকে private member সরাসরি access করা সম্ভব নয়, যা encapsulation নিশ্চিত করে।"
     },
     {
       "id": 23,
@@ -294,7 +316,8 @@
         "d": "Used when a function returns an object"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Used when a function returns an object"
+      "correct_answer_text": "Used when a function returns an object",
+      "explanation": "Copy constructor তখন call হয় যখন কোনো function একটি object return করে, কারণ return value একটি নতুন temporary object এ copy করতে হয়। এছাড়া object-by-value পাস বা initialization এর সময়ও এটি ব্যবহৃত হয়।"
     },
     {
       "id": 24,
@@ -306,7 +329,8 @@
         "d": "Encapsulation"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Inheritance"
+      "correct_answer_text": "Inheritance",
+      "explanation": "Inheritance OOP এর সেই বৈশিষ্ট্য যা কোড পুনর্ব্যবহারযোগ্যতা (code reusability) সবচেয়ে বেশি বাড়ায়। Parent class এর সমস্ত বৈশিষ্ট্য ও মেথড child class স্বয়ংক্রিয়ভাবে পায়, ফলে নতুন করে কোড লিখতে হয় না।"
     },
     {
       "id": 25,
@@ -318,7 +342,8 @@
         "d": "Virtual function"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Friend function"
+      "correct_answer_text": "Friend function",
+      "explanation": "Friend function কোনো class এর member নয়, বরং এটি class এর বাইরের একটি function যাকে class এর private ও protected member access করার অনুমতি দেওয়া হয়। এটি class scope এ নেই।"
     },
     {
       "id": 26,
@@ -330,7 +355,8 @@
         "d": "As many as required"
       },
       "correct_answer": "d",
-      "correct_answer_text": "As many as required"
+      "correct_answer_text": "As many as required",
+      "explanation": "একটি try block এর সাথে যতগুলো প্রয়োজন ততগুলো catch block ব্যবহার করা যায়। প্রতিটি catch block ভিন্ন ধরনের exception handle করতে পারে, যা exception handling কে আরও নমনীয় করে।"
     },
     {
       "id": 27,
@@ -342,7 +368,8 @@
         "d": "Parameterized constructor"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Friend constructor"
+      "correct_answer_text": "Friend constructor",
+      "explanation": "Friend constructor বলে কোনো ধারণা OOP এ নেই। Constructor এর প্রকারভেদ হলো: Default constructor, Parameterized constructor এবং Copy constructor। Friend শুধুমাত্র function বা class এর ক্ষেত্রে প্রযোজ্য।"
     },
     {
       "id": 28,
@@ -354,7 +381,8 @@
         "d": "class data members are private by default while that of structure are public by default"
       },
       "correct_answer": "d",
-      "correct_answer_text": "class data members are private by default while that of structure are public by default"
+      "correct_answer_text": "class data members are private by default while that of structure are public by default",
+      "explanation": "C++ এ class এর member গুলো default এ private হয়, আর structure এর member গুলো default এ public হয়। এটি class এবং structure এর মধ্যে প্রধান পার্থক্য।"
     },
     {
       "id": 29,
@@ -366,7 +394,8 @@
         "d": "Dynamic loading"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Dynamic binding"
+      "correct_answer_text": "Dynamic binding",
+      "explanation": "Dynamic binding (late binding) এ কোন function call হবে তা compile time এ নয়, runtime এ নির্ধারিত হয়। Virtual function এর মাধ্যমে dynamic binding প্রয়োগ করা হয় এবং এটি runtime polymorphism এর ভিত্তি।"
     },
     {
       "id": 30,
@@ -378,7 +407,8 @@
         "d": "All of the above"
       },
       "correct_answer": "d",
-      "correct_answer_text": "All of the above"
+      "correct_answer_text": "All of the above",
+      "explanation": "Operator overloading, function overloading এবং templates সবগুলোই static (compile-time) polymorphism এর উদাহরণ। এগুলোতে compile এর সময়ই সিদ্ধান্ত নেওয়া হয় কোন function বা operation call হবে।"
     },
     {
       "id": 31,
@@ -390,7 +420,8 @@
         "d": "Hierarchical"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Distributive"
+      "correct_answer_text": "Distributive",
+      "explanation": "OOP এ inheritance এর প্রকারভেদ হলো: Single, Multiple, Multilevel, Hierarchical এবং Hybrid। Distributive inheritance বলে কোনো প্রকার নেই, এটি OOP এর কোনো স্বীকৃত inheritance type নয়।"
     },
     {
       "id": 32,
@@ -402,7 +433,8 @@
         "d": "Hierarchical Inheritance"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Multiple inheritance"
+      "correct_answer_text": "Multiple inheritance",
+      "explanation": "class A : public X, public Y এখানে class A একসাথে দুটি base class X এবং Y থেকে inherit করছে, এটিই Multiple inheritance। একটি derived class যখন একাধিক base class থেকে inherit করে তখন তাকে multiple inheritance বলে।"
     },
     {
       "id": 33,
@@ -414,7 +446,8 @@
         "d": "Both A and B"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Both A and B"
+      "correct_answer_text": "Both A and B",
+      "explanation": "Static data member সেই class এর সব অবজেক্টের মধ্যে shared হয়, মানে সব object একই মেমরি স্পেস ব্যবহার করে। Static member function শুধুমাত্র static data member access করতে পারে কারণ এর কোনো 'this' pointer নেই।"
     },
     {
       "id": 34,
@@ -426,7 +459,8 @@
         "d": "None"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Object is an instance of a class"
+      "correct_answer_text": "Object is an instance of a class",
+      "explanation": "Class হলো একটি blueprint বা template, আর Object হলো সেই class এর একটি নির্দিষ্ট instance। যেমন 'Car' একটি class হলে 'myCar' হলো সেই class এর একটি object বা instance।"
     }
   ]
 }

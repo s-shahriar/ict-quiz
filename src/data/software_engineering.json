@@ -12,7 +12,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Risk management",
-      "page": "SDLC Models"
+      "page": "SDLC Models",
+      "explanation": "Spiral Model-এর সবচেয়ে গুরুত্বপূর্ণ বৈশিষ্ট্য হলো Risk Management। প্রতিটি spiral চক্রে risk চিহ্নিত করা, বিশ্লেষণ করা এবং সমাধান করা হয়, যা বড় ও জটিল প্রকল্পের জন্য এটিকে বিশেষভাবে উপযুক্ত করে।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Beta testing",
-      "page": "Testing"
+      "page": "Testing",
+      "explanation": "Beta Testing হলো সেই পরীক্ষা যেখানে প্রকৃত ব্যবহারকারীরা প্রকৃত পরিবেশে সফটওয়্যার ব্যবহার করে। Alpha testing ডেভেলপারদের দ্বারা ভেতরে করা হয়, কিন্তু Beta testing বাস্তব ব্যবহারকারীদের দ্বারা বাইরে করা হয়।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Are we building the right product",
-      "page": "Testing"
+      "page": "Testing",
+      "explanation": "Validation মানে হলো 'সঠিক পণ্য তৈরি করছি কি?' — অর্থাৎ সফটওয়্যারটি ব্যবহারকারীর প্রকৃত চাহিদা পূরণ করছে কিনা তা নিশ্চিত করা। Verification হলো 'পণ্যটি সঠিকভাবে তৈরি করছি কি?' — specification অনুযায়ী তৈরি হচ্ছে কিনা তা নিশ্চিত করা।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "all of the above",
-      "page": "Software Metrics"
+      "page": "Software Metrics",
+      "explanation": "Software Measurement বা metrics সফটওয়্যারের গুণমান পরিমাপ, অগ্রগতি পর্যবেক্ষণ এবং ভবিষ্যৎ প্রকল্পের জন্য estimation-এর ভিত্তি তৈরি করে — তিনটি উদ্দেশ্যই পূরণ করে, তাই সঠিক উত্তর 'সবগুলো'।"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "The process of executing a program with the intent of finding errors",
-      "page": "Testing"
+      "page": "Testing",
+      "explanation": "Software testing-এর মূল উদ্দেশ্য হলো ত্রুটি খুঁজে বের করা (fault finding)। Dijkstra বলেছেন, testing দিয়ে bugs-এর উপস্থিতি প্রমাণ করা যায়, কিন্তু bugs-এর অনুপস্থিতি প্রমাণ করা যায় না।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Constructive Cost Model",
-      "page": "Software Estimation"
+      "page": "Software Estimation",
+      "explanation": "COCOMO (Constructive Cost Model) হলো Barry Boehm কর্তৃক তৈরি সফটওয়্যার খরচ অনুমান মডেল। এটি code line সংখ্যা এবং প্রকল্পের জটিলতার উপর ভিত্তি করে development সময় ও খরচ অনুমান করে।"
     },
     {
       "id": 7,
@@ -90,7 +96,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Specification-based testing",
-      "page": "Testing"
+      "page": "Testing",
+      "explanation": "Black-box testing-কে Specification-based testing বলা হয় কারণ এতে শুধু software-এর input/output specification অনুযায়ী পরীক্ষা করা হয়, ভেতরের code structure না দেখে। White-box testing হলো Structural testing যেখানে code দেখে পরীক্ষা করা হয়।"
     },
     {
       "id": 8,
@@ -103,7 +110,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Spiral model",
-      "page": "SDLC Models"
+      "page": "SDLC Models",
+      "explanation": "Spiral Model-এ প্রতিটি পর্যায়ে risk analysis একটি অপরিহার্য ধাপ। এটিই একমাত্র SDLC মডেল যা আনুষ্ঠানিকভাবে প্রকল্পের risk চিহ্নিত করে এবং সেগুলো মোকাবেলার কৌশল নির্ধারণ করে।"
     },
     {
       "id": 9,
@@ -116,7 +124,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Validation",
-      "page": "Testing"
+      "page": "Testing",
+      "explanation": "'সঠিক পণ্য তৈরি করছি কি?' এই প্রশ্নটি Validation-এর সাথে সম্পর্কিত। Validation নিশ্চিত করে যে সফটওয়্যারটি ব্যবহারকারীর প্রকৃত চাহিদা পূরণ করছে। Verification নিশ্চিত করে যে specification অনুযায়ী তৈরি হচ্ছে।"
     },
     {
       "id": 10,
@@ -129,7 +138,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Waterfall Model",
-      "page": "SDLC Models"
+      "page": "SDLC Models",
+      "explanation": "Waterfall Model-কে Linear Sequential বা Classic Life Cycle বলা হয় কারণ এতে requirements, design, implementation, testing, deployment — প্রতিটি পর্যায় ধাপে ধাপে সম্পন্ন হয় এবং আগের ধাপ শেষ না হলে পরের ধাপ শুরু হয় না।"
     },
     {
       "id": 11,
@@ -142,7 +152,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Both a and b options",
-      "page": "SDLC Models"
+      "page": "SDLC Models",
+      "explanation": "Waterfall Model-এ প্রতিটি process activity আলাদা (separate) এবং স্বতন্ত্র (discrete) হিসেবে বিবেচনা করা হয়। এর মানে প্রতিটি পর্যায় সম্পূর্ণ আলাদাভাবে সম্পন্ন হয় এবং পরবর্তী পর্যায়ে যাওয়ার আগে সম্পূর্ণ শেষ করতে হয়।"
     },
     {
       "id": 12,
@@ -155,7 +166,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "all of the above",
-      "page": "Software Design"
+      "page": "Software Design",
+      "explanation": "Module-এর structure এবং তাদের মধ্যে control সম্পর্ক পরিকল্পনা করাকে Architectural Design, High Level Design এবং System Design — তিনটি নামেই ডাকা হয়। এগুলো essentially একই ধারণার বিভিন্ন নাম।"
     },
     {
       "id": 13,
@@ -168,7 +180,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "cohesive, coupled",
-      "page": "Software Design"
+      "page": "Software Design",
+      "explanation": "ভালো software design-এ প্রতিটি module একটি নির্দিষ্ট কাজ করে (strongly cohesive) এবং modules একে অপরের উপর কম নির্ভরশীল থাকে (weakly coupled)। এতে software maintain ও test করা সহজ হয়।"
     },
     {
       "id": 14,
@@ -181,7 +194,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Normal Coupling",
-      "page": "Software Design"
+      "page": "Software Design",
+      "explanation": "Normal Coupling (বা No Coupling) হলো সবচেয়ে আদর্শ অবস্থা যেখানে দুটি module-এর মধ্যে কোনো data বা control তথ্য আদান-প্রদান হয় না। এটি সর্বনিম্ন coupling-এর প্রকার।"
     },
     {
       "id": 15,
@@ -194,7 +208,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Common Coupling",
-      "page": "Software Design"
+      "page": "Software Design",
+      "explanation": "Common Coupling তখন হয় যখন একাধিক module একই global data বা global variable ব্যবহার করে। এটি undesirable কারণ একটি module-এর পরিবর্তন অন্য সকল module-কে প্রভাবিত করতে পারে।"
     },
     {
       "id": 16,
@@ -207,7 +222,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "all of the above",
-      "page": "Software Design"
+      "page": "Software Design",
+      "explanation": "Data Flow Diagram (DFD), Structure Chart এবং Decision Tree — তিনটিই software design-এর graphical tool। DFD data প্রবাহ দেখায়, Structure Chart module hierarchy দেখায়, এবং Decision Tree সিদ্ধান্ত গ্রহণের প্রক্রিয়া দেখায়।"
     },
     {
       "id": 17,
@@ -221,7 +237,8 @@
       "correct_answer": "c",
       "correct_answer_text": "They should be used to document changes to the code",
       "page": "Coding",
-      "note": "Version control systems should track changes, not code comments"
+      "note": "Version control systems should track changes, not code comments",
+      "explanation": "Code comment-এ পরিবর্তনের ইতিহাস রাখা ভালো অভ্যাস নয় — এই কাজ Git-এর মতো version control system-এর জন্য। Comment-এ পরিবর্তন ট্র্যাক করলে code জটিল ও অপরিষ্কার হয়ে যায়।"
     },
     {
       "id": 18,
@@ -234,7 +251,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Black-box testing",
-      "page": "Testing"
+      "page": "Testing",
+      "explanation": "Equivalence Partitioning একটি Black-box testing technique যেখানে input data-কে সমতুল্য দলে ভাগ করা হয় এবং প্রতিটি দল থেকে একটি করে test case বেছে নেওয়া হয়। Code-এর ভেতরের structure না দেখেই এই test design করা হয়।"
     },
     {
       "id": 19,
@@ -247,7 +265,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Iterative enhancement model",
-      "page": "SDLC Models"
+      "page": "SDLC Models",
+      "explanation": "Iterative Enhancement Model-এ requirements গুলোকে category বা priority অনুযায়ী ভাগ করে ধীরে ধীরে implement করা হয়। প্রতিটি iteration-এ নতুন features যোগ করা হয় এবং পূর্ববর্তী version উন্নত করা হয়।"
     },
     {
       "id": 20,
@@ -260,7 +279,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Mutation testing",
-      "page": "Testing"
+      "page": "Testing",
+      "explanation": "Mutation Testing একটি fault-based testing technique যেখানে সফটওয়্যারের code-এ ইচ্ছাকৃতভাবে ছোট পরিবর্তন (mutation) করা হয় এবং দেখা হয় test cases সেই পরিবর্তন ধরতে পারে কিনা। এটি test suite-এর কার্যকারিতা পরীক্ষা করে।"
     },
     {
       "id": 21,
@@ -273,7 +293,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Non-Regular Language",
-      "page": "Automata Theory"
+      "page": "Automata Theory",
+      "explanation": "Regular Language-এর সংজ্ঞা হলো যে language-এর জন্য একটি DFA (Deterministic Finite Automaton) তৈরি করা সম্ভব। যদি কোনো DFA তৈরি করা না যায়, তাহলে সেই language সংজ্ঞানুযায়ী Non-Regular Language।"
     },
     {
       "id": 22,
@@ -286,7 +307,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "C code",
-      "page": "Automata Theory"
+      "page": "Automata Theory",
+      "explanation": "DFA কে Transition graph (state diagram) এবং Transition table হিসেবে সহজেই উপস্থাপন করা যায়। তবে C code হলো implementation language — DFA-এর formal representation format নয়, তাই এটি DFA-এর standard উপস্থাপনা পদ্ধতি নয়।"
     },
     {
       "id": 23,
@@ -299,7 +321,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "REJECT",
-      "page": "Automata Theory"
+      "page": "Automata Theory",
+      "explanation": "NFA (Non-deterministic Finite Automaton)-এ REJECT state হলো একটি dead-end অ-চূড়ান্ত (non-final) state যেখান থেকে কোনো transition নেই এবং input সেখানে পৌঁছালে string প্রত্যাখ্যান করা হয়।"
     },
     {
       "id": 24,
@@ -312,7 +335,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "sequence of alphanumeric characters in a token",
-      "page": "Compiler Design"
+      "page": "Compiler Design",
+      "explanation": "Compiler Design-এ Lexeme হলো source code-এর সেই অক্ষরের ক্রম যা একটি token-এর সাথে match করে। উদাহরণস্বরূপ, `int` একটি lexeme যা keyword token গঠন করে, এবং `count` একটি lexeme যা identifier token গঠন করে।"
     }
   ]
 }

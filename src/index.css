@@ -489,6 +489,56 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .study-opt.correct .study-opt-key { background: var(--c); color: #fff; }
 .study-opt-text { flex: 1; line-height: 1.45; }
 
+/* ── Explanation Box ───────────────────── */
+.explanation-box {
+  margin-top: 18px;
+  background: color-mix(in srgb, var(--c, #22d3ee) 8%, var(--elevated));
+  border: 1px solid color-mix(in srgb, var(--c, #22d3ee) 30%, transparent);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.explanation-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.explanation-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  flex: 1;
+}
+
+.answer-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+.answer-badge.correct {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+.answer-badge.wrong {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.explanation-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text);
+  font-weight: 400;
+}
+
 /* ── Animations ────────────────────────── */
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(8px); }

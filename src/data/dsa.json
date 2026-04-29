@@ -12,7 +12,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "O(n²)",
-      "page": "Linked List"
+      "page": "Linked List",
+      "explanation": "সর্টেড লিংকড লিস্টে প্রতিটি উপাদান সন্নিবেশ করতে সর্বোচ্চ O(n) সময় লাগে, কারণ সঠিক অবস্থান খুঁজে বের করতে তালিকার মধ্য দিয়ে যেতে হয়। n টি উপাদানের জন্য মোট সময় O(n × n) = O(n²)।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Prints all nodes in reverse order",
-      "page": "Linked List"
+      "page": "Linked List",
+      "explanation": "এই ফাংশনটি রিকার্সিভলি প্রথমে পরবর্তী নোডে চলে যায় এবং ফেরার পথে প্রিন্ট করে। ফলে শেষ নোড সবার আগে প্রিন্ট হয়, অর্থাৎ সকল নোড বিপরীত ক্রমে মুদ্রিত হয়।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "The first node",
-      "page": "Linked List"
+      "page": "Linked List",
+      "explanation": "সার্কুলার লিংকড লিস্টে শেষ নোডের next পয়েন্টার প্রথম নোডকে নির্দেশ করে, যার ফলে তালিকাটি একটি বৃত্তাকার লুপ গঠন করে এবং NULL দিয়ে শেষ হয় না।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Front = rear ≠ null",
-      "page": 150
+      "page": 150,
+      "explanation": "যখন সার্কুলার কিউতে মাত্র একটি উপাদান থাকে, তখন front এবং rear উভয়ই সেই একই উপাদানের অবস্থান নির্দেশ করে, তাই front = rear এবং এটি null নয়।"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Stack",
-      "page": 150
+      "page": 150,
+      "explanation": "স্ট্যাক LIFO (Last In First Out) নীতি অনুসরণ করে, অর্থাৎ সর্বশেষ প্রবেশ করা উপাদান সর্বপ্রথম বের হয়। তাই বিপরীত ক্রমে ডেটা পুনরুদ্ধারের জন্য স্ট্যাক সবচেয়ে উপযুক্ত।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "radix sort",
-      "page": 150
+      "page": 150,
+      "explanation": "Radix Sort অ্যালগরিদমে প্রতিটি ডিজিটের জন্য buckets ব্যবহার করা হয় যেগুলো FIFO (First In First Out) ক্রমে প্রক্রিয়া করা হয়, আর Queue হলো FIFO ডেটা স্ট্রাকচার — তাই Queue দিয়ে Radix Sort সহজে বাস্তবায়ন করা যায়।"
     },
     {
       "id": 7,
@@ -90,7 +96,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Both P and Q",
-      "page": "Graph"
+      "page": "Graph",
+      "explanation": "Handshaking Lemma অনুযায়ী, একটি গ্রাফে সকল vertex-এর degree-এর যোগফল সবসময় জোড় সংখ্যা (প্রতিটি edge দুটি vertex-এর degree যোগ করে), এবং এর ফলেই বিজোড় degree-এর vertex সংখ্যাও সর্বদা জোড় হয়।"
     },
     {
       "id": 8,
@@ -103,7 +110,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "10",
-      "page": "Graph"
+      "page": "Graph",
+      "explanation": "n টি নোডবিশিষ্ট সম্পূর্ণ গ্রাফে edges-এর সংখ্যা = n(n-1)/2। 5 নোডের জন্য: 5×4/2 = 10। প্রতিটি নোড অন্য সকল নোডের সাথে সংযুক্ত থাকে।"
     },
     {
       "id": 9,
@@ -116,7 +124,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Merge sort",
-      "page": "Sorting"
+      "page": "Sorting",
+      "explanation": "Merge Sort-এ দুটি সাব-অ্যারে মার্জ করার সময় অতিরিক্ত O(n) মেমোরি প্রয়োজন হয়, তাই এটি in-place অ্যালগরিদম নয়। বাকি তিনটি অ্যালগরিদম মূল অ্যারেতেই কাজ করে।"
     },
     {
       "id": 10,
@@ -129,7 +138,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Fibonacci series",
-      "page": "Dynamic Programming"
+      "page": "Dynamic Programming",
+      "explanation": "Fibonacci series ডায়নামিক প্রোগ্রামিং-এর উৎকৃষ্ট উদাহরণ কারণ এখানে পূর্বে গণনা করা মানগুলো সংরক্ষণ করে (memoization) পুনরায় গণনা এড়ানো যায়, যা সময় জটিলতা উল্লেখযোগ্যভাবে কমায়।"
     },
     {
       "id": 11,
@@ -142,7 +152,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Queue",
-      "page": "Graph"
+      "page": "Graph",
+      "explanation": "অ-ভারযুক্ত গ্রাফে Dijkstra's অ্যালগরিদম আসলে BFS-এর মতো কাজ করে। Queue ব্যবহার করলে FIFO ক্রমে নোড প্রক্রিয়া হয়, ফলে অ্যালগরিদমটি O(V+E) বা রৈখিক সময়ে চলতে পারে।"
     },
     {
       "id": 12,
@@ -155,7 +166,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "16",
-      "page": "Graph"
+      "page": "Graph",
+      "explanation": "Cayley's formula অনুযায়ী, n টি labeled নোডের সম্পূর্ণ গ্রাফে সর্বোচ্চ n^(n-2) টি spanning tree গঠন করা সম্ভব। 4 নোডের জন্য: 4^(4-2) = 4² = 16।"
     },
     {
       "id": 13,
@@ -168,7 +180,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Trees",
-      "page": 191
+      "page": 191,
+      "explanation": "Tree হলো একটি non-linear ডেটা স্ট্রাকচার কারণ এতে উপাদানগুলো সরলরৈখিকভাবে সাজানো থাকে না, বরং প্রতিটি নোডের একাধিক child node থাকতে পারে এবং শাখা-প্রশাখা বিস্তার করে।"
     },
     {
       "id": 14,
@@ -181,7 +194,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Binary tree",
-      "page": 191
+      "page": 191,
+      "explanation": "Binary tree-তে header node বা sentinel node ব্যবহার করা হয় boundary condition সহজ করতে। এটি tree traversal এবং insertion/deletion অপারেশনে NULL চেক কমিয়ে কোড সরল করে।"
     },
     {
       "id": 15,
@@ -194,7 +208,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "O(n)",
-      "page": 191
+      "page": 191,
+      "explanation": "Linked list-এ random access সুবিধা নেই, তাই কোনো উপাদান খুঁজতে হলে প্রথম নোড থেকে শুরু করে একে একে সকল নোড পরীক্ষা করতে হতে পারে। সর্বোচ্চ n টি নোড পরীক্ষা করতে হয়, তাই সময় জটিলতা O(n)।"
     },
     {
       "id": 16,
@@ -207,7 +222,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "O(logn)",
-      "page": 191
+      "page": 191,
+      "explanation": "Priority Queue সাধারণত Heap ডেটা স্ট্রাকচার ব্যবহার করে বাস্তবায়িত হয়। Heap-এ নতুন উপাদান সন্নিবেশ করার পর heap property বজায় রাখতে 'heapify up' অপারেশন করতে হয়, যার সময় জটিলতা O(log n)।"
     },
     {
       "id": 17,
@@ -220,7 +236,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "The 3-sat problem can be reduced to it in polynomial time",
-      "page": 192
+      "page": 192,
+      "explanation": "NP-Complete সমস্যার সংজ্ঞা হলো — এটি NP-তে আছে এবং NP-র যেকোনো সমস্যাকে polynomial সময়ে এতে রূপান্তর (reduce) করা যায়। 3-SAT যেহেতু NP-Complete, তাই 3-SAT থেকে reduce করা যাওয়া মানেই সমস্যাটি NP-Complete।"
     },
     {
       "id": 18,
@@ -233,7 +250,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "that contains negative-weight cycles",
-      "page": 192
+      "page": 192,
+      "explanation": "Bellman-Ford অ্যালগরিদম negative-weight edges সহ গ্রাফে কাজ করতে পারে, কিন্তু negative-weight cycle থাকলে shortest path অসীম ছোট হতে থাকে এবং অ্যালগরিদম কখনো সঠিক উত্তর দিতে পারে না।"
     },
     {
       "id": 19,
@@ -246,7 +264,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "linked list",
-      "page": 192
+      "page": 192,
+      "explanation": "Chaining পদ্ধতিতে collision হলে একই bucket-এ নতুন উপাদান যোগ করা হয় linked list আকারে। যদি সব উপাদান একই bucket-এ পড়ে (সবচেয়ে খারাপ অবস্থা), তাহলে পুরো hash table একটি দীর্ঘ linked list-এ পরিণত হয়।"
     },
     {
       "id": 20,
@@ -259,7 +278,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "O(VE)",
-      "page": 192
+      "page": 192,
+      "explanation": "Bellman-Ford অ্যালগরিদম (V-1) বার সকল edge relaxation করে, যেখানে V হলো vertex সংখ্যা এবং E হলো edge সংখ্যা। তাই মোট সময় জটিলতা O(V × E) = O(VE)।"
     },
     {
       "id": 21,
@@ -271,7 +291,8 @@
         "d": "Null case"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Null case"
+      "correct_answer_text": "Null case",
+      "explanation": "Complexity theory-তে শুধুমাত্র তিনটি standard case আছে — Best case (সর্বোত্তম), Worst case (সর্বনিম্ন) এবং Average case (গড়)। 'Null case' বলে কোনো ধারণা complexity theory-তে বিদ্যমান নেই।"
     },
     {
       "id": 22,
@@ -283,7 +304,8 @@
         "d": "O(n^2 logn)"
       },
       "correct_answer": "b",
-      "correct_answer_text": "O(n logn)"
+      "correct_answer_text": "O(n logn)",
+      "explanation": "বাইরের লুপ n/2 থেকে n পর্যন্ত চলে, যা O(n) বার চলে। ভেতরের লুপ j কে প্রতিবার দ্বিগুণ করে 2 থেকে n পর্যন্ত চলে, যা O(log n) বার চলে। তাই মোট জটিলতা O(n) × O(log n) = O(n log n)।"
     },
     {
       "id": 23,
@@ -295,7 +317,8 @@
         "d": "Elements are sequentially accessed"
       },
       "correct_answer": "b",
-      "correct_answer_text": "There are chances of wastage of memory space if elements inserted in an array are lesser than the allocated size"
+      "correct_answer_text": "There are chances of wastage of memory space if elements inserted in an array are lesser than the allocated size",
+      "explanation": "Array-এর একটি প্রধান অসুবিধা হলো এটি static size-এর — ঘোষণার সময় নির্দিষ্ট আকার বরাদ্দ করতে হয়। যদি প্রকৃত উপাদান সংখ্যা বরাদ্দ আকারের চেয়ে কম হয়, তাহলে অব্যবহৃত মেমোরি নষ্ট হয়।"
     },
     {
       "id": 24,
@@ -307,7 +330,8 @@
         "d": "logarithmically"
       },
       "correct_answer": "a",
-      "correct_answer_text": "randomly"
+      "correct_answer_text": "randomly",
+      "explanation": "Array-এ যেকোনো উপাদান সরাসরি তার index ব্যবহার করে O(1) সময়ে অ্যাক্সেস করা যায়, এটিকে random access বলে। প্রথম থেকে শুরু করে একে একে যেতে হয় না, সরাসরি যেকোনো অবস্থানে যাওয়া সম্ভব।"
     },
     {
       "id": 25,
@@ -319,7 +343,8 @@
         "d": "Linked list"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Queue"
+      "correct_answer_text": "Queue",
+      "explanation": "Queue হলো FIFO (First In First Out) ডেটা স্ট্রাকচার যেখানে উপাদান rear প্রান্ত থেকে প্রবেশ করে এবং front প্রান্ত থেকে বের হয়, ঠিক যেভাবে টিকিটের লাইনে মানুষ প্রবেশ করে ও বের হয়।"
     },
     {
       "id": 26,
@@ -331,7 +356,8 @@
         "d": "Tree"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Queue"
+      "correct_answer_text": "Queue",
+      "explanation": "BFS (Breadth First Search)-এ একটি নোডের সকল প্রতিবেশী প্রথমে ভিজিট করা হয়, তারপর পরবর্তী স্তরে যাওয়া হয়। এই FIFO (First In First Out) আচরণ বজায় রাখতে Queue ব্যবহার করা হয়।"
     },
     {
       "id": 27,
@@ -343,7 +369,8 @@
         "d": "Curve Buffer"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Ring Buffer"
+      "correct_answer_text": "Ring Buffer",
+      "explanation": "Circular Queue-কে Ring Buffer বলা হয় কারণ এতে শেষ অবস্থানের পরে front-এ ফিরে আসা যায়, যা একটি বৃত্তাকার আংটির মতো আচরণ করে এবং মেমোরির কার্যকর ব্যবহার নিশ্চিত করে।"
     },
     {
       "id": 28,
@@ -355,7 +382,8 @@
         "d": "ABDC"
       },
       "correct_answer": "a",
-      "correct_answer_text": "ABCD"
+      "correct_answer_text": "ABCD",
+      "explanation": "Queue FIFO (First In First Out) নীতি অনুসরণ করে — যে উপাদান প্রথমে প্রবেশ করে, সে প্রথমে বের হয়। A, B, C, D এই ক্রমে প্রবেশ করেছে, তাই একই ক্রমে ABCD বের হবে।"
     },
     {
       "id": 29,
@@ -367,7 +395,8 @@
         "d": "Array implementation of list"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Circular doubly linked list"
+      "correct_answer_text": "Circular doubly linked list",
+      "explanation": "Circular doubly linked list-এ tail node সরাসরি জানা যায় (head-এর previous pointer থেকে), তাই দুটি তালিকা O(1) সময়ে সংযুক্ত করা সম্ভব — শুধু pointer পরিবর্তন করতে হয়, পুরো তালিকা traverse করতে হয় না।"
     },
     {
       "id": 30,
@@ -379,7 +408,8 @@
         "d": "Binary search"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Binary search"
+      "correct_answer_text": "Binary search",
+      "explanation": "Binary Search কাজ করার জন্য মাঝের উপাদান সরাসরি O(1) সময়ে অ্যাক্সেস করতে হয়, কিন্তু Linked list-এ random access সম্ভব নয়। Linked list-এ মাঝের উপাদান খুঁজতে O(n) সময় লাগে।"
     },
     {
       "id": 31,
@@ -391,7 +421,8 @@
         "d": "Heap"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Dynamic"
+      "correct_answer_text": "Dynamic",
+      "explanation": "Linked list একটি dynamic ডেটা স্ট্রাকচার কারণ এর আকার runtime-এ প্রয়োজন অনুযায়ী বাড়ানো বা কমানো যায়। Array-এর মতো আগে থেকে নির্দিষ্ট মেমোরি বরাদ্দ করতে হয় না।"
     },
     {
       "id": 32,
@@ -403,7 +434,8 @@
         "d": "Head node is known"
       },
       "correct_answer": "a",
-      "correct_answer_text": "You cannot have the 'next' pointer point to null in a circular linked list"
+      "correct_answer_text": "You cannot have the 'next' pointer point to null in a circular linked list",
+      "explanation": "সাধারণ linked list-এ শেষ নোডের next pointer NULL হয়, কিন্তু circular linked list-এ শেষ নোডের next pointer প্রথম নোডকে নির্দেশ করে — তাই এখানে next কখনো NULL হয় না।"
     },
     {
       "id": 33,
@@ -415,7 +447,8 @@
         "d": "Priority"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Tree"
+      "correct_answer_text": "Tree",
+      "explanation": "Tree ডেটা স্ট্রাকচার hierarchical (শ্রেণিবদ্ধ) সম্পর্ক প্রকাশের জন্য আদর্শ — যেমন ফাইল সিস্টেম, অর্গানোগ্রাম, বা XML ডকুমেন্ট। এতে parent-child সম্পর্ক স্বাভাবিকভাবে উপস্থাপন করা যায়।"
     },
     {
       "id": 34,
@@ -427,7 +460,8 @@
         "d": "center to left to right"
       },
       "correct_answer": "b",
-      "correct_answer_text": "right to left"
+      "correct_answer_text": "right to left",
+      "explanation": "Prefix expression মূল্যায়নের জন্য স্ট্রিংটি ডান থেকে বামে পড়া হয়। অপারেন্ড স্ট্যাকে রাখা হয় এবং অপারেটর পাওয়া গেলে স্ট্যাক থেকে দুটি অপারেন্ড নিয়ে অপারেশন সম্পাদন করা হয়।"
     },
     {
       "id": 35,
@@ -439,7 +473,8 @@
         "d": "Depth First"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Depth First"
+      "correct_answer_text": "Depth First",
+      "explanation": "DFS (Depth First Search)-এ একটি vertex থেকে যতটা সম্ভব গভীরে যাওয়া হয় সকল descendant প্রক্রিয়া করার জন্য, তারপর backtrack করে পার্শ্ববর্তী vertex-এ যাওয়া হয়। এটি Stack বা recursion ব্যবহার করে বাস্তবায়িত হয়।"
     }
   ]
 }

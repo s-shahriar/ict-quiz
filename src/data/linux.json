@@ -12,7 +12,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Windows CE",
-      "page": "OS Types"
+      "page": "OS Types",
+      "explanation": "Windows CE (Compact Edition) একটি embedded অপারেটিং সিস্টেম যা মোবাইল ডিভাইস, PDA এবং শিল্প নিয়ন্ত্রণ ব্যবস্থার মতো সীমিত সম্পদের ডিভাইসের জন্য ডিজাইন করা হয়েছে।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Shell",
-      "page": "Linux Basics"
+      "page": "Linux Basics",
+      "explanation": "Shell হলো একটি command-line interpreter যা ব্যবহারকারীর টাইপ করা কমান্ডগুলো পড়ে, ব্যাখ্যা করে এবং অপারেটিং সিস্টেমকে সেগুলো কার্যকর করার নির্দেশ দেয়। Bash, Zsh ইত্যাদি জনপ্রিয় shell-এর উদাহরণ।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Prompt",
-      "page": "Linux Basics"
+      "page": "Linux Basics",
+      "explanation": "Prompt হলো সেই চিহ্ন বা টেক্সট যা shell প্রদর্শন করে জানাতে যে সে ব্যবহারকারীর input-এর জন্য অপেক্ষা করছে। Linux-এ সাধারণত `$` (সাধারণ ব্যবহারকারী) বা `#` (root) চিহ্ন দেখা যায়।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Command",
-      "page": "Linux Basics"
+      "page": "Linux Basics",
+      "explanation": "Command হলো কমান্ড লাইনে প্রথমে লেখা শব্দ যা নির্দেশ করে কোন প্রোগ্রামটি চালাতে হবে। যেমন `ls`, `cp`, `mkdir` ইত্যাদি হলো command-এর উদাহরণ।"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Option",
-      "page": "Linux Basics"
+      "page": "Linux Basics",
+      "explanation": "Option (বা flag) হলো command-এর আচরণ পরিবর্তন করার উপায়, সাধারণত `-` বা `--` দিয়ে শুরু হয়। যেমন `ls -l`-এ `-l` হলো option যা বিস্তারিত তালিকা দেখায়।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Physical Console",
-      "page": 363
+      "page": 363,
+      "explanation": "Physical Console হলো কম্পিউটারের সাথে সরাসরি সংযুক্ত প্রকৃত হার্ডওয়্যার — মনিটর এবং কীবোর্ড — যা সিস্টেমের সাথে সরাসরি যোগাযোগের সুবিধা দেয়।"
     },
     {
       "id": 7,
@@ -90,7 +96,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Virtual Console",
-      "page": 363
+      "page": 363,
+      "explanation": "Virtual Console হলো সফটওয়্যার-নির্মিত একাধিক কনসোল যা একটি physical console-এর উপর চলে। Linux-এ সাধারণত Ctrl+Alt+F1 থেকে F6 ব্যবহার করে ভিন্ন virtual console-এ যাওয়া যায় এবং প্রতিটিতে আলাদা login session চালানো সম্ভব।"
     },
     {
       "id": 8,
@@ -103,7 +110,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Terminal",
-      "page": 363
+      "page": 363,
+      "explanation": "Terminal হলো সেই interface যা shell session-এর জন্য output দেখানোর ডিসপ্লে এবং input দেওয়ার কীবোর্ড সরবরাহ করে। আধুনিক সিস্টেমে terminal emulator (যেমন GNOME Terminal, xterm) এই কাজ করে।"
     },
     {
       "id": 9,
@@ -117,7 +125,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": ";",
-      "page": "Bash"
+      "page": "Bash",
+      "explanation": "Bash-এ সেমিকোলন (;) দিয়ে একই লাইনে একাধিক কমান্ড আলাদা করা যায় এবং সেগুলো একে একে কার্যকর হয়। যেমন `ls ; pwd ; whoami` তিনটি কমান্ড পর্যায়ক্রমে চালাবে।"
     },
     {
       "id": 10,
@@ -131,7 +140,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Pressing Ctrl+K",
-      "page": "Bash"
+      "page": "Bash",
+      "explanation": "Bash-এ Ctrl+K শর্টকাট ব্যবহার করলে cursor-এর বর্তমান অবস্থান থেকে লাইনের শেষ পর্যন্ত সকল অক্ষর মুছে যায়, যা দ্রুত কমান্ড সম্পাদনায় সহায়তা করে।"
     },
     {
       "id": 11,
@@ -144,7 +154,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "/etc",
-      "page": "Linux Filesystem"
+      "page": "Linux Filesystem",
+      "explanation": "/etc ডিরেক্টরিতে সিস্টেমের সকল কনফিগারেশন ফাইল সংরক্ষিত থাকে, যেমন নেটওয়ার্ক সেটিং, ব্যবহারকারীর তথ্য (/etc/passwd), এবং সার্ভিস কনফিগারেশন। এই তথ্য system reboot-এর পরেও থাকে।"
     },
     {
       "id": 12,
@@ -157,7 +168,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "/",
-      "page": "Linux Filesystem"
+      "page": "Linux Filesystem",
+      "explanation": "/ (root directory) হলো Linux ফাইল সিস্টেমের শীর্ষে অবস্থিত directory, যাকে 'root' বলা হয়। সমস্ত অন্যান্য directory এবং ফাইল এই root directory-র অধীনে থাকে।"
     },
     {
       "id": 13,
@@ -170,7 +182,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "/var",
-      "page": "Linux Filesystem"
+      "page": "Linux Filesystem",
+      "explanation": "/var ডিরেক্টরিতে variable বা পরিবর্তনশীল ডেটা রাখা হয় যা প্রতিনিয়ত পরিবর্তন হয়, যেমন log file (/var/log), database data, ওয়েবসাইটের ফাইল এবং mail queue।"
     },
     {
       "id": 14,
@@ -183,7 +196,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "/usr/bin",
-      "page": "Linux Filesystem"
+      "page": "Linux Filesystem",
+      "explanation": "/usr/bin ডিরেক্টরিতে সাধারণ ব্যবহারকারীদের জন্য executable প্রোগ্রাম এবং utilities রাখা হয়, যেমন `ls`, `grep`, `python` ইত্যাদি কমান্ড।"
     },
     {
       "id": 15,
@@ -196,7 +210,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "/usr",
-      "page": "Linux Filesystem"
+      "page": "Linux Filesystem",
+      "explanation": "/usr (Unix System Resources) ডিরেক্টরিতে ইনস্টল করা সফটওয়্যার প্রোগ্রাম এবং লাইব্রেরি থাকে। এর মধ্যে /usr/bin, /usr/lib, /usr/share সহ অনেক উপ-ডিরেক্টরি রয়েছে।"
     },
     {
       "id": 16,
@@ -209,7 +224,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "cd -",
-      "page": "Linux Commands"
+      "page": "Linux Commands",
+      "explanation": "`cd -` কমান্ড আপনাকে সর্বশেষ ব্যবহৃত working directory-তে ফিরিয়ে নিয়ে যায়। এটি দুটি ডিরেক্টরির মধ্যে দ্রুত যাতায়াতের জন্য উপকারী, `cd ~` হোম ডিরেক্টরিতে নিয়ে যায়।"
     },
     {
       "id": 17,
@@ -222,7 +238,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "[!b]*",
-      "page": "Linux Globbing"
+      "page": "Linux Globbing",
+      "explanation": "[!b]* pattern-এ [!b] অর্থ প্রথম অক্ষরটি 'b' ছাড়া যেকোনো অক্ষর হতে পারে এবং * পরের যেকোনো সংখ্যক অক্ষর নির্দেশ করে। এইভাবে 'b' দিয়ে শুরু হয় না এমন সব ফাইলনাম match করে।"
     },
     {
       "id": 18,
@@ -235,7 +252,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "*[[:digit:]]*",
-      "page": "Linux Globbing"
+      "page": "Linux Globbing",
+      "explanation": "*[[:digit:]]* pattern-এ [[:digit:]] হলো POSIX character class যা 0-9 পর্যন্ত যেকোনো সংখ্যা নির্দেশ করে। দুপাশের * মানে সংখ্যার আগে ও পরে যেকোনো অক্ষর থাকতে পারে, ফলে যেকোনো সংখ্যাযুক্ত ফাইলনাম match হয়।"
     },
     {
       "id": 19,
@@ -249,7 +267,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "[[:upper:]]*",
-      "page": "Linux Globbing"
+      "page": "Linux Globbing",
+      "explanation": "[[:upper:]]* pattern-এ [[:upper:]] হলো POSIX character class যা A-Z পর্যন্ত যেকোনো বড় হাতের অক্ষর নির্দেশ করে। পরের * মানে তারপর যেকোনো অক্ষর থাকতে পারে, ফলে বড় হাতের অক্ষর দিয়ে শুরু হওয়া ফাইলনাম match হয়।"
     },
     {
       "id": 20,
@@ -262,7 +281,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "2>/dev/null",
-      "page": "Linux Redirection"
+      "page": "Linux Redirection",
+      "explanation": "2>/dev/null মানে standard error (file descriptor 2) কে /dev/null-এ redirect করা, যা সব error বার্তা বাতিল করে দেয়। Standard output (1) terminal-এ প্রদর্শিত হতে থাকে, শুধু error মেসেজ দেখা যায় না।"
     },
     {
       "id": 21,
@@ -275,7 +295,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": ">file 2>file2",
-      "page": "Linux Redirection"
+      "page": "Linux Redirection",
+      "explanation": ">file standard output (stdout) কে file-এ পাঠায় এবং 2>file2 standard error (stderr) কে আলাদা file2-এ পাঠায়। এই পদ্ধতিতে সাধারণ output এবং error message দুটি আলাদা ফাইলে রেকর্ড করা যায়।"
     },
     {
       "id": 22,
@@ -288,7 +309,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "/var/log/messages",
-      "page": "Linux Logs"
+      "page": "Linux Logs",
+      "explanation": "/var/log/messages ফাইলে সিস্টেমের সাধারণ syslog বার্তাগুলো সংরক্ষিত হয়। Authentication (/var/log/secure), mail (/var/log/maillog) এবং debugging সংক্রান্ত log আলাদা ফাইলে যায়।"
     },
     {
       "id": 23,
@@ -301,7 +323,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "/var/log",
-      "page": "Linux Logs"
+      "page": "Linux Logs",
+      "explanation": "/var/log ডিরেক্টরিতে Linux সিস্টেমের মানুষের পাঠযোগ্য (human-readable) সকল log ফাইল রাখা হয়। /var/log/journal-এ binary format-এ systemd journal রাখা হয়, যা সরাসরি পড়া যায় না।"
     },
     {
       "id": 24,
@@ -314,7 +337,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "/var/log/maillog",
-      "page": "Linux Logs"
+      "page": "Linux Logs",
+      "explanation": "/var/log/maillog ফাইলে mail server সম্পর্কিত সকল syslog বার্তা যেমন email পাঠানো, গ্রহণ করা এবং mail server ত্রুটির তথ্য সংরক্ষিত হয়।"
     },
     {
       "id": 25,
@@ -327,7 +351,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "UID",
-      "page": "Linux Users"
+      "page": "Linux Users",
+      "explanation": "UID (User ID) হলো একটি সংখ্যা যা Linux সিস্টেমে প্রতিটি ব্যবহারকারীকে অনন্যভাবে সনাক্ত করে। সিস্টেম মূলত UID দিয়ে ব্যবহারকারী পরিচয় নির্ধারণ করে, username শুধু মানুষের পড়ার সুবিধার জন্য।"
     },
     {
       "id": 26,
@@ -340,7 +365,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "login shell",
-      "page": "Linux Users"
+      "page": "Linux Users",
+      "explanation": "Login shell হলো সেই প্রোগ্রাম যা ব্যবহারকারী লগইন করার সময় চালু হয় এবং command-line prompt প্রদান করে। /etc/passwd ফাইলে প্রতিটি ব্যবহারকারীর জন্য তাদের login shell উল্লেখ থাকে।"
     },
     {
       "id": 27,
@@ -353,7 +379,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "/etc/group",
-      "page": "Linux Users"
+      "page": "Linux Users",
+      "explanation": "/etc/group ফাইলে সিস্টেমের সকল group-এর তথ্য সংরক্ষিত থাকে, যেমন group নাম, GID এবং কোন ব্যবহারকারীরা সেই group-এর সদস্য। /etc/passwd-এ ব্যবহারকারীর তথ্য থাকে।"
     },
     {
       "id": 28,
@@ -366,7 +393,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "GID",
-      "page": "Linux Users"
+      "page": "Linux Users",
+      "explanation": "GID (Group ID) হলো একটি সংখ্যা যা Linux সিস্টেমে প্রতিটি group-কে অনন্যভাবে সনাক্ত করে। UID যেমন ব্যবহারকারী পরিচয় দেয়, GID তেমনি group পরিচয় নির্ধারণ করে।"
     },
     {
       "id": 29,
@@ -379,7 +407,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "/etc/passwd",
-      "page": "Linux Users"
+      "page": "Linux Users",
+      "explanation": "/etc/passwd ফাইলে সিস্টেমের সকল local ব্যবহারকারীর তথ্য সংরক্ষিত থাকে, যেমন username, UID, GID, home directory এবং login shell। প্রতিটি ব্যবহারকারীর জন্য একটি লাইন থাকে।"
     },
     {
       "id": 30,
@@ -393,7 +422,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "T",
-      "page": "Linux Processes"
+      "page": "Linux Processes",
+      "explanation": "Linux process state 'T' মানে সেই process বন্ধ (stopped) বা স্থগিত (suspended) অবস্থায় আছে, সাধারণত Ctrl+Z বা SIGSTOP signal দ্বারা। R = Running, S = Sleeping, D = Uninterruptible Sleep, Z = Zombie।"
     }
   ]
 }

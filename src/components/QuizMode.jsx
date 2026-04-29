@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy } from 'lucide-react'
+import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb } from 'lucide-react'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -48,6 +48,7 @@ export default function QuizMode({ topic, onBack, onHome }) {
   }
 
   const progress = ((idx + (revealed ? 1 : 0)) / questions.length) * 100
+  const isCorrect = selected === q.correct_answer
 
   return (
     <div className="quiz-page anim-fade">
@@ -98,13 +99,26 @@ export default function QuizMode({ topic, onBack, onHome }) {
           })}
         </div>
 
+        {revealed && q.explanation && (
+          <div className="explanation-box anim-slide" style={{ '--c': topic.color }}>
+            <div className="explanation-header">
+              <Lightbulb size={14} style={{ color: topic.color, flexShrink: 0 }} />
+              <span className="explanation-label" style={{ color: topic.color }}>ব্যাখ্যা</span>
+              <span className={`answer-badge ${isCorrect ? 'correct' : 'wrong'}`}>
+                {isCorrect ? '✓ সঠিক' : '✗ ভুল'}
+              </span>
+            </div>
+            <p className="explanation-text">{q.explanation}</p>
+          </div>
+        )}
+
         {revealed && (
           <button
             className="quiz-next-btn"
             style={{ background: topic.color }}
             onClick={next}
           >
-            {idx + 1 >= questions.length ? 'See Results' : 'Next Question'}
+            {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}
             <ArrowRight size={16} />
           </button>
         )}
@@ -116,25 +130,25 @@ export default function QuizMode({ topic, onBack, onHome }) {
 function ScoreScreen({ score, total, topic, onRetry, onHome }) {
   const pct = total > 0 ? Math.round((score / total) * 100) : 0
   const msg =
-    pct >= 80 ? '🎯 Excellent work!' :
-    pct >= 60 ? '👍 Good job!' :
-    pct >= 40 ? '📚 Keep practicing!' :
-                '💪 More study needed!'
+    pct >= 80 ? '🎯 অসাধারণ! তুমি দারুণ করেছ!' :
+    pct >= 60 ? '👍 ভালো হয়েছে! আরেকটু চেষ্টা করো।' :
+    pct >= 40 ? '📚 আরো অনুশীলন করো।' :
+                '💪 হাল ছেড়ো না, আবার চেষ্টা করো!'
 
   return (
     <div className="score-page anim-fade">
       <div className="score-card">
         <Trophy size={46} className="score-trophy" style={{ color: topic.color }} />
-        <div className="score-title">Quiz Complete!</div>
+        <div className="score-title">কুইজ সম্পন্ন!</div>
         <div className="score-fraction" style={{ color: topic.color }}>
           {score}<span className="score-total">/{total}</span>
         </div>
         <div className="score-pct">{pct}%</div>
         <div className="score-msg">{msg}</div>
         <div className="score-actions">
-          <button className="score-retry" onClick={onRetry}>Try Again</button>
+          <button className="score-retry" onClick={onRetry}>আবার চেষ্টা</button>
           <button className="score-home" style={{ background: topic.color }} onClick={onHome}>
-            <Home size={15} /> Home
+            <Home size={15} /> হোম
           </button>
         </div>
       </div>

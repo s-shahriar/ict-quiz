@@ -12,7 +12,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Solve the memory fragmentation problem",
-      "page": "Memory Management"
+      "page": "Memory Management",
+      "explanation": "Paging মেমোরিকে সমান আকারের ব্লকে (page) ভাগ করে ফ্র্যাগমেন্টেশন সমস্যা সমাধান করে। এতে ছোট ছোট ফাঁকা মেমোরি অপচয় হয় না কারণ প্রতিটি পেজ যেকোনো ফ্রি ফ্রেমে বসানো যায়।"
     },
     {
       "id": 2,
@@ -26,7 +27,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Assembly language",
-      "page": "OS Basics"
+      "page": "OS Basics",
+      "explanation": "Assembler হলো এমন একটি প্রোগ্রাম যা Assembly ভাষায় লেখা কোডকে মেশিন কোডে (বাইনারি) রূপান্তরিত করে। Assembly ভাষা মানুষের পাঠযোগ্য মনেমোনিক (যেমন MOV, ADD) ব্যবহার করে যা Assembler মেশিন ভাষায় অনুবাদ করে।"
     },
     {
       "id": 3,
@@ -40,7 +42,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Multitasking",
-      "page": "OS Concepts"
+      "page": "OS Concepts",
+      "explanation": "Multitasking হলো একটি প্রসেসরে একাধিক প্রোগ্রাম একই সাথে চালানোর ক্ষমতা, যেখানে OS দ্রুত CPU time শেয়ার করে ব্যবহারকারীকে মনে করায় সব কাজ একসাথে চলছে। Multiprocessing-এ একাধিক প্রসেসর থাকে, কিন্তু Multitasking-এ একটিই।"
     },
     {
       "id": 4,
@@ -53,7 +56,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Page table",
-      "page": "Memory Management"
+      "page": "Memory Management",
+      "explanation": "Page table হলো OS-এর একটি ডেটা স্ট্রাকচার যা প্রতিটি ভার্চুয়াল পেজের সাথে ফিজিক্যাল মেমোরির ফ্রেমের ম্যাপিং সংরক্ষণ করে। মেমোরি এক্সেসের সময় Page table দেখে ফিজিক্যাল অ্যাড্রেস খুঁজে বের করা হয়।"
     },
     {
       "id": 5,
@@ -66,7 +70,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Demand Paging",
-      "page": "Memory Management"
+      "page": "Memory Management",
+      "explanation": "Demand Paging হলো Virtual Memory-র সবচেয়ে প্রচলিত বাস্তবায়ন পদ্ধতি, যেখানে একটি পেজ শুধুমাত্র তখনই RAM-এ লোড হয় যখন সেটির প্রয়োজন হয়। এতে RAM-এর সীমার চেয়ে বড় প্রোগ্রাম চালানো সম্ভব হয়।"
     },
     {
       "id": 6,
@@ -79,7 +84,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "multiprogramming operating systems",
-      "page": "CPU Scheduling"
+      "page": "CPU Scheduling",
+      "explanation": "Multiprogramming OS-এ একাধিক প্রসেস একই সময়ে চলে, তাই কোন প্রসেস কখন CPU পাবে তা নির্ধারণ করতে CPU Scheduling অপরিহার্য। এটি ছাড়া CPU দক্ষতার সাথে একাধিক প্রসেসের মধ্যে সময় ভাগ করতে পারবে না।"
     },
     {
       "id": 7,
@@ -92,7 +98,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "the instruction set architecture",
-      "page": "Memory Management"
+      "page": "Memory Management",
+      "explanation": "Instruction Set Architecture (ISA) নির্ধারণ করে একটি নির্দেশনা সম্পাদন করতে সর্বোচ্চ কতটি পেজ একসাথে দরকার। যেমন একটি নির্দেশনা যদি একাধিক মেমোরি লোকেশন স্পর্শ করে, তাহলে সেই সংখ্যক পেজ ফ্রেম ন্যূনতম বরাদ্দ রাখতে হয়।"
     },
     {
       "id": 8,
@@ -105,7 +112,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Deadlock avoidance",
-      "page": 352
+      "page": 352,
+      "explanation": "Banker's Algorithm হলো একটি Deadlock Avoidance অ্যালগরিদম যা রিসোর্স বরাদ্দ দেওয়ার আগে সিস্টেমটি 'safe state'-এ থাকবে কিনা তা যাচাই করে। যদি রিসোর্স দিলে deadlock হওয়ার সম্ভাবনা থাকে, তাহলে সেটি দেওয়া হয় না।"
     }
   ]
 }

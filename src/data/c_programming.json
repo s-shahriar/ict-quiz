@@ -12,7 +12,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Run-time error",
-      "page": 38
+      "page": 38,
+      "explanation": "Run-time error প্রোগ্রাম চলার সময় (execution-এর সময়) উৎপন্ন হয়, যেমন শূন্য দিয়ে ভাগ বা null pointer access। Syntax error কম্পাইলের সময় ধরা পড়ে, কিন্তু Run-time error প্রোগ্রাম চালু হওয়ার পরেই ঘটে।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "-mysum",
-      "page": 38
+      "page": 38,
+      "explanation": "C-তে identifier অক্ষর (a-z, A-Z) বা আন্ডারস্কোর (_) দিয়ে শুরু হতে হয়, কিন্তু হাইফেন (-) দিয়ে শুরু হওয়া বৈধ নয়। -mysum-এ শুরুতে হাইফেন থাকায় এটি অবৈধ identifier।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "FORTRAN",
-      "page": 38
+      "page": 38,
+      "explanation": "FORTRAN (FORmula TRANslation) ১৯৫৭ সালে IBM তৈরি করে এবং এটিই প্রথম হাই-লেভেল প্রোগ্রামিং ল্যাঙ্গুয়েজ। এটি বৈজ্ঞানিক ও গাণিতিক হিসাব-নিকাশের জন্য তৈরি হয়েছিল এবং COBOL ও C পরে এসেছে।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "char c[10]; char *c;",
-      "page": "Previous Year Question"
+      "page": "Previous Year Question",
+      "explanation": "char c[10] একটি নির্দিষ্ট আকারের অ্যারে যা ১০টি ক্যারেক্টারের জন্য মেমোরি বরাদ্দ করে, কিন্তু char *c একটি পয়েন্টার যা কোনো নির্দিষ্ট মেমোরি বরাদ্দ করে না। তাই কম্পাইলার এই দুটিকে ভিন্ন হিসেবে দেখে।"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "int array[5] = {1,2,3,4,5}",
-      "page": "Previous Year Question"
+      "page": "Previous Year Question",
+      "explanation": "C-তে অ্যারে ডিক্লেয়ার করতে স্কোয়ার ব্র্যাকেট [] ব্যবহার করতে হয় এবং ইনিশিয়ালাইজেশনে কার্লি ব্রেস {} ব্যবহার করতে হয়। অন্য অপশনগুলো ভুল সিনট্যাক্স ব্যবহার করেছে।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Random",
-      "page": "Previous Year Question"
+      "page": "Previous Year Question",
+      "explanation": "অ্যারেতে যেকোনো উপাদান সরাসরি তার ইন্ডেক্স নম্বর ব্যবহার করে এক্সেস করা যায়, তাই এটি Random Access। যেমন a[3] দিয়ে সরাসরি চতুর্থ উপাদানে যাওয়া যায়, প্রথম থেকে ক্রমান্বয়ে যাওয়ার দরকার নেই।"
     },
     {
       "id": 7,
@@ -90,7 +96,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "-32768 to 32767",
-      "page": 66
+      "page": 66,
+      "explanation": "১৬-বিট কম্পাইলারে int ১৬ বিট জায়গা নেয়, যার মাধ্যমে ২^১৫ = ৩২৭৬৮টি ঋণাত্মক এবং ২^১৫ - ১ = ৩২৭৬৭টি ধনাত্মক মান প্রকাশ করা যায়। তাই রেঞ্জ হলো -32768 থেকে 32767।"
     },
     {
       "id": 8,
@@ -103,7 +110,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "1examveda",
-      "page": 66
+      "page": 66,
+      "explanation": "C-তে identifier সংখ্যা দিয়ে শুরু হতে পারে না, তাই 1examveda অবৈধ। আন্ডারস্কোর (_) বা অক্ষর দিয়ে শুরু করা বৈধ, এবং মাঝে বা শেষে সংখ্যা রাখা যায় (যেমন examveda1)।"
     },
     {
       "id": 9,
@@ -116,7 +124,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "gets()",
-      "page": "Exercise"
+      "page": "Exercise",
+      "explanation": "gets() ফাংশন স্পেস সহ পুরো লাইন পড়তে পারে যতক্ষণ না নিউলাইন পাওয়া যায়। scanf() স্পেসে থেমে যায়, তাই একাধিক শব্দের স্ট্রিং পড়তে gets() বেশি উপযুক্ত (যদিও এটি বাফার ওভারফ্লো ঝুঁকিপূর্ণ)।"
     },
     {
       "id": 10,
@@ -129,7 +138,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "0",
-      "page": "Exercise"
+      "page": "Exercise",
+      "explanation": "C-তে অ্যারে আংশিক ইনিশিয়ালাইজ করলে বাকি উপাদানগুলো স্বয়ংক্রিয়ভাবে ০ হয়ে যায়। এখানে a[0]=1, a[1]=2, a[2]=3 সেট হয়েছে, কিন্তু a[3] এবং a[4] ইনিশিয়ালাইজ না হওয়ায় এদের মান ০।"
     },
     {
       "id": 11,
@@ -142,7 +152,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Arithmetic operators",
-      "page": "Exercise"
+      "page": "Exercise",
+      "explanation": "C-তে অপারেটরের প্রেসিডেন্স অর্ডার: Arithmetic (*, /, +, -) > Relational (<, >, <=, >=) > Equality (==, !=) > Logical (&&, ||)। তাই Arithmetic অপারেটরের প্রেসিডেন্স সবচেয়ে বেশি।"
     },
     {
       "id": 12,
@@ -154,7 +165,8 @@
         "d": "None of the above"
       },
       "correct_answer": "a",
-      "correct_answer_text": "System programming language"
+      "correct_answer_text": "System programming language",
+      "explanation": "Dennis Ritchie ১৯৭২ সালে UNIX অপারেটিং সিস্টেম পুনর্লিখনের জন্য C ভাষা তৈরি করেন। এটি মূলত সিস্টেম প্রোগ্রামিংয়ের জন্য ডিজাইন হয়েছিল কারণ এটি হার্ডওয়্যারের কাছাকাছি কাজ করতে পারে।"
     },
     {
       "id": 13,
@@ -166,7 +178,8 @@
         "d": "both (b) and (c)"
       },
       "correct_answer": "d",
-      "correct_answer_text": "both (b) and (c)"
+      "correct_answer_text": "both (b) and (c)",
+      "explanation": "C ভেরিয়েবল শুধুমাত্র অক্ষর (a-z, A-Z) বা আন্ডারস্কোর (_) দিয়ে শুরু করা যায়। সংখ্যা দিয়ে শুরু বা অন্য কোনো বিশেষ চিহ্ন (!, @, # ইত্যাদি) দিয়ে শুরু করা বৈধ নয়।"
     },
     {
       "id": 14,
@@ -178,7 +191,8 @@
         "d": "None of the above"
       },
       "correct_answer": "c",
-      "correct_answer_text": "()"
+      "correct_answer_text": "()",
+      "explanation": "C-তে গাণিতিক এক্সপ্রেশনে শুধুমাত্র গোলাকার বন্ধনী () ব্যবহার করা যায় অপারেশনের অগ্রাধিকার নির্ধারণ করতে। [] অ্যারে ইন্ডেক্সিং এবং {} ব্লক বা ইনিশিয়ালাইজেশনের জন্য ব্যবহৃত হয়।"
     },
     {
       "id": 15,
@@ -190,7 +204,8 @@
         "d": "B & C Both"
       },
       "correct_answer": "d",
-      "correct_answer_text": "B & C Both"
+      "correct_answer_text": "B & C Both",
+      "explanation": "C-তে const কীওয়ার্ড ডেটা টাইপের আগে বা পরে রাখা যায়, তাই int const var = 10 এবং const int var = 10 উভয়ই বৈধ। দুটি পদ্ধতিই কম্পাইলার একইভাবে গ্রহণ করে।"
     },
     {
       "id": 16,
@@ -202,7 +217,8 @@
         "d": "Syntax error"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Syntax error"
+      "correct_answer_text": "Syntax error",
+      "explanation": "C-তে 0 দিয়ে শুরু হওয়া নম্বর অক্টাল (base-8) হিসেবে ধরা হয়, কিন্তু অক্টালে 8 এবং 9 অঙ্ক নেই। তাই 01289-তে 8 এবং 9 থাকায় এটি invalid octal literal এবং Syntax error দেবে।"
     },
     {
       "id": 17,
@@ -214,7 +230,8 @@
         "d": "A declaration occurs once, but a definition may occur many times"
       },
       "correct_answer": "b",
-      "correct_answer_text": "A definition occurs once, but a declaration may occur many times"
+      "correct_answer_text": "A definition occurs once, but a declaration may occur many times",
+      "explanation": "Declaration কম্পাইলারকে ভেরিয়েবলের ধরন জানায় এবং একাধিকবার করা যায় (যেমন extern int x;)। কিন্তু Definition মেমোরি বরাদ্দ করে এবং প্রোগ্রামে শুধুমাত্র একবার করা সম্ভব।"
     },
     {
       "id": 18,
@@ -226,7 +243,8 @@
         "d": "*/+-"
       },
       "correct_answer": "d",
-      "correct_answer_text": "*/+-"
+      "correct_answer_text": "*/+-",
+      "explanation": "C-তে গাণিতিক অপারেটরের প্রেসিডেন্স: প্রথমে গুণ (*) ও ভাগ (/) একই স্তরে, তারপর যোগ (+) ও বিয়োগ (-) একই স্তরে। তাই সঠিক ক্রম হলো */+-।"
     },
     {
       "id": 19,
@@ -238,7 +256,8 @@
         "d": "int n(6) = {2, 4, 12, 5, 45, 5};"
       },
       "correct_answer": "a",
-      "correct_answer_text": "int num[6] = {2, 4, 12, 5, 45, 5};"
+      "correct_answer_text": "int num[6] = {2, 4, 12, 5, 45, 5};",
+      "explanation": "C-তে অ্যারে ডিক্লেয়ার করতে স্কোয়ার ব্র্যাকেট [] ব্যবহার করতে হয় এবং ইনিশিয়ালাইজেশনে কার্লি ব্রেস {} ব্যবহার করতে হয়। অন্য অপশনগুলোতে ভুল সিনট্যাক্স রয়েছে।"
     },
     {
       "id": 20,
@@ -250,7 +269,8 @@
         "d": "None of the above"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Sequential"
+      "correct_answer_text": "Sequential",
+      "explanation": "অ্যারের সব উপাদান মেমোরিতে পাশাপাশি (ক্রমিকভাবে) সংরক্ষিত হয়। এই কারণেই ইন্ডেক্স ব্যবহার করে যেকোনো উপাদানের অ্যাড্রেস সহজে গণনা করা যায়: base_address + index * element_size।"
     },
     {
       "id": 21,
@@ -262,7 +282,8 @@
         "d": "None of the above"
       },
       "correct_answer": "c",
-      "correct_answer_text": "032"
+      "correct_answer_text": "032",
+      "explanation": "x[4]={1,2,3} ডিক্লেয়ার করলে x[0]=1, x[1]=2, x[2]=3, x[3]=0 হয় (অ-ইনিশিয়ালাইজড উপাদান ০ হয়)। printf-এ x[3]=0, x[2]=3, x[1]=2 প্রিন্ট হবে, তাই আউটপুট 032।"
     },
     {
       "id": 22,
@@ -274,7 +295,8 @@
         "d": "ints and chars"
       },
       "correct_answer": "d",
-      "correct_answer_text": "ints and chars"
+      "correct_answer_text": "ints and chars",
+      "explanation": "Bitwise অপারেটর শুধুমাত্র integer টাইপের (int, char, short, long) উপর কাজ করে কারণ এরা বাইনারি বিট-স্তরে অপারেশন করে। float এবং double ফ্লোটিং পয়েন্ট সংখ্যা, তাই এদের উপর bitwise অপারেশন সম্ভব নয়।"
     },
     {
       "id": 23,
@@ -286,7 +308,8 @@
         "d": "none of these"
       },
       "correct_answer": "a",
-      "correct_answer_text": "9"
+      "correct_answer_text": "9",
+      "explanation": "প্রথমে a/b = 36/9 = 4, তারপর 4-2 = 2, এরপর a>>2 = 36>>2 = 9 (বিনারিতে 36 = 100100, ডানে 2 বিট শিফট করলে 001001 = 9)। তাই আউটপুট 9।"
     },
     {
       "id": 24,
@@ -298,7 +321,8 @@
         "d": "9"
       },
       "correct_answer": "a",
-      "correct_answer_text": "11"
+      "correct_answer_text": "11",
+      "explanation": "3D অ্যারেতে মেমোরি ক্রম হলো: [0][0][0]=1, [0][0][1]=2, [0][1][0]=3, [0][1][1]=4, [1][0][0]=5, [1][0][1]=6, [1][1][0]=7, [1][1][1]=8, [2][0][0]=9, [2][0][1]=10, [2][1][0]=11, [2][1][1]=12। তাই testarray[2][1][0] = 11।"
     },
     {
       "id": 25,
@@ -310,7 +334,8 @@
         "d": "register"
       },
       "correct_answer": "b",
-      "correct_answer_text": "main"
+      "correct_answer_text": "main",
+      "explanation": "main C-এর একটি ফাংশনের নাম যা প্রোগ্রামের শুরুর বিন্দু, কিন্তু এটি C-এর রিজার্ভড কীওয়ার্ড নয়। auto, case এবং register হলো C-এর সংরক্ষিত কীওয়ার্ড যা বিশেষ উদ্দেশ্যে নির্ধারিত।"
     },
     {
       "id": 26,
@@ -322,7 +347,8 @@
         "d": "Input of a Function"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Declaration of Function"
+      "correct_answer_text": "Declaration of Function",
+      "explanation": "ফাংশন প্রোটোটাইপ হলো ফাংশনের ডিক্লারেশন যা কম্পাইলারকে ফাংশনের নাম, রিটার্ন টাইপ ও প্যারামিটারের ধরন জানায়। এটি ফাংশন ডেফিনিশনের আগে লেখা হয় যাতে কম্পাইলার ফাংশন কলের সময় সঠিকতা যাচাই করতে পারে।"
     },
     {
       "id": 27,
@@ -334,7 +360,8 @@
         "d": "Depends on the compiler"
       },
       "correct_answer": "b",
-      "correct_answer_text": "fgets()"
+      "correct_answer_text": "fgets()",
+      "explanation": "fgets() নিরাপদ কারণ এটি সর্বোচ্চ কতটি ক্যারেক্টার পড়বে তা নির্দিষ্ট করে দেওয়া যায়, বাফার ওভারফ্লো প্রতিরোধ করে। gets() কোনো সীমা না রাখায় বড় ইনপুট বাফার ওভারফ্লো ঘটাতে পারে এবং নিরাপত্তা ঝুঁকি তৈরি করে।"
     },
     {
       "id": 28,
@@ -346,7 +373,8 @@
         "d": "memalloc() and faralloc()"
       },
       "correct_answer": "c",
-      "correct_answer_text": "malloc() and calloc()"
+      "correct_answer_text": "malloc() and calloc()",
+      "explanation": "malloc() এবং calloc() উভয়ই C-তে dynamic memory allocation-এর জন্য stdlib.h-এর স্ট্যান্ডার্ড ফাংশন। malloc() যেকোনো আকারের মেমোরি বরাদ্দ করে, calloc() মেমোরি বরাদ্দের পাশাপাশি সেটিকে শূন্য দিয়ে ইনিশিয়ালাইজ করে।"
     }
   ]
 }

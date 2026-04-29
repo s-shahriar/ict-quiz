@@ -12,7 +12,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Switch",
-      "page": 421
+      "page": 421,
+      "explanation": "Switch MAC address table ব্যবহার করে data packet-কে শুধুমাত্র নির্দিষ্ট destination device-এ পাঠায়। Hub সব port-এ broadcast করে, কিন্তু Switch intelligent forwarding করে MAC address-এর ভিত্তিতে।"
     },
     {
       "id": 2,
@@ -26,7 +27,8 @@
       "correct_answer": "d",
       "correct_answer_text": "Has no memory",
       "page": 421,
-      "note": "Switch DOES have memory to store MAC address table"
+      "note": "Switch DOES have memory to store MAC address table",
+      "explanation": "Switch-এর memory থাকে যেখানে সে MAC address table সংরক্ষণ করে। এই table ব্যবহার করেই Switch জানে কোন MAC address কোন port-এ আছে এবং সেই অনুযায়ী packet forward করে।"
     },
     {
       "id": 3,
@@ -39,7 +41,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "192.168.24.43",
-      "page": "IP Addressing"
+      "page": "IP Addressing",
+      "explanation": "192.168.0.0 থেকে 192.168.255.255 range হলো private IP address। 192.168.24.43 এই range-এর মধ্যে পড়ে। Private IP address শুধুমাত্র local network-এ ব্যবহৃত হয়, internet-এ directly route হয় না।"
     },
     {
       "id": 4,
@@ -52,7 +55,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "OSPF, RIP",
-      "page": "Routing"
+      "page": "Routing",
+      "explanation": "OSPF (Open Shortest Path First) এবং RIP (Routing Information Protocol) উভয়ই intra-domain routing protocols (IGP), যা একটি autonomous system-এর ভেতরে routing-এর জন্য ব্যবহৃত হয়। BGP হলো inter-domain protocol।"
     },
     {
       "id": 5,
@@ -65,7 +69,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "interface card",
-      "page": "LAN"
+      "page": "LAN",
+      "explanation": "LAN-এ computers সংযুক্ত করতে cable এবং NIC (Network Interface Card) বা interface card ব্যবহার করা হয়। NIC computer-এর motherboard-এ সংযুক্ত থাকে এবং network-এর সাথে যোগাযোগ করার সুবিধা দেয়।"
     },
     {
       "id": 6,
@@ -78,7 +83,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "mesh topology",
-      "page": "Network Topology"
+      "page": "Network Topology",
+      "explanation": "Mesh topology সবচেয়ে বেশি reliable কারণ প্রতিটি device অন্য সকল device-এর সাথে directly connected থাকে। একটি link fail করলেও alternate paths দিয়ে communication চালু থাকে, ফলে redundancy অনেক বেশি।"
     },
     {
       "id": 7,
@@ -91,7 +97,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "d*(d-1)/2",
-      "page": "Network Topology"
+      "page": "Network Topology",
+      "explanation": "Fully connected mesh network-এ d টি device থাকলে মোট physical links হয় d*(d-1)/2। এটি combination formula C(d,2) থেকে আসে। উদাহরণ: 4টি device-এ 4*3/2 = 6টি link প্রয়োজন।"
     },
     {
       "id": 8,
@@ -105,7 +112,8 @@
       "correct_answer": "c",
       "correct_answer_text": "IP layer is connected oriented layer in TCP/IP",
       "page": "OSI Model",
-      "note": "IP is CONNECTIONLESS, not connection-oriented"
+      "note": "IP is CONNECTIONLESS, not connection-oriented",
+      "explanation": "IP (Internet Protocol) layer হলো connectionless, connection-oriented নয়। IP প্রতিটি packet স্বাধীনভাবে route করে এবং delivery guarantee দেয় না। TCP layer connection-oriented, কিন্তু IP layer নয়।"
     },
     {
       "id": 9,
@@ -118,7 +126,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Physical layer",
-      "page": "OSI Model"
+      "page": "OSI Model",
+      "explanation": "Hub OSI model-এর Physical layer (Layer 1)-এ কাজ করে। এটি শুধুমাত্র bits-এর আকারে electrical signals forward করে, কোনো addressing বা intelligent routing করে না।"
     },
     {
       "id": 10,
@@ -132,7 +141,8 @@
       "correct_answer": "a",
       "correct_answer_text": "1",
       "page": "Switching",
-      "note": "A switch without VLANs creates 1 broadcast domain but 12 collision domains"
+      "note": "A switch without VLANs creates 1 broadcast domain but 12 collision domains",
+      "explanation": "VLAN ছাড়া একটি 12-port switch মাত্র 1টি broadcast domain তৈরি করে কারণ switch সব port-এ broadcast করে। তবে প্রতিটি port আলাদা collision domain তৈরি করে, তাই collision domain হয় 12টি।"
     },
     {
       "id": 11,
@@ -145,7 +155,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "A",
-      "page": "IP Addressing"
+      "page": "IP Addressing",
+      "explanation": "Class A IP address-এ 24 bits host অংশের জন্য বরাদ্দ, তাই এতে 2^24 - 2 = প্রায় 16 million host address রাখা যায়। Class B-তে 65534 এবং Class C-তে মাত্র 254টি host address সম্ভব।"
     },
     {
       "id": 12,
@@ -159,7 +170,8 @@
       "correct_answer": "a",
       "correct_answer_text": "36",
       "page": "Network Topology",
-      "note": "n*(n-1)/2 = 9*8/2 = 36"
+      "note": "n*(n-1)/2 = 9*8/2 = 36",
+      "explanation": "9 nodes-এর fully connected mesh network-এ প্রয়োজনীয় links সংখ্যা n*(n-1)/2 = 9*8/2 = 36। প্রতিটি node বাকি 8টির সাথে connected, কিন্তু duplicate গণনা এড়াতে 2 দিয়ে ভাগ করা হয়।"
     },
     {
       "id": 13,
@@ -172,7 +184,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Breaks up broadcast domains in a layer 2 switch internetwork",
-      "page": "VLAN"
+      "page": "VLAN",
+      "explanation": "VLAN (Virtual LAN) Layer 2 switch network-এ broadcast domains ভেঙে আলাদা করে। এটি logically network segment করে, ফলে একটি VLAN-এর broadcast traffic অন্য VLAN-এ যায় না এবং security ও performance উন্নত হয়।"
     },
     {
       "id": 14,
@@ -185,7 +198,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "So different networks could communicate",
-      "page": "OSI Model"
+      "page": "OSI Model",
+      "explanation": "OSI model তৈরির মূল উদ্দেশ্য ছিল বিভিন্ন vendor-এর networks-কে একে অপরের সাথে communicate করানো। এটি একটি standard framework হিসেবে কাজ করে যাতে বিভিন্ন manufacturer-এর devices পরস্পরের সাথে কথা বলতে পারে।"
     },
     {
       "id": 15,
@@ -199,7 +213,8 @@
       "correct_answer": "d",
       "correct_answer_text": "12",
       "page": "Switching",
-      "note": "Each switch port = one collision domain"
+      "note": "Each switch port = one collision domain",
+      "explanation": "Switch-এর প্রতিটি port একটি আলাদা collision domain তৈরি করে। 12-port switch-এ 12টি আলাদা collision domain হয়। এটি hub থেকে আলাদা যেখানে সব ports একটি collision domain ভাগ করে।"
     },
     {
       "id": 16,
@@ -212,7 +227,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Inside global",
-      "page": "NAT"
+      "page": "NAT",
+      "explanation": "NAT-এ Inside global হলো internal host-এর সেই address যা NAT translation-এর পরে public internet-এ ব্যবহৃত হয়। এটি ISP দ্বারা assigned public IP address যা বাইরের network দেখতে পায়।"
     },
     {
       "id": 17,
@@ -225,7 +241,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "VLANs",
-      "page": "VLAN"
+      "page": "VLAN",
+      "explanation": "VLAN broadcast domain-এর আকার কমায় network-কে logical segments-এ ভাগ করে। প্রতিটি VLAN একটি আলাদা broadcast domain, তাই একটি VLAN-এর broadcast traffic অন্য VLAN-এ পৌঁছায় না।"
     },
     {
       "id": 18,
@@ -238,7 +255,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Class D",
-      "page": "IP Addressing"
+      "page": "IP Addressing",
+      "explanation": "Class D IP address (224.0.0.0 থেকে 239.255.255.255) multicasting-এর জন্য reserved। Multicast মানে একটি source থেকে multiple specific receivers-এ একসাথে data পাঠানো, যা streaming এবং conferencing-এ ব্যবহৃত হয়।"
     },
     {
       "id": 19,
@@ -251,7 +269,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "All the seven layers",
-      "page": "Network Devices"
+      "page": "Network Devices",
+      "explanation": "Gateway OSI model-এর সাতটি স্তরেই কাজ করে। এটি দুটি সম্পূর্ণ ভিন্ন network architecture বা protocol-এর মধ্যে data translation করে, তাই সকল layer-এ processing প্রয়োজন হয়।"
     },
     {
       "id": 20,
@@ -264,7 +283,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Outside local",
-      "page": "NAT"
+      "page": "NAT",
+      "explanation": "NAT-এ Outside local হলো destination host-এর সেই address যা internal network থেকে দেখা যায় translation-এর পরে। এটি NAT device-এর inside থেকে external server-এর পরিচিত address।"
     },
     {
       "id": 21,
@@ -277,7 +297,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Transport",
-      "page": "OSI Model"
+      "page": "OSI Model",
+      "explanation": "Transport layer (Layer 4) data stream-কে smaller segments-এ ভাগ করে। TCP protocol এই segmentation করে এবং প্রতিটি segment-কে sequence number দিয়ে receiver end-এ সঠিক ক্রমে reassemble করা নিশ্চিত করে।"
     },
     {
       "id": 22,
@@ -290,7 +311,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "ipconfig.exe",
-      "page": "Network Utilities"
+      "page": "Network Utilities",
+      "explanation": "ipconfig.exe command Windows-এ network configuration দেখায়, যেমন IP address, subnet mask এবং default gateway। এটি ব্যবহার করে IP address configured আছে কিনা বা duplicate address আছে কিনা তা যাচাই করা যায়।"
     },
     {
       "id": 23,
@@ -303,7 +325,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "SNMP",
-      "page": "Network Protocols"
+      "page": "Network Protocols",
+      "explanation": "SNMP (Simple Network Management Protocol) network devices যেমন hubs, switches, routers monitor ও manage করার জন্য ব্যবহৃত হয়। এটি network administrators-কে device performance, errors এবং status সম্পর্কে তথ্য সংগ্রহ করতে সাহায্য করে।"
     },
     {
       "id": 24,
@@ -317,7 +340,8 @@
       "correct_answer": "c",
       "correct_answer_text": "172.16.255.255",
       "page": "Subnetting",
-      "note": "Class B default mask 255.255.0.0 → broadcast = 172.16.255.255"
+      "note": "Class B default mask 255.255.0.0 → broadcast = 172.16.255.255",
+      "explanation": "Class B-এর default subnet mask হলো 255.255.0.0, অর্থাৎ প্রথম 16 bits network অংশ এবং শেষ 16 bits host অংশ। তাই 172.16.x.x network-এর broadcast address হবে 172.16.255.255 (host bits সব 1 করে)।"
     },
     {
       "id": 25,
@@ -330,7 +354,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Subnet number and host number",
-      "page": "Subnetting"
+      "page": "Subnetting",
+      "explanation": "IP address-এর local portion বা local address হলো subnet number এবং host number-এর সমন্বয়। Network number বৈশ্বিকভাবে identify করে, আর subnet+host combination local network-এ specific device চিহ্নিত করে।"
     },
     {
       "id": 26,
@@ -343,7 +368,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Static subnetting",
-      "page": "Subnetting"
+      "page": "Subnetting",
+      "explanation": "Static subnetting-এ একটি network-কে সমান আকারের subnets-এ ভাগ করা হয়, সবগুলো একই subnet mask ব্যবহার করে। VLSM (Variable Length Subnet Masking)-এ ভিন্ন ভিন্ন subnet mask ব্যবহার করা যায়।"
     },
     {
       "id": 27,
@@ -356,7 +382,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Class B, Subnet 172.16.13.0, Broadcast 172.16.13.127",
-      "page": "Subnetting"
+      "page": "Subnetting",
+      "explanation": "172.x.x.x হলো Class B address। /25 mask মানে শেষ octet-এর শুধু 7 bits host। 172.16.13.5 AND 255.255.255.128 = 172.16.13.0 (subnet) এবং broadcast = 172.16.13.127 (host bits সব 1)।"
     },
     {
       "id": 28,
@@ -370,7 +397,8 @@
       "correct_answer": "d",
       "correct_answer_text": "30",
       "page": "Subnetting",
-      "note": "/27 mask → 5 host bits → 2^5-2 = 30 usable hosts"
+      "note": "/27 mask → 5 host bits → 2^5-2 = 30 usable hosts",
+      "explanation": "255.255.255.224 মানে /27 subnet mask, যেখানে শেষ 5 bits host অংশের জন্য বরাদ্দ। Usable host সংখ্যা হলো 2^5 - 2 = 32 - 2 = 30 (network address এবং broadcast address বাদ দিয়ে)।"
     },
     {
       "id": 29,
@@ -383,7 +411,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "172.16.112.0",
-      "page": "Subnetting"
+      "page": "Subnetting",
+      "explanation": "/25 mask মানে 255.255.255.128। 172.16.112.1 AND 255.255.255.128 = 172.16.112.0। 112 এর binary হলো 01110000, এবং 128 (10000000) দিয়ে AND করলে 01110000 = 112 পাওয়া যায়, তাই subnet address 172.16.112.0।"
     },
     {
       "id": 30,
@@ -397,7 +426,8 @@
       "correct_answer": "a",
       "correct_answer_text": "201.14.78.64",
       "page": "Subnetting",
-      "note": "65 AND 224 = 01000001 AND 11100000 = 01000000 = 64"
+      "note": "65 AND 224 = 01000001 AND 11100000 = 01000000 = 64",
+      "explanation": "Subnet address বের করতে IP address এবং subnet mask-এর bitwise AND করতে হয়। শেষ octet: 65 (01000001) AND 224 (11100000) = 64 (01000000)। তাই subnet address হলো 201.14.78.64।"
     },
     {
       "id": 31,
@@ -410,7 +440,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "the particular location of the computer",
-      "page": 444
+      "page": 444,
+      "explanation": "Subnet mask IP address-এর কোন অংশটি network এবং কোন অংশটি host তা নির্ধারণ করে, যা effectively computer-এর network-এ নির্দিষ্ট অবস্থান চিহ্নিত করে। এটি routing এবং network segmentation-এ গুরুত্বপূর্ণ ভূমিকা রাখে।"
     }
   ]
 }

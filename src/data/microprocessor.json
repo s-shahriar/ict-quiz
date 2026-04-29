@@ -12,7 +12,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Data Bus",
-      "page": 387
+      "page": 387,
+      "explanation": "Data Bus হলো microprocessor, memory এবং I/O devices-এর মধ্যে actual data transfer-এর জন্য physical connection। Address bus address পাঠায় এবং control bus signals পাঠায়, কিন্তু data transfer-এর জন্য Data Bus ব্যবহৃত হয়।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Data hazard",
-      "page": 387
+      "page": 387,
+      "explanation": "Data hazard তখন হয় যখন pipeline-এ একটি instruction-এর জন্য প্রয়োজনীয় operand data এখনো পূর্ববর্তী instruction দ্বারা তৈরি হয়নি। এই পরিস্থিতিতে processor-কে stall করতে হয় বা forwarding mechanism ব্যবহার করতে হয়।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "PC",
-      "page": "Registers"
+      "page": "Registers",
+      "explanation": "Program Counter (PC) সবার আগে initialize হয় কারণ এটি পরবর্তী execute হওয়া instruction-এর memory address ধারণ করে। PC ছাড়া CPU জানতে পারে না প্রথম instruction কোথায় আছে।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "D flip flop",
-      "page": "Registers"
+      "page": "Registers",
+      "explanation": "D flip flop (Data flip flop) registers-এ data সংরক্ষণ করতে ব্যবহৃত হয়। এটি clock edge-এ input D-এর value output Q-তে store করে এবং registers-এর জন্য প্রয়োজনীয় simple, predictable behavior প্রদান করে।"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Hazard",
-      "page": "Pipelining"
+      "page": "Pipelining",
+      "explanation": "Hazard হলো এমন যেকোনো পরিস্থিতি যা pipeline-এ processor-কে stall করে বা সঠিক execution বিঘ্নিত করে। তিন ধরনের hazard আছে: data hazard, structural hazard এবং control hazard।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Multiple bus",
-      "page": "Bus"
+      "page": "Bus",
+      "explanation": "Multiple bus structure সাধারণত I/O devices সংযুক্ত করতে ব্যবহৃত হয় কারণ এটি multiple devices-কে simultaneously communicate করতে দেয়। Single bus-এ bottleneck সমস্যা হয়, কিন্তু multiple bus parallel data transfer সম্ভব করে।"
     },
     {
       "id": 7,
@@ -90,7 +96,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Cache's",
-      "page": "Memory"
+      "page": "Memory",
+      "explanation": "Cache memory ব্যবহার করে memory access time কমানো হয়। Cache হলো CPU-এর কাছাকাছি অবস্থিত ছোট কিন্তু অত্যন্ত দ্রুত memory যেখানে frequently used data রাখা হয়, ফলে main memory-তে যাওয়ার প্রয়োজন কমে।"
     },
     {
       "id": 8,
@@ -103,7 +110,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Program counter",
-      "page": "Registers"
+      "page": "Registers",
+      "explanation": "CPU সবসময় Program Counter (PC)-এ stored address অনুযায়ী memory থেকে instruction fetch করে। প্রতিটি instruction fetch-এর পরে PC স্বয়ংক্রিয়ভাবে পরবর্তী instruction-এর address-এ update হয়।"
     },
     {
       "id": 9,
@@ -116,7 +124,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "n-bit ALU",
-      "page": 386
+      "page": 386,
+      "explanation": "n-bit microprocessor বলতে বোঝায় এর ALU (Arithmetic Logic Unit) n-bit data একসাথে process করতে পারে। ALU-এর bit width দিয়ে microprocessor-এর word size নির্ধারিত হয়, যা এর processing power নির্দেশ করে।"
     },
     {
       "id": 10,
@@ -129,7 +138,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "IR",
-      "page": 386
+      "page": 386,
+      "explanation": "Instruction Register (IR) memory থেকে fetch করা current instruction সংরক্ষণ করে। Decode unit এই IR থেকে instruction পড়ে decode করে এবং execute unit-এ পাঠায়। PC পরবর্তী instruction-এর address রাখে, IR current instruction রাখে।"
     },
     {
       "id": 11,
@@ -142,7 +152,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "real integer",
-      "page": 386
+      "page": 386,
+      "explanation": "Floating point representation real numbers (বাস্তব সংখ্যা) সংরক্ষণ করতে ব্যবহৃত হয় যেখানে দশমিক অংশ থাকে, যেমন 3.14 বা -0.001। এটি sign, exponent এবং mantissa অংশে ভাগ করে numbers represent করে।"
     },
     {
       "id": 12,
@@ -155,7 +166,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "immediate",
-      "page": "Addressing Modes"
+      "page": "Addressing Modes",
+      "explanation": "Immediate addressing mode-এ operand-এর actual value instruction-এর মধ্যেই থাকে। MOV AX, 0005H-এ 0005H হলো actual data value যা সরাসরি AX register-এ load হবে, কোনো memory reference নেই।"
     },
     {
       "id": 13,
@@ -168,7 +180,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "direct addressing mode",
-      "page": "Addressing Modes"
+      "page": "Addressing Modes",
+      "explanation": "Direct addressing mode-এ instruction-এ memory address সরাসরি দেওয়া থাকে। MOV AX, 1234H-এ 1234H হলো একটি memory address যেখান থেকে data fetch করে AX-এ রাখা হবে।"
     },
     {
       "id": 14,
@@ -181,7 +194,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "register addressing mode",
-      "page": "Addressing Modes"
+      "page": "Addressing Modes",
+      "explanation": "Register addressing mode-এ operand CPU register-এ থাকে এবং সেই register-এর নাম দিয়ে refer করা হয়। এটি সবচেয়ে দ্রুত addressing mode কারণ memory access-এর প্রয়োজন হয় না।"
     },
     {
       "id": 15,
@@ -194,7 +208,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "register indirect addressing mode",
-      "page": "Addressing Modes"
+      "page": "Addressing Modes",
+      "explanation": "Register indirect addressing mode-এ register-এ actual data নয়, বরং data-র memory address থাকে। MOV AX,[BX]-এ BX register-এ যে address আছে, সেই address-এর memory location থেকে data fetch করে AX-এ রাখা হয়।"
     },
     {
       "id": 16,
@@ -207,7 +222,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Immediate",
-      "page": "Addressing Modes"
+      "page": "Addressing Modes",
+      "explanation": "Immediate addressing mode-এ operand-এর মান instruction-এর অংশ হিসেবে সরাসরি দেওয়া থাকে, আলাদা করে memory access করতে হয় না। এটি constant values load করার জন্য ব্যবহৃত হয়, যেমন MOV AL, 5।"
     },
     {
       "id": 17,
@@ -220,7 +236,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "EA = 5+R1",
-      "page": "Addressing Modes"
+      "page": "Addressing Modes",
+      "explanation": "Indexed addressing mode-এ effective address (EA) হলো base register-এর মান এবং constant offset-এর যোগফল। MOV 5(R1),LOC-এ EA = 5 + R1, অর্থাৎ R1 register-এর মানের সাথে 5 যোগ করে effective address পাওয়া যায়।"
     }
   ]
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronLeft, Home, Eye, EyeOff, CheckCircle } from 'lucide-react'
+import { ChevronLeft, Home, Eye, EyeOff, CheckCircle, Lightbulb } from 'lucide-react'
 
 export default function StudyMode({ topic, onBack, onHome }) {
   const questions = topic.questions.filter(q => q.options && q.correct_answer)
@@ -39,7 +39,7 @@ function StudyCard({ question: q, index, color }) {
           style={{ color: shown ? color : 'var(--text-2)' }}
         >
           {shown ? <Eye size={12} /> : <EyeOff size={12} />}
-          {shown ? 'Hide' : 'Answer'}
+          {shown ? 'লুকাও' : 'উত্তর দেখো'}
         </button>
       </div>
 
@@ -61,6 +61,16 @@ function StudyCard({ question: q, index, color }) {
           )
         })}
       </div>
+
+      {shown && q.explanation && (
+        <div className="explanation-box anim-slide" style={{ '--c': color }}>
+          <div className="explanation-header">
+            <Lightbulb size={14} style={{ color, flexShrink: 0 }} />
+            <span className="explanation-label" style={{ color }}>ব্যাখ্যা</span>
+          </div>
+          <p className="explanation-text">{q.explanation}</p>
+        </div>
+      )}
     </div>
   )
 }

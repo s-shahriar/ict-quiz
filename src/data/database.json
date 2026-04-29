@@ -12,7 +12,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "No proper subset is a super key",
-      "page": "Keys"
+      "page": "Keys",
+      "explanation": "Candidate key হলো super key-এর এমন একটি minimal subset যার কোনো proper subset আর super key নয়। অর্থাৎ, যদি কোনো subset থেকে একটি attribute সরিয়ে দিলে uniqueness নষ্ট হয়, তাহলে সেটি candidate key।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "rename, select and union",
-      "page": "Relational Algebra"
+      "page": "Relational Algebra",
+      "explanation": "Relational algebra-তে rename, select এবং union তিনটিই মৌলিক operations। Rename একটি relation বা attribute-এর নাম পরিবর্তন করে, select নির্দিষ্ট শর্তে tuple বেছে নেয়, এবং union দুটি relation-এর সকল tuple একত্রিত করে।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Super key",
-      "page": "Keys"
+      "page": "Keys",
+      "explanation": "Super key হলো এক বা একাধিক attributes-এর এমন একটি সেট যা একটি relation-এর প্রতিটি tuple-কে uniquely identify করতে পারে। এটি candidate key-এর superset হতে পারে।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "ALTER TABLE",
-      "page": "SQL"
+      "page": "SQL",
+      "explanation": "ALTER TABLE কমান্ড ব্যবহার করে বিদ্যমান table-এ নতুন column যোগ করা বা integrity constraint প্রয়োগ করা যায়। উদাহরণ: ALTER TABLE student ADD COLUMN age INT;"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "3NF",
-      "page": "Normalization"
+      "page": "Normalization",
+      "explanation": "Third Normal Form (3NF) transitive dependency দূর করে। Transitive dependency মানে যখন একটি non-key attribute অন্য একটি non-key attribute-এর উপর নির্ভরশীল থাকে, যা 3NF-এ অনুমোদিত নয়।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "ALTER TABLE",
-      "page": "SQL"
+      "page": "SQL",
+      "explanation": "ALTER TABLE কমান্ড দিয়ে একটি table-এর constraint enable, disable বা drop করা যায়। SQL-এ integrity constraint পরিচালনার জন্য এটিই মানক কমান্ড।"
     },
     {
       "id": 7,
@@ -91,7 +97,8 @@
       "correct_answer": "a",
       "correct_answer_text": "3, 20",
       "page": "SQL",
-      "note": "varchar stores only actual chars (3 for 'Avi'), char pads to full width (20 for 'Reed' in char(20))"
+      "note": "varchar stores only actual chars (3 for 'Avi'), char pads to full width (20 for 'Reed' in char(20))",
+      "explanation": "VARCHAR শুধুমাত্র actual characters সংরক্ষণ করে, তাই 'Avi' তিনটি space নেয়। কিন্তু CHAR একটি fixed length data type, তাই char(20)-এ 'Reed' সংরক্ষণ করলে বাকি জায়গা padding দিয়ে পূরণ হয় এবং মোট 20টি space ব্যবহার হয়।"
     },
     {
       "id": 8,
@@ -104,7 +111,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "key dependencies",
-      "page": "Functional Dependency"
+      "page": "Functional Dependency",
+      "explanation": "Functional dependency হলো key dependency-এর একটি সাধারণীকরণ। Key dependency-তে একটি key সম্পূর্ণ tuple-কে uniquely determine করে, আর functional dependency-তে যেকোনো attribute অন্য attribute-কে determine করতে পারে।"
     },
     {
       "id": 9,
@@ -117,7 +125,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Partially commit",
-      "page": "Transaction"
+      "page": "Transaction",
+      "explanation": "যখন একটি transaction তার সকল operation সম্পন্ন করে কিন্তু এখনো commit বা rollback হয়নি, তখন তাকে 'Partially committed' অবস্থায় বলা হয়। এই অবস্থায় transaction সফলভাবে শেষ হয়েছে কিন্তু পরিবর্তনগুলো এখনো স্থায়ী হয়নি।"
     },
     {
       "id": 10,
@@ -130,7 +139,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Primary",
-      "page": "Keys"
+      "page": "Keys",
+      "explanation": "Foreign key হলো এমন একটি attribute যা অন্য একটি table-এর primary key-কে reference করে। এটি দুটি table-এর মধ্যে referential integrity বজায় রাখে এবং সম্পর্ক স্থাপন করে।"
     },
     {
       "id": 11,
@@ -143,7 +153,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Outer join",
-      "page": "SQL"
+      "page": "SQL",
+      "explanation": "Outer join ব্যবহার করলে matching record না থাকলেও সেই row-গুলো result-এ অন্তর্ভুক্ত হয় এবং missing মানের জায়গায় NULL দেখায়। Inner join শুধুমাত্র matching records দেখায়।"
     },
     {
       "id": 12,
@@ -157,7 +168,8 @@
       "correct_answer": "a",
       "correct_answer_text": "0",
       "page": "SQL",
-      "note": "No salary can be greater than ALL salaries (i.e. greater than the maximum), so result is 0"
+      "note": "No salary can be greater than ALL salaries (i.e. greater than the maximum), so result is 0",
+      "explanation": "SALARY > ALL মানে হলো SALARY সকল SALARY মানের চেয়ে বড় হতে হবে, অর্থাৎ maximum SALARY-এর চেয়েও বড়। কিন্তু maximum SALARY নিজেই সর্বোচ্চ, তাই কোনো record এই শর্ত পূরণ করতে পারবে না এবং result হবে 0।"
     },
     {
       "id": 13,
@@ -170,7 +182,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Having, where",
-      "page": "SQL"
+      "page": "SQL",
+      "explanation": "SQL-এ aggregate functions (SUM, COUNT, AVG ইত্যাদি) SELECT এবং HAVING clause-এ ব্যবহার করা যায়। WHERE clause-এ aggregate function ব্যবহার করা যায় না কারণ WHERE individual rows-এ কাজ করে, grouped data-তে নয়।"
     },
     {
       "id": 14,
@@ -205,7 +218,8 @@
       "correct_answer": "c",
       "correct_answer_text": "Union",
       "page": "Relational Algebra",
-      "note": "Union is a binary operation (needs two relations). Select, Project, Rename are unary."
+      "note": "Union is a binary operation (needs two relations). Select, Project, Rename are unary.",
+      "explanation": "Unary operation একটি মাত্র relation-এ প্রয়োগ করা হয়, যেমন Select, Project, Rename। কিন্তু Union একটি binary operation কারণ এটি দুটি relation নিয়ে কাজ করে এবং তাদের সব tuple একত্রিত করে।"
     },
     {
       "id": 18,
@@ -218,7 +232,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Small-group situation",
-      "page": "Database Basics"
+      "page": "Database Basics",
+      "explanation": "File-based database সিস্টেম small-group situation-এর জন্য সবচেয়ে উপযুক্ত কারণ এটি সহজ এবং কম জটিল। বড় বা জটিল ব্যবহারের ক্ষেত্রে পূর্ণাঙ্গ DBMS বেশি কার্যকর।"
     },
     {
       "id": 19,
@@ -231,7 +246,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Unique",
-      "page": "Keys"
+      "page": "Keys",
+      "explanation": "Primary key অবশ্যই unique হতে হবে কারণ এটি প্রতিটি record-কে আলাদাভাবে সনাক্ত করে। Primary key-তে duplicate বা NULL মান থাকতে পারে না।"
     },
     {
       "id": 20,
@@ -244,7 +260,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "DML",
-      "page": "Database Basics"
+      "page": "Database Basics",
+      "explanation": "DML (Data Manipulation Language) হলো সেই ভাষা যা application program থেকে DBMS-কে data insert, update, delete বা retrieve করতে ব্যবহার করা হয়। SELECT, INSERT, UPDATE, DELETE হলো DML statements।"
     },
     {
       "id": 21,
@@ -257,7 +274,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "TOTAL",
-      "page": "Database Basics"
+      "page": "Database Basics",
+      "explanation": "TOTAL হলো একটি পুরনো network-based DBMS সফটওয়্যার প্যাকেজ যা application programs-এর সাথে মিলে একটি complete database management system তৈরি করে।"
     },
     {
       "id": 22,
@@ -270,7 +288,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "All of the mentioned",
-      "page": "SQL"
+      "page": "SQL",
+      "explanation": "SQL trigger গুলো INSERT, UPDATE, DELETE এবং Views-এ সব ধরনের DML operations-এ সমর্থিত। Trigger স্বয়ংক্রিয়ভাবে execute হয় যখন নির্দিষ্ট database event ঘটে।"
     },
     {
       "id": 23,
@@ -283,7 +302,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "ALTER PROCEDURE",
-      "page": "SQL"
+      "page": "SQL",
+      "explanation": "ALTER PROCEDURE কমান্ড ব্যবহার করে একটি stored procedure পুনরায় compile করা যায়। এটি procedure-এর definition পরিবর্তন করে এবং database-এ নতুনভাবে compile করে সংরক্ষণ করে।"
     },
     {
       "id": 24,
@@ -296,7 +316,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Group of Transact-SQL statements compiled into a single execution plan",
-      "page": "SQL"
+      "page": "SQL",
+      "explanation": "Stored procedure হলো Transact-SQL statements-এর একটি গ্রুপ যা একসাথে compile করে একটি single execution plan হিসেবে database-এ সংরক্ষণ করা হয়। এটি বারবার execute করা যায় এবং performance উন্নত করে।"
     },
     {
       "id": 25,
@@ -309,7 +330,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Fields",
-      "page": "Database Basics"
+      "page": "Database Basics",
+      "explanation": "Database-এ প্রতিটি record একাধিক fields নিয়ে গঠিত। Field হলো data-র সবচেয়ে ছোট একক, যেমন নাম, বয়স, ঠিকানা। একটি record হলো সংশ্লিষ্ট fields-এর সমন্বয়।"
     },
     {
       "id": 26,
@@ -321,7 +343,8 @@
         "d": "4NF"
       },
       "correct_answer": "b",
-      "correct_answer_text": "2NF"
+      "correct_answer_text": "2NF",
+      "explanation": "Second Normal Form (2NF) partial functional dependency দূর করে। Partial dependency তখন হয় যখন একটি non-key attribute composite primary key-এর শুধুমাত্র একটি অংশের উপর নির্ভরশীল থাকে, সম্পূর্ণ key-এর উপর নয়।"
     },
     {
       "id": 27,
@@ -333,7 +356,8 @@
         "d": "Physical View"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Conceptual view"
+      "correct_answer_text": "Conceptual view",
+      "explanation": "Conceptual view বা logical view হলো সম্পূর্ণ database-এর একটি abstract দৃষ্টিভঙ্গি যা সকল data এবং তাদের সম্পর্ক দেখায়। এটি physical storage বা individual user views-এর বিস্তারিত লুকিয়ে রাখে।"
     },
     {
       "id": 28,
@@ -345,7 +369,8 @@
         "d": "A number of tables"
       },
       "correct_answer": "a",
-      "correct_answer_text": "A number of tuples"
+      "correct_answer_text": "A number of tuples",
+      "explanation": "Relational model-এ cardinality বলতে একটি relation-এ মোট tuples (rows)-এর সংখ্যা বোঝায়। অন্যদিকে, attributes-এর সংখ্যাকে degree বলা হয়।"
     },
     {
       "id": 29,
@@ -357,7 +382,8 @@
         "d": "High-level language"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Non-Procedural language"
+      "correct_answer_text": "Non-Procedural language",
+      "explanation": "Relational calculus একটি non-procedural (declarative) language কারণ এটি specify করে কী data চাই, কিন্তু কীভাবে পাওয়া যাবে তা বলে না। Relational algebra procedural, কিন্তু calculus declarative।"
     },
     {
       "id": 30,
@@ -369,7 +395,8 @@
         "d": "not defined"
       },
       "correct_answer": "b",
-      "correct_answer_text": "a Binary operator"
+      "correct_answer_text": "a Binary operator",
+      "explanation": "Cartesian product একটি binary operator কারণ এটি দুটি relation নিয়ে কাজ করে এবং উভয় relation-এর সকল possible tuple combinations তৈরি করে। যদি R-এ m টি এবং S-এ n টি tuple থাকে, তাহলে R×S-এ m×n টি tuple হবে।"
     },
     {
       "id": 31,
@@ -381,7 +408,8 @@
         "d": "Open Database Connectivity"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Open Database Connectivity"
+      "correct_answer_text": "Open Database Connectivity",
+      "explanation": "ODBC মানে Open Database Connectivity। এটি একটি standard API যা application programs-কে বিভিন্ন DBMS-এর সাথে সংযোগ করতে দেয়, যেমন MySQL, Oracle, SQL Server ইত্যাদি।"
     },
     {
       "id": 32,
@@ -393,7 +421,8 @@
         "d": "both (A) and (C)"
       },
       "correct_answer": "a",
-      "correct_answer_text": "describes the entire database"
+      "correct_answer_text": "describes the entire database",
+      "explanation": "Logical schema হলো সম্পূর্ণ database-এর একটি abstract বর্ণনা যেখানে tables, columns, relationships এবং constraints সংজ্ঞায়িত থাকে। এটি physical storage-এর বিস্তারিত থেকে স্বাধীন।"
     },
     {
       "id": 33,
@@ -405,7 +434,8 @@
         "d": "All of the above"
       },
       "correct_answer": "d",
-      "correct_answer_text": "All of the above"
+      "correct_answer_text": "All of the above",
+      "explanation": "Database-এর সবগুলো বৈশিষ্ট্যই সঠিক: এটি logically related records-এর সংগ্রহ, পৃথক files একত্রিত করে, এবং application programs থেকে data স্বাধীন থাকে। এই তিনটি একসাথে database-এর core properties।"
     },
     {
       "id": 34,
@@ -417,7 +447,8 @@
         "d": "Query language"
       },
       "correct_answer": "b",
-      "correct_answer_text": "DML"
+      "correct_answer_text": "DML",
+      "explanation": "DML (Data Manipulation Language) statements যেমন SELECT, INSERT, UPDATE, DELETE সরাসরি application programs-এ embed করা যায়। এটি host language-এর সাথে মিলিয়ে database-এ data manipulate করতে ব্যবহৃত হয়।"
     },
     {
       "id": 35,
@@ -429,7 +460,8 @@
         "d": "columns"
       },
       "correct_answer": "a",
-      "correct_answer_text": "values"
+      "correct_answer_text": "values",
+      "explanation": "SQL-এর COUNT() function একটি column বা expression-এর মোট values-এর সংখ্যা return করে (NULL বাদে)। Distinct values গণনা করতে COUNT(DISTINCT column) ব্যবহার করতে হয়।"
     },
     {
       "id": 36,
@@ -441,7 +473,8 @@
         "d": "A data dictionary is a tool used exclusively by the database administrator"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Data elements in the database can be modified by changing the data dictionary"
+      "correct_answer_text": "Data elements in the database can be modified by changing the data dictionary",
+      "explanation": "Data dictionary শুধুমাত্র metadata সংরক্ষণ করে, actual data নয়। তাই data dictionary পরিবর্তন করলে database-এর actual data elements পরিবর্তন হয় না। Data dictionary হলো একটি meta-level repository।"
     },
     {
       "id": 37,
@@ -453,7 +486,8 @@
         "d": "None of these"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Doubly outlined rectangle"
+      "correct_answer_text": "Doubly outlined rectangle",
+      "explanation": "E-R diagram-এ weak entity set বোঝাতে doubly outlined rectangle (দ্বিগুণ বর্ডারের আয়তক্ষেত্র) ব্যবহার করা হয়। Weak entity-র নিজস্ব primary key নেই এবং এটি অন্য entity-র উপর নির্ভরশীল।"
     },
     {
       "id": 38,
@@ -465,7 +499,8 @@
         "d": "None of these"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Network Model"
+      "correct_answer_text": "Network Model",
+      "explanation": "Network Database Model-এ SET concept ব্যবহার করা হয়, যেখানে একটি owner record type এবং এক বা একাধিক member record types-এর মধ্যে সম্পর্ক define করা হয়। এটি CODASYL মডেল নামেও পরিচিত।"
     },
     {
       "id": 39,
@@ -477,7 +512,8 @@
         "d": "None of the above"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Procedural Query Language"
+      "correct_answer_text": "Procedural Query Language",
+      "explanation": "Relational Algebra একটি procedural query language কারণ এটি step-by-step specify করে কীভাবে data retrieve করতে হবে। এটি operators যেমন select, project, join ব্যবহার করে query তৈরি করে।"
     },
     {
       "id": 40,
@@ -489,7 +525,8 @@
         "d": "None of these"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Foreign Key"
+      "correct_answer_text": "Foreign Key",
+      "explanation": "Foreign key দুটি table-এর মধ্যে সম্পর্ক তৈরি করে। এটি একটি table-এ অন্য table-এর primary key-কে reference হিসেবে ব্যবহার করে এবং referential integrity নিশ্চিত করে।"
     },
     {
       "id": 41,
@@ -501,7 +538,8 @@
         "d": "All of the above"
       },
       "correct_answer": "d",
-      "correct_answer_text": "All of the above"
+      "correct_answer_text": "All of the above",
+      "explanation": "CHARACTER, NUMERIC এবং FLOAT তিনটিই SQL-এর valid data types। CHARACTER text data, NUMERIC সংখ্যাসূচক data, এবং FLOAT floating-point সংখ্যা সংরক্ষণের জন্য ব্যবহৃত হয়।"
     },
     {
       "id": 42,
@@ -513,7 +551,8 @@
         "d": "None of the above"
       },
       "correct_answer": "b",
-      "correct_answer_text": "SELECT NAME FROM EMPLOYEE;"
+      "correct_answer_text": "SELECT NAME FROM EMPLOYEE;",
+      "explanation": "SELECT NAME FROM EMPLOYEE; একটি valid SQL expression কারণ এটি সঠিক syntax অনুসরণ করে। NULL-এর সাথে তুলনা করতে = NULL ব্যবহার করা যায় না; IS NULL ব্যবহার করতে হয়।"
     },
     {
       "id": 43,
@@ -525,7 +564,8 @@
         "d": "All of the above"
       },
       "correct_answer": "d",
-      "correct_answer_text": "All of the above"
+      "correct_answer_text": "All of the above",
+      "explanation": "SQL-এ =, LIKE এবং BETWEEN তিনটিই comparison operators। = সরাসরি সমতা যাচাই করে, LIKE pattern matching করে, এবং BETWEEN একটি range-এর মধ্যে মান আছে কিনা তা যাচাই করে।"
     },
     {
       "id": 44,
@@ -537,7 +577,8 @@
         "d": "domain"
       },
       "correct_answer": "d",
-      "correct_answer_text": "domain"
+      "correct_answer_text": "domain",
+      "explanation": "Domain হলো একটি attribute-এর জন্য সকল সম্ভাব্য মানের সেট। যেমন, বয়সের domain হতে পারে 0 থেকে 150 পর্যন্ত positive integers, এবং লিঙ্গের domain হতে পারে {'Male', 'Female', 'Other'}।"
     },
     {
       "id": 45,
@@ -549,7 +590,8 @@
         "d": "All of the above"
       },
       "correct_answer": "d",
-      "correct_answer_text": "All of the above"
+      "correct_answer_text": "All of the above",
+      "explanation": "Data dictionary হলো একটি metadata repository যেখানে database-এর সকল fields-এর নাম, width এবং data type সহ সম্পূর্ণ তথ্য সংরক্ষিত থাকে। এটি database-এর structure বোঝার জন্য reference হিসেবে ব্যবহৃত হয়।"
     },
     {
       "id": 46,
@@ -561,7 +603,8 @@
         "d": "Both (A) and (C)"
       },
       "correct_answer": "b",
-      "correct_answer_text": "A is not a candidate key"
+      "correct_answer_text": "A is not a candidate key",
+      "explanation": "Candidate key-তে NULL মান থাকতে পারে না। যদিও A-এর মানগুলো distinct, কিন্তু NULL মান থাকায় A কে candidate key হিসেবে গণ্য করা যাবে না। NULL মানে 'অজানা', যা uniqueness নিশ্চিত করতে পারে না।"
     },
     {
       "id": 47,
@@ -573,7 +616,8 @@
         "d": "Combination of projection and Cartesian product"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Combination of selection and Cartesian product"
+      "correct_answer_text": "Combination of selection and Cartesian product",
+      "explanation": "Natural join আসলে Cartesian product-এর পর selection operation-এর সমতুল্য। প্রথমে দুটি relation-এর Cartesian product নেওয়া হয়, তারপর common attributes-এ সমান মান সহ tuples select করা হয়।"
     },
     {
       "id": 48,
@@ -585,7 +629,8 @@
         "d": "Select * from R inner join S"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Select * from R cross join S"
+      "correct_answer_text": "Select * from R cross join S",
+      "explanation": "SQL-এ FROM R, S লেখা হলে এটি R এবং S-এর Cartesian product বা cross join তৈরি করে, যেখানে R-এর প্রতিটি row S-এর প্রতিটি row-এর সাথে combine হয়। এটি SELECT * FROM R CROSS JOIN S-এর সমতুল্য।"
     },
     {
       "id": 49,
@@ -597,7 +642,8 @@
         "d": "Flashback"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Transaction"
+      "correct_answer_text": "Transaction",
+      "explanation": "Transaction হলো database operations-এর একটি logical unit যা একটি sequence of queries এবং/অথবা updates নিয়ে গঠিত। ACID properties (Atomicity, Consistency, Isolation, Durability) transaction-এর নির্ভরযোগ্যতা নিশ্চিত করে।"
     },
     {
       "id": 50,
@@ -609,7 +655,8 @@
         "d": "Flashback"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Commit"
+      "correct_answer_text": "Commit",
+      "explanation": "COMMIT statement একটি transaction-এর সকল পরিবর্তন স্থায়ীভাবে database-এ সংরক্ষণ করে। COMMIT-এর পরে পরিবর্তনগুলো আর undo করা যায় না এবং অন্য users তা দেখতে পারে।"
     },
     {
       "id": 51,
@@ -621,7 +668,8 @@
         "d": "Flashback"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Rollback"
+      "correct_answer_text": "Rollback",
+      "explanation": "যদি commit-এর আগে transaction-এর সময় system shutdown হয়, তাহলে DBMS স্বয়ংক্রিয়ভাবে ROLLBACK করে। এটি transaction-এর সকল partial changes বাতিল করে database-কে আগের consistent state-এ ফিরিয়ে নেয়।"
     },
     {
       "id": 52,
@@ -633,7 +681,8 @@
         "d": "Decomposition"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Normalization"
+      "correct_answer_text": "Normalization",
+      "explanation": "Normalization একটি bottom-up approach যেখানে attributes-এর মধ্যে functional dependency পরীক্ষা করে database design করা হয়। এটি redundancy কমায় এবং data integrity নিশ্চিত করে।"
     },
     {
       "id": 53,
@@ -645,7 +694,8 @@
         "d": "Fourth"
       },
       "correct_answer": "a",
-      "correct_answer_text": "First"
+      "correct_answer_text": "First",
+      "explanation": "First Normal Form (1NF) নিশ্চিত করে যে প্রতিটি column atomically অর্থাৎ অবিভাজ্য মান ধারণ করে। তাই composite বা multi-valued attributes-কে পৃথক individual attributes-এ রূপান্তরিত করতে হয়।"
     },
     {
       "id": 54,
@@ -657,7 +707,8 @@
         "d": "Have a composite key"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Have a composite key"
+      "correct_answer_text": "Have a composite key",
+      "explanation": "Many-to-many relationship-এ junction table সাধারণত দুটি related table-এর foreign keys নিয়ে গঠিত composite key রাখে। উদাহরণ: Student-Course junction table-এ (student_id, course_id) composite primary key হিসেবে কাজ করে।"
     },
     {
       "id": 55,
@@ -669,7 +720,8 @@
         "d": "None of the mentioned"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Key"
+      "correct_answer_text": "Key",
+      "explanation": "Functional dependency key-এর উপর ভিত্তি করে তৈরি constraints। যখন একটি attribute বা attribute set অন্য attribute-কে uniquely determine করে, সেই ধারণাটি key dependency থেকেই উদ্ভূত হয়।"
     },
     {
       "id": 56,
@@ -681,7 +733,8 @@
         "d": "Diamond, rectangle"
       },
       "correct_answer": "d",
-      "correct_answer_text": "Diamond, rectangle"
+      "correct_answer_text": "Diamond, rectangle",
+      "explanation": "E-R diagram-এ role label করা হয় diamond (relationship set) এবং rectangle (entity set)-এর মধ্যে সংযোগকারী line-এ। এটি বিশেষত recursive relationship-এ গুরুত্বপূর্ণ যেখানে একটি entity দুটি ভিন্ন ভূমিকায় থাকে।"
     },
     {
       "id": 57,
@@ -693,7 +746,8 @@
         "d": "Oracle"
       },
       "correct_answer": "a",
-      "correct_answer_text": "MySQL"
+      "correct_answer_text": "MySQL",
+      "explanation": "MySQL একটি open source relational DBMS যা বিনামূল্যে ব্যবহার করা যায় এবং এর source code publicly available। Microsoft SQL Server, Access এবং Oracle হলো proprietary (closed-source) DBMS।"
     }
   ]
 }

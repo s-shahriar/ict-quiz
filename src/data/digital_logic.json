@@ -12,7 +12,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "226",
-      "page": "Number System"
+      "page": "Number System",
+      "explanation": "বাইনারি সংখ্যা 11100010 কে দশমিকে রূপান্তর করতে প্রতিটি বিটের স্থানীয় মান গণনা করতে হয়: 128+64+32+0+0+0+2+0 = 226। তাই এই বাইনারি সংখ্যার দশমিক মান 226।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "-1",
-      "page": "Number System"
+      "page": "Number System",
+      "explanation": "2's complement পদ্ধতিতে 8-বিট সিস্টেমে সর্বোচ্চ বিট (MSB) হলো সাইন বিট; যদি MSB=1 হয় তাহলে সংখ্যাটি ঋণাত্মক। 11111111 এর 2's complement হলো -1, কারণ এটি -1 এর বাইনারি উপস্থাপন।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "-86",
-      "page": 122
+      "page": 122,
+      "explanation": "10101010 এর MSB=1, তাই এটি ঋণাত্মক সংখ্যা। 2's complement বিধি অনুযায়ী: বিটগুলো উল্টে (01010101) তারপর 1 যোগ করলে (01010110) = 86, তাই মূল মান হলো -86।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "NAND",
-      "page": 122
+      "page": 122,
+      "explanation": "NAND গেটে যদি একটি ইনপুট LOW (0) হয়, তাহলে আউটপুট সর্বদা HIGH (1) হয়, কারণ NAND গেট AND-এর বিপরীত। এই বৈশিষ্ট্যটি NAND গেটকে অন্য গেট থেকে আলাদা করে।"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "logic analyzer",
-      "page": 122
+      "page": 122,
+      "explanation": "Logic analyzer হলো একটি পরীক্ষামূলক যন্ত্র যা একাধিক ডিজিটাল সিগন্যালকে একসাথে ডিসপ্লে করে এবং প্রত্যাশিত টাইমিং ডায়াগ্রামের সাথে তুলনা করতে সাহায্য করে। এটি ডিজিটাল সার্কিট ডিবাগিংয়ের জন্য অপরিহার্য।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "ASCII",
-      "page": 122
+      "page": 122,
+      "explanation": "ASCII (American Standard Code for Information Interchange) হলো একটি ক্যারেক্টার এনকোডিং স্ট্যান্ডার্ড যা শুধুমাত্র টেক্সট উপস্থাপনের জন্য ব্যবহৃত হয়, ডিজিটাল লজিক সার্কিটের জন্য নয়। GRAY এবং Hamming কোড ডিজিটাল লজিক ও ত্রুটি সংশোধনে ব্যবহৃত হয়।"
     },
     {
       "id": 7,
@@ -90,7 +96,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Bistable multivibrator",
-      "page": 123
+      "page": 123,
+      "explanation": "Flip-flop কে Bistable multivibrator বলা হয় কারণ এটির দুটি স্থিতিশীল অবস্থা (0 এবং 1) রয়েছে এবং এটি যেকোনো একটি অবস্থায় অনির্দিষ্টকালের জন্য থাকতে পারে যতক্ষণ না ট্রিগার করা হয়।"
     },
     {
       "id": 8,
@@ -103,7 +110,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "1100",
-      "page": 123
+      "page": 123,
+      "explanation": "দশমিক 8 এর বাইনারি হলো 1000। Gray code পেতে MSB অপরিবর্তিত রাখতে হয় এবং পরবর্তী প্রতিটি বিট পাওয়া যায় সংলগ্ন দুটি বাইনারি বিটের XOR করে: 1, 1⊕0=1, 0⊕0=0, 0⊕0=0 → 1100।"
     },
     {
       "id": 9,
@@ -116,7 +124,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "2ⁿ-1",
-      "page": 123
+      "page": 123,
+      "explanation": "2-to-1 MUX দিয়ে 2ⁿ-to-1 MUX তৈরি করতে ট্রি কাঠামোতে সংযুক্ত করতে হয়। প্রতিটি স্তরে অর্ধেক MUX লাগে এবং মোট স্তর n হলে প্রয়োজনীয় MUX সংখ্যা হয় 2ⁿ-1।"
     },
     {
       "id": 10,
@@ -129,7 +138,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "2ⁿ cells",
-      "page": 123
+      "page": 123,
+      "explanation": "Karnaugh map (K-map) এ n ভেরিয়েবল থাকলে মোট 2ⁿ টি সেল থাকে, কারণ n বিট দিয়ে 2ⁿ টি সম্ভাব্য ইনপুট কম্বিনেশন তৈরি হয়। যেমন 3-variable K-map এ 8টি এবং 4-variable K-map এ 16টি সেল থাকে।"
     },
     {
       "id": 11,
@@ -142,7 +152,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "odd function",
-      "page": 123
+      "page": 123,
+      "explanation": "XOR গেটকে odd function বলা হয় কারণ এর আউটপুট 1 হয় শুধুমাত্র যখন ইনপুটে বিজোড় সংখ্যক 1 থাকে। অর্থাৎ 1, 3, 5... টি 1 থাকলে আউটপুট 1 হয়।"
     },
     {
       "id": 12,
@@ -155,7 +166,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Encoder",
-      "page": 123
+      "page": 123,
+      "explanation": "Encoder হলো এমন একটি ডিভাইস যা দশমিক বা অন্য ফরম্যাটের সংখ্যাকে বাইনারি কোডে রূপান্তর করে। এটি ডিকোডারের বিপরীত কাজ করে যা বাইনারি থেকে অন্য ফরম্যাটে রূপান্তর করে।"
     },
     {
       "id": 13,
@@ -168,7 +180,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Symmetric",
-      "page": 123
+      "page": 123,
+      "explanation": "Full adder এর carry আউটপুট একটি symmetric function কারণ ইনপুটগুলোর যেকোনো ক্রমবিন্যাস করলেও আউটপুট একই থাকে। যেমন, A=1,B=0,C=1 এবং A=0,B=1,C=1 উভয়েই carry=1 দেয়।"
     },
     {
       "id": 14,
@@ -180,7 +193,8 @@
         "d": "NAND"
       },
       "correct_answer": "c",
-      "correct_answer_text": "OR"
+      "correct_answer_text": "OR",
+      "explanation": "OR গেটের আউটপুট 1 হয় যখন অন্তত একটি ইনপুট 1 হয়। শুধুমাত্র সব ইনপুট 0 হলেই OR গেটের আউটপুট 0 হয়।"
     },
     {
       "id": 15,
@@ -192,7 +206,8 @@
         "d": "Charging time"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Propagation time"
+      "correct_answer_text": "Propagation time",
+      "explanation": "Propagation time হলো একটি গেট বা ইনভার্টারের ইনপুট পরিবর্তন হওয়ার পর আউটপুট পরিবর্তন হতে যে সময় লাগে। এটি ডিজিটাল সার্কিটের গতি নির্ধারণে একটি গুরুত্বপূর্ণ প্যারামিটার।"
     },
     {
       "id": 16,
@@ -204,7 +219,8 @@
         "d": "Operating speed"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Rise time"
+      "correct_answer_text": "Rise time",
+      "explanation": "Rise time হলো একটি পালস সিগন্যালের মান তার সর্বোচ্চ মানের 10% থেকে 90% এ পৌঁছাতে যে সময় লাগে। এটি সিগন্যালের উত্থান গতি পরিমাপ করে।"
     },
     {
       "id": 17,
@@ -216,7 +232,8 @@
         "d": "Four"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Three"
+      "correct_answer_text": "Three",
+      "explanation": "OR গেট NAND গেট দিয়ে তৈরি করতে হলে De Morgan's theorem ব্যবহার করে: A+B = (A'+B')' = ((A'·B')') হলেও সঠিকভাবে করতে দুটো ইনপুট NAND করে ইনভার্ট করতে মোট তিনটি NAND গেট প্রয়োজন।"
     },
     {
       "id": 18,
@@ -228,7 +245,8 @@
         "d": "4 half-adders, 12 full-adders"
       },
       "correct_answer": "b",
-      "correct_answer_text": "1 half-adder, 15 full-adders"
+      "correct_answer_text": "1 half-adder, 15 full-adders",
+      "explanation": "16-বিট যোগফলের জন্য সবচেয়ে কম বিট (LSB) যোগ করতে 1টি half adder লাগে কারণ সেখানে কোনো carry ইনপুট নেই। বাকি 15টি বিটের জন্য carry ইনপুট থাকায় 15টি full adder প্রয়োজন।"
     },
     {
       "id": 19,
@@ -240,7 +258,8 @@
         "d": "Select data from several inputs and route it to single output"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Both (a) & (b)"
+      "correct_answer_text": "Both (a) & (b)",
+      "explanation": "Demultiplexer (DEMUX) একটি একক ইনপুট থেকে ডেটা একাধিক আউটপুটের একটিতে পাঠায় এবং এটি serial থেকে parallel রূপান্তরেও ব্যবহৃত হয়। তাই উভয় কাজই DEMUX করতে পারে।"
     },
     {
       "id": 20,
@@ -252,7 +271,8 @@
         "d": "None of these"
       },
       "correct_answer": "a",
-      "correct_answer_text": "combinational logic circuits"
+      "correct_answer_text": "combinational logic circuits",
+      "explanation": "Parallel adder হলো একটি combinational logic circuit কারণ এর আউটপুট শুধুমাত্র বর্তমান ইনপুটের উপর নির্ভর করে, কোনো মেমরি বা আগের অবস্থার উপর নয়।"
     },
     {
       "id": 21,
@@ -264,7 +284,8 @@
         "d": "OR-AND"
       },
       "correct_answer": "c",
-      "correct_answer_text": "AND-OR"
+      "correct_answer_text": "AND-OR",
+      "explanation": "ডিজিটাল মাল্টিপ্লেক্সার AND-OR অপারেশন সম্পাদন করে: প্রতিটি ইনপুট ডেটা লাইন সিলেক্ট লাইনের সাথে AND হয়, এবং সব AND গেটের আউটপুট একটি OR গেটে যুক্ত হয়ে চূড়ান্ত আউটপুট দেয়।"
     },
     {
       "id": 22,
@@ -276,7 +297,8 @@
         "d": "High if only one of its inputs is low"
       },
       "correct_answer": "c",
-      "correct_answer_text": "High if all of its inputs are low"
+      "correct_answer_text": "High if all of its inputs are low",
+      "explanation": "NOR গেট হলো OR গেটের বিপরীত। OR গেটের আউটপুট 0 হয় শুধুমাত্র যখন সব ইনপুট 0, তাই NOR গেটের আউটপুট HIGH (1) হয় শুধুমাত্র যখন সব ইনপুট LOW (0)।"
     },
     {
       "id": 23,
@@ -288,7 +310,8 @@
         "d": "present output and the previous output"
       },
       "correct_answer": "a",
-      "correct_answer_text": "input combination at the time"
+      "correct_answer_text": "input combination at the time",
+      "explanation": "Combinational circuit এর আউটপুট শুধুমাত্র বর্তমান ইনপুটের উপর নির্ভর করে, কোনো আগের অবস্থার উপর নয়। এটি sequential circuit থেকে আলাদা যেখানে আগের অবস্থাও আউটপুটকে প্রভাবিত করে।"
     },
     {
       "id": 24,
@@ -300,7 +323,8 @@
         "d": "to perform serial to parallel conversion"
       },
       "correct_answer": "b",
-      "correct_answer_text": "to select 1 out of N input data sources and to transmit it to single channel"
+      "correct_answer_text": "to select 1 out of N input data sources and to transmit it to single channel",
+      "explanation": "Multiplexer (MUX) হলো এমন একটি ডিভাইস যা N টি ইনপুট লাইন থেকে একটিকে নির্বাচন করে একটি মাত্র আউটপুট চ্যানেলে পাঠায়। সিলেক্ট লাইনের মান দিয়ে কোন ইনপুট আউটপুটে যাবে তা নির্ধারিত হয়।"
     },
     {
       "id": 25,
@@ -312,7 +336,8 @@
         "d": "ECL ICs"
       },
       "correct_answer": "b",
-      "correct_answer_text": "C MOS ICs"
+      "correct_answer_text": "C MOS ICs",
+      "explanation": "CMOS (Complementary Metal-Oxide-Semiconductor) IC তে PMOS এবং NMOS ট্রানজিস্টর জোড়ায় কাজ করে এবং স্থির অবস্থায় প্রায় কোনো কারেন্ট প্রবাহিত হয় না, তাই এটি অত্যন্ত কম বিদ্যুৎ খরচ করে এবং গেটপ্রতি খরচও কম।"
     },
     {
       "id": 26,
@@ -324,7 +349,8 @@
         "d": "2 input MUX"
       },
       "correct_answer": "a",
-      "correct_answer_text": "16 input MUX"
+      "correct_answer_text": "16 input MUX",
+      "explanation": "চারটি 4-to-1 MUX একটি 4-to-1 MUX কে চালালে, প্রথম স্তরে 4×4=16 টি ইনপুট থাকে এবং এগুলো শেষ MUX-এ 1 আউটপুটে পরিণত হয়, ফলে একটি 16-to-1 MUX তৈরি হয়।"
     },
     {
       "id": 27,
@@ -336,7 +362,8 @@
         "d": "Fetch Time"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Memory cycle time"
+      "correct_answer_text": "Memory cycle time",
+      "explanation": "Memory cycle time হলো দুটি পরপর মেমরি অপারেশনের মধ্যে ন্যূনতম সময়ের ব্যবধান। এটি access time থেকে বেশি কারণ মেমরিকে পরবর্তী অপারেশনের জন্য রিসেট বা রিস্টোর হওয়ার সময়ও প্রয়োজন।"
     },
     {
       "id": 28,
@@ -348,7 +375,8 @@
         "d": "Multiple of the access time"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Longer than the access time"
+      "correct_answer_text": "Longer than the access time",
+      "explanation": "Memory cycle time সর্বদা access time এর চেয়ে বেশি হয় কারণ cycle time এ access time এর পাশাপাশি মেমরিকে পুনরায় প্রস্তুত (restore/recharge) করার সময়ও অন্তর্ভুক্ত থাকে।"
     },
     {
       "id": 29,
@@ -360,7 +388,8 @@
         "d": "None of these"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Higher bit density and low power consumption"
+      "correct_answer_text": "Higher bit density and low power consumption",
+      "explanation": "DRAM এ প্রতিটি বিট একটি ক্যাপাসিটরে সংরক্ষিত হয় যা SRAM এর ফ্লিপ-ফ্লপ সার্কিটের চেয়ে অনেক ছোট, তাই DRAM এর bit density বেশি এবং বিদ্যুৎ খরচ কম। তবে DRAM কে বারবার refresh করতে হয়।"
     }
   ]
 }

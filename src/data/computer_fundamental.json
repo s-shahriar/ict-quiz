@@ -12,7 +12,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "IBM 650",
-      "page": 8
+      "page": 8,
+      "explanation": "IBM 650 ছিল প্রথম প্রজন্মের (১৯৫০-এর দশক) সবচেয়ে জনপ্রিয় কম্পিউটার, যা ১৯৫৪ সালে বাণিজ্যিকভাবে বিক্রি হয়েছিল। এটি ভ্যাকুয়াম টিউব ব্যবহার করত এবং বৈজ্ঞানিক ও ব্যবসায়িক কাজে ব্যাপকভাবে ব্যবহৃত হতো।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Speed",
-      "page": 8
+      "page": 8,
+      "explanation": "এনালগ কম্পিউটার বৈদ্যুতিক সংকেত সরাসরি প্রক্রিয়া করে বলে নির্দিষ্ট ধরনের কাজে ডিজিটালের চেয়ে দ্রুত ফলাফল দিতে পারে। তবে নির্ভুলতা ও নির্ভরযোগ্যতায় ডিজিটাল কম্পিউটার এগিয়ে।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "electrodes",
-      "page": 9
+      "page": 9,
+      "explanation": "প্লাজমা ডিসপ্লেতে দুটি কাচের প্যানেলের মাঝে গ্যাস থাকে, এবং ইলেকট্রোডের গ্রিডের মাধ্যমে সেই গ্যাসকে তড়িৎ প্রয়োগ করে আলোকিত করা হয়। ইলেকট্রোড ছাড়া গ্যাসকে সঠিকভাবে উত্তেজিত করা সম্ভব নয়।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": ".ini",
-      "page": 9
+      "page": 9,
+      "explanation": ".ini (Initialization) ফাইল হলো Windows-এর কনফিগারেশন ফাইল যেখানে সফটওয়্যার সেটিংস ও প্রোগ্রামের প্রাথমিক তথ্য সংরক্ষিত থাকে। .exe হলো এক্সিকিউটেবল এবং .dll হলো লাইব্রেরি ফাইল।"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "labels",
-      "page": 9
+      "page": 9,
+      "explanation": "স্প্রেডশিটে লেবেল হলো টেক্সট ডেটা যা কলাম বা রোর শিরোনাম হিসেবে ব্যবহৃত হয়, ফলে ওয়ার্কশিটের ডেটা বোঝা সহজ হয়। লেবেল ছাড়া শুধু সংখ্যা দেখে বোঝা কঠিন যে কোন তথ্য কোথায় আছে।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "SRAM",
-      "page": 14
+      "page": 14,
+      "explanation": "SRAM (Static RAM) প্রতিটি বিট সংরক্ষণের জন্য ফ্লিপ-ফ্লপ সার্কিট ব্যবহার করে, যা ক্রমাগত রিফ্রেশ ছাড়াই ডেটা ধরে রাখে। অপরদিকে DRAM ক্যাপাসিটর ব্যবহার করে এবং বারবার রিফ্রেশ প্রয়োজন হয়।"
     },
     {
       "id": 7,
@@ -90,7 +96,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "4 bit",
-      "page": 20
+      "page": 20,
+      "explanation": "কম্পিউটার মেমোরিতে ১ নিবল = ৪ বিট, ২ নিবল = ১ বাইট (৮ বিট)। এটি একটি হেক্সাডেসিমাল ডিজিট প্রকাশের জন্য ব্যবহৃত হয়, কারণ হেক্স ডিজিটের মান ০-F পর্যন্ত যা ৪ বিটে প্রকাশ করা যায়।"
     },
     {
       "id": 8,
@@ -103,7 +110,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "All of them",
-      "page": 20
+      "page": 20,
+      "explanation": "ম্যাগনেটিক টেপ সেকেন্ডারি স্টোরেজ হিসেবে ডেটা সংরক্ষণ করতে পারে, ইনপুট মিডিয়া হিসেবে কম্পিউটারে ডেটা প্রবেশ করাতে পারে এবং আউটপুট মিডিয়া হিসেবে প্রসেস করা ডেটা সংরক্ষণ করতে পারে।"
     },
     {
       "id": 9,
@@ -116,7 +124,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "16",
-      "page": 20
+      "page": 20,
+      "explanation": "Unicode মূলত ১৬ বিটের একটি আন্তর্জাতিক ক্যারেক্টার এনকোডিং স্ট্যান্ডার্ড যা বিশ্বের প্রায় সব ভাষার অক্ষর প্রকাশ করতে সক্ষম। ASCII যেখানে মাত্র ৭-৮ বিট ব্যবহার করে, সেখানে Unicode ৬৫,৫৩৬টি পর্যন্ত ক্যারেক্টার সমর্থন করে।"
     },
     {
       "id": 10,
@@ -129,7 +138,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "A bit",
-      "page": "Exercise"
+      "page": "Exercise",
+      "explanation": "বিট (Binary Digit) হলো কম্পিউটারের তথ্যের সবচেয়ে ছোট একক, যার মান হয় ০ অথবা ১। সব ডিজিটাল তথ্য শেষ পর্যন্ত এই দুটি মানের সমন্বয়ে তৈরি।"
     },
     {
       "id": 11,
@@ -142,7 +152,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "System unit",
-      "page": "Exercise"
+      "page": "Exercise",
+      "explanation": "CPU (Central Processing Unit) সিস্টেম ইউনিটের ভেতরে মাদারবোর্ডে অবস্থিত। সিস্টেম ইউনিট হলো কম্পিউটারের মূল বাক্স যেখানে প্রসেসর, র্যাম, মাদারবোর্ড সহ সব গুরুত্বপূর্ণ হার্ডওয়্যার থাকে।"
     },
     {
       "id": 12,
@@ -155,7 +166,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "MICR",
-      "page": "Exercise"
+      "page": "Exercise",
+      "explanation": "MICR (Magnetic Ink Character Recognition) আয়রন অক্সাইডের চৌম্বকীয় কণাযুক্ত বিশেষ কালি ব্যবহার করে অক্ষর মুদ্রণ করে, যা পরে মেশিন দ্বারা পড়া যায়। ব্যাংকের চেকে এই প্রযুক্তি ব্যবহার করা হয়।"
     },
     {
       "id": 13,
@@ -168,7 +180,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Declaring",
-      "page": "Exercise"
+      "page": "Exercise",
+      "explanation": "ফাংশন প্রোটোটাইপ হলো ফাংশনের ডিক্লারেশন, যেখানে ফাংশনের নাম, রিটার্ন টাইপ এবং প্যারামিটার টাইপ উল্লেখ থাকে কিন্তু বডি থাকে না। এটি কম্পাইলারকে ফাংশন ব্যবহারের আগেই তার সম্পর্কে জানতে দেয়।"
     },
     {
       "id": 14,
@@ -181,7 +194,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Input media",
-      "page": 30
+      "page": 30,
+      "explanation": "RFID (Radio Frequency Identification) হলো একটি ইনপুট ডিভাইস যা রেডিও তরঙ্গ ব্যবহার করে ট্যাগ থেকে ডেটা পড়ে কম্পিউটারে পাঠায়। এটি ডেটা আউটপুট বা স্টোরেজ করে না, শুধু পরিবেশ থেকে তথ্য সংগ্রহ করে।"
     },
     {
       "id": 15,
@@ -194,7 +208,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Binary Language",
-      "page": 30
+      "page": 30,
+      "explanation": "কম্পিউটারের প্রসেসর সরাসরি শুধুমাত্র বাইনারি ভাষা (০ এবং ১) বোঝে, কারণ এটি বৈদ্যুতিক সংকেতের ON ও OFF অবস্থার উপর নির্ভরশীল। অন্য সব ভাষা শেষ পর্যন্ত বাইনারিতে রূপান্তরিত হয়ে প্রসেসরে পৌঁছায়।"
     },
     {
       "id": 16,
@@ -207,7 +222,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "1024 ZB",
-      "page": 30
+      "page": 30,
+      "explanation": "ডেটা স্টোরেজের ক্রমানুসার হলো: KB → MB → GB → TB → PB → EB → ZB → YB। তাই ১ ইয়োটাবাইট = ১০২৪ জেটাবাইট (ZB)। ইয়োটাবাইট এখন পর্যন্ত ব্যবহৃত সবচেয়ে বড় স্ট্যান্ডার্ড ডেটা একক।"
     },
     {
       "id": 17,
@@ -220,7 +236,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "inversely",
-      "page": 30
+      "page": 30,
+      "explanation": "ডিস্কের প্রতিটি অংশে সমান লিনিয়ার গতি বজায় রাখতে (CLV - Constant Linear Velocity), ব্যাসার্ধ বাড়লে ঘূর্ণন গতি কমাতে হয়। তাই ডিস্কের ঘূর্ণন ব্যাসার্ধের সাথে বিপরীতভাবে পরিবর্তিত হয়।"
     },
     {
       "id": 18,
@@ -232,7 +249,8 @@
         "d": "ICL-2900"
       },
       "correct_answer": "a",
-      "correct_answer_text": "EDSAC"
+      "correct_answer_text": "EDSAC",
+      "explanation": "EDSAC (Electronic Delay Storage Automatic Calculator) ১৯৪৯ সালে তৈরি হয় এবং এটি প্রথম প্রজন্মের কম্পিউটার যা ভ্যাকুয়াম টিউব ব্যবহার করত। IBM-1401 দ্বিতীয় প্রজন্মের এবং CDC-1604 ও ICL-2900 পরবর্তী প্রজন্মের।"
     },
     {
       "id": 19,
@@ -244,7 +262,8 @@
         "d": "exactly the same as the machine cycle time"
       },
       "correct_answer": "c",
-      "correct_answer_text": "microprocessors does not contain I/O devices"
+      "correct_answer_text": "microprocessors does not contain I/O devices",
+      "explanation": "মাইক্রোপ্রসেসর হলো শুধু একটি চিপ যা শুধুমাত্র CPU-এর কাজ করে, এতে I/O ডিভাইস থাকে না। মাইক্রোকম্পিউটার হলো একটি সম্পূর্ণ সিস্টেম যেখানে মাইক্রোপ্রসেসর, মেমোরি এবং I/O ডিভাইস সবই থাকে।"
     },
     {
       "id": 20,
@@ -256,7 +275,8 @@
         "d": "A.J. Garneing"
       },
       "correct_answer": "c",
-      "correct_answer_text": "Seymour Cray"
+      "correct_answer_text": "Seymour Cray",
+      "explanation": "Seymour Cray কে সুপার কম্পিউটারের জনক বলা হয়। তিনি ১৯৭৬ সালে Cray-1 তৈরি করেন যা ছিল বিশ্বের প্রথম বাণিজ্যিকভাবে সফল সুপার কম্পিউটার।"
     },
     {
       "id": 21,
@@ -268,7 +288,8 @@
         "d": "CFPS"
       },
       "correct_answer": "c",
-      "correct_answer_text": "MIPS"
+      "correct_answer_text": "MIPS",
+      "explanation": "MIPS (Millions of Instructions Per Second) হলো কম্পিউটারের প্রসেসিং গতি পরিমাপের একক, যা প্রতি সেকেন্ডে কতটি নির্দেশনা সম্পাদন করা হয় তা নির্দেশ করে। এটি বিভিন্ন প্রসেসরের গতি তুলনা করতে ব্যবহৃত হয়।"
     },
     {
       "id": 22,
@@ -280,7 +301,8 @@
         "d": "EBCDIC Code"
       },
       "correct_answer": "d",
-      "correct_answer_text": "EBCDIC Code"
+      "correct_answer_text": "EBCDIC Code",
+      "explanation": "EBCDIC (Extended Binary Coded Decimal Interchange Code) IBM কর্পোরেশন তৈরি করেছে এবং এটি তাদের মেইনফ্রেম কম্পিউটারে ব্যবহৃত হয়। ASCII সর্বজনীন ব্যবহারের জন্য, কিন্তু EBCDIC বিশেষভাবে IBM-এর পণ্যের জন্য।"
     },
     {
       "id": 23,
@@ -292,7 +314,8 @@
         "d": "all of them"
       },
       "correct_answer": "d",
-      "correct_answer_text": "all of them"
+      "correct_answer_text": "all of them",
+      "explanation": "DOS-এ তিন ধরনের বিশেষ এক্সিকিউটেবল ফাইল আছে: .COM (ছোট প্রোগ্রাম), .EXE (বড় প্রোগ্রাম) এবং BATCH (.BAT) ফাইল যা একাধিক কমান্ড একসাথে চালানোর জন্য ব্যবহৃত হয়।"
     },
     {
       "id": 24,
@@ -304,7 +327,8 @@
         "d": "all of them"
       },
       "correct_answer": "a",
-      "correct_answer_text": "Marcian E Huff"
+      "correct_answer_text": "Marcian E Huff",
+      "explanation": "Marcian E. Hoff (Ted Hoff) ইন্টেলে কাজ করার সময় ১৯৭১ সালে Intel 4004 নামে প্রথম মাইক্রোপ্রসেসর আবিষ্কার করেন। এটি ছিল একটি ছোট চিপে সম্পূর্ণ CPU-এর কার্যকারিতা একীভূত করার প্রথম সফল প্রচেষ্টা।"
     },
     {
       "id": 25,
@@ -316,7 +340,8 @@
         "d": "a keyboard and screen"
       },
       "correct_answer": "d",
-      "correct_answer_text": "a keyboard and screen"
+      "correct_answer_text": "a keyboard and screen",
+      "explanation": "ডাম্ব টার্মিনালে শুধুমাত্র কীবোর্ড এবং স্ক্রিন থাকে, নিজস্ব কোনো প্রসেসর বা মেমোরি থাকে না। এটি সব প্রসেসিং মূল হোস্ট কম্পিউটারে পাঠিয়ে দেয় এবং শুধু ইনপুট-আউটপুটের মাধ্যম হিসেবে কাজ করে।"
     },
     {
       "id": 26,
@@ -328,7 +353,8 @@
         "d": "all of them"
       },
       "correct_answer": "b",
-      "correct_answer_text": "input is never converted to digital form"
+      "correct_answer_text": "input is never converted to digital form",
+      "explanation": "এনালগ কম্পিউটার ভোল্টেজ, তাপমাত্রা বা চাপের মতো ক্রমাগত পরিবর্তনশীল সংকেত সরাসরি প্রক্রিয়া করে, কখনো ডিজিটালে রূপান্তরিত করে না। এ কারণে এটি বাস্তব জগতের সংকেত প্রক্রিয়ায় দ্রুত কিন্তু নির্ভুলতায় কম।"
     },
     {
       "id": 27,
@@ -340,7 +366,8 @@
         "d": "all of them"
       },
       "correct_answer": "d",
-      "correct_answer_text": "all of them"
+      "correct_answer_text": "all of them",
+      "explanation": "মেমোরি থেকে বিদ্যমান ডেটা পুনরুদ্ধারের প্রক্রিয়াকে read, read-out বা read from — এই তিনটি পরিভাষাতেই বলা হয়। এরা সবই একই কার্যক্রম বোঝায়, তাই তিনটিই সঠিক।"
     },
     {
       "id": 28,
@@ -352,7 +379,8 @@
         "d": "word"
       },
       "correct_answer": "c",
-      "correct_answer_text": "data"
+      "correct_answer_text": "data",
+      "explanation": "সব আধুনিক কম্পিউটার মূলত ডেটার উপর কাজ করে — ডেটা ইনপুট নেয়, প্রক্রিয়া করে এবং আউটপুট দেয়। তথ্য (information) হলো প্রক্রিয়াকৃত ডেটা, কিন্তু কম্পিউটার সরাসরি ডেটা নিয়ে কাজ করে।"
     },
     {
       "id": 29,
@@ -364,7 +392,8 @@
         "d": "all of them"
       },
       "correct_answer": "c",
-      "correct_answer_text": "ROM and RAM"
+      "correct_answer_text": "ROM and RAM",
+      "explanation": "কম্পিউটারের মূল মেমোরি দুই ধরনের: ROM (Read Only Memory) যা স্থায়ীভাবে ডেটা ধরে রাখে এবং RAM (Random Access Memory) যা অস্থায়ীভাবে চলমান প্রোগ্রাম ও ডেটা ধরে রাখে।"
     },
     {
       "id": 30,
@@ -376,7 +405,8 @@
         "d": "medium level language"
       },
       "correct_answer": "a",
-      "correct_answer_text": "machine language"
+      "correct_answer_text": "machine language",
+      "explanation": "মেশিন ল্যাঙ্গুয়েজ সরাসরি প্রসেসর বোঝে, তাই কোনো কম্পাইল বা ট্রান্সলেশন ছাড়াই মেমোরিতে সহজে লোড ও রিলোড করা যায়। অন্যান্য ভাষাকে মেশিন কোডে রূপান্তরিত করতে হয় বলে সেগুলো সরাসরি রিলোড করা কঠিন।"
     },
     {
       "id": 31,
@@ -388,7 +418,8 @@
         "d": "machine language"
       },
       "correct_answer": "a",
-      "correct_answer_text": "high level language"
+      "correct_answer_text": "high level language",
+      "explanation": "হাই-লেভেল ল্যাঙ্গুয়েজ (যেমন Python, Java, C) মেশিন-ইন্ডিপেন্ডেন্ট কারণ এটি যেকোনো হার্ডওয়্যারে কম্পাইল করে চালানো যায়। অ্যাসেম্বলি বা মেশিন ল্যাঙ্গুয়েজ নির্দিষ্ট প্রসেসর আর্কিটেকচারের উপর নির্ভরশীল।"
     },
     {
       "id": 32,
@@ -400,7 +431,8 @@
         "d": "program counter"
       },
       "correct_answer": "c",
-      "correct_answer_text": "instruction register"
+      "correct_answer_text": "instruction register",
+      "explanation": "Program Counter (PC) যে মেমোরি অ্যাড্রেস নির্দেশ করে, সেই অ্যাড্রেস থেকে ফেচ করা নির্দেশনা Instruction Register (IR)-এ লোড হয়। IR এরপর সেই নির্দেশনা ডিকোড ও এক্সিকিউট করতে সাহায্য করে।"
     }
   ]
 }

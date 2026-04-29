@@ -12,7 +12,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Replay attack",
-      "page": "Security Attacks"
+      "page": "Security Attacks",
+      "explanation": "Replay attack এ আক্রমণকারী বৈধ ডেটা ট্রান্সমিশন আটকিয়ে রাখে এবং পরে তা পুনরায় পাঠায়। ডেটা পরিবর্তন না করেই পুরানো তথ্য পুনরায় ব্যবহার করে সিস্টেমকে প্রতারিত করা এই আক্রমণের মূল বৈশিষ্ট্য।"
     },
     {
       "id": 2,
@@ -25,7 +26,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Denial-of-services (DoS) attack",
-      "page": "Security Attacks"
+      "page": "Security Attacks",
+      "explanation": "DoS (Denial of Service) attack এ একটি একক উৎস থেকে সার্ভারে এত বেশি request পাঠানো হয় যে সার্ভার overwhelmed হয়ে সাধারণ ব্যবহারকারীদের সেবা দিতে পারে না বা সম্পূর্ণ বন্ধ হয়ে যায়।"
     },
     {
       "id": 3,
@@ -38,7 +40,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Stealth Virus",
-      "page": "Malware"
+      "page": "Malware",
+      "explanation": "Stealth virus কম্পিউটারের মেমরিতে লুকিয়ে থাকে এবং নিজেকে লুকানোর জন্য অ্যান্টিভাইরাস সফটওয়্যারকে ফাঁকি দেয়। এটি সিস্টেম কলকে intercept করে নিজের অস্তিত্ব গোপন রাখে, তাই এটি ধরা বেশ কঠিন।"
     },
     {
       "id": 4,
@@ -51,7 +54,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "160 bits",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "SHA-1 (Secure Hash Algorithm 1) যেকোনো দৈর্ঘ্যের input থেকে সর্বদা 160-bit (20 bytes) message digest তৈরি করে। যদিও SHA-1 এখন দুর্বল বলে বিবেচিত এবং SHA-256 বা SHA-3 ব্যবহারের পরামর্শ দেওয়া হয়।"
     },
     {
       "id": 5,
@@ -64,7 +68,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Message Confidentiality",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "Message authentication শুধু বার্তার গোপনীয়তা (confidentiality) নিশ্চিত করার বাইরে গিয়ে প্রেরকের পরিচয় যাচাই করে এবং বার্তার অখণ্ডতা নিশ্চিত করে। Confidentiality শুধু গোপনীয়তা দেয়, authentication অতিরিক্ত সুরক্ষা প্রদান করে।"
     },
     {
       "id": 6,
@@ -77,7 +82,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Receiver",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "Message confidentiality নিশ্চিত করে যে পাঠানো বার্তা শুধুমাত্র উদ্দিষ্ট receiver বুঝতে পারবে। Encryption ব্যবহার করে বার্তা এনকোড করা হয় যাতে মাঝপথে অন্য কেউ ধরলেও বুঝতে না পারে।"
     },
     {
       "id": 7,
@@ -90,7 +96,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Changed",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "Hash function বার্তার integrity নিশ্চিত করে এটি নিশ্চিত করে যে বার্তাটি পরিবর্তন (changed) হয়নি। বার্তার hash value প্রেরণের আগে ও পরে একই থাকলে বার্তা অপরিবর্তিত বলে ধরা যায়।"
     },
     {
       "id": 8,
@@ -103,7 +110,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Finger Print",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "Receiver বার্তার integrity যাচাই করতে hash function ব্যবহার করে একটি digital fingerprint তৈরি করে। এই fingerprint প্রেরকের পাঠানো hash এর সাথে মিললে বার্তা অপরিবর্তিত বলে নিশ্চিত হওয়া যায়।"
     },
     {
       "id": 9,
@@ -116,7 +124,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Public-key system",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "Digital signature তৈরিতে Public-key (asymmetric) cryptography ব্যবহার করা হয়। প্রেরক তার private key দিয়ে sign করে এবং receiver public key দিয়ে যাচাই করে, এতে non-repudiation নিশ্চিত হয়।"
     },
     {
       "id": 10,
@@ -129,7 +138,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Finger Print",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "ডিজিটাল নিরাপত্তায় fingerprint বলতে hash function এর মাধ্যমে তৈরি একটি অনন্য সংখ্যাসূচক মান বোঝায় যা একটি document এর identity প্রকাশ করে। এই fingerprint পরিবর্তন হলে document টি modified হয়েছে বলে ধরা যায়।"
     },
     {
       "id": 11,
@@ -142,7 +152,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Threat",
-      "page": "Security Concepts"
+      "page": "Security Concepts",
+      "explanation": "Threat হলো এমন যেকোনো সম্ভাব্য ঘটনা বা কার্যক্রম যা তথ্যের গোপনীয়তা, অখণ্ডতা বা প্রাপ্যতাকে ক্ষতিগ্রস্ত করতে পারে। গোপন তথ্য প্রকাশ পাওয়া একটি security threat এর উদাহরণ।"
     },
     {
       "id": 12,
@@ -155,7 +166,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "Vital Information Resource Under Seize",
-      "page": "Malware"
+      "page": "Malware",
+      "explanation": "VIRUS এর পূর্ণ রূপ হলো Vital Information Resource Under Seize। এটি এমন একটি ক্ষতিকর প্রোগ্রাম যা গুরুত্বপূর্ণ তথ্য সম্পদ দখল করে নেয় এবং নিজে নিজেই ছড়িয়ে পড়তে পারে।"
     },
     {
       "id": 13,
@@ -168,7 +180,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Password guessing",
-      "page": "Security Attacks"
+      "page": "Security Attacks",
+      "explanation": "Password guessing একটি সাধারণ authentication attack, কিন্তু এটি web server এর বিরুদ্ধে নির্দিষ্ট attack নয়। DOS, SQLi defacement এবং Directory Traversal সরাসরি web server এর দুর্বলতাকে লক্ষ্য করে।"
     },
     {
       "id": 14,
@@ -181,7 +194,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Backdoor",
-      "page": "Malware"
+      "page": "Malware",
+      "explanation": "Backdoor হলো এমন একটি লুকানো পথ যা আক্রমণকারী একটি system এ install করে রাখে যাতে পরবর্তীতে সহজে ও গোপনে সিস্টেমে প্রবেশ করতে পারে। সাধারণ authentication bypass করে এটি remote access দেয়।"
     },
     {
       "id": 15,
@@ -194,7 +208,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Authentication",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "Encryption শুধু তথ্যের গোপনীয়তা (confidentiality) নিশ্চিত করে, কিন্তু প্রেরকের পরিচয় যাচাই (authentication) করে না। Authentication এর জন্য আলাদাভাবে digital signature বা certificate ব্যবহার করতে হয়।"
     },
     {
       "id": 16,
@@ -207,7 +222,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Criminal organizations, Black hat hackers, malware developers, cyber-terrorists",
-      "page": "Malware"
+      "page": "Malware",
+      "explanation": "Malware মূলত criminal organizations, black hat hackers, malware developers এবং cyber-terrorists ছড়ায় যারা ব্যক্তিগত লাভ বা ক্ষতির উদ্দেশ্যে কাজ করে। White hat hackers এবং penetration testers নৈতিকভাবে কাজ করে, তারা malware ছড়ায় না।"
     },
     {
       "id": 17,
@@ -220,7 +236,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "Confidentiality",
-      "page": "Security Concepts"
+      "page": "Security Concepts",
+      "explanation": "Confidentiality (গোপনীয়তা) মানে তথ্য শুধুমাত্র অনুমোদিত ব্যক্তিদের কাছে প্রকাশ করা এবং অননুমোদিত প্রকাশ থেকে রক্ষা করা। এটি CIA triad (Confidentiality, Integrity, Availability) এর একটি মূল স্তম্ভ।"
     },
     {
       "id": 18,
@@ -233,7 +250,8 @@
       },
       "correct_answer": "c",
       "correct_answer_text": "Data tampering",
-      "page": "Security Concepts"
+      "page": "Security Concepts",
+      "explanation": "Integrity মানে তথ্য অপরিবর্তিত এবং সঠিক থাকা। যখন integrity ভঙ্গ হয়, তখন data tampering ঘটে অর্থাৎ কেউ অননুমোদিতভাবে তথ্য পরিবর্তন করে ফেলে।"
     },
     {
       "id": 19,
@@ -246,7 +264,8 @@
       },
       "correct_answer": "d",
       "correct_answer_text": "Network-security protocols",
-      "page": "Network Security"
+      "page": "Network Security",
+      "explanation": "Network-security protocols যেমন TLS, SSL, IPSec নেটওয়ার্কের মধ্য দিয়ে যাওয়া ডেটার নিরাপত্তা ও অখণ্ডতা নিশ্চিত করে। এগুলো encryption ও authentication ব্যবহার করে ডেটা সুরক্ষিত রাখে।"
     },
     {
       "id": 20,
@@ -259,7 +278,8 @@
       },
       "correct_answer": "b",
       "correct_answer_text": "data integrity, authentication, nonrepudiation",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "Digital signature তিনটি গুরুত্বপূর্ণ বিষয় নিশ্চিত করে: data integrity (তথ্য পরিবর্তন হয়নি), authentication (প্রেরকের পরিচয়) এবং nonrepudiation (প্রেরক পরে অস্বীকার করতে পারবে না)।"
     },
     {
       "id": 21,
@@ -273,7 +293,8 @@
       "correct_answer": "d",
       "correct_answer_text": "all",
       "page": "Cryptography",
-      "note": "AES supports 128, 192, and 256-bit key sizes"
+      "note": "AES supports 128, 192, and 256-bit key sizes",
+      "explanation": "AES (Advanced Encryption Standard) তিনটি ভিন্ন key size সমর্থন করে: 128, 192 এবং 256 বিট। এই তিনটি variant যথাক্রমে AES-128, AES-192 এবং AES-256 নামে পরিচিত এবং সবগুলোই নিরাপদ।"
     },
     {
       "id": 22,
@@ -286,7 +307,8 @@
       },
       "correct_answer": "a",
       "correct_answer_text": "SHA-1",
-      "page": "Cryptography"
+      "page": "Cryptography",
+      "explanation": "SHA-1 হলো একটি cryptographic hash function যা যেকোনো input থেকে নির্দিষ্ট দৈর্ঘ্যের (160-bit) hash তৈরি করে। RSA এবং Diffie-Hellman হলো key exchange/encryption algorithm এবং AES হলো symmetric encryption algorithm।"
     }
   ]
 }
