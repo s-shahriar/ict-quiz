@@ -1,5 +1,7 @@
 # ⚡ ICT Quiz
 
+**🌐 Live:** [ict-quiz-nu.vercel.app](https://ict-quiz-nu.vercel.app/)
+
 A fast, clean quiz and study app for mastering **Information & Communication Technology** topics. Built with React + Vite. Features Bengali explanations for every question.
 
 ## ✨ Features
