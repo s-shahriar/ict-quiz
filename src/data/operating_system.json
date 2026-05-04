@@ -114,6 +114,253 @@
       "correct_answer_text": "Deadlock avoidance",
       "page": 352,
       "explanation": "Banker's Algorithm হলো একটি Deadlock Avoidance অ্যালগরিদম যা রিসোর্স বরাদ্দ দেওয়ার আগে সিস্টেমটি 'safe state'-এ থাকবে কিনা তা যাচাই করে। যদি রিসোর্স দিলে deadlock হওয়ার সম্ভাবনা থাকে, তাহলে সেটি দেওয়া হয় না।"
+    },
+    {
+      "id": 9,
+      "question": "How many necessary conditions are required for deadlock?",
+      "options": {
+        "a": "2",
+        "b": "3",
+        "c": "4",
+        "d": "5"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "4",
+      "explanation": "Deadlock-এর ৪টি প্রয়োজনীয় শর্ত: Mutual Exclusion, Hold & Wait, No Preemption, এবং Circular Wait। এই ৪টি শর্ত একসাথে পূরণ হলেই deadlock হতে পারে। যেকোনো একটি ভাঙলে deadlock প্রতিরোধ হয়।"
+    },
+    {
+      "id": 10,
+      "question": "Which scheduling algorithm gives the minimum average waiting time?",
+      "options": {
+        "a": "FCFS",
+        "b": "SJF",
+        "c": "Round Robin",
+        "d": "Priority"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "SJF",
+      "explanation": "SJF (Shortest Job First) গড় waiting time কমায় — non-preemptive scheduling-এর জন্য mathematically প্রমাণিত optimal। FCFS-এ convoy effect হতে পারে। Round Robin-এ বেশি overhead। Priority-তে starvation হতে পারে।"
+    },
+    {
+      "id": 11,
+      "question": "Page fault occurs when:",
+      "options": {
+        "a": "Page is in RAM",
+        "b": "Page is NOT in RAM",
+        "c": "CPU is busy",
+        "d": "Cache miss happens"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Page is NOT in RAM",
+      "explanation": "Page fault তখন ঘটে যখন কোনো process এমন page access করে যা RAM-এ নেই (physical memory-তে নেই), ফলে OS সেটি disk থেকে load করে। Cache miss আলাদা — এটি CPU cache সম্পর্কে, RAM সম্পর্কে নয়।"
+    },
+    {
+      "id": 12,
+      "question": "Thrashing is caused by:",
+      "options": {
+        "a": "High CPU usage",
+        "b": "Low memory",
+        "c": "Excessive paging",
+        "d": "Deadlock"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Excessive paging",
+      "explanation": "Thrashing তখন ঘটে যখন OS process execute করার চেয়ে বেশি সময় page swap করে (excessive paging)। এটি ঘটে যখন অনেক প্রসেস সীমিত memory frame-এর জন্য প্রতিযোগিতা করে।"
+    },
+    {
+      "id": 13,
+      "question": "Semaphore value cannot be:",
+      "options": {
+        "a": "0",
+        "b": "Positive",
+        "c": "Negative",
+        "d": "Boolean"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Boolean",
+      "explanation": "Semaphore value হলো non-negative integer (0 বা positive)। এটি 0 হতে পারে (রিসোর্স unavailable) বা positive (রিসোর্স available)। Boolean মানে শুধু true/false — কিন্তু semaphore counting support করে।"
+    },
+    {
+      "id": 14,
+      "question": "Which page replacement algorithm may suffer from Belady's anomaly?",
+      "options": {
+        "a": "LRU",
+        "b": "FIFO",
+        "c": "Optimal",
+        "d": "LFU"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "FIFO",
+      "explanation": "FIFO-তে Belady's anomaly হতে পারে — বেশি page frame যোগ করলে page fault বাড়তে পারে। LRU এবং Optimal-এ এটি হয় না। Optimal তাত্ত্বিকভাবে সেরা কিন্তু ব্যবহারিক নয়। LFU-তে এই anomaly দেখা যায় না।"
+    },
+    {
+      "id": 15,
+      "question": "Banker's Algorithm is used for:",
+      "options": {
+        "a": "Deadlock prevention",
+        "b": "Deadlock avoidance",
+        "c": "Deadlock detection",
+        "d": "Deadlock recovery"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Deadlock avoidance",
+      "explanation": "Banker's Algorithm Deadlock Avoidance-এর জন্য — এটি চেক করে রিসোর্স request দিলে সিস্টেম safe state-এ থাকবে কিনা। Prevention ৪টি condition-এর একটি দূর করে। Detection existing deadlock খুঁজে বের করে। Recovery সেগুলো সমাধান করে।"
+    },
+    {
+      "id": 16,
+      "question": "Which memory allocation technique suffers from external fragmentation?",
+      "options": {
+        "a": "Paging",
+        "b": "Segmentation",
+        "c": "Virtual memory",
+        "d": "Cache"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Segmentation",
+      "explanation": "Segmentation-এ external fragmentation হয় — variable-sized segment-এর মধ্যে allocated block গুলোর ফাঁকা জায়গা খুব ছোট হয়ে ব্যবহার করা যায় না। Paging fixed-size page/frame ব্যবহার করে external fragmentation দূর করে।"
+    },
+    {
+      "id": 17,
+      "question": "A system is in an unsafe state means:",
+      "options": {
+        "a": "Deadlock has occurred",
+        "b": "Deadlock will definitely occur",
+        "c": "Deadlock may occur",
+        "d": "System crashed"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Deadlock may occur",
+      "explanation": "Unsafe state মানে deadlock হতে পারে — এটি গ্যারান্টি নয়, কিন্তু সিস্টেম deadlock-free execution গ্যারান্টি দিতে পারে না। Safe state সব process complete হওয়ার গ্যারান্টি দেয়। Deadlock একটি আলাদা প্রকৃত অবস্থা।"
+    },
+    {
+      "id": 18,
+      "question": "In deadlock detection using a wait-for graph, a cycle indicates:",
+      "options": {
+        "a": "Deadlock",
+        "b": "Starvation",
+        "c": "Safe state",
+        "d": "Livelock"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Deadlock",
+      "explanation": "Wait-for graph-এ cycle থাকলে deadlock নির্দেশ করে — process গুলো circularly একে অপরের রিসোর্সের জন্য wait করছে। Cycle না থাকলে deadlock নেই। Starvation হলো কোনো process কখনো CPU না পাওয়া। Livelock-এ process গুলো state change করে কিন্তু progress হয় না।"
+    },
+    {
+      "id": 19,
+      "question": "RAID 1 provides:",
+      "options": {
+        "a": "Striping",
+        "b": "Parity",
+        "c": "Mirroring",
+        "d": "Compression"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Mirroring",
+      "explanation": "RAID 1 = Mirroring। ডেটা দুটি disk-এ একই সাথে duplicate করা হয়। RAID 0 = Striping (কোনো redundancy নেই, দ্রুত)। RAID 5 = Striping + distributed Parity। RAID 6 = double parity। Compression কোনো RAID feature নয়।"
+    },
+    {
+      "id": 20,
+      "question": "In paging, the logical address is divided into:",
+      "options": {
+        "a": "Page number + Offset",
+        "b": "Frame + Block",
+        "c": "Segment + Page",
+        "d": "Index + Key"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Page number + Offset",
+      "explanation": "Paging-এ logical address = Page Number + Page Offset। Page number page table-কে index করে physical frame খুঁজে বের করে। Offset page/frame-এর ভিতরের অবস্থান দেয়। Segment + Page হলো segmentation-with-paging hybrid system।"
+    },
+    {
+      "id": 21,
+      "question": "Starvation can occur in which scheduling algorithm?",
+      "options": {
+        "a": "FCFS",
+        "b": "Round Robin",
+        "c": "Priority Scheduling",
+        "d": "SJF only"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Priority Scheduling",
+      "explanation": "Priority Scheduling-এ starvation হতে পারে — low-priority process অনির্দিষ্টকালের জন্য wait করতে পারে যদি high-priority process আসতে থাকে। সমাধান: Aging (ধীরে ধীরে priority বাড়ানো)। FCFS এবং Round Robin fair। SJF দীর্ঘ job-এ starvation করে।"
+    },
+    {
+      "id": 22,
+      "question": "In a system using demand paging, increasing the degree of multiprogramming may cause:",
+      "options": {
+        "a": "Higher throughput",
+        "b": "Lower page fault rate",
+        "c": "Thrashing",
+        "d": "Deadlock"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Thrashing",
+      "explanation": "অনেক প্রসেস সীমিত frame-এর জন্য প্রতিযোগিতা করলে → প্রতিটি কম frame পায় → বেশি page fault → Thrashing। এমন একটি পর্যায় আছে যেখানে আরও প্রসেস যোগ করলে CPU utilization নাটকীয়ভাবে কমে যায়।"
+    },
+    {
+      "id": 23,
+      "question": "Which scheduling algorithm may cause a convoy effect?",
+      "options": {
+        "a": "SJF",
+        "b": "FCFS",
+        "c": "Round Robin",
+        "d": "Priority"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "FCFS",
+      "explanation": "FCFS (First Come First Served)-এ convoy effect হয় — ছোট process গুলো একটি বড় process-এর পিছনে আটকে থাকে, CPU utilization কমে। SJF এটি এড়ায়। Round Robin time slice দেয়। Priority-তে starvation হতে পারে।"
+    },
+    {
+      "id": 24,
+      "question": "If a process holds R1 and waits for R2, while another holds R2 and waits for R1, this is:",
+      "options": {
+        "a": "Starvation",
+        "b": "Deadlock",
+        "c": "Livelock",
+        "d": "Thrashing"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Deadlock",
+      "explanation": "এটি একটি classic Deadlock — circular wait (৪টি প্রয়োজনীয় শর্তের একটি)। P1, R1 hold করে R2 চায়; P2, R2 hold করে R1 চায় — কেউই এগোতে পারে না। Livelock-এ process গুলো state change করে progress ছাড়া। Starvation-এ কোনো process কখনো রিসোর্স পায় না।"
+    },
+    {
+      "id": 25,
+      "question": "If a semaphore value is 0 and a process executes wait(), it will:",
+      "options": {
+        "a": "Continue execution",
+        "b": "Increment the semaphore",
+        "c": "Block (wait)",
+        "d": "Crash"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Block (wait)",
+      "explanation": "wait() (P operation): যদি semaphore > 0 হয়, decrement করে এগিয়ে যায়। যদি semaphore = 0 হয়, process BLOCK হয় (waiting queue-তে যায়)। এটি crash বা continue করে না। signal() (V operation) increment করে blocked process জাগায়।"
+    },
+    {
+      "id": 26,
+      "question": "Which OS component handles memory allocation?",
+      "options": {
+        "a": "Shell",
+        "b": "Kernel",
+        "c": "Compiler",
+        "d": "Loader"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Kernel",
+      "explanation": "Kernel memory allocation (এবং সব hardware resource) পরিচালনা করে। Shell হলো OS-এর user interface। Compiler code translate করে। Loader program মেমোরিতে load করে (কিন্তু kernel মেমোরি space পরিচালনা করে)।"
+    },
+    {
+      "id": 27,
+      "question": "Which RAID level can survive the failure of two disks simultaneously?",
+      "options": {
+        "a": "RAID 0",
+        "b": "RAID 1",
+        "c": "RAID 5",
+        "d": "RAID 6"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "RAID 6",
+      "explanation": "RAID 6 double distributed parity ব্যবহার করে, ২টি disk একসাথে fail হলেও data বাঁচে। RAID 0-তে কোনো redundancy নেই (যেকোনো failure = data loss)। RAID 1 প্রতি mirror pair-এ ১টি failure survive করে। RAID 5 শুধু ১টি disk failure survive করে।"
     }
   ]
 }

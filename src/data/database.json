@@ -748,6 +748,240 @@
       "correct_answer": "a",
       "correct_answer_text": "MySQL",
       "explanation": "MySQL একটি open source relational DBMS যা বিনামূল্যে ব্যবহার করা যায় এবং এর source code publicly available। Microsoft SQL Server, Access এবং Oracle হলো proprietary (closed-source) DBMS।"
+    },
+    {
+      "id": 58,
+      "question": "3NF removes which type of dependency?",
+      "options": {
+        "a": "Partial dependency",
+        "b": "Transitive dependency",
+        "c": "Multivalued dependency",
+        "d": "Redundancy"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Transitive dependency",
+      "explanation": "3NF অপসারণ করে Transitive dependency (non-key → non-key)। 2NF অপসারণ করে Partial dependency। 4NF সামলায় Multivalued dependency। সব normal form redundancy কমায় কিন্তু প্রতিটি নির্দিষ্ট dependency type টার্গেট করে।"
+    },
+    {
+      "id": 59,
+      "question": "ACID property 'Durability' means:",
+      "options": {
+        "a": "Data can change",
+        "b": "Data is permanent after commit",
+        "c": "No duplication",
+        "d": "Atomic transaction"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Data is permanent after commit",
+      "explanation": "Durability নিশ্চিত করে যে committed transaction স্থায়ীভাবে টিকে থাকে crash/power loss-এর পরেও (disk-এ সংরক্ষিত)। Atomicity = সব বা কিছুই না। Consistency = বৈধ state। Isolation = transaction একে অপরের সাথে হস্তক্ষেপ করে না।"
+    },
+    {
+      "id": 60,
+      "question": "Which SQL join returns ALL records from both tables?",
+      "options": {
+        "a": "INNER JOIN",
+        "b": "LEFT JOIN",
+        "c": "FULL OUTER JOIN",
+        "d": "CROSS JOIN"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "FULL OUTER JOIN",
+      "explanation": "FULL OUTER JOIN উভয় টেবিলের সকল record ফেরত দেয়, যেখানে match নেই সেখানে NULL থাকে। INNER শুধু match ফেরত দেয়। LEFT বাম টেবিলের সব + ডান টেবিলের matched। CROSS ফেরত দেয় Cartesian product।"
+    },
+    {
+      "id": 61,
+      "question": "Which SQL clause is used to filter grouped data?",
+      "options": {
+        "a": "WHERE",
+        "b": "GROUP BY",
+        "c": "HAVING",
+        "d": "ORDER BY"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "HAVING",
+      "explanation": "HAVING GROUP BY-এর পরে filter করে (aggregated result-এ)। WHERE grouping-এর আগে row filter করে। GROUP BY row গুছিয়ে দেয়। ORDER BY result সাজায়। WHERE-এর সাথে COUNT/SUM-এর মতো aggregate function ব্যবহার করা যায় না।"
+    },
+    {
+      "id": 62,
+      "question": "Index is used to:",
+      "options": {
+        "a": "Increase redundancy",
+        "b": "Improve query speed",
+        "c": "Normalize table",
+        "d": "Reduce memory"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Improve query speed",
+      "explanation": "Index ডেটা retrieval দ্রুত করে একটি আলাদা lookup structure তৈরি করে। এগুলো redundancy বাড়ায় না (এগুলো metadata)। এগুলো normalize করে না বা মেমোরি কমায় না — index আসলে অতিরিক্ত storage ব্যবহার করে।"
+    },
+    {
+      "id": 63,
+      "question": "Primary key cannot contain:",
+      "options": {
+        "a": "Integer values",
+        "b": "Duplicate values",
+        "c": "Unique values",
+        "d": "NOT NULL values"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Duplicate values",
+      "explanation": "Primary key অবশ্যই UNIQUE এবং NOT NULL হতে হবে। Duplicate value uniqueness constraint ভঙ্গ করবে — record গুলোর মধ্যে পার্থক্য করা যাবে না। Integer এবং unique value বৈধ primary key type।"
+    },
+    {
+      "id": 64,
+      "question": "Which normal form removes partial dependency?",
+      "options": {
+        "a": "1NF",
+        "b": "2NF",
+        "c": "3NF",
+        "d": "BCNF"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "2NF",
+      "explanation": "2NF অপসারণ করে Partial dependency (non-key attribute composite primary key-এর অংশের উপর নির্ভর করে)। 1NF atomic value নিশ্চিত করে। 3NF transitive dependency অপসারণ করে। BCNF, 3NF-এর চেয়ে কঠোর।"
+    },
+    {
+      "id": 65,
+      "question": "Which SQL command removes the entire table structure?",
+      "options": {
+        "a": "DELETE",
+        "b": "DROP",
+        "c": "TRUNCATE",
+        "d": "REMOVE"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "DROP",
+      "explanation": "DROP পুরো টেবিল structure এবং ডেটা স্থায়ীভাবে মুছে দেয়। DELETE row মুছে (DML, rollback সম্ভব)। TRUNCATE সব row মুছে কিন্তু structure রাখে (DELETE-এর চেয়ে দ্রুত)। REMOVE কোনো SQL command নয়।"
+    },
+    {
+      "id": 66,
+      "question": "Functional dependency A → B means:",
+      "options": {
+        "a": "B determines A",
+        "b": "A uniquely determines B",
+        "c": "A and B are independent",
+        "d": "None of these"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "A uniquely determines B",
+      "explanation": "A → B মানে A functionally determine করে B — A-এর প্রতিটি value-এর জন্য B-এর ঠিক একটি value আছে। এর মানে এই নয় যে B, A কে determine করে (সেটি হতো B → A)। এরা independent নয়।"
+    },
+    {
+      "id": 67,
+      "question": "BCNF is stricter than:",
+      "options": {
+        "a": "1NF",
+        "b": "2NF",
+        "c": "3NF",
+        "d": "All of these"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "All of these",
+      "explanation": "BCNF (Boyce-Codd Normal Form) 1NF, 2NF এবং 3NF-এর সবগুলোর চেয়ে কঠোর। BCNF-এর প্রতিটি relation 3NF, 2NF এবং 1NF-এ আছে, কিন্তু বিপরীতটি নয়। BCNF প্রয়োজন করে যে প্রতিটি determinant একটি candidate key হবে।"
+    },
+    {
+      "id": 68,
+      "question": "Which SQL join returns only the common/matching records?",
+      "options": {
+        "a": "LEFT JOIN",
+        "b": "RIGHT JOIN",
+        "c": "INNER JOIN",
+        "d": "FULL JOIN"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "INNER JOIN",
+      "explanation": "INNER JOIN শুধুমাত্র সেই row গুলো ফেরত দেয় যেখানে উভয় টেবিলে match আছে (intersection)। LEFT JOIN বাম টেবিলের সব row + ডান টেবিলের matched। RIGHT JOIN ডান টেবিলের সব row + বাম টেবিলের matched। FULL JOIN উভয় টেবিলের সব row।"
+    },
+    {
+      "id": 69,
+      "question": "ACID property 'I' stands for:",
+      "options": {
+        "a": "Integrity",
+        "b": "Isolation",
+        "c": "Index",
+        "d": "Independence"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Isolation",
+      "explanation": "ACID: Atomicity, Consistency, Isolation, Durability। Isolation নিশ্চিত করে যে concurrent transaction গুলো এমনভাবে execute হয় যেন একটি অন্যটির intermediate state দেখতে না পায়। Integrity সাধারণ DB ধারণা, ACID-এর 'I' নয়।"
+    },
+    {
+      "id": 70,
+      "question": "Which of the following is NOT a NoSQL database?",
+      "options": {
+        "a": "MongoDB",
+        "b": "Cassandra",
+        "c": "MySQL",
+        "d": "Redis"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "MySQL",
+      "explanation": "MySQL একটি relational (SQL) database যা table এবং structured query language ব্যবহার করে। MongoDB হলো document-based NoSQL। Cassandra হলো column-family NoSQL। Redis হলো key-value NoSQL। NoSQL = non-relational database।"
+    },
+    {
+      "id": 71,
+      "question": "Which transaction isolation level prevents dirty reads but allows non-repeatable reads?",
+      "options": {
+        "a": "Read Uncommitted",
+        "b": "Read Committed",
+        "c": "Repeatable Read",
+        "d": "Serializable"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Read Committed",
+      "explanation": "Read Committed dirty read (uncommitted ডেটা পড়া) প্রতিরোধ করে কিন্তু non-repeatable read (একই query ভিন্ন ফলাফল দেয়) অনুমোদন করে। Read Uncommitted dirty read অনুমোদন করে। Repeatable Read উভয়ই প্রতিরোধ করে। Serializable সবচেয়ে কঠোর।"
+    },
+    {
+      "id": 72,
+      "question": "Which SQL clause is logically executed first?",
+      "options": {
+        "a": "SELECT",
+        "b": "WHERE",
+        "c": "FROM",
+        "d": "ORDER BY"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "FROM",
+      "explanation": "SQL logical execution order: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY। FROM প্রথম — টেবিল চিহ্নিত হতে হবে filtering (WHERE) বা column select (SELECT) করার আগে। ORDER BY সবার শেষে।"
+    },
+    {
+      "id": 73,
+      "question": "If relation R(A,B,C) has functional dependencies: A→B, B→C, then A→C is:",
+      "options": {
+        "a": "Trivial",
+        "b": "Derived by transitivity",
+        "c": "Partial dependency",
+        "d": "Invalid"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Derived by transitivity",
+      "explanation": "A→C Armstrong's Axioms-এর transitivity rule দ্বারা প্রাপ্ত: যদি A→B এবং B→C, তাহলে A→C। এটি একটি transitive dependency (3NF তৈরির কারণ)। Trivial FD হলো A→A-এর মতো। এটি valid, partial নয়।"
+    },
+    {
+      "id": 74,
+      "question": "Which normal form requires every determinant to be a candidate key?",
+      "options": {
+        "a": "3NF",
+        "b": "BCNF",
+        "c": "2NF",
+        "d": "4NF"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "BCNF",
+      "explanation": "BCNF (Boyce-Codd Normal Form): প্রতিটি FD X → Y-এর জন্য, X অবশ্যই একটি candidate key (superkey) হতে হবে। এটি 3NF-এর চেয়ে কঠোর যা non-candidate key determinant অনুমোদন করে যদি Y prime attribute হয়। 4NF multivalued dependency সামলায়।"
+    },
+    {
+      "id": 75,
+      "question": "A relation is in 3NF but not in BCNF when:",
+      "options": {
+        "a": "Partial dependency exists",
+        "b": "Transitive dependency exists",
+        "c": "Non-key attribute determines the key",
+        "d": "Determinant is not a candidate key"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Determinant is not a candidate key",
+      "explanation": "3NF একটি non-candidate-key determinant অনুমোদন করে যদি dependent একটি prime attribute হয়। BCNF সব determinant-কে candidate key হতে বাধ্য করে — কোনো ব্যতিক্রম নেই। তাই 3NF-তে আছে কিন্তু BCNF-তে নেই এমন relation-এ এমন determinant থাকে যেটি candidate key নয়।"
     }
   ]
 }

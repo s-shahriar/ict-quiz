@@ -375,6 +375,32 @@
       "correct_answer": "c",
       "correct_answer_text": "malloc() and calloc()",
       "explanation": "malloc() এবং calloc() উভয়ই C-তে dynamic memory allocation-এর জন্য stdlib.h-এর স্ট্যান্ডার্ড ফাংশন। malloc() যেকোনো আকারের মেমোরি বরাদ্দ করে, calloc() মেমোরি বরাদ্দের পাশাপাশি সেটিকে শূন্য দিয়ে ইনিশিয়ালাইজ করে।"
+    },
+    {
+      "id": 29,
+      "question": "Which symbol is used for pointer in C?",
+      "options": {
+        "a": "&",
+        "b": "*",
+        "c": "#",
+        "d": "%"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "*",
+      "explanation": "* ব্যবহার করা হয় C-তে pointer declare এবং dereference করতে (যেমন int *ptr)। & হলো address-of operator (variable-এর address দেয়)। # হলো preprocessor directive-এর জন্য। % হলো modulo operator।"
+    },
+    {
+      "id": 30,
+      "question": "In C, dynamic memory allocation is done using:",
+      "options": {
+        "a": "alloc()",
+        "b": "new",
+        "c": "malloc()",
+        "d": "create()"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "malloc()",
+      "explanation": "malloc() (memory allocate) C-তে heap থেকে dynamically মেমোরি বরাদ্দ করে। 'new' হলো C++ syntax। alloc() এবং create() C standard library-তে নেই। Memory leak এড়াতে free() দিয়ে মেমোরি মুক্ত করতে হয়।"
     }
   ]
 }

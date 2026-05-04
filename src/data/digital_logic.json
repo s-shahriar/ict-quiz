@@ -390,6 +390,32 @@
       "correct_answer": "b",
       "correct_answer_text": "Higher bit density and low power consumption",
       "explanation": "DRAM এ প্রতিটি বিট একটি ক্যাপাসিটরে সংরক্ষিত হয় যা SRAM এর ফ্লিপ-ফ্লপ সার্কিটের চেয়ে অনেক ছোট, তাই DRAM এর bit density বেশি এবং বিদ্যুৎ খরচ কম। তবে DRAM কে বারবার refresh করতে হয়।"
+    },
+    {
+      "id": 30,
+      "question": "An 8:1 MUX requires how many select lines?",
+      "options": {
+        "a": "2",
+        "b": "3",
+        "c": "4",
+        "d": "8"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "3",
+      "explanation": "8:1 MUX-এ ৩টি select line প্রয়োজন (২³ = ৮টি input combination)। সূত্র: n select line → 2ⁿ input। ২টি line → 4:1 MUX। ৪টি line → 16:1 MUX।"
+    },
+    {
+      "id": 31,
+      "question": "XOR gate output is 1 when:",
+      "options": {
+        "a": "Inputs are the same",
+        "b": "Inputs are different",
+        "c": "Both inputs are 0",
+        "d": "Both inputs are 1"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Inputs are different",
+      "explanation": "XOR (Exclusive OR) output ১ হয় শুধুমাত্র তখন যখন input গুলো ভিন্ন (০,১ বা ১,০)। Input same হলে (০,০ বা ১,১) output ০। এটি OR gate থেকে আলাদা যেটি same-1 input-এও output ১ দেয়।"
     }
   ]
 }

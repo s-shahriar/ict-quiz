@@ -442,6 +442,292 @@
       "correct_answer_text": "the particular location of the computer",
       "page": 444,
       "explanation": "Subnet mask IP address-এর কোন অংশটি network এবং কোন অংশটি host তা নির্ধারণ করে, যা effectively computer-এর network-এ নির্দিষ্ট অবস্থান চিহ্নিত করে। এটি routing এবং network segmentation-এ গুরুত্বপূর্ণ ভূমিকা রাখে।"
+    },
+    {
+      "id": 32,
+      "question": "TCP provides:",
+      "options": {
+        "a": "Unreliable delivery",
+        "b": "Connectionless service",
+        "c": "Reliable delivery",
+        "d": "Broadcast"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Reliable delivery",
+      "explanation": "TCP (Transmission Control Protocol) connection-oriented এবং error-checking, ACK, ও retransmission সহ reliable, ordered delivery প্রদান করে। UDP unreliable/connectionless delivery দেয়। TCP broadcast support করে না।"
+    },
+    {
+      "id": 33,
+      "question": "IP operates at which OSI layer?",
+      "options": {
+        "a": "Data Link",
+        "b": "Network",
+        "c": "Transport",
+        "d": "Session"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Network",
+      "explanation": "IP (Internet Protocol) OSI model-এর Network Layer (Layer 3)-এ কাজ করে। Data Link MAC address সামলায়। Transport TCP/UDP সামলায়। Session application-এর মধ্যে connection পরিচালনা করে।"
+    },
+    {
+      "id": 34,
+      "question": "Port number size in TCP/UDP is:",
+      "options": {
+        "a": "8 bit",
+        "b": "16 bit",
+        "c": "32 bit",
+        "d": "64 bit"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "16 bit",
+      "explanation": "Port number হলো 16-bit integer (0–65535)। 8-bit হলে মাত্র 256 port পাওয়া যেত (খুবই কম)। 32-bit হলো IPv4 address-এর আকার। 64-bit হলো IPv6 address-এর আকার।"
+    },
+    {
+      "id": 35,
+      "question": "DNS primarily uses which transport protocol?",
+      "options": {
+        "a": "TCP",
+        "b": "UDP",
+        "c": "HTTP",
+        "d": "FTP"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "UDP",
+      "explanation": "DNS প্রধানত UDP (port 53) ব্যবহার করে দ্রুত, lightweight query-এর জন্য। UDP ব্যবহার হয় কারণ DNS response ছোট এবং speed গুরুত্বপূর্ণ। TCP শুধু বড় response বা zone transfer-এর জন্য ব্যবহৃত।"
+    },
+    {
+      "id": 36,
+      "question": "Subnet mask 255.255.255.0 is equivalent to:",
+      "options": {
+        "a": "/16",
+        "b": "/24",
+        "c": "/8",
+        "d": "/32"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "/24",
+      "explanation": "255.255.255.0 = 24টি 1 binary-তে (11111111.11111111.11111111.00000000) = /24। /16 = 255.255.0.0। /8 = 255.0.0.0। /32 = 255.255.255.255 (single host)।"
+    },
+    {
+      "id": 37,
+      "question": "TCP uses which mechanism for reliability?",
+      "options": {
+        "a": "Checksum only",
+        "b": "Acknowledgement & Retransmission",
+        "c": "Routing",
+        "d": "Fragmentation"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Acknowledgement & Retransmission",
+      "explanation": "TCP reliability আসে ACK (acknowledgement) থেকে — receiver receipt confirm করে, এবং Retransmission — sender unacknowledged packet পুনরায় পাঠায়। Checksum শুধু error detect করে। Routing এবং fragmentation IP-এর কাজ।"
+    },
+    {
+      "id": 38,
+      "question": "IPv4 address size is:",
+      "options": {
+        "a": "16 bits",
+        "b": "32 bits",
+        "c": "64 bits",
+        "d": "128 bits"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "32 bits",
+      "explanation": "IPv4 address 32 bit (4 octet, যেমন 192.168.1.1)। 16-bit খুবই ছোট। 64-bit স্ট্যান্ডার্ড নয়। 128-bit হলো IPv6। IPv4-এর 32 bit ~4.3 billion unique address দেয়।"
+    },
+    {
+      "id": 39,
+      "question": "In TCP, flow control is handled by:",
+      "options": {
+        "a": "Congestion window",
+        "b": "Sliding Window",
+        "c": "Routing table",
+        "d": "TTL"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Sliding Window",
+      "explanation": "TCP flow control Sliding Window mechanism ব্যবহার করে — receiver তার buffer size advertise করে, এবং sender সেই অনুযায়ী ডেটা সীমিত করে। Congestion window congestion control সামলায় (আলাদা!)। Routing table IP-এর জন্য। TTL infinite looping প্রতিরোধ করে।"
+    },
+    {
+      "id": 40,
+      "question": "TCP congestion control mainly uses:",
+      "options": {
+        "a": "ARP",
+        "b": "Slow Start",
+        "c": "DNS",
+        "d": "ICMP"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Slow Start",
+      "explanation": "TCP congestion control Slow Start algorithm ব্যবহার করে — ছোট window দিয়ে শুরু করে, প্রতি RTT তে double করে threshold পর্যন্ত, তারপর linearly বাড়ায়। ARP IP থেকে MAC resolve করে। DNS name থেকে IP resolve করে। ICMP error report করে।"
+    },
+    {
+      "id": 41,
+      "question": "Subnet mask of /26 provides how many usable hosts?",
+      "options": {
+        "a": "62",
+        "b": "64",
+        "c": "30",
+        "d": "126"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "62",
+      "explanation": "/26 মানে 26 network bit, 6 host bit → 2⁶ = 64 address। ২টি বাদ (network + broadcast) = 62 usable host। /30 দেয় ২টি host। /25 দেয় 126 host। 64 হলো total address, usable নয়।"
+    },
+    {
+      "id": 42,
+      "question": "Which protocol resolves IP address to MAC address?",
+      "options": {
+        "a": "RARP",
+        "b": "DNS",
+        "c": "ARP",
+        "d": "DHCP"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "ARP",
+      "explanation": "ARP (Address Resolution Protocol) IP address কে MAC address-এ map করে। RARP reverse করে (MAC → IP, obsolete)। DNS domain name কে IP-তে resolve করে। DHCP dynamically IP address assign করে।"
+    },
+    {
+      "id": 43,
+      "question": "DNS works on which port?",
+      "options": {
+        "a": "21",
+        "b": "53",
+        "c": "80",
+        "d": "25"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "53",
+      "explanation": "DNS port 53 ব্যবহার করে (UDP এবং TCP উভয়ই)। Port 21 হলো FTP। Port 80 হলো HTTP। Port 25 হলো SMTP (email)। এই port number গুলো IANA দ্বারা standardized।"
+    },
+    {
+      "id": 44,
+      "question": "If TCP window size is 0, the sender will:",
+      "options": {
+        "a": "Terminate the connection",
+        "b": "Wait and send probe segments",
+        "c": "Reset the connection",
+        "d": "Ignore the receiver"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Wait and send probe segments",
+      "explanation": "Window size = 0 হলে, receiver-এর buffer পূর্ণ। Sender data পাঠানো বন্ধ করে এবং periodically probe segment (Window Probe) পাঠায় window খুলেছে কিনা চেক করতে। এটি connection terminate বা reset করে না।"
+    },
+    {
+      "id": 45,
+      "question": "How many IP address classes exist in IPv4?",
+      "options": {
+        "a": "3",
+        "b": "4",
+        "c": "5",
+        "d": "6"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "5",
+      "explanation": "IPv4-এ ৫টি class আছে: A (বড় network), B (মাঝারি), C (ছোট), D (multicast), E (experimental/reserved)। Class A, B, C unicast-এর জন্য ব্যবহৃত। D multicast-এর জন্য। E ভবিষ্যতে ব্যবহারের জন্য reserved।"
+    },
+    {
+      "id": 46,
+      "question": "Which device operates at the Data Link Layer?",
+      "options": {
+        "a": "Router",
+        "b": "Hub",
+        "c": "Switch",
+        "d": "Gateway"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Switch",
+      "explanation": "Switch Layer 2 (Data Link)-এ কাজ করে MAC address ব্যবহার করে। Router Layer 3 (Network)-এ কাজ করে। Hub Layer 1 (Physical)-এ কাজ করে — সব port-এ broadcast করে। Gateway একাধিক layer-এ কাজ করতে পারে।"
+    },
+    {
+      "id": 47,
+      "question": "TCP is reliable because it uses:",
+      "options": {
+        "a": "ACK + Sequence numbers",
+        "b": "TTL",
+        "c": "MAC address",
+        "d": "Fragmentation"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "ACK + Sequence numbers",
+      "explanation": "TCP reliability আসে: Sequence number (packet order করে) + Acknowledgement (receipt confirm করে) + Retransmission (lost packet পুনরায় পাঠায়)। TTL হলো IP header field। MAC address হলো Layer 2। Fragmentation ও IP-এর কাজ।"
+    },
+    {
+      "id": 48,
+      "question": "Which protocol is connectionless?",
+      "options": {
+        "a": "TCP",
+        "b": "UDP",
+        "c": "FTP",
+        "d": "SMTP"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "UDP",
+      "explanation": "UDP (User Datagram Protocol) connectionless — কোনো handshake নেই, কোনো guaranteed delivery নেই, কোনো order নেই। TCP connection-oriented। FTP এবং SMTP উভয়ই TCP ব্যবহার করে (connection-oriented) reliable file/email transfer-এর জন্য।"
+    },
+    {
+      "id": 49,
+      "question": "Which statement is TRUE about TCP and UDP?",
+      "options": {
+        "a": "UDP guarantees delivery",
+        "b": "TCP is always faster",
+        "c": "TCP uses a 3-way handshake",
+        "d": "UDP uses congestion control"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "TCP uses a 3-way handshake",
+      "explanation": "TCP 3-way handshake (SYN, SYN-ACK, ACK) ব্যবহার করে connection establish করে। UDP delivery guarantee করে না। TCP UDP-এর চেয়ে slow (reliability-এর overhead)। UDP-তে congestion control নেই — সেটি TCP feature।"
+    },
+    {
+      "id": 50,
+      "question": "In TCP congestion control, after a timeout event, cwnd becomes:",
+      "options": {
+        "a": "Same as before",
+        "b": "Doubled",
+        "c": "1 MSS",
+        "d": "Half"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "1 MSS",
+      "explanation": "Timeout-এর পরে cwnd (congestion window) 1 MSS (Maximum Segment Size)-এ reset হয় এবং ssthresh অর্ধেক হয় — TCP ধরে নেয় severe congestion হয়েছে। ৩টি duplicate ACK-এর পরে (fast retransmit) cwnd অর্ধেক হয় (কম severe)।"
+    },
+    {
+      "id": 51,
+      "question": "In IPv4 header, TTL is used to prevent:",
+      "options": {
+        "a": "Congestion",
+        "b": "Packet loss",
+        "c": "Infinite looping",
+        "d": "Fragmentation"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Infinite looping",
+      "explanation": "TTL (Time To Live) packet network-এ forever loop করা প্রতিরোধ করে। প্রতিটি router TTL ১ কমায়; যখন ০ হয়, packet discard হয় (ICMP Time Exceeded ফেরত পাঠানো হয়)। Congestion TCP সামলায়। Fragmentation DF bit ব্যবহার করে।"
+    },
+    {
+      "id": 52,
+      "question": "Which protocol uses port 443?",
+      "options": {
+        "a": "HTTP",
+        "b": "HTTPS",
+        "c": "FTP",
+        "d": "SMTP"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "HTTPS",
+      "explanation": "HTTPS (HTTP Secure) TLS/SSL encryption সহ port 443 ব্যবহার করে। HTTP port 80 ব্যবহার করে (unencrypted)। FTP port 20/21 ব্যবহার করে। SMTP port 25 ব্যবহার করে। মনে রাখুন: 443 = HTTPS (secure), 80 = HTTP (plain)।"
+    },
+    {
+      "id": 53,
+      "question": "DNS primarily works at which OSI layer?",
+      "options": {
+        "a": "Network",
+        "b": "Transport",
+        "c": "Application",
+        "d": "Data Link"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Application",
+      "explanation": "DNS OSI model-এর Application Layer (Layer 7)-এ কাজ করে। এটি Transport Layer-এ UDP/TCP এবং Network Layer-এ IP ব্যবহার করে, কিন্তু DNS নিজে একটি application-layer protocol। HTTP, FTP, SMTP ও application layer-এ।"
     }
   ]
 }

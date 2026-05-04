@@ -337,6 +337,45 @@
       "correct_answer_text": "sequence of alphanumeric characters in a token",
       "page": "Compiler Design",
       "explanation": "Compiler Design-এ Lexeme হলো source code-এর সেই অক্ষরের ক্রম যা একটি token-এর সাথে match করে। উদাহরণস্বরূপ, `int` একটি lexeme যা keyword token গঠন করে, এবং `count` একটি lexeme যা identifier token গঠন করে।"
+    },
+    {
+      "id": 25,
+      "question": "The first step of SDLC is:",
+      "options": {
+        "a": "Coding",
+        "b": "Testing",
+        "c": "Requirement analysis",
+        "d": "Deployment"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Requirement analysis",
+      "explanation": "SDLC শুরু হয় Requirement Analysis দিয়ে — সিস্টেমটি কী করবে তা বোঝা। তারপর design → coding → testing → deployment → maintenance। Requirement ছাড়া কিছু সঠিকভাবে design বা build করা সম্ভব নয়।"
+    },
+    {
+      "id": 26,
+      "question": "Black box testing checks:",
+      "options": {
+        "a": "Internal code",
+        "b": "Internal logic",
+        "c": "Functionality",
+        "d": "Code structure"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Functionality",
+      "explanation": "Black box testing functionality/behavior পরীক্ষা করে অভ্যন্তরীণ code জানা ছাড়াই। Tester শুধু input এবং output দেখে। White box testing অভ্যন্তরীণ logic/code/structure পরীক্ষা করে।"
+    },
+    {
+      "id": 27,
+      "question": "Agile methodology emphasizes:",
+      "options": {
+        "a": "Comprehensive documentation",
+        "b": "Customer collaboration",
+        "c": "Following a fixed plan",
+        "d": "No testing needed"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Customer collaboration",
+      "explanation": "Agile-এর মূল value হলো Customer Collaboration over contract negotiation। এটি working software-কে documentation-এর উপরে, change respond করাকে plan follow করার উপরে, এবং individuals-কে processes-এর উপরে value দেয়।"
     }
   ]
 }
