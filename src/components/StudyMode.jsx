@@ -1,8 +1,13 @@
 import { useState } from 'react'
-import { ChevronLeft, Home, Eye, EyeOff, CheckCircle, Lightbulb } from 'lucide-react'
+import { ChevronLeft, Home, Eye, EyeOff, CheckCircle, Lightbulb, Star } from 'lucide-react'
 
-export default function StudyMode({ topic, onBack, onHome }) {
-  const questions = topic.questions.filter(q => q.options && q.correct_answer)
+export default function StudyMode({ topic, mastered, onNail, onBack, onHome }) {
+  const allQ = topic.questions
+    .map((q, i) => ({ q, qid: `${topic.id}__${i}` }))
+    .filter(({ q }) => q.options && q.correct_answer)
+
+  const visible  = allQ.filter(({ qid }) => !mastered.has(qid))
+  const nailedCt = allQ.length - visible.length
 
   return (
     <div className="study-page anim-fade">
@@ -16,31 +21,64 @@ export default function StudyMode({ topic, onBack, onHome }) {
         </button>
       </div>
 
-      <div className="study-list">
-        {questions.map((q, i) => (
-          <StudyCard key={q.id ?? i} question={q} index={i} color={topic.color} />
-        ))}
-      </div>
+      {nailedCt > 0 && (
+        <div className="nailed-notice" style={{ borderColor: `${topic.color}40`, color: topic.color }}>
+          <Star size={13} fill="currentColor" />
+          <span>{nailedCt} টি question Nailed — <button onClick={onHome} className="nailed-notice-link">Nailed It</button> এ দেখো</span>
+        </div>
+      )}
+
+      {visible.length === 0 ? (
+        <div className="study-all-nailed">
+          <Star size={38} style={{ color: topic.color, opacity: 0.5, marginBottom: 12 }} fill="currentColor" />
+          <p>সব প্রশ্ন Nailed করা হয়েছে! 🎉</p>
+          <button className="back-btn" style={{ marginTop: 16 }} onClick={onHome}>হোমে ফিরে যাও</button>
+        </div>
+      ) : (
+        <div className="study-list">
+          {visible.map(({ q, qid }, i) => (
+            <StudyCard
+              key={qid}
+              question={q}
+              index={i}
+              color={topic.color}
+              nailed={mastered.has(qid)}
+              onNail={() => onNail(qid)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
 
-function StudyCard({ question: q, index, color }) {
+function StudyCard({ question: q, index, color, nailed, onNail }) {
   const [shown, setShown] = useState(false)
   const opts = ['a','b','c','d'].filter(k => q.options?.[k])
 
   return (
-    <div className="study-card" style={{ '--c': color }}>
+    <div className={`study-card${nailed ? ' study-card-nailed' : ''}`} style={{ '--c': color }}>
       <div className="study-card-top">
         <span className="study-qnum" style={{ color }}>Q{index + 1}</span>
-        <button
-          className="study-toggle"
-          onClick={() => setShown(v => !v)}
-          style={{ color: shown ? color : 'var(--text-2)' }}
-        >
-          {shown ? <Eye size={12} /> : <EyeOff size={12} />}
-          {shown ? 'লুকাও' : 'উত্তর দেখো'}
-        </button>
+        <div className="study-card-actions">
+          <button
+            className={`nail-btn${nailed ? ' nailed' : ''}`}
+            onClick={onNail}
+            title={nailed ? 'Nailed It — click to un-nail' : 'Mark as Nailed It'}
+            style={nailed ? { color, borderColor: `${color}60`, background: `${color}15` } : {}}
+          >
+            <Star size={12} fill={nailed ? 'currentColor' : 'none'} />
+            {nailed ? 'Nailed ✓' : 'Nail It'}
+          </button>
+          <button
+            className="study-toggle"
+            onClick={() => setShown(v => !v)}
+            style={{ color: shown ? color : 'var(--text-2)' }}
+          >
+            {shown ? <Eye size={12} /> : <EyeOff size={12} />}
+            {shown ? 'লুকাও' : 'উত্তর দেখো'}
+          </button>
+        </div>
       </div>
 
       <p className="study-question">{q.question}</p>
@@ -49,11 +87,7 @@ function StudyCard({ question: q, index, color }) {
         {opts.map(key => {
           const isCorrect = shown && key === q.correct_answer
           return (
-            <div
-              key={key}
-              className={`study-opt${isCorrect ? ' correct' : ''}`}
-              style={isCorrect ? { color } : {}}
-            >
+            <div key={key} className={`study-opt${isCorrect ? ' correct' : ''}`} style={isCorrect ? { color } : {}}>
               <span className="study-opt-key">{key.toUpperCase()}</span>
               <span className="study-opt-text">{q.options[key]}</span>
               {isCorrect && <CheckCircle size={13} style={{ color, marginLeft: 'auto', flexShrink: 0 }} />}

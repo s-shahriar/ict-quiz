@@ -1,48 +1,106 @@
 import { useState } from 'react'
-import { Zap, Brain, PenLine } from 'lucide-react'
+import { Zap, Brain, PenLine, Star, ChevronDown, ChevronUp, X } from 'lucide-react'
 
-export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten }) {
-  const [module, setModule] = useState('mcq')
+export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, mastered, onUnnail }) {
+  const [module, setModule]         = useState('mcq')
+  const [nailedOpen, setNailedOpen] = useState(false)
+
+  // Build nailed questions grouped by topic for the panel
+  const nailedByTopic = topics.map(t => {
+    const qs = t.questions
+      .map((q, i) => ({ q, qid: `${t.id}__${i}` }))
+      .filter(({ q }) => q.options && q.correct_answer)
+      .filter(({ qid }) => mastered.has(qid))
+    return { topic: t, items: qs }
+  }).filter(g => g.items.length > 0)
+
+  const totalNailed = nailedByTopic.reduce((s, g) => s + g.items.length, 0)
 
   return (
     <div className="home anim-fade">
       <header className="home-header">
         <div className="logo-row">
-          <div className="logo-icon-wrap">
-            <Zap size={22} />
-          </div>
+          <div className="logo-icon-wrap"><Zap size={22} /></div>
           <span className="logo-title">ICT Quiz</span>
         </div>
         <p className="home-sub">Master Information &amp; Communication Technology</p>
 
-        {/* Module toggle */}
         <div className="module-toggle">
-          <button
-            className={`module-btn${module === 'mcq' ? ' active' : ''}`}
-            onClick={() => setModule('mcq')}
-          >
-            <Brain size={15} />
-            MCQ Module
+          <button className={`module-btn${module === 'mcq' ? ' active' : ''}`} onClick={() => setModule('mcq')}>
+            <Brain size={15} /> MCQ Module
           </button>
-          <button
-            className={`module-btn${module === 'written' ? ' active' : ''}`}
-            onClick={() => setModule('written')}
-          >
-            <PenLine size={15} />
-            Written Module
+          <button className={`module-btn${module === 'written' ? ' active' : ''}`} onClick={() => setModule('written')}>
+            <PenLine size={15} /> Written Module
           </button>
         </div>
-
       </header>
 
       {module === 'mcq' ? (
         <>
+          {/* Exam Mode card */}
+          <button className="exam-mode-card" onClick={onExam}>
+            <div className="emc-glow" aria-hidden="true" />
+            <div className="emc-icon-wrap">
+              <Zap size={22} className="emc-icon" />
+            </div>
+            <div className="emc-body">
+              <div className="emc-title">Exam Mode</div>
+              <div className="emc-sub">যেকোনো topic বেছে নাও, question সংখ্যা ঠিক করো — নিজেই পরীক্ষা নাও</div>
+              <div className="emc-pills">
+                <span className="emc-pill">12 Topics</span>
+                <span className="emc-pill">436 Questions</span>
+                <span className="emc-pill">Custom Count</span>
+              </div>
+            </div>
+            <div className="emc-cta">
+              Start Exam
+              <span className="emc-arrow">→</span>
+            </div>
+          </button>
+
           <p className="section-label">Choose a Topic</p>
           <main className="topics-grid">
-            {topics.map(t => (
-              <TopicCard key={t.id} topic={t} onClick={() => onSelectMCQ(t)} />
-            ))}
+            {topics.map(t => <TopicCard key={t.id} topic={t} onClick={() => onSelectMCQ(t)} />)}
           </main>
+
+          {/* Nailed It panel */}
+          {totalNailed > 0 && (
+            <div className="nailed-panel">
+              <button className="nailed-panel-header" onClick={() => setNailedOpen(v => !v)}>
+                <div className="nailed-panel-title">
+                  <Star size={15} fill="currentColor" style={{ color: '#f59e0b' }} />
+                  Nailed It
+                  <span className="nailed-count-badge">{totalNailed}</span>
+                </div>
+                {nailedOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+
+              {nailedOpen && (
+                <div className="nailed-panel-body anim-slide">
+                  {nailedByTopic.map(({ topic: t, items }) => (
+                    <div key={t.id} className="nailed-topic-group">
+                      <div className="nailed-topic-label" style={{ color: t.color }}>
+                        <span className="nailed-topic-dot" style={{ background: t.color }} />
+                        {t.name}
+                      </div>
+                      {items.map(({ q, qid }) => (
+                        <div key={qid} className="nailed-item">
+                          <span className="nailed-item-text">{q.question}</span>
+                          <button
+                            className="nailed-unnail-btn"
+                            onClick={() => onUnnail(qid)}
+                            title="Remove from Nailed It"
+                          >
+                            <X size={13} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </>
       ) : (
         <>
