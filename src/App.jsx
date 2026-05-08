@@ -21,6 +21,12 @@ export default function App() {
 
   return (
     <div className="app-root">
+      {/* Animated aurora background */}
+      <div className="bg-canvas" aria-hidden="true">
+        <div className="bg-aurora" />
+        <div className="bg-grid" />
+      </div>
+
       <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
         {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
       </button>

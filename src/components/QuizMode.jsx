@@ -152,6 +152,7 @@ function ScoreScreen({ score, total, topic, onRetry, onHome }) {
               stroke={topic.color}
               strokeDasharray={circumference}
               strokeDashoffset={strokeOffset}
+              style={{ filter: `drop-shadow(0 0 8px ${topic.color})` }}
             />
           </svg>
           <div className="score-ring-text">

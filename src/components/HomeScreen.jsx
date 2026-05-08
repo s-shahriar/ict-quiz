@@ -14,8 +14,14 @@ export default function HomeScreen({ topics, onSelect }) {
         </div>
         <p className="home-sub">Master Information &amp; Communication Technology</p>
         <div className="home-stats-row">
-          <div className="stat-badge"><strong>{topics.length}</strong>&nbsp;topics</div>
-          <div className="stat-badge"><strong>{totalQ}</strong>&nbsp;questions</div>
+          <div className="stat-badge">
+            <span className="stat-dot" />
+            <strong>{topics.length}</strong>&nbsp;topics
+          </div>
+          <div className="stat-badge">
+            <span className="stat-dot" />
+            <strong>{totalQ}</strong>&nbsp;questions
+          </div>
         </div>
       </header>
 
