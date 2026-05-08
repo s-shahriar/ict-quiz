@@ -7,17 +7,19 @@ export default function HomeScreen({ topics, onSelect }) {
     <div className="home anim-fade">
       <header className="home-header">
         <div className="logo-row">
-          <Zap size={26} className="logo-zap" />
+          <div className="logo-icon-wrap">
+            <Zap size={22} />
+          </div>
           <span className="logo-title">ICT Quiz</span>
         </div>
         <p className="home-sub">Master Information &amp; Communication Technology</p>
-        <div className="home-stats">
-          <em>{topics.length}</em> <span>topics</span>
-          &nbsp;·&nbsp;
-          <em>{totalQ}</em> <span>questions</span>
+        <div className="home-stats-row">
+          <div className="stat-badge"><strong>{topics.length}</strong>&nbsp;topics</div>
+          <div className="stat-badge"><strong>{totalQ}</strong>&nbsp;questions</div>
         </div>
       </header>
 
+      <p className="section-label">Choose a Topic</p>
       <main className="topics-grid">
         {topics.map(t => <TopicCard key={t.id} topic={t} onClick={() => onSelect(t)} />)}
       </main>

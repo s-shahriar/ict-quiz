@@ -60,12 +60,14 @@ export default function QuizMode({ topic, onBack, onHome }) {
         <span className="quiz-score-pill">{score} pts</span>
       </div>
 
-      <div className="quiz-progress-track">
-        <div className="quiz-progress-fill" style={{ width: `${progress}%`, background: topic.color }} />
-      </div>
-
-      <div className="quiz-meta">
-        <span className="quiz-qnum">Question {idx + 1} / {questions.length}</span>
+      <div className="quiz-progress-wrap">
+        <div className="quiz-progress-header">
+          <span className="quiz-qnum">Question {idx + 1} of {questions.length}</span>
+          <span className="quiz-pct">{Math.round(progress)}%</span>
+        </div>
+        <div className="quiz-progress-track">
+          <div className="quiz-progress-fill" style={{ width: `${progress}%`, background: topic.color }} />
+        </div>
       </div>
 
       <div className="quiz-card anim-slide">
@@ -89,7 +91,7 @@ export default function QuizMode({ topic, onBack, onHome }) {
                 <span className="opt-key">{key.toUpperCase()}</span>
                 <span className="opt-text">{q.options[key]}</span>
                 {revealed && key === q.correct_answer && (
-                  <CheckCircle size={15} className="opt-icon" style={{ color: topic.color }} />
+                  <CheckCircle size={15} className="opt-icon" style={{ color: '#10b981' }} />
                 )}
                 {revealed && key === selected && key !== q.correct_answer && (
                   <XCircle size={15} className="opt-icon" style={{ color: '#ef4444' }} />
@@ -113,11 +115,7 @@ export default function QuizMode({ topic, onBack, onHome }) {
         )}
 
         {revealed && (
-          <button
-            className="quiz-next-btn"
-            style={{ background: topic.color }}
-            onClick={next}
-          >
+          <button className="quiz-next-btn" onClick={next}>
             {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}
             <ArrowRight size={16} />
           </button>
@@ -130,20 +128,40 @@ export default function QuizMode({ topic, onBack, onHome }) {
 function ScoreScreen({ score, total, topic, onRetry, onHome }) {
   const pct = total > 0 ? Math.round((score / total) * 100) : 0
   const msg =
-    pct >= 80 ? '🎯 অসাধারণ! তুমি দারুণ করেছ!' :
-    pct >= 60 ? '👍 ভালো হয়েছে! আরেকটু চেষ্টা করো।' :
-    pct >= 40 ? '📚 আরো অনুশীলন করো।' :
-                '💪 হাল ছেড়ো না, আবার চেষ্টা করো!'
+    pct >= 80 ? 'অসাধারণ! তুমি দারুণ করেছ!' :
+    pct >= 60 ? 'ভালো হয়েছে! আরেকটু চেষ্টা করো।' :
+    pct >= 40 ? 'আরো অনুশীলন করো।' :
+                'হাল ছেড়ো না, আবার চেষ্টা করো!'
+
+  const r = 54
+  const circumference = 2 * Math.PI * r
+  const strokeOffset = circumference - (pct / 100) * circumference
 
   return (
     <div className="score-page anim-fade">
       <div className="score-card">
-        <Trophy size={46} className="score-trophy" style={{ color: topic.color }} />
+        <Trophy size={44} className="score-trophy" style={{ color: topic.color }} />
         <div className="score-title">কুইজ সম্পন্ন!</div>
-        <div className="score-fraction" style={{ color: topic.color }}>
-          {score}<span className="score-total">/{total}</span>
+
+        <div className="score-ring-wrap">
+          <svg className="score-ring-svg" width="138" height="138" viewBox="0 0 138 138">
+            <circle className="score-ring-bg" cx="69" cy="69" r={r} />
+            <circle
+              className="score-ring-fill"
+              cx="69" cy="69" r={r}
+              stroke={topic.color}
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeOffset}
+            />
+          </svg>
+          <div className="score-ring-text">
+            <div className="score-fraction" style={{ color: topic.color }}>
+              {score}<span className="score-total">/{total}</span>
+            </div>
+            <div className="score-pct">{pct}%</div>
+          </div>
         </div>
-        <div className="score-pct">{pct}%</div>
+
         <div className="score-msg">{msg}</div>
         <div className="score-actions">
           <button className="score-retry" onClick={onRetry}>আবার চেষ্টা</button>

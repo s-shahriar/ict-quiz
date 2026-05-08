@@ -11,9 +11,13 @@ export default function ModeSelect({ topic, onQuiz, onStudy, onBack }) {
       <div className="mode-topic-hero">
         <div
           className="mode-icon-circle"
-          style={{ background: `${topic.color}18`, color: topic.color }}
+          style={{
+            background: `${topic.color}1a`,
+            color: topic.color,
+            boxShadow: `0 8px 40px ${topic.color}30, 0 0 0 1px ${topic.color}20`,
+          }}
         >
-          <Icon size={34} />
+          <Icon size={38} />
         </div>
         <div className="mode-topic-name" style={{ color: topic.color }}>
           {topic.name}
@@ -23,14 +27,18 @@ export default function ModeSelect({ topic, onQuiz, onStudy, onBack }) {
 
       <div className="mode-cards">
         <button className="mode-card" onClick={onQuiz}>
-          <Brain size={32} style={{ color: topic.color }} />
+          <div className="mode-card-icon" style={{ background: `${topic.color}1a`, color: topic.color }}>
+            <Brain size={26} />
+          </div>
           <h3>Quiz Mode</h3>
           <p>Answer questions one by one. Get instant right/wrong feedback and track your score.</p>
           <span className="mode-card-cta" style={{ color: topic.color }}>Start Quiz →</span>
         </button>
 
         <button className="mode-card" onClick={onStudy}>
-          <BookOpen size={32} style={{ color: topic.color }} />
+          <div className="mode-card-icon" style={{ background: `${topic.color}1a`, color: topic.color }}>
+            <BookOpen size={26} />
+          </div>
           <h3>Study Mode</h3>
           <p>Browse all Q&amp;As at your own pace. Reveal answers when ready. Great for revision.</p>
           <span className="mode-card-cta" style={{ color: topic.color }}>Start Reading →</span>
