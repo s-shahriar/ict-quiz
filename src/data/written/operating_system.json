@@ -1,0 +1,122 @@
+{
+  "category": "operating_system",
+  "questions": [
+    {
+      "id": "os_001",
+      "q": "Explain Paging vs. Framing vs. Segmentation in Operating Systems.",
+      "tags": ["paging", "framing", "segmentation", "memory management"],
+      "answer": {
+        "summary": "Paging ও Framing একসাথে কাজ করে (logical↔physical fixed-size), Segmentation variable-size logical unit — তিনটিই memory management কৌশল কিন্তু উদ্দেশ্য আলাদা।",
+        "points": [
+          "Paging: Process এর logical memory কে fixed-size block এ ভাগ করা হয় → এগুলো Page। External fragmentation নেই, internal fragmentation হতে পারে।",
+          "Framing: Physical memory (RAM) কে fixed-size block এ ভাগ করা হয় → এগুলো Frame। Frame size = Page size সবসময়।",
+          "Paging ↔ Framing: Page হলো logical side, Frame হলো physical side। OS একটি Page Table রাখে (page → frame mapping)।",
+          "Segmentation: Process কে variable-size logical unit এ ভাগ করা হয় → Code, Data, Stack, Heap। External fragmentation হতে পারে, internal fragmentation নেই।",
+          "OS একটি Segment Table রাখে (segment → base address + limit)।"
+        ],
+        "diagram": "PAGING:\n Logical (Process)        Physical (RAM)\n ┌──────────┐            ┌──────────┐ ← Frame 0\n │  Page 0  │──────────→ │  Page 1  │\n ├──────────┤            ├──────────┤ ← Frame 1\n │  Page 1  │──────┐     │  Page 0  │\n ├──────────┤      │     ├──────────┤ ← Frame 2\n │  Page 2  │───┐  └───→ │  Page 2  │\n └──────────┘   └──────→ └──────────┘\n Fixed size → ছড়িয়ে থাকলেও সমস্যা নেই\n\nSEGMENTATION:\n Logical (Process)        Physical (RAM)\n ┌────────────────┐      ┌──────────────────────┐\n │   Code Seg     │────→ │ Code  (var. size)     │\n ├────────┐       │      ├──────────────────────┤\n │ Data   │       │      │ [gap] ← external frag │\n ├────────┘       │      ├──────────────────────┤\n │   Stack Seg    │────→ │ Stack (var. size)     │\n └────────────────┘      └──────────────────────┘\n Variable size → gaps তৈরি হয়",
+        "mistakes": [
+          ["Frame আর Page আলাদা জিনিস", "Frame = physical RAM এর block, Page = logical process এর block — size সমান কিন্তু অবস্থান আলাদা"],
+          ["Segmentation এ internal fragmentation হয়", "না — internal fragmentation Paging এ হয়, Segmentation এ external fragmentation হয়"]
+        ],
+        "table": {
+          "headers": ["", "Paging", "Segmentation"],
+          "rows": [
+            ["বিভাজন", "Fixed-size (pages)", "Variable-size (segments)"],
+            ["Fragmentation", "Internal", "External"],
+            ["User দেখতে পায়?", "না (OS manage করে)", "হ্যাঁ (logical unit)"],
+            ["Table", "Page Table", "Segment Table"],
+            ["Address গঠন", "Page # + Offset", "Segment # + Offset"]
+          ]
+        },
+        "mnemonic": "Paging = পিজ্জা সমান টুকরো (fixed size), Segmentation = সবার মনের মতো ছেঁড়া (variable size)। Frame = Paging এর physical side — Page এর set, RAM তে থাকে।"
+      }
+    },
+    {
+      "id": "os_002",
+      "q": "In an office with 50-70 employees, what is Active Directory, and why is it needed and how does it help?",
+      "tags": ["Active Directory", "Domain Controller", "Group Policy", "GPO", "Windows Server", "SSO"],
+      "answer": {
+        "summary": "Active Directory (AD) হলো Microsoft এর centralized user ও resource management system — একটি server এ সব employee এর account, permission, ও policy রাখা হয়। ৫০-৭০ জনের অফিসে এটি ছাড়া প্রতিটি computer আলাদাভাবে manage করা অসম্ভব কষ্টকর।",
+        "points": [
+          "Domain Controller (DC): AD চালায় এমন Windows Server — সব authentication এখানে হয়",
+          "Single Sign-On (SSO): একটি username/password দিয়ে যেকোনো PC, printer, file server এ login",
+          "Group Policy (GPO): IT admin একবার rule set করলে সব PC তে automatically apply — password policy, screen lock, USB block সব",
+          "Organizational Unit (OU): AD এর ভেতরে department ভাগ — Finance OU, HR OU, IT OU আলাদা permission",
+          "Employee joins: AD তে 1 account তৈরি → সব PC তে কাজ করে (50-70 PC তে আলাদা করতে হয় না)",
+          "Employee leaves: AD তে 1 account disable → সঙ্গে সঙ্গে সব PC, server, printer এ access বন্ধ",
+          "Role-based access: Finance PC থেকে HR folder দেখা যাবে না — OU ও GPO দিয়ে enforce করা হয়"
+        ],
+        "diagram": "WITHOUT AD (50-70 PC):\n┌──────┐ ┌──────┐ ┌──────┐       ┌──────┐\n│ PC 1 │ │ PC 2 │ │ PC 3 │  ···  │ PC 70│\n│ Rahim│ │ Rahim│ │ Rahim│       │ Rahim│ ← 70 জায়গায় আলাদা account!\n└──────┘ └──────┘ └──────┘       └──────┘\nRahim leaves → 70 PC তে delete 😩\n\nWITH ACTIVE DIRECTORY:\n         ┌──────────────────────────┐\n         │     DOMAIN CONTROLLER   │\n         │  ┌──────────────────┐   │\n         │  │ ACTIVE DIRECTORY │   │\n         │  │ Users / Computers│   │\n         │  │ Printers / Policy│   │\n         │  └──────────────────┘   │\n         └────────────┬────────────┘\n                      │ authenticate\n        ┌─────────────┼─────────────┐\n        ▼             ▼             ▼\n   ┌─────────┐   ┌─────────┐   ┌─────────┐\n   │ Finance │   │   HR    │   │   IT    │\n   │   PC    │   │   PC    │   │   PC    │\n   └─────────┘   └─────────┘   └─────────┘\nRahim joins → 1 account → works on ALL PCs ✅\nRahim leaves → 1 disable → blocked everywhere ✅",
+        "mistakes": [
+          ["AD শুধু বড় company র জন্য", "না — ৫০+ employee এর যেকোনো office এ AD দরকার, সময় ও cost বাঁচায়"],
+          ["Domain Controller বন্ধ হলে internet বন্ধ", "না — DC বন্ধ হলে শুধু AD authentication বন্ধ, internet চলতে থাকে"]
+        ],
+        "table": {
+          "headers": ["Group Policy (GPO)", "উদাহরণ"],
+          "rows": [
+            ["Password policy", "Minimum 8 character, 90 দিনে expire"],
+            ["Screen lock", "5 মিনিট idle হলে lock"],
+            ["USB block", "Finance PC তে USB drive disabled"],
+            ["Software install", "Employee নিজে install করতে পারবে না"],
+            ["Network drive", "HR PC তে HR folder auto-mount"],
+            ["Windows Update", "সব PC তে একসাথে update push"]
+          ]
+        },
+        "mnemonic": "Active Directory = অফিসের Central HR ও Security Database — একটি জায়গায় সব employee এর তথ্য ও নিয়ম। একবার বদলালে পুরো অফিসে বদলায়। কেউ চলে গেলে একটি switch OFF — সব access বন্ধ।"
+      }
+    },
+    {
+      "id": "os_003",
+      "q": "Differentiate between Logical Address and Physical Address in context of Operating System.",
+      "tags": ["logical address", "physical address", "MMU", "virtual address", "memory management"],
+      "answer": {
+        "summary": "Logical address = CPU যে address তৈরি করে (process এর নিজস্ব view), Physical address = RAM এর আসল location। MMU hardware দুটোর মধ্যে translate করে।",
+        "points": [
+          "Logical Address: CPU প্রতিটি instruction execute করার সময় তৈরি করে। Process মনে করে সে 0 থেকে শুরু করে। User program শুধু এটাই দেখে।",
+          "Physical Address: RAM chip এর আসল location। MMU (Memory Management Unit) তৈরি করে। Hardware এ এটাই ব্যবহার হয়।",
+          "MMU: Logical → Physical translate করার hardware। Base register যোগ করে বা Page Table ব্যবহার করে।",
+          "একাধিক process এর logical address same হতে পারে — physical আলাদা থাকে → process isolation নিশ্চিত",
+          "Virtual memory সম্ভব — logical space RAM এর চেয়ে বড় হতে পারে"
+        ],
+        "diagram": " CPU                MMU                   RAM\n ┌────┐  Logical   ┌──────────────┐  Physical\n │    │──0x0050───▶│ Base = 0x3000│──0x3050──▶ [actual RAM]\n │    │            │ 0x3000+0x0050│\n └────┘            └──────────────┘\n\n Multiple processes — same logical, different physical:\n  Process A: logical 0x0050 → physical 0x3050\n  Process B: logical 0x0050 → physical 0x7050\n  → Process isolation নিশ্চিত হয়",
+        "mistakes": [
+          ["Logical ও Physical address সবসময় আলাদা value", "প্রথমবার RAM এর শুরুতে load হলে same হতে পারে, কিন্তু সাধারণত আলাদা"],
+          ["User program physical address ব্যবহার করে", "না — user program শুধু logical address দেখে, physical address OS ও MMU manage করে"]
+        ],
+        "table": {
+          "headers": ["", "Logical Address", "Physical Address"],
+          "rows": [
+            ["তৈরি করে", "CPU", "MMU"],
+            ["দেখে", "User program", "Hardware (RAM)"],
+            ["শুরু", "সবসময় 0 থেকে", "যেকোনো RAM location"],
+            ["পরিবর্তন হয়?", "না (প্রতি run এ একই)", "হ্যাঁ (কোথায় load হলো তার উপর)"],
+            ["অন্য নাম", "Virtual Address", "Real Address"]
+          ]
+        },
+        "mnemonic": "Logical = বাড়ির ভেতরে ঘরের নম্বর (প্রতিটি বাড়িতে ১ থেকে শুরু), Physical = শহরে আসল ঠিকানা (unique)। MMU = ডাকপিয়ন যে ভেতরের নম্বর দেখে শহরের ঠিকানায় পৌঁছে দেয়।"
+      }
+    },
+    {
+      "id": "os_004",
+      "q": "Briefly explain 'Circular Wait.' In a Resource Allocation Graph (RAG), if a cycle exists, does it absolutely guarantee that a Deadlock has occurred? Explain briefly.",
+      "tags": ["circular wait", "deadlock", "RAG", "resource allocation graph", "Coffman conditions"],
+      "answer": {
+        "summary": "Circular Wait = processes এর চক্রাকার অপেক্ষা — প্রতিটি process এমন resource এর জন্য অপেক্ষা করে যা পরের process ধরে আছে। RAG এ cycle থাকলেই deadlock নিশ্চিত নয় — শুধু single instance resource এ নিশ্চিত।",
+        "points": [
+          "Circular Wait: P1 → R1 ধরে R2 চায়, P2 → R2 ধরে R1 চায় → চক্র — কেউ এগোতে পারে না",
+          "Deadlock এর ৪টি Coffman শর্ত: Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait",
+          "Single instance resource + RAG cycle → Deadlock GUARANTEED ✅",
+          "Multiple instance resource + RAG cycle → Deadlock POSSIBLE কিন্তু নিশ্চিত নয় ❌",
+          "Cycle = necessary condition কিন্তু sufficient condition নয় (multiple instance এর ক্ষেত্রে)"
+        ],
+        "diagram": "SINGLE INSTANCE (Cycle = Deadlock নিশ্চিত ✅):\n ○P1 ──→ □R2 ──→ ○P2\n  ↑                │\n  └────── □R1 ←───┘\n P1 ধরে R1 চায় R2, P2 ধরে R2 চায় R1 → Deadlock!\n\nMULTIPLE INSTANCE (Cycle ≠ Deadlock নিশ্চিত ❌):\n R1 এর ২টি instance:\n ○P1 ──→ □R1 (instance 1 → P2 এর কাছে)\n ○P2 ──→ □R1 (instance 2 চায়)\n ○P3 ←── □R1 (P3 instance পেয়েছে, কাজ শেষে ছাড়বে)\n P3 শেষ করে R1 ছাড়বে → P2 পাবে → P1 পাবে\n Cycle আছে কিন্তু Deadlock নেই!\n\nRAG Symbols:\n ○ = Process,  □ = Resource (dots = instances)\n P──→R = Request edge,  R──→P = Assignment edge",
+        "mistakes": [
+          ["RAG এ cycle থাকলে সবসময় deadlock", "শুধু single instance এ guaranteed। Multiple instance এ cycle থাকলেও deadlock নাও হতে পারে"],
+          ["Circular Wait একাই deadlock ঘটায়", "না — চারটি Coffman শর্ত একসাথে থাকলেই deadlock"]
+        ],
+        "mnemonic": "Circular Wait = গোল চক্কর traffic jam — সবাই সামনের গাড়ির জন্য অপেক্ষা। RAG Cycle: Single instance = cycle মানেই deadlock নিশ্চিত। Multiple instance = cycle থাকলেই deadlock না। Cycle = necessary but NOT sufficient।"
+      }
+    }
+  ]
+}

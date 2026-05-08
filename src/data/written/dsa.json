@@ -1,0 +1,67 @@
+{
+  "category": "dsa",
+  "questions": [
+    {
+      "id": "dsa_001",
+      "q": "Analyze the time complexity of Quicksort when all elements are already sorted and the first element is the pivot. How does the pivot position affect performance?",
+      "tags": ["quicksort", "time complexity", "pivot", "worst case"],
+      "answer": {
+        "summary": "Sorted array + first element pivot = Quicksort এর worst case → O(n²), কারণ প্রতিটি partition সম্পূর্ণ unbalanced হয়।",
+        "points": [
+          "Sorted array তে first element সবসময় সবচেয়ে ছোট → প্রতিটি partition এ left=0, right=n−1",
+          "Recurrence: T(n) = T(0) + T(n−1) + O(n) → সমাধান: T(n) = O(n²)",
+          "মোট comparisons = (n−1)+(n−2)+...+1 = n(n−1)/2 = O(n²)",
+          "Recursion tree সম্পূর্ণ skewed (একদিকে হেলে) → n level গভীর",
+          "এটি Quicksort এর worst case — average case O(n log n) থেকে অনেক খারাপ"
+        ],
+        "diagram": " Sorted: [1, 2, 3, 4, 5],  pivot = first element\n\n Step 1:  pivot=1  │ left=[]  right=[2,3,4,5]  │ 4 comparisons\n Step 2:  pivot=2  │ left=[]  right=[3,4,5]    │ 3 comparisons\n Step 3:  pivot=3  │ left=[]  right=[4,5]      │ 2 comparisons\n Step 4:  pivot=4  │ left=[]  right=[5]        │ 1 comparison\n                                         Total = 4+3+2+1 = 10 = O(n²)\n\n Recursion tree (সম্পূর্ণ skewed):\n        [1,2,3,4,5]                   ← depth 1\n       /             \\\n     []           [2,3,4,5]           ← depth 2\n                 /           \\\n               []          [3,4,5]    ← depth 3\n                           /      \\\n                         []      [4,5]← depth 4\n                                /    \\\n                              []     [5] ← depth 5\n n level গভীর → O(n²)",
+        "mistakes": [
+          ["Quicksort সবসময় O(n log n)", "না — worst case O(n²) যখন pivot সবসময় সবচেয়ে ছোট বা বড় হয়"],
+          ["Sorted array তে সব sorting algorithm ভালো করে", "না — Quicksort (first pivot) sorted array তে সবচেয়ে খারাপ করে"]
+        ],
+        "table": {
+          "headers": ["Pivot choice", "Sorted array তে", "Random array তে"],
+          "rows": [
+            ["First element", "❌ O(n²) worst", "O(n log n) avg"],
+            ["Last element", "❌ O(n²) worst", "O(n log n) avg"],
+            ["Middle element", "✅ O(n log n)", "O(n log n) avg"],
+            ["Random element", "✅ O(n log n) expected", "O(n log n) avg"],
+            ["Median-of-3", "✅ O(n log n)", "O(n log n) avg"]
+          ]
+        },
+        "mnemonic": "\"Sorted দেখলে Quicksort ভয় পায়\" — first/last pivot + sorted array = worst case O(n²)। ভালো pivot = middle বা random → balanced tree → O(n log n)।"
+      }
+    },
+    {
+      "id": "dsa_002",
+      "q": "Explain the logic of Bubble Sort. Why is it considered inefficient for large datasets compared to Merge Sort?",
+      "tags": ["bubble sort", "merge sort", "time complexity", "sorting"],
+      "answer": {
+        "summary": "Bubble Sort প্রতি pass এ adjacent elements compare করে বড়টাকে শেষে পাঠায় — O(n²) complexity এর কারণে large data তে Merge Sort (O(n log n)) এর তুলনায় অনেক ধীর।",
+        "points": [
+          "প্রতিটি pass এ পাশাপাশি দুটো element compare করা হয়, wrong order হলে swap করা হয়",
+          "এক pass এ সবচেয়ে বড় element array এর শেষে settle করে (বুদবুদের মতো ভেসে ওঠে)",
+          "n element এর জন্য সর্বোচ্চ n−1 pass লাগে",
+          "Worst case: O(n²) — reverse sorted array। Best case: O(n) — already sorted",
+          "In-place sorting → extra memory লাগে না: O(1) space"
+        ],
+        "diagram": " Initial: [5, 3, 8, 1]\n\n Pass 1:\n  [5, 3, 8, 1] → 5>3 swap  → [3, 5, 8, 1]\n  [3, 5, 8, 1] → 5<8 no    → [3, 5, 8, 1]\n  [3, 5, 8, 1] → 8>1 swap  → [3, 5, 1, 8]  ✓ 8 settled\n\n Pass 2:\n  [3, 5, 1, 8] → 3<5 no    → [3, 5, 1, 8]\n  [3, 5, 1, 8] → 5>1 swap  → [3, 1, 5, 8]  ✓ 5 settled\n\n Pass 3:\n  [3, 1, 5, 8] → 3>1 swap  → [1, 3, 5, 8]  ✓ 3 settled\n\n Result: [1, 3, 5, 8] ✅",
+        "mistakes": [
+          ["Bubble Sort সবসময় O(n²)", "না — already sorted array তে early exit optimization সহ O(n) possible"],
+          ["Bubble Sort in-place নয়", "না — Bubble Sort in-place, O(1) extra space মাত্র"]
+        ],
+        "table": {
+          "headers": ["", "Bubble Sort", "Merge Sort"],
+          "rows": [
+            ["Time (worst)", "❌ O(n²)", "✅ O(n log n)"],
+            ["Time (best)", "O(n)", "O(n log n)"],
+            ["Space", "✅ O(1) in-place", "❌ O(n) extra"],
+            ["Stable?", "✅ হ্যাঁ", "✅ হ্যাঁ"],
+            ["n=1000 এ operations", "≈ 1,000,000", "≈ 10,000"]
+          ]
+        },
+        "mnemonic": "বুদবুদের মতো — সবচেয়ে বড় element প্রতি pass এ ভেসে শেষে যায়। কিন্তু বুদবুদ তোলা slow — বড় পুকুরে (large data) কাজ করে না।"
+      }
+    }
+  ]
+}

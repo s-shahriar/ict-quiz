@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Sun, Moon } from 'lucide-react'
 import { TOPICS } from './data/index.js'
+import { getWrittenData, getWrittenCount } from './data/written/index.js'
 import HomeScreen from './components/HomeScreen.jsx'
 import ModeSelect from './components/ModeSelect.jsx'
 import QuizMode from './components/QuizMode.jsx'
 import StudyMode from './components/StudyMode.jsx'
+import WrittenMode from './components/WrittenMode.jsx'
+
+// Topics that have written questions, enriched with writtenCount
+const WRITTEN_TOPICS = TOPICS
+  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
+  .filter(t => t.writtenCount > 0)
 
 export default function App() {
   const [screen, setScreen] = useState('home')
@@ -21,7 +28,6 @@ export default function App() {
 
   return (
     <div className="app-root">
-      {/* Animated aurora background */}
       <div className="bg-canvas" aria-hidden="true">
         <div className="bg-aurora" />
         <div className="bg-grid" />
@@ -34,7 +40,9 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           topics={TOPICS}
-          onSelect={(t) => { setSelectedTopic(t); setScreen('mode') }}
+          writtenTopics={WRITTEN_TOPICS}
+          onSelectMCQ={(t) => { setSelectedTopic(t); setScreen('mode') }}
+          onSelectWritten={(t) => { setSelectedTopic(t); setScreen('written') }}
         />
       )}
       {screen === 'mode' && (
@@ -42,7 +50,7 @@ export default function App() {
           topic={selectedTopic}
           onQuiz={() => setScreen('quiz')}
           onStudy={() => setScreen('study')}
-          onBack={() => setScreen('home')}
+          onBack={goHome}
         />
       )}
       {screen === 'quiz' && (
@@ -57,6 +65,15 @@ export default function App() {
         <StudyMode
           topic={selectedTopic}
           onBack={() => setScreen('mode')}
+          onHome={goHome}
+        />
+      )}
+      {screen === 'written' && (
+        <WrittenMode
+          key={selectedTopic.id + '-written'}
+          topic={selectedTopic}
+          writtenData={getWrittenData(selectedTopic.id)}
+          onBack={goHome}
           onHome={goHome}
         />
       )}

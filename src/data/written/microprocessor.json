@@ -1,0 +1,36 @@
+{
+  "category": "microprocessor",
+  "questions": [
+    {
+      "id": "mp_001",
+      "q": "Why do modern processor designs favor multistage pipeline approach over single cycle implementation? Explain with appropriate reasoning.",
+      "tags": ["pipeline", "single cycle", "CPU", "stages", "throughput", "clock"],
+      "answer": {
+        "summary": "Single cycle এ প্রতিটি instruction পুরো clock নেয় — slowest instruction এর জন্য সবাইকে অপেক্ষা করতে হয়। Pipeline এ instruction কে stages এ ভাগ করে একসাথে অনেক instruction process হয় — throughput বহুগুণ বাড়ে।",
+        "points": [
+          "Single cycle: 1 instruction = 1 clock cycle, clock period = slowest instruction এর সময় → সব instruction এই দীর্ঘ সময় নেয়",
+          "Pipeline: instruction কে 5টি stage এ ভাগ — IF → ID → EX → MEM → WB। প্রতিটি stage এ আলাদা instruction থাকে",
+          "Clock period = 1টি stage এর সময় (পুরো instruction এর নয়) → clock অনেক দ্রুত",
+          "Throughput: steady state এ প্রতি cycle এ 1টি instruction complete হয় (n-stage pipeline এ n গুণ বেশি)",
+          "Resource utilization: Single cycle এ ALU বেশিরভাগ সময় idle, Pipeline এ প্রতিটি unit প্রতি cycle এ ব্যস্ত"
+        ],
+        "diagram": "SINGLE CYCLE (clock = 20ns, 5 instructions):\n     0ns  20   40   60   80  100\nI1:  ████\nI2:       ████\nI3:            ████\nI4:                 ████\nI5:                      ████\nTotal = 5 × 20 = 100ns\n\nPIPELINE (5 stages, each 4ns):\n     IF   ID   EX  MEM   WB\nI1:  ████ ████ ████ ████ ████\nI2:       ████ ████ ████ ████ ████\nI3:            ████ ████ ████ ████ ████\nI4:                 ████ ████ ████ ████ ████\nI5:                      ████ ████ ████ ████ ████\n     4    8    12   16   20   24   28   32   36ns\nTotal = (5+4) × 4 = 36ns  ← 100ns থেকে 36ns!\n\nSingle Cycle inefficiency:\n  ADD (fast): 10ns  ← কিন্তু clock 20ns নেয় (LOAD এর জন্য)\n  LOAD (slow): 20ns ← এটার জন্য সবাইকে অপেক্ষা",
+        "mistakes": [
+          ["Pipeline সবসময় n গুণ দ্রুত", "Ideal case এ n গুণ, কিন্তু hazard (data, control, structural) এর কারণে কম হয়"],
+          ["Pipeline এ clock speed কমে", "উল্টো — Pipeline এ clock period ছোট হয় (1 stage), তাই clock speed বাড়ে"]
+        ],
+        "table": {
+          "headers": ["", "Single Cycle", "Pipeline"],
+          "rows": [
+            ["Clock period", "Slowest instruction", "1 stage duration"],
+            ["Throughput", "1 instruction/cycle", "~1 instruction/cycle (steady)"],
+            ["Resource use", "ALU বেশিরভাগ idle", "প্রতিটি unit প্রতি cycle ব্যস্ত"],
+            ["Parallelism", "❌ নেই", "✅ n stages parallel"],
+            ["Clock frequency", "~50 MHz", "~GHz range (modern)"]
+          ]
+        },
+        "mnemonic": "Pipeline = কারখানার assembly line — একই সময়ে 5টি গাড়ি 5টি আলাদা ধাপে তৈরি হচ্ছে। Single Cycle = একটি শেষ হলে পরের টা শুরু — অনেক সময় নষ্ট।"
+      }
+    }
+  ]
+}

