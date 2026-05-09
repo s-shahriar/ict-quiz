@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState } from 'react' // needed for nailedOpen
 import { Zap, Brain, PenLine, Star, ChevronDown, ChevronUp, X } from 'lucide-react'
 
-export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, mastered, onUnnail }) {
-  const [module, setModule]         = useState('mcq')
+export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, mastered, onUnnail, activeModule, onModuleChange }) {
+  const module    = activeModule
+  const setModule = onModuleChange
   const [nailedOpen, setNailedOpen] = useState(false)
 
   // Build nailed questions grouped by topic for the panel
@@ -45,12 +46,6 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
             </div>
             <div className="emc-body">
               <div className="emc-title">Exam Mode</div>
-              <div className="emc-sub">যেকোনো topic বেছে নাও, question সংখ্যা ঠিক করো — নিজেই পরীক্ষা নাও</div>
-              <div className="emc-pills">
-                <span className="emc-pill">12 Topics</span>
-                <span className="emc-pill">436 Questions</span>
-                <span className="emc-pill">Custom Count</span>
-              </div>
             </div>
             <div className="emc-cta">
               Start Exam

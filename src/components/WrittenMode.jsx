@@ -3,11 +3,16 @@ import { ChevronLeft, Home, ChevronDown, ChevronUp, Brain, BookOpenText, PenLine
 
 export default function WrittenMode({ topic, writtenData, onBack, onHome }) {
   const questions = writtenData?.questions || []
-  const [openId, setOpenId] = useState(questions[0]?.id ?? null)
+  const [openIds, setOpenIds] = useState(() => new Set(questions.map(q => q.id)))
   const [extOpen, setExtOpen] = useState({})
 
-  const toggleCard = (id) => setOpenId(prev => prev === id ? null : id)
-  const toggleExt  = (id) => setExtOpen(prev => ({ ...prev, [id]: !prev[id] }))
+  const toggleCard = (id) => setOpenIds(prev => {
+    const next = new Set(prev)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    return next
+  })
+  const toggleExt = (id) => setExtOpen(prev => ({ ...prev, [id]: !prev[id] }))
 
   return (
     <div className="written-page anim-fade">
@@ -41,7 +46,7 @@ export default function WrittenMode({ topic, writtenData, onBack, onHome }) {
                 q={q}
                 idx={idx}
                 topicColor={topic.color}
-                isOpen={openId === q.id}
+                isOpen={openIds.has(q.id)}
                 isExtOpen={!!extOpen[q.id]}
                 onToggle={() => toggleCard(q.id)}
                 onToggleExt={() => toggleExt(q.id)}

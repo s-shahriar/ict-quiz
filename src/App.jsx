@@ -24,11 +24,12 @@ function saveMastered(set) {
 }
 
 export default function App() {
-  const [screen, setScreen]         = useState('home')
+  const [screen, setScreen]               = useState('home')
+  const [activeModule, setActiveModule]   = useState('mcq')
   const [selectedTopic, setSelectedTopic] = useState(null)
-  const [examData, setExamData]     = useState(null)   // { questions, label }
-  const [theme, setTheme]           = useState(() => localStorage.getItem('ict-theme') || 'light')
-  const [mastered, setMastered]     = useState(loadMastered)
+  const [examData, setExamData]           = useState(null)
+  const [theme, setTheme]                 = useState(() => localStorage.getItem('ict-theme') || 'light')
+  const [mastered, setMastered]           = useState(loadMastered)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -36,12 +37,13 @@ export default function App() {
   }, [theme])
 
   const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light')
-  const goHome      = () => { setScreen('home'); setSelectedTopic(null); setExamData(null) }
+
+  const goHome        = () => { setScreen('home'); setSelectedTopic(null); setExamData(null) }
+  const goWrittenHome = () => { setScreen('home'); setSelectedTopic(null); setActiveModule('written') }
 
   const nail = (qid) => setMastered(prev => {
     const next = new Set(prev); next.add(qid); saveMastered(next); return next
   })
-
   const unnail = (qid) => setMastered(prev => {
     const next = new Set(prev); next.delete(qid); saveMastered(next); return next
   })
@@ -53,15 +55,20 @@ export default function App() {
         <div className="bg-grid" />
       </div>
 
-      <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
-        {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-      </button>
+      {/* Theme toggle only on home screen */}
+      {screen === 'home' && (
+        <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
+          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+        </button>
+      )}
 
       {screen === 'home' && (
         <HomeScreen
           topics={TOPICS}
           writtenTopics={WRITTEN_TOPICS}
           mastered={mastered}
+          activeModule={activeModule}
+          onModuleChange={setActiveModule}
           onSelectMCQ={(t) => { setSelectedTopic(t); setScreen('mode') }}
           onSelectWritten={(t) => { setSelectedTopic(t); setScreen('written') }}
           onExam={() => setScreen('exam_config')}
@@ -99,7 +106,7 @@ export default function App() {
           key={selectedTopic.id + '-written'}
           topic={selectedTopic}
           writtenData={getWrittenData(selectedTopic.id)}
-          onBack={goHome}
+          onBack={goWrittenHome}
           onHome={goHome}
         />
       )}

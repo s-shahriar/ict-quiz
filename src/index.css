@@ -1107,7 +1107,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 
 /* Card body */
 .written-card-body {
-  padding: 0 20px 22px;
+  padding: 16px 20px 24px;
   display: flex; flex-direction: column; gap: 16px;
 }
 
