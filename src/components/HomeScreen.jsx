@@ -32,22 +32,31 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
           {/* Action cards row */}
           <div className="home-action-row">
             <button className="action-card exam-card" onClick={onExam}>
-              <div className="ac-glow ac-glow--exam" aria-hidden="true" />
+              <div className="ac-shine" aria-hidden="true" />
               <div className="ac-icon-wrap ac-icon-wrap--exam">
-                <Zap size={20} className="ac-icon" />
+                <Zap size={22} className="ac-icon" />
               </div>
-              <div className="ac-label">Exam Mode</div>
-              <div className="ac-cta ac-cta--exam">Start <span className="ac-arrow">→</span></div>
+              <div className="ac-body">
+                <div className="ac-label">Exam Mode</div>
+                <div className="ac-sub">Test yourself</div>
+              </div>
+              <div className="ac-footer ac-footer--exam">
+                Start <span className="ac-arrow">→</span>
+              </div>
             </button>
 
             <button className="action-card nailed-card" onClick={onNailed}>
-              <div className="ac-glow ac-glow--nailed" aria-hidden="true" />
+              <div className="ac-shine" aria-hidden="true" />
               <div className="ac-icon-wrap ac-icon-wrap--nailed">
-                <Star size={18} fill="currentColor" className="ac-icon" />
+                <Star size={20} fill="currentColor" className="ac-icon" />
               </div>
-              <div className="ac-label">Nailed It</div>
-              <div className="ac-sub">{totalNailed} question{totalNailed !== 1 ? 's' : ''}</div>
-              <div className="ac-cta ac-cta--nailed">View <span className="ac-arrow">→</span></div>
+              <div className="ac-body">
+                <div className="ac-label">Nailed It</div>
+                <div className="ac-sub">{totalNailed} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--nailed">
+                View <span className="ac-arrow">→</span>
+              </div>
             </button>
           </div>
 
