@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Sun, Moon } from 'lucide-react'
+import { fetchRemote, pushRemote } from './lib/api.js'
 import { TOPICS } from './data/index.js'
 import { getWrittenData, getWrittenCount } from './data/written/index.js'
 import HomeScreen    from './components/HomeScreen.jsx'
@@ -35,7 +36,19 @@ export default function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     localStorage.setItem('ict-theme', theme)
+    pushRemote(mastered, theme)
   }, [theme])
+
+  useEffect(() => {
+    fetchRemote().then(remote => {
+      if (!remote) return
+      const local = loadMastered()
+      const merged = new Set([...local, ...remote.mastered])
+      saveMastered(merged)
+      setMastered(merged)
+      if (!localStorage.getItem('ict-theme')) setTheme(remote.theme)
+    })
+  }, [])
 
   const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light')
 
@@ -43,10 +56,14 @@ export default function App() {
   const goWrittenHome = () => { setScreen('home'); setSelectedTopic(null); setActiveModule('written') }
 
   const nail = (qid) => setMastered(prev => {
-    const next = new Set(prev); next.add(qid); saveMastered(next); return next
+    const next = new Set(prev); next.add(qid); saveMastered(next)
+    pushRemote(next, theme)
+    return next
   })
   const unnail = (qid) => setMastered(prev => {
-    const next = new Set(prev); next.delete(qid); saveMastered(next); return next
+    const next = new Set(prev); next.delete(qid); saveMastered(next)
+    pushRemote(next, theme)
+    return next
   })
 
   return (
