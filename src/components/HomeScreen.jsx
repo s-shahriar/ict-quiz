@@ -31,33 +31,23 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
         <>
           {/* Action cards row */}
           <div className="home-action-row">
-            <button className="exam-mode-card" onClick={onExam}>
-              <div className="emc-glow" aria-hidden="true" />
-              <div className="emc-icon-wrap">
-                <Zap size={22} className="emc-icon" />
+            <button className="action-card exam-card" onClick={onExam}>
+              <div className="ac-glow ac-glow--exam" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--exam">
+                <Zap size={20} className="ac-icon" />
               </div>
-              <div className="emc-body">
-                <div className="emc-title">Exam Mode</div>
-              </div>
-              <div className="emc-cta">
-                Start
-                <span className="emc-arrow">→</span>
-              </div>
+              <div className="ac-label">Exam Mode</div>
+              <div className="ac-cta ac-cta--exam">Start <span className="ac-arrow">→</span></div>
             </button>
 
-            <button className="nailed-mode-card" onClick={onNailed}>
-              <div className="nmc-glow" aria-hidden="true" />
-              <div className="nmc-icon-wrap">
-                <Star size={20} fill="currentColor" className="nmc-icon" />
+            <button className="action-card nailed-card" onClick={onNailed}>
+              <div className="ac-glow ac-glow--nailed" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--nailed">
+                <Star size={18} fill="currentColor" className="ac-icon" />
               </div>
-              <div className="nmc-body">
-                <div className="nmc-title">Nailed It</div>
-                <div className="nmc-count">{totalNailed} question{totalNailed !== 1 ? 's' : ''}</div>
-              </div>
-              <div className="nmc-cta">
-                View
-                <span className="nmc-arrow">→</span>
-              </div>
+              <div className="ac-label">Nailed It</div>
+              <div className="ac-sub">{totalNailed} question{totalNailed !== 1 ? 's' : ''}</div>
+              <div className="ac-cta ac-cta--nailed">View <span className="ac-arrow">→</span></div>
             </button>
           </div>
 
