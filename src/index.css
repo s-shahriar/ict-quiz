@@ -669,6 +669,38 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .opt-btn.revealed::before { display: none; }
 
 /* ── Next Button ─── */
+.quiz-revealed-actions {
+  display: flex; align-items: stretch; gap: 10px; margin-top: 20px;
+  animation: slideUp 0.25s ease;
+}
+.quiz-revealed-actions .quiz-next-btn { flex: 1; margin-top: 0; animation: none; }
+
+.quiz-nail-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  flex-shrink: 0; width: 66px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(245,158,11,0.35);
+  background: rgba(245,158,11,0.07);
+  color: #b45309;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+[data-theme='dark'] .quiz-nail-btn { color: #fbbf24; border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); }
+.quiz-nail-btn:hover { border-color: #f59e0b; background: rgba(245,158,11,0.14); transform: translateY(-2px); }
+.quiz-nail-btn.nailed {
+  border-color: #f59e0b;
+  background: rgba(245,158,11,0.18);
+  color: #d97706;
+  box-shadow: 0 0 12px rgba(245,158,11,0.3), inset 0 0 8px rgba(245,158,11,0.1);
+}
+[data-theme='dark'] .quiz-nail-btn.nailed { color: #fbbf24; box-shadow: 0 0 14px rgba(251,191,36,0.35), inset 0 0 8px rgba(251,191,36,0.12); }
+.quiz-nail-btn svg { transition: transform 0.2s ease; }
+.quiz-nail-btn:hover svg { transform: scale(1.2) rotate(-8deg); }
+.quiz-nail-btn.nailed svg { filter: drop-shadow(0 0 4px rgba(245,158,11,0.7)); }
+
 .quiz-next-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   width: 100%; margin-top: 20px; padding: 15px;
@@ -1262,6 +1294,75 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* ════════════════════════════════════════════════════ */
 
 /* Exam Mode card on home */
+/* ── Action row (Exam + Nailed side-by-side) ── */
+.home-action-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin-bottom: 20px;
+}
+.home-action-row .exam-mode-card { margin-bottom: 0; }
+
+/* ── Nailed It card ── */
+.nailed-mode-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  padding: 18px 16px;
+  background: var(--surface-glass);
+  border: 1px solid rgba(245,158,11,0.22);
+  border-radius: 18px;
+  cursor: pointer; text-align: left;
+  box-shadow: var(--shadow-md), 0 0 40px rgba(245,158,11,0.06);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  transition: all 0.26s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative; overflow: hidden;
+}
+.nailed-mode-card:hover {
+  border-color: rgba(245,158,11,0.55);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-lg), 0 0 60px rgba(245,158,11,0.15);
+}
+.nmc-glow {
+  position: absolute; top: -30px; left: -20px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, #f59e0b, #f97316);
+  opacity: 0.10; filter: blur(36px); pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.nailed-mode-card:hover .nmc-glow { opacity: 0.20; }
+.nmc-icon-wrap {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+  box-shadow: 0 4px 16px rgba(245,158,11,0.45);
+}
+.nmc-icon { color: #fff; }
+.nmc-body { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.nmc-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem; font-weight: 800; letter-spacing: -0.02em;
+  color: #d97706;
+}
+[data-theme='dark'] .nmc-title { color: #fbbf24; }
+.nmc-count {
+  font-size: 0.72rem; color: var(--text-3); font-weight: 500; margin-top: 1px;
+}
+.nmc-cta {
+  display: flex; align-items: center; gap: 5px;
+  position: relative; z-index: 1;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem; font-weight: 700;
+  color: #d97706; padding: 6px 12px; border-radius: 9px;
+  border: 1.5px solid rgba(245,158,11,0.35);
+  background: rgba(245,158,11,0.08);
+  transition: all 0.2s ease;
+}
+[data-theme='dark'] .nmc-cta { color: #fbbf24; }
+.nailed-mode-card:hover .nmc-cta {
+  background: linear-gradient(135deg, #f59e0b, #f97316); color: #fff;
+  border-color: transparent; box-shadow: 0 4px 14px rgba(245,158,11,0.4);
+}
+.nmc-arrow { transition: transform 0.2s ease; }
+.nailed-mode-card:hover .nmc-arrow { transform: translateX(4px); }
+
 .exam-mode-card {
   display: flex; align-items: center; gap: 16px;
   width: 100%; padding: 20px 22px;
@@ -1620,6 +1721,106 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   margin-top: 1px;
 }
 .nailed-unnail-btn:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08); }
+
+/* ── Nailed It Screen ── */
+.nailed-screen {
+  max-width: 520px; margin: 0 auto;
+  padding: 20px 16px 80px;
+  min-height: 100vh;
+}
+.nailed-screen-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.nailed-screen-title {
+  display: flex; align-items: center; gap: 7px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem; font-weight: 800; color: var(--text);
+}
+.nailed-screen-empty {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 80px 16px; text-align: center;
+  color: var(--text-2);
+}
+.nailed-screen-empty p { font-size: 1rem; font-weight: 600; color: var(--text); margin: 0; }
+.nailed-screen-empty span { font-size: 0.84rem; line-height: 1.6; }
+
+.nailed-screen-summary {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 6px;
+}
+.nailed-screen-total {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem; font-weight: 900; color: #f59e0b;
+  line-height: 1;
+}
+.nailed-screen-total-label {
+  font-size: 0.82rem; color: var(--text-2); font-weight: 500;
+}
+.nailed-screen-hint {
+  font-size: 0.78rem; color: var(--text-3); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+}
+.nailed-screen-list { display: flex; flex-direction: column; gap: 12px; }
+
+.nailed-group {
+  background: var(--surface-glass);
+  border: 1px solid var(--border-md);
+  border-radius: 16px; overflow: hidden;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.nailed-group-header {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 14px 16px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-2); transition: background 0.18s ease;
+}
+.nailed-group-header:hover { background: var(--hover-bg); }
+.nailed-group-label {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+}
+.nailed-group-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.nailed-group-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 700;
+  padding: 2px 8px; border-radius: 6px;
+}
+.nailed-group-body {
+  border-top: 1px solid var(--border);
+  padding: 10px 12px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.nailed-row {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 10px 12px; border-radius: 10px;
+  background: var(--elevated); border: 1px solid var(--border);
+  transition: background 0.18s;
+}
+.nailed-row:hover { background: var(--hover-bg); }
+.nailed-row-body {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;
+}
+.nailed-row-text {
+  font-size: 0.84rem; line-height: 1.55;
+  color: var(--text); font-family: 'Inter', sans-serif;
+}
+.nailed-row-answer {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 10px; border-radius: 8px;
+  background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+}
+.nailed-ans-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 800;
+  color: #10b981; background: rgba(16,185,129,0.15);
+  padding: 1px 6px; border-radius: 4px; flex-shrink: 0;
+}
+.nailed-ans-text {
+  font-size: 0.8rem; font-weight: 600; color: #10b981;
+  font-family: 'Inter', sans-serif; line-height: 1.4;
+}
 
 @media (min-width: 600px) {
   .exam-config-page { padding: 48px 24px 90px; }

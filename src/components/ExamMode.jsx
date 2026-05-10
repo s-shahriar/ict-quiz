@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX } from 'lucide-react'
+import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX, Star } from 'lucide-react'
 
-export default function ExamMode({ questions, label, onHome }) {
+export default function ExamMode({ questions, label, mastered, onNail, onUnnail, onHome }) {
   const [idx, setIdx]           = useState(0)
   const [selected, setSelected] = useState(null)
   const [revealed, setRevealed] = useState(false)
@@ -17,6 +17,8 @@ export default function ExamMode({ questions, label, onHome }) {
 
   const q    = questions[idx]
   const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
+  const qid  = q?._topicId != null ? `${q._topicId}__${q._origIndex}` : null
+  const isNailed = qid ? mastered?.has(qid) : false
 
   const pick = (key) => {
     if (revealed) return
@@ -114,10 +116,22 @@ export default function ExamMode({ questions, label, onHome }) {
         )}
 
         {revealed && (
-          <button className="quiz-next-btn" onClick={next} style={{ background: accent }}>
-            {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}
-            <ArrowRight size={16} />
-          </button>
+          <div className="quiz-revealed-actions">
+            {qid && (
+              <button
+                className={`quiz-nail-btn${isNailed ? ' nailed' : ''}`}
+                onClick={() => isNailed ? onUnnail?.(qid) : onNail?.(qid)}
+                title={isNailed ? 'Nailed — click to un-nail' : 'Mark as Nailed It'}
+              >
+                <Star size={18} fill={isNailed ? 'currentColor' : 'none'} strokeWidth={1.8} />
+                {isNailed ? 'Nailed!' : 'Nail It'}
+              </button>
+            )}
+            <button className="quiz-next-btn" onClick={next} style={{ background: accent }}>
+              {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}
+              <ArrowRight size={16} />
+            </button>
+          </div>
         )}
       </div>
     </div>

@@ -30,11 +30,14 @@ export default function ExamConfig({ topics, onStart, onBack }) {
     let pool
     if (topicId === 'all') {
       pool = topics.flatMap(t =>
-        t.questions.filter(validQ).map(q => ({ ...q, _color: t.color, _label: t.shortName }))
+        t.questions.map((q, i) => ({ ...q, _color: t.color, _label: t.shortName, _topicId: t.id, _origIndex: i }))
+          .filter(q => validQ(q))
       )
     } else {
       const t = topics.find(t => t.id === topicId)
-      pool = t.questions.filter(validQ).map(q => ({ ...q, _color: t.color, _label: t.shortName }))
+      pool = t.questions
+        .map((q, i) => ({ ...q, _color: t.color, _label: t.shortName, _topicId: t.id, _origIndex: i }))
+        .filter(q => validQ(q))
     }
     const questions = shuffle(pool).slice(0, safeCount)
     const label = topicId === 'all' ? 'All Topics' : topics.find(t => t.id === topicId)?.name

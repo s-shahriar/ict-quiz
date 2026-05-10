@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import { Sun, Moon } from 'lucide-react'
 import { TOPICS } from './data/index.js'
 import { getWrittenData, getWrittenCount } from './data/written/index.js'
-import HomeScreen   from './components/HomeScreen.jsx'
-import ModeSelect   from './components/ModeSelect.jsx'
-import QuizMode     from './components/QuizMode.jsx'
-import StudyMode    from './components/StudyMode.jsx'
-import WrittenMode  from './components/WrittenMode.jsx'
-import ExamConfig   from './components/ExamConfig.jsx'
-import ExamMode     from './components/ExamMode.jsx'
+import HomeScreen    from './components/HomeScreen.jsx'
+import ModeSelect    from './components/ModeSelect.jsx'
+import QuizMode      from './components/QuizMode.jsx'
+import StudyMode     from './components/StudyMode.jsx'
+import WrittenMode   from './components/WrittenMode.jsx'
+import ExamConfig    from './components/ExamConfig.jsx'
+import ExamMode      from './components/ExamMode.jsx'
+import NailedScreen  from './components/NailedScreen.jsx'
 
 const WRITTEN_TOPICS = TOPICS
   .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
@@ -72,7 +73,16 @@ export default function App() {
           onSelectMCQ={(t) => { setSelectedTopic(t); setScreen('mode') }}
           onSelectWritten={(t) => { setSelectedTopic(t); setScreen('written') }}
           onExam={() => setScreen('exam_config')}
+          onNailed={() => setScreen('nailed')}
           onUnnail={unnail}
+        />
+      )}
+      {screen === 'nailed' && (
+        <NailedScreen
+          topics={TOPICS}
+          mastered={mastered}
+          onUnnail={unnail}
+          onHome={goHome}
         />
       )}
       {screen === 'mode' && (
@@ -87,6 +97,9 @@ export default function App() {
         <QuizMode
           key={selectedTopic.id + '-quiz'}
           topic={selectedTopic}
+          mastered={mastered}
+          onNail={nail}
+          onUnnail={unnail}
           onBack={() => setScreen('mode')}
           onHome={goHome}
         />
@@ -122,6 +135,9 @@ export default function App() {
           key={examData.label + examData.questions.length}
           questions={examData.questions}
           label={examData.label}
+          mastered={mastered}
+          onNail={nail}
+          onUnnail={unnail}
           onHome={goHome}
         />
       )}

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb } from 'lucide-react'
+import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, Star } from 'lucide-react'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -10,9 +10,13 @@ function shuffle(arr) {
   return a
 }
 
-export default function QuizMode({ topic, onBack, onHome }) {
+export default function QuizMode({ topic, mastered, onNail, onUnnail, onBack, onHome }) {
   const questions = useMemo(
-    () => shuffle(topic.questions.filter(q => q.options && q.correct_answer)).slice(0, Math.min(topic.questions.length, 20)),
+    () => shuffle(
+      topic.questions
+        .map((q, i) => ({ ...q, _origIndex: i }))
+        .filter(q => q.options && q.correct_answer)
+    ).slice(0, Math.min(topic.questions.length, 20)),
     [topic]
   )
   const [idx, setIdx] = useState(0)
@@ -23,6 +27,8 @@ export default function QuizMode({ topic, onBack, onHome }) {
 
   const q = questions[idx]
   const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
+  const qid = q ? `${topic.id}__${q._origIndex}` : null
+  const isNailed = qid ? mastered?.has(qid) : false
 
   const pick = (key) => {
     if (revealed) return
@@ -115,10 +121,20 @@ export default function QuizMode({ topic, onBack, onHome }) {
         )}
 
         {revealed && (
-          <button className="quiz-next-btn" onClick={next}>
-            {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}
-            <ArrowRight size={16} />
-          </button>
+          <div className="quiz-revealed-actions">
+            <button
+              className={`quiz-nail-btn${isNailed ? ' nailed' : ''}`}
+              onClick={() => isNailed ? onUnnail?.(qid) : onNail?.(qid)}
+              title={isNailed ? 'Nailed — click to un-nail' : 'Mark as Nailed It'}
+            >
+              <Star size={18} fill={isNailed ? 'currentColor' : 'none'} strokeWidth={1.8} />
+              {isNailed ? 'Nailed!' : 'Nail It'}
+            </button>
+            <button className="quiz-next-btn" onClick={next}>
+              {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}
+              <ArrowRight size={16} />
+            </button>
+          </div>
         )}
       </div>
     </div>
