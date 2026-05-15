@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { ChevronLeft, Home, Eye, EyeOff, CheckCircle, Lightbulb, Star } from 'lucide-react'
+import { ChevronLeft, Home, Eye, EyeOff, CheckCircle, Lightbulb, Star, Bookmark } from 'lucide-react'
 
-export default function StudyMode({ topic, mastered, onNail, onBack, onHome }) {
+export default function StudyMode({ topic, mastered, important, onNail, onMarkImportant, onUnmarkImportant, onBack, onHome }) {
   const allQ = topic.questions
     .map((q, i) => ({ q, qid: `${topic.id}__${i}` }))
     .filter(({ q }) => q.options && q.correct_answer)
@@ -43,7 +43,10 @@ export default function StudyMode({ topic, mastered, onNail, onBack, onHome }) {
               index={i}
               color={topic.color}
               nailed={mastered.has(qid)}
+              isImportant={important?.has(qid) ?? false}
               onNail={() => onNail(qid)}
+              onMarkImportant={() => onMarkImportant?.(qid)}
+              onUnmarkImportant={() => onUnmarkImportant?.(qid)}
             />
           ))}
         </div>
@@ -52,7 +55,7 @@ export default function StudyMode({ topic, mastered, onNail, onBack, onHome }) {
   )
 }
 
-function StudyCard({ question: q, index, color, nailed, onNail }) {
+function StudyCard({ question: q, index, color, nailed, isImportant, onNail, onMarkImportant, onUnmarkImportant }) {
   const [shown, setShown] = useState(false)
   const opts = ['a','b','c','d'].filter(k => q.options?.[k])
 
@@ -69,6 +72,15 @@ function StudyCard({ question: q, index, color, nailed, onNail }) {
           >
             <Star size={12} fill={nailed ? 'currentColor' : 'none'} />
             {nailed ? 'Nailed ✓' : 'Nail It'}
+          </button>
+          <button
+            className={`nail-btn important-study-btn${isImportant ? ' nailed' : ''}`}
+            onClick={isImportant ? onUnmarkImportant : onMarkImportant}
+            title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
+            style={isImportant ? { color: '#ef4444', borderColor: 'rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.1)' } : {}}
+          >
+            <Bookmark size={12} fill={isImportant ? 'currentColor' : 'none'} />
+            {isImportant ? 'Important ✓' : 'Important'}
           </button>
           <button
             className="study-toggle"

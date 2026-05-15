@@ -19,14 +19,14 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     const doc = await col.findOne({ _id: 'user_prefs' })
-    return res.json({ mastered: doc?.mastered ?? [], theme: doc?.theme ?? 'light' })
+    return res.json({ mastered: doc?.mastered ?? [], theme: doc?.theme ?? 'light', important: doc?.important ?? [] })
   }
 
   if (req.method === 'POST') {
-    const { mastered, theme } = req.body
+    const { mastered, theme, important } = req.body
     await col.updateOne(
       { _id: 'user_prefs' },
-      { $set: { mastered, theme, updatedAt: new Date() } },
+      { $set: { mastered, theme, important: important ?? [], updatedAt: new Date() } },
       { upsert: true }
     )
     return res.json({ ok: true })

@@ -1,16 +1,16 @@
 import { useState } from 'react'
-import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home, Lightbulb } from 'lucide-react'
+import { ChevronLeft, Bookmark, X, ChevronDown, ChevronUp, Home, Lightbulb } from 'lucide-react'
 
-export default function NailedScreen({ topics, mastered, onUnnail, onHome }) {
-  const nailedByTopic = topics.map(t => {
+export default function ImportantScreen({ topics, important, onUnmark, onHome }) {
+  const importantByTopic = topics.map(t => {
     const items = t.questions
       .map((q, i) => ({ q, qid: `${t.id}__${i}` }))
       .filter(({ q }) => q.options && q.correct_answer)
-      .filter(({ qid }) => mastered.has(qid))
+      .filter(({ qid }) => important.has(qid))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
 
-  const total = nailedByTopic.reduce((s, g) => s + g.items.length, 0)
+  const total = importantByTopic.reduce((s, g) => s + g.items.length, 0)
 
   return (
     <div className="nailed-screen anim-fade">
@@ -19,8 +19,8 @@ export default function NailedScreen({ topics, mastered, onUnnail, onHome }) {
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
-          <Star size={16} fill="currentColor" style={{ color: '#f59e0b' }} />
-          Nailed It
+          <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
+          Important
         </div>
         <button className="study-home-btn" onClick={onHome} title="Home">
           <Home size={16} />
@@ -29,22 +29,22 @@ export default function NailedScreen({ topics, mastered, onUnnail, onHome }) {
 
       {total === 0 ? (
         <div className="nailed-screen-empty">
-          <Star size={48} style={{ color: '#f59e0b', opacity: 0.3 }} />
-          <p>No questions nailed yet.</p>
-          <span>Answer questions in Quiz, Study, or Exam mode and tap <strong>Nail It</strong> to save them here.</span>
+          <Bookmark size={48} style={{ color: '#ef4444', opacity: 0.3 }} />
+          <p>No important questions yet.</p>
+          <span>Answer questions in Quiz, Study, or Exam mode and tap <strong>Important</strong> to save them here. These will still appear in Exam Mode.</span>
         </div>
       ) : (
         <>
           <div className="nailed-screen-summary">
-            <span className="nailed-screen-total">{total}</span>
-            <span className="nailed-screen-total-label">question{total !== 1 ? 's' : ''} nailed across {nailedByTopic.length} topic{nailedByTopic.length !== 1 ? 's' : ''}</span>
+            <span className="nailed-screen-total important-total">{total}</span>
+            <span className="nailed-screen-total-label">important question{total !== 1 ? 's' : ''} across {importantByTopic.length} topic{importantByTopic.length !== 1 ? 's' : ''}</span>
           </div>
           <div className="nailed-screen-hint">
-            Tap <X size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> to un-nail and return a question to the active pool.
+            These questions still appear in Exam Mode. Tap <X size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> to remove.
           </div>
           <div className="nailed-screen-list">
-            {nailedByTopic.map(({ topic: t, items }) => (
-              <NailedTopicGroup key={t.id} topic={t} items={items} onUnnail={onUnnail} />
+            {importantByTopic.map(({ topic: t, items }) => (
+              <ImportantTopicGroup key={t.id} topic={t} items={items} onUnmark={onUnmark} />
             ))}
           </div>
         </>
@@ -53,7 +53,7 @@ export default function NailedScreen({ topics, mastered, onUnnail, onHome }) {
   )
 }
 
-function NailedTopicGroup({ topic: t, items, onUnnail }) {
+function ImportantTopicGroup({ topic: t, items, onUnmark }) {
   const [open, setOpen] = useState(true)
 
   return (
@@ -73,7 +73,7 @@ function NailedTopicGroup({ topic: t, items, onUnnail }) {
         <div className="nailed-group-body anim-slide">
           {items.map(({ q, qid }) => (
             <div key={qid} className="nailed-row">
-              <Star size={11} fill="currentColor" style={{ color: '#f59e0b', flexShrink: 0, marginTop: 3 }} />
+              <Bookmark size={11} fill="currentColor" style={{ color: '#ef4444', flexShrink: 0, marginTop: 3 }} />
               <div className="nailed-row-body">
                 <span className="nailed-row-text">{q.question}</span>
                 {q.correct_answer && q.options?.[q.correct_answer] && (
@@ -84,15 +84,15 @@ function NailedTopicGroup({ topic: t, items, onUnnail }) {
                 )}
                 {q.explanation && (
                   <div className="nailed-row-explanation">
-                    <Lightbulb size={11} style={{ color: '#f59e0b', flexShrink: 0, marginTop: 1 }} />
+                    <Lightbulb size={11} style={{ color: '#ef4444', flexShrink: 0, marginTop: 1 }} />
                     <span>{q.explanation}</span>
                   </div>
                 )}
               </div>
               <button
                 className="nailed-unnail-btn"
-                onClick={() => onUnnail(qid)}
-                title="Un-nail — return to active pool"
+                onClick={() => onUnmark(qid)}
+                title="Remove from Important"
               >
                 <X size={13} />
               </button>

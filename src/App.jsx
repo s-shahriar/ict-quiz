@@ -3,14 +3,15 @@ import { Sun, Moon } from 'lucide-react'
 import { fetchRemote, pushRemote } from './lib/api.js'
 import { TOPICS } from './data/index.js'
 import { getWrittenData, getWrittenCount } from './data/written/index.js'
-import HomeScreen    from './components/HomeScreen.jsx'
-import ModeSelect    from './components/ModeSelect.jsx'
-import QuizMode      from './components/QuizMode.jsx'
-import StudyMode     from './components/StudyMode.jsx'
-import WrittenMode   from './components/WrittenMode.jsx'
-import ExamConfig    from './components/ExamConfig.jsx'
-import ExamMode      from './components/ExamMode.jsx'
-import NailedScreen  from './components/NailedScreen.jsx'
+import HomeScreen       from './components/HomeScreen.jsx'
+import ModeSelect       from './components/ModeSelect.jsx'
+import QuizMode         from './components/QuizMode.jsx'
+import StudyMode        from './components/StudyMode.jsx'
+import WrittenMode      from './components/WrittenMode.jsx'
+import ExamConfig       from './components/ExamConfig.jsx'
+import ExamMode         from './components/ExamMode.jsx'
+import NailedScreen     from './components/NailedScreen.jsx'
+import ImportantScreen  from './components/ImportantScreen.jsx'
 
 const WRITTEN_TOPICS = TOPICS
   .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
@@ -20,9 +21,16 @@ function loadMastered() {
   try { return new Set(JSON.parse(localStorage.getItem('ict-nailed') ?? '[]')) }
   catch { return new Set() }
 }
-
 function saveMastered(set) {
   localStorage.setItem('ict-nailed', JSON.stringify([...set]))
+}
+
+function loadImportant() {
+  try { return new Set(JSON.parse(localStorage.getItem('ict-important') ?? '[]')) }
+  catch { return new Set() }
+}
+function saveImportant(set) {
+  localStorage.setItem('ict-important', JSON.stringify([...set]))
 }
 
 export default function App() {
@@ -32,20 +40,25 @@ export default function App() {
   const [examData, setExamData]           = useState(null)
   const [theme, setTheme]                 = useState(() => localStorage.getItem('ict-theme') || 'light')
   const [mastered, setMastered]           = useState(loadMastered)
+  const [important, setImportant]         = useState(loadImportant)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     localStorage.setItem('ict-theme', theme)
-    pushRemote(mastered, theme)
+    pushRemote(mastered, theme, important)
   }, [theme])
 
   useEffect(() => {
     fetchRemote().then(remote => {
       if (!remote) return
-      const local = loadMastered()
-      const merged = new Set([...local, ...remote.mastered])
-      saveMastered(merged)
-      setMastered(merged)
+      const localM = loadMastered()
+      const mergedM = new Set([...localM, ...remote.mastered])
+      saveMastered(mergedM)
+      setMastered(mergedM)
+      const localI = loadImportant()
+      const mergedI = new Set([...localI, ...(remote.important ?? [])])
+      saveImportant(mergedI)
+      setImportant(mergedI)
       if (!localStorage.getItem('ict-theme')) setTheme(remote.theme)
     })
   }, [])
@@ -57,12 +70,23 @@ export default function App() {
 
   const nail = (qid) => setMastered(prev => {
     const next = new Set(prev); next.add(qid); saveMastered(next)
-    pushRemote(next, theme)
+    pushRemote(next, theme, important)
     return next
   })
   const unnail = (qid) => setMastered(prev => {
     const next = new Set(prev); next.delete(qid); saveMastered(next)
-    pushRemote(next, theme)
+    pushRemote(next, theme, important)
+    return next
+  })
+
+  const markImportant = (qid) => setImportant(prev => {
+    const next = new Set(prev); next.add(qid); saveImportant(next)
+    pushRemote(mastered, theme, next)
+    return next
+  })
+  const unmarkImportant = (qid) => setImportant(prev => {
+    const next = new Set(prev); next.delete(qid); saveImportant(next)
+    pushRemote(mastered, theme, next)
     return next
   })
 
@@ -85,12 +109,14 @@ export default function App() {
           topics={TOPICS}
           writtenTopics={WRITTEN_TOPICS}
           mastered={mastered}
+          important={important}
           activeModule={activeModule}
           onModuleChange={setActiveModule}
           onSelectMCQ={(t) => { setSelectedTopic(t); setScreen('mode') }}
           onSelectWritten={(t) => { setSelectedTopic(t); setScreen('written') }}
           onExam={() => setScreen('exam_config')}
           onNailed={() => setScreen('nailed')}
+          onImportant={() => setScreen('important')}
           onUnnail={unnail}
         />
       )}
@@ -99,6 +125,14 @@ export default function App() {
           topics={TOPICS}
           mastered={mastered}
           onUnnail={unnail}
+          onHome={goHome}
+        />
+      )}
+      {screen === 'important' && (
+        <ImportantScreen
+          topics={TOPICS}
+          important={important}
+          onUnmark={unmarkImportant}
           onHome={goHome}
         />
       )}
@@ -115,8 +149,11 @@ export default function App() {
           key={selectedTopic.id + '-quiz'}
           topic={selectedTopic}
           mastered={mastered}
+          important={important}
           onNail={nail}
           onUnnail={unnail}
+          onMarkImportant={markImportant}
+          onUnmarkImportant={unmarkImportant}
           onBack={() => setScreen('mode')}
           onHome={goHome}
         />
@@ -126,7 +163,10 @@ export default function App() {
           key={selectedTopic.id + '-study'}
           topic={selectedTopic}
           mastered={mastered}
+          important={important}
           onNail={nail}
+          onMarkImportant={markImportant}
+          onUnmarkImportant={unmarkImportant}
           onBack={() => setScreen('mode')}
           onHome={goHome}
         />
@@ -153,8 +193,11 @@ export default function App() {
           questions={examData.questions}
           label={examData.label}
           mastered={mastered}
+          important={important}
           onNail={nail}
           onUnnail={unnail}
+          onMarkImportant={markImportant}
+          onUnmarkImportant={unmarkImportant}
           onHome={goHome}
         />
       )}

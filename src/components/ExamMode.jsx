@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX, Star } from 'lucide-react'
+import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX, Star, Bookmark } from 'lucide-react'
 
-export default function ExamMode({ questions, label, mastered, onNail, onUnnail, onHome }) {
+export default function ExamMode({ questions, label, mastered, important, onNail, onUnnail, onMarkImportant, onUnmarkImportant, onHome }) {
   const [idx, setIdx]           = useState(0)
   const [selected, setSelected] = useState(null)
   const [revealed, setRevealed] = useState(false)
@@ -19,6 +19,7 @@ export default function ExamMode({ questions, label, mastered, onNail, onUnnail,
   const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
   const qid  = q?._topicId != null ? `${q._topicId}__${q._origIndex}` : null
   const isNailed = qid ? mastered?.has(qid) : false
+  const isImportant = qid ? important?.has(qid) : false
 
   const pick = (key) => {
     if (revealed) return
@@ -118,14 +119,24 @@ export default function ExamMode({ questions, label, mastered, onNail, onUnnail,
         {revealed && (
           <div className="quiz-revealed-actions">
             {qid && (
-              <button
-                className={`quiz-nail-btn${isNailed ? ' nailed' : ''}`}
-                onClick={() => isNailed ? onUnnail?.(qid) : onNail?.(qid)}
-                title={isNailed ? 'Nailed — click to un-nail' : 'Mark as Nailed It'}
-              >
-                <Star size={18} fill={isNailed ? 'currentColor' : 'none'} strokeWidth={1.8} />
-                {isNailed ? 'Nailed!' : 'Nail It'}
-              </button>
+              <div className="quiz-mark-btns">
+                <button
+                  className={`quiz-nail-btn${isNailed ? ' nailed' : ''}`}
+                  onClick={() => isNailed ? onUnnail?.(qid) : onNail?.(qid)}
+                  title={isNailed ? 'Nailed — click to un-nail' : 'Mark as Nailed It'}
+                >
+                  <Star size={16} fill={isNailed ? 'currentColor' : 'none'} strokeWidth={1.8} />
+                  {isNailed ? 'Nailed!' : 'Nail It'}
+                </button>
+                <button
+                  className={`quiz-important-btn${isImportant ? ' marked' : ''}`}
+                  onClick={() => isImportant ? onUnmarkImportant?.(qid) : onMarkImportant?.(qid)}
+                  title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
+                >
+                  <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />
+                  {isImportant ? 'Saved!' : 'Important'}
+                </button>
+              </div>
             )}
             <button className="quiz-next-btn" onClick={next} style={{ background: accent }}>
               {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}

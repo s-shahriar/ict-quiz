@@ -1,11 +1,15 @@
-import { Zap, Brain, PenLine, Star } from 'lucide-react'
+import { Zap, Brain, PenLine, Star, Bookmark } from 'lucide-react'
 
-export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, onNailed, mastered, activeModule, onModuleChange }) {
+export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, onNailed, onImportant, mastered, important, activeModule, onModuleChange }) {
   const module    = activeModule
   const setModule = onModuleChange
 
   const totalNailed = topics.reduce((s, t) =>
     s + t.questions.filter((q, i) => q.options && q.correct_answer && mastered.has(`${t.id}__${i}`)).length
+  , 0)
+
+  const totalImportant = topics.reduce((s, t) =>
+    s + t.questions.filter((q, i) => q.options && q.correct_answer && important.has(`${t.id}__${i}`)).length
   , 0)
 
   return (
@@ -30,7 +34,7 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
       {module === 'mcq' ? (
         <>
           {/* Action cards row */}
-          <div className="home-action-row">
+          <div className="home-action-row home-action-row--3">
             <button className="action-card exam-card" onClick={onExam}>
               <div className="ac-shine" aria-hidden="true" />
               <div className="ac-icon-wrap ac-icon-wrap--exam">
@@ -55,6 +59,20 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
                 <div className="ac-sub">{totalNailed} saved</div>
               </div>
               <div className="ac-footer ac-footer--nailed">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+
+            <button className="action-card important-card" onClick={onImportant}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--important">
+                <Bookmark size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Important</div>
+                <div className="ac-sub">{totalImportant} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>
               </div>
             </button>
