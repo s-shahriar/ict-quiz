@@ -16,7 +16,7 @@ export default function QuizMode({ topic, mastered, important, onNail, onUnnail,
       topic.questions
         .map((q, i) => ({ ...q, _origIndex: i }))
         .filter(q => q.options && q.correct_answer)
-    ).slice(0, Math.min(topic.questions.length, 20)),
+    ),
     [topic]
   )
   const [idx, setIdx] = useState(0)

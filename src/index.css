@@ -906,6 +906,21 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   box-shadow: var(--shadow-glow);
 }
 
+/* ── Study filter bar ── */
+.study-filter-bar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.study-filter-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 24px;
+  font-size: 0.78rem; font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--elevated); border: 1.5px solid var(--border);
+  color: var(--text-2); transition: all 0.18s ease;
+}
+.study-filter-btn:hover { border-color: var(--border-bright); background: var(--hover-bg); }
+.study-filter-btn.active { font-weight: 700; }
+
 .study-list { display: flex; flex-direction: column; gap: 12px; }
 
 .study-card {
@@ -961,7 +976,23 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   background: var(--elevated); border: 1px solid var(--border);
   font-size: 0.87rem; font-family: 'Inter', sans-serif;
   font-weight: 500; transition: all 0.18s ease;
+  width: 100%; text-align: left;
 }
+.study-opt-clickable:not(.correct):not(.wrong):not(.dim):hover {
+  border-color: var(--border-bright); background: var(--hover-bg);
+  transform: translateX(3px);
+  box-shadow: 0 0 0 1px rgba(99,102,241,0.18), var(--shadow-sm);
+  cursor: pointer;
+}
+.study-opt-clickable.correct { cursor: default; }
+.study-opt-clickable.wrong {
+  border-color: #ef4444; background: rgba(239,68,68,0.06); cursor: default;
+}
+.study-opt-clickable.wrong .study-opt-key {
+  background: #ef4444; border-color: #ef4444; color: #fff;
+  box-shadow: 0 0 8px rgba(239,68,68,0.4);
+}
+.study-opt-clickable.dim { opacity: 0.28; cursor: default; }
 .study-opt.correct {
   border-color: var(--c, var(--accent));
   background: color-mix(in srgb, var(--c, var(--accent)) 9%, transparent);

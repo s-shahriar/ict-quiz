@@ -1,13 +1,21 @@
 import { useState } from 'react'
-import { ChevronLeft, Home, Eye, EyeOff, CheckCircle, Lightbulb, Star, Bookmark } from 'lucide-react'
+import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Filter } from 'lucide-react'
 
 export default function StudyMode({ topic, mastered, important, onNail, onMarkImportant, onUnmarkImportant, onBack, onHome }) {
+  const [filterImportant, setFilterImportant] = useState(false)
+
   const allQ = topic.questions
     .map((q, i) => ({ q, qid: `${topic.id}__${i}` }))
     .filter(({ q }) => q.options && q.correct_answer)
 
-  const visible  = allQ.filter(({ qid }) => !mastered.has(qid))
-  const nailedCt = allQ.length - visible.length
+  const nonNailed = allQ.filter(({ qid }) => !mastered.has(qid))
+  const nailedCt  = allQ.length - nonNailed.length
+
+  const importantCount = nonNailed.filter(({ qid }) => important?.has(qid)).length
+
+  const visible = filterImportant
+    ? nonNailed.filter(({ qid }) => important?.has(qid))
+    : nonNailed
 
   return (
     <div className="study-page anim-fade">
@@ -21,7 +29,26 @@ export default function StudyMode({ topic, mastered, important, onNail, onMarkIm
         </button>
       </div>
 
-      {nailedCt > 0 && (
+      {/* Filter bar */}
+      <div className="study-filter-bar">
+        <button
+          className={`study-filter-btn${!filterImportant ? ' active' : ''}`}
+          onClick={() => setFilterImportant(false)}
+          style={!filterImportant ? { borderColor: topic.color, color: topic.color, background: `${topic.color}15` } : {}}
+        >
+          সব ({nonNailed.length})
+        </button>
+        <button
+          className={`study-filter-btn${filterImportant ? ' active' : ''}`}
+          onClick={() => setFilterImportant(true)}
+          style={filterImportant ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+        >
+          <Bookmark size={11} fill={filterImportant ? 'currentColor' : 'none'} />
+          Important ({importantCount})
+        </button>
+      </div>
+
+      {nailedCt > 0 && !filterImportant && (
         <div className="nailed-notice" style={{ borderColor: `${topic.color}40`, color: topic.color }}>
           <Star size={13} fill="currentColor" />
           <span>{nailedCt} টি question Nailed — <button onClick={onHome} className="nailed-notice-link">Nailed It</button> এ দেখো</span>
@@ -30,8 +57,11 @@ export default function StudyMode({ topic, mastered, important, onNail, onMarkIm
 
       {visible.length === 0 ? (
         <div className="study-all-nailed">
-          <Star size={38} style={{ color: topic.color, opacity: 0.5, marginBottom: 12 }} fill="currentColor" />
-          <p>সব প্রশ্ন Nailed করা হয়েছে! 🎉</p>
+          {filterImportant
+            ? <Bookmark size={38} style={{ color: '#ef4444', opacity: 0.4, marginBottom: 12 }} fill="currentColor" />
+            : <Star size={38} style={{ color: topic.color, opacity: 0.5, marginBottom: 12 }} fill="currentColor" />
+          }
+          <p>{filterImportant ? 'কোনো Important প্রশ্ন নেই।' : 'সব প্রশ্ন Nailed করা হয়েছে! 🎉'}</p>
           <button className="back-btn" style={{ marginTop: 16 }} onClick={onHome}>হোমে ফিরে যাও</button>
         </div>
       ) : (
@@ -56,8 +86,15 @@ export default function StudyMode({ topic, mastered, important, onNail, onMarkIm
 }
 
 function StudyCard({ question: q, index, color, nailed, isImportant, onNail, onMarkImportant, onUnmarkImportant }) {
-  const [shown, setShown] = useState(false)
+  const [shown, setShown]       = useState(false)
+  const [selected, setSelected] = useState(null)
   const opts = ['a','b','c','d'].filter(k => q.options?.[k])
+
+  const pick = (key) => {
+    if (shown) return
+    setSelected(key)
+    setShown(true)
+  }
 
   return (
     <div className={`study-card${nailed ? ' study-card-nailed' : ''}`} style={{ '--c': color }}>
@@ -82,14 +119,15 @@ function StudyCard({ question: q, index, color, nailed, isImportant, onNail, onM
             <Bookmark size={12} fill={isImportant ? 'currentColor' : 'none'} />
             {isImportant ? 'Important ✓' : 'Important'}
           </button>
-          <button
-            className="study-toggle"
-            onClick={() => setShown(v => !v)}
-            style={{ color: shown ? color : 'var(--text-2)' }}
-          >
-            {shown ? <Eye size={12} /> : <EyeOff size={12} />}
-            {shown ? 'লুকাও' : 'উত্তর দেখো'}
-          </button>
+          {shown && (
+            <button
+              className="study-toggle"
+              onClick={() => { setShown(false); setSelected(null) }}
+              style={{ color }}
+            >
+              লুকাও
+            </button>
+          )}
         </div>
       </div>
 
@@ -97,13 +135,21 @@ function StudyCard({ question: q, index, color, nailed, isImportant, onNail, onM
 
       <div className="study-options">
         {opts.map(key => {
-          const isCorrect = shown && key === q.correct_answer
+          const isCorrect = key === q.correct_answer
+          const isWrong   = shown && key === selected && !isCorrect
+          let cls = 'study-opt study-opt-clickable'
+          if (shown) {
+            if (isCorrect)  cls += ' correct'
+            else if (isWrong) cls += ' wrong'
+            else cls += ' dim'
+          }
           return (
-            <div key={key} className={`study-opt${isCorrect ? ' correct' : ''}`} style={isCorrect ? { color } : {}}>
+            <button key={key} className={cls} style={isCorrect && shown ? { '--c': color } : {}} onClick={() => pick(key)}>
               <span className="study-opt-key">{key.toUpperCase()}</span>
               <span className="study-opt-text">{q.options[key]}</span>
-              {isCorrect && <CheckCircle size={13} style={{ color, marginLeft: 'auto', flexShrink: 0 }} />}
-            </div>
+              {shown && isCorrect && <CheckCircle size={13} style={{ color, marginLeft: 'auto', flexShrink: 0 }} />}
+              {shown && isWrong   && <XCircle size={13} style={{ color: '#ef4444', marginLeft: 'auto', flexShrink: 0 }} />}
+            </button>
           )
         })}
       </div>
