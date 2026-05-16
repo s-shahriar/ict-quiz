@@ -1,0 +1,1045 @@
+{
+  "topic": "Machine Learning",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Machine Learning is a subset of",
+      "options": {
+        "a": "DBMS",
+        "b": "OS",
+        "c": "Artificial Intelligence",
+        "d": "Networking"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Artificial Intelligence",
+      "explanation": "Machine Learning হলো Artificial Intelligence-এর একটি শাখা, যেখানে সিস্টেম স্বয়ংক্রিয়ভাবে ডেটা থেকে শেখে — প্রোগ্রামারকে প্রতিটি নিয়ম হাতে লিখে দিতে হয় না।"
+    },
+    {
+      "id": 2,
+      "question": "ML allows systems to",
+      "options": {
+        "a": "Be programmed manually",
+        "b": "Learn from data",
+        "c": "Increase memory",
+        "d": "Improve hardware"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Learn from data",
+      "explanation": "ML-এর মূল বৈশিষ্ট্য হলো সিস্টেম নিজে থেকেই অভিজ্ঞতা ও ডেটা থেকে শিখে উন্নতি করে — ধাপে ধাপে প্রোগ্রাম করার প্রয়োজন হয় না।"
+    },
+    {
+      "id": 3,
+      "question": "Supervised learning uses",
+      "options": {
+        "a": "Unlabeled data",
+        "b": "Labeled data",
+        "c": "No data",
+        "d": "Random data"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Labeled data",
+      "explanation": "Supervised learning-এ labeled data ব্যবহার করা হয় — প্রতিটি ইনপুটের সাথে সঠিক আউটপুট দেওয়া থাকে, যাতে মডেল input-output সম্পর্ক শিখতে পারে।"
+    },
+    {
+      "id": 4,
+      "question": "Unsupervised learning is used for",
+      "options": {
+        "a": "Prediction",
+        "b": "Clustering",
+        "c": "Classification",
+        "d": "Regression"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Clustering",
+      "explanation": "Unsupervised learning unlabeled data থেকে লুকানো প্যাটার্ন খুঁজে বের করে। Clustering-এ পূর্বনির্ধারিত লেবেল ছাড়াই একই ধরনের ডেটা পয়েন্টগুলোকে গ্রুপ করা হয়।"
+    },
+    {
+      "id": 5,
+      "question": "Reinforcement learning is based on",
+      "options": {
+        "a": "Labels",
+        "b": "Probability",
+        "c": "Reward and punishment",
+        "d": "Distance"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Reward and punishment",
+      "explanation": "Reinforcement Learning-এ এজেন্ট ইন্টারঅ্যাকশনের মাধ্যমে শেখে — ভালো কাজের জন্য reward এবং খারাপ কাজের জন্য penalty পায়, মোট reward বেশি করার চেষ্টা করে।"
+    },
+    {
+      "id": 6,
+      "question": "Which algorithm is used for clustering?",
+      "options": {
+        "a": "Linear regression",
+        "b": "K-means",
+        "c": "Naive Bayes",
+        "d": "SVM"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "K-means",
+      "explanation": "K-means অ্যালগরিদম ডেটাকে K-টি গ্রুপে ভাগ করে — প্রতিটি গ্রুপের centroid-এর চারপাশে variance কমিয়ে iteratively আপডেট করে।"
+    },
+    {
+      "id": 7,
+      "question": "Linear regression is used for",
+      "options": {
+        "a": "Classification",
+        "b": "Prediction",
+        "c": "Clustering",
+        "d": "Association"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Prediction",
+      "explanation": "Linear regression feature এবং output-এর মধ্যে রৈখিক সম্পর্ক ফিট করে continuous সংখ্যাসূচক মান (যেমন দাম, তাপমাত্রা) পূর্বাভাস দেয়।"
+    },
+    {
+      "id": 8,
+      "question": "Overfitting means",
+      "options": {
+        "a": "Model too simple",
+        "b": "Model learns noise",
+        "c": "Less training",
+        "d": "Less data"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Model learns noise",
+      "explanation": "Overfitting তখন হয় যখন মডেল ট্রেইনিং ডেটার noise মুখস্থ করে ফেলে — ফলে নতুন ডেটায় তার পারফরম্যান্স খারাপ হয়।"
+    },
+    {
+      "id": 9,
+      "question": "Which is a classification algorithm?",
+      "options": {
+        "a": "K-means",
+        "b": "PCA",
+        "c": "Decision Tree",
+        "d": "Apriori"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Decision Tree",
+      "explanation": "Decision Tree একটি classification অ্যালগরিদম — প্রতিটি node-এ feature condition অনুযায়ী ডেটা split করে class label পূর্বাভাস দেয়।"
+    },
+    {
+      "id": 10,
+      "question": "Naive Bayes is based on",
+      "options": {
+        "a": "Distance",
+        "b": "Trees",
+        "c": "Probability theorem",
+        "d": "Rules"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Probability theorem",
+      "explanation": "Naive Bayes, Bayes' theorem ব্যবহার করে — সব feature ক্লাসের শর্তে স্বাধীন বলে ধরে নেওয়া হয় (naive assumption)।"
+    },
+    {
+      "id": 11,
+      "question": "Which ML uses distance metric?",
+      "options": {
+        "a": "SVM",
+        "b": "KNN",
+        "c": "Naive Bayes",
+        "d": "Regression"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "KNN",
+      "explanation": "KNN Euclidean distance-এর মতো distance metric ব্যবহার করে K-টি নিকটতম neighbor খুঁজে বের করে এবং তাদের majority class অনুযায়ী classification করে।"
+    },
+    {
+      "id": 12,
+      "question": "Training data is used to",
+      "options": {
+        "a": "Test model",
+        "b": "Learn patterns",
+        "c": "Deploy model",
+        "d": "Store output"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Learn patterns",
+      "explanation": "Training data দিয়ে মডেল fit করা হয় — এটি ট্রেইনিং ফেজে ডেটার underlying patterns ও relationships শেখে।"
+    },
+    {
+      "id": 13,
+      "question": "Test data is used to",
+      "options": {
+        "a": "Train model",
+        "b": "Evaluate performance",
+        "c": "Clean data",
+        "d": "Normalize data"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Evaluate performance",
+      "explanation": "Test data হলো আলাদা রাখা একটি সেট যা শুধু ট্রেইনিং শেষে মডেল unseen data-তে কতটা ভালো কাজ করে তা evaluate করতে ব্যবহৃত হয়।"
+    },
+    {
+      "id": 14,
+      "question": "Deep Learning uses",
+      "options": {
+        "a": "Single layer",
+        "b": "Multiple neural layers",
+        "c": "Rules",
+        "d": "Tables"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Multiple neural layers",
+      "explanation": "Deep Learning এমন deep neural network ব্যবহার করে যাতে অনেকগুলো hidden layer থাকে — এগুলো স্বয়ংক্রিয়ভাবে hierarchical feature representations শেখে।"
+    },
+    {
+      "id": 15,
+      "question": "Which activation function is popular in Deep Learning?",
+      "options": {
+        "a": "Step",
+        "b": "Linear",
+        "c": "ReLU",
+        "d": "Binary"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "ReLU",
+      "explanation": "ReLU (Rectified Linear Unit) vanishing gradient সমস্যা সমাধান করে এবং computationally efficient — Deep Learning-এ সবচেয়ে বেশি ব্যবহৃত activation function।"
+    },
+    {
+      "id": 16,
+      "question": "Which ML task predicts continuous values?",
+      "options": {
+        "a": "Classification",
+        "b": "Regression",
+        "c": "Clustering",
+        "d": "Association"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Regression",
+      "explanation": "Regression continuous সংখ্যাসূচক আউটপুট (যেমন বাড়ির দাম) পূর্বাভাস দেয়, যেখানে classification discrete label পূর্বাভাস দেয়।"
+    },
+    {
+      "id": 17,
+      "question": "Feature selection helps to",
+      "options": {
+        "a": "Increase noise",
+        "b": "Improve accuracy",
+        "c": "Increase data size",
+        "d": "Reduce labels"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Improve accuracy",
+      "explanation": "Feature selection অপ্রাসঙ্গিক feature বাদ দিয়ে মডেলের complexity কমায় এবং accuracy ও generalization উন্নত করে।"
+    },
+    {
+      "id": 18,
+      "question": "Which ML algorithm is lazy learner?",
+      "options": {
+        "a": "Decision tree",
+        "b": "KNN",
+        "c": "SVM",
+        "d": "Regression"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "KNN",
+      "explanation": "KNN একটি lazy learner — এটি training time-এ কোনো explicit model তৈরি না করে সব কম্পিউটেশন prediction time পর্যন্ত ফেলে রাখে।"
+    },
+    {
+      "id": 19,
+      "question": "PCA is used for",
+      "options": {
+        "a": "Classification",
+        "b": "Dimensionality reduction",
+        "c": "Clustering",
+        "d": "Prediction"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Dimensionality reduction",
+      "explanation": "PCA ডেটাকে maximum variance-এর দিকে (principal components) project করে dimension কমায় — এটি dimensionality reduction technique।"
+    },
+    {
+      "id": 20,
+      "question": "Confusion matrix is used to",
+      "options": {
+        "a": "Store data",
+        "b": "Evaluate classification",
+        "c": "Normalize data",
+        "d": "Reduce features"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Evaluate classification",
+      "explanation": "Confusion matrix TP, TN, FP, FN দেখায় — এ থেকে accuracy, precision, recall ও F1-score হিসাব করা যায়।"
+    },
+    {
+      "id": 21,
+      "question": "Which ML algorithm creates margin?",
+      "options": {
+        "a": "KNN",
+        "b": "SVM",
+        "c": "K-means",
+        "d": "Apriori"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "SVM",
+      "explanation": "SVM feature space-এ ক্লাসগুলোর মধ্যে সর্বোচ্চ margin সহ optimal hyperplane খুঁজে বের করে।"
+    },
+    {
+      "id": 22,
+      "question": "Spam detection is an example of",
+      "options": {
+        "a": "Clustering",
+        "b": "Classification",
+        "c": "Regression",
+        "d": "Association"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Classification",
+      "explanation": "Spam detection ইমেইলকে 'spam' বা 'not spam' হিসেবে classify করে — এটি Naive Bayes বা SVM দিয়ে সমাধান করা একটি binary classification সমস্যা।"
+    },
+    {
+      "id": 23,
+      "question": "Bias-variance tradeoff relates to",
+      "options": {
+        "a": "Memory",
+        "b": "Speed",
+        "c": "Model performance",
+        "d": "Storage"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Model performance",
+      "explanation": "Bias-variance tradeoff হলো high bias (underfitting, অতিরিক্ত সরল) এবং high variance (overfitting, অতিরিক্ত জটিল) এর মধ্যে ভারসাম্য রাখার চ্যালেঞ্জ।"
+    },
+    {
+      "id": 24,
+      "question": "Cross-validation is used for",
+      "options": {
+        "a": "Data collection",
+        "b": "Model evaluation",
+        "c": "Encryption",
+        "d": "Feature scaling"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Model evaluation",
+      "explanation": "K-fold cross-validation ডেটাকে ভিন্ন ভিন্ন split-এ train/test করে মডেলের performance evaluate করে, evaluation overfitting কমায়।"
+    },
+    {
+      "id": 25,
+      "question": "Apriori algorithm is used for",
+      "options": {
+        "a": "Classification",
+        "b": "Clustering",
+        "c": "Association rule mining",
+        "d": "Regression"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Association rule mining",
+      "explanation": "Apriori অ্যালগরিদম frequent itemset ও association rule আবিষ্কার করে — 'যারা X কেনে তারা Y-ও কেনে' টাইপ recommendation-এর ভিত্তি।"
+    },
+    {
+      "id": 26,
+      "question": "Which ML uses reward signal?",
+      "options": {
+        "a": "Supervised",
+        "b": "Unsupervised",
+        "c": "Reinforcement",
+        "d": "Deep learning"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Reinforcement",
+      "explanation": "Reinforcement Learning একমাত্র পদ্ধতি যেখানে reward signal ব্যবহার হয় — এজেন্ট trial-and-error এর মাধ্যমে cumulative reward বেশি করতে শেখে।"
+    },
+    {
+      "id": 27,
+      "question": "Which loss is common in regression?",
+      "options": {
+        "a": "Cross entropy",
+        "b": "Mean Squared Error",
+        "c": "Hinge loss",
+        "d": "Log loss"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Mean Squared Error",
+      "explanation": "MSE (Mean Squared Error) regression-এর standard loss — এটি prediction ও target-এর পার্থক্যের বর্গ করে বড় ভুলগুলোকে বেশি শাস্তি দেয়।"
+    },
+    {
+      "id": 28,
+      "question": "Which ML model is probabilistic?",
+      "options": {
+        "a": "SVM",
+        "b": "KNN",
+        "c": "Naive Bayes",
+        "d": "Decision Tree"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Naive Bayes",
+      "explanation": "Naive Bayes একটি probabilistic classifier — এটি Bayes' theorem ও feature likelihood ব্যবহার করে class probability আউটপুট দেয়।"
+    },
+    {
+      "id": 29,
+      "question": "Which ML problem groups similar data?",
+      "options": {
+        "a": "Classification",
+        "b": "Regression",
+        "c": "Clustering",
+        "d": "Prediction"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Clustering",
+      "explanation": "Clustering হলো unsupervised ML task যেখানে পূর্বনির্ধারিত label ছাড়াই একই ধরনের ডেটা পয়েন্টগুলোকে গ্রুপ করা হয় (যেমন customer segmentation)।"
+    },
+    {
+      "id": 30,
+      "question": "Which ML is used in recommendation systems?",
+      "options": {
+        "a": "Sorting",
+        "b": "Collaborative filtering",
+        "c": "Encryption",
+        "d": "Scheduling"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Collaborative filtering",
+      "explanation": "Collaborative filtering একই রুচির ব্যবহারকারী খুঁজে বের করে item recommend করে — Netflix ও Spotify-এর রিকমেন্ডেশন ইঞ্জিন এটি ব্যবহার করে।"
+    },
+    {
+      "id": 31,
+      "question": "Overfitting can be reduced by",
+      "options": {
+        "a": "Increasing noise",
+        "b": "Regularization",
+        "c": "Removing data",
+        "d": "Reducing testing"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Regularization",
+      "explanation": "Regularization (L1/L2) loss function-এ penalty যোগ করে মডেলের complexity কমায়, ফলে overfitting কমে।"
+    },
+    {
+      "id": 32,
+      "question": "Which ML model is tree-based?",
+      "options": {
+        "a": "SVM",
+        "b": "Decision Tree",
+        "c": "KNN",
+        "d": "PCA"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Decision Tree",
+      "explanation": "Decision Tree feature-split node-এর hierarchical tree structure ব্যবহার করে prediction এ পৌঁছায়।"
+    },
+    {
+      "id": 33,
+      "question": "Normalization is used to",
+      "options": {
+        "a": "Add features",
+        "b": "Scale data",
+        "c": "Remove labels",
+        "d": "Encrypt data"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Scale data",
+      "explanation": "Normalization সব feature-কে একটি standard range-এ (যেমন 0–1) scale করে, যাতে বড় magnitude-এর feature training dominate না করে।"
+    },
+    {
+      "id": 34,
+      "question": "Which ML algorithm is centroid-based?",
+      "options": {
+        "a": "KNN",
+        "b": "K-means",
+        "c": "SVM",
+        "d": "Bayes"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "K-means",
+      "explanation": "K-means প্রতিটি পয়েন্টকে নিকটতম centroid-এ assign করে এবং within-cluster variance কমাতে iteratively centroid আপডেট করে।"
+    },
+    {
+      "id": 35,
+      "question": "Which learning needs no labeled data?",
+      "options": {
+        "a": "Supervised",
+        "b": "Unsupervised",
+        "c": "Reinforcement",
+        "d": "Deep"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Unsupervised",
+      "explanation": "Unsupervised learning unlabeled data নিয়ে কাজ করে — clustering ও dimensionality reduction এর মাধ্যমে লুকানো প্যাটার্ন আবিষ্কার করে।"
+    },
+    {
+      "id": 36,
+      "question": "Which ML technique handles non-linearity well?",
+      "options": {
+        "a": "Linear regression",
+        "b": "Decision Tree",
+        "c": "PCA",
+        "d": "Naive Bayes"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Decision Tree",
+      "explanation": "Decision Tree linear model-এর বিপরীতে recursively feature space partition করে complex non-linear boundary model করতে পারে।"
+    },
+    {
+      "id": 37,
+      "question": "Gradient descent is used for",
+      "options": {
+        "a": "Testing",
+        "b": "Optimization",
+        "c": "Encryption",
+        "d": "Searching"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Optimization",
+      "explanation": "Gradient descent loss function কমানোর জন্য iteratively steepest descent-এর দিকে অগ্রসর হয় — এটি ML-এর core optimizer।"
+    },
+    {
+      "id": 38,
+      "question": "Which ML model is used in image recognition?",
+      "options": {
+        "a": "KNN",
+        "b": "CNN",
+        "c": "Apriori",
+        "d": "Linear regression"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "CNN",
+      "explanation": "CNN (Convolutional Neural Network) convolutional layer ব্যবহার করে ইমেজ ডেটা থেকে স্বয়ংক্রিয়ভাবে spatial feature hierarchy শেখে।"
+    },
+    {
+      "id": 39,
+      "question": "Which ML is used in self-driving cars?",
+      "options": {
+        "a": "Clustering",
+        "b": "Reinforcement learning",
+        "c": "Sorting",
+        "d": "Hashing"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Reinforcement learning",
+      "explanation": "Self-driving car simulated environment-এ reward/penalty এর মাধ্যমে optimal driving policy শিখতে Reinforcement Learning ব্যবহার করে।"
+    },
+    {
+      "id": 40,
+      "question": "ML performance mainly depends on",
+      "options": {
+        "a": "Hardware only",
+        "b": "Data quality and algorithm",
+        "c": "Network speed",
+        "d": "OS version"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Data quality and algorithm",
+      "explanation": "ML performance প্রধানত ডেটার quality (পরিষ্কার, প্রতিনিধিত্বমূলক) এবং সমস্যার জন্য উপযুক্ত algorithm choice-এর উপর নির্ভর করে।"
+    },
+    {
+      "id": 41,
+      "question": "Artificial Intelligence mainly aims to",
+      "options": {
+        "a": "Store data",
+        "b": "Increase memory",
+        "c": "Make machines intelligent",
+        "d": "Improve networking"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Make machines intelligent",
+      "explanation": "AI-এর মূল লক্ষ্য হলো মেশিনে human-like intelligence simulate করা — যাতে তারা শিখতে, যুক্তি করতে এবং স্বায়ত্তশাসিতভাবে সমস্যা সমাধান করতে পারে।"
+    },
+    {
+      "id": 42,
+      "question": "The term 'Artificial Intelligence' was coined by",
+      "options": {
+        "a": "Alan Turing",
+        "b": "Marvin Minsky",
+        "c": "John McCarthy",
+        "d": "Herbert Simon"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "John McCarthy",
+      "explanation": "John McCarthy ১৯৫৬ সালে Dartmouth Conference-এ 'Artificial Intelligence' শব্দটি প্রথম ব্যবহার করেন — সেখানেই AI একটি formal field হিসেবে প্রতিষ্ঠিত হয়।"
+    },
+    {
+      "id": 43,
+      "question": "Turing Test is related to",
+      "options": {
+        "a": "Speed",
+        "b": "Accuracy",
+        "c": "Machine intelligence",
+        "d": "Learning rate"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Machine intelligence",
+      "explanation": "Turing Test (১৯৫০) পরীক্ষা করে একটি মেশিন কি মানুষের থেকে আলাদা করা যায় এমন intelligent behavior দেখাতে পারে কিনা।"
+    },
+    {
+      "id": 44,
+      "question": "Which is NOT an AI goal?",
+      "options": {
+        "a": "Learning",
+        "b": "Reasoning",
+        "c": "Problem solving",
+        "d": "Data compression"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Data compression",
+      "explanation": "Data compression হলো computer science-এর একটি কাজ। AI-এর প্রকৃত লক্ষ্য হলো learning, reasoning, perception এবং problem-solving।"
+    },
+    {
+      "id": 45,
+      "question": "Expert systems are based on",
+      "options": {
+        "a": "Neural networks",
+        "b": "Rules and knowledge base",
+        "c": "Genetic algorithms",
+        "d": "Big data"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Rules and knowledge base",
+      "explanation": "Expert system একটি knowledge base (domain-specific তথ্য) এবং IF-THEN rule inference engine ব্যবহার করে human expert-এর সিদ্ধান্ত অনুকরণ করে।"
+    },
+    {
+      "id": 46,
+      "question": "Which search algorithm uses heuristic?",
+      "options": {
+        "a": "DFS",
+        "b": "BFS",
+        "c": "A*",
+        "d": "Linear search"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "A*",
+      "explanation": "A* অ্যালগরিদম heuristic h(n) ব্যবহার করে goal-এর distance অনুমান করে — heuristic admissible হলে এটি optimal ও complete।"
+    },
+    {
+      "id": 47,
+      "question": "NLP stands for",
+      "options": {
+        "a": "Neural Learning Process",
+        "b": "Natural Language Processing",
+        "c": "Network Logic Protocol",
+        "d": "Nonlinear Programming"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Natural Language Processing",
+      "explanation": "NLP (Natural Language Processing) মেশিনকে মানুষের ভাষা বোঝা, ব্যাখ্যা করা এবং উৎপন্ন করতে সক্ষম করে।"
+    },
+    {
+      "id": 48,
+      "question": "Which AI field deals with images?",
+      "options": {
+        "a": "NLP",
+        "b": "Robotics",
+        "c": "Computer Vision",
+        "d": "Expert system"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Computer Vision",
+      "explanation": "Computer Vision মেশিনকে ইমেজ ও ভিডিও থেকে visual data ব্যাখ্যা করতে সক্ষম করে — মানুষের visual perception অনুকরণ করে।"
+    },
+    {
+      "id": 49,
+      "question": "Chess playing program is an example of",
+      "options": {
+        "a": "Strong AI",
+        "b": "Narrow AI",
+        "c": "General AI",
+        "d": "Super AI"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Narrow AI",
+      "explanation": "Deep Blue-এর মতো দাবা প্রোগ্রাম Narrow AI — এটি শুধু একটি নির্দিষ্ট কাজে দক্ষ কিন্তু অন্য domain-এ generalize করতে পারে না।"
+    },
+    {
+      "id": 50,
+      "question": "Knowledge representation refers to",
+      "options": {
+        "a": "Database design",
+        "b": "Storing facts and rules",
+        "c": "Memory allocation",
+        "d": "File management"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Storing facts and rules",
+      "explanation": "Knowledge representation বিশ্বের তথ্যকে structured আকারে encode করে যাতে AI system সেটা reasoning ও problem-solving-এ ব্যবহার করতে পারে।"
+    },
+    {
+      "id": 51,
+      "question": "Which logic is widely used in AI?",
+      "options": {
+        "a": "Boolean logic",
+        "b": "Binary logic",
+        "c": "Predicate logic",
+        "d": "Fuzzy only"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Predicate logic",
+      "explanation": "Predicate (first-order) logic variable ও quantifier দিয়ে জটিল সম্পর্ক প্রকাশ করতে পারে — AI reasoning-এ এটি অপরিহার্য।"
+    },
+    {
+      "id": 52,
+      "question": "Fuzzy logic deals with",
+      "options": {
+        "a": "True or False",
+        "b": "Degree of truth",
+        "c": "Binary values",
+        "d": "Hashing"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Degree of truth",
+      "explanation": "Fuzzy logic binary true/false-এর বদলে truth-এর degree (০ থেকে ১) নিয়ে কাজ করে — বাস্তব জগতের uncertainty modeling-এ কার্যকর।"
+    },
+    {
+      "id": 53,
+      "question": "Which AI technique mimics evolution?",
+      "options": {
+        "a": "Neural network",
+        "b": "Genetic algorithm",
+        "c": "Decision tree",
+        "d": "Regression"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Genetic algorithm",
+      "explanation": "Genetic algorithm জীববিজ্ঞানের evolution অনুকরণ করে — selection, crossover ও mutation ব্যবহার করে optimal solution evolve করে।"
+    },
+    {
+      "id": 54,
+      "question": "An intelligent agent perceives environment through",
+      "options": {
+        "a": "Actuators",
+        "b": "Sensors",
+        "c": "Database",
+        "d": "Compiler"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Sensors",
+      "explanation": "Agent পরিবেশকে perceive করতে sensor ব্যবহার করে (ইনপুট) এবং কাজ করতে actuator ব্যবহার করে। Sensor হলো agent-এর পরিবেশের সাথে সংযোগ।"
+    },
+    {
+      "id": 55,
+      "question": "Which environment is fully observable?",
+      "options": {
+        "a": "Poker",
+        "b": "Driving",
+        "c": "Chess",
+        "d": "Medical diagnosis"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Chess",
+      "explanation": "দাবা সম্পূর্ণ observable — উভয় খেলোয়াড় পুরো বোর্ড সবসময় দেখতে পায়। পোকারে কার্ড লুকানো থাকে, তাই এটি partially observable।"
+    },
+    {
+      "id": 56,
+      "question": "Which AI system improves automatically over time?",
+      "options": {
+        "a": "Static system",
+        "b": "Manual system",
+        "c": "Learning system",
+        "d": "Embedded system"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Learning system",
+      "explanation": "Learning system (ML model) অভিজ্ঞতা ও ডেটা থেকে নিজে থেকেই উন্নতি করে — পুনরায় explicitly program করার প্রয়োজন হয় না।"
+    },
+    {
+      "id": 57,
+      "question": "Bayesian networks use",
+      "options": {
+        "a": "Rules",
+        "b": "Trees",
+        "c": "Probability",
+        "d": "Graph coloring"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Probability",
+      "explanation": "Bayesian network হলো probabilistic graphical model — এটি probability theory ব্যবহার করে variable-গুলোর মধ্যে conditional dependency প্রকাশ করে।"
+    },
+    {
+      "id": 58,
+      "question": "Robotics is a branch of",
+      "options": {
+        "a": "OS",
+        "b": "DBMS",
+        "c": "Artificial Intelligence",
+        "d": "Networking"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Artificial Intelligence",
+      "explanation": "Robotics হলো AI ও engineering-এর একটি interdisciplinary শাখা যা autonomous শারীরিক কাজ করতে সক্ষম intelligent machine ডিজাইন করে।"
+    },
+    {
+      "id": 59,
+      "question": "Which search algorithm is optimal?",
+      "options": {
+        "a": "DFS",
+        "b": "BFS",
+        "c": "A*",
+        "d": "Hill climbing"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "A*",
+      "explanation": "A* admissible heuristic ব্যবহার করলে optimal হয় — এটি সবসময় goal-এ সর্বনিম্ন খরচের path খুঁজে বের করে।"
+    },
+    {
+      "id": 60,
+      "question": "Which is NOT an AI application?",
+      "options": {
+        "a": "Chatbot",
+        "b": "Face recognition",
+        "c": "File compression",
+        "d": "Speech recognition"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "File compression",
+      "explanation": "File compression (ZIP/RAR) Huffman coding ব্যবহার করে — এটি pure computer science, AI-based নয়।"
+    },
+    {
+      "id": 61,
+      "question": "Strong AI refers to",
+      "options": {
+        "a": "Task-specific AI",
+        "b": "Human-level intelligence",
+        "c": "Weak intelligence",
+        "d": "Rule-based AI"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Human-level intelligence",
+      "explanation": "Strong AI (AGI) এমন মেশিনকে বর্ণনা করে যার সাধারণ intelligence মানুষের সমান — যেকোনো domain-এ reasoning করতে সক্ষম।"
+    },
+    {
+      "id": 62,
+      "question": "Which AI component selects actions?",
+      "options": {
+        "a": "Sensor",
+        "b": "Database",
+        "c": "Agent",
+        "d": "Compiler"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Agent",
+      "explanation": "Agent হলো সিদ্ধান্ত গ্রহণকারী entity — এটি sensor দিয়ে পরিবেশ perceive করে এবং goal অর্জনের জন্য action বেছে নেয়।"
+    },
+    {
+      "id": 63,
+      "question": "Reasoning in AI means",
+      "options": {
+        "a": "Data storage",
+        "b": "Drawing conclusions",
+        "c": "File processing",
+        "d": "Encryption"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Drawing conclusions",
+      "explanation": "AI-তে reasoning হলো existing knowledge থেকে logical inference বা probabilistic method ব্যবহার করে নতুন সিদ্ধান্তে পৌঁছানো।"
+    },
+    {
+      "id": 64,
+      "question": "Which AI technique handles uncertainty?",
+      "options": {
+        "a": "DFS",
+        "b": "Fuzzy logic",
+        "c": "Sorting",
+        "d": "Hashing"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Fuzzy logic",
+      "explanation": "Fuzzy logic partial truth value ব্যবহার করে uncertainty handle করে — ambiguous বাস্তব পরিস্থিতিতে এটি কার্যকর।"
+    },
+    {
+      "id": 65,
+      "question": "AI that can think like humans is",
+      "options": {
+        "a": "Narrow AI",
+        "b": "Weak AI",
+        "c": "General AI",
+        "d": "Reactive AI"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "General AI",
+      "explanation": "General AI (AGI) মানুষের মতো সব domain-এ think ও reason করতে পারে, যেখানে Narrow AI শুধু নির্দিষ্ট কাজে সীমাবদ্ধ।"
+    },
+    {
+      "id": 66,
+      "question": "Game playing in AI mainly uses",
+      "options": {
+        "a": "Scheduling",
+        "b": "Search algorithms",
+        "c": "Encryption",
+        "d": "Compilation"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Search algorithms",
+      "explanation": "Game-playing AI Minimax ও Alpha-Beta pruning-এর মতো search algorithm ব্যবহার করে game tree explore করে optimal move খুঁজে বের করে।"
+    },
+    {
+      "id": 67,
+      "question": "Which is an AI application in banking?",
+      "options": {
+        "a": "Firewall",
+        "b": "Fraud detection",
+        "c": "Router",
+        "d": "DNS"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Fraud detection",
+      "explanation": "Fraud detection real-time-এ ML ব্যবহার করে অস্বাভাবিক transaction pattern শনাক্ত করে — ব্যাংকিং-এ AI-এর অন্যতম প্রধান প্রয়োগ।"
+    },
+    {
+      "id": 68,
+      "question": "Heuristic means",
+      "options": {
+        "a": "Random",
+        "b": "Guaranteed solution",
+        "c": "Rule of thumb",
+        "d": "Exact method"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Rule of thumb",
+      "explanation": "Heuristic হলো একটি practical rule of thumb যা problem-solving ত্বরান্বিত করে — তবে এটি optimal solution guarantee করে না।"
+    },
+    {
+      "id": 69,
+      "question": "Which AI deals with speech?",
+      "options": {
+        "a": "Robotics",
+        "b": "Speech recognition",
+        "c": "Data mining",
+        "d": "Encryption"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Speech recognition",
+      "explanation": "Speech recognition AI কথ্য ভাষাকে text-এ রূপান্তর করে — voice assistant ও transcription service এটি ব্যবহার করে।"
+    },
+    {
+      "id": 70,
+      "question": "Which AI system uses IF-THEN rules?",
+      "options": {
+        "a": "Neural network",
+        "b": "Expert system",
+        "c": "Genetic algorithm",
+        "d": "KNN"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Expert system",
+      "explanation": "Expert system তাদের inference engine-এ IF-THEN production rule ব্যবহার করে domain expert-এর সিদ্ধান্ত গ্রহণ অনুকরণ করে।"
+    },
+    {
+      "id": 71,
+      "question": "Which is an example of AI agent?",
+      "options": {
+        "a": "Compiler",
+        "b": "Autonomous robot",
+        "c": "Text editor",
+        "d": "Printer"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Autonomous robot",
+      "explanation": "Autonomous robot একটি classic AI agent — এটি sensor দিয়ে perceive করে এবং goal অর্জনে deliberate action নেয়।"
+    },
+    {
+      "id": 72,
+      "question": "Learning from experience is core of",
+      "options": {
+        "a": "DBMS",
+        "b": "OS",
+        "c": "AI systems",
+        "d": "Networks"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "AI systems",
+      "explanation": "অভিজ্ঞতা থেকে শেখা হলো AI/ML-এর মৌলিক নীতি — সিস্টেম ডেটা ও feedback এর মাধ্যমে performance উন্নত করে।"
+    },
+    {
+      "id": 73,
+      "question": "Which AI area focuses on planning?",
+      "options": {
+        "a": "NLP",
+        "b": "Vision",
+        "c": "Problem solving",
+        "d": "Encryption"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Problem solving",
+      "explanation": "AI planning-এ initial state থেকে goal state-এ পৌঁছানোর জন্য action-এর sequence খুঁজে বের করা হয়।"
+    },
+    {
+      "id": 74,
+      "question": "Symbolic AI mainly uses",
+      "options": {
+        "a": "Data-driven models",
+        "b": "Symbols and rules",
+        "c": "Neural layers",
+        "d": "Sensors"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Symbols and rules",
+      "explanation": "Symbolic AI (classical AI) explicit symbol ও logical rule ব্যবহার করে knowledge represent করে — statistical learning থেকে ভিন্ন।"
+    },
+    {
+      "id": 75,
+      "question": "AI perception includes",
+      "options": {
+        "a": "Sorting",
+        "b": "Searching",
+        "c": "Vision and speech",
+        "d": "Hashing"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Vision and speech",
+      "explanation": "AI perception-এ Computer Vision (ইমেজ/ভিডিও) এবং Speech Recognition (অডিও) অন্তর্ভুক্ত — sensory data ব্যাখ্যা করার জন্য।"
+    },
+    {
+      "id": 76,
+      "question": "Which is NOT a component of AI?",
+      "options": {
+        "a": "Learning",
+        "b": "Reasoning",
+        "c": "Formatting",
+        "d": "Perception"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Formatting",
+      "explanation": "Formatting হলো presentation task। AI-এর core component হলো learning, reasoning, perception এবং autonomous action।"
+    },
+    {
+      "id": 77,
+      "question": "Which AI is used in recommendation systems?",
+      "options": {
+        "a": "Compiler",
+        "b": "Machine Learning",
+        "c": "OS",
+        "d": "DNS"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Machine Learning",
+      "explanation": "ML user-এর historical behavior থেকে preference শিখে recommendation system চালায় (Netflix, Amazon, Spotify)।"
+    },
+    {
+      "id": 78,
+      "question": "Which AI system is goal-oriented?",
+      "options": {
+        "a": "Random system",
+        "b": "Agent-based system",
+        "c": "Static system",
+        "d": "Manual system"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Agent-based system",
+      "explanation": "Agent-based system inherently goal-oriented — agent নির্দিষ্ট objective অর্জনের জন্য rational action বেছে নেয়।"
+    },
+    {
+      "id": 79,
+      "question": "AI decision making uses",
+      "options": {
+        "a": "Guessing",
+        "b": "Logic and probability",
+        "c": "Formatting",
+        "d": "Encryption"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Logic and probability",
+      "explanation": "AI decision-making logical inference ও probabilistic reasoning একত্রিত করে uncertainty-এর অধীনে optimal choice করে।"
+    },
+    {
+      "id": 80,
+      "question": "Which AI area focuses on understanding text?",
+      "options": {
+        "a": "Robotics",
+        "b": "Vision",
+        "c": "NLP",
+        "d": "Scheduling"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "NLP",
+      "explanation": "NLP মেশিনকে মানুষের ভাষা context সহ পড়তে, বুঝতে, ব্যাখ্যা করতে এবং উৎপন্ন করতে সক্ষম করে।"
+    }
+  ]
+}

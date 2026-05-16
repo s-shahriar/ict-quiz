@@ -1,4 +1,4 @@
-import { Monitor, Wifi, Code2, Database, Cpu, GitBranch, Lock, Terminal, CircuitBoard, Package, Server, Layers } from 'lucide-react'
+import { Monitor, Wifi, Code2, Database, Cpu, GitBranch, Lock, Terminal, CircuitBoard, Package, Server, Layers, BrainCircuit } from 'lucide-react'
 
 import computerFundamental from './computer_fundamental.json'
 import computerNetwork from './computer_network.json'
@@ -12,6 +12,7 @@ import microprocessor from './microprocessor.json'
 import oop from './oop.json'
 import operatingSystem from './operating_system.json'
 import softwareEngineering from './software_engineering.json'
+import machineLearning from './machine_learning.json'
 
 export const TOPICS = [
   {
@@ -109,5 +110,13 @@ export const TOPICS = [
     icon: Layers,
     color: '#4ade80',
     questions: softwareEngineering.questions || [],
+  },
+  {
+    id: 'machine_learning',
+    name: 'Machine Learning',
+    shortName: 'ML',
+    icon: BrainCircuit,
+    color: '#e879f9',
+    questions: machineLearning.questions || [],
   },
 ]
