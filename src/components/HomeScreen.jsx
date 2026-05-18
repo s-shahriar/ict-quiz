@@ -1,6 +1,6 @@
-import { Zap, Brain, PenLine, Star, Bookmark } from 'lucide-react'
+import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck } from 'lucide-react'
 
-export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, onNailed, onImportant, mastered, important, activeModule, onModuleChange }) {
+export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, onNailed, onImportant, onBackup, mastered, important, activeModule, onModuleChange }) {
   const module    = activeModule
   const setModule = onModuleChange
 
@@ -75,6 +75,12 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
               <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>
               </div>
+            </button>
+          </div>
+
+          <div className="backup-trigger-row">
+            <button className="backup-trigger-btn" onClick={onBackup}>
+              <ShieldCheck size={13} /> Backup & Restore
             </button>
           </div>
 

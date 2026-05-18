@@ -1992,3 +1992,177 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   .exam-config-page { padding: 48px 24px 90px; }
   .emb-sub { display: block; }
 }
+
+/* ── Backup trigger button ── */
+.backup-trigger-row {
+  display: flex; justify-content: center;
+  margin: -6px 0 16px;
+}
+.backup-trigger-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--surface-glass); border: 1px solid var(--border);
+  color: var(--text-3); font-size: 0.72rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s ease;
+  font-family: 'Space Grotesk', sans-serif;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.backup-trigger-btn:hover {
+  color: var(--accent); border-color: rgba(99,102,241,0.4);
+  background: rgba(99,102,241,0.07);
+}
+
+/* ── Backup modal overlay ── */
+.backup-overlay {
+  position: fixed; inset: 0; z-index: 900;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0 0 env(safe-area-inset-bottom, 0);
+}
+@media (min-width: 520px) {
+  .backup-overlay { align-items: center; }
+}
+
+/* ── Backup modal panel ── */
+.backup-modal {
+  width: 100%; max-width: 480px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.25);
+  overflow: hidden;
+}
+@media (min-width: 520px) {
+  .backup-modal {
+    border-radius: 24px;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.3);
+  }
+}
+
+.backup-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.backup-title-row {
+  display: flex; align-items: center; gap: 10px;
+}
+.backup-title-icon { color: var(--accent); flex-shrink: 0; }
+.backup-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem; font-weight: 800;
+  color: var(--text); letter-spacing: -0.02em;
+}
+.backup-sub {
+  font-size: 0.7rem; color: var(--text-3); margin-top: 1px;
+}
+.backup-close {
+  width: 32px; height: 32px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-glass); border: 1px solid var(--border);
+  color: var(--text-2); cursor: pointer;
+  transition: all 0.18s ease;
+}
+.backup-close:hover { background: rgba(239,68,68,0.1); color: #ef4444; border-color: rgba(239,68,68,0.3); }
+
+/* ── Tabs ── */
+.backup-tabs {
+  display: flex; gap: 6px; padding: 12px 18px 0;
+}
+.backup-tab {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 16px; border-radius: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--text-3); background: transparent;
+  border: 1px solid transparent; cursor: pointer;
+  transition: all 0.18s ease;
+}
+.backup-tab:hover { color: var(--text); background: var(--surface-glass); border-color: var(--border); }
+.backup-tab.active {
+  color: var(--accent); background: rgba(99,102,241,0.1);
+  border-color: rgba(99,102,241,0.3);
+}
+
+/* ── Body ── */
+.backup-body {
+  padding: 14px 18px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.backup-hint {
+  font-size: 0.75rem; color: var(--text-3); line-height: 1.55; margin: 0;
+}
+
+/* ── Cypher textarea ── */
+.backup-cypher-wrap { position: relative; }
+.backup-cypher {
+  width: 100%; min-height: 90px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-glass);
+  color: var(--text); font-family: 'Courier New', monospace;
+  font-size: 0.72rem; line-height: 1.6; resize: none;
+  outline: none; box-sizing: border-box;
+  word-break: break-all;
+  transition: border-color 0.18s ease;
+}
+.backup-cypher:focus { border-color: rgba(99,102,241,0.5); }
+.backup-cypher--input { min-height: 80px; }
+.backup-cypher--input::placeholder { color: var(--text-3); opacity: 0.7; }
+
+/* ── Buttons ── */
+.backup-copy-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 18px; border-radius: 12px; width: 100%;
+  background: var(--grad-brand); border: none;
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.backup-copy-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.backup-restore-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 18px; border-radius: 12px; width: 100%;
+  background: linear-gradient(135deg, #10b981, #059669); border: none;
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.backup-restore-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+.backup-restore-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ── Feedback messages ── */
+.backup-error {
+  font-size: 0.74rem; color: #ef4444; margin: 0;
+  padding: 7px 10px; border-radius: 8px;
+  background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+}
+.backup-success {
+  font-size: 0.74rem; color: #10b981; margin: 0;
+  padding: 7px 10px; border-radius: 8px;
+  background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+}
+
+/* ── Restore summary ── */
+.backup-summary {
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.22);
+  display: flex; flex-direction: column; gap: 5px;
+}
+.backup-summary-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem; font-weight: 700; color: #10b981;
+}
+.backup-summary-row {
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  font-size: 0.75rem;
+}
+.bsr-nailed   { color: #f59e0b; font-weight: 600; }
+.bsr-important { color: #ef4444; font-weight: 600; }
+.bsr-dot      { color: var(--text-3); }
+.backup-summary-already {
+  font-size: 0.72rem; color: var(--text-3); font-style: italic;
+}

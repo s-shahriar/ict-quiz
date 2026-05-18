@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Sun, Moon } from 'lucide-react'
-import { fetchRemote, pushRemote } from './lib/api.js'
 import { TOPICS } from './data/index.js'
 import { getWrittenData, getWrittenCount } from './data/written/index.js'
 import HomeScreen       from './components/HomeScreen.jsx'
@@ -12,6 +11,7 @@ import ExamConfig       from './components/ExamConfig.jsx'
 import ExamMode         from './components/ExamMode.jsx'
 import NailedScreen     from './components/NailedScreen.jsx'
 import ImportantScreen  from './components/ImportantScreen.jsx'
+import BackupModal      from './components/BackupModal.jsx'
 
 const WRITTEN_TOPICS = TOPICS
   .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
@@ -41,27 +41,12 @@ export default function App() {
   const [theme, setTheme]                 = useState(() => localStorage.getItem('ict-theme') || 'light')
   const [mastered, setMastered]           = useState(loadMastered)
   const [important, setImportant]         = useState(loadImportant)
+  const [showBackup, setShowBackup]       = useState(false)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     localStorage.setItem('ict-theme', theme)
-    pushRemote(mastered, theme, important)
   }, [theme])
-
-  useEffect(() => {
-    fetchRemote().then(remote => {
-      if (!remote) return
-      const localM = loadMastered()
-      const mergedM = new Set([...localM, ...remote.mastered])
-      saveMastered(mergedM)
-      setMastered(mergedM)
-      const localI = loadImportant()
-      const mergedI = new Set([...localI, ...(remote.important ?? [])])
-      saveImportant(mergedI)
-      setImportant(mergedI)
-      if (!localStorage.getItem('ict-theme')) setTheme(remote.theme)
-    })
-  }, [])
 
   const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light')
 
@@ -69,26 +54,27 @@ export default function App() {
   const goWrittenHome = () => { setScreen('home'); setSelectedTopic(null); setActiveModule('written') }
 
   const nail = (qid) => setMastered(prev => {
-    const next = new Set(prev); next.add(qid); saveMastered(next)
-    pushRemote(next, theme, important)
-    return next
+    const next = new Set(prev); next.add(qid); saveMastered(next); return next
   })
   const unnail = (qid) => setMastered(prev => {
-    const next = new Set(prev); next.delete(qid); saveMastered(next)
-    pushRemote(next, theme, important)
-    return next
+    const next = new Set(prev); next.delete(qid); saveMastered(next); return next
   })
 
   const markImportant = (qid) => setImportant(prev => {
-    const next = new Set(prev); next.add(qid); saveImportant(next)
-    pushRemote(mastered, theme, next)
-    return next
+    const next = new Set(prev); next.add(qid); saveImportant(next); return next
   })
   const unmarkImportant = (qid) => setImportant(prev => {
-    const next = new Set(prev); next.delete(qid); saveImportant(next)
-    pushRemote(mastered, theme, next)
-    return next
+    const next = new Set(prev); next.delete(qid); saveImportant(next); return next
   })
+
+  const handleRestore = (nailedArr, importantArr) => {
+    setMastered(prev => {
+      const next = new Set([...prev, ...nailedArr]); saveMastered(next); return next
+    })
+    setImportant(prev => {
+      const next = new Set([...prev, ...importantArr]); saveImportant(next); return next
+    })
+  }
 
   return (
     <div className="app-root">
@@ -117,6 +103,7 @@ export default function App() {
           onExam={() => setScreen('exam_config')}
           onNailed={() => setScreen('nailed')}
           onImportant={() => setScreen('important')}
+          onBackup={() => setShowBackup(true)}
           onUnnail={unnail}
         />
       )}
@@ -183,6 +170,7 @@ export default function App() {
       {screen === 'exam_config' && (
         <ExamConfig
           topics={TOPICS}
+          important={important}
           onStart={(data) => { setExamData(data); setScreen('exam') }}
           onBack={goHome}
         />
@@ -199,6 +187,14 @@ export default function App() {
           onMarkImportant={markImportant}
           onUnmarkImportant={unmarkImportant}
           onHome={goHome}
+        />
+      )}
+      {showBackup && (
+        <BackupModal
+          mastered={mastered}
+          important={important}
+          onRestore={handleRestore}
+          onClose={() => setShowBackup(false)}
         />
       )}
     </div>
