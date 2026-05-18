@@ -1,5 +1,10 @@
 const PREFIX = 'ICT'
 
+// Per-topic entry header byte:
+//   bit 7 = 0 → index-list mode,  bits 0-6 = numMarks  (max 127 marks)
+//   bit 7 = 1 → bitmask mode,     bits 0-6 = byteLen   (max 127 bytes = 1016 questions)
+// Always picks whichever representation is smaller for each topic.
+
 function buildTopicList(topics) {
   return topics.map(t => ({ id: t.id, len: t.questions.length }))
 }
@@ -7,20 +12,35 @@ function buildTopicList(topics) {
 function encodeSet(set, tList) {
   const entries = []
   tList.forEach((t, tIdx) => {
-    const byteLen = Math.ceil(t.len / 8)
-    const bytes = new Uint8Array(byteLen)
-    let any = false
+    const marks = []
     for (let i = 0; i < t.len; i++) {
-      if (set.has(`${t.id}__${i}`)) { bytes[i >> 3] |= 1 << (i & 7); any = true }
+      if (set.has(`${t.id}__${i}`)) marks.push(i)
     }
-    if (any) entries.push([tIdx, bytes])
+    if (!marks.length) return
+    const bitmaskLen = Math.ceil(t.len / 8)
+    if (marks.length < bitmaskLen && marks.length < 128) {
+      entries.push({ type: 'idx', tIdx, marks })
+    } else {
+      const bytes = new Uint8Array(bitmaskLen)
+      marks.forEach(i => { bytes[i >> 3] |= 1 << (i & 7) })
+      entries.push({ type: 'bm', tIdx, bytes })
+    }
   })
-  const buf = new Uint8Array(1 + entries.reduce((s, [, b]) => s + 2 + b.length, 0))
+
+  const size = 1 + entries.reduce((s, e) =>
+    s + 2 + (e.type === 'idx' ? e.marks.length : e.bytes.length), 0)
+  const buf = new Uint8Array(size)
   buf[0] = entries.length
   let pos = 1
-  for (const [tIdx, bytes] of entries) {
-    buf[pos++] = tIdx; buf[pos++] = bytes.length
-    buf.set(bytes, pos); pos += bytes.length
+  for (const e of entries) {
+    buf[pos++] = e.tIdx
+    if (e.type === 'idx') {
+      buf[pos++] = e.marks.length
+      for (const m of e.marks) buf[pos++] = m
+    } else {
+      buf[pos++] = 0x80 | e.bytes.length
+      buf.set(e.bytes, pos); pos += e.bytes.length
+    }
   }
   return buf
 }
@@ -33,13 +53,18 @@ function decodeSet(buf, tList) {
   for (let e = 0; e < numEntries; e++) {
     if (pos + 1 >= buf.length) break
     const tIdx = buf[pos++]
-    const byteLen = buf[pos++]
-    const bytes = buf.slice(pos, pos + byteLen)
-    pos += byteLen
+    const header = buf[pos++]
     const topic = tList[tIdx]
-    if (!topic) continue
-    for (let i = 0; i < topic.len; i++) {
-      if (bytes[i >> 3] & (1 << (i & 7))) result.push(`${topic.id}__${i}`)
+    if (header & 0x80) {
+      const byteLen = header & 0x7f
+      const bytes = buf.slice(pos, pos + byteLen); pos += byteLen
+      if (!topic) continue
+      for (let i = 0; i < topic.len; i++)
+        if (bytes[i >> 3] & (1 << (i & 7))) result.push(`${topic.id}__${i}`)
+    } else {
+      const numMarks = header
+      if (!topic) { pos += numMarks; continue }
+      for (let m = 0; m < numMarks; m++) result.push(`${topic.id}__${buf[pos++]}`)
     }
   }
   return result
@@ -49,10 +74,9 @@ export function generateCypher(mastered, important, topics) {
   const tList = buildTopicList(topics)
   const nBuf = encodeSet(mastered, tList)
   const iBuf = encodeSet(important, tList)
-  const combined = new Uint8Array(2 + nBuf.length + iBuf.length)
-  combined[0] = (nBuf.length >> 8) & 0xff
-  combined[1] = nBuf.length & 0xff
-  combined.set(nBuf, 2); combined.set(iBuf, 2 + nBuf.length)
+  const combined = new Uint8Array(1 + nBuf.length + iBuf.length)
+  combined[0] = nBuf.length
+  combined.set(nBuf, 1); combined.set(iBuf, 1 + nBuf.length)
   const b64 = btoa(String.fromCharCode(...combined))
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
   return `${PREFIX}:${b64}`
@@ -71,11 +95,11 @@ export function parseCypher(cypher, topics) {
     // New compact binary format
     const binary = atob(raw.replace(/-/g, '+').replace(/_/g, '/'))
     const combined = Uint8Array.from(binary, c => c.charCodeAt(0))
-    const nLen = (combined[0] << 8) | combined[1]
+    const nLen = combined[0]
     const tList = buildTopicList(topics)
     return {
-      nailed:    decodeSet(combined.slice(2, 2 + nLen), tList),
-      important: decodeSet(combined.slice(2 + nLen), tList),
+      nailed:    decodeSet(combined.slice(1, 1 + nLen), tList),
+      important: decodeSet(combined.slice(1 + nLen), tList),
     }
   } catch (e) {
     if (e.message.includes('not for')) throw e
