@@ -193,6 +193,7 @@ export default function App() {
         <BackupModal
           mastered={mastered}
           important={important}
+          topics={TOPICS}
           onRestore={handleRestore}
           onClose={() => setShowBackup(false)}
         />

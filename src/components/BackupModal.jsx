@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { X, Copy, Check, Upload, Download, ShieldCheck } from 'lucide-react'
 import { generateCypher, parseCypher } from '../lib/backup.js'
 
-export default function BackupModal({ mastered, important, onRestore, onClose }) {
+export default function BackupModal({ mastered, important, topics, onRestore, onClose }) {
   const [tab, setTab]           = useState('export')
   const [copied, setCopied]     = useState(false)
   const [importText, setImportText] = useState('')
@@ -10,7 +10,7 @@ export default function BackupModal({ mastered, important, onRestore, onClose })
   const [restoreSummary, setRestoreSummary] = useState(null)
   const textRef = useRef(null)
 
-  const cypher = generateCypher(mastered, important)
+  const cypher = generateCypher(mastered, important, topics)
   const nailedCount    = mastered.size
   const importantCount = important.size
 
@@ -25,7 +25,7 @@ export default function BackupModal({ mastered, important, onRestore, onClose })
     setError('')
     setRestoreSummary(null)
     try {
-      const { nailed, important: imp } = parseCypher(importText)
+      const { nailed, important: imp } = parseCypher(importText, topics)
       const newNailed    = nailed.filter(id => !mastered.has(id)).length
       const newImportant = imp.filter(id => !important.has(id)).length
       onRestore(nailed, imp)
