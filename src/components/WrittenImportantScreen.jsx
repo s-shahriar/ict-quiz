@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { ChevronLeft, Bookmark, X, ChevronDown, ChevronUp, Home, PenLine } from 'lucide-react'
+import { ChevronLeft, Bookmark, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
 import { getWrittenData } from '../data/written/index.js'
+import { WrittenCardBody } from './WrittenCardBody.jsx'
 
 export default function WrittenImportantScreen({ writtenTopics, important, onUnmark, onHome }) {
   const importantByTopic = writtenTopics.map(t => {
@@ -40,9 +41,6 @@ export default function WrittenImportantScreen({ writtenTopics, important, onUnm
             <span className="nailed-screen-total important-total">{total}</span>
             <span className="nailed-screen-total-label">important written question{total !== 1 ? 's' : ''} across {importantByTopic.length} topic{importantByTopic.length !== 1 ? 's' : ''}</span>
           </div>
-          <div className="nailed-screen-hint">
-            Tap <X size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> to remove.
-          </div>
           <div className="nailed-screen-list">
             {importantByTopic.map(({ topic: t, items }) => (
               <WrittenImportantGroup key={t.id} topic={t} items={items} onUnmark={onUnmark} />
@@ -71,9 +69,9 @@ function WrittenImportantGroup({ topic: t, items, onUnmark }) {
       </button>
 
       {open && (
-        <div className="nailed-group-body anim-slide">
+        <div className="nailed-group-body anim-slide" style={{ gap: 12 }}>
           {items.map(({ q, qid }) => (
-            <WrittenImportantRow key={qid} q={q} qid={qid} topicColor={t.color} onUnmark={onUnmark} />
+            <WrittenImportantCard key={qid} q={q} qid={qid} topicColor={t.color} onUnmark={onUnmark} />
           ))}
         </div>
       )}
@@ -81,40 +79,23 @@ function WrittenImportantGroup({ topic: t, items, onUnmark }) {
   )
 }
 
-function WrittenImportantRow({ q, qid, topicColor, onUnmark }) {
-  const a = q.answer
+function WrittenImportantCard({ q, qid, topicColor, onUnmark }) {
   return (
-    <div className="nailed-row wimp-row">
-      <PenLine size={11} style={{ color: topicColor, flexShrink: 0, marginTop: 3 }} />
-      <div className="nailed-row-body">
-        <span className="nailed-row-text">{q.q}</span>
-
-        {a?.summary && (
-          <div className="wimp-summary" style={{ borderColor: `${topicColor}35`, background: `color-mix(in srgb, ${topicColor} 8%, var(--elevated))` }}>
-            <span className="wimp-summary-label" style={{ color: topicColor }}>সংক্ষেপ</span>
-            <span>{a.summary}</span>
-          </div>
-        )}
-
-        {a?.points?.length > 0 && (
-          <ul className="wimp-points">
-            {a.points.map((pt, i) => (
-              <li key={i} className="wimp-point">
-                <span className="wimp-dot" style={{ background: topicColor }} />
-                <span>{pt}</span>
-              </li>
-            ))}
-          </ul>
-        )}
+    <div className="written-card open" style={{ '--c': topicColor }}>
+      <div className="written-card-header">
+        <div className="written-card-toggle" style={{ cursor: 'default' }}>
+          <span className="written-qtext" style={{ paddingTop: 2 }}>{q.q}</span>
+        </div>
+        <button
+          className="nailed-unnail-btn"
+          onClick={() => onUnmark(qid)}
+          title="Remove from Important"
+          style={{ flexShrink: 0, marginTop: 2 }}
+        >
+          <X size={13} />
+        </button>
       </div>
-      <button
-        className="nailed-unnail-btn"
-        onClick={() => onUnmark(qid)}
-        title="Remove from Important"
-        style={{ marginTop: 2 }}
-      >
-        <X size={13} />
-      </button>
+      <WrittenCardBody a={q.answer} topicColor={topicColor} />
     </div>
   )
 }
