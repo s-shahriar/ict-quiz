@@ -13,7 +13,11 @@
         "database integrity"
       ],
       "answer": {
-        "summary": "Consistency নিশ্চিত করে transaction এর আগে ও পরে database এর সব defined rules ও constraints পূরণ থাকে। SQL এ CHECK (current_balance >= 0) দিয়ে balance শূন্যের নিচে যাওয়া আটকানো হয়।",
+        "summary": [
+          "Consistency নিশ্চিত করে transaction এর আগে ও পরে database এর সব defined rules ও constraints পূরণ থাকে।",
+          "SQL এ CHECK (current_balance >= 0) দিয়ে balance শূন্যের নিচে যাওয়া আটকানো হয়।",
+          "Constraint violate হলে transaction পুরোটা reject হয়, database পুরনো state এ ফিরে যায়।"
+        ],
         "points": [
           "Consistency = database এক valid state থেকে আরেক valid state এ যায় — কোনো rule বা constraint ভাঙা যাবে না",
           "Constraint violate হলে → transaction পুরোটা reject হয়, database পুরনো state এ ফিরে যায়",
@@ -76,7 +80,10 @@
         "COUNT"
       ],
       "answer": {
-        "summary": "GROUP BY দিয়ে region ভাগ করো, AVG() ও COUNT() দিয়ে aggregate করো, তারপর HAVING দিয়ে condition দাও। WHERE আগে filter করে (row level), HAVING পরে filter করে (group level)।",
+        "summary": [
+          "GROUP BY দিয়ে region ভাগ করো, AVG() ও COUNT() দিয়ে aggregate করো, তারপর HAVING দিয়ে condition দাও।",
+          "WHERE আগে filter করে (row level), HAVING পরে filter করে (group level)।"
+        ],
         "points": [
           "SELECT এ region, AVG(sale_amount), COUNT(*) রাখো — এই তিনটি দেখাতে বলা হয়েছে",
           "FROM Sales — table নাম",

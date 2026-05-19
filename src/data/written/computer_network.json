@@ -11,7 +11,11 @@
         "file transfer"
       ],
       "answer": {
-        "summary": "Checksum হলো data এর সব bytes এর যোগফল থেকে তৈরি একটি fixed value — sender ও receiver এর checksum match করলে data intact, না করলে corrupted।",
+        "summary": [
+          "Checksum হলো data এর সব bytes এর যোগফল থেকে তৈরি একটি fixed value।",
+          "Sender ও receiver এর checksum match করলে data intact, না করলে corrupted।",
+          "Checksum error detect করে কিন্তু correct করে না — TCP re-transmit করে, UDP করে না।"
+        ],
         "points": [
           "Sender: data এর সব bytes যোগ করে checksum তৈরি করে, তারপর data + checksum একসাথে পাঠায়",
           "Receiver: নিজে received data এর checksum হিসাব করে → sender এর checksum এর সাথে compare করে",
@@ -78,7 +82,11 @@
         "server"
       ],
       "answer": {
-        "summary": "Bangladesh Bank এর network এ দুটো Firewall দিয়ে DMZ তৈরি করা হয় — Public server, Mail server, DNS server DMZ তে থাকে আর Private server একদম ভেতরে থাকে, Internet থেকে সরাসরি access করা যায় না।",
+        "summary": [
+          "Bangladesh Bank এর network এ দুটো Firewall দিয়ে DMZ তৈরি করা হয়।",
+          "Public server, Mail server, DNS server DMZ তে থাকে আর Private server একদম ভেতরে থাকে।",
+          "Internet থেকে Private server সরাসরি access করা যায় না — Defense in Depth কৌশল।"
+        ],
         "points": [
           "Internet থেকে আসা traffic প্রথমে Edge Router, তারপর Outer Firewall পার হয়",
           "Outer Firewall এর পর DMZ — এখানে publicly accessible servers থাকে (Public Web Server, Mail Server, DNS Server)",
@@ -150,7 +158,10 @@
         "transport layer"
       ],
       "answer": {
-        "summary": "Email পাঠাতে SMTP, গ্রহণ করতে POP3 বা IMAP — সবই Application Layer Protocol। Transport Layer এ সবসময় TCP ব্যবহার হয় কারণ email delivery reliable হতে হবে।",
+        "summary": [
+          "Email পাঠাতে SMTP, গ্রহণ করতে POP3 বা IMAP — সবই Application Layer Protocol।",
+          "Transport Layer এ সবসময় TCP ব্যবহার হয় কারণ email delivery reliable হতে হবে।"
+        ],
         "points": [
           "SMTP (Simple Mail Transfer Protocol): email পাঠানোর protocol — Afsana → নিজের Mail Server, এবং Server → Server transfer। Port 25/587।",
           "POP3 (Post Office Protocol v3): email server থেকে download করে local এ রাখে, server থেকে delete করে। Port 110।",
@@ -219,14 +230,18 @@
         "path vector"
       ],
       "answer": {
-        "summary": "তিনটি আলাদা জায়গায় কাজ করে: RIP ছোট নেটওয়ার্কে (Distance Vector, Count-to-Infinity সমস্যা আছে), OSPF বড় নেটওয়ার্কে Dijkstra চালিয়ে best path বের করে (Link State), BGP আলাদা আলাদা Autonomous System (AS) এর মধ্যে Internet routing করে (Path Vector)।",
+        "summary": [
+          "তিনটি আলাদা জায়গায় কাজ করে: RIP ছোট নেটওয়ার্কে (Distance Vector, Count-to-Infinity সমস্যা আছে)।",
+          "OSPF বড় নেটওয়ার্কে Dijkstra চালিয়ে best path বের করে (Link State)।",
+          "BGP আলাদা আলাদা Autonomous System (AS) এর মধ্যে Internet routing করে (Path Vector)।"
+        ],
         "points": [
           "RIP → Distance Vector: প্রতিটি router শুধু তার neighbor এর কাছ থেকে routing table শোনে — নিজে পুরো network দেখতে পায় না। Hop count মেট্রিক, max 15 hop।",
-          "RIP এর বড় সমস্যা → Count-to-Infinity: কোনো link down হলে routers ভুল information নিয়ে একে অপরকে loop করতে থাকে, hop count বাড়তেই থাকে 16 না হওয়া পর্যন্ত।",
+          {"sub": "RIP এর বড় সমস্যা → Count-to-Infinity: কোনো link down হলে routers ভুল information নিয়ে একে অপরকে loop করতে থাকে, hop count বাড়তেই থাকে 16 না হওয়া পর্যন্ত।"},
           "OSPF → Link State: প্রতিটি router পুরো network এর map (LSDB) তৈরি করে, তারপর Dijkstra's Algorithm চালিয়ে নিজে best path বের করে। Bandwidth-based cost metric।",
-          "OSPF vs RIP: OSPF তে Count-to-Infinity নেই — কারণ সে নিজে পুরো map দেখে সিদ্ধান্ত নেয়, কারো কথায় বিশ্বাস করে না। Fast convergence।",
+          {"sub": "OSPF vs RIP: OSPF তে Count-to-Infinity নেই — কারণ সে নিজে পুরো map দেখে সিদ্ধান্ত নেয়, কারো কথায় বিশ্বাস করে না। Fast convergence।"},
           "BGP → Path Vector: একটি AS (Autonomous System) থেকে আরেকটি AS এ routing করে — এটাই পুরো Internet এর backbone। ISP রা BGP দিয়ে একে অপরের সাথে route advertise করে।",
-          "AS কী: একটি organization বা ISP এর নিয়ন্ত্রণে থাকা router গুলোর group। যেমন Grameenphone = একটি AS, BTCL = আরেকটি AS। BGP এদের মধ্যে কাজ করে।"
+          {"sub": "AS কী: একটি organization বা ISP এর নিয়ন্ত্রণে থাকা router গুলোর group। যেমন Grameenphone = একটি AS, BTCL = আরেকটি AS। BGP এদের মধ্যে কাজ করে।"}
         ],
         "diagram": "RIP — Distance Vector (neighbor এর কথা বিশ্বাস করে)\n─────────────────────────────────────────────────\nA → B → C → D  (প্রতিটি = 1 hop)\nA থেকে D = 3 hops → RIP এটাই নেবে\nকিন্তু B→C link 1 Mbps, A→D direct link 100 Mbps হলেও\nRIP hop count দেখে, bandwidth দেখে না ❌\n\nCount-to-Infinity Problem:\nA — B — C,  A-B link হঠাৎ down\nB ভাবে: C এর মাধ্যমে A পাওয়া যাবে (hop=2)\nC ভাবে: B এর মাধ্যমে A পাওয়া যাবে (hop=3)\nB ভাবে: তাহলে hop=4 ... এভাবে 16 পর্যন্ত চলে → Slow!\n\n\nOSPF — Link State + Dijkstra\n─────────────────────────────────────────────────\nপ্রতিটি router পুরো network এর map জানে (LSDB):\n\n        cost=1         cost=10\n   A ─────────── B ─────────── C\n    \\  cost=3           cost=3 /\n     ──────────── D ───────────\n\nDijkstra চালায়:\n  A→B→C = 1+10 = 11\n  A→D→C = 3+3  = 6  ← best path ✅\nCount-to-Infinity নেই, কারণ নিজেই map দেখে calculate করে\n\n\nBGP — Path Vector (AS থেকে AS)\n─────────────────────────────────────────────────\n  [AS 100]  ──BGP──  [AS 200]  ──BGP──  [AS 300]\n  (GP ISP)            (BD ISP)           (BTCL)\n\nBGP advertise করে: 'AS 300 পৌঁছাতে AS 200 → AS 300 path নাও'\nPath = [100, 200, 300] — loop detect করা যায় নিজের AS দেখে\nRIP/OSPF = একটি AS এর ভেতরে (IGP)\nBGP      = আলাদা AS এর মধ্যে (EGP) ← এটাই পার্থক্য",
         "mistakes": [
@@ -321,7 +336,10 @@
         "router"
       ],
       "answer": {
-        "summary": "Packet switching এ data ছোট packet এ ভাগ হয়ে independently route হয়। ৪টি router ও ৫টি link হলে: Total delay = (5 × 5ms) + (4 × 2ms) = 33 ms।",
+        "summary": [
+          "Packet switching এ data ছোট packet এ ভাগ হয়ে independently route হয়।",
+          "৪টি router ও ৫টি link হলে: Total delay = (5 × 5ms) + (4 × 2ms) = 33 ms।"
+        ],
         "points": [
           "Packet Switching: data কে ছোট packet এ ভাগ করে পাঠানো — প্রতিটি packet আলাদাভাবে route হয়",
           "Router store-and-forward করে — packet পুরোটা এলে তারপর forward করে",
@@ -358,7 +376,11 @@
         "supernetting"
       ],
       "answer": {
-        "summary": "Router Layer 3 (Network Layer) এ কাজ করে, PDU এর নাম Packet। ৪টি /24 network কে supernet করলে হয় 10.1.0.0/22।",
+        "summary": [
+          "Router Layer 3 (Network Layer) এ কাজ করে, PDU এর নাম Packet।",
+          "৪টি /24 network কে supernet করলে হয় 10.1.0.0/22।",
+          "4 = 2² → prefix থেকে 2 বাদ দাও → /24 − 2 = /22।"
+        ],
         "points": [
           "Router = Layer 3 (Network Layer)। PDU = Packet। IP header দেখে routing সিদ্ধান্ত নেয়।",
           "Switch = Layer 2 (Frame), Hub = Layer 1 (Bits)",
@@ -393,7 +415,11 @@
         "wireless"
       ],
       "answer": {
-        "summary": "Transmission media দু'ধরনের: Guided (wired — Twisted Pair, Coaxial, Fiber Optic) ও Unguided (wireless — Radio Wave, Microwave, Infrared)। Guided = physical cable দিয়ে, Unguided = electromagnetic wave দিয়ে data পাঠায়।",
+        "summary": [
+          "Transmission media দু'ধরনের: Guided (wired) ও Unguided (wireless)।",
+          "Guided এ আছে Twisted Pair, Coaxial, Fiber Optic — physical cable দিয়ে data পাঠায়।",
+          "Unguided এ আছে Radio Wave, Microwave, Infrared — electromagnetic wave দিয়ে data পাঠায়।"
+        ],
         "points": [
           "── GUIDED MEDIA (Wired) ──────────────────────────",
           "Twisted Pair Cable: LAN এ সবচেয়ে বেশি ব্যবহৃত। ✅ কম দাম, সহজ install, high-speed LAN। ❌ দূরত্ব সীমিত, interference বেশি।",
@@ -465,7 +491,10 @@
         "transmission"
       ],
       "answer": {
-        "summary": "Multiplexing = একটি channel এ একাধিক signal পাঠানো। TDM = time ভাগ করে, FDM = frequency ভাগ করে, WDM = আলোর wavelength ভাগ করে (fiber optic এ)।",
+        "summary": [
+          "Multiplexing = একটি channel এ একাধিক signal পাঠানো।",
+          "TDM = time ভাগ করে, FDM = frequency ভাগ করে, WDM = আলোর wavelength ভাগ করে (fiber optic এ)।"
+        ],
         "points": [
           "TDM (Time Division Multiplexing): channel কে সমান time slot এ ভাগ করা হয়। প্রতিটি device পালা করে নিজের slot এ data পাঠায়। Digital signal এ ব্যবহৃত।",
           "FDM (Frequency Division Multiplexing): channel এর total bandwidth কে ছোট ছোট frequency band এ ভাগ করা হয়। প্রতিটি device একটি নির্দিষ্ট frequency band পায়। Analog signal এ ব্যবহৃত (Radio, Cable TV)।",

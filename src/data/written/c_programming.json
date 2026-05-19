@@ -14,7 +14,11 @@
         "pointer"
       ],
       "answer": {
-        "summary": "Dynamic Memory Allocation = runtime এ programmer নিজে heap থেকে memory নেয় এবং কাজ শেষে ফেরত দেয়। C তে 4টি function: malloc(), calloc(), realloc(), free()। Stack memory compiler handle করে, Heap memory programmer handle করে।",
+        "summary": [
+          "Dynamic Memory Allocation = runtime এ programmer নিজে heap থেকে memory নেয় এবং কাজ শেষে ফেরত দেয়।",
+          "C তে 4টি function: malloc(), calloc(), realloc(), free()।",
+          "Stack memory compiler handle করে, Heap memory programmer handle করে।"
+        ],
         "points": [
           "Static Allocation: compile time এ memory fix হয় (int arr[10])। Runtime এ size পরিবর্তন করা যায় না।",
           "Dynamic Allocation: runtime এ প্রয়োজন অনুযায়ী heap থেকে memory নেওয়া যায়।",
@@ -71,7 +75,11 @@
         "structure within structure"
       ],
       "answer": {
-        "summary": "Nested Structure = একটি struct এর ভেতরে আরেকটি struct রাখা। Real-world entity কে hierarchically represent করা যায়। যেমন: Student এর ভেতরে Address struct।",
+        "summary": [
+          "Nested Structure = একটি struct এর ভেতরে আরেকটি struct রাখা।",
+          "Real-world entity কে hierarchically represent করা যায়।",
+          "যেমন: Student এর ভেতরে Address struct — access করতে dot operator ব্যবহার করা হয়।"
+        ],
         "points": [
           "Structure: related data গুলোকে একসাথে রাখার user-defined data type। struct keyword দিয়ে define করা হয়।",
           "Nested Structure: একটি struct এর member হিসেবে আরেকটি struct রাখা — দুটো উপায়ে করা যায়।",

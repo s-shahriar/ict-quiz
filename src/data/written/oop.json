@@ -14,7 +14,11 @@
         "setter"
       ],
       "answer": {
-        "summary": "Encapsulation = data কে private রাখো, access দাও public method দিয়ে। BankAccount class এ name, accountNumber, balance private — deposit(), withdraw(), display() public। withdraw() এ balance check করা encapsulation এর practical example।",
+        "summary": [
+          "Encapsulation = data কে private রাখো, access দাও public method দিয়ে।",
+          "BankAccount class এ name, accountNumber, balance private — deposit(), withdraw(), display() public।",
+          "withdraw() এ balance check করা encapsulation এর practical example।"
+        ],
         "points": [
           "Encapsulation: data member গুলো private করা হয় যাতে বাইরে থেকে সরাসরি access না হয়",
           "deposit(): balance += amount — শুধু positive amount accept করে",
@@ -48,7 +52,11 @@
         "unchecked"
       ],
       "answer": {
-        "summary": "Java তে Exception ও Error উভয়ই Throwable এর subclass। Exception = program এ handle করা যায় এমন সমস্যা (try-catch)। Error = JVM level এর গুরুতর সমস্যা যা normally handle করা সম্ভব নয়।",
+        "summary": [
+          "Java তে Exception ও Error উভয়ই Throwable এর subclass।",
+          "Exception = program এ handle করা যায় এমন সমস্যা (try-catch)।",
+          "Error = JVM level এর গুরুতর সমস্যা যা normally handle করা সম্ভব নয়।"
+        ],
         "points": [
           "Throwable hierarchy: Throwable → Exception (handle করা যায়) ও Error (handle করা যায় না)।",
           "Exception: program এর logical সমস্যা — developer এর কোডে। try-catch দিয়ে handle করা যায়। দুই ধরন: Checked ও Unchecked।",
@@ -107,7 +115,11 @@
         "Java"
       ],
       "answer": {
-        "summary": "Exception Handling = program এ unexpected runtime error কে gracefully handle করার mechanism। Java তে 5টি keyword: try, catch, finally, throw, throws। Program crash না করে error message দেখিয়ে চলতে পারে।",
+        "summary": [
+          "Exception Handling = program এ unexpected runtime error কে gracefully handle করার mechanism।",
+          "Java তে 5টি keyword: try, catch, finally, throw, throws।",
+          "Program crash না করে error message দেখিয়ে চলতে পারে।"
+        ],
         "points": [
           "try block: যে code এ exception হতে পারে সেটা এখানে রাখো।",
           "catch block: exception ধরে handle করো — message দেখাও বা recovery করো। Multiple catch হতে পারে।",

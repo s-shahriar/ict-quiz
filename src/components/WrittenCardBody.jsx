@@ -16,16 +16,26 @@ export function WrittenCardBody({ a, topicColor }) {
 
       <div className="written-summary" style={{ borderColor: `${topicColor}40`, background: `color-mix(in srgb, ${topicColor} 7%, var(--elevated))` }}>
         <span className="written-summary-label" style={{ color: topicColor }}>সংক্ষেপ</span>
-        <p>{a.summary}</p>
+        {Array.isArray(a.summary)
+          ? <div className="written-summary-lines">
+              {a.summary.map((line, i) => <p key={i} className="written-summary-line">{line}</p>)}
+            </div>
+          : <p>{a.summary}</p>}
       </div>
 
       <ul className="written-points">
-        {a.points.map((pt, i) => (
-          <li key={i} className="written-point">
-            <span className="written-dot" style={{ background: topicColor }} />
-            <span>{pt}</span>
-          </li>
-        ))}
+        {a.points.map((pt, i) => {
+          const isSub = typeof pt === 'object' && pt.sub
+          return (
+            <li key={i} className={isSub ? 'written-point written-subpoint' : 'written-point'}
+              style={isSub ? { '--subpoint-color': topicColor } : {}}>
+              {isSub
+                ? <span className="written-subpoint-indent" />
+                : <span className="written-dot" style={{ background: topicColor }} />}
+              <span>{isSub ? pt.sub : pt}</span>
+            </li>
+          )
+        })}
       </ul>
 
       {a.diagram && (

@@ -6,7 +6,10 @@
       "q": "Firewall rules - Rule 1: Source A, Dest B, Port 89. Rule 2: Source A, Dest B, Port < 443. Rule 3: Source A, Dest B, Port 443. If a packet comes from Port 443, is it accepted or rejected? Explain 'First Inspection rules'.",
       "tags": ["firewall", "first match", "packet filtering", "rules"],
       "answer": {
-        "summary": "Port 443 packet টি Rule 1 ও Rule 2 এর সাথে match করে না — Rule 3 এ গিয়ে match হয় এবং packet ACCEPTED হয়। এটাই First Match (First Inspection) নীতি।",
+        "summary": [
+          "Port 443 packet টি Rule 1 ও Rule 2 এর সাথে match করে না — Rule 3 এ গিয়ে match হয় এবং packet ACCEPTED হয়।",
+          "এটাই First Match (First Inspection) নীতি — প্রথম matching rule apply হলে বাকি rules দেখা হয় না।"
+        ],
         "points": [
           "First Inspection Rule = Firewall rules গুলো উপর থেকে নিচে ক্রমানুসারে check করা হয়",
           "প্রথম যে rule টি packet এর সাথে match করে, সেটিই apply হয় — বাকি rules দেখা হয় না",
@@ -28,7 +31,10 @@
       "q": "What are XSS (Cross-Site Scripting), CSRF (Cross-Site Request Forgery), and DNS Poisoning — especially in relation to session cookies? What are the differences between them? How are they handled/mitigated today using CORS and SameSite?",
       "tags": ["XSS", "CSRF", "DNS poisoning", "session cookie", "CORS", "SameSite", "HTTPOnly", "web security"],
       "answer": {
-        "summary": "তিনটিই session cookie কে target করে কিন্তু ভিন্নভাবে — XSS cookie চুরি করে, CSRF cookie ব্যবহার করে না চুরি করে, DNS Poisoning victim কে ভুল সার্ভারে পাঠায়। আধুনিক সমাধান: HTTPOnly, SameSite, CORS, DNSSEC।",
+        "summary": [
+          "তিনটিই session cookie কে target করে কিন্তু ভিন্নভাবে — XSS cookie চুরি করে, CSRF cookie ব্যবহার করে না চুরি করে, DNS Poisoning victim কে ভুল সার্ভারে পাঠায়।",
+          "আধুনিক সমাধান: HTTPOnly, SameSite, CORS, DNSSEC।"
+        ],
         "points": [
           "XSS: Attacker trusted website এ malicious JS inject করে → script victim এর browser এ run করে → document.cookie চুরি করে attacker এর server এ পাঠায়",
           "CSRF: Cookie চুরি করে না — victim এর browser কে দিয়ে bank.com এ unwanted request করায়। Browser automatically victim এর cookie পাঠায় → blind attack",

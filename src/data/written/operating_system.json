@@ -11,7 +11,11 @@
         "memory management"
       ],
       "answer": {
-        "summary": "Paging ও Framing একসাথে কাজ করে (logical↔physical fixed-size), Segmentation variable-size logical unit — তিনটিই memory management কৌশল কিন্তু উদ্দেশ্য আলাদা।",
+        "summary": [
+          "Paging ও Framing একসাথে কাজ করে — Paging = logical fixed-size blocks, Framing = physical fixed-size blocks।",
+          "Segmentation = variable-size logical units (Code, Data, Stack, Heap)।",
+          "তিনটিই memory management কৌশল কিন্তু উদ্দেশ্য আলাদা।"
+        ],
         "points": [
           "Paging: Process এর logical memory কে fixed-size block এ ভাগ করা হয় → এগুলো Page। External fragmentation নেই, internal fragmentation হতে পারে।",
           "Framing: Physical memory (RAM) কে fixed-size block এ ভাগ করা হয় → এগুলো Frame। Frame size = Page size সবসময়।",
@@ -79,7 +83,11 @@
         "SSO"
       ],
       "answer": {
-        "summary": "Active Directory (AD) হলো Microsoft এর centralized user ও resource management system — একটি server এ সব employee এর account, permission, ও policy রাখা হয়। ৫০-৭০ জনের অফিসে এটি ছাড়া প্রতিটি computer আলাদাভাবে manage করা অসম্ভব কষ্টকর।",
+        "summary": [
+          "Active Directory (AD) হলো Microsoft এর centralized user ও resource management system।",
+          "একটি server এ সব employee এর account, permission, ও policy রাখা হয়।",
+          "৫০-৭০ জনের অফিসে এটি ছাড়া প্রতিটি computer আলাদাভাবে manage করা অসম্ভব কষ্টকর।"
+        ],
         "points": [
           "Domain Controller (DC): AD চালায় এমন Windows Server — সব authentication এখানে হয়",
           "Single Sign-On (SSO): একটি username/password দিয়ে যেকোনো PC, printer, file server এ login",
@@ -146,7 +154,11 @@
         "memory management"
       ],
       "answer": {
-        "summary": "Logical address = CPU যে address তৈরি করে (process এর নিজস্ব view), Physical address = RAM এর আসল location। MMU hardware দুটোর মধ্যে translate করে।",
+        "summary": [
+          "Logical address = CPU যে address তৈরি করে (process এর নিজস্ব view)।",
+          "Physical address = RAM এর আসল location।",
+          "MMU hardware দুটোর মধ্যে translate করে।"
+        ],
         "points": [
           "Logical Address: CPU প্রতিটি instruction execute করার সময় তৈরি করে। Process মনে করে সে 0 থেকে শুরু করে। User program শুধু এটাই দেখে।",
           "Physical Address: RAM chip এর আসল location। MMU (Memory Management Unit) তৈরি করে। Hardware এ এটাই ব্যবহার হয়।",
@@ -213,7 +225,11 @@
         "Coffman conditions"
       ],
       "answer": {
-        "summary": "Circular Wait = processes এর চক্রাকার অপেক্ষা। RAG এ cycle থাকলেই deadlock নিশ্চিত নয় — resource এর instance সংখ্যার উপর নির্ভর করে।",
+        "summary": [
+          "Circular Wait = processes এর চক্রাকার অপেক্ষা — কেউ এগোতে পারছে না।",
+          "RAG এ cycle থাকলেই deadlock নিশ্চিত নয় — resource এর instance সংখ্যার উপর নির্ভর করে।",
+          "Single instance → cycle = deadlock নিশ্চিত। Multiple instance → cycle থাকলেও deadlock নাও হতে পারে।"
+        ],
         "points": [
           "Circular Wait: P1 অপেক্ষা করছে P2 এর resource এর জন্য → P2 অপেক্ষা করছে P3 এর জন্য → P3 অপেক্ষা করছে P1 এর জন্য — একটা বৃত্ত, কেউ এগোতে পারছে না",
           "Deadlock এর ৪টি Coffman শর্ত: Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait — চারটি একসাথে থাকলেই deadlock",
@@ -246,7 +262,11 @@
         "bits"
       ],
       "answer": {
-        "summary": "Logical address = page number bits + offset bits। Physical address = frame number bits + offset bits। Page size = Frame size, তাই offset bits দুটোতেই সমান।",
+        "summary": [
+          "Logical address = page number bits + offset bits।",
+          "Physical address = frame number bits + offset bits।",
+          "Page size = Frame size, তাই offset bits দুটোতেই সমান।"
+        ],
         "points": [
           "দেওয়া আছে: Pages = 512, Page size = 2 KB, Frames = 128",
           "Offset bits = log₂(page size) = log₂(2 KB) = log₂(2048) = 11 bits",
@@ -280,7 +300,11 @@
         "context switching"
       ],
       "answer": {
-        "summary": "Process = একটি স্বাধীন program যা নিজের আলাদা memory নিয়ে চলে। Thread = Process এর ভেতরে ছোট execution unit যা একই memory share করে। Thread হালকা ও দ্রুত, Process ভারী ও আলাদা।",
+        "summary": [
+          "Process = একটি স্বাধীন program যা নিজের আলাদা memory নিয়ে চলে।",
+          "Thread = Process এর ভেতরে ছোট execution unit যা একই memory share করে।",
+          "Thread হালকা ও দ্রুত, Process ভারী ও আলাদা।"
+        ],
         "points": [
           "Process: OS যখন একটি program run করে তখন সেটা Process হয়। নিজস্ব আলাদা memory space (code, data, heap, stack) থাকে। Process দুটো একে অপরের memory access করতে পারে না।",
           "Thread: একটি Process এর ভেতরে একাধিক execution path। একই Process এর সব thread code, data, heap share করে — শুধু নিজের stack আলাদা।",
@@ -338,7 +362,11 @@
         "race condition"
       ],
       "answer": {
-        "summary": "Producer-Consumer = একটি thread data তৈরি করে (Producer), আরেকটি সেটা consume করে (Consumer), উভয়ে shared buffer ব্যবহার করে। সমস্যা: buffer full/empty হলে কী হবে, এবং একসাথে access এ race condition।",
+        "summary": [
+          "Producer-Consumer = একটি thread data তৈরি করে (Producer), আরেকটি সেটা consume করে (Consumer), উভয়ে shared buffer ব্যবহার করে।",
+          "সমস্যা: buffer full/empty হলে কী হবে, এবং একসাথে access এ race condition।",
+          "Semaphore দিয়ে সমাধান: mutex (race condition), empty ও full semaphore (buffer control)।"
+        ],
         "points": [
           "Problem: Producer data তৈরি করে buffer এ রাখে। Consumer buffer থেকে নিয়ে process করে। Buffer এর size সীমিত (bounded buffer)।",
           "Synchronization Issue ১ — Race Condition: Producer ও Consumer একসাথে buffer access করলে data corrupt হতে পারে। Mutual Exclusion (Mutex) দিয়ে সমাধান।",
@@ -371,7 +399,11 @@
         "performance"
       ],
       "answer": {
-        "summary": "Multithreading = একটি program এ একাধিক thread একসাথে চালানো। Thread রা একই memory share করে parallel কাজ করে। CPU efficiently ব্যবহার হয়, program দ্রুত হয় এবং user experience ভালো হয়।",
+        "summary": [
+          "Multithreading = একটি program এ একাধিক thread একসাথে চালানো।",
+          "Thread রা একই memory share করে parallel কাজ করে — CPU efficiently ব্যবহার হয়।",
+          "Program দ্রুত হয় এবং user experience ভালো হয়।"
+        ],
         "points": [
           "Multithreading: একটি Process এর ভেতরে একাধিক thread তৈরি করে concurrently execute করানো। প্রতিটি thread আলাদা কাজ করতে পারে কিন্তু একই data access করতে পারে।",
           "কারণ ১ — CPU Utilization: একটি thread I/O wait করলে (disk, network) অন্য thread CPU ব্যবহার করতে পারে → CPU idle থাকে না।",

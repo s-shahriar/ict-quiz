@@ -107,7 +107,7 @@ export default function App() {
   return (
     <div className="app-root">
       <div className="bg-canvas" aria-hidden="true">
-        <div className="bg-aurora" />
+        {screen === 'home' && <div className="bg-aurora" />}
         <div className="bg-grid" />
       </div>
 

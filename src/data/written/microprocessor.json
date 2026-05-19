@@ -6,7 +6,11 @@
       "q": "Why do modern processor designs favor multistage pipeline approach over single cycle implementation? Explain with appropriate reasoning.",
       "tags": ["pipeline", "single cycle", "CPU", "stages", "throughput", "clock"],
       "answer": {
-        "summary": "Single cycle এ প্রতিটি instruction পুরো clock নেয় — slowest instruction এর জন্য সবাইকে অপেক্ষা করতে হয়। Pipeline এ instruction কে stages এ ভাগ করে একসাথে অনেক instruction process হয় — throughput বহুগুণ বাড়ে।",
+        "summary": [
+          "Single cycle এ প্রতিটি instruction পুরো clock নেয় — slowest instruction এর জন্য সবাইকে অপেক্ষা করতে হয়।",
+          "Pipeline এ instruction কে stages এ ভাগ করে একসাথে অনেক instruction process হয় — throughput বহুগুণ বাড়ে।",
+          "Clock period = 1টি stage এর সময় → clock অনেক দ্রুত হয় এবং resource utilization বাড়ে।"
+        ],
         "points": [
           "Single cycle: 1 instruction = 1 clock cycle, clock period = slowest instruction এর সময় → সব instruction এই দীর্ঘ সময় নেয়",
           "Pipeline: instruction কে 5টি stage এ ভাগ — IF → ID → EX → MEM → WB। প্রতিটি stage এ আলাদা instruction থাকে",

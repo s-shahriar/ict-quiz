@@ -11,7 +11,11 @@
         "worst case"
       ],
       "answer": {
-        "summary": "Sorted array + first element pivot = Quicksort এর worst case → O(n²), কারণ প্রতিটি partition সম্পূর্ণ unbalanced হয়।",
+        "summary": [
+          "Sorted array + first element pivot = Quicksort এর worst case → O(n²)।",
+          "কারণ প্রতিটি partition সম্পূর্ণ unbalanced হয় — left=0, right=n−1 সবসময়।",
+          "Recursion tree সম্পূর্ণ skewed হয়ে n level গভীর হয়।"
+        ],
         "points": [
           "Sorted array তে first element সবসময় সবচেয়ে ছোট → প্রতিটি partition এ left=0, right=n−1",
           "Recurrence: T(n) = T(0) + T(n−1) + O(n) → সমাধান: T(n) = O(n²)",
@@ -77,7 +81,11 @@
         "sorting"
       ],
       "answer": {
-        "summary": "Bubble Sort প্রতি pass এ adjacent elements compare করে বড়টাকে শেষে পাঠায় — O(n²) complexity এর কারণে large data তে Merge Sort (O(n log n)) এর তুলনায় অনেক ধীর।",
+        "summary": [
+          "Bubble Sort প্রতি pass এ adjacent elements compare করে বড়টাকে শেষে পাঠায়।",
+          "O(n²) complexity এর কারণে large data তে Merge Sort (O(n log n)) এর তুলনায় অনেক ধীর।",
+          "In-place sorting — extra memory লাগে না (O(1) space)।"
+        ],
         "points": [
           "প্রতিটি pass এ পাশাপাশি দুটো element compare করা হয়, wrong order হলে swap করা হয়",
           "এক pass এ সবচেয়ে বড় element array এর শেষে settle করে (বুদবুদের মতো ভেসে ওঠে)",
@@ -143,7 +151,11 @@
         "graph theory"
       ],
       "answer": {
-        "summary": "Graph-3 ও Graph-4 isomorphic নয় — কারণ তাদের degree sequence আলাদা। Graph-3 এ ৪টি degree-3 vertex আছে, Graph-4 এ আছে মাত্র ৩টি। Degree sequence না মিললে bijection সম্ভব নয় → NOT isomorphic।",
+        "summary": [
+          "Graph-3 ও Graph-4 isomorphic নয় — কারণ তাদের degree sequence আলাদা।",
+          "Graph-3 এ ৪টি degree-3 vertex আছে, Graph-4 এ আছে মাত্র ৩টি।",
+          "Degree sequence না মিললে bijection সম্ভব নয় → NOT isomorphic।"
+        ],
         "points": [
           "Step 1 — Vertex count: Graph-3 = 6টি, Graph-4 = 6টি ✅ (মিলেছে, কিন্তু এটাই যথেষ্ট নয়)",
           "Step 2 — Edge count: দুটোরই সমান কিনা চেক করো (এই ধাপেও মিলতে পারে)",
@@ -182,16 +194,19 @@
         "O(log n)"
       ],
       "answer": {
-        "summary": "Binary Search প্রতিবার array কে অর্ধেক করে ফেলে — middle দেখে বাম বা ডানে যায়। O(log n) time complexity। Unsorted array তে কাজ করে না কারণ মাঝের element দেখে কোনদিকে যাবে সেটা বলা সম্ভব নয়।",
+        "summary": [
+          "Binary Search প্রতিবার array কে অর্ধেক করে ফেলে — middle দেখে বাম বা ডানে যায়।",
+          "O(log n) time complexity। Unsorted array তে কাজ করে না।",
+          "কারণ মাঝের element দেখে কোনদিকে যাবে সেটা unsorted এ বলা সম্ভব নয়।"
+        ],
         "points": [
-          "Step 1: low = 0, high = n-1 সেট করো (পুরো array কে search range ধরো)",
-          "Step 2: mid = (low + high) / 2 বের করো",
-          "Step 3: arr[mid] == target → পাওয়া গেছে, return mid ✅",
-          "Step 4: arr[mid] < target → target ডানদিকে, low = mid + 1",
-          "Step 5: arr[mid] > target → target বামদিকে, high = mid - 1",
-          "Step 6: low > high হলে → target নেই, return -1",
-          "Unsorted এ fail কেন: Step 4/5 এ assume করা হয় যে mid এর বামে সব ছোট, ডানে সব বড়। Unsorted array তে এই assumption সত্য নয় — তাই ভুল দিকে গিয়ে element miss হয়।",
-          "Time complexity: O(log n) — প্রতি step এ search space অর্ধেক হয়। Linear Search = O(n)।"
+          "low = 0, high = n−1 দিয়ে শুরু করো।",
+          "যতক্ষণ low ≤ high: mid = (high − low) / 2 বের করো।",
+          {"sub": "arr[mid] == target → return mid ✅"},
+          {"sub": "arr[mid] < target → low = mid + 1 (ডানে যাও)"},
+          {"sub": "arr[mid] > target → high = mid − 1 (বামে যাও)"},
+          "লুপ শেষে target না পেলে return −1 ❌",
+          "Unsorted এ fail কেন: mid দেখে বাম/ডান decide করা হয় — unsorted এ সেই assumption ভুল, তাই element miss হয়।"
         ],
         "diagram": "Array: [2, 5, 8, 12, 16, 23, 38, 42]  Target = 23\nIndex:  0  1  2   3   4   5   6   7\n\nRound 1: low=0, high=7 → mid=3 → arr[3]=12 < 23 → low=4\n         [_, _, _, _, 16, 23, 38, 42]\n\nRound 2: low=4, high=7 → mid=5 → arr[5]=23 == 23 ✅ FOUND!\n         [_, _, _, _, _, 23, _, _]\n\nমাত্র 2 step এ পাওয়া গেল (Linear Search এ 6 step লাগত)\n\nUnsorted এ fail:\nArray: [5, 23, 2, 38, 12]  Target = 12\nmid=2 → arr[2]=2 < 12 → low=3 (ডানে যাও)\nকিন্তু 12 আছে index 4 এ, 38 এর পরে → miss! ❌",
         "mnemonic": "Binary Search = ফোনবুকে নাম খোঁজা — মাঝখানে খোলো, আগে না পরে সেটা দেখে বাদ দাও অর্ধেক। Unsorted ফোনবুক এ এই কৌশল কাজ করে না।"
@@ -208,7 +223,11 @@
         "data structure"
       ],
       "answer": {
-        "summary": "Stack = LIFO (শেষে ঢোকা আগে বের হয়), Queue = FIFO (আগে ঢোকা আগে বের হয়)। দুটো Stack দিয়ে Queue বানানো যায়: Stack1 এ enqueue করো, dequeue এর সময় সব Stack2 তে ঢেলে দাও — তাহলে order উল্টে যায় এবং FIFO হয়।",
+        "summary": [
+          "Stack = LIFO (শেষে ঢোকা আগে বের হয়), Queue = FIFO (আগে ঢোকা আগে বের হয়)।",
+          "দুটো Stack দিয়ে Queue বানানো যায়: Stack1 এ enqueue করো, dequeue এর সময় সব Stack2 তে ঢেলে দাও।",
+          "তাহলে order উল্টে যায় এবং FIFO হয় — amortized O(1) complexity।"
+        ],
         "points": [
           "Stack1 = Inbox (নতুন element ঢোকে), Stack2 = Outbox (element বের হয়)",
           "Enqueue(x): সরাসরি Stack1 তে push করো — O(1)",
@@ -242,17 +261,26 @@
         "uninformed search"
       ],
       "answer": {
-        "summary": "BFS = blind search — সব দিকে সমানভাবে explore করে। A* = informed search — heuristic function h(n) দিয়ে goal এর দিকে guided হয়ে explore করে। A* অনেক কম node explore করে তাই দ্রুত, কিন্তু heuristic admissible না হলে optimal path miss করতে পারে।",
-        "points": [
-          "BFS (Blind Search): Queue ব্যবহার করে level-by-level সব neighbor explore করে। Goal এর দিক জানে না — সব দিকে সমান effort দেয়।",
-          "A* (Heuristic Search): f(n) = g(n) + h(n) — g(n) = এখন পর্যন্ত actual cost, h(n) = goal পর্যন্ত estimated cost। সবচেয়ে কম f(n) এর node আগে explore করে।",
-          "A* কেন দ্রুত: h(n) দিয়ে goal এর কাছাকাছি node গুলো prioritize করা হয়। ভুল দিকের node গুলো explore করতেই হয় না।",
-          "উদাহরণ — Map এ shortest path: BFS সব দিকে বৃত্তাকারে expand করে। A* সরাসরি destination এর দিকে এগিয়ে যায় (straight-line distance = heuristic)।",
-          "Perfect path guarantee: Heuristic admissible হলে (h(n) ≤ actual cost) A* optimal path দেয়। Non-admissible heuristic এ দ্রুত কিন্তু optimal নাও হতে পারে।",
-          "Trade-off: BFS = সবসময় optimal (unweighted graph এ), কিন্তু slow। A* = সাধারণত optimal এবং fast, কিন্তু heuristic এর quality এর উপর নির্ভর করে।"
+        "summary": [
+          "BFS = blind search — Goal কোথায় জানে না, সব দিকে সমানভাবে explore করে।",
+          "A* = informed search — প্রতিটি node এ \"এখন পর্যন্ত cost + Goal এর estimate\" দেখে সবচেয়ে promising দিকে যায়।",
+          "ফলে A* অনেক কম node explore করে তাই দ্রুত — কিন্তু estimate ভুল হলে optimal path miss হতে পারে।"
         ],
-        "diagram": "BFS (Blind) — সব দিকে expand:\n         [Start]\n        /   |   \\\n      [A]  [B]  [C]      ← level 1 (সব explore)\n     / \\   / \\   / \\\n   [D][E][F][G][H][Goal] ← level 2 (সব explore)\n   Goal পেতে D,E,F,G,H সবই visit করতে হলো\n\nA* (Heuristic) — Goal এর দিকে guided:\n         [Start]\n        /       \\\n      [A]       [C]      h(A)=5, h(C)=2 → C বেছে নেয়\n                 \\\n               [Goal]    মাত্র 2টি node explore!\n\nf(n) = g(n) + h(n):\n  g(n) = Start থেকে n পর্যন্ত actual cost\n  h(n) = n থেকে Goal পর্যন্ত estimated cost\n  A* সবচেয়ে কম f(n) এর node আগে explore করে",
-        "mnemonic": "BFS = অন্ধকারে মশাল ঘুরিয়ে খোঁজা (সব দিক)। A* = GPS দিয়ে খোঁজা (goal এর দিকে সরাসরি)। GPS ভুল হতে পারে, কিন্তু সাধারণত অনেক দ্রুত।"
+        "points": [
+          "BFS কী করে: Queue এর সামনের node বের করে, তার সব neighbor Queue এ ঢোকায়।",
+          {"sub": "Goal কোথায় জানে না — সব দিকে সমান effort দেয়।"},
+          "A* কী করে: প্রতিটি node এ দুটো জিনিস track করে —",
+          {"sub": "(১) Start থেকে এখন পর্যন্ত কত cost হয়েছে"},
+          {"sub": "(২) Goal থেকে আনুমানিক কতদূর (heuristic estimate)"},
+          {"sub": "এই দুটো যোগ করে সবচেয়ে কম যার, সে আগে explore হয়।"},
+          "পার্থক্য: Goal ডানদিকে। BFS ডান-বাম-উপর-নিচ সব দিকে ছড়ায়।",
+          {"sub": "A* দেখে ডানের node এর total সবচেয়ে কম → ডানে যায় → আবার ডানে → Goal।"},
+          {"sub": "বাম-উপর-নিচ explore করতেই হয়নি — এটাই A* এর গতির কারণ।"},
+          "Admissible heuristic: estimate যদি সবসময় actual cost ≤ হয়, A* optimal path দেয়।",
+          "Trade-off: BFS = সবসময় optimal কিন্তু slow। A* = heuristic ভালো হলে optimal ও দ্রুত।"
+        ],
+        "diagram": "Grid map: S থেকে G যেতে হবে (G ডানদিকে)\nS . . . . . . . G\n. . . . . . . . .\n. . . . . . . . .\n\nBFS — সব দিকে বৃত্তাকারে expand:\n. . . . . . . . G  ← G এখনো দেখেনি\n. . . 3 3 3 . . .\n. . 3 2 2 2 3 . .\n. 3 2 1 S 1 2 3 .  ← সব দিকে সমানভাবে\n. . 3 2 2 2 3 . .\n. . . 3 3 3 . . .\nG ডানদিকে থাকলেও বাম-উপর-নিচ সব explore\n\nA* — Goal এর দিকে ঝুঁকে যায়:\nStep 1: S থেকে সব neighbor check:\n  ডানের node:  cost=1, est=7 → total=8  ← সবচেয়ে কম!\n  বামের node:  cost=1, est=9 → total=10\n  নিচের node:  cost=1, est=8 → total=9\n  → ডানে যায়\nStep 2: আবার ডানের neighbor সবচেয়ে ভালো → ডানে\nStep 3: আবার ডানে... → G পৌঁছে গেলো!\nS → → → → → → → G  (বাম-উপর-নিচ explore করতেই হয়নি)",
+        "mnemonic": "BFS = অন্ধকারে সব দিকে মশাল জ্বালানো। A* = GPS — সামনে কতদূর দেখতে পাচ্ছি তার উপর ভিত্তি করে সরাসরি এগিয়ে যাওয়া।"
       }
     }
   ]

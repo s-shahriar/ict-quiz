@@ -73,7 +73,7 @@ export default function QuizMode({ topic, mastered, important, onNail, onUnnail,
           <span className="quiz-pct">{Math.round(progress)}%</span>
         </div>
         <div className="quiz-progress-track">
-          <div className="quiz-progress-fill" style={{ width: `${progress}%`, background: topic.color }} />
+          <div className="quiz-progress-fill" style={{ '--progress': progress / 100, background: topic.color }} />
         </div>
       </div>
 

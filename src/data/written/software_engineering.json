@@ -16,7 +16,10 @@
         "system design"
       ],
       "answer": {
-        "summary": "পাঁচটি layer এ pipeline ভাগ করতে হবে — Ingestion → Storage → Resource Management → Processing → ML & Serving। প্রতিটি Hadoop component একটি নির্দিষ্ট layer এ কাজ করে।",
+        "summary": [
+          "পাঁচটি layer এ pipeline ভাগ করতে হবে — Ingestion → Storage → Resource Management → Processing → ML & Serving।",
+          "প্রতিটি Hadoop component একটি নির্দিষ্ট layer এ কাজ করে।"
+        ],
         "points": [
           "Flume: Web server এর nginx/apache log real-time collect করে HDFS এ পাঠায়",
           "Chukwa: Distributed system এর monitoring data collect করে — HDFS এর উপর built",
@@ -98,7 +101,11 @@
         "data center"
       ],
       "answer": {
-        "summary": "Preventive = ব্যর্থতার আগে scheduled রক্ষণাবেক্ষণ, Corrective = ব্যর্থতার পরে মেরামত। Series এ ৩টি component (0.95 each): R = 0.95³ = 0.857375 ≈ 85.74%।",
+        "summary": [
+          "Preventive = ব্যর্থতার আগে scheduled রক্ষণাবেক্ষণ, Corrective = ব্যর্থতার পরে মেরামত।",
+          "Series এ ৩টি component (0.95 each): R = 0.95³ = 0.857375 ≈ 85.74%।",
+          "Series এ component বাড়লে reliability কমে — data center এ redundant (parallel) components ব্যবহার করা হয়।"
+        ],
         "points": [
           "Preventive: ব্যর্থতার আগে scheduled maintenance। Data center উদাহরণ: প্রতি ২ বছরে UPS battery পরিবর্তন, মাসিক fan cleaning, quarterly hardware diagnostics",
           "Corrective: ব্যর্থতার পরে মেরামত। Data center উদাহরণ: হঠাৎ power supply নষ্ট হলে replace, RAID failure পরে disk swap, OS crash এর পরে restore",
@@ -166,7 +173,11 @@
         "software engineering"
       ],
       "answer": {
-        "summary": "SCRUM হলো Agile framework এর একটি জনপ্রিয় পদ্ধতি যেখানে কাজকে ছোট ছোট Sprint (1-4 সপ্তাহ) এ ভাগ করে iterative ভাবে working software deliver করা হয়। তিনটি মূল role, পাঁচটি key element এবং একটি cyclical process নিয়ে গঠিত।",
+        "summary": [
+          "SCRUM হলো Agile framework এর একটি জনপ্রিয় পদ্ধতি।",
+          "কাজকে ছোট ছোট Sprint (1-4 সপ্তাহ) এ ভাগ করে iterative ভাবে working software deliver করা হয়।",
+          "তিনটি মূল role, পাঁচটি key element এবং একটি cyclical process নিয়ে গঠিত।"
+        ],
         "points": [
           "Sprint: SCRUM এর মূল unit — 1 থেকে 4 সপ্তাহের time-boxed iteration। প্রতিটি Sprint শেষে working software (Increment) deliver করতে হয়।",
           "Product Backlog: সব requirements এর prioritized তালিকা। Product Owner maintain করেন। পুরো project এর কাজের master list।",

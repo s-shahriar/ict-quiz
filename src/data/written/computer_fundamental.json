@@ -10,7 +10,11 @@
         "parity"
       ],
       "answer": {
-        "summary": "৫টি ৪ TB ড্রাইভে RAID 5 সেটআপে usable storage = ১৬ TB, কারণ ১টি ড্রাইভের সমপরিমাণ জায়গা parity-তে খরচ হয়।",
+        "summary": [
+          "৫টি ৪ TB ড্রাইভে RAID 5 সেটআপে usable storage = ১৬ TB।",
+          "কারণ ১টি ড্রাইভের সমপরিমাণ জায়গা parity-তে খরচ হয়।",
+          "Parity একটি নির্দিষ্ট ড্রাইভে নয় — সব ড্রাইভে ছড়িয়ে (distributed) থাকে।"
+        ],
         "points": [
           "মোট raw storage = ৫ × ৪ = ২০ TB",
           "RAID 5 সূত্র: Usable = (n − 1) × drive size",
@@ -99,7 +103,11 @@
         "ATM"
       ],
       "answer": {
-        "summary": "Availability = Uptime/Total × 100% = 99.44%। Revenue loss = Downtime × Revenue per hour = Tk. 1,000।",
+        "summary": [
+          "Availability = Uptime/Total × 100% = 99.44%।",
+          "Revenue loss = Downtime × Revenue per hour = Tk. 1,000।",
+          "99.44% banking standard এর নিচে — ATM/banking এ minimum 99.9% (three nines) হওয়া উচিত।"
+        ],
         "points": [
           "Total time = 30 days × 24 hours = 720 hours",
           "Uptime = 720 - 4 = 716 hours",
@@ -162,7 +170,10 @@
         "usable capacity"
       ],
       "answer": {
-        "summary": "৪টি ২TB ড্রাইভে — RAID 1 = 2 TB, RAID 5 = 6 TB, RAID 10 = 4 TB। সূত্র: RAID 1 = 1×size, RAID 5 = (n−1)×size, RAID 10 = (n/2)×size।",
+        "summary": [
+          "৪টি ২TB ড্রাইভে — RAID 1 = 2 TB, RAID 5 = 6 TB, RAID 10 = 4 TB।",
+          "সূত্র: RAID 1 = 1×size, RAID 5 = (n−1)×size, RAID 10 = (n/2)×size।"
+        ],
         "points": [
           "Total raw = 4 × 2 TB = 8 TB",
           "RAID 1: সব ড্রাইভ একে অপরের mirror → Usable = 1 × 2 TB = 2 TB (বাকি 6 TB redundancy)",
@@ -222,14 +233,16 @@
         "AI"
       ],
       "answer": {
-        "summary": "তিনটি আলাদা ML approach: RL = reward দিয়ে শেখে (trial & error), DL = অনেক layer এর neural network দিয়ে শেখে, FL = data share না করে distributed ভাবে শেখে (privacy-preserving)।",
+        "summary": [
+          "তিনটি আলাদা ML approach: RL = reward দিয়ে শেখে (trial & error), DL = অনেক layer এর neural network দিয়ে শেখে, FL = data share না করে distributed ভাবে শেখে (privacy-preserving)।"
+        ],
         "points": [
           "Reinforcement Learning (RL): একটি agent environment এ action নেয়, ভালো action এ reward পায়, খারাপ action এ penalty। Trial & error করতে করতে optimal policy শেখে। Data লাগে না — নিজেই experience থেকে শেখে।",
-          "RL real-world: Chess/Go খেলা (AlphaGo), robotics, self-driving car, game playing (Atari), recommendation system।",
+          {"sub": "RL real-world: Chess/Go খেলা (AlphaGo), robotics, self-driving car, game playing (Atari), recommendation system।"},
           "Deep Learning (DL): অনেক layer বিশিষ্ট Artificial Neural Network। Input থেকে output পর্যন্ত multiple hidden layer এ feature automatically extract হয়। বড় dataset ও GPU দরকার।",
-          "DL real-world: Image recognition (face ID), speech recognition (Siri), NLP (ChatGPT), medical diagnosis, autonomous vehicle।",
+          {"sub": "DL real-world: Image recognition (face ID), speech recognition (Siri), NLP (ChatGPT), medical diagnosis, autonomous vehicle।"},
           "Federated Learning (FL): Data কে central server এ না পাঠিয়ে, প্রতিটি device নিজের local data দিয়ে model train করে, শুধু model weights/updates পাঠায়। Privacy সুরক্ষিত থাকে।",
-          "FL real-world: Google Keyboard (Gboard) — তোমার typing data তোমার phone এই থাকে, model update শুধু যায়। Hospital patient data share না করে collaborative model training।"
+          {"sub": "FL real-world: Google Keyboard (Gboard) — তোমার typing data তোমার phone এই থাকে, model update শুধু যায়। Hospital patient data share না করে collaborative model training।"}
         ],
         "diagram": "Reinforcement Learning:\n  Agent ──action──▶ Environment\n    ↑                    │\n    └────reward/state────┘\n  শিক্ষা: reward maximize করো\n\nDeep Learning:\n  Input → [Layer1] → [Layer2] → ... → [LayerN] → Output\n  (pixels)  (edges)  (shapes)          (features)  (cat/dog)\n  শিক্ষা: labeled data থেকে backpropagation\n\nFederated Learning:\n  Phone A ──model update──┐\n  Phone B ──model update──┼──▶ Central Server\n  Phone C ──model update──┘    (aggregates)\n  ❌ Raw data কখনো server এ যায় না\n  ✅ Privacy সুরক্ষিত",
         "table": {
