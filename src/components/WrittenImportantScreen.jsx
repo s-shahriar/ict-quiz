@@ -73,27 +73,48 @@ function WrittenImportantGroup({ topic: t, items, onUnmark }) {
       {open && (
         <div className="nailed-group-body anim-slide">
           {items.map(({ q, qid }) => (
-            <div key={qid} className="nailed-row">
-              <PenLine size={11} style={{ color: t.color, flexShrink: 0, marginTop: 3 }} />
-              <div className="nailed-row-body">
-                <span className="nailed-row-text">{q.q}</span>
-                {q.answer?.summary && (
-                  <div className="nailed-row-explanation">
-                    <span>{q.answer.summary}</span>
-                  </div>
-                )}
-              </div>
-              <button
-                className="nailed-unnail-btn"
-                onClick={() => onUnmark(qid)}
-                title="Remove from Important"
-              >
-                <X size={13} />
-              </button>
-            </div>
+            <WrittenImportantRow key={qid} q={q} qid={qid} topicColor={t.color} onUnmark={onUnmark} />
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+function WrittenImportantRow({ q, qid, topicColor, onUnmark }) {
+  const a = q.answer
+  return (
+    <div className="nailed-row wimp-row">
+      <PenLine size={11} style={{ color: topicColor, flexShrink: 0, marginTop: 3 }} />
+      <div className="nailed-row-body">
+        <span className="nailed-row-text">{q.q}</span>
+
+        {a?.summary && (
+          <div className="wimp-summary" style={{ borderColor: `${topicColor}35`, background: `color-mix(in srgb, ${topicColor} 8%, var(--elevated))` }}>
+            <span className="wimp-summary-label" style={{ color: topicColor }}>সংক্ষেপ</span>
+            <span>{a.summary}</span>
+          </div>
+        )}
+
+        {a?.points?.length > 0 && (
+          <ul className="wimp-points">
+            {a.points.map((pt, i) => (
+              <li key={i} className="wimp-point">
+                <span className="wimp-dot" style={{ background: topicColor }} />
+                <span>{pt}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <button
+        className="nailed-unnail-btn"
+        onClick={() => onUnmark(qid)}
+        title="Remove from Important"
+        style={{ marginTop: 2 }}
+      >
+        <X size={13} />
+      </button>
     </div>
   )
 }

@@ -24,6 +24,8 @@ export default function WrittenMode({ topic, writtenData, important, writtenMast
   })
   const toggleExt = (id) => setExtOpen(prev => ({ ...prev, [id]: !prev[id] }))
 
+  const visibleQuestions = questions.filter(q => !writtenMastered?.has(qid(q)))
+
   return (
     <div className="written-page anim-fade">
       <div className="written-topbar">
@@ -39,18 +41,18 @@ export default function WrittenMode({ topic, writtenData, important, writtenMast
         </button>
       </div>
 
-      {questions.length === 0 ? (
+      {visibleQuestions.length === 0 ? (
         <div className="written-empty">
           <BookOpenText size={40} style={{ opacity: 0.25, marginBottom: 12 }} />
-          <p>এই topic-এ এখনো কোনো written প্রশ্ন নেই।</p>
+          <p>{questions.length > 0 ? 'সব প্রশ্ন nailed! 🎉' : 'এই topic-এ এখনো কোনো written প্রশ্ন নেই।'}</p>
         </div>
       ) : (
         <>
           <p className="section-label" style={{ marginBottom: 16 }}>
-            {questions.length} টি প্রশ্ন
+            {visibleQuestions.length} টি প্রশ্ন
           </p>
           <div className="written-list">
-            {questions.map((q, idx) => (
+            {visibleQuestions.map((q, idx) => (
               <WrittenCard
                 key={q.id}
                 q={q}
