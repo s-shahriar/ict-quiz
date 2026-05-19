@@ -5,6 +5,7 @@ import { WrittenCardBody } from './WrittenCardBody.jsx'
 export default function WrittenMode({ topic, writtenData, important, writtenMastered, onMarkImportant, onUnmarkImportant, onNailWritten, onUnnailWritten, onBack, onHome }) {
   const questions = writtenData?.questions || []
   const [openIds, setOpenIds] = useState(() => new Set(questions.map(q => q.id)))
+  const [filterImportant, setFilterImportant] = useState(false)
 
   const qid = (q) => `written__${topic.id}__${q.id}`
   const toggleImportant = (q) => {
@@ -23,7 +24,11 @@ export default function WrittenMode({ topic, writtenData, important, writtenMast
     return next
   })
 
-  const visibleQuestions = questions.filter(q => !writtenMastered?.has(qid(q)))
+  const nonNailed       = questions.filter(q => !writtenMastered?.has(qid(q)))
+  const importantCount  = nonNailed.filter(q => important?.has(qid(q))).length
+  const visibleQuestions = filterImportant
+    ? nonNailed.filter(q => important?.has(qid(q)))
+    : nonNailed
 
   return (
     <div className="written-page anim-fade">
@@ -40,10 +45,33 @@ export default function WrittenMode({ topic, writtenData, important, writtenMast
         </button>
       </div>
 
+      {/* Filter bar */}
+      <div className="study-filter-bar">
+        <button
+          className={`study-filter-btn${!filterImportant ? ' active' : ''}`}
+          onClick={() => setFilterImportant(false)}
+          style={!filterImportant ? { borderColor: topic.color, color: topic.color, background: `${topic.color}15` } : {}}
+        >
+          সব ({nonNailed.length})
+        </button>
+        <button
+          className={`study-filter-btn${filterImportant ? ' active' : ''}`}
+          onClick={() => setFilterImportant(true)}
+          style={filterImportant ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+        >
+          <Bookmark size={11} fill={filterImportant ? 'currentColor' : 'none'} />
+          Important ({importantCount})
+        </button>
+      </div>
+
       {visibleQuestions.length === 0 ? (
         <div className="written-empty">
           <BookOpenText size={40} style={{ opacity: 0.25, marginBottom: 12 }} />
-          <p>{questions.length > 0 ? 'সব প্রশ্ন nailed! 🎉' : 'এই topic-এ এখনো কোনো written প্রশ্ন নেই।'}</p>
+          <p>
+            {filterImportant
+              ? 'কোনো Important প্রশ্ন নেই।'
+              : questions.length > 0 ? 'সব প্রশ্ন nailed! 🎉' : 'এই topic-এ এখনো কোনো written প্রশ্ন নেই।'}
+          </p>
         </div>
       ) : (
         <>

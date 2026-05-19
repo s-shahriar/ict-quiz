@@ -1904,6 +1904,9 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   padding: 20px 16px 80px;
   min-height: 100vh;
 }
+.nailed-screen--wide {
+  max-width: 780px;
+}
 .nailed-screen-topbar {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 24px;

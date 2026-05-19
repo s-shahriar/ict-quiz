@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home, PenLine } from 'lucide-react'
+import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
 import { getWrittenData } from '../data/written/index.js'
+import { WrittenCardBody } from './WrittenCardBody.jsx'
 
 export default function WrittenNailedScreen({ writtenTopics, writtenMastered, onUnnail, onHome }) {
   const nailedByTopic = writtenTopics.map(t => {
@@ -14,7 +15,7 @@ export default function WrittenNailedScreen({ writtenTopics, writtenMastered, on
   const total = nailedByTopic.reduce((s, g) => s + g.items.length, 0)
 
   return (
-    <div className="nailed-screen anim-fade">
+    <div className="nailed-screen nailed-screen--wide anim-fade">
       <div className="nailed-screen-topbar">
         <button className="back-btn" onClick={onHome}>
           <ChevronLeft size={15} /> Back
@@ -71,29 +72,33 @@ function WrittenNailedGroup({ topic: t, items, onUnnail }) {
       </button>
 
       {open && (
-        <div className="nailed-group-body anim-slide">
+        <div className="nailed-group-body anim-slide" style={{ padding: '8px 6px 10px', gap: 10 }}>
           {items.map(({ q, qid }) => (
-            <div key={qid} className="nailed-row">
-              <PenLine size={11} style={{ color: t.color, flexShrink: 0, marginTop: 3 }} />
-              <div className="nailed-row-body">
-                <span className="nailed-row-text">{q.q}</span>
-                {q.answer?.summary && (
-                  <div className="nailed-row-explanation">
-                    <span>{q.answer.summary}</span>
-                  </div>
-                )}
-              </div>
-              <button
-                className="nailed-unnail-btn"
-                onClick={() => onUnnail(qid)}
-                title="Un-nail"
-              >
-                <X size={13} />
-              </button>
-            </div>
+            <WrittenNailedCard key={qid} q={q} qid={qid} topicColor={t.color} onUnnail={onUnnail} />
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+function WrittenNailedCard({ q, qid, topicColor, onUnnail }) {
+  return (
+    <div className="written-card open" style={{ '--c': topicColor }}>
+      <div className="written-card-header">
+        <div className="written-card-toggle" style={{ cursor: 'default' }}>
+          <span className="written-qtext" style={{ paddingTop: 2 }}>{q.q}</span>
+        </div>
+        <button
+          className="nailed-unnail-btn"
+          onClick={() => onUnnail(qid)}
+          title="Un-nail"
+          style={{ flexShrink: 0, marginTop: 2 }}
+        >
+          <X size={13} />
+        </button>
+      </div>
+      <WrittenCardBody a={q.answer} topicColor={topicColor} />
     </div>
   )
 }

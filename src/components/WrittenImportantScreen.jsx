@@ -15,7 +15,7 @@ export default function WrittenImportantScreen({ writtenTopics, important, onUnm
   const total = importantByTopic.reduce((s, g) => s + g.items.length, 0)
 
   return (
-    <div className="nailed-screen anim-fade">
+    <div className="nailed-screen nailed-screen--wide anim-fade">
       <div className="nailed-screen-topbar">
         <button className="back-btn" onClick={onHome}>
           <ChevronLeft size={15} /> Back
@@ -69,7 +69,7 @@ function WrittenImportantGroup({ topic: t, items, onUnmark }) {
       </button>
 
       {open && (
-        <div className="nailed-group-body anim-slide" style={{ gap: 12 }}>
+        <div className="nailed-group-body anim-slide" style={{ padding: '8px 6px 10px', gap: 10 }}>
           {items.map(({ q, qid }) => (
             <WrittenImportantCard key={qid} q={q} qid={qid} topicColor={t.color} onUnmark={onUnmark} />
           ))}
