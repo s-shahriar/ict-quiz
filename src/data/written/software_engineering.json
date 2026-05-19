@@ -4,7 +4,17 @@
     {
       "id": "se_001",
       "q": "You have been hired as a Cloud Data Engineer to design a big data analytics pipeline for an e-commerce company. The company needs to: ingest millions of real-time web server logs, store and manage petabytes of raw and structured data, process data for batch and stream analytics, provide near real-time product recommendations, run machine learning models at scale. From the Hadoop ecosystem components: MapReduce, HDFS, YARN, HBase, ZooKeeper, Pig, Hive, Mahout, Chukwa, Cassandra, Avro, Oozie, Flume, Sqoop — what will be your plan?",
-      "tags": ["hadoop", "big data", "pipeline", "HDFS", "Flume", "Hive", "Mahout", "YARN", "system design"],
+      "tags": [
+        "hadoop",
+        "big data",
+        "pipeline",
+        "HDFS",
+        "Flume",
+        "Hive",
+        "Mahout",
+        "YARN",
+        "system design"
+      ],
       "answer": {
         "summary": "পাঁচটি layer এ pipeline ভাগ করতে হবে — Ingestion → Storage → Resource Management → Processing → ML & Serving। প্রতিটি Hadoop component একটি নির্দিষ্ট layer এ কাজ করে।",
         "points": [
@@ -25,20 +35,53 @@
         ],
         "diagram": "                E-COMMERCE BIG DATA PIPELINE\n═══════════════════════════════════════════════════════\n\n  DATA SOURCES\n  ┌────────────┐  ┌────────────┐  ┌────────────┐\n  │Web Servers │  │App Servers │  │MySQL / RDB │\n  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘\n        │               │               │\n─────────────────────────────────────────────────────\n  LAYER 1: INGESTION\n        │               │               │\n   ┌────▼───┐      ┌────▼───┐      ┌────▼───┐\n   │ FLUME  │      │CHUKWA  │      │ SQOOP  │\n   │log coll│      │monitor │      │RDBMS ↔ │\n   └────┬───┘      └────┬───┘      └────┬───┘\n        │    AVRO (serialization)        │\n        └──────────────┬────────────────┘\n                       │\n─────────────────────────────────────────────────────\n  LAYER 2: STORAGE\n                       │\n        ┌──────────────┼─────────────┐\n        ▼              ▼             ▼\n   ┌─────────┐  ┌──────────┐  ┌──────────┐\n   │  HDFS   │  │  HBase   │  │Cassandra │\n   │Raw Data │  │Structured│  │High-speed│\n   │Petabytes│  │Clickstrm │  │Recommends│\n   └─────────┘  └──────────┘  └──────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 3: RESOURCE MANAGEMENT\n   ┌──────────────────┐  ┌───────────────────┐\n   │  YARN            │  │  ZooKeeper        │\n   │  Resource Mgr    │  │  Coordination     │\n   └──────────────────┘  └───────────────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 4: PROCESSING\n   ┌──────────┐ ┌─────┐ ┌──────┐ ┌──────────┐\n   │MapReduce │ │ Pig │ │ Hive │ │  Oozie   │\n   │  Batch   │ │ ETL │ │ SQL  │ │Scheduler │\n   └──────────┘ └─────┘ └──────┘ └──────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 5: ML & SERVING\n   ┌──────────────────────────────────────┐\n   │              MAHOUT                  │\n   │  Collaborative Filtering → Reco      │\n   │  Clustering → Customer Segment       │\n   └───────────────┬──────────────────────┘\n                   │\n        ┌──────────┴──────────┐\n        ▼                     ▼\n   ┌──────────┐          ┌──────────┐\n   │  HBase   │          │Cassandra │\n   │(reco DB) │          │(fast API)│\n   └──────────┘          └──────────┘\n                   │\n                   ▼\n        ┌──────────────────┐\n        │ Recommendation   │\n        │      API         │\n        └──────────────────┘\n═══════════════════════════════════════════════════════",
         "mistakes": [
-          ["Flume ও Chukwa একই কাজ করে", "Flume = log/event streaming, Chukwa = system monitoring — ভিন্ন use case"],
-          ["HBase ও Cassandra একই", "HBase = HDFS এর উপর, strong consistency। Cassandra = independent, eventual consistency, higher write speed"],
-          ["MapReduce real-time processing করে", "না — MapReduce batch only। Real-time এর জন্য Spark/Flink লাগে (এই list এ নেই)"]
+          [
+            "Flume ও Chukwa একই কাজ করে",
+            "Flume = log/event streaming, Chukwa = system monitoring — ভিন্ন use case"
+          ],
+          [
+            "HBase ও Cassandra একই",
+            "HBase = HDFS এর উপর, strong consistency। Cassandra = independent, eventual consistency, higher write speed"
+          ],
+          [
+            "MapReduce real-time processing করে",
+            "না — MapReduce batch only। Real-time এর জন্য Spark/Flink লাগে (এই list এ নেই)"
+          ]
         ],
         "table": {
-          "headers": ["Requirement", "Components"],
+          "headers": [
+            "Requirement",
+            "Components"
+          ],
           "rows": [
-            ["Real-time log ingestion", "Flume, Chukwa, Avro"],
-            ["Petabyte storage", "HDFS, HBase, Cassandra"],
-            ["Batch & stream processing", "MapReduce, Pig, Hive, Oozie"],
-            ["Near real-time recommendations", "Mahout, Cassandra, HBase"],
-            ["ML at scale", "Mahout, YARN, MapReduce"],
-            ["Coordination (সবার জন্য)", "YARN, ZooKeeper"],
-            ["RDBMS data import", "Sqoop"]
+            [
+              "Real-time log ingestion",
+              "Flume, Chukwa, Avro"
+            ],
+            [
+              "Petabyte storage",
+              "HDFS, HBase, Cassandra"
+            ],
+            [
+              "Batch & stream processing",
+              "MapReduce, Pig, Hive, Oozie"
+            ],
+            [
+              "Near real-time recommendations",
+              "Mahout, Cassandra, HBase"
+            ],
+            [
+              "ML at scale",
+              "Mahout, YARN, MapReduce"
+            ],
+            [
+              "Coordination (সবার জন্য)",
+              "YARN, ZooKeeper"
+            ],
+            [
+              "RDBMS data import",
+              "Sqoop"
+            ]
           ]
         },
         "mnemonic": "Layer mnemonics — Ingestion: 'Fast Catching Stuff Automatically' (Flume, Chukwa, Sqoop, Avro) | Storage: 'Huge House Castle' (HDFS, HBase, Cassandra) | Resource: 'Yard Zealously' (YARN, ZooKeeper) | Processing: 'My Pig Has Orders' (MapReduce, Pig, Hive, Oozie) | ML: 'Mahout rides the Hadoop elephant'"
@@ -47,7 +90,13 @@
     {
       "id": "se_002",
       "q": "Distinguish between Preventive and Corrective maintenance with a real-world example for each in a data center environment. A critical system consists of three components (Power Supply, Motherboard, and Storage) connected in a series configuration. If each component has a reliability of 0.95, what is the total reliability of the system?",
-      "tags": ["preventive maintenance", "corrective maintenance", "reliability", "series configuration", "data center"],
+      "tags": [
+        "preventive maintenance",
+        "corrective maintenance",
+        "reliability",
+        "series configuration",
+        "data center"
+      ],
       "answer": {
         "summary": "Preventive = ব্যর্থতার আগে scheduled রক্ষণাবেক্ষণ, Corrective = ব্যর্থতার পরে মেরামত। Series এ ৩টি component (0.95 each): R = 0.95³ = 0.857375 ≈ 85.74%।",
         "points": [
@@ -59,20 +108,119 @@
         ],
         "diagram": "Series Configuration:\n Input ──▶ [Power Supply] ──▶ [Motherboard] ──▶ [Storage] ──▶ Output\n              0.95               0.95              0.95\n যেকোনো একটি নষ্ট = system fail ❌\n\n R = 0.95 × 0.95 × 0.95 = (0.95)³ = 0.857375 ≈ 85.74%\n\nParallel (তুলনার জন্য):\n          ┌──[Component 0.95]──┐\n Input ───┤                    ├─── Output\n          └──[Component 0.95]──┘\n R = 1 − (1−0.95)² = 1 − 0.0025 = 0.9975 = 99.75%\n Series এ কমে, Parallel এ বাড়ে → data center এ redundancy ব্যবহার করা হয়",
         "mistakes": [
-          ["Series reliability = গড় (0.95+0.95+0.95)/3", "না — গুণ করতে হবে: 0.95 × 0.95 × 0.95 = 0.857"],
-          ["Preventive maintenance শুধু hardware এ", "না — software (OS patch, firmware update) ও Preventive maintenance এর অংশ"]
+          [
+            "Series reliability = গড় (0.95+0.95+0.95)/3",
+            "না — গুণ করতে হবে: 0.95 × 0.95 × 0.95 = 0.857"
+          ],
+          [
+            "Preventive maintenance শুধু hardware এ",
+            "না — software (OS patch, firmware update) ও Preventive maintenance এর অংশ"
+          ]
         ],
         "table": {
-          "headers": ["", "Preventive", "Corrective"],
+          "headers": [
+            "",
+            "Preventive",
+            "Corrective"
+          ],
           "rows": [
-            ["কখন", "ব্যর্থতার আগে (scheduled)", "ব্যর্থতার পরে (unplanned)"],
-            ["লক্ষ্য", "ব্যর্থতা প্রতিরোধ", "ব্যর্থতা সংশোধন"],
-            ["Downtime", "Planned (predictable)", "Unplanned (unpredictable)"],
-            ["খরচ", "নিয়মিত কিন্তু কম", "অনিয়মিত কিন্তু বেশি"],
-            ["Data center উদাহরণ", "Annual UPS battery replacement", "Emergency power supply replace after failure"]
+            [
+              "কখন",
+              "ব্যর্থতার আগে (scheduled)",
+              "ব্যর্থতার পরে (unplanned)"
+            ],
+            [
+              "লক্ষ্য",
+              "ব্যর্থতা প্রতিরোধ",
+              "ব্যর্থতা সংশোধন"
+            ],
+            [
+              "Downtime",
+              "Planned (predictable)",
+              "Unplanned (unpredictable)"
+            ],
+            [
+              "খরচ",
+              "নিয়মিত কিন্তু কম",
+              "অনিয়মিত কিন্তু বেশি"
+            ],
+            [
+              "Data center উদাহরণ",
+              "Annual UPS battery replacement",
+              "Emergency power supply replace after failure"
+            ]
           ]
         },
         "mnemonic": "Preventive = আগুন লাগার আগে extinguisher check করো। Corrective = আগুন লাগার পরে নেভাও। Series reliability: chain এর সবচেয়ে দুর্বল কড়া — একটি ভাঙলে সব শেষ। গুণ করলে সবসময় কমে।"
+      }
+    },
+    {
+      "id": "se_003",
+      "q": "What is SCRUM? Explain its key elements and describe the SCRUM process.",
+      "tags": [
+        "SCRUM",
+        "Agile",
+        "Sprint",
+        "Product Backlog",
+        "Scrum Master",
+        "software engineering"
+      ],
+      "answer": {
+        "summary": "SCRUM হলো Agile framework এর একটি জনপ্রিয় পদ্ধতি যেখানে কাজকে ছোট ছোট Sprint (1-4 সপ্তাহ) এ ভাগ করে iterative ভাবে working software deliver করা হয়। তিনটি মূল role, পাঁচটি key element এবং একটি cyclical process নিয়ে গঠিত।",
+        "points": [
+          "Sprint: SCRUM এর মূল unit — 1 থেকে 4 সপ্তাহের time-boxed iteration। প্রতিটি Sprint শেষে working software (Increment) deliver করতে হয়।",
+          "Product Backlog: সব requirements এর prioritized তালিকা। Product Owner maintain করেন। পুরো project এর কাজের master list।",
+          "Sprint Backlog: Product Backlog থেকে বেছে নেওয়া items যা current Sprint এ করা হবে। Team নিজে select করে।",
+          "Increment: প্রতিটি Sprint শেষে produce করা working, tested software। আগের Increment এর সাথে যোগ হয়।",
+          "Daily Scrum (Stand-up): প্রতিদিন 15 মিনিটের meeting। তিনটি প্রশ্ন: গতকাল কী করলাম? আজ কী করব? কোনো বাধা আছে কি?",
+          "Roles — Product Owner: requirements define করেন, backlog manage করেন। Scrum Master: process facilitate করেন, বাধা দূর করেন। Development Team: actual কাজ করে (3-9 জন)।"
+        ],
+        "diagram": "SCRUM Process Flow:\n\nProduct Backlog     Sprint Backlog        Sprint          Increment\n(সব requirements)  (selected items)    (1-4 weeks)    (working SW)\n┌──────────┐       ┌──────────┐       ┌──────────┐    ┌──────────┐\n│ • Req 1  │       │ • Req 2  │  ╔══▶ │          │══▶ │  v1.0    │\n│ • Req 2  │──────▶│ • Req 5  │  ║    │  Daily   │    │ Released │\n│ • Req 3  │       │ • Req 7  │  ╚════│  Scrum ↺ │    │          │\n│ • Req 4  │       └──────────┘       └──────────┘    └──────────┘\n│ ...      │                                ↑\n└──────────┘                         15 min/day\n\nKey Roles:\n  Product Owner  → What to build (backlog manage)\n  Scrum Master   → How to work (process, remove blockers)\n  Dev Team       → Build it (3-9 members, self-organizing)\n\nSprint Timeline:\n  Day 1: Sprint Planning\n  Day 2-N: Daily Scrum + Development\n  Last day: Sprint Review + Retrospective\n  → Next Sprint শুরু!",
+        "table": {
+          "headers": [
+            "Element",
+            "কাজ",
+            "কে responsible"
+          ],
+          "rows": [
+            [
+              "Product Backlog",
+              "সব requirements এর তালিকা",
+              "Product Owner"
+            ],
+            [
+              "Sprint Backlog",
+              "Current sprint এর tasks",
+              "Dev Team"
+            ],
+            [
+              "Sprint",
+              "1-4 সপ্তাহের iteration",
+              "পুরো team"
+            ],
+            [
+              "Daily Scrum",
+              "15 min daily sync",
+              "Scrum Master"
+            ],
+            [
+              "Increment",
+              "Sprint শেষে working software",
+              "Dev Team"
+            ],
+            [
+              "Sprint Review",
+              "Stakeholder demo",
+              "Product Owner + Team"
+            ],
+            [
+              "Retrospective",
+              "Process improvement",
+              "Scrum Master + Team"
+            ]
+          ]
+        },
+        "mnemonic": "SCRUM = Sprint করে Correct করো Regularly উন্নতি করো Management এ। Product Owner বলে কী বানাবে, Scrum Master বলে কীভাবে বানাবে, Dev Team বানায়। Sprint = ছোট ছোট দৌড়, Backlog = দৌড়ের তালিকা।"
       }
     }
   ]

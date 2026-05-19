@@ -43,6 +43,14 @@ Track of all manually added written questions (most recent first).
 
 ---
 
+## Software Engineering (`software_engineering.json`)
+
+| ID | Question | Date Added |
+|----|----------|------------|
+| se_003 | What is SCRUM? Key elements (Backlog, Sprint, Increment, Roles) + process flow | 2026-05-19 |
+
+---
+
 ## C Programming (`c_programming.json`) ← new file
 
 | ID | Question | Date Added |
