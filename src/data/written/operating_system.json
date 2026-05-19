@@ -221,7 +221,7 @@
           "Multiple Instance Resource = resource এর ২+ copies → cycle থাকলেও হয়তো কোনো process কাজ শেষ করে resource ছেড়ে দেবে → বাকিরা এগোতে পারবে → Deadlock নাও হতে পারে ❌",
           "তাই RAG cycle = deadlock এর necessary condition (লাগবেই), কিন্তু sufficient condition নয় — cycle আছে মানেই deadlock, এটা বলা যাবে না (multiple instance এর ক্ষেত্রে)"
         ],
-        "diagram": "SINGLE INSTANCE (Cycle = Deadlock নিশ্চিত ✅):\n ○P1 ──→ □R2 ──→ ○P2\n  ↑                │\n  └────── □R1 ←───┘\n P1 ধরে R1 চায় R2, P2 ধরে R2 চায় R1 → Deadlock!\n\nMULTIPLE INSTANCE (Cycle ≠ Deadlock নিশ্চিত ❌):\n R1 এর ২টি instance:\n ○P1 ──→ □R1 (instance 1 → P2 এর কাছে)\n ○P2 ──→ □R1 (instance 2 চায়)\n ○P3 ←── □R1 (P3 instance পেয়েছে, কাজ শেষে ছাড়বে)\n P3 শেষ করে R1 ছাড়বে → P2 পাবে → P1 পাবে\n Cycle আছে কিন্তু Deadlock নেই!\n\nRAG Symbols:\n ○ = Process,  □ = Resource (dots = instances)\n P──→R = Request edge,  R──→P = Assignment edge",
+        "diagram": "SINGLE INSTANCE — Cycle = Deadlock নিশ্চিত ✅\n─────────────────────────────────────────────\nP1 : R1 ধরে আছে,  R2 চায়  →  R2 পাবে না (P2 ধরে)\nP2 : R2 ধরে আছে,  R1 চায়  →  R1 পাবে না (P1 ধরে)\n\nকেউ ছাড়বে না, কেউ পাবে না → DEADLOCK! 🔴\n\n\nMULTIPLE INSTANCE — Cycle ≠ Deadlock নিশ্চিত নয় ❌\n────────────────────────────────────────────────────\nR1 এর ২টি instance আছে: [●][●]\n\nP1 : R1[●] ধরে,  R2 চায়\nP2 : R2[●] ধরে,  R1 চায়\nP3 : R1[●] ধরে,  আর কিছু চায় না  ← এটাই পার্থক্য!\n\nStep 1 → P3 কাজ শেষ,  R1[●] মুক্ত করে\nStep 2 → P2 সেই R1[●] পায়,  কাজ শেষ,  R2[●] মুক্ত করে\nStep 3 → P1 সেই R2[●] পায়,  কাজ শেষ!\n\nCycle ছিল (P1↔P2), কিন্তু P3 রাস্তা খুলে দিল → NO DEADLOCK! 🟢",
         "mistakes": [
           [
             "RAG এ cycle থাকলে সবসময় deadlock",

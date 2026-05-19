@@ -4,7 +4,7 @@ import { WrittenCardBody } from './WrittenCardBody.jsx'
 
 export default function WrittenMode({ topic, writtenData, important, writtenMastered, onMarkImportant, onUnmarkImportant, onNailWritten, onUnnailWritten, onBack, onHome }) {
   const questions = writtenData?.questions || []
-  const [openIds, setOpenIds] = useState(() => new Set(questions.map(q => q.id)))
+  const [openIds, setOpenIds] = useState({})
   const [filterImportant, setFilterImportant] = useState(false)
 
   const qid = (q) => `written__${topic.id}__${q.id}`
@@ -17,12 +17,7 @@ export default function WrittenMode({ topic, writtenData, important, writtenMast
     writtenMastered.has(id) ? onUnnailWritten(id) : onNailWritten(id)
   }
 
-  const toggleCard = (id) => setOpenIds(prev => {
-    const next = new Set(prev)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    return next
-  })
+  const toggleCard = (id) => setOpenIds(prev => ({ ...prev, [id]: !prev[id] }))
 
   const nonNailed       = questions.filter(q => !writtenMastered?.has(qid(q)))
   const importantCount  = nonNailed.filter(q => important?.has(qid(q))).length
@@ -85,7 +80,7 @@ export default function WrittenMode({ topic, writtenData, important, writtenMast
                 q={q}
                 idx={idx}
                 topicColor={topic.color}
-                isOpen={openIds.has(q.id)}
+                isOpen={!!openIds[q.id]}
                 isImportant={important?.has(qid(q))}
                 isNailed={writtenMastered?.has(qid(q))}
                 onToggle={() => toggleCard(q.id)}
@@ -107,24 +102,24 @@ function WrittenCard({ q, idx, topicColor, isOpen, isImportant, isNailed, onTogg
     <div className={`written-card${isOpen ? ' open' : ''}`} style={{ '--c': topicColor }}>
 
       {/* ── Header ── */}
-      <div className="written-card-header">
-        <button className="written-card-toggle" onClick={onToggle}>
+      <div className="written-card-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
+        <div className="written-card-toggle">
           <span className="written-qnum" style={{ color: topicColor }}>Q{idx + 1}</span>
           <span className="written-qtext">{q.q}</span>
           <span className="written-chevron">
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </span>
-        </button>
+        </div>
         <button
           className={`written-imp-btn${isNailed ? ' nailed' : ''}`}
-          onClick={onToggleNailed}
+          onClick={e => { e.stopPropagation(); onToggleNailed() }}
           title={isNailed ? 'Un-nail' : 'Nail It — mark as mastered'}
         >
           <Star size={14} fill={isNailed ? 'currentColor' : 'none'} />
         </button>
         <button
           className={`written-imp-btn${isImportant ? ' marked' : ''}`}
-          onClick={onToggleImportant}
+          onClick={e => { e.stopPropagation(); onToggleImportant() }}
           title={isImportant ? 'Remove from Important' : 'Mark as Important'}
         >
           <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
