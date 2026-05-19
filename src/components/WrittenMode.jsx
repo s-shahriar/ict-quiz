@@ -1,10 +1,20 @@
 import { useState } from 'react'
-import { ChevronLeft, Home, ChevronDown, ChevronUp, Brain, BookOpenText, PenLine } from 'lucide-react'
+import { ChevronLeft, Home, ChevronDown, ChevronUp, Brain, BookOpenText, PenLine, Bookmark, Star } from 'lucide-react'
 
-export default function WrittenMode({ topic, writtenData, onBack, onHome }) {
+export default function WrittenMode({ topic, writtenData, important, writtenMastered, onMarkImportant, onUnmarkImportant, onNailWritten, onUnnailWritten, onBack, onHome }) {
   const questions = writtenData?.questions || []
   const [openIds, setOpenIds] = useState(() => new Set(questions.map(q => q.id)))
   const [extOpen, setExtOpen] = useState({})
+
+  const qid = (q) => `written__${topic.id}__${q.id}`
+  const toggleImportant = (q) => {
+    const id = qid(q)
+    important.has(id) ? onUnmarkImportant(id) : onMarkImportant(id)
+  }
+  const toggleNailed = (q) => {
+    const id = qid(q)
+    writtenMastered.has(id) ? onUnnailWritten(id) : onNailWritten(id)
+  }
 
   const toggleCard = (id) => setOpenIds(prev => {
     const next = new Set(prev)
@@ -48,8 +58,12 @@ export default function WrittenMode({ topic, writtenData, onBack, onHome }) {
                 topicColor={topic.color}
                 isOpen={openIds.has(q.id)}
                 isExtOpen={!!extOpen[q.id]}
+                isImportant={important?.has(qid(q))}
+                isNailed={writtenMastered?.has(qid(q))}
                 onToggle={() => toggleCard(q.id)}
                 onToggleExt={() => toggleExt(q.id)}
+                onToggleImportant={() => toggleImportant(q)}
+                onToggleNailed={() => toggleNailed(q)}
               />
             ))}
           </div>
@@ -59,20 +73,36 @@ export default function WrittenMode({ topic, writtenData, onBack, onHome }) {
   )
 }
 
-function WrittenCard({ q, idx, topicColor, isOpen, isExtOpen, onToggle, onToggleExt }) {
+function WrittenCard({ q, idx, topicColor, isOpen, isExtOpen, isImportant, isNailed, onToggle, onToggleExt, onToggleImportant, onToggleNailed }) {
   const a = q.answer
 
   return (
     <div className={`written-card${isOpen ? ' open' : ''}`} style={{ '--c': topicColor }}>
 
       {/* ── Header ── */}
-      <button className="written-card-header" onClick={onToggle}>
-        <span className="written-qnum" style={{ color: topicColor }}>Q{idx + 1}</span>
-        <span className="written-qtext">{q.q}</span>
-        <span className="written-chevron">
-          {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </span>
-      </button>
+      <div className="written-card-header">
+        <button className="written-card-toggle" onClick={onToggle}>
+          <span className="written-qnum" style={{ color: topicColor }}>Q{idx + 1}</span>
+          <span className="written-qtext">{q.q}</span>
+          <span className="written-chevron">
+            {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </span>
+        </button>
+        <button
+          className={`written-imp-btn${isNailed ? ' nailed' : ''}`}
+          onClick={onToggleNailed}
+          title={isNailed ? 'Un-nail' : 'Nail It — mark as mastered'}
+        >
+          <Star size={14} fill={isNailed ? 'currentColor' : 'none'} />
+        </button>
+        <button
+          className={`written-imp-btn${isImportant ? ' marked' : ''}`}
+          onClick={onToggleImportant}
+          title={isImportant ? 'Remove from Important' : 'Mark as Important'}
+        >
+          <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
+        </button>
+      </div>
 
       {/* ── Body ── */}
       {isOpen && (

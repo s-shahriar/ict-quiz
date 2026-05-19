@@ -1,6 +1,6 @@
 import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck } from 'lucide-react'
 
-export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, onNailed, onImportant, onBackup, mastered, important, activeModule, onModuleChange }) {
+export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, onNailed, onImportant, onWrittenImportant, onWrittenNailed, onBackup, mastered, important, writtenMastered, activeModule, onModuleChange }) {
   const module    = activeModule
   const setModule = onModuleChange
 
@@ -11,6 +11,12 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
   const totalImportant = topics.reduce((s, t) =>
     s + t.questions.filter((q, i) => q.options && q.correct_answer && important.has(`${t.id}__${i}`)).length
   , 0)
+
+  const totalWrittenImportant = (writtenTopics || []).reduce((s, t) =>
+    s + [...important].filter(id => id.startsWith(`written__${t.id}__`)).length
+  , 0)
+
+  const totalWrittenNailed = writtenMastered?.size ?? 0
 
   return (
     <div className="home anim-fade">
@@ -91,6 +97,36 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
         </>
       ) : (
         <>
+          <div className="home-action-row">
+            <button className="action-card nailed-card" onClick={onWrittenNailed}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--nailed">
+                <Star size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Nailed It</div>
+                <div className="ac-sub">{totalWrittenNailed} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--nailed">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+
+            <button className="action-card important-card" onClick={onWrittenImportant}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--important">
+                <Bookmark size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Important</div>
+                <div className="ac-sub">{totalWrittenImportant} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--important">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+          </div>
+
           <p className="section-label">Choose a Category</p>
           <main className="topics-grid">
             {writtenTopics.map(t => (
