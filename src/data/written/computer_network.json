@@ -380,6 +380,142 @@
         ],
         "mnemonic": "Router = Layer 3 = Packet। Supernet: কতটি network? 2 এর কত power? সেই power prefix থেকে বাদ দাও। 4 network = 2² → /24−2 = /22।"
       }
+    },
+    {
+      "id": "cn_007",
+      "q": "What are the different types of transmission media used for data communication? Explain their advantages and disadvantages.",
+      "tags": [
+        "transmission media",
+        "guided media",
+        "unguided media",
+        "twisted pair",
+        "fiber optic",
+        "wireless"
+      ],
+      "answer": {
+        "summary": "Transmission media দু'ধরনের: Guided (wired — Twisted Pair, Coaxial, Fiber Optic) ও Unguided (wireless — Radio Wave, Microwave, Infrared)। Guided = physical cable দিয়ে, Unguided = electromagnetic wave দিয়ে data পাঠায়।",
+        "points": [
+          "── GUIDED MEDIA (Wired) ──────────────────────────",
+          "Twisted Pair Cable: LAN এ সবচেয়ে বেশি ব্যবহৃত। ✅ কম দাম, সহজ install, high-speed LAN। ❌ দূরত্ব সীমিত, interference বেশি।",
+          "Coaxial Cable: Cable TV ও internet এ ব্যবহৃত। ✅ High-speed, ভালো shielding। ❌ ব্যয়বহুল, একটা ক্ষতি হলে পুরো network down।",
+          "Fiber Optic Cable: High-speed broadband ও long-distance। ✅ সর্বোচ্চ bandwidth, signal loss নেই, interference মুক্ত। ❌ ব্যয়বহুল, ভঙ্গুর, install জটিল।",
+          "── UNGUIDED MEDIA (Wireless) ─────────────────────",
+          "Radio Waves: Wi-Fi, AM/FM, mobile network। ✅ বড় এলাকা coverage, setup সস্তা। ❌ Interference বেশি, security কম।",
+          "Microwaves: Satellite ও long-distance। ✅ Cable লাগে না, remote area তে কাজ করে। ❌ Installation cost বেশি, weather এ affected।",
+          "Infrared: Remote control ও short-range। ✅ Secure, কম power। ❌ দূরত্ব খুব সীমিত, obstacle পার হতে পারে না।"
+        ],
+        "diagram": "TRANSMISSION MEDIA\n├── Guided (Wired)\n│   ├── Twisted Pair ──── LAN, সস্তা, interference বেশি\n│   ├── Coaxial ───────── Cable TV, shielding ভালো\n│   └── Fiber Optic ───── সর্বোচ্চ speed, ব্যয়বহুল\n└── Unguided (Wireless)\n    ├── Radio Wave ─────── Wi-Fi, mobile, বড় coverage\n    ├── Microwave ──────── Satellite, weather dependent\n    └── Infrared ───────── Remote, short-range only\n\nSpeed ranking (fast → slow):\nFiber Optic > Coaxial > Twisted Pair\nMicrowave   > Radio Wave > Infrared\n\nCost ranking (high → low):\nFiber Optic > Coaxial > Twisted Pair\nMicrowave   > Radio Wave > Infrared",
+        "table": {
+          "headers": [
+            "Media",
+            "ব্যবহার",
+            "সুবিধা",
+            "অসুবিধা"
+          ],
+          "rows": [
+            [
+              "Twisted Pair",
+              "LAN",
+              "সস্তা, সহজ",
+              "interference, সীমিত দূরত্ব"
+            ],
+            [
+              "Coaxial",
+              "Cable TV",
+              "shielding ভালো",
+              "ব্যয়বহুল, failure ঝুঁকি"
+            ],
+            [
+              "Fiber Optic",
+              "Broadband",
+              "সর্বোচ্চ speed",
+              "দামি, ভঙ্গুর"
+            ],
+            [
+              "Radio Wave",
+              "Wi-Fi, Mobile",
+              "বড় coverage",
+              "interference, security কম"
+            ],
+            [
+              "Microwave",
+              "Satellite",
+              "cable নেই",
+              "weather dependent"
+            ],
+            [
+              "Infrared",
+              "Remote control",
+              "secure",
+              "খুব কম দূরত্ব"
+            ]
+          ]
+        },
+        "mnemonic": "Guided = তার ধরা (T-C-F: Twisted-Coaxial-Fiber, দাম ও speed বাড়ে)। Unguided = বাতাসে ছাড়া (R-M-I: Radio-Microwave-Infrared, দূরত্ব কমে)।"
+      }
+    },
+    {
+      "id": "cn_008",
+      "q": "Differentiate among TDM, FDM and WDM. How does TDM work?",
+      "tags": [
+        "TDM",
+        "FDM",
+        "WDM",
+        "multiplexing",
+        "transmission"
+      ],
+      "answer": {
+        "summary": "Multiplexing = একটি channel এ একাধিক signal পাঠানো। TDM = time ভাগ করে, FDM = frequency ভাগ করে, WDM = আলোর wavelength ভাগ করে (fiber optic এ)।",
+        "points": [
+          "TDM (Time Division Multiplexing): channel কে সমান time slot এ ভাগ করা হয়। প্রতিটি device পালা করে নিজের slot এ data পাঠায়। Digital signal এ ব্যবহৃত।",
+          "FDM (Frequency Division Multiplexing): channel এর total bandwidth কে ছোট ছোট frequency band এ ভাগ করা হয়। প্রতিটি device একটি নির্দিষ্ট frequency band পায়। Analog signal এ ব্যবহৃত (Radio, Cable TV)।",
+          "WDM (Wavelength Division Multiplexing): Fiber Optic cable এ আলোর বিভিন্ন wavelength (রঙ) ব্যবহার করে একসাথে অনেক signal পাঠানো হয়। Terabit/s পর্যন্ত capacity।",
+          "TDM কীভাবে কাজ করে: Channel কে N টি time slot এ ভাগ করা হয়। Device 1 → Slot 1, Device 2 → Slot 2, ... এভাবে round-robin পদ্ধতিতে চলে। Slot empty থাকলেও অন্য device সেটা নিতে পারে না (Synchronous TDM)।",
+          "Statistical TDM: Slot শুধু তখনই দেওয়া হয় যখন device এর data আছে → bandwidth efficient।"
+        ],
+        "diagram": "FDM — Frequency ভাগ:\n  f1 ████████████████████████████  → Device A\n  f2 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  → Device B\n  f3 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  → Device C\n     ──────────── time ──────────▶\n\nTDM — Time ভাগ:\n  [A][B][C][A][B][C][A][B][C]...  → একটি channel\n   ↑   ↑   ↑\n   slot1 slot2 slot3 (round-robin)\n\nWDM — Wavelength ভাগ (Fiber Optic):\n  λ1 (লাল)  ──────────────────────▶\n  λ2 (সবুজ) ──────────────────────▶  একই fiber\n  λ3 (নীল)  ──────────────────────▶\n\nTDM Working Detail:\n  Frame = [Slot-A | Slot-B | Slot-C]\n  Cycle 1: A পাঠায় → B পাঠায় → C পাঠায়\n  Cycle 2: A পাঠায় → B পাঠায় → C পাঠায়\n  Synchronous: slot খালি থাকলেও wait করতে হয়",
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "TDM",
+            "FDM",
+            "WDM"
+          ],
+          "rows": [
+            [
+              "কী ভাগ হয়",
+              "Time slot",
+              "Frequency band",
+              "Light wavelength"
+            ],
+            [
+              "Signal type",
+              "Digital",
+              "Analog",
+              "Optical (Fiber)"
+            ],
+            [
+              "ব্যবহার",
+              "Telephone, GSM",
+              "Radio, Cable TV",
+              "Long-distance fiber"
+            ],
+            [
+              "Interference",
+              "নেই",
+              "Guard band দরকার",
+              "নেই"
+            ],
+            [
+              "Efficiency",
+              "মাঝারি",
+              "মাঝারি",
+              "সর্বোচ্চ"
+            ]
+          ]
+        },
+        "mnemonic": "TDM = টাইম শেয়ার (পালা করে), FDM = ফ্রিকোয়েন্সি শেয়ার (আলাদা রেডিও স্টেশন), WDM = আলোর রঙ শেয়ার (fiber এ rainbow)।"
+      }
     }
   ]
 }

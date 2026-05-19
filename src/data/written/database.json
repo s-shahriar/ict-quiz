@@ -4,7 +4,14 @@
     {
       "id": "db_001",
       "q": "What does the Consistency property in ACID guarantee during a bank fund transfer transaction? You are designing the schema for a Savings_Accounts table. Write the specific SQL constraint clause to ensure that the current_balance column can never drop below zero.",
-      "tags": ["ACID", "consistency", "CHECK constraint", "SQL", "transaction", "database integrity"],
+      "tags": [
+        "ACID",
+        "consistency",
+        "CHECK constraint",
+        "SQL",
+        "transaction",
+        "database integrity"
+      ],
       "answer": {
         "summary": "Consistency নিশ্চিত করে transaction এর আগে ও পরে database এর সব defined rules ও constraints পূরণ থাকে। SQL এ CHECK (current_balance >= 0) দিয়ে balance শূন্যের নিচে যাওয়া আটকানো হয়।",
         "points": [
@@ -16,19 +23,80 @@
         ],
         "diagram": "Bank Transfer — Consistency উদাহরণ:\n Rule: balance >= 0\n\n Before: A = Tk. 1000, B = Tk. 500, Total = Tk. 1500\n\n Transfer Tk. 200 (A→B):\n   A = 800, B = 700, Total = 1500 ✅ consistent\n\n Transfer Tk. 1200 (A→B):\n   A = -200 ← violates CHECK constraint!\n   → Transaction REJECTED ❌\n   → Database পুরনো state এ থাকে\n\nSQL Schema:\n CREATE TABLE Savings_Accounts (\n     account_id      INT           PRIMARY KEY,\n     account_holder  VARCHAR(100)  NOT NULL,\n     current_balance DECIMAL(15,2) NOT NULL,\n\n     CONSTRAINT chk_balance_non_negative\n         CHECK (current_balance >= 0)\n );\n\n অথবা inline:\n current_balance DECIMAL(15,2) NOT NULL CHECK (current_balance >= 0)",
         "mistakes": [
-          ["Consistency = Atomicity", "Atomicity = all-or-nothing execution। Consistency = rules maintained আগে ও পরে"],
-          ["CHECK constraint ছাড়াও Consistency নিশ্চিত হয়", "না — database constraint (CHECK, FK, PK) না থাকলে Consistency enforce হয় না"]
+          [
+            "Consistency = Atomicity",
+            "Atomicity = all-or-nothing execution। Consistency = rules maintained আগে ও পরে"
+          ],
+          [
+            "CHECK constraint ছাড়াও Consistency নিশ্চিত হয়",
+            "না — database constraint (CHECK, FK, PK) না থাকলে Consistency enforce হয় না"
+          ]
         ],
         "table": {
-          "headers": ["ACID", "মানে", "Bank উদাহরণ"],
+          "headers": [
+            "ACID",
+            "মানে",
+            "Bank উদাহরণ"
+          ],
           "rows": [
-            ["Atomicity", "সব হবে বা কিছু না", "Debit ও credit দুটোই হবে, নয়তো কোনোটাই না"],
-            ["Consistency", "Rules সবসময় মানা থাকবে", "Balance কখনো শূন্যের নিচে যাবে না"],
-            ["Isolation", "Transaction গুলো interfere করবে না", "দুটি transfer একসাথে চললে conflict হবে না"],
-            ["Durability", "Committed data হারাবে না", "Crash এর পরেও transfer এর record থাকবে"]
+            [
+              "Atomicity",
+              "সব হবে বা কিছু না",
+              "Debit ও credit দুটোই হবে, নয়তো কোনোটাই না"
+            ],
+            [
+              "Consistency",
+              "Rules সবসময় মানা থাকবে",
+              "Balance কখনো শূন্যের নিচে যাবে না"
+            ],
+            [
+              "Isolation",
+              "Transaction গুলো interfere করবে না",
+              "দুটি transfer একসাথে চললে conflict হবে না"
+            ],
+            [
+              "Durability",
+              "Committed data হারাবে না",
+              "Crash এর পরেও transfer এর record থাকবে"
+            ]
           ]
         },
         "mnemonic": "Consistency = নিয়ম মানা — লেনদেনের আগে ও পরে সব constraint পূরণ হতে হবে। CHECK = দারোয়ান যে balance negative হতে দেয় না। ACID মনে রাখো: A-tomic, C-onsistent, I-solated, D-urable।"
+      }
+    },
+    {
+      "id": "db_002",
+      "q": "Consider the relation Sales(sales_id, salesman, region, sale_amount, sale_date). Write an SQL query to display the region, average sale amount, and total number of sales for each region where the average sale amount exceeds BDT 50,000 and the total number of sales is at least 5.",
+      "tags": [
+        "SQL",
+        "GROUP BY",
+        "HAVING",
+        "aggregate functions",
+        "AVG",
+        "COUNT"
+      ],
+      "answer": {
+        "summary": "GROUP BY দিয়ে region ভাগ করো, AVG() ও COUNT() দিয়ে aggregate করো, তারপর HAVING দিয়ে condition দাও। WHERE আগে filter করে (row level), HAVING পরে filter করে (group level)।",
+        "points": [
+          "SELECT এ region, AVG(sale_amount), COUNT(*) রাখো — এই তিনটি দেখাতে বলা হয়েছে",
+          "FROM Sales — table নাম",
+          "GROUP BY region — প্রতিটি region কে একটি group হিসেবে treat করো",
+          "HAVING AVG(sale_amount) > 50000 — group এর average 50,000 এর বেশি হতে হবে",
+          "AND COUNT(*) >= 5 — সেই region এ কমপক্ষে 5টি sale থাকতে হবে",
+          "HAVING vs WHERE: WHERE individual row filter করে (GROUP BY এর আগে), HAVING group filter করে (GROUP BY এর পরে) — aggregate function এ সবসময় HAVING"
+        ],
+        "diagram": "SQL Query:\n──────────────────────────────────────────\nSELECT  region,\n        AVG(sale_amount) AS avg_sale_amount,\n        COUNT(*)         AS total_sales\nFROM    Sales\nGROUP BY region\nHAVING  AVG(sale_amount) > 50000\n    AND COUNT(*) >= 5;\n──────────────────────────────────────────\n\nExecution order:\n  1. FROM Sales       → table load\n  2. GROUP BY region  → region অনুযায়ী ভাগ\n  3. AVG(), COUNT()   → প্রতি group এ calculate\n  4. HAVING           → condition মেলে না এমন group বাদ\n  5. SELECT           → বাকি columns দেখাও",
+        "mistakes": [
+          [
+            "HAVING এর জায়গায় WHERE লেখা",
+            "WHERE aggregate function (AVG, COUNT) এর সাথে কাজ করে না — সবসময় HAVING ব্যবহার করো"
+          ],
+          [
+            "COUNT(*) >= 3 লেখা",
+            "Question এ বলেছে 'at least 5' → COUNT(*) >= 5"
+          ]
+        ],
+        "mnemonic": "মনে রাখো: WHERE = row filter (আগে), HAVING = group filter (পরে)। Aggregate function সবসময় HAVING এ। Order: FROM → WHERE → GROUP BY → HAVING → SELECT।"
       }
     }
   ]

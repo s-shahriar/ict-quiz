@@ -1,0 +1,87 @@
+{
+  "category": "c_programming",
+  "questions": [
+    {
+      "id": "c_001",
+      "q": "Describe Dynamic Memory Allocation in C programming.",
+      "tags": [
+        "dynamic memory",
+        "malloc",
+        "calloc",
+        "realloc",
+        "free",
+        "heap",
+        "pointer"
+      ],
+      "answer": {
+        "summary": "Dynamic Memory Allocation = runtime এ programmer নিজে heap থেকে memory নেয় এবং কাজ শেষে ফেরত দেয়। C তে 4টি function: malloc(), calloc(), realloc(), free()। Stack memory compiler handle করে, Heap memory programmer handle করে।",
+        "points": [
+          "Static Allocation: compile time এ memory fix হয় (int arr[10])। Runtime এ size পরিবর্তন করা যায় না।",
+          "Dynamic Allocation: runtime এ প্রয়োজন অনুযায়ী heap থেকে memory নেওয়া যায়।",
+          "malloc(size): নির্দিষ্ট byte এর uninitialized memory দেয়। Return type: void*। Fail হলে NULL।  উদাহরণ: int *p = (int*)malloc(5 * sizeof(int));",
+          "calloc(n, size): n টি element এর initialized (0 দিয়ে) memory দেয়। উদাহরণ: int *p = (int*)calloc(5, sizeof(int));",
+          "realloc(ptr, newSize): আগে নেওয়া memory কে বড় বা ছোট করে। উদাহরণ: p = (int*)realloc(p, 10 * sizeof(int));",
+          "free(ptr): কাজ শেষে heap memory ফেরত দেয়। না দিলে Memory Leak হয়।"
+        ],
+        "diagram": "Memory Layout:\n  ┌──────────────┐  ← High address\n  │    Stack     │  ← local variables, function calls (auto)\n  │      ↓       │\n  │              │\n  │      ↑       │\n  │    Heap      │  ← malloc/calloc/realloc (manual)\n  ├──────────────┤\n  │    Data      │  ← global, static variables\n  │    Code      │  ← program instructions\n  └──────────────┘  ← Low address\n\nExample:\n  int *arr = (int*)malloc(5 * sizeof(int));\n  if (arr == NULL) { /* handle failure */ }\n  arr[0]=1; arr[1]=2; // use it\n  free(arr);           // must free!\n  arr = NULL;          // good practice\n\nmalloc vs calloc:\n  malloc(20)      → [?][?][?][?][?]  (garbage)\n  calloc(5,4)     → [0][0][0][0][0]  (zero initialized)",
+        "table": {
+          "headers": [
+            "Function",
+            "কাজ",
+            "Initialize",
+            "Use case"
+          ],
+          "rows": [
+            [
+              "malloc(n)",
+              "n byte allocate",
+              "❌ garbage",
+              "একক block"
+            ],
+            [
+              "calloc(n,s)",
+              "n×s byte allocate",
+              "✅ zero",
+              "array"
+            ],
+            [
+              "realloc(p,n)",
+              "size পরিবর্তন",
+              "—",
+              "resize"
+            ],
+            [
+              "free(p)",
+              "memory মুক্ত",
+              "—",
+              "সবসময় শেষে"
+            ]
+          ]
+        },
+        "mnemonic": "M-C-R-F: Malloc (নাও), Calloc (0 দিয়ে নাও), Realloc (বদলাও), Free (ছাড়ো)। Free না করলে = Memory Leak = বাসা ছেড়ে না দেওয়া।"
+      }
+    },
+    {
+      "id": "c_002",
+      "q": "What is Nested Structure in C programming? Explain with example.",
+      "tags": [
+        "nested structure",
+        "struct",
+        "C programming",
+        "structure within structure"
+      ],
+      "answer": {
+        "summary": "Nested Structure = একটি struct এর ভেতরে আরেকটি struct রাখা। Real-world entity কে hierarchically represent করা যায়। যেমন: Student এর ভেতরে Address struct।",
+        "points": [
+          "Structure: related data গুলোকে একসাথে রাখার user-defined data type। struct keyword দিয়ে define করা হয়।",
+          "Nested Structure: একটি struct এর member হিসেবে আরেকটি struct রাখা — দুটো উপায়ে করা যায়।",
+          "উপায় ১ — Separate definition: আলাদাভাবে struct define করে ভেতরে ব্যবহার করো (recommended)।",
+          "উপায় ২ — Embedded definition: একটি struct এর ভেতরেই আরেকটি define করো।",
+          "Access: dot operator (.) দিয়ে। Nested member access: outer.inner.member।"
+        ],
+        "diagram": "// Separate definition (recommended)\nstruct Date {\n    int day, month, year;\n};\n\nstruct Student {\n    char name[50];\n    int  roll;\n    struct Date dob;   // nested struct\n};\n\nint main() {\n    struct Student s;\n    s.roll        = 101;\n    s.dob.day     = 15;   // nested access\n    s.dob.month   = 8;\n    s.dob.year    = 2000;\n\n    printf(\"%d/%d/%d\\n\",\n           s.dob.day, s.dob.month, s.dob.year);\n    // Output: 15/8/2000\n    return 0;\n}\n\nMemory layout:\n  Student s:\n  [name(50B)][roll(4B)][dob.day(4B)][dob.month(4B)][dob.year(4B)]",
+        "mnemonic": "Nested struct = ঠিকানার মতো — বাড়ি এর ভেতরে ঘর, ঘরের ভেতরে জিনিস। s.dob.year = Student এর জন্মতারিখের বছর — ধাপে ধাপে access।"
+      }
+    }
+  ]
+}

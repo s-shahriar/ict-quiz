@@ -1,0 +1,123 @@
+{
+  "category": "oop",
+  "questions": [
+    {
+      "id": "oop_001",
+      "q": "Write a Java program to represent a BankAccount class with data members: account holder's name, account number, and balance. Include member functions deposit(), withdraw() (ensuring sufficient balance), and display(). Demonstrate encapsulation by keeping data members private and providing public methods.",
+      "tags": [
+        "OOP",
+        "encapsulation",
+        "Java",
+        "class",
+        "BankAccount",
+        "getter",
+        "setter"
+      ],
+      "answer": {
+        "summary": "Encapsulation = data কে private রাখো, access দাও public method দিয়ে। BankAccount class এ name, accountNumber, balance private — deposit(), withdraw(), display() public। withdraw() এ balance check করা encapsulation এর practical example।",
+        "points": [
+          "Encapsulation: data member গুলো private করা হয় যাতে বাইরে থেকে সরাসরি access না হয়",
+          "deposit(): balance += amount — শুধু positive amount accept করে",
+          "withdraw(): balance >= amount চেক করে তারপর বাদ দেয় — insufficient হলে error message",
+          "display(): account এর সব info দেখায় — getter method এর বিকল্প",
+          "main() এ object তৈরি করে সব method call করে demonstrate করা হয়"
+        ],
+        "diagram": "class BankAccount {\n    // Private data members (Encapsulation)\n    private String  name;\n    private String  accountNumber;\n    private double  balance;\n\n    // Constructor\n    public BankAccount(String name, String accountNumber, double balance) {\n        this.name          = name;\n        this.accountNumber = accountNumber;\n        this.balance       = balance;\n    }\n\n    // Deposit method\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance += amount;\n            System.out.println(amount + \" deposited. New balance: \" + balance);\n        } else {\n            System.out.println(\"Invalid deposit amount.\");\n        }\n    }\n\n    // Withdraw method (with balance check)\n    public void withdraw(double amount) {\n        if (amount > balance) {\n            System.out.println(\"Insufficient balance!\");\n        } else if (amount <= 0) {\n            System.out.println(\"Invalid withdrawal amount.\");\n        } else {\n            balance -= amount;\n            System.out.println(amount + \" withdrawn. New balance: \" + balance);\n        }\n    }\n\n    // Display account details\n    public void display() {\n        System.out.println(\"--- Account Details ---\");\n        System.out.println(\"Name    : \" + name);\n        System.out.println(\"Acc No  : \" + accountNumber);\n        System.out.println(\"Balance : \" + balance);\n    }\n\n    // Main method\n    public static void main(String[] args) {\n        BankAccount acc = new BankAccount(\"Rahim\", \"BD-1001\", 5000);\n        acc.display();\n        acc.deposit(2000);\n        acc.withdraw(1000);\n        acc.withdraw(9000);  // Should show: Insufficient balance!\n        acc.display();\n    }\n}",
+        "mistakes": [
+          [
+            "balance কে public রাখা",
+            "Encapsulation নষ্ট হয় — balance সবসময় private, access দাও method দিয়ে"
+          ],
+          [
+            "withdraw() এ balance check না করা",
+            "balance < 0 হয়ে যেতে পারে — সবসময় if (amount > balance) চেক করো"
+          ]
+        ],
+        "mnemonic": "Encapsulation = ক্যাপসুলের মতো data ঢেকে রাখো (private), ছোট ছিদ্র দিয়ে access দাও (public method)। BankAccount এ balance private — তুমি সরাসরি ধরতে পারবে না, deposit()/withdraw() দিয়ে যেতে হবে।"
+      }
+    },
+    {
+      "id": "oop_002",
+      "q": "Difference between Exception and Error in Java.",
+      "tags": [
+        "exception",
+        "error",
+        "Java",
+        "throwable",
+        "checked",
+        "unchecked"
+      ],
+      "answer": {
+        "summary": "Java তে Exception ও Error উভয়ই Throwable এর subclass। Exception = program এ handle করা যায় এমন সমস্যা (try-catch)। Error = JVM level এর গুরুতর সমস্যা যা normally handle করা সম্ভব নয়।",
+        "points": [
+          "Throwable hierarchy: Throwable → Exception (handle করা যায়) ও Error (handle করা যায় না)।",
+          "Exception: program এর logical সমস্যা — developer এর কোডে। try-catch দিয়ে handle করা যায়। দুই ধরন: Checked ও Unchecked।",
+          "Checked Exception: compile time এ ধরা পড়ে — handle বা declare করতেই হবে। উদাহরণ: IOException, SQLException, FileNotFoundException।",
+          "Unchecked Exception (RuntimeException): runtime এ ঘটে — handle optional। উদাহরণ: NullPointerException, ArrayIndexOutOfBoundsException, ArithmeticException।",
+          "Error: JVM বা system level সমস্যা — program দিয়ে recover করা সম্ভব নয়। উদাহরণ: OutOfMemoryError, StackOverflowError, VirtualMachineError।"
+        ],
+        "diagram": "Throwable\n├── Exception  (handle করা যায় ✅)\n│   ├── Checked Exception\n│   │   ├── IOException\n│   │   ├── SQLException\n│   │   └── FileNotFoundException\n│   └── Unchecked (RuntimeException)\n│       ├── NullPointerException\n│       ├── ArrayIndexOutOfBoundsException\n│       └── ArithmeticException (÷0)\n└── Error  (handle করা যায় না ❌)\n    ├── OutOfMemoryError\n    ├── StackOverflowError\n    └── VirtualMachineError",
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Exception",
+            "Error"
+          ],
+          "rows": [
+            [
+              "কখন ঘটে",
+              "Program logic এ",
+              "JVM/system level এ"
+            ],
+            [
+              "Handle করা যায়?",
+              "✅ try-catch দিয়ে",
+              "❌ সাধারণত না"
+            ],
+            [
+              "Recover করা যায়?",
+              "✅ হ্যাঁ",
+              "❌ না"
+            ],
+            [
+              "উদাহরণ",
+              "NullPointerException, IOException",
+              "OutOfMemoryError, StackOverflowError"
+            ],
+            [
+              "Checked?",
+              "Checked ও Unchecked দুটোই",
+              "Unchecked (always)"
+            ]
+          ]
+        },
+        "mnemonic": "Exception = গাড়ির টায়ার পাংচার (ঠিক করা যায়)। Error = ইঞ্জিন বিস্ফোরণ (ঠিক করা যায় না)। Exception try-catch এ ধরো, Error দেখলে বুঝো JVM এর সমস্যা।"
+      }
+    },
+    {
+      "id": "oop_003",
+      "q": "What is Exception Handling? Explain with example in Java.",
+      "tags": [
+        "exception handling",
+        "try",
+        "catch",
+        "finally",
+        "throw",
+        "throws",
+        "Java"
+      ],
+      "answer": {
+        "summary": "Exception Handling = program এ unexpected runtime error কে gracefully handle করার mechanism। Java তে 5টি keyword: try, catch, finally, throw, throws। Program crash না করে error message দেখিয়ে চলতে পারে।",
+        "points": [
+          "try block: যে code এ exception হতে পারে সেটা এখানে রাখো।",
+          "catch block: exception ধরে handle করো — message দেখাও বা recovery করো। Multiple catch হতে পারে।",
+          "finally block: exception হোক বা না হোক সবসময় execute হয় — resource close করার জন্য।",
+          "throw: manually exception তৈরি করে ছুঁড়ে দেওয়া। throw new ArithmeticException(\"message\");",
+          "throws: method signature এ declare করা যে এই method exception throw করতে পারে। Caller handle করবে।"
+        ],
+        "diagram": "Basic structure:\n  try {\n      // risky code\n      int result = 10 / 0;  // ArithmeticException!\n  } catch (ArithmeticException e) {\n      System.out.println(\"Error: \" + e.getMessage());\n  } finally {\n      System.out.println(\"Always runs\");\n  }\n  // Output:\n  // Error: / by zero\n  // Always runs\n\nMultiple catch:\n  try {\n      int[] arr = new int[3];\n      arr[5] = 10;  // ArrayIndexOutOfBoundsException\n  } catch (ArrayIndexOutOfBoundsException e) {\n      System.out.println(\"Index error: \" + e.getMessage());\n  } catch (Exception e) {\n      System.out.println(\"General error\");\n  } finally {\n      System.out.println(\"Done\");\n  }\n\nthrow example:\n  void checkAge(int age) {\n      if (age < 18)\n          throw new IllegalArgumentException(\"Age < 18!\");\n  }",
+        "mnemonic": "Try = চেষ্টা করো, Catch = সমস্যা ধরো, Finally = যাই হোক শেষ কাজ করো। Throw = নিজে ছুঁড়ে দাও, Throws = সাবধান করে দাও। T-C-F-T-T।"
+      }
+    }
+  ]
+}

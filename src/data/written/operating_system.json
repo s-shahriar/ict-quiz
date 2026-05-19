@@ -234,6 +234,155 @@
         ],
         "mnemonic": "Single instance = পুরো building এ মাত্র ১টা চাবি, সবাই চাইছে → কেউ পাবে না → deadlock নিশ্চিত। Multiple instance = ২টো চাবি আছে, ৩ জন চাইছে → একজন পেয়ে কাজ শেষে ফেরত দেবে → বাকিরা পাবে → deadlock নাও হতে পারে। Cycle আছে = traffic jam এর সম্ভাবনা, কিন্তু jam হবেই তা নিশ্চিত নয়।"
       }
+    },
+    {
+      "id": "os_005",
+      "q": "Consider a logical address space of 512 pages, each of 2-KB page size, mapped onto a physical memory containing 128 frames. a) How many bits are required in the logical address? b) How many bits are required in the physical address?",
+      "tags": [
+        "paging",
+        "logical address",
+        "physical address",
+        "memory management",
+        "bits"
+      ],
+      "answer": {
+        "summary": "Logical address = page number bits + offset bits। Physical address = frame number bits + offset bits। Page size = Frame size, তাই offset bits দুটোতেই সমান।",
+        "points": [
+          "দেওয়া আছে: Pages = 512, Page size = 2 KB, Frames = 128",
+          "Offset bits = log₂(page size) = log₂(2 KB) = log₂(2048) = 11 bits",
+          "Page number bits = log₂(total pages) = log₂(512) = 9 bits",
+          "∴ Logical address = page bits + offset bits = 9 + 11 = 20 bits",
+          "Frame number bits = log₂(total frames) = log₂(128) = 7 bits",
+          "∴ Physical address = frame bits + offset bits = 7 + 11 = 18 bits"
+        ],
+        "diagram": "GIVEN:\n  Pages  = 512  → log₂(512)  = 9  bits  (page number)\n  Page size = 2 KB = 2048 B → log₂(2048) = 11 bits  (offset)\n  Frames = 128  → log₂(128)  = 7  bits  (frame number)\n\nLOGICAL ADDRESS  (20 bits total)\n┌─────────────────┬──────────────────────┐\n│  Page Number    │       Offset         │\n│    9 bits       │       11 bits        │\n└─────────────────┴──────────────────────┘\n\nPHYSICAL ADDRESS  (18 bits total)\n┌─────────────────┬──────────────────────┐\n│  Frame Number   │       Offset         │\n│    7 bits       │       11 bits        │\n└─────────────────┴──────────────────────┘\n\nNote: Offset bits একই (11) — কারণ page size = frame size",
+        "mistakes": [
+          [
+            "Page bits ও Frame bits একই",
+            "না — pages=512 (9 bits), frames=128 (7 bits) → আলাদা"
+          ],
+          [
+            "Offset আলাদা হয়",
+            "না — page size = frame size = 2KB, তাই offset দুটোতেই 11 bits"
+          ]
+        ],
+        "mnemonic": "সূত্র: Offset = log₂(page size), Page# = log₂(pages), Frame# = log₂(frames)। Logical = Page# + Offset, Physical = Frame# + Offset। Offset সবসময় সমান।"
+      }
+    },
+    {
+      "id": "os_006",
+      "q": "Explain the fundamental difference between a Process and a Thread. Provide two advantages of using threads over processes.",
+      "tags": [
+        "process",
+        "thread",
+        "multithreading",
+        "OS",
+        "context switching"
+      ],
+      "answer": {
+        "summary": "Process = একটি স্বাধীন program যা নিজের আলাদা memory নিয়ে চলে। Thread = Process এর ভেতরে ছোট execution unit যা একই memory share করে। Thread হালকা ও দ্রুত, Process ভারী ও আলাদা।",
+        "points": [
+          "Process: OS যখন একটি program run করে তখন সেটা Process হয়। নিজস্ব আলাদা memory space (code, data, heap, stack) থাকে। Process দুটো একে অপরের memory access করতে পারে না।",
+          "Thread: একটি Process এর ভেতরে একাধিক execution path। একই Process এর সব thread code, data, heap share করে — শুধু নিজের stack আলাদা।",
+          "মূল পার্থক্য: Process = heavyweight (আলাদা memory), Thread = lightweight (shared memory)। Process তৈরি করতে বেশি resource লাগে, Thread কম।",
+          "সুবিধা ১ — দ্রুত Communication: Thread রা একই memory space share করে তাই IPC (Inter-Process Communication) লাগে না। Data সরাসরি access করা যায় → অনেক দ্রুত।",
+          "সুবিধা ২ — কম Resource: Thread তৈরিতে নতুন memory allocate করতে হয় না। Context switching ও দ্রুত কারণ memory map switch করতে হয় না → CPU efficient।"
+        ],
+        "diagram": "PROCESS (Heavy)\n┌─────────────────────────────┐\n│  Process A                  │\n│  ┌────────┐  ┌──────────┐  │\n│  │ Code   │  │  Heap    │  │\n│  └────────┘  └──────────┘  │\n│  ┌────────────────────────┐ │\n│  │ Stack (Thread-1 only)  │ │\n│  └────────────────────────┘ │\n└─────────────────────────────┘\n         ❌ cannot access\n┌─────────────────────────────┐\n│  Process B (আলাদা memory)   │\n└─────────────────────────────┘\n\nTHREADS (Lightweight — একই Process এ)\n┌──────────────────────────────────────┐\n│  Process                             │\n│  ┌────────┐  ┌──────────┐           │\n│  │ Code   │  │  Heap    │ ← shared  │\n│  └────────┘  └──────────┘           │\n│  ┌────────┐ ┌────────┐ ┌────────┐   │\n│  │Stack T1│ │Stack T2│ │Stack T3│   │\n│  └────────┘ └────────┘ └────────┘   │\n└──────────────────────────────────────┘",
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Process",
+            "Thread"
+          ],
+          "rows": [
+            [
+              "Memory",
+              "আলাদা address space",
+              "Shared address space"
+            ],
+            [
+              "তৈরির cost",
+              "বেশি (heavyweight)",
+              "কম (lightweight)"
+            ],
+            [
+              "Communication",
+              "IPC দরকার (slow)",
+              "সরাসরি shared memory (fast)"
+            ],
+            [
+              "Context switch",
+              "ধীর (memory map switch)",
+              "দ্রুত"
+            ],
+            [
+              "Failure effect",
+              "শুধু নিজে crash",
+              "পুরো process crash হতে পারে"
+            ]
+          ]
+        },
+        "mnemonic": "Process = আলাদা বাসা (নিজের সব কিছু), Thread = একই বাসায় আলাদা ঘর (বাসা share, ঘর আলাদা)। Thread এ communication সহজ কারণ একই বাসা।"
+      }
+    },
+    {
+      "id": "os_007",
+      "q": "Explain the Producer-Consumer problem in operating systems. What synchronization issue must be solved?",
+      "tags": [
+        "producer consumer",
+        "synchronization",
+        "semaphore",
+        "mutex",
+        "buffer",
+        "race condition"
+      ],
+      "answer": {
+        "summary": "Producer-Consumer = একটি thread data তৈরি করে (Producer), আরেকটি সেটা consume করে (Consumer), উভয়ে shared buffer ব্যবহার করে। সমস্যা: buffer full/empty হলে কী হবে, এবং একসাথে access এ race condition।",
+        "points": [
+          "Problem: Producer data তৈরি করে buffer এ রাখে। Consumer buffer থেকে নিয়ে process করে। Buffer এর size সীমিত (bounded buffer)।",
+          "Synchronization Issue ১ — Race Condition: Producer ও Consumer একসাথে buffer access করলে data corrupt হতে পারে। Mutual Exclusion (Mutex) দিয়ে সমাধান।",
+          "Synchronization Issue ২ — Buffer Full: Producer buffer full দেখলে wait করতে হবে। Consumer consume করলে Producer কে জানাতে হবে।",
+          "Synchronization Issue ৩ — Buffer Empty: Consumer buffer empty দেখলে wait করতে হবে। Producer produce করলে Consumer কে জানাতে হবে।",
+          "Semaphore দিয়ে সমাধান: mutex=1 (critical section), empty=N (খালি slot), full=0 (ভরা slot)। Producer: empty↓, mutex lock, produce, mutex unlock, full↑। Consumer: full↓, mutex lock, consume, mutex unlock, empty↑।"
+        ],
+        "diagram": "Producer-Consumer:\n\n [Producer] ──produce──▶ [Buffer] ──consume──▶ [Consumer]\n                         [_ _ _ _]\n                          size = N\n\nProblem scenarios:\n  Buffer FULL  → Producer wait করে\n  Buffer EMPTY → Consumer wait করে\n  একসাথে access → Race condition → data corrupt\n\nSemaphore Solution:\n  mutex = 1    (0/1 — lock for critical section)\n  empty = N    (কতটি slot খালি)\n  full  = 0    (কতটি slot ভরা)\n\nProducer:                 Consumer:\n  wait(empty)              wait(full)\n  wait(mutex)              wait(mutex)\n  → buffer এ add           → buffer থেকে remove\n  signal(mutex)            signal(mutex)\n  signal(full)             signal(empty)",
+        "mistakes": [
+          [
+            "Mutex একাই যথেষ্ট",
+            "না — Mutex শুধু race condition solve করে। Buffer full/empty handle করতে Semaphore লাগে।"
+          ],
+          [
+            "Producer সরাসরি Consumer কে দেয়",
+            "না — Buffer মাঝখানে থাকে, উভয়ে asynchronous ভাবে কাজ করে"
+          ]
+        ],
+        "mnemonic": "Producer = রান্নাঘরে রাঁধুনি, Consumer = খাওয়ার মানুষ, Buffer = ডাইনিং টেবিল। টেবিল ভরলে রাঁধুনি থামে, খালি হলে খাওয়ার মানুষ থামে। দুজনে একসাথে থালা ধরলে ঝামেলা (race condition)।"
+      }
+    },
+    {
+      "id": "os_008",
+      "q": "What is Multithreading programming? Why is Multithreading used in programming?",
+      "tags": [
+        "multithreading",
+        "concurrency",
+        "parallelism",
+        "thread",
+        "performance"
+      ],
+      "answer": {
+        "summary": "Multithreading = একটি program এ একাধিক thread একসাথে চালানো। Thread রা একই memory share করে parallel কাজ করে। CPU efficiently ব্যবহার হয়, program দ্রুত হয় এবং user experience ভালো হয়।",
+        "points": [
+          "Multithreading: একটি Process এর ভেতরে একাধিক thread তৈরি করে concurrently execute করানো। প্রতিটি thread আলাদা কাজ করতে পারে কিন্তু একই data access করতে পারে।",
+          "কারণ ১ — CPU Utilization: একটি thread I/O wait করলে (disk, network) অন্য thread CPU ব্যবহার করতে পারে → CPU idle থাকে না।",
+          "কারণ ২ — Responsiveness: UI thread আলাদা রাখলে background কাজ চললেও app responsive থাকে। যেমন: YouTube এ video load হওয়ার সময়ও scroll করা যায়।",
+          "কারণ ৩ — Parallel Processing: Multi-core CPU তে একাধিক thread সত্যিকারে parallel চলতে পারে → computation দ্রুত হয়।",
+          "কারণ ৪ — Resource Sharing: Thread রা একই memory share করায় data copy করতে হয় না → efficient।",
+          "চ্যালেঞ্জ: Race condition, Deadlock, Synchronization — Mutex ও Semaphore দিয়ে handle করতে হয়।"
+        ],
+        "diagram": "Single-threaded (Sequential):\n  Thread-1: [Task A]──[Task B]──[Task C]──[Task D]\n  Time: ──────────────────────────────────────────▶\n  Total = A + B + C + D\n\nMulti-threaded (Concurrent):\n  Thread-1: [Task A]────────────[Task D]\n  Thread-2:    [Task B]──────────────────\n  Thread-3:       [Task C]────────────────\n  Time: ──────────────────────▶ (অনেক কম!)\n\nReal example — Web Server:\n  Client 1 request → Thread 1 handle করে\n  Client 2 request → Thread 2 handle করে  (একসাথে!)\n  Client 3 request → Thread 3 handle করে\n  Single thread এ: Client 2,3 কে wait করতে হতো",
+        "mnemonic": "Multithreading = একজনের বদলে পুরো team কাজ করে। Single thread = একা সব করো (ধীর)। Multi-thread = কাজ ভাগ করো, একসাথে শেষ করো (দ্রুত)। কিন্তু team এ সমন্বয় না থাকলে (synchronization) ঝামেলা হয়।"
+      }
     }
   ]
 }

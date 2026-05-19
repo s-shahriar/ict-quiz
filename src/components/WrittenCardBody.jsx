@@ -7,6 +7,13 @@ export function WrittenCardBody({ a, topicColor }) {
   return (
     <div className="written-card-body">
 
+      {/* Question image (if provided) */}
+      {a.image && (
+        <div className="written-question-img-wrap">
+          <img src={a.image} alt="question diagram" className="written-question-img" />
+        </div>
+      )}
+
       <div className="written-summary" style={{ borderColor: `${topicColor}40`, background: `color-mix(in srgb, ${topicColor} 7%, var(--elevated))` }}>
         <span className="written-summary-label" style={{ color: topicColor }}>সংক্ষেপ</span>
         <p>{a.summary}</p>

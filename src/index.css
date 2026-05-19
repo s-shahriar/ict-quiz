@@ -1226,6 +1226,15 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   display: flex; flex-direction: column; gap: 16px;
 }
 
+.written-question-img-wrap {
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.written-question-img {
+  width: 100%; height: auto; display: block;
+}
+
 /* Summary block */
 .written-summary {
   border: 1px solid;

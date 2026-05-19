@@ -6,6 +6,8 @@ import informationSecurity from './information_security.json'
 import softwareEngineering from './software_engineering.json'
 import microprocessor from './microprocessor.json'
 import database from './database.json'
+import oop from './oop.json'
+import cProgramming from './c_programming.json'
 
 const WRITTEN_DATA = {
   computer_fundamental: computerFundamental,
@@ -16,6 +18,8 @@ const WRITTEN_DATA = {
   software_engineering: softwareEngineering,
   microprocessor: microprocessor,
   database: database,
+  oop: oop,
+  c_programming: cProgramming,
 }
 
 export function getWrittenData(topicId) {

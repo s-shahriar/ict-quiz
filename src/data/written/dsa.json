@@ -4,7 +4,12 @@
     {
       "id": "dsa_001",
       "q": "Analyze the time complexity of Quicksort when all elements are already sorted and the first element is the pivot. How does the pivot position affect performance?",
-      "tags": ["quicksort", "time complexity", "pivot", "worst case"],
+      "tags": [
+        "quicksort",
+        "time complexity",
+        "pivot",
+        "worst case"
+      ],
       "answer": {
         "summary": "Sorted array + first element pivot = Quicksort এর worst case → O(n²), কারণ প্রতিটি partition সম্পূর্ণ unbalanced হয়।",
         "points": [
@@ -16,17 +21,47 @@
         ],
         "diagram": " Sorted: [1, 2, 3, 4, 5],  pivot = first element\n\n Step 1:  pivot=1  │ left=[]  right=[2,3,4,5]  │ 4 comparisons\n Step 2:  pivot=2  │ left=[]  right=[3,4,5]    │ 3 comparisons\n Step 3:  pivot=3  │ left=[]  right=[4,5]      │ 2 comparisons\n Step 4:  pivot=4  │ left=[]  right=[5]        │ 1 comparison\n                                         Total = 4+3+2+1 = 10 = O(n²)\n\n Recursion tree (সম্পূর্ণ skewed):\n        [1,2,3,4,5]                   ← depth 1\n       /             \\\n     []           [2,3,4,5]           ← depth 2\n                 /           \\\n               []          [3,4,5]    ← depth 3\n                           /      \\\n                         []      [4,5]← depth 4\n                                /    \\\n                              []     [5] ← depth 5\n n level গভীর → O(n²)",
         "mistakes": [
-          ["Quicksort সবসময় O(n log n)", "না — worst case O(n²) যখন pivot সবসময় সবচেয়ে ছোট বা বড় হয়"],
-          ["Sorted array তে সব sorting algorithm ভালো করে", "না — Quicksort (first pivot) sorted array তে সবচেয়ে খারাপ করে"]
+          [
+            "Quicksort সবসময় O(n log n)",
+            "না — worst case O(n²) যখন pivot সবসময় সবচেয়ে ছোট বা বড় হয়"
+          ],
+          [
+            "Sorted array তে সব sorting algorithm ভালো করে",
+            "না — Quicksort (first pivot) sorted array তে সবচেয়ে খারাপ করে"
+          ]
         ],
         "table": {
-          "headers": ["Pivot choice", "Sorted array তে", "Random array তে"],
+          "headers": [
+            "Pivot choice",
+            "Sorted array তে",
+            "Random array তে"
+          ],
           "rows": [
-            ["First element", "❌ O(n²) worst", "O(n log n) avg"],
-            ["Last element", "❌ O(n²) worst", "O(n log n) avg"],
-            ["Middle element", "✅ O(n log n)", "O(n log n) avg"],
-            ["Random element", "✅ O(n log n) expected", "O(n log n) avg"],
-            ["Median-of-3", "✅ O(n log n)", "O(n log n) avg"]
+            [
+              "First element",
+              "❌ O(n²) worst",
+              "O(n log n) avg"
+            ],
+            [
+              "Last element",
+              "❌ O(n²) worst",
+              "O(n log n) avg"
+            ],
+            [
+              "Middle element",
+              "✅ O(n log n)",
+              "O(n log n) avg"
+            ],
+            [
+              "Random element",
+              "✅ O(n log n) expected",
+              "O(n log n) avg"
+            ],
+            [
+              "Median-of-3",
+              "✅ O(n log n)",
+              "O(n log n) avg"
+            ]
           ]
         },
         "mnemonic": "\"Sorted দেখলে Quicksort ভয় পায়\" — first/last pivot + sorted array = worst case O(n²)। ভালো pivot = middle বা random → balanced tree → O(n log n)।"
@@ -35,7 +70,12 @@
     {
       "id": "dsa_002",
       "q": "Explain the logic of Bubble Sort. Why is it considered inefficient for large datasets compared to Merge Sort?",
-      "tags": ["bubble sort", "merge sort", "time complexity", "sorting"],
+      "tags": [
+        "bubble sort",
+        "merge sort",
+        "time complexity",
+        "sorting"
+      ],
       "answer": {
         "summary": "Bubble Sort প্রতি pass এ adjacent elements compare করে বড়টাকে শেষে পাঠায় — O(n²) complexity এর কারণে large data তে Merge Sort (O(n log n)) এর তুলনায় অনেক ধীর।",
         "points": [
@@ -47,20 +87,172 @@
         ],
         "diagram": " Initial: [5, 3, 8, 1]\n\n Pass 1:\n  [5, 3, 8, 1] → 5>3 swap  → [3, 5, 8, 1]\n  [3, 5, 8, 1] → 5<8 no    → [3, 5, 8, 1]\n  [3, 5, 8, 1] → 8>1 swap  → [3, 5, 1, 8]  ✓ 8 settled\n\n Pass 2:\n  [3, 5, 1, 8] → 3<5 no    → [3, 5, 1, 8]\n  [3, 5, 1, 8] → 5>1 swap  → [3, 1, 5, 8]  ✓ 5 settled\n\n Pass 3:\n  [3, 1, 5, 8] → 3>1 swap  → [1, 3, 5, 8]  ✓ 3 settled\n\n Result: [1, 3, 5, 8] ✅",
         "mistakes": [
-          ["Bubble Sort সবসময় O(n²)", "না — already sorted array তে early exit optimization সহ O(n) possible"],
-          ["Bubble Sort in-place নয়", "না — Bubble Sort in-place, O(1) extra space মাত্র"]
+          [
+            "Bubble Sort সবসময় O(n²)",
+            "না — already sorted array তে early exit optimization সহ O(n) possible"
+          ],
+          [
+            "Bubble Sort in-place নয়",
+            "না — Bubble Sort in-place, O(1) extra space মাত্র"
+          ]
         ],
         "table": {
-          "headers": ["", "Bubble Sort", "Merge Sort"],
+          "headers": [
+            "",
+            "Bubble Sort",
+            "Merge Sort"
+          ],
           "rows": [
-            ["Time (worst)", "❌ O(n²)", "✅ O(n log n)"],
-            ["Time (best)", "O(n)", "O(n log n)"],
-            ["Space", "✅ O(1) in-place", "❌ O(n) extra"],
-            ["Stable?", "✅ হ্যাঁ", "✅ হ্যাঁ"],
-            ["n=1000 এ operations", "≈ 1,000,000", "≈ 10,000"]
+            [
+              "Time (worst)",
+              "❌ O(n²)",
+              "✅ O(n log n)"
+            ],
+            [
+              "Time (best)",
+              "O(n)",
+              "O(n log n)"
+            ],
+            [
+              "Space",
+              "✅ O(1) in-place",
+              "❌ O(n) extra"
+            ],
+            [
+              "Stable?",
+              "✅ হ্যাঁ",
+              "✅ হ্যাঁ"
+            ],
+            [
+              "n=1000 এ operations",
+              "≈ 1,000,000",
+              "≈ 10,000"
+            ]
           ]
         },
         "mnemonic": "বুদবুদের মতো — সবচেয়ে বড় element প্রতি pass এ ভেসে শেষে যায়। কিন্তু বুদবুদ তোলা slow — বড় পুকুরে (large data) কাজ করে না।"
+      }
+    },
+    {
+      "id": "dsa_003",
+      "q": "Determine whether Graph-3 (u1–u6) and Graph-4 (v1–v6) are isomorphic. Graph-3 degree sequence: (3,3,2,2,3,3). Graph-4 degree sequence: (2,3,3,2,2,3).",
+      "tags": [
+        "graph",
+        "isomorphism",
+        "degree sequence",
+        "graph theory"
+      ],
+      "answer": {
+        "summary": "Graph-3 ও Graph-4 isomorphic নয় — কারণ তাদের degree sequence আলাদা। Graph-3 এ ৪টি degree-3 vertex আছে, Graph-4 এ আছে মাত্র ৩টি। Degree sequence না মিললে bijection সম্ভব নয় → NOT isomorphic।",
+        "points": [
+          "Step 1 — Vertex count: Graph-3 = 6টি, Graph-4 = 6টি ✅ (মিলেছে, কিন্তু এটাই যথেষ্ট নয়)",
+          "Step 2 — Edge count: দুটোরই সমান কিনা চেক করো (এই ধাপেও মিলতে পারে)",
+          "Step 3 — Degree sequence: Graph-3 = (3,3,2,2,3,3) → sort করলে [2,2,3,3,3,3]; Graph-4 = (2,3,3,2,2,3) → sort করলে [2,2,2,3,3,3]",
+          "Sorted sequence মেলাও: [2,2,3,3,3,3] ≠ [2,2,2,3,3,3] ❌ — এখানেই বাদ!",
+          "Graph-3 এ degree-3 vertex = 4টি (u1,u2,u3,u6), degree-2 vertex = 2টি (u4,u5)",
+          "Graph-4 এ degree-3 vertex = 3টি (v2,v3,v6), degree-2 vertex = 3টি (v1,v4,v5)",
+          "∴ Degree sequence ভিন্ন → isomorphic bijection কখনো সম্ভব নয় → NOT ISOMORPHIC ✅"
+        ],
+        "diagram": "Degree Sequence তুলনা:\n──────────────────────────────────────────────\n         Graph-3 (u)      Graph-4 (v)\n──────────────────────────────────────────────\nu1 → deg 3    v1 → deg 2\nu2 → deg 3    v2 → deg 3\nu3 → deg 2    v3 → deg 3\nu4 → deg 2    v4 → deg 2\nu5 → deg 3    v5 → deg 2\nu6 → deg 3    v6 → deg 3\n──────────────────────────────────────────────\nSorted:  [2,2,3,3,3,3]   [2,2,2,3,3,3]\n                    ❌ DIFFERENT!\n\nGraph-3: degree-3 আছে ৪টি\nGraph-4: degree-3 আছে ৩টি\n\n∴ NOT ISOMORPHIC\n\nমনে রাখো — Isomorphism চেক ধাপ:\n V count → E count → Degree Seq → Bijection\n যেকোনো ধাপে ❌ = NOT isomorphic, থামো!",
+        "mistakes": [
+          [
+            "শুধু vertex count মিললেই isomorphic",
+            "না — vertex + edge + degree sequence তিনটিই মিলতে হবে, তারপর bijection খুঁজতে হবে"
+          ],
+          [
+            "degree sequence মিললেই isomorphic নিশ্চিত",
+            "না — degree sequence মেলা necessary condition, sufficient নয়। Bijection দিয়ে confirm করতে হয়"
+          ],
+          [
+            "দেখতে আলাদা মানেই isomorphic নয়",
+            "Graph isomorphism দেখায় নয়, structure এ — একই graph ভিন্নভাবে আঁকা যায়"
+          ]
+        ],
+        "mnemonic": "VED-B rule: Vertex → Edge → Degree → Bijection। এখানে Degree step এই ধরা পড়েছে — [2,2,3,3,3,3] ≠ [2,2,2,3,3,3] → সাথে সাথে NOT isomorphic বলো, bijection খোঁজার দরকার নেই।",
+        "image": "/written-images/dsa_003.png"
+      }
+    },
+    {
+      "id": "dsa_004",
+      "q": "Describe step-by-step how Binary Search locates a target value in a sorted array. Why does it fail if the array is unsorted?",
+      "tags": [
+        "binary search",
+        "searching",
+        "sorted array",
+        "O(log n)"
+      ],
+      "answer": {
+        "summary": "Binary Search প্রতিবার array কে অর্ধেক করে ফেলে — middle দেখে বাম বা ডানে যায়। O(log n) time complexity। Unsorted array তে কাজ করে না কারণ মাঝের element দেখে কোনদিকে যাবে সেটা বলা সম্ভব নয়।",
+        "points": [
+          "Step 1: low = 0, high = n-1 সেট করো (পুরো array কে search range ধরো)",
+          "Step 2: mid = (low + high) / 2 বের করো",
+          "Step 3: arr[mid] == target → পাওয়া গেছে, return mid ✅",
+          "Step 4: arr[mid] < target → target ডানদিকে, low = mid + 1",
+          "Step 5: arr[mid] > target → target বামদিকে, high = mid - 1",
+          "Step 6: low > high হলে → target নেই, return -1",
+          "Unsorted এ fail কেন: Step 4/5 এ assume করা হয় যে mid এর বামে সব ছোট, ডানে সব বড়। Unsorted array তে এই assumption সত্য নয় — তাই ভুল দিকে গিয়ে element miss হয়।",
+          "Time complexity: O(log n) — প্রতি step এ search space অর্ধেক হয়। Linear Search = O(n)।"
+        ],
+        "diagram": "Array: [2, 5, 8, 12, 16, 23, 38, 42]  Target = 23\nIndex:  0  1  2   3   4   5   6   7\n\nRound 1: low=0, high=7 → mid=3 → arr[3]=12 < 23 → low=4\n         [_, _, _, _, 16, 23, 38, 42]\n\nRound 2: low=4, high=7 → mid=5 → arr[5]=23 == 23 ✅ FOUND!\n         [_, _, _, _, _, 23, _, _]\n\nমাত্র 2 step এ পাওয়া গেল (Linear Search এ 6 step লাগত)\n\nUnsorted এ fail:\nArray: [5, 23, 2, 38, 12]  Target = 12\nmid=2 → arr[2]=2 < 12 → low=3 (ডানে যাও)\nকিন্তু 12 আছে index 4 এ, 38 এর পরে → miss! ❌",
+        "mnemonic": "Binary Search = ফোনবুকে নাম খোঁজা — মাঝখানে খোলো, আগে না পরে সেটা দেখে বাদ দাও অর্ধেক। Unsorted ফোনবুক এ এই কৌশল কাজ করে না।"
+      }
+    },
+    {
+      "id": "dsa_005",
+      "q": "You have two stacks. Explain the logic required to implement a Queue (FIFO) using only these two stacks.",
+      "tags": [
+        "queue",
+        "stack",
+        "FIFO",
+        "LIFO",
+        "data structure"
+      ],
+      "answer": {
+        "summary": "Stack = LIFO (শেষে ঢোকা আগে বের হয়), Queue = FIFO (আগে ঢোকা আগে বের হয়)। দুটো Stack দিয়ে Queue বানানো যায়: Stack1 এ enqueue করো, dequeue এর সময় সব Stack2 তে ঢেলে দাও — তাহলে order উল্টে যায় এবং FIFO হয়।",
+        "points": [
+          "Stack1 = Inbox (নতুন element ঢোকে), Stack2 = Outbox (element বের হয়)",
+          "Enqueue(x): সরাসরি Stack1 তে push করো — O(1)",
+          "Dequeue: Stack2 খালি থাকলে Stack1 এর সব element Stack2 তে push করো (order উল্টে যায়), তারপর Stack2 থেকে pop করো",
+          "কেন কাজ করে: Stack1 তে [1,2,3] থাকলে (3 উপরে), Stack2 তে ঢাললে হয় [3,2,1] (1 উপরে) → pop করলে 1 বের হয় = FIFO ✅",
+          "Dequeue time complexity: Amortized O(1) — প্রতিটি element একবার Stack1 এ push, একবার Stack2 এ push, একবার pop → মোট 3 operation।"
+        ],
+        "diagram": "Enqueue 1, 2, 3:\n  Stack1: [1, 2, 3]  (3 is top)\n  Stack2: []\n\nDequeue (Stack2 খালি → Stack1 উল্টাও):\n  Stack1 → Stack2:\n  Stack1: []          Stack2: [3, 2, 1]  (1 is top)\n\n  Stack2.pop() = 1  ← Queue এর front ✅ FIFO!\n\nDequeue আবার (Stack2 এখনো আছে):\n  Stack2.pop() = 2  ✅\n\nEnqueue 4 (Stack1 এ যাবে):\n  Stack1: [4]     Stack2: [3]\n  Dequeue: Stack2.pop() = 3 ✅ (Stack1 উল্টানো লাগেনি)",
+        "mistakes": [
+          [
+            "প্রতিটি dequeue এ Stack1 উল্টানো",
+            "না — শুধু Stack2 খালি হলে উল্টাও, নাহলে সরাসরি Stack2 থেকে pop"
+          ],
+          [
+            "Stack দিয়ে Queue হয় না",
+            "হয় — দুটো Stack দিয়ে FIFO implement করা সম্ভব, amortized O(1) এ"
+          ]
+        ],
+        "mnemonic": "Stack1 = চিঠির inbox (উপরে রাখো), Stack2 = outbox (উল্টো করে রাখলে পুরানোটা উপরে আসে)। দুবার উল্টালে আবার সঠিক order।"
+      }
+    },
+    {
+      "id": "dsa_006",
+      "q": "Construct a logical argument explaining why a heuristic search (like A*) might be faster than a blind search (like BFS), even if it doesn't guarantee the absolute perfect path in all cases.",
+      "tags": [
+        "A*",
+        "BFS",
+        "heuristic",
+        "graph search",
+        "informed search",
+        "uninformed search"
+      ],
+      "answer": {
+        "summary": "BFS = blind search — সব দিকে সমানভাবে explore করে। A* = informed search — heuristic function h(n) দিয়ে goal এর দিকে guided হয়ে explore করে। A* অনেক কম node explore করে তাই দ্রুত, কিন্তু heuristic admissible না হলে optimal path miss করতে পারে।",
+        "points": [
+          "BFS (Blind Search): Queue ব্যবহার করে level-by-level সব neighbor explore করে। Goal এর দিক জানে না — সব দিকে সমান effort দেয়।",
+          "A* (Heuristic Search): f(n) = g(n) + h(n) — g(n) = এখন পর্যন্ত actual cost, h(n) = goal পর্যন্ত estimated cost। সবচেয়ে কম f(n) এর node আগে explore করে।",
+          "A* কেন দ্রুত: h(n) দিয়ে goal এর কাছাকাছি node গুলো prioritize করা হয়। ভুল দিকের node গুলো explore করতেই হয় না।",
+          "উদাহরণ — Map এ shortest path: BFS সব দিকে বৃত্তাকারে expand করে। A* সরাসরি destination এর দিকে এগিয়ে যায় (straight-line distance = heuristic)।",
+          "Perfect path guarantee: Heuristic admissible হলে (h(n) ≤ actual cost) A* optimal path দেয়। Non-admissible heuristic এ দ্রুত কিন্তু optimal নাও হতে পারে।",
+          "Trade-off: BFS = সবসময় optimal (unweighted graph এ), কিন্তু slow। A* = সাধারণত optimal এবং fast, কিন্তু heuristic এর quality এর উপর নির্ভর করে।"
+        ],
+        "diagram": "BFS (Blind) — সব দিকে expand:\n         [Start]\n        /   |   \\\n      [A]  [B]  [C]      ← level 1 (সব explore)\n     / \\   / \\   / \\\n   [D][E][F][G][H][Goal] ← level 2 (সব explore)\n   Goal পেতে D,E,F,G,H সবই visit করতে হলো\n\nA* (Heuristic) — Goal এর দিকে guided:\n         [Start]\n        /       \\\n      [A]       [C]      h(A)=5, h(C)=2 → C বেছে নেয়\n                 \\\n               [Goal]    মাত্র 2টি node explore!\n\nf(n) = g(n) + h(n):\n  g(n) = Start থেকে n পর্যন্ত actual cost\n  h(n) = n থেকে Goal পর্যন্ত estimated cost\n  A* সবচেয়ে কম f(n) এর node আগে explore করে",
+        "mnemonic": "BFS = অন্ধকারে মশাল ঘুরিয়ে খোঁজা (সব দিক)। A* = GPS দিয়ে খোঁজা (goal এর দিকে সরাসরি)। GPS ভুল হতে পারে, কিন্তু সাধারণত অনেক দ্রুত।"
       }
     }
   ]
