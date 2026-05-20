@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Filter } from 'lucide-react'
+import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Filter, LayoutGrid } from 'lucide-react'
+import CategorySidebar from './CategorySidebar.jsx'
 
-export default function StudyMode({ topic, mastered, important, onNail, onMarkImportant, onUnmarkImportant, onBack, onHome }) {
+export default function StudyMode({ topic, topics, mastered, important, onNail, onMarkImportant, onUnmarkImportant, onBack, onHome, onChangeTopic }) {
   const [filterImportant, setFilterImportant] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const allQ = topic.questions
     .map((q, i) => ({ q, qid: `${topic.id}__${i}` }))
@@ -24,10 +26,27 @@ export default function StudyMode({ topic, mastered, important, onNail, onMarkIm
           <ChevronLeft size={15} /> Back
         </button>
         <span className="study-title" style={{ color: topic.color }}>{topic.name}</span>
-        <button className="study-home-btn" onClick={onHome} title="Home">
-          <Home size={16} />
-        </button>
+        <div className="topbar-right-actions">
+          {topics && onChangeTopic && (
+            <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
+              <LayoutGrid size={16} />
+            </button>
+          )}
+          <button className="study-home-btn" onClick={onHome} title="Home">
+            <Home size={16} />
+          </button>
+        </div>
       </div>
+
+      {topics && onChangeTopic && (
+        <CategorySidebar
+          topics={topics}
+          currentTopicId={topic.id}
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          onSelect={onChangeTopic}
+        />
+      )}
 
       {/* Filter bar */}
       <div className="study-filter-bar">
