@@ -233,6 +233,166 @@
         },
         "mnemonic": "SCRUM = Sprint করে Correct করো Regularly উন্নতি করো Management এ। Product Owner বলে কী বানাবে, Scrum Master বলে কীভাবে বানাবে, Dev Team বানায়। Sprint = ছোট ছোট দৌড়, Backlog = দৌড়ের তালিকা।"
       }
+    },
+    {
+      "id": "se_004",
+      "q": "What is the difference between Software Validation and Software Verification? Provide a real-life software development explanation.",
+      "tags": [
+        "software verification",
+        "software validation",
+        "V&V",
+        "quality assurance",
+        "static testing",
+        "dynamic testing",
+        "UAT"
+      ],
+      "answer": {
+        "summary": [
+          "Verification = 'Are we building the product right?' — specifications ও standards ঠিকমতো follow হচ্ছে কি না।",
+          "Validation = 'Are we building the right product?' — final software user এর actual need পূরণ করছে কি না।"
+        ],
+        "points": [
+          "Verification: Internal process — code, design, document specifications এর সাথে মেলানো হয়। Static Testing — code execute না করেও করা যায়। Early in lifecycle — requirements, design phase এ। Methods: Code Review, Walkthrough, Inspection, Static Analysis, Unit Testing",
+          "Validation: External process — final software user এর real need ও expectation পূরণ করছে কি না। Dynamic Testing — actual code execute করে test করতে হয়। Later in lifecycle — development এর পরে। Methods: System Testing, Integration Testing, UAT (User Acceptance Testing), Alpha/Beta Testing",
+          "Key distinction: Verification = blueprint ঠিক আছে কি না। Validation = blueprint অনুযায়ী বানানো জিনিস user এর কাজে লাগছে কি না",
+          "Real-life Example (Online Banking App — Fund Transfer): Verification: Developer TransferFunds() function এর code review করে — '$5000 limit logic টি design spec অনুযায়ী implement হয়েছে কি না?' চেক। Validation: Tester $5001 transfer করার চেষ্টা করে — 'User কি helpful error message পাচ্ছে এবং transfer block হচ্ছে?' — user need পূরণ হচ্ছে কি না confirm করে"
+        ],
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Verification",
+            "Validation"
+          ],
+          "rows": [
+            [
+              "মূল প্রশ্ন",
+              "Are we building the product right?",
+              "Are we building the right product?"
+            ],
+            [
+              "Focus",
+              "Specification, Design, Standards",
+              "User Needs, Expectations"
+            ],
+            [
+              "Testing Type",
+              "Static (no execution)",
+              "Dynamic (execution required)"
+            ],
+            [
+              "Timing",
+              "Early & throughout lifecycle",
+              "Later — after development"
+            ],
+            [
+              "Who does it",
+              "Developers, Reviewers",
+              "Testers, End Users"
+            ],
+            [
+              "Examples",
+              "Code review, Inspection, Unit Test",
+              "UAT, System Test, Beta Test"
+            ]
+          ]
+        },
+        "mnemonic": "Verification = V for blueprint (bVerification = blueprint check)। Validation = V for Value to user। 'Build RIGHT' vs 'RIGHT product'।"
+      }
+    },
+    {
+      "id": "se_005",
+      "q": "Compare Agile vs. Waterfall vs. Spiral SDLC models — covering fundamental differences, suitability for different types of projects/organizations, and cost analysis.",
+      "tags": [
+        "SDLC",
+        "Agile",
+        "Waterfall",
+        "Spiral",
+        "software development",
+        "risk management",
+        "cost analysis"
+      ],
+      "answer": {
+        "summary": [
+          "Waterfall = Linear ও Sequential (requirements clear হলে ভালো)। Agile = Iterative ও Incremental (requirements বদলালে ভালো)। Spiral = Risk-Driven ও Evolutionary (large, high-risk project এ ভালো)।"
+        ],
+        "points": [
+          "Waterfall: Approach — Linear, Sequential। একটি phase শেষ না হলে পরেরটি শুরু হয় না। Flexibility — খুব কম। Risk — High (late detection)। Customer involvement — শুরু ও শেষে। Progress = Completed documents",
+          "Agile: Approach — Iterative, Incremental (Sprint ভিত্তিক)। Flexibility — খুব বেশি — requirement যেকোনো সময় বদলানো যায়। Risk — Moderate। Customer involvement — Maximum, continuous। Progress = Working software delivery",
+          "Spiral: Approach — Risk-driven, evolutionary। প্রতিটি spiral এ 4 ধাপ: Planning → Risk Analysis → Engineering → Evaluation। Flexibility — High। Risk — Low (risk-first approach)। Customer involvement — High। Progress = Prototypes",
+          "Cost: Waterfall — upfront cost কম (plan simple), change cost অনেক বেশি। Agile — moderate total cost, change cost কম (next sprint এ নেওয়া যায়)। Spiral — upfront cost অনেক বেশি (risk analysis প্রতিটি loop এ), total project cost সবচেয়ে বেশি"
+        ],
+        "table": {
+          "headers": [
+            "Feature",
+            "Waterfall",
+            "Agile",
+            "Spiral"
+          ],
+          "rows": [
+            [
+              "Approach",
+              "Linear, Sequential",
+              "Iterative, Incremental",
+              "Risk-Driven, Evolutionary"
+            ],
+            [
+              "Flexibility",
+              "Very Low",
+              "Very High",
+              "High"
+            ],
+            [
+              "Risk Management",
+              "High risk (late)",
+              "Moderate",
+              "Low (risk-first)"
+            ],
+            [
+              "Customer Involvement",
+              "Minimum",
+              "Maximum (continuous)",
+              "High"
+            ],
+            [
+              "Progress Measured By",
+              "Documents/Artifacts",
+              "Working software",
+              "Prototypes"
+            ],
+            [
+              "Upfront Cost",
+              "Low",
+              "Low",
+              "Very High"
+            ],
+            [
+              "Cost of Change",
+              "Very High",
+              "Low",
+              "Moderate"
+            ],
+            [
+              "Total Cost",
+              "Low (if stable req)",
+              "Moderate",
+              "Very Expensive"
+            ],
+            [
+              "Best For",
+              "Clear, fixed requirements",
+              "Evolving requirements",
+              "Large, high-risk projects"
+            ],
+            [
+              "Best Org",
+              "Government, Healthcare",
+              "Startups, Product teams",
+              "R&D, Defense, Scientific"
+            ]
+          ]
+        },
+        "mnemonic": "Waterfall = পাহাড় থেকে নামার মতো — একমুখী। Agile = চাকার মতো — বারবার ঘুরে। Spiral = ঝড়ের চোখের মতো — risk center করে ঘুরে।"
+      }
     }
   ]
 }

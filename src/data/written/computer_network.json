@@ -237,11 +237,17 @@
         ],
         "points": [
           "RIP → Distance Vector: প্রতিটি router শুধু তার neighbor এর কাছ থেকে routing table শোনে — নিজে পুরো network দেখতে পায় না। Hop count মেট্রিক, max 15 hop।",
-          {"sub": "RIP এর বড় সমস্যা → Count-to-Infinity: কোনো link down হলে routers ভুল information নিয়ে একে অপরকে loop করতে থাকে, hop count বাড়তেই থাকে 16 না হওয়া পর্যন্ত।"},
+          {
+            "sub": "RIP এর বড় সমস্যা → Count-to-Infinity: কোনো link down হলে routers ভুল information নিয়ে একে অপরকে loop করতে থাকে, hop count বাড়তেই থাকে 16 না হওয়া পর্যন্ত।"
+          },
           "OSPF → Link State: প্রতিটি router পুরো network এর map (LSDB) তৈরি করে, তারপর Dijkstra's Algorithm চালিয়ে নিজে best path বের করে। Bandwidth-based cost metric।",
-          {"sub": "OSPF vs RIP: OSPF তে Count-to-Infinity নেই — কারণ সে নিজে পুরো map দেখে সিদ্ধান্ত নেয়, কারো কথায় বিশ্বাস করে না। Fast convergence।"},
+          {
+            "sub": "OSPF vs RIP: OSPF তে Count-to-Infinity নেই — কারণ সে নিজে পুরো map দেখে সিদ্ধান্ত নেয়, কারো কথায় বিশ্বাস করে না। Fast convergence।"
+          },
           "BGP → Path Vector: একটি AS (Autonomous System) থেকে আরেকটি AS এ routing করে — এটাই পুরো Internet এর backbone। ISP রা BGP দিয়ে একে অপরের সাথে route advertise করে।",
-          {"sub": "AS কী: একটি organization বা ISP এর নিয়ন্ত্রণে থাকা router গুলোর group। যেমন Grameenphone = একটি AS, BTCL = আরেকটি AS। BGP এদের মধ্যে কাজ করে।"}
+          {
+            "sub": "AS কী: একটি organization বা ISP এর নিয়ন্ত্রণে থাকা router গুলোর group। যেমন Grameenphone = একটি AS, BTCL = আরেকটি AS। BGP এদের মধ্যে কাজ করে।"
+          }
         ],
         "diagram": "RIP — Distance Vector (neighbor এর কথা বিশ্বাস করে)\n─────────────────────────────────────────────────\nA → B → C → D  (প্রতিটি = 1 hop)\nA থেকে D = 3 hops → RIP এটাই নেবে\nকিন্তু B→C link 1 Mbps, A→D direct link 100 Mbps হলেও\nRIP hop count দেখে, bandwidth দেখে না ❌\n\nCount-to-Infinity Problem:\nA — B — C,  A-B link হঠাৎ down\nB ভাবে: C এর মাধ্যমে A পাওয়া যাবে (hop=2)\nC ভাবে: B এর মাধ্যমে A পাওয়া যাবে (hop=3)\nB ভাবে: তাহলে hop=4 ... এভাবে 16 পর্যন্ত চলে → Slow!\n\n\nOSPF — Link State + Dijkstra\n─────────────────────────────────────────────────\nপ্রতিটি router পুরো network এর map জানে (LSDB):\n\n        cost=1         cost=10\n   A ─────────── B ─────────── C\n    \\  cost=3           cost=3 /\n     ──────────── D ───────────\n\nDijkstra চালায়:\n  A→B→C = 1+10 = 11\n  A→D→C = 3+3  = 6  ← best path ✅\nCount-to-Infinity নেই, কারণ নিজেই map দেখে calculate করে\n\n\nBGP — Path Vector (AS থেকে AS)\n─────────────────────────────────────────────────\n  [AS 100]  ──BGP──  [AS 200]  ──BGP──  [AS 300]\n  (GP ISP)            (BD ISP)           (BTCL)\n\nBGP advertise করে: 'AS 300 পৌঁছাতে AS 200 → AS 300 path নাও'\nPath = [100, 200, 300] — loop detect করা যায় নিজের AS দেখে\nRIP/OSPF = একটি AS এর ভেতরে (IGP)\nBGP      = আলাদা AS এর মধ্যে (EGP) ← এটাই পার্থক্য",
         "mistakes": [
@@ -544,6 +550,584 @@
           ]
         },
         "mnemonic": "TDM = টাইম শেয়ার (পালা করে), FDM = ফ্রিকোয়েন্সি শেয়ার (আলাদা রেডিও স্টেশন), WDM = আলোর রঙ শেয়ার (fiber এ rainbow)।"
+      }
+    },
+    {
+      "id": "cn_009",
+      "q": "What are the challenges in optimizing energy efficiency of data centers? Explain.",
+      "tags": [
+        "data center",
+        "energy efficiency",
+        "PUE",
+        "cooling",
+        "green IT"
+      ],
+      "answer": {
+        "summary": [
+          "Data center energy optimization কঠিন কারণ এতে heat, power, hardware, workload ও design — সব দিক একসাথে সামলাতে হয়।",
+          "PUE কমানো, renewable energy যোগ করা, এবং legacy hardware আপগ্রেড করা — সবই বড় চ্যালেঞ্জ।"
+        ],
+        "points": [
+          "Heat Generation & Cooling: Modern server অনেক heat তৈরি করে — uniform cooling ও hot spot prevention জরুরি। Hot spot থেকে equipment failure হতে পারে",
+          "PUE (Power Usage Effectiveness) Reduction: PUE = Total facility energy ÷ IT equipment energy। PUE কমাতে cooling, lighting সহ সব non-computing energy কমাতে হয় — এটি কঠিন",
+          "Renewable Energy Integration: Solar বা wind power intermittent (সবসময় পাওয়া যায় না)। Grid limitation ও variable supply integration চ্যালেঞ্জিং",
+          "Legacy Hardware: পুরনো, কম energy-efficient server এখনো চলছে। Upgrade করা costly ও time-consuming",
+          "Dynamic Workloads: Data center load সারাদিন ওঠানামা করে। Peak ও off-peak এ efficiently resource scale করা কঠিন",
+          "Physical Design: Server room layout, airflow management ও rack placement সঠিক না হলে cooling ও efficiency দুটোই ক্ষতিগ্রস্ত হয়"
+        ],
+        "table": {
+          "headers": [
+            "Challenge",
+            "Core Problem",
+            "Impact"
+          ],
+          "rows": [
+            [
+              "Cooling",
+              "High heat density, hot spots",
+              "Equipment failure, high energy cost"
+            ],
+            [
+              "PUE Reduction",
+              "Non-IT energy consumption",
+              "Wasted power, high OpEx"
+            ],
+            [
+              "Renewable Energy",
+              "Intermittent supply, grid limits",
+              "Reliability risk"
+            ],
+            [
+              "Legacy Hardware",
+              "Old, inefficient servers",
+              "High energy draw, slow upgrade"
+            ],
+            [
+              "Dynamic Workloads",
+              "Fluctuating demand",
+              "Over/under-provisioning"
+            ],
+            [
+              "Physical Design",
+              "Poor airflow, layout",
+              "Cooling inefficiency"
+            ]
+          ]
+        },
+        "mnemonic": "HC-PR-HL-DD (Heat/Cooling → PUE Reduction → Hardware Legacy → Dynamic Demand/Design)"
+      }
+    },
+    {
+      "id": "cn_010",
+      "q": "Why does DNS primarily use UDP instead of TCP? Describe the sequence of events during DNS name resolution when a user enters www.companybd.com into a web browser.",
+      "tags": [
+        "DNS",
+        "UDP",
+        "TCP",
+        "name resolution",
+        "recursive resolver",
+        "root server",
+        "TLD",
+        "authoritative server"
+      ],
+      "answer": {
+        "summary": [
+          "DNS UDP ব্যবহার করে কারণ এটি দ্রুত ও lightweight — DNS query ছোট, তাই TCP handshake এর overhead দরকার নেই।",
+          "Name resolution: Browser cache → OS/Resolver → Root Server → TLD Server → Authoritative Server → IP পাওয়া → website load।"
+        ],
+        "points": [
+          "UDP কেন? Connection setup (3-way handshake) নেই → অনেক দ্রুত। DNS query সাধারণত 512 bytes এর মধ্যে — TCP এর overhead অপ্রয়োজনীয়",
+          "UDP কেন না TCP? TCP ব্যবহার হয় শুধু যখন response 512 bytes এর বেশি (zone transfer বা DNSSEC এ)",
+          "Step 1 — Browser Cache: Browser নিজের cache এ IP খোঁজে। আগে visit করা থাকলে পায়",
+          "Step 2 — OS/Recursive Resolver: Cache এ না থাকলে OS → ISP এর Recursive Resolver এ query যায়",
+          "Step 3 — Root Server: Recursive Resolver root server কে জিজ্ঞেস করে → root server .com এর TLD server এর address দেয়",
+          "Step 4 — TLD Server: .com TLD server, companybd.com এর Authoritative Name Server এর address দেয়",
+          "Step 5 — Authoritative Server: এটি www.companybd.com এর actual IP address (e.g., 192.168.1.10) দেয়",
+          "Step 6 — Response & Connect: Browser IP পেয়ে web server এ TCP connection করে → website load হয়"
+        ],
+        "diagram": "User types: www.companybd.com\n         │\n         ▼\n ┌───────────────────┐\n │  1. Browser Cache │ ─── Hit? → Done ✅\n └────────┬──────────┘\n          │ Miss\n          ▼\n ┌───────────────────┐\n │ 2. OS / Recursive │\n │    Resolver (ISP) │\n └────────┬──────────┘\n          │\n          ▼\n ┌───────────────────┐\n │  3. Root Server   │ → \"Ask .com TLD\"\n └────────┬──────────┘\n          │\n          ▼\n ┌───────────────────┐\n │  4. TLD Server    │ → \"Ask companybd.com's\n │     (.com)        │    Authoritative NS\"\n └────────┬──────────┘\n          │\n          ▼\n ┌───────────────────────────┐\n │  5. Authoritative Server  │ → IP: 192.168.1.10\n └────────┬──────────────────┘\n          │\n          ▼\n   Browser connects to 192.168.1.10 → Website loads ✅",
+        "mistakes": [
+          [
+            "DNS সবসময় TCP ব্যবহার করে",
+            "না — DNS default এ UDP/53 ব্যবহার করে। TCP শুধু large response বা zone transfer এ"
+          ],
+          [
+            "Root server সরাসরি IP দেয়",
+            "না — Root server শুধু TLD server এর address দেয়, actual IP দেয় না"
+          ]
+        ],
+        "mnemonic": "Browser → OS → Root → TLD → Auth → IP! (BORTA-IP)"
+      }
+    },
+    {
+      "id": "cn_011",
+      "q": "What are SOAP and RESTful APIs in web services? State one main difference between SOAP and REST in terms of how they exchange data.",
+      "tags": [
+        "SOAP",
+        "REST",
+        "RESTful API",
+        "web services",
+        "XML",
+        "JSON",
+        "HTTP"
+      ],
+      "answer": {
+        "summary": [
+          "SOAP হলো একটি strict protocol যা XML ব্যবহার করে। REST হলো একটি flexible architectural style যা সাধারণত JSON ব্যবহার করে HTTP এর উপর।",
+          "মূল পার্থক্য: SOAP শুধু XML এ কথা বলে — REST JSON, XML, HTML যেকোনো format এ কথা বলতে পারে।"
+        ],
+        "points": [
+          "SOAP (Simple Object Access Protocol): একটি standard communication protocol। XML format এ message আদান-প্রদান করে। Strict rules ও standards follow করে (WS-Security, WSDL)। High security ও ACID transaction এর জন্য উপযুক্ত",
+          "RESTful API (Representational State Transfer): একটি architectural style, protocol নয়। HTTP methods (GET, POST, PUT, DELETE) ব্যবহার করে। JSON, XML, HTML ইত্যাদি যেকোনো format সাপোর্ট করে। হালকা, দ্রুত, এবং web ও mobile app এ সবচেয়ে জনপ্রিয়",
+          "Data Exchange পার্থক্য: SOAP → শুধু XML envelope এ data পাঠায়। REST → JSON (সবচেয়ে সাধারণ), XML বা অন্য যেকোনো format ব্যবহার করতে পারে"
+        ],
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "SOAP",
+            "REST"
+          ],
+          "rows": [
+            [
+              "Type",
+              "Protocol",
+              "Architectural Style"
+            ],
+            [
+              "Data Format",
+              "শুধু XML",
+              "JSON, XML, HTML ইত্যাদি"
+            ],
+            [
+              "Speed",
+              "ধীর (XML heavy)",
+              "দ্রুত (JSON lightweight)"
+            ],
+            [
+              "Security",
+              "Built-in WS-Security",
+              "HTTPS এর উপর নির্ভর"
+            ],
+            [
+              "ব্যবহার",
+              "Banking, ERP, Enterprise",
+              "Web app, Mobile app, Public API"
+            ],
+            [
+              "উদাহরণ",
+              "Bank fund transfer API",
+              "Facebook, YouTube API"
+            ]
+          ]
+        },
+        "mnemonic": "SOAP = Strict Old XML Protocol। REST = Relaxed, Easy, Simple Transfer (JSON preferred)"
+      }
+    },
+    {
+      "id": "cn_012",
+      "q": "A company developed private communication software (VoIP) where anyone can eavesdrop packets and reconstruct the voice stream. Which OSI layer is most suitable for adding end-to-end encryption, considering development time, software maintainability, and development cost? Give reasons.",
+      "tags": [
+        "OSI model",
+        "encryption",
+        "VoIP",
+        "Presentation Layer",
+        "end-to-end encryption",
+        "TLS",
+        "SSL"
+      ],
+      "answer": {
+        "summary": [
+          "সবচেয়ে উপযুক্ত layer হলো Presentation Layer (Layer 6)।",
+          "এই layer এর মূল কাজই data encryption/decryption — তাই development time, cost ও maintainability সব দিক থেকে এটি সেরা।"
+        ],
+        "points": [
+          "Presentation Layer (Layer 6) কেন? Encryption ও decryption এই layer এর built-in responsibility। Standard libraries (SSL/TLS) সহজে ব্যবহার করা যায় — development fast ও cheap",
+          "Development Time & Cost: Layer 6 এ SSL/TLS implement করতে proven, ready-made libraries আছে। Custom packet-level encryption (Layer 3/4) লিখলে অনেক বেশি সময় ও খরচ লাগত",
+          "Software Maintainability: Separation of concerns — security logic application (Layer 7) ও network (Layer 3) থেকে আলাদা থাকে। Encryption algorithm পরিবর্তন করলে বাকি layers এ কোনো change লাগে না",
+          "End-to-End Protection: Voice data Application layer তৈরি করার পরপরই Layer 6 encrypt করে। Receiver এ Layer 6 decrypt করে Application layer কে দেয় — মাঝখানে কেউ পড়তে পারে না",
+          "কেন Layer 3/4 নয়? Layer 3 (Network) শুধু routing জানে — payload সুরক্ষার জায়গা নয়। Layer 4 (Transport) connection manage করে — content encryption এর জন্য design করা হয়নি",
+          "কেন Layer 7 নয়? Application layer তে implement করলে প্রতিটি application আলাদাভাবে encryption maintain করতে হয় — costly ও error-prone"
+        ],
+        "diagram": "OSI MODEL — ENCRYPTION AT LAYER 6\n\n Sender Side                    Receiver Side\n ─────────────────────────────────────────────\n Layer 7 (App)   Voice stream created\n      │\n Layer 6 (Pres)  ← ENCRYPT HERE ───────────── Layer 6 (Pres) → DECRYPT HERE\n      │               ↑                                              ↓\n Layer 5-1       Encrypted voice travels                    Original voice\n                  through network                          restored for app\n\n Anyone intercepting between Layer 6 → Layer 6 sees only encrypted data ✅",
+        "mistakes": [
+          [
+            "Layer 7 (Application) তে encrypt করা সবচেয়ে ভালো",
+            "না — Layer 7 এ প্রতিটি app আলাদা encryption লিখতে হবে, maintainability খারাপ হয়"
+          ],
+          [
+            "Layer 3 (Network) তে encrypt করলে end-to-end হবে",
+            "না — Layer 3 encrypt করলে শুধু একটি hop সুরক্ষিত হয়, প্রকৃত end-to-end হয় না। Layer 6 পুরো path cover করে"
+          ]
+        ],
+        "mnemonic": "Presentation Layer = Personal bodyguard of data — data বের হওয়ার আগে encrypt, ঢোকার পর decrypt। কেউ মাঝে পড়তে পারে না।"
+      }
+    },
+    {
+      "id": "cn_013",
+      "q": "What are the advantages and disadvantages of Net-Specific Routing and Host-Specific Routing? Compare with each other.",
+      "tags": [
+        "routing",
+        "net-specific routing",
+        "host-specific routing",
+        "routing table",
+        "subnet mask",
+        "network layer"
+      ],
+      "answer": {
+        "summary": [
+          "Net-Specific Routing পুরো network/subnet কে একটি entry দিয়ে cover করে — scalable কিন্তু granular control কম।",
+          "Host-Specific Routing একটি নির্দিষ্ট IP কে target করে (/32 mask) — নিখুঁত control কিন্তু routing table বড় হয়।"
+        ],
+        "points": [
+          "Net-Specific Routing: একটি route entry পুরো network cover করে (e.g., /8 to /30)। Routing table ছোট ও manageable। RIP, OSPF এর মতো standard protocols এটি ব্যবহার করে। Individual host এর জন্য আলাদা policy দেওয়া যায় না",
+          "Host-Specific Routing: একটি route entry শুধু একটি IP cover করে (/32 for IPv4)। Granular control — critical host এর জন্য custom path বা security policy দেওয়া যায়। Routing table বিশাল হয়ে যায় large network এ। Most routing protocols host route advertise করে না — manually configure করতে হয়",
+          "Net-Specific Advantage: Scalable, less memory, standard, easy management",
+          "Net-Specific Disadvantage: No per-host control, no per-host security/optimization",
+          "Host-Specific Advantage: Granular control, redundant path for critical servers, per-host security policy",
+          "Host-Specific Disadvantage: Huge routing table, high overhead, static configuration, not scalable"
+        ],
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Net-Specific Routing",
+            "Host-Specific Routing"
+          ],
+          "rows": [
+            [
+              "Subnet Mask",
+              "/8 to /30 (group of hosts)",
+              "/32 (single host)"
+            ],
+            [
+              "Routing Table Size",
+              "ছোট ও efficient",
+              "বড় ও complex"
+            ],
+            [
+              "Control",
+              "Network-level only",
+              "Per-host granular control"
+            ],
+            [
+              "Management",
+              "Easy, low overhead",
+              "Difficult, high overhead"
+            ],
+            [
+              "Protocol Support",
+              "RIP, OSPF ইত্যাদি সাপোর্ট করে",
+              "সাধারণত manually/statically configure করতে হয়"
+            ],
+            [
+              "ব্যবহার",
+              "Standard routing (সব traffic)",
+              "Critical server, redundancy, security exception"
+            ]
+          ]
+        },
+        "mnemonic": "Net-Specific = পাড়ার সবার জন্য একটি সিগন্যাল। Host-Specific = একজনের বাড়িতে আলাদা সিকিউরিটি গার্ড।"
+      }
+    },
+    {
+      "id": "cn_014",
+      "q": "What is an IT Disaster Recovery Plan (DRP)? Propose a comprehensive DR & BCP plan for a data center.",
+      "tags": [
+        "disaster recovery",
+        "DRP",
+        "BCP",
+        "RPO",
+        "RTO",
+        "data replication",
+        "redundancy",
+        "backup"
+      ],
+      "answer": {
+        "summary": [
+          "DRP হলো একটি structured guideline যা দুর্যোগের (আগুন, সাইবার আক্রমণ) পর IT infrastructure ও data পুনরুদ্ধার করতে ব্যবহৃত হয়।",
+          "একটি কার্যকর DR plan এ RPO/RTO নির্ধারণ, data replication, redundancy, regular testing ও backup policy থাকে।"
+        ],
+        "points": [
+          "DRP কী? Disaster Recovery Plan — প্রাকৃতিক বা মানবসৃষ্ট দুর্যোগের পর IT system ও data restore করার নির্দিষ্ট পদ্ধতি। BCP (Business Continuity Plan) নিশ্চিত করে দুর্যোগের সময়ও business চালু থাকে",
+          "RPO & RTO নির্ধারণ: RPO (Recovery Point Objective) = কতটুকু data loss acceptable (e.g., max 1 hour)। RTO (Recovery Time Objective) = কত দ্রুত system restore হতে হবে (e.g., 4 hours এর মধ্যে)",
+          "Data Replication: Primary DC থেকে DR site এ real-time বা near-real-time data sync। Synchronous replication (zero data loss, costly) বা Asynchronous (কিছু data loss হতে পারে, সস্তা)",
+          "Redundancy Strategy: Network redundancy (dual ISP, redundant switches/routers)। Server redundancy (clustering, failover)। Power redundancy (UPS + diesel generator)",
+          "Regular Testing: প্রতি ৬ মাসে disaster drill — failover test করে দেখা system ঠিকমতো recover হচ্ছে কি না। Tabletop exercise ও live failover test দুটোই করা",
+          "Backup Policy: 3-2-1 Rule — 3 copies, 2 different media, 1 off-site। Regular off-site backup (cloud বা remote DC)। Backup integrity test করা"
+        ],
+        "diagram": "PRIMARY DATA CENTER                    DR SITE\n─────────────────────────────────────────────────────\n┌─────────────────┐   Real-time/Near   ┌─────────────┐\n│  Production     │ ──replication────→  │  Standby    │\n│  Servers        │                     │  Servers    │\n│  Storage        │ ──────────────────→  │  Storage    │\n└─────────────────┘                     └─────────────┘\n        │                                      │\n  UPS + Generator                        UPS + Generator\n        │                                      │\n    ISP Link 1                            ISP Link 2\n\nDISASTER OCCURS ↓\n Primary DC goes down\n DNS/Load Balancer redirects to DR Site\n DR Site becomes active within RTO window ✅",
+        "table": {
+          "headers": [
+            "Component",
+            "কী করে",
+            "উদ্দেশ্য"
+          ],
+          "rows": [
+            [
+              "RPO",
+              "Acceptable data loss সীমা নির্ধারণ",
+              "কতটুকু data হারানো চলবে"
+            ],
+            [
+              "RTO",
+              "Acceptable downtime সীমা নির্ধারণ",
+              "কত দ্রুত উঠতে হবে"
+            ],
+            [
+              "Data Replication",
+              "Real-time data sync",
+              "DR site এ fresh data"
+            ],
+            [
+              "Redundancy",
+              "Dual network, server, power",
+              "Single point of failure দূর করা"
+            ],
+            [
+              "Regular Testing",
+              "6-monthly disaster drill",
+              "Plan কাজ করে কি না যাচাই"
+            ],
+            [
+              "Backup (3-2-1)",
+              "Off-site + multiple copies",
+              "Last resort recovery"
+            ]
+          ]
+        },
+        "mnemonic": "DR Plan = RPO-RTO → Replicate → Redundancy → Regular Test → Backup (R4B)"
+      }
+    },
+    {
+      "id": "cn_015",
+      "q": "Describe the security architecture (network flow) for a bank's online system — showing how an NGFW sits between external internet users and internal servers.",
+      "tags": [
+        "NGFW",
+        "network security",
+        "firewall",
+        "DMZ",
+        "security architecture",
+        "web server",
+        "DNS server"
+      ],
+      "answer": {
+        "summary": [
+          "একটি bank এর security architecture এ NGFW মাঝখানে gateway হিসেবে থাকে — internet থেকে আসা সব traffic প্রথমে firewall এ filter হয়, তারপর শুধু authorized traffic servers এ যায়।",
+          "Flow: Internet Users → Router/ISP → NGFW (filter) → Web/DNS/Mail Server"
+        ],
+        "points": [
+          "External Users: Internet থেকে bank এর website বা services access করার চেষ্টা করে",
+          "Router/ISP Gateway: ISP এর router প্রথমে traffic receive করে — basic routing করে NGFW এ পাঠায়",
+          "Next-Generation Firewall (NGFW): Traffic Filtering ও Security Rule Checking করে। Deep Packet Inspection (DPI) দিয়ে malicious traffic ধরে। Application-level control — নির্দিষ্ট app বা protocol block করতে পারে। IPS, Anti-virus, Sandboxing built-in",
+          "Internal Servers (behind NGFW): Web Server, DNS Server, Mail Server — শুধু NGFW-approved traffic পৌঁছায়। DMZ zone এ রাখা হয় web-facing servers — internal network থেকেও আলাদা",
+          "এই design এর সুবিধা: Unauthorized traffic automatically block। Single choke point এ সব security enforce। Layer-wise defense (Defense in Depth)"
+        ],
+        "diagram": "[External Internet Users / Clients]\n              │\n              ▼\n   [Router / ISP Gateway]\n              │\n              ▼\n ┌────────────────────────────────┐\n │  Next-Generation Firewall      │\n │  (NGFW)                        │\n │  • Deep Packet Inspection      │\n │  • App Control (block FB etc.) │\n │  • IPS + Anti-virus            │\n │  • Security Rule Checking      │\n └───────────┬────────────────────┘\n             │ Authorized Traffic Only\n      ┌──────┼──────┐\n      ▼      ▼      ▼\n [Web    [DNS    [Mail\n Server] Server] Server]\n  (DMZ Zone — isolated from internal LAN)\n              │\n              ▼\n    [Internal Bank Network / DB Servers]\n    (only accessible from DMZ, not internet)",
+        "mistakes": [
+          [
+            "Router এবং NGFW একই জিনিস",
+            "না — Router শুধু routing করে। NGFW deep inspection, IPS, app control করে"
+          ],
+          [
+            "Firewall দিলে DMZ দরকার নেই",
+            "না — DMZ আলাদা isolation layer। Web server সরাসরি internal network এ থাকলে breach হলে পুরো bank network exposed হবে"
+          ]
+        ],
+        "mnemonic": "Internet → Router → NGFW (filter) → DMZ Servers → Internal Network। NGFW = সবকিছু দেখে সিদ্ধান্ত নেওয়া security checkpoint।"
+      }
+    },
+    {
+      "id": "cn_016",
+      "q": "What is a Data Center to Cloud Transformation Strategy? Describe the migration steps.",
+      "tags": [
+        "cloud migration",
+        "data center",
+        "hybrid cloud",
+        "6Rs",
+        "lift and shift",
+        "cloud strategy"
+      ],
+      "answer": {
+        "summary": [
+          "Data center থেকে cloud এ migration একটি phased process — সরাসরি সব সরিয়ে নিলে ঝুঁকি বেশি।",
+          "Strategy: Assessment → Cloud Model Selection → Migration Path (6Rs) → Pilot → Data Migration → Cut-over।"
+        ],
+        "points": [
+          "Assessment & Inventory: বর্তমান DC তে কী কী application, server, database আছে তার inventory তৈরি। কোনটি cloud-ready, কোনটি legacy — classify করা",
+          "Cloud Model Selection: Public Cloud (AWS/Azure) — cost-effective, scalable। Private Cloud — data sovereignty, security। Hybrid Cloud — bank এর মতো sensitive industry এর জন্য best: critical data private, rest public",
+          "Migration Path — 6Rs: Rehost (Lift & Shift) — যেমন আছে তেমন cloud এ তোলা। Replatform — OS বা DB upgrade করে cloud optimize। Refactor — cloud-native architecture এ rebuild। Retire — unused apps বন্ধ। Retain — কিছু on-premise রাখা। Repurchase — SaaS solution এ switch",
+          "Pilot Phase: কম গুরুত্বপূর্ণ application প্রথমে cloud এ test। Production load simulate করে performance দেখা",
+          "Data Migration: Secure channel (VPN / AWS Direct Connect) দিয়ে data transfer। Downtime minimize করতে incremental migration",
+          "Synchronization: Physical ও cloud data sync রাখা migration চলাকালীন। Consistency check করা",
+          "Cut-over & Monitoring: সম্পূর্ণ traffic cloud এ shift। Performance, latency, cost — সব monitor। Rollback plan ready রাখা"
+        ],
+        "table": {
+          "headers": [
+            "6R Strategy",
+            "অর্থ",
+            "কখন ব্যবহার"
+          ],
+          "rows": [
+            [
+              "Rehost",
+              "Lift & Shift — হুবহু cloud এ",
+              "Quick migration, legacy apps"
+            ],
+            [
+              "Replatform",
+              "Minor optimization করে cloud এ",
+              "DB upgrade, managed services"
+            ],
+            [
+              "Refactor",
+              "Cloud-native rebuild",
+              "Performance critical apps"
+            ],
+            [
+              "Retire",
+              "App বন্ধ করে দেওয়া",
+              "Unused, redundant systems"
+            ],
+            [
+              "Retain",
+              "On-premise রাখা",
+              "Compliance/regulatory requirement"
+            ],
+            [
+              "Repurchase",
+              "SaaS এ switch",
+              "CRM, email, HR tools"
+            ]
+          ]
+        },
+        "mnemonic": "Migration = Assess → Model → 6Rs → Pilot → Migrate → Sync → Cut-over (AMP → 6R → PSC)"
+      }
+    },
+    {
+      "id": "cn_017",
+      "q": "Compare SAS (Serial Attached SCSI) vs. SATA (Serial ATA). Which is better for servers and why?",
+      "tags": [
+        "SAS",
+        "SATA",
+        "storage",
+        "server",
+        "hard drive",
+        "data center",
+        "dual port"
+      ],
+      "answer": {
+        "summary": [
+          "SAS server এর জন্য সেরা — high speed, dual port reliability, ও 24/7 enterprise-grade use এর জন্য design করা।",
+          "SATA সাশ্রয়ী — backup, archive বা consumer-grade storage এর জন্য ঠিক আছে।"
+        ],
+        "points": [
+          "SAS (Serial Attached SCSI): Speed অনেক বেশি — 12Gbps বা তার বেশি। Dual Port support — একটি path fail হলে অন্যটি দিয়ে data read চলে। 24/7 continuous operation এর জন্য design করা। Highly reliable, MTBF (Mean Time Between Failure) অনেক বেশি। দাম বেশি",
+          "SATA (Serial ATA): Speed তুলনামূলক কম — 6Gbps। Single port — path fail মানে data access বন্ধ। Consumer/desktop grade — 24/7 heavy use এর জন্য নয়। সাশ্রয়ী। Backup ও archive storage এর জন্য উপযুক্ত",
+          "Server এর জন্য SAS কেন সেরা? Dual port = redundancy, failover। High speed = fast transaction processing। Enterprise reliability = data center এর uptime requirement পূরণ করে। Banking ও critical system এ SAS mandatory",
+          "SATA কখন ব্যবহার করবে? Backup storage, cold archive, less-critical data যেখানে cost priority"
+        ],
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "SAS",
+            "SATA"
+          ],
+          "rows": [
+            [
+              "Speed",
+              "12Gbps+ (অনেক বেশি)",
+              "6Gbps (তুলনামূলক কম)"
+            ],
+            [
+              "Port",
+              "Dual Port (redundancy)",
+              "Single Port"
+            ],
+            [
+              "Reliability",
+              "অত্যন্ত উচ্চ (24/7 enterprise)",
+              "মাঝারি (consumer grade)"
+            ],
+            [
+              "দাম",
+              "অনেক বেশি",
+              "সাশ্রয়ী"
+            ],
+            [
+              "Path Failover",
+              "✅ Yes — other port takes over",
+              "❌ No — single path"
+            ],
+            [
+              "ব্যবহার",
+              "Production server, database, banking",
+              "Backup, archive, desktop"
+            ]
+          ]
+        },
+        "mnemonic": "SAS = Server এর জন্য Sure-fire Awesome Storage। SATA = Suitable for Archive, Tier-2 use।"
+      }
+    },
+    {
+      "id": "cn_018",
+      "q": "What is BIOS and how does it affect hardware maintenance and booting configuration in a server?",
+      "tags": [
+        "BIOS",
+        "UEFI",
+        "POST",
+        "boot order",
+        "server",
+        "RAID",
+        "virtualization",
+        "power management"
+      ],
+      "answer": {
+        "summary": [
+          "BIOS (Basic Input/Output System) হলো server এর motherboard এ থাকা firmware যা hardware ও OS এর মধ্যে bridge হিসেবে কাজ করে।",
+          "Server boot এর সময় hardware initialize করা, boot order নির্ধারণ, RAID config, power management ও virtualization enable — সব BIOS এ হয়।"
+        ],
+        "points": [
+          "BIOS কী? Motherboard এ stored firmware। Hardware ও Operating System এর মধ্যে সেতু। আধুনিক server এ UEFI (Unified Extensible Firmware Interface) — BIOS এর advanced version। Server চালু হওয়ার সময় সবার আগে BIOS execute হয়",
+          "Hardware Initialization — POST (Power-On Self-Test): Server চালু হলে BIOS প্রথমেই CPU, RAM, Storage, NIC check করে। কোনো hardware fault থাকলে beep code বা error message দেখায় ও boot আটকে দেয়। এটি hardware maintenance এ সবচেয়ে গুরুত্বপূর্ণ diagnostic tool",
+          "Boot Order Configuration: Server কোথা থেকে OS load করবে — HDD, SSD, Network (PXE Boot), বা USB — তা BIOS এ set করা হয়। PXE Boot দিয়ে network থেকে OS deploy করা যায় (diskless server)",
+          "RAID Configuration: অনেক server এ onboard RAID controller BIOS থেকে configure করতে হয়। RAID 1, 5, 10 ইত্যাদি disk redundancy BIOS/UEFI RAID setup এ define হয়",
+          "Power Management: Power cut এর পর server automatically চালু হবে কি না (Power On AC Restore) — BIOS থেকে set করা হয়। Data center এ UPS restore এর পর auto-boot দরকার",
+          "Virtualization Support: Intel VT-x বা AMD-V virtualization feature BIOS থেকে enable করতে হয়। VMware, Hyper-V চালাতে এটি mandatory"
+        ],
+        "table": {
+          "headers": [
+            "BIOS Function",
+            "কী করে",
+            "Maintenance এ গুরুত্ব"
+          ],
+          "rows": [
+            [
+              "POST",
+              "Hardware self-test করে",
+              "Fault detection — boot এর আগেই hardware problem ধরা"
+            ],
+            [
+              "Boot Order",
+              "OS কোথা থেকে load হবে",
+              "OS reinstall, PXE deploy, recovery"
+            ],
+            [
+              "RAID Config",
+              "Disk redundancy set করে",
+              "Data protection, storage setup"
+            ],
+            [
+              "Power Management",
+              "Auto power-on set করে",
+              "DC outage recovery automation"
+            ],
+            [
+              "Virtualization",
+              "VT-x/AMD-V enable করে",
+              "VM host চালানোর prerequisite"
+            ]
+          ]
+        },
+        "mnemonic": "BIOS = Boot (POST) → Initialize → OS load। BIOS ছাড়া server অন্ধ — hardware দেখতে পায় না, OS খুঁজে পায় না।"
       }
     }
   ]

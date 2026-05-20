@@ -202,9 +202,15 @@
         "points": [
           "low = 0, high = n−1 দিয়ে শুরু করো।",
           "যতক্ষণ low ≤ high: mid = (high − low) / 2 বের করো।",
-          {"sub": "arr[mid] == target → return mid ✅"},
-          {"sub": "arr[mid] < target → low = mid + 1 (ডানে যাও)"},
-          {"sub": "arr[mid] > target → high = mid − 1 (বামে যাও)"},
+          {
+            "sub": "arr[mid] == target → return mid ✅"
+          },
+          {
+            "sub": "arr[mid] < target → low = mid + 1 (ডানে যাও)"
+          },
+          {
+            "sub": "arr[mid] > target → high = mid − 1 (বামে যাও)"
+          },
           "লুপ শেষে target না পেলে return −1 ❌",
           "Unsorted এ fail কেন: mid দেখে বাম/ডান decide করা হয় — unsorted এ সেই assumption ভুল, তাই element miss হয়।"
         ],
@@ -268,19 +274,105 @@
         ],
         "points": [
           "BFS কী করে: Queue এর সামনের node বের করে, তার সব neighbor Queue এ ঢোকায়।",
-          {"sub": "Goal কোথায় জানে না — সব দিকে সমান effort দেয়।"},
+          {
+            "sub": "Goal কোথায় জানে না — সব দিকে সমান effort দেয়।"
+          },
           "A* কী করে: প্রতিটি node এ দুটো জিনিস track করে —",
-          {"sub": "(১) Start থেকে এখন পর্যন্ত কত cost হয়েছে"},
-          {"sub": "(২) Goal থেকে আনুমানিক কতদূর (heuristic estimate)"},
-          {"sub": "এই দুটো যোগ করে সবচেয়ে কম যার, সে আগে explore হয়।"},
+          {
+            "sub": "(১) Start থেকে এখন পর্যন্ত কত cost হয়েছে"
+          },
+          {
+            "sub": "(২) Goal থেকে আনুমানিক কতদূর (heuristic estimate)"
+          },
+          {
+            "sub": "এই দুটো যোগ করে সবচেয়ে কম যার, সে আগে explore হয়।"
+          },
           "পার্থক্য: Goal ডানদিকে। BFS ডান-বাম-উপর-নিচ সব দিকে ছড়ায়।",
-          {"sub": "A* দেখে ডানের node এর total সবচেয়ে কম → ডানে যায় → আবার ডানে → Goal।"},
-          {"sub": "বাম-উপর-নিচ explore করতেই হয়নি — এটাই A* এর গতির কারণ।"},
+          {
+            "sub": "A* দেখে ডানের node এর total সবচেয়ে কম → ডানে যায় → আবার ডানে → Goal।"
+          },
+          {
+            "sub": "বাম-উপর-নিচ explore করতেই হয়নি — এটাই A* এর গতির কারণ।"
+          },
           "Admissible heuristic: estimate যদি সবসময় actual cost ≤ হয়, A* optimal path দেয়।",
           "Trade-off: BFS = সবসময় optimal কিন্তু slow। A* = heuristic ভালো হলে optimal ও দ্রুত।"
         ],
         "diagram": "Grid map: S থেকে G যেতে হবে (G ডানদিকে)\nS . . . . . . . G\n. . . . . . . . .\n. . . . . . . . .\n\nBFS — সব দিকে বৃত্তাকারে expand:\n. . . . . . . . G  ← G এখনো দেখেনি\n. . . 3 3 3 . . .\n. . 3 2 2 2 3 . .\n. 3 2 1 S 1 2 3 .  ← সব দিকে সমানভাবে\n. . 3 2 2 2 3 . .\n. . . 3 3 3 . . .\nG ডানদিকে থাকলেও বাম-উপর-নিচ সব explore\n\nA* — Goal এর দিকে ঝুঁকে যায়:\nStep 1: S থেকে সব neighbor check:\n  ডানের node:  cost=1, est=7 → total=8  ← সবচেয়ে কম!\n  বামের node:  cost=1, est=9 → total=10\n  নিচের node:  cost=1, est=8 → total=9\n  → ডানে যায়\nStep 2: আবার ডানের neighbor সবচেয়ে ভালো → ডানে\nStep 3: আবার ডানে... → G পৌঁছে গেলো!\nS → → → → → → → G  (বাম-উপর-নিচ explore করতেই হয়নি)",
         "mnemonic": "BFS = অন্ধকারে সব দিকে মশাল জ্বালানো। A* = GPS — সামনে কতদূর দেখতে পাচ্ছি তার উপর ভিত্তি করে সরাসরি এগিয়ে যাওয়া।"
+      }
+    },
+    {
+      "id": "dsa_007",
+      "q": "Compare Dynamic Programming (DP) vs. Greedy Method vs. Divide and Conquer — focusing on fundamental differences, solution style, and core properties.",
+      "tags": [
+        "dynamic programming",
+        "greedy",
+        "divide and conquer",
+        "memoization",
+        "tabulation",
+        "optimal substructure",
+        "overlapping subproblems"
+      ],
+      "answer": {
+        "summary": [
+          "তিনটি technique optimization problem solve করে কিন্তু ভিন্নভাবে।",
+          "D&C = independent subproblem combine করে। DP = overlapping subproblem একবার solve করে মনে রাখে। Greedy = সবসময় সেই মুহূর্তের best choice নেয়।"
+        ],
+        "points": [
+          "Divide and Conquer (D&C): Problem ভেঙে independent subproblem তৈরি করে। প্রতিটি subproblem independently solve হয়, তারপর merge করে। Always optimal। Top-down recursion। Examples: Merge Sort, Quick Sort, Binary Search",
+          "Dynamic Programming (DP): Overlapping subproblem — same subproblem বারবার আসে। একবার solve করে table/memo তে store করে — পরে সেখান থেকে নেয়। Always optimal। Bottom-up (Tabulation) বা Top-down (Memoization)। Examples: 0/1 Knapsack, Fibonacci, Floyd-Warshall",
+          "Greedy Method: প্রতিটি step এ locally optimal (সেই মুহূর্তে সবচেয়ে ভালো) choice নেয়। Future consequence দেখে না। Optimal guarantee নেই — শুধু Greedy Choice Property থাকলে optimal। সবচেয়ে fast। Examples: Dijkstra, Kruskal, Activity Selection",
+          "Key property differences: D&C = subproblem independent। DP = subproblem overlapping + optimal substructure। Greedy = optimal substructure + greedy choice property",
+          "Guaranteed optimality: D&C ✅ always। DP ✅ always। Greedy ❌ not always — depends on problem"
+        ],
+        "table": {
+          "headers": [
+            "Feature",
+            "Divide and Conquer",
+            "Dynamic Programming",
+            "Greedy"
+          ],
+          "rows": [
+            [
+              "Subproblem Type",
+              "Independent",
+              "Overlapping (repeated)",
+              "Current best only"
+            ],
+            [
+              "Stores results?",
+              "No (recomputes)",
+              "Yes (memo/table)",
+              "No"
+            ],
+            [
+              "Guaranteed Optimal?",
+              "✅ Yes",
+              "✅ Yes",
+              "❌ Not always"
+            ],
+            [
+              "Approach",
+              "Top-down recursion",
+              "Bottom-up or Top-down memo",
+              "Single iterative choice"
+            ],
+            [
+              "Speed",
+              "Efficient",
+              "Efficient (eliminates recompute)",
+              "Fastest (if applicable)"
+            ],
+            [
+              "Examples",
+              "Merge Sort, Binary Search",
+              "Knapsack, Fibonacci, Floyd-Warshall",
+              "Dijkstra, Kruskal, Activity Selection"
+            ]
+          ]
+        },
+        "diagram": "SAME PROBLEM — 3 APPROACHES:\nFibonacci(5)\n\nD&C (pure recursion — recomputes):\n fib(5) → fib(4) + fib(3)\n fib(4) → fib(3) + fib(2)   ← fib(3) calculated twice! ❌\n\nDP (memoization — store results):\n fib(5) → fib(4) → fib(3) → fib(2) → fib(1)\n          (each stored, never recomputed) ✅\n\nGreedy (coin change — not always optimal):\n Change 6 using {4, 3, 1}:\n Greedy picks 4 first → then 1+1 = 3 coins\n Optimal:  3+3 = 2 coins ← Greedy failed here ❌",
+        "mnemonic": "D&C = ভাগ করো, জয় করো। DP = মনে রাখো, সময় বাঁচাও। Greedy = এখনই সেরাটা নাও (কিন্তু সবসময় সেরা ফল নাও না)।"
       }
     }
   ]
