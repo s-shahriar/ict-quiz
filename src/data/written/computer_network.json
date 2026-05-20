@@ -1129,6 +1129,102 @@
         },
         "mnemonic": "BIOS = Boot (POST) → Initialize → OS load। BIOS ছাড়া server অন্ধ — hardware দেখতে পায় না, OS খুঁজে পায় না।"
       }
+    },
+    {
+      "id": "cn_019",
+      "q": "What type of generator is best suited for a data center's cooling and power backup needs? Justify based on fuel type, cost, energy efficiency, and banking standards.",
+      "tags": [
+        "data center",
+        "diesel generator",
+        "UPS",
+        "power backup",
+        "cooling",
+        "generator selection",
+        "banking"
+      ],
+      "answer": {
+        "summary": [
+          "Data center এর জন্য Diesel Generator সবচেয়ে উপযুক্ত।",
+          "কারণ: দ্রুত load নেয়, দীর্ঘমেয়াদে fuel store করা যায়, initial cost কম, এবং banking standard এ Standby diesel generator recommended।"
+        ],
+        "points": [
+          "পছন্দ: Diesel Generator (ডিজেল জেনারেটর)",
+          "Fuel (জ্বালানি): ডিজেল দীর্ঘদিন store করা যায়। দুর্যোগের সময় gas line বিচ্ছিন্ন হলেও diesel থাকে। Natural gas line এর উপর নির্ভরশীলতা নেই",
+          "Cost (খরচ): Natural gas generator এর চেয়ে initial purchase cost কম। Maintenance cost acceptable। ROI ভালো — দীর্ঘমেয়াদে টেকসই",
+          "Energy/Efficiency (শক্তি): Diesel generator সাধারণত 10-15 সেকেন্ডের মধ্যে full load নিতে পারে। Data center cooling system বন্ধ হওয়ার আগেই backup power আসে। High power output ঘনত্ব",
+          "Banking Standard: Banking data center এ 'Standby' rating এর diesel generator ব্যবহার করা হয়। Tier III ও Tier IV data center এ N+1 বা 2N redundancy — একাধিক generator রাখা হয়",
+          "UPS সাথে Integration: Generator চালু হওয়ার আগের 10-15 second gap UPS (Uninterruptible Power Supply) cover করে। Generator + UPS = zero-downtime power transition"
+        ],
+        "table": {
+          "headers": [
+            "Parameter",
+            "Diesel Generator",
+            "Natural Gas Generator"
+          ],
+          "rows": [
+            [
+              "Fuel Storage",
+              "Long-term storage সম্ভব",
+              "Pipeline dependent — disaster এ বিচ্ছিন্ন হতে পারে"
+            ],
+            [
+              "Initial Cost",
+              "কম",
+              "বেশি"
+            ],
+            [
+              "Load Response",
+              "10-15 sec (দ্রুত)",
+              "তুলনামূলক ধীর"
+            ],
+            [
+              "Reliability",
+              "উচ্চ, disaster proof",
+              "Gas supply failure এ বন্ধ হয়"
+            ],
+            [
+              "Banking Use",
+              "Standby rating — industry standard",
+              "কম প্রচলিত"
+            ],
+            [
+              "Maintenance",
+              "Regular — diesel filter, fuel quality",
+              "Gas system maintain করতে হয়"
+            ]
+          ]
+        },
+        "mnemonic": "Data Center Power = UPS (10-15 sec bridge) + Diesel Generator (long-term backup)। Diesel = store করো, দ্রুত চালু করো, disaster তে টিকে থাকো।"
+      }
+    },
+    {
+      "id": "cn_020",
+      "q": "Explain how OSPF (Open Shortest Path First) works for packet delivery at the Network Layer. Describe its step-by-step process.",
+      "tags": [
+        "OSPF",
+        "routing protocol",
+        "link-state",
+        "Dijkstra",
+        "LSA",
+        "LSDB",
+        "SPF",
+        "network layer"
+      ],
+      "answer": {
+        "summary": [
+          "OSPF হলো একটি link-state routing protocol যা Dijkstra's Algorithm ব্যবহার করে network এর সবচেয়ে দ্রুততম/সস্তা পথ বের করে।",
+          "Process: LSA → LSDB তৈরি → SPF Algorithm → Routing Table update → Packet Forward।"
+        ],
+        "points": [
+          "Step 1 — LSA (Link-State Advertisement): প্রতিটি router তার neighbor router খুঁজে বের করে। নিজের connection এর speed ও cost তথ্য LSA আকারে সব router এ broadcast করে। Example: Router A জানায় Router B এর সাথে তার 1Gbps link আছে",
+          "Step 2 — LSDB (Link-State Database): সব router এর LSA মিলে পুরো network এর একটি complete map তৈরি হয়। প্রতিটি router এই একই map রাখে — সবার picture identical। Example: পুরো শহরের সব রাস্তার একটি common ম্যাপ",
+          "Step 3 — SPF Algorithm (Dijkstra's): LSDB থেকে Dijkstra's Algorithm চালিয়ে সবচেয়ে কম cost এর path বের করে। Cost = bandwidth এর inverse (বেশি bandwidth = কম cost)। Example: ঢাকা থেকে চট্টগ্রাম — সবচেয়ে কম যানজটের রাস্তা",
+          "Step 4 — Routing Table Update: SPF algorithm এ পাওয়া best path গুলো Routing Table এ save হয়। প্রতিটি destination network এর জন্য next-hop router লেখা থাকে",
+          "Step 5 — Packet Forwarding: Packet আসলে destination IP দেখে Routing Table থেকে next-hop বের করে। সঠিক interface দিয়ে packet forward করে দেয়"
+        ],
+        "diagram": "OSPF PROCESS:\n\n Step 1: LSA Broadcast\n ┌──────┐   LSA   ┌──────┐   LSA   ┌──────┐\n │  R1  │ ──────→ │  R2  │ ──────→ │  R3  │\n │      │ ←────── │      │ ←────── │      │\n └──────┘         └──────┘         └──────┘\n  \"My link to R2 = 1Gbps, cost=1\"\n\n Step 2: LSDB (Same map in every router)\n ┌──────────────────────────────┐\n │  Network Map (LSDB)          │\n │  R1 ─── R2: cost 1           │\n │  R2 ─── R3: cost 2           │\n │  R1 ─── R3: cost 5           │\n └──────────────────────────────┘\n\n Step 3: SPF — Dijkstra's Algorithm\n  R1 → R3: Via R2 = 1+2 = 3 ✅ (best)\n           Direct  = 5   ❌\n\n Step 4: Routing Table\n  Destination  Next-Hop  Cost\n  R3 network   R2        3\n\n Step 5: Packet from R1 to R3\n  Packet → R1 checks table → sends to R2 → R2 sends to R3 ✅",
+        "mnemonic": "OSPF = L-L-S-R-P: LSA → LSDB → SPF → Routing Table → Packet Forward। মনে রাখো: 'Link করো, Learn করো, Shortest নাও, Route করো, Packet পাঠাও'"
+      }
     }
   ]
 }
