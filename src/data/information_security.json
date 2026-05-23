@@ -309,6 +309,71 @@
       "correct_answer_text": "SHA-1",
       "page": "Cryptography",
       "explanation": "SHA-1 হলো একটি cryptographic hash function যা যেকোনো input থেকে নির্দিষ্ট দৈর্ঘ্যের (160-bit) hash তৈরি করে। RSA এবং Diffie-Hellman হলো key exchange/encryption algorithm এবং AES হলো symmetric encryption algorithm।"
+    },
+    {
+      "id": 23,
+      "question": "Trojan can be introduced through?",
+      "options": {
+        "a": "Internet browsing",
+        "b": "Database accessing",
+        "c": "Emails",
+        "d": "Troubleshooting"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Emails",
+      "explanation": "Trojan সাধারণত email attachment-এর মাধ্যমে ছড়ায়। এই emails authentic দেখায়, কিন্তু user attached file download ও run করলে সেটি system corrupt করতে শুরু করে। Freeware ও shareware-এর মাধ্যমেও আসতে পারে।"
+    },
+    {
+      "id": 24,
+      "question": "Which of the following is not a malware?",
+      "options": {
+        "a": "Virus",
+        "b": "Worm",
+        "c": "Bug",
+        "d": "Trojan horse"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Bug",
+      "explanation": "Bug হলো program-এর logical error, এটি malware নয়। Virus, Worm এবং Trojan horse — এগুলো সব malicious program যা ইচ্ছাকৃতভাবে ক্ষতি করার জন্য তৈরি। Bug হলো অনিচ্ছাকৃত programming mistake।"
+    },
+    {
+      "id": 25,
+      "question": "Laili digitally signs a message and sends it to Mojnu. Verification of the signature by Mojnu requires —",
+      "options": {
+        "a": "Laili's public key",
+        "b": "Mojnu's public key",
+        "c": "Mojnu's private key",
+        "d": "Laili's private key"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Laili's public key",
+      "explanation": "Digital signature-এ sender (Laili) তার private key দিয়ে sign করে। Receiver (Mojnu) signature verify করতে sender-এর (Laili-র) public key ব্যবহার করে। এটি asymmetric cryptography-র মূলনীতি।"
+    },
+    {
+      "id": 26,
+      "question": "Advanced Encryption Standard (AES) is based on —",
+      "options": {
+        "a": "Asymmetric key algorithm",
+        "b": "Symmetric key algorithm",
+        "c": "Public key algorithm",
+        "d": "Key Exchange"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Symmetric key algorithm",
+      "explanation": "AES (Advanced Encryption Standard) Symmetric key algorithm-এর উপর ভিত্তি করে — একই key দিয়ে encrypt ও decrypt করা হয়। DES, Blowfish, IDEA-ও symmetric। RSA হলো Asymmetric (Public key) algorithm।"
+    },
+    {
+      "id": 27,
+      "question": "What is a computer Virus?",
+      "options": {
+        "a": "Hardware",
+        "b": "Software",
+        "c": "Microorganism",
+        "d": "Non Living Cell"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Software",
+      "explanation": "Computer Virus হলো একটি malicious software (program) যা নিজেকে অন্য files বা programs-এ copy করে ছড়িয়ে পড়ে এবং computer system-এর ক্ষতি করে। এটি hardware বা biological organism নয়, এটি একটি software।"
     }
   ]
 }

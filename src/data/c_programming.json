@@ -401,6 +401,71 @@
       "correct_answer": "c",
       "correct_answer_text": "malloc()",
       "explanation": "malloc() (memory allocate) C-তে heap থেকে dynamically মেমোরি বরাদ্দ করে। 'new' হলো C++ syntax। alloc() এবং create() C standard library-তে নেই। Memory leak এড়াতে free() দিয়ে মেমোরি মুক্ত করতে হয়।"
+    },
+    {
+      "id": 31,
+      "question": "What will be the output of the following C code?\nint main() {\n    int x = 107;\n    char y = 'Q';\n    printf(\"%c %d\", x, y);\n    return 0;\n}",
+      "options": {
+        "a": "107, Q",
+        "b": "k, 81",
+        "c": "k, Q",
+        "d": "Q, K"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "k, 81",
+      "explanation": "এই প্রোগ্রামে x = 107 (integer) এবং y = 'Q' (character)। printf(\"%c %d\", x, y) — %c দিয়ে x কে ASCII character হিসেবে print করে, ASCII 107 = k। %d দিয়ে y কে integer হিসেবে print করে, 'Q' এর ASCII value = 81। তাই output হবে: k 81।"
+    },
+    {
+      "id": 32,
+      "question": "What will be the output of the following C code?\nint main() {\n    int i = 11, j = 3;\n    printf(\"%d\n\", i|j);\n    return 0;\n}",
+      "options": {
+        "a": "11",
+        "b": "12",
+        "c": "13",
+        "d": "14"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "11",
+      "explanation": "এই প্রোগ্রামে i = 11 (binary: 1011), j = 3 (binary: 0011)। Bitwise OR (|) operation: 1011 | 0011 = 1011, যা decimal-এ 11। তাই output হবে 11।"
+    },
+    {
+      "id": 33,
+      "question": "Which of the following doesn't require an & for the input in scanf()?",
+      "options": {
+        "a": "char name[10]",
+        "b": "int name[10]",
+        "c": "float name[10]",
+        "d": "double name[10]"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "char name[10]",
+      "explanation": "char name[10] একটি array যার নাম নিজেই একটি pointer (memory address)। তাই scanf()-এ & দরকার হয় না। কিন্তু int, float, double variable-এর জন্য & দিয়ে address পাস করতে হয়।"
+    },
+    {
+      "id": 34,
+      "question": "Find the correct output:\nint a=10, b=20;\na^=b; b^=a; a^=b;\nprintf(\"%d %d\", a, b);",
+      "options": {
+        "a": "20 30",
+        "b": "10 30",
+        "c": "20 10",
+        "d": "Garbage value"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "20 10",
+      "explanation": "এটি XOR swap algorithm। a^=b → a=10^20=30; b^=a → b=20^30=10; a^=b → a=30^10=20। ফলে a=20, b=10। printf(\"%d %d\", a, b) → output: 20 10।"
+    },
+    {
+      "id": 35,
+      "question": "What will be the output of the given line?\nprintf(\"%d\", sizeof(int));",
+      "options": {
+        "a": "2",
+        "b": "4",
+        "c": "1",
+        "d": "8"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "4",
+      "explanation": "sizeof(int) বেশিরভাগ modern 32-bit ও 64-bit system-এ 4 bytes return করে। তাই printf(\"%d\", sizeof(int)) এর output হবে 4।"
     }
   ]
 }

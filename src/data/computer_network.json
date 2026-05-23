@@ -767,6 +767,357 @@
       "correct_answer": "c",
       "correct_answer_text": "Network or Transport Layer",
       "explanation": "TCP/IP tunneling সাধারণত Network Layer (Layer 3) বা Transport Layer (Layer 4)-এ encapsulation করে। GRE Network Layer tunneling protocol। SSL/TLS VPN Transport Layer-এ কাজ করে। Protocol অনুযায়ী layer ভিন্ন হতে পারে — কিন্তু Physical বা শুধু Application Layer এ নয়।"
+    },
+    {
+      "id": 57,
+      "question": "Which type of cable is used to connect the COM port of a host to the COM port of a router or switch?",
+      "options": {
+        "a": "Crossover",
+        "b": "Straight-through",
+        "c": "Rolled",
+        "d": "None of these"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Rolled",
+      "explanation": "Host-এর COM port থেকে router বা switch-এর CONSOLE port সংযোগ করতে Rolled (rollover) cable ব্যবহার হয়। এই cable সরাসরি host-এ plug করা যায় না, তাই RJ45 to DB9 Female cable converter ব্যবহার করতে হয়।"
+    },
+    {
+      "id": 58,
+      "question": "Which protocol can cause overload on a managed device?",
+      "options": {
+        "a": "Netflow",
+        "b": "WCCP",
+        "c": "IP SLA",
+        "d": "SNMP"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "SNMP",
+      "explanation": "SNMP (Simple Network Management Protocol) managed device-এ overload সৃষ্টি করতে পারে। এটি IP network-এর managed devices সম্পর্কে তথ্য collect ও organize করে এবং device behavior পরিবর্তন করতে পারে, যা অতিরিক্ত load তৈরি করে।"
+    },
+    {
+      "id": 59,
+      "question": "RPC provides a(an) —— on the client side, a separate one for each remote procedure.",
+      "options": {
+        "a": "stub",
+        "b": "identifier",
+        "c": "name",
+        "d": "process identifier"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "stub",
+      "explanation": "RPC (Remote Procedure Call)-এ client side-এ প্রতিটি remote procedure-এর জন্য একটি করে stub থাকে। Stub হলো distributed computing-এ এমন একটি code যা client ও server-এর মধ্যে remote procedure call-এর সময় parameters convert করে।"
+    },
+    {
+      "id": 60,
+      "question": "How many layers does the internet protocol suite have?",
+      "options": {
+        "a": "7",
+        "b": "5",
+        "c": "3",
+        "d": "4"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "4",
+      "explanation": "Internet protocol suite (TCP/IP model)-এ 4টি layer আছে: Application, Transport, Internet এবং Network Access (Link) layer। এটি OSI model-এর 7 layer থেকে আলাদা।"
+    },
+    {
+      "id": 61,
+      "question": "A host machine is unable to communicate with google server. Which command is the most appropriate to run at host machine to determine which intermediary device is responsible for this failure?",
+      "options": {
+        "a": "telnet 192.168.1.1",
+        "b": "ping 192.168.1.1",
+        "c": "tracert 192.168.1.1",
+        "d": "ftp 192.168.1.1"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "tracert 192.168.1.1",
+      "explanation": "tracert (Traceroute) command একটি packet কোন কোন router-এর মধ্য দিয়ে যাচ্ছে তা দেখায়। কোন intermediary device সমস্যা তৈরি করছে তা চিহ্নিত করতে এটি সবচেয়ে উপযুক্ত। ping শুধু connectivity চেক করে, কিন্তু path দেখায় না।"
+    },
+    {
+      "id": 62,
+      "question": "ইন্টারনেট নেটওয়ার্কে Media Access করার জন্য কোন পদ্ধতি ব্যবহৃত হয়?",
+      "options": {
+        "a": "CSMA/CD",
+        "b": "CSMA/CA",
+        "c": "Polling",
+        "d": "None"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "CSMA/CD",
+      "explanation": "ইন্টারনেট নেটওয়ার্কে (Ethernet) Media Access Control-এর জন্য CSMA/CD (Carrier Sense Multiple Access with Collision Detection) পদ্ধতি ব্যবহৃত হয়। এটি collision detect করে এবং retransmit করে। CSMA/CA wireless network-এ ব্যবহৃত হয়।"
+    },
+    {
+      "id": 63,
+      "question": "Suppose you need to assign IPv4 address to two computers of your company so that both computers belong to the subnet 255.255.255.240. Which of the following is the valid assignment?",
+      "options": {
+        "a": "172.16.5.14 and 172.16.5.17",
+        "b": "172.16.5.29 and 172.16.5.33",
+        "c": "172.16.5.17 and 172.16.5.29",
+        "d": "172.16.5.33 and 172.16.5.4"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "172.16.5.17 and 172.16.5.29",
+      "explanation": "Subnet mask 255.255.255.240 মানে /28, block size = 256-240 = 16। Blocks: .0-.15, .16-.31, .32-.47... 172.16.5.17 এবং 172.16.5.29 উভয়ই .16-.31 block-এ পড়ে, তাই এরা একই subnet-এ। অন্য options ভিন্ন block-এ পড়ে।"
+    },
+    {
+      "id": 64,
+      "question": "Suppose you are using an HTML browser at a client machine C to access a static HTML webpage hosted in a HTTP server. Assuming no web caching, which of the following is correct when you load the web page along with the embedded image?",
+      "options": {
+        "a": "C need to send last 2 HTTP requests to S using two different TCP connection",
+        "b": "C need to send last 2 HTTP requests to S but a single TCP connection is sufficient",
+        "c": "A single HTTP request is sufficient using a single TCP connection from C to S",
+        "d": "A single HTTP request is sufficient using any TCP connection from C to S"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "C need to send last 2 HTTP requests to S but a single TCP connection is sufficient",
+      "explanation": "HTTP/1.1 persistent connection ব্যবহার করে। একটি HTML page এবং তার embedded image load করতে 2টি HTTP request দরকার (একটি HTML-এর জন্য, একটি image-এর জন্য)। কিন্তু একটি single TCP connection-এই দুটি request পাঠানো সম্ভব।"
+    },
+    {
+      "id": 65,
+      "question": "Consider an extremely noisy channel in which the value of the signal-to-noise ratio is almost zero. For this channel the bandwidth is B, then what is the channel capacity?",
+      "options": {
+        "a": "0.137B",
+        "b": "0",
+        "c": "0.137",
+        "d": "Infinity"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "0",
+      "explanation": "Shannon-এর theorem অনুযায়ী, SNR ≈ 0 হলে channel capacity C = B × log2(1+SNR) ≈ B × log2(1) = 0। SNR শূন্যের কাছাকাছি হলে signal power ও noise power সমান, তাই কোনো তথ্য বহন করা সম্ভব নয়।"
+    },
+    {
+      "id": 66,
+      "question": "On a class B network, how many hosts are available at each site with a subnet mask of 248?",
+      "options": {
+        "a": "16,382",
+        "b": "8,190",
+        "c": "4,094",
+        "d": "2,046"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "2,046",
+      "explanation": "Subnet mask 248 = 11111000 binary। Host bits = 3 (শেষের 3 bit)। কিন্তু Class B network-এ subnet mask /13 equivalent হলে usable hosts = 2^11 - 2 = 2046। Network ও broadcast address বাদ দিয়ে usable hosts = 2,046।"
+    },
+    {
+      "id": 67,
+      "question": "The —— is an HFC network device installed inside the distribution hub that receives data from the internet and passes them to the combiner.",
+      "options": {
+        "a": "CM",
+        "b": "CMTS",
+        "c": "DOCSIS",
+        "d": "MCNS"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "CMTS",
+      "explanation": "CMTS (Cable Modem Transmission System) হলো distribution hub-এ installed HFC network device যা internet থেকে data receive করে combiner-এ pass করে। CM (Cable Modem) subscriber premises-এ installed থাকে। DOCSIS হলো protocol specification।"
+    },
+    {
+      "id": 68,
+      "question": "In which type of circuit switching, delivery of data is delayed because data must be stored and retrieved from RAM?",
+      "options": {
+        "a": "Space-division",
+        "b": "Time-division",
+        "c": "Virtual",
+        "d": "Packet"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Time-division",
+      "explanation": "Time-division circuit switching-এ data RAM-এ store করা হয় এবং পরে retrieve করা হয়, তাই delivery-তে delay হয়। এটি all-electronic switching system যা TDM (Time Division Multiplexing) ব্যবহার করে। Space-division physical path switching করে।"
+    },
+    {
+      "id": 69,
+      "question": "Which error detection method involves the use of parity bits?",
+      "options": {
+        "a": "Simple parity check",
+        "b": "Two-dimensional parity check",
+        "c": "CRC",
+        "d": "(a) and (b)"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "(a) and (b)",
+      "explanation": "Simple parity check এবং Two-dimensional parity check উভয়ই parity bits ব্যবহার করে error detection করে। Simple parity check একটি bit যোগ করে even/odd parity নিশ্চিত করে। Two-dimensional parity check rows ও columns উভয় দিকে parity check করে। CRC polynomial division ব্যবহার করে।"
+    },
+    {
+      "id": 70,
+      "question": "A DNS response is classified as —— if the information comes from cache memory.",
+      "options": {
+        "a": "Authoritative",
+        "b": "Recursive",
+        "c": "Unauthoritative",
+        "d": "Iterative"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Recursive",
+      "explanation": "Recursive DNS resolver cache থেকে তথ্য দিলে সেই response Recursive হিসেবে classified হয়। Recursive resolver নিজের cache check করে; থাকলে সরাসরি return করে। Authoritative DNS server সরাসরি IP address store করে এবং সেখান থেকে আসা response authoritative।"
+    },
+    {
+      "id": 71,
+      "question": "An email contains a textual birthday greeting, a cake picture, and a song. The order is not essential. What is the Content-type?",
+      "options": {
+        "a": "Multipart/digest",
+        "b": "Multipart/alternative",
+        "c": "Multipart/mixed",
+        "d": "Multipart/parallel"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Multipart/mixed",
+      "explanation": "Multipart/mixed ব্যবহার হয় যখন email-এ বিভিন্ন ধরনের content (text, image, audio) থাকে এবং সেগুলোর order essential নয়। এটি independent parts যা serially display করা যায়। Multipart/alternative একই content-এর বিভিন্ন format-এর জন্য।"
+    },
+    {
+      "id": 72,
+      "question": "A standard that allows a telephone connected to a public telephone network to talk to a computer connected to the Internet is —",
+      "options": {
+        "a": "SIP",
+        "b": "H.323",
+        "c": "IEEE 802.3",
+        "d": "V.90bis"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "H.323",
+      "explanation": "H.323 হলো ITU Telecommunication Standardization Sector (ITU-T)-এর recommendation যা packet networks-এ audio-visual communication-এর protocol describe করে। এটি VoIP, IP-based videoconferencing ও Internet telephony-তে ব্যবহৃত হয়।"
+    },
+    {
+      "id": 73,
+      "question": "An Ethernet LAN using the OSPF protocol with five attached routers can be called a —— network.",
+      "options": {
+        "a": "Point-to-point",
+        "b": "Stub",
+        "c": "Transient",
+        "d": "Virtual"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Transient",
+      "explanation": "OSPF-এ Ethernet LAN-এর মতো multiple routers attached network-কে Transient network বলা হয়। Transient network-এ একাধিক router সংযুক্ত থাকে। Stub network-এ শুধু একটি router থাকে, Point-to-point দুটি router-এর মধ্যে direct link।"
+    },
+    {
+      "id": 74,
+      "question": "Major function of a transport layer in the OSI model is to perform —",
+      "options": {
+        "a": "Peer to peer message encryption",
+        "b": "Node to node delivery",
+        "c": "End to end message delivery",
+        "d": "Updating routing tables"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "End to end message delivery",
+      "explanation": "OSI model-এর Transport layer-এর প্রধান কাজ হলো end-to-end message delivery নিশ্চিত করা। এটি source থেকে destination পর্যন্ত reliable data transfer, error control, flow control এবং segmentation পরিচালনা করে। TCP ও UDP এই layer-এর protocol।"
+    },
+    {
+      "id": 75,
+      "question": "An IPv6 basic header is fixed as —",
+      "options": {
+        "a": "32 bytes long",
+        "b": "40 bytes long",
+        "c": "64 bits long",
+        "d": "128-bit long"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "40 bytes long",
+      "explanation": "IPv6-এর fixed header সবসময় 40 bytes (320 bits) দীর্ঘ। IPv4 header variable length (20-60 bytes) হলেও IPv6 header সবসময় fixed 40 bytes। এতে Version, Traffic Class, Flow Label, Payload Length, Next Header, Hop Limit, Source ও Destination address থাকে।"
+    },
+    {
+      "id": 76,
+      "question": "An Access point operates in which layer of the OSI model?",
+      "options": {
+        "a": "Data link Layer",
+        "b": "Presentation layer",
+        "c": "Physical layer",
+        "d": "Transport layer"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Data link Layer",
+      "explanation": "Access point OSI model-এর Data Link layer (Layer 2)-এ কাজ করে। এটি switch-এর মতো যেকোনো packet broadcast করে কিন্তু নতুন network তৈরি করতে পারে না। Router Network layer (Layer 3)-এ কাজ করে এবং নতুন network তৈরি করতে পারে।"
+    },
+    {
+      "id": 77,
+      "question": "Suppose we want to download text documents at the rate of 100 pages per second. Assume a page consists of an average of 24 lines with 80 characters in each line. What is the required bit rate of the channel?",
+      "options": {
+        "a": "192 kbps",
+        "b": "512 kbps",
+        "c": "1.248 Mbps",
+        "d": "1.536 Mbps"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "1.536 Mbps",
+      "explanation": "মোট bits = 100 pages × 24 lines × 80 characters × 8 bits = 1,536,000 bits per second = 1536 kbps = 1.536 Mbps।"
+    },
+    {
+      "id": 78,
+      "question": "In a class B subnet, IP address: 125.134.112.66, Mask: 255.255.224.0. What is the first address (Network Address)?",
+      "options": {
+        "a": "125.134.96.0",
+        "b": "125.134.112.0",
+        "c": "125.134.112.66",
+        "d": "125.134.0.0"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "125.134.96.0",
+      "explanation": "Network Address বের করতে IP AND Subnet Mask করতে হয়। IP: 01111101.10000110.01110000.01000010, Mask: 11111111.11111111.11100000.00000000। AND করলে: 01111101.10000110.01100000.00000000 = 125.134.96.0।"
+    },
+    {
+      "id": 79,
+      "question": "The address resolution protocol (ARP) is used for ——",
+      "options": {
+        "a": "Finding the IP address from the DNS",
+        "b": "Finding the IP address of the default gateway",
+        "c": "Finding the IP address that corresponds to a MAC address",
+        "d": "Finding the MAC address that corresponds to an IP address"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Finding the MAC address that corresponds to an IP address",
+      "explanation": "ARP (Address Resolution Protocol) একটি known IP address-এর জন্য corresponding MAC address খুঁজে বের করে। Network-এ data পাঠাতে IP address জানা থাকলেও MAC address দরকার হয়, ARP সেই MAC address resolve করে।"
+    },
+    {
+      "id": 80,
+      "question": "A receiver host has failed to receive all of the segments that it should acknowledge. What can the host do to improve the reliability of this communication session?",
+      "options": {
+        "a": "Send a different source port number",
+        "b": "Restart the virtual circuit",
+        "c": "Decrease the sequence number",
+        "d": "Decrease the window size"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Decrease the window size",
+      "explanation": "Receiver host segments miss করলে window size কমিয়ে reliability বাড়ানো যায়। TCP flow control-এ (TCP Windowing) window size কমালে sender কম data পাঠায়, ফলে buffer overflow হয় না এবং segment loss কমে।"
+    },
+    {
+      "id": 81,
+      "question": "Assume that Source S and Destination D are connected through an intermediate router R. How many times a packet has to visit the network layer and data link layer during transmission from S to D?",
+      "options": {
+        "a": "Network Layer-4 times, Data link layer-4 times",
+        "b": "Network Layer-4 times, Data link layer-6 times",
+        "c": "Network Layer-2 times, Data link layer-4 times",
+        "d": "Network Layer-3 times, Data link layer-4 times"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Network Layer-3 times, Data link layer-4 times",
+      "explanation": "S ও D-তে প্রতিটিতে 1টি করে Network layer ও 1টি Data link layer। Router R-এ 1টি Network layer ও 2টি Data link layer (in ও out)। মোট: Network layer = 1+1+1 = 3, Data link layer = 1+2+1 = 4।"
+    },
+    {
+      "id": 82,
+      "question": "In the IPv4 address format, the number of networks allowed under Class C address is —",
+      "options": {
+        "a": "2^14",
+        "b": "2^7",
+        "c": "2^21",
+        "d": "2^24"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "2^21",
+      "explanation": "Class C-তে 24 bits Network ID-এর জন্য, 8 bits Host ID-এর জন্য। Network ID-এর leading 3 bits fixed (110)। তাই বাকি 24-3 = 21 bits দিয়ে network সংখ্যা = 2^21।"
+    },
+    {
+      "id": 83,
+      "question": "What is routing poisoning?",
+      "options": {
+        "a": "It sends back the protocol received from a router as a poison pill which stops the regular update",
+        "b": "It is uniform received from a router that cannot be sent back to the original router",
+        "c": "It describes when a router sets the metric for a downed link to infinity",
+        "d": "It prevents regular update message from reinstating a route that just came up"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "It describes when a router sets the metric for a downed link to infinity",
+      "explanation": "Route poisoning হলো যখন router কোনো downed link-এর metric infinity (16) তে set করে। Distance-vector routing protocol network down হলে route poisoning শুরু করে — network-কে unreachable হিসেবে advertise করে loop এড়াতে।"
     }
   ]
 }

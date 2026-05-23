@@ -376,6 +376,84 @@
       "correct_answer": "b",
       "correct_answer_text": "Customer collaboration",
       "explanation": "Agile-এর মূল value হলো Customer Collaboration over contract negotiation। এটি working software-কে documentation-এর উপরে, change respond করাকে plan follow করার উপরে, এবং individuals-কে processes-এর উপরে value দেয়।"
+    },
+    {
+      "id": 28,
+      "question": "Objective of integration testing is to find —",
+      "options": {
+        "a": "design error",
+        "b": "functional error",
+        "c": "interface error",
+        "d": "coding error"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "interface error",
+      "explanation": "Integration testing-এর মূল উদ্দেশ্য হলো দুটি বা তার বেশি module একসাথে কাজ করার সময় যে interface error বা communication defect তৈরি হয় তা খুঁজে বের করা। এটি unit testing ও validation testing-এর মাঝামাঝি পর্যায়ে হয়।"
+    },
+    {
+      "id": 29,
+      "question": "Cyclomatic complexity is a software metric used in —",
+      "options": {
+        "a": "White box testing",
+        "b": "Black box testing",
+        "c": "Grey box testing",
+        "d": "None of these"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "White box testing",
+      "explanation": "Cyclomatic complexity হলো White box testing-এ ব্যবহৃত একটি software metric যা প্রোগ্রামের control flow graph বিশ্লেষণ করে। এটি একটি প্রোগ্রামের complexity পরিমাপ করে এবং স্বাধীন path-এর সংখ্যা নির্ধারণ করে।"
+    },
+    {
+      "id": 30,
+      "question": "Waterfall model phase in which system design is prepared and this system design helps in specifying system requirements and define overall system architecture is —",
+      "options": {
+        "a": "planning",
+        "b": "modeling",
+        "c": "construction",
+        "d": "communication"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "modeling",
+      "explanation": "Waterfall model-এর Modeling phase-এ system design তৈরি করা হয়। এই phase system requirements specify করতে এবং overall system architecture define করতে সাহায্য করে। এটি analysis ও design উভয়কেই cover করে।"
+    },
+    {
+      "id": 31,
+      "question": "Language compilers and interpreters does not translate statements correctly when they have —",
+      "options": {
+        "a": "transcription error",
+        "b": "base errors",
+        "c": "syntax error",
+        "d": "logical error"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "syntax error",
+      "explanation": "Compiler ও interpreter syntax error থাকলে statements সঠিকভাবে translate করতে পারে না। Syntax error মানে programming language-এর grammar নিয়ম ভাঙা হয়েছে, যেমন missing semicolon বা bracket।"
+    },
+    {
+      "id": 32,
+      "question": "—— is the final stage of the testing process conducted before software release. This is referred —",
+      "options": {
+        "a": "Alpha Testing",
+        "b": "Beta Testing",
+        "c": "Gamma Testing",
+        "d": "Delta Testing"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Gamma Testing",
+      "explanation": "Gamma Testing হলো software release-এর আগে পরিচালিত testing process-এর সর্বশেষ ধাপ। Alpha testing internal team করে, Beta testing external users করে, আর Gamma testing হলো final verification যা release-এর ঠিক আগে করা হয়।"
+    },
+    {
+      "id": 33,
+      "question": "Assuming the existence of start and end nodes for a program graph (PG), the total number of patterns required in a set of data to test the software is —",
+      "options": {
+        "a": "Minimum",
+        "b": "Maximum",
+        "c": "Optimum",
+        "d": "Supreme"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Minimum",
+      "explanation": "Program graph (PG)-এ start ও end node থাকলে software test করার জন্য data-র minimum সংখ্যক patterns দরকার। এই minimum set দিয়ে সব paths cover করা যায়। এটি path testing-এর মূলনীতি যেখানে minimum test cases দিয়ে maximum coverage নিশ্চিত করা হয়।"
     }
   ]
 }

@@ -13,6 +13,8 @@ import oop from './oop.json'
 import operatingSystem from './operating_system.json'
 import softwareEngineering from './software_engineering.json'
 import machineLearning from './machine_learning.json'
+import theoryOfComputation from './theory_of_computation.json'
+import python from './python.json'
 
 export const TOPICS = [
   {
@@ -118,5 +120,21 @@ export const TOPICS = [
     icon: BrainCircuit,
     color: '#e879f9',
     questions: machineLearning.questions || [],
+  },
+  {
+    id: 'theory_of_computation',
+    name: 'Theory of Computation',
+    shortName: 'ToC',
+    icon: Layers,
+    color: '#fb7185',
+    questions: theoryOfComputation.questions || [],
+  },
+  {
+    id: 'python',
+    name: 'Python',
+    shortName: 'Python',
+    icon: Code2,
+    color: '#facc15',
+    questions: python.questions || [],
   },
 ]

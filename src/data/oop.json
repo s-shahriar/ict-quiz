@@ -461,6 +461,136 @@
       "correct_answer": "b",
       "correct_answer_text": "Object is an instance of a class",
       "explanation": "Class হলো একটি blueprint বা template, আর Object হলো সেই class এর একটি নির্দিষ্ট instance। যেমন 'Car' একটি class হলে 'myCar' হলো সেই class এর একটি object বা instance।"
+    },
+    {
+      "id": 35,
+      "question": "The operator that can be overloaded is ——",
+      "options": {
+        "a": "++",
+        "b": "::",
+        "c": "~",
+        "d": "()"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "++",
+      "explanation": "++ (increment operator) C++-এ overload করা যায়। কিন্তু :: (scope resolution), . (member access), .* (member pointer), ?: (ternary) এবং sizeof — এই operators overload করা যায় না। ++ সহ বেশিরভাগ arithmetic ও logical operator overload সম্ভব।"
+    },
+    {
+      "id": 36,
+      "question": "How to access the overridden method of base class from the derived class?",
+      "options": {
+        "a": "Using arrow operator",
+        "b": "Using dot operator",
+        "c": "Using scope resolution operator",
+        "d": "Can't be accessed once overridden"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Using scope resolution operator",
+      "explanation": "Derived class থেকে base class-এর overridden method access করতে scope resolution operator (::) ব্যবহার করতে হয়। যেমন: BaseClass::methodName()। এটি C++-এ parent class-এর original method call করার উপায়।"
+    },
+    {
+      "id": 37,
+      "question": "Which of the following provides a programmer with the facility of using object of a class inside other classes?",
+      "options": {
+        "a": "Inheritance",
+        "b": "Abstraction",
+        "c": "Encapsulation",
+        "d": "Composition"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Composition",
+      "explanation": "Composition হলো OOP-এর একটি fundamental concept যেখানে একটি class অন্য class-এর object কে instance variable হিসেবে ধারণ করে। এটি \"has-a\" relationship তৈরি করে। যেমন Car class-এ Engine class-এর object থাকতে পারে।"
+    },
+    {
+      "id": 38,
+      "question": "The operator that cannot be overloaded is ---",
+      "options": {
+        "a": "++",
+        "b": "()",
+        "c": "~",
+        "d": "::"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "::",
+      "explanation": ":: (scope resolution operator) C++-এ overload করা যায় না। এছাড়া . (member access), .* (pointer to member), ?: (ternary) এবং sizeof-ও overload করা যায় না। ++, (), ~ সহ বেশিরভাগ operator overload সম্ভব।"
+    },
+    {
+      "id": 39,
+      "question": "Which of the following is the destructor of class Vehicle?",
+      "options": {
+        "a": "*Vehicle()",
+        "b": "~Vehicle()",
+        "c": "~Vehicle(int value)",
+        "d": "*Vehicle(int value)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "~Vehicle()",
+      "explanation": "Destructor-এর নাম class-এর নামের আগে ~ (tilde) চিহ্ন দিয়ে লেখা হয়। Destructor-এ কোনো parameter বা return type থাকে না। তাই Vehicle class-এর destructor হবে ~Vehicle()।"
+    },
+    {
+      "id": 40,
+      "question": "Which of the following operator functions cannot be global i.e must be a member function?",
+      "options": {
+        "a": "Conversion operator",
+        "b": "new",
+        "c": "delete",
+        "d": "all of these"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "all of these",
+      "explanation": "Conversion operator, new এবং delete — এই তিনটি operator function global হতে পারে না, এগুলো অবশ্যই class-এর member function হতে হবে। Conversion operator class-specific type conversion করে, তাই member হওয়া বাধ্যতামূলক।"
+    },
+    {
+      "id": 41,
+      "question": "Which of the following is true regarding a constructor in Object Oriented Programming?",
+      "options": {
+        "a": "May consist of a return type",
+        "b": "Does not consist of any return type",
+        "c": "Has some return type",
+        "d": "None of the above"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Does not consist of any return type",
+      "explanation": "Constructor-এ কোনো return type থাকে না — এমনকি void-ও না। Constructor-এর নাম class-এর নামের মতোই হয় এবং object তৈরির সময় automatically call হয়। Java constructor abstract, final, static বা synchronized হতে পারে না।"
+    },
+    {
+      "id": 42,
+      "question": "Which of the following is correct regarding \"X extends Y\" in Java?",
+      "options": {
+        "a": "\"X extends Y\" is correct if and only if X is a class and Y is an interface.",
+        "b": "\"X extends Y\" is correct if and only if X is an interface and Y is a class.",
+        "c": "\"X extends Y\" is correct if X and Y are either both classes or both interfaces.",
+        "d": "\"X extends Y\" is correct for all combinations of X and Y being classes and/or interfaces."
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "\"X extends Y\" is correct if X and Y are either both classes or both interfaces.",
+      "explanation": "Java-তে \"extends\" keyword তখনই সঠিক যখন X ও Y উভয়ই class অথবা উভয়ই interface। Class, interface implement করে (implements keyword), extend করে না। Interface শুধু অন্য interface extend করতে পারে।"
+    },
+    {
+      "id": 43,
+      "question": "Which of the following is not a method of Thread class?",
+      "options": {
+        "a": "sleep(long msec)",
+        "b": "stop()",
+        "c": "go()",
+        "d": "yield()"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "go()",
+      "explanation": "go() কোনো Thread class-এর method নয়। Thread class-এর built-in methods হলো: sleep(), stop(), yield(), start(), run(), join(), interrupt() ইত্যাদি। go() Java-তে কোনো standard Thread method নয়।"
+    },
+    {
+      "id": 44,
+      "question": "Converting a primitive type data into its corresponding wrapper class object instance is called —",
+      "options": {
+        "a": "Boxing",
+        "b": "Wrapping",
+        "c": "Instantiation",
+        "d": "Auto boxing"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Auto boxing",
+      "explanation": "Autoboxing হলো Java compiler-এর automatic conversion যা primitive types কে তাদের corresponding wrapper class object-এ রূপান্তর করে। যেমন int → Integer, double → Double। এটি automatically হয়, তাই \"Auto boxing\" বলা হয়। বিপরীত প্রক্রিয়াকে Unboxing বলে।"
     }
   ]
 }

@@ -361,6 +361,84 @@
       "correct_answer": "d",
       "correct_answer_text": "RAID 6",
       "explanation": "RAID 6 double distributed parity ব্যবহার করে, ২টি disk একসাথে fail হলেও data বাঁচে। RAID 0-তে কোনো redundancy নেই (যেকোনো failure = data loss)। RAID 1 প্রতি mirror pair-এ ১টি failure survive করে। RAID 5 শুধু ১টি disk failure survive করে।"
+    },
+    {
+      "id": 28,
+      "question": "To keep track of how many frames have been allocated, how many are there, and how many are available, operating system maintain a —",
+      "options": {
+        "a": "memory table",
+        "b": "Page table",
+        "c": "mapping table",
+        "d": "frame table"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "frame table",
+      "explanation": "Operating system একটি frame table রক্ষণাবেক্ষণ করে যা physical memory-র প্রতিটি frame সম্পর্কে তথ্য রাখে — কতটি frame আছে, কতটি allocated এবং কতটি available। এটি memory management-এর গুরুত্বপূর্ণ অংশ।"
+    },
+    {
+      "id": 29,
+      "question": "A critical section is a program segment —",
+      "options": {
+        "a": "which should run in a certain specified amount of time",
+        "b": "which avoids deadlocks",
+        "c": "where shared resources are accessed",
+        "d": "which must be enclosed by a pair of semaphore (wait and signal) operations"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "where shared resources are accessed",
+      "explanation": "Critical section হলো প্রোগ্রামের সেই অংশ যেখানে shared resources (যেমন variables, files, memory) access করা হয়। Data inconsistency এড়াতে একসময়ে শুধুমাত্র একটি process critical section-এ execute করতে পারে।"
+    },
+    {
+      "id": 30,
+      "question": "The maximum number of processes that can be in ready state in a computer system with n CPUs is —",
+      "options": {
+        "a": "n",
+        "b": "n^2",
+        "c": "2n",
+        "d": "independent of n"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "independent of n",
+      "explanation": "Ready queue-এর size CPU-এর সংখ্যার উপর নির্ভর করে না। একটি single-processor system-েও অনেক process ready state-এ থাকতে পারে। Ready queue-এর size নির্ভর করে মোট process সংখ্যার উপর, CPU সংখ্যার উপর নয়।"
+    },
+    {
+      "id": 31,
+      "question": "Which is not the state of process in an Operating System?",
+      "options": {
+        "a": "New",
+        "b": "Sleep",
+        "c": "Terminated",
+        "d": "Ready"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Sleep",
+      "explanation": "OS-এ process-এর valid states হলো: New (তৈরি হচ্ছে), Ready (processor-এর জন্য অপেক্ষা), Running (execute হচ্ছে), Waiting (I/O বা event-এর জন্য অপেক্ষা), Terminated (শেষ)। \"Sleep\" কোনো standard process state নয়।"
+    },
+    {
+      "id": 32,
+      "question": "Logical memory is broken into blocks of the same size called ——",
+      "options": {
+        "a": "Frames",
+        "b": "Pages",
+        "c": "Raids",
+        "d": "Blocks"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Pages",
+      "explanation": "Paging-এ logical memory কে সমান আকারের blocks-এ ভাগ করা হয় যাকে Pages বলে। Physical memory-র সমান আকারের blocks-কে Frames বলে। Process execute হলে তার pages যেকোনো available memory frame-এ load হয়।"
+    },
+    {
+      "id": 33,
+      "question": "Which of the following Process scheduling algorithm is highly improbable/impossible to be implemented?",
+      "options": {
+        "a": "FCFS Scheduling",
+        "b": "Priority Scheduling",
+        "c": "Shortest Job First Scheduling",
+        "d": "None of the above"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Shortest Job First Scheduling",
+      "explanation": "SJF (Shortest Job First) practically implement করা অসম্ভব কারণ আগে থেকে জানা সম্ভব নয় যে কোন job কত সময় নেবে। এটি theoretically optimal কিন্তু burst time আগে থেকে জানা যায় না বলে real system-এ implement করা যায় না।"
     }
   ]
 }

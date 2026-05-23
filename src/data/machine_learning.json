@@ -1040,6 +1040,71 @@
       "correct_answer": "c",
       "correct_answer_text": "NLP",
       "explanation": "NLP মেশিনকে মানুষের ভাষা context সহ পড়তে, বুঝতে, ব্যাখ্যা করতে এবং উৎপন্ন করতে সক্ষম করে।"
+    },
+    {
+      "id": 81,
+      "question": "What does the term \"hyperparameter\" refer in AI?",
+      "options": {
+        "a": "Parameter learned by the model during training",
+        "b": "Parameter that define the structure of the model",
+        "c": "Parameter used to make prediction",
+        "d": "Parameter related to the loss function"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Parameter that define the structure of the model",
+      "explanation": "Hyperparameter হলো এমন parameter যা training শুরু হওয়ার আগে set করা হয় এবং model-এর architecture ও training process নিয়ন্ত্রণ করে। যেমন: learning rate, number of layers। এটি training-এর সময় model নিজে শেখে না।"
+    },
+    {
+      "id": 82,
+      "question": "Hill climbing search is a —",
+      "options": {
+        "a": "Local Maxima",
+        "b": "Infinite loop",
+        "c": "Demand Priority",
+        "d": "No Solution"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Local Maxima",
+      "explanation": "Hill climbing search একটি local search algorithm যা সবসময় উন্নত অবস্থার দিকে যায়। এর প্রধান সমস্যা হলো এটি Local Maxima-তে আটকে যেতে পারে — যেখানে চারদিকের সব neighbor খারাপ কিন্তু global optimum এখনো পাওয়া যায়নি।"
+    },
+    {
+      "id": 83,
+      "question": "Which one is not part of learning phase of machine learning?",
+      "options": {
+        "a": "Collect data",
+        "b": "training data",
+        "c": "algorithm",
+        "d": "model"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "algorithm",
+      "explanation": "Machine learning-এর learning phase-এ data collect করা, training data প্রস্তুত করা এবং model তৈরি করা অন্তর্ভুক্ত। Algorithm হলো একটি mathematical procedure যা learning phase-এর আগেই নির্বাচন করা হয়, এটি learning phase-এর অংশ নয়।"
+    },
+    {
+      "id": 84,
+      "question": "Market basket analysis is part of:",
+      "options": {
+        "a": "Classification",
+        "b": "Regression",
+        "c": "Clustering",
+        "d": "Association"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Association",
+      "explanation": "Market basket analysis হলো Association rule mining-এর একটি application। এটি খুঁজে বের করে কোন products একসাথে কেনা হয়। যেমন: যে রুটি কেনে সে মাখনও কেনে। এটি classification বা regression নয়।"
+    },
+    {
+      "id": 85,
+      "question": "Which of the following search algorithm requires less memory?",
+      "options": {
+        "a": "Optimal search",
+        "b": "Breadth-First Search",
+        "c": "Depth-First Search",
+        "d": "Linear Search"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Depth-First Search",
+      "explanation": "DFS (Depth-First Search) কম memory ব্যবহার করে কারণ এটি শুধু current path-এর nodes store করে (stack ব্যবহার করে, O(log n) memory)। BFS সব discovered nodes queue-এ রাখে (O(n) memory), তাই BFS বেশি memory নেয়।"
     }
   ]
 }

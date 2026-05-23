@@ -774,6 +774,292 @@
       "correct_answer": "c",
       "correct_answer_text": "Bellman-Ford",
       "explanation": "Bellman-Ford negative edge weight সামলাতে পারে (কিন্তু negative cycle নয়) dynamic programming ব্যবহার করে — সব edge V-1 বার relax করে। Dijkstra negative weight-এ ব্যর্থ হয়। Prim's এবং Kruskal's Minimum Spanning Tree-এর জন্য, shortest path-এর জন্য নয়।"
+    },
+    {
+      "id": 59,
+      "question": "In the worst case, the number of comparisons needed to search a singly linked list of length n for a given element is —",
+      "options": {
+        "a": "log(2*n)",
+        "b": "n/2",
+        "c": "n",
+        "d": "log(2*n) - 1"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "n",
+      "explanation": "Singly linked list-এ কোনো element খুঁজতে হলে worst case-এ পুরো list traverse করতে হয়। n দৈর্ঘ্যের list-এ প্রতিটি element-এর জন্য একটি comparison করতে হয়, তাই সর্বোচ্চ n টি comparison লাগে।"
+    },
+    {
+      "id": 60,
+      "question": "Which of the following sorting algorithms can be used to sort a random linked list with minimum time complexity?",
+      "options": {
+        "a": "Insertion sort",
+        "b": "Quick sort",
+        "c": "Heap sort",
+        "d": "Merge sort"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Merge sort",
+      "explanation": "Linked list sort করার জন্য Merge sort সবচেয়ে ভালো কারণ এটি random access ছাড়াই কাজ করে এবং O(n log n) time complexity দেয়। Quick sort random access-এর উপর নির্ভরশীল, Heap sort ও Insertion sort linked list-এ কম efficient।"
+    },
+    {
+      "id": 61,
+      "question": "Which of the following symbol table implementation is best suited if access time is to be minimum?",
+      "options": {
+        "a": "Linear list",
+        "b": "Linked list",
+        "c": "Hash table",
+        "d": "Self-organizing list"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Hash table",
+      "explanation": "Symbol table-এ access time minimum রাখতে Hash table সবচেয়ে উপযুক্ত। Hash table average case-এ O(1) time complexity-তে lookup করতে পারে, যেখানে Linear list ও Linked list O(n) সময় নেয়।"
+    },
+    {
+      "id": 62,
+      "question": "The degree of any vertex of a graph is:",
+      "options": {
+        "a": "Number Of Vertices In A Graph",
+        "b": "Number of vertices incident with the vertex",
+        "c": "Number Of Vertices Adjacent To The Vertex",
+        "d": "Number of edges incident to the vertex of the graph"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Number of edges incident to the vertex of the graph",
+      "explanation": "Graph-এ কোনো vertex-এর degree হলো সেই vertex-এর সাথে কতটি edge যুক্ত আছে তার সংখ্যা। অর্থাৎ vertex-এ incident edge-এর সংখ্যাই হলো তার degree।"
+    },
+    {
+      "id": 63,
+      "question": "What is time complexity of Huffman coding?",
+      "options": {
+        "a": "O(n)",
+        "b": "O(n log n)",
+        "c": "O(n (log n)^2)",
+        "d": "O(n^2)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(n log n)",
+      "explanation": "Huffman coding algorithm-এর time complexity হলো O(n log n)। এখানে n হলো unique characters-এর সংখ্যা। Priority queue ব্যবহার করে প্রতিটি insertion/extraction O(log n) সময় নেয় এবং n বার করতে হয়।"
+    },
+    {
+      "id": 64,
+      "question": "The average number of key comparisons done in a successful sequential search in a list of length n is —",
+      "options": {
+        "a": "log n",
+        "b": "(n+1)/2",
+        "c": "(n-1)/2",
+        "d": "n/2"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "(n+1)/2",
+      "explanation": "Sequential search-এ successful search-এর ক্ষেত্রে average comparisons = (n+1)/2। কারণ element প্রথম position-এ থাকলে 1টি, শেষে থাকলে n টি comparison লাগে। গড় = (1+2+...+n)/n = (n+1)/2।"
+    },
+    {
+      "id": 65,
+      "question": "Which of the following is not a stable sorting algorithm in its typical implementation?",
+      "options": {
+        "a": "Heap Sort",
+        "b": "Quick Sort",
+        "c": "Merge sort",
+        "d": "Insertion sort"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Quick Sort",
+      "explanation": "Quick Sort তার typical implementation-এ stable নয়। Stable sort মানে সমান মানের elements-এর আপেক্ষিক ক্রম অপরিবর্তিত থাকে। Merge sort ও Insertion sort stable, কিন্তু Quick Sort equal elements-এর order preserve করে না।"
+    },
+    {
+      "id": 66,
+      "question": "Complete Binary tree height n তার মধ্যে node কতটি?",
+      "options": {
+        "a": "n",
+        "b": "2^n",
+        "c": "2^(n-1)",
+        "d": "2^(n+1)-1"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "2^(n+1)-1",
+      "explanation": "Height n-এর Complete Binary tree-এ সর্বোচ্চ node সংখ্যা = 2^(n+1) - 1। যেমন height 0 হলে 1টি node, height 1 হলে 3টি, height 2 হলে 7টি। সূত্র: 2^(n+1) - 1।"
+    },
+    {
+      "id": 67,
+      "question": "Which of the following algorithm implementations is similar to that of an insertion sort?",
+      "options": {
+        "a": "Binary heap",
+        "b": "Quick sort",
+        "c": "Merge sort",
+        "d": "Radix sort"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Quick sort",
+      "explanation": "Quick sort-এর implementation insertion sort-এর মতো। উভয়ই in-place sorting এবং উভয়ই partition-based approach ব্যবহার করে। Insertion sort-এর মতো Quick sort-ও ছোট array-তে ভালো কাজ করে।"
+    },
+    {
+      "id": 68,
+      "question": "Suppose you have compiled undirected graph with 4 nodes. What is the maximum number of Minimum Spanning Tree (MST) you can form?",
+      "options": {
+        "a": "4",
+        "b": "8",
+        "c": "16",
+        "d": "1"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "16",
+      "explanation": "n nodes-এর undirected graph-এ maximum MST সংখ্যা = n^(n-2) (Cayley's formula)। n=4 হলে: 4^(4-2) = 4^2 = 16। তাই 4 nodes-এর graph-এ সর্বোচ্চ 16টি MST তৈরি করা যায়।"
+    },
+    {
+      "id": 69,
+      "question": "A B* tree can contain a maximum of 7 pointers in a node. What is the minimum number of keys in leaves?",
+      "options": {
+        "a": "6",
+        "b": "3",
+        "c": "4",
+        "d": "7"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "3",
+      "explanation": "B+ tree of order n-এ প্রতিটি leaf node-এ সর্বোচ্চ (n-1) = 6 টি এবং সর্বনিম্ন ⌈(n-1)/2⌉ = ⌈(7-1)/2⌉ = ⌈3⌉ = 3 টি key থাকে। তাই minimum keys in leaves = 3।"
+    },
+    {
+      "id": 70,
+      "question": "Find the output of the following prefix expression: * + 2 2 1/4-2+-531",
+      "options": {
+        "a": "2",
+        "b": "12",
+        "c": "10",
+        "d": "4"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "2",
+      "explanation": "Prefix expression দুটি stack দিয়ে evaluate করলে: (2+2-1) * (4-2) / (5-3+1) = 3 * 2 / 3 = 2। তাই output হলো 2।"
+    },
+    {
+      "id": 71,
+      "question": "Travelling Salesperson Problem is an example of —",
+      "options": {
+        "a": "Polynomial-time",
+        "b": "NP-Complete",
+        "c": "NP",
+        "d": "NP-Hard"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "NP-Complete",
+      "explanation": "Travelling Salesperson Problem (TSP) হলো NP-Complete সমস্যার একটি classic উদাহরণ। এটি এমন computational problems-এর class যার জন্য কোনো efficient algorithm পাওয়া যায়নি। Graph-covering ও satisfiability problems-ও এই class-এ পড়ে।"
+    },
+    {
+      "id": 72,
+      "question": "If we have a very small amount of additional memory, but a large number of items to sort, which of the following sorting algorithm should we use?",
+      "options": {
+        "a": "Merge sort",
+        "b": "Heap sort",
+        "c": "Bubble sort",
+        "d": "Bogo sort"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Bubble sort",
+      "explanation": "Bubble sort in-place sorting algorithm — এটি initial list ছাড়া কোনো additional memory space ব্যবহার করে না। তাই memory খুব সীমিত হলে Bubble sort উপযুক্ত। Merge sort O(n) extra memory নেয়, Heap sort-ও heap structure-এর জন্য memory লাগে।"
+    },
+    {
+      "id": 73,
+      "question": "To implement Dijkstra's shortest path algorithm on unweighted graph so that it runs in linear time, the data structure to be used is —",
+      "options": {
+        "a": "Queue",
+        "b": "Stack",
+        "c": "Heap",
+        "d": "B-Tree"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Queue",
+      "explanation": "Unweighted graph-এ Dijkstra's algorithm linear time-এ run করাতে Queue (BFS) ব্যবহার করা হয়। BFS হলো Dijkstra's algorithm-এর lightweight version যা unweighted বা equal-weight graph-এ shortest path খুঁজে বের করে O(V+E) সময়ে।"
+    },
+    {
+      "id": 74,
+      "question": "Which of the following data structures can be used both as Stack and Queue?",
+      "options": {
+        "a": "Vector",
+        "b": "Hash Table",
+        "c": "Dequeue",
+        "d": "Binary Search Tree"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Dequeue",
+      "explanation": "Deque (Double Ended Queue) উভয় প্রান্ত থেকে insertion ও deletion করতে পারে। তাই এটি Stack (LIFO) হিসেবেও ব্যবহার করা যায় এবং Queue (FIFO) হিসেবেও। এটি queue ও stack-এর combination।"
+    },
+    {
+      "id": 75,
+      "question": "Suppose you want to insert n elements into an empty linked list while maintaining the sorted order. What is the worst case time?",
+      "options": {
+        "a": "O(n)",
+        "b": "O(n logn)",
+        "c": "O(1)",
+        "d": "O(n²)"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "O(n²)",
+      "explanation": "Sorted linked list-এ n element insert করতে worst case O(n²)। প্রতিটি element insert করতে সঠিক position খুঁজতে O(n) traversal লাগে এবং n বার করতে হয়, তাই মোট O(n×n) = O(n²)।"
+    },
+    {
+      "id": 76,
+      "question": "The postorder traversal of a binary tree is 8,9,6,7,4,5,2,3,1. The inorder traversal of the same tree is 8,3,9,4,7,2,5,1,3. What is the height of the above binary tree?",
+      "options": {
+        "a": "4",
+        "b": "3",
+        "c": "2",
+        "d": "1"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "4",
+      "explanation": "Postorder-এর শেষ element হলো root (1)। Inorder থেকে left ও right subtree বের করে recursively tree reconstruct করলে height = 4 পাওয়া যায়।"
+    },
+    {
+      "id": 77,
+      "question": "The minimum number of comparisons required to determine if an integer appears more than n/2 times in a sorted array of n integers is —",
+      "options": {
+        "a": "O(n)",
+        "b": "O(log n)",
+        "c": "O(log* n)",
+        "d": "O(1)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(log n)",
+      "explanation": "Sorted array-এ কোনো integer n/2-এর বেশি বার আছে কিনা তা binary search দিয়ে O(log n) সময়ে বের করা যায়। Binary search দিয়ে first ও last occurrence খুঁজে count করলেই হয়।"
+    },
+    {
+      "id": 78,
+      "question": "What is the space complexity (memory) of BFS traversal?",
+      "options": {
+        "a": "O(log n)",
+        "b": "O(1)",
+        "c": "O(n)",
+        "d": "O(n²)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(n)",
+      "explanation": "BFS-এ সব discovered nodes একটি queue-এ রাখতে হয়। Worst case-এ distance d-তে সব nodes queue-এ থাকে। তাই BFS-এর space complexity O(n)। এর বিপরীতে DFS শুধু current path-এর nodes রাখে, তাই O(log n) memory নেয়।"
+    },
+    {
+      "id": 79,
+      "question": "What is the space complexity (memory) of DFS traversal?",
+      "options": {
+        "a": "O(n)",
+        "b": "O(n²)",
+        "c": "O(log n)",
+        "d": "O(n log n)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(log n)",
+      "explanation": "DFS শুধু root থেকে current node পর্যন্ত path-এর nodes stack-এ রাখে। Balanced tree-এ এই path-এর দৈর্ঘ্য = height = O(log n)। তাই DFS-এর space complexity O(log n), যা BFS-এর O(n)-এর চেয়ে অনেক কম।"
+    },
+    {
+      "id": 80,
+      "question": "Which is the best data structure to implement a Priority Queue?",
+      "options": {
+        "a": "Array",
+        "b": "Linked List",
+        "c": "Heap",
+        "d": "Stack"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Heap",
+      "explanation": "Heap হলো Priority Queue implement করার সর্বোত্তম উপায়। Heap-এ insert ও delete উভয়ই O(log n) সময় নেয়। Array বা Linked List দিয়ে priority queue করলে insert বা delete O(n) হয়। তাই Heap সবচেয়ে efficient।"
     }
   ]
 }

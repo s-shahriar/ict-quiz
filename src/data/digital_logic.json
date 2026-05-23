@@ -416,6 +416,84 @@
       "correct_answer": "b",
       "correct_answer_text": "Inputs are different",
       "explanation": "XOR (Exclusive OR) output ১ হয় শুধুমাত্র তখন যখন input গুলো ভিন্ন (০,১ বা ১,০)। Input same হলে (০,০ বা ১,১) output ০। এটি OR gate থেকে আলাদা যেটি same-1 input-এও output ১ দেয়।"
+    },
+    {
+      "id": 32,
+      "question": "In which flip flop the present input will be the next output?",
+      "options": {
+        "a": "S-R",
+        "b": "J-K",
+        "c": "D",
+        "d": "T"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "D",
+      "explanation": "D Flip Flop-এ next output Q সরাসরি present input D-এর সমান হয়। অর্থাৎ D=1 হলে Q=1, D=0 হলে Q=0। এটি data/delay flip flop নামেও পরিচিত।"
+    },
+    {
+      "id": 33,
+      "question": "11100010 has a decimal value of —",
+      "options": {
+        "a": "252",
+        "b": "225",
+        "c": "226",
+        "d": "220"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "226",
+      "explanation": "11100010 binary থেকে decimal: 1×128 + 1×64 + 1×32 + 0×16 + 0×8 + 0×4 + 1×2 + 0×1 = 128 + 64 + 32 + 2 = 226।"
+    },
+    {
+      "id": 34,
+      "question": "When two variables is logically compared, the logic gate that tests the equivalence is —",
+      "options": {
+        "a": "XNOR",
+        "b": "XOR",
+        "c": "AND",
+        "d": "NOR"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "XNOR",
+      "explanation": "XNOR gate দুটি input সমান হলে output 1 দেয়, ভিন্ন হলে 0 দেয়। তাই এটি equivalence তথা logical equality পরীক্ষার জন্য ব্যবহৃত হয়। XOR হলো এর বিপরীত — inputs আলাদা হলে 1।"
+    },
+    {
+      "id": 35,
+      "question": "A binary counter is being pulsed by a 256 kHz clock signal. The output frequency from the last flip-flop is 2 kHz. Which one of the following is the counting range?",
+      "options": {
+        "a": "0 to 255",
+        "b": "0 to 128",
+        "c": "0 to 127",
+        "d": "None of the above"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "0 to 127",
+      "explanation": "f_out = f_in / N সূত্র থেকে: 2 = 256/N → N = 128। N = 128 মানে 7-bit counter, যার counting range 0 থেকে 127 (2^7 - 1 = 127)। তাই counting range হলো 0 to 127।"
+    },
+    {
+      "id": 36,
+      "question": "Suppose you have an 8 bit binary number N. Which of the following operations does not change its lower 4 bits?",
+      "options": {
+        "a": "An exclusive logical sum of N with 0Fh",
+        "b": "A logical product of N with 0Fh",
+        "c": "A negative logical product of N with 0Fh",
+        "d": "A logical sum of N with 0Fh"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "A logical product of N with 0Fh",
+      "explanation": "0Fh = 00001111 binary। N AND 0Fh করলে upper 4 bits শূন্য হয়, lower 4 bits অপরিবর্তিত থাকে। OR করলে lower 4 bits সব 1 হয়, XOR করলে lower 4 bits flip হয়। তাই AND (logical product) lower 4 bits অপরিবর্তিত রাখে।"
+    },
+    {
+      "id": 37,
+      "question": "Which of the logic expression is equivalent to the digital circuit shown in the figure? (A → NOT gate → AND gate with B → NOT gate; both into AND gate → X)",
+      "options": {
+        "a": "X = A·B + Ā·B̄",
+        "b": "X = A·B + Ā·B̄",
+        "c": "X = A·B̄ + Ā·B",
+        "d": "X = (Ā + B)·(A + B̄)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "X = A·B̄ + Ā·B",
+      "explanation": "Circuit অনুযায়ী X = [(Ā+B̄)·A] + [(Ā+B̄)·B] = [AĀ+AB̄] + [AB+BB̄] = A·B̄ + Ā·B। এটি XOR gate-এর equivalent expression। Note-তেও দেখানো হয়েছে X = A·B̄ + Ā·B।"
     }
   ]
 }

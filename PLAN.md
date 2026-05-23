@@ -30,7 +30,8 @@
         "d": "Anderson Palimar"
       },
       "correct_answer": "b",
-      "correct_answer_text": "Christopher Latham Sholes"
+      "correct_answer_text": "Christopher Latham Sholes",
+      "explanation": "Bengali explanation of why the answer is correct."
     }
   ]
 }
@@ -55,6 +56,8 @@
 - IDs are auto-incremented across all screenshots for the same topic
 - Questions that don't clearly fit a known topic go into `others.json`
 - Topic is **auto-detected** from question content — no need for the user to specify it
+- **Always verify the correct answer** against the book's "Ans:" label shown in the screenshot before saving
+- **Always include `explanation` field** in Bengali — explain why the correct answer is right, in clear and simple Bengali
 
 ---
 

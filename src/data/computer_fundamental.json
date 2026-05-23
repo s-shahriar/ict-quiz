@@ -433,6 +433,266 @@
       "correct_answer": "c",
       "correct_answer_text": "instruction register",
       "explanation": "Program Counter (PC) যে মেমোরি অ্যাড্রেস নির্দেশ করে, সেই অ্যাড্রেস থেকে ফেচ করা নির্দেশনা Instruction Register (IR)-এ লোড হয়। IR এরপর সেই নির্দেশনা ডিকোড ও এক্সিকিউট করতে সাহায্য করে।"
+    },
+    {
+      "id": 33,
+      "question": "Which format is usually used to store data in a computer?",
+      "options": {
+        "a": "BCD",
+        "b": "Decimal",
+        "c": "Hexadecimal",
+        "d": "Octal"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "BCD",
+      "explanation": "কম্পিউটার সাধারণত BCD (Binary Coded Decimal) ফরম্যাটে ডেটা সংরক্ষণ করে। এটি প্রতিটি decimal digit কে 4-bit binary দিয়ে represent করে।"
+    },
+    {
+      "id": 34,
+      "question": "Swap space exists in ---",
+      "options": {
+        "a": "CPU",
+        "b": "random memory",
+        "c": "primary memory",
+        "d": "secondary memory"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "secondary memory",
+      "explanation": "Swap space হলো secondary memory (হার্ড ডিস্ক)-এ অবস্থিত একটি বিশেষ অংশ যা RAM পূর্ণ হয়ে গেলে virtual memory হিসেবে ব্যবহৃত হয়।"
+    },
+    {
+      "id": 35,
+      "question": "Which of the following is Cloud Platform by Microsoft?",
+      "options": {
+        "a": "Azure",
+        "b": "AWS",
+        "c": "Cloudera",
+        "d": "Openstack"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Azure",
+      "explanation": "Microsoft Azure হলো Microsoft-এর cloud computing platform। AWS হলো Amazon-এর, Cloudera ও Openstack ভিন্ন কোম্পানির।"
+    },
+    {
+      "id": 36,
+      "question": "Java source code is compiled into —",
+      "options": {
+        "a": "Source Code",
+        "b": "Byte Code",
+        "c": "Object",
+        "d": ".exe"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Byte Code",
+      "explanation": "Java source code (.java) কম্পাইল করলে Byte Code (.class) তৈরি হয়, যা JVM (Java Virtual Machine) দ্বারা execute হয়। এটি Java-কে platform-independent করে তোলে।"
+    },
+    {
+      "id": 37,
+      "question": "Word Press can be called as —",
+      "options": {
+        "a": "Static website",
+        "b": "Dynamic website",
+        "c": "Content Managed website",
+        "d": "E Commerce website"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Content Managed website",
+      "explanation": "WordPress হলো একটি CMS (Content Management System)। এটি ব্যবহারকারীদের technical knowledge ছাড়াই website-এর content তৈরি ও পরিচালনা করতে দেয়।"
+    },
+    {
+      "id": 38,
+      "question": "Programs that is automatically loaded and operates as a part of browser —",
+      "options": {
+        "a": "Plug in",
+        "b": "Add ons",
+        "c": "Widgets",
+        "d": "Utilities"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Plug in",
+      "explanation": "Plug in হলো এমন প্রোগ্রাম যা automatically browser-এর সাথে লোড হয় এবং browser-এর অংশ হিসেবে কাজ করে। Add ons কাছাকাছি হলেও plug in সরাসরি browser-এর অংশ হিসেবে চলে।"
+    },
+    {
+      "id": 39,
+      "question": "A RAM chip is labeled as \"2M x 16\", what is the word-size of the RAM?",
+      "options": {
+        "a": "2 Bytes",
+        "b": "16 Bytes",
+        "c": "2x16MB",
+        "d": "8 Bits"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "16 Bytes",
+      "explanation": "\"2M x 16\" RAM chip-এ 2M হলো address location-এর সংখ্যা এবং 16 হলো word size (প্রতিটি লোকেশনে কত bit)। তাই word size = 16 bits = 2 Bytes।"
+    },
+    {
+      "id": 40,
+      "question": "Which was the most popular first-generation computer?",
+      "options": {
+        "a": "IBM 1650",
+        "b": "IBM 360",
+        "c": "IBM 1130",
+        "d": "IBM 2700"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "IBM 1650",
+      "explanation": "IBM 1650 ছিল প্রথম প্রজন্মের সবচেয়ে জনপ্রিয় কম্পিউটার। এটি vacuum tube ব্যবহার করত এবং ১৯৫০-এর দশকে ব্যাপকভাবে ব্যবহৃত হয়।"
+    },
+    {
+      "id": 41,
+      "question": "The computer code of the interchange of information between terminals is —",
+      "options": {
+        "a": "ASCII",
+        "b": "BCD",
+        "c": "EBCDIC",
+        "d": "All of them"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "ASCII",
+      "explanation": "ASCII (American Standard Code for Information Interchange) হলো terminals-এর মধ্যে তথ্য আদান-প্রদানের জন্য ব্যবহৃত standard computer code। এটি 128টি character represent করতে পারে।"
+    },
+    {
+      "id": 42,
+      "question": "The step by step instruction that solved a problem are called —",
+      "options": {
+        "a": "Algorithm",
+        "b": "A list",
+        "c": "A plan",
+        "d": "None of the above"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Algorithm",
+      "explanation": "Algorithm হলো কোনো সমস্যা সমাধানের জন্য ধাপে ধাপে (step by step) নির্দেশাবলীর একটি সুনির্দিষ্ট সেট। প্রতিটি ধাপ সুস্পষ্ট এবং finite সংখ্যক ধাপে সমস্যার সমাধান দেয়।"
+    },
+    {
+      "id": 43,
+      "question": "Dark data represents —",
+      "options": {
+        "a": "Unused data",
+        "b": "Harmful data",
+        "c": "Highlighted data",
+        "d": "Important data"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Unused data",
+      "explanation": "Dark data হলো এমন তথ্য যা সংগৃহীত ও সংরক্ষিত হয় কিন্তু কোনো কাজে ব্যবহার হয় না। এটি storage দখল করে কিন্তু business value তৈরি করে না।"
+    },
+    {
+      "id": 44,
+      "question": "Source code is a(an) —",
+      "options": {
+        "a": "Program",
+        "b": "List of commands",
+        "c": "Source of variables",
+        "d": "Explanation of the algorithm"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Program",
+      "explanation": "Source code হলো একটি program যা human-readable programming language-এ লেখা হয়। এটি compiler বা interpreter দ্বারা machine code-এ রূপান্তরিত হয়।"
+    },
+    {
+      "id": 45,
+      "question": "Number of bits in \"BCD\" code used in computing are —",
+      "options": {
+        "a": "seven bits",
+        "b": "twelve bits",
+        "c": "eighteen bits",
+        "d": "six bits"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "six bits",
+      "explanation": "BCD (Binary Coded Decimal) code-এ প্রতিটি decimal digit (0-9) represent করতে 4 bits ব্যবহার হয়। কিন্তু computing-এ BCD-এর extended version 6 bits ব্যবহার করে। তাই উত্তর six bits।"
+    },
+    {
+      "id": 46,
+      "question": "Object code is the ——— language file that tells the CPU what to do?",
+      "options": {
+        "a": "programming",
+        "b": "binary",
+        "c": "machine",
+        "d": "natural"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "machine",
+      "explanation": "Object code হলো machine language file যা CPU-কে কী করতে হবে তা বলে। এটি compiler দ্বারা source code থেকে তৈরি হয় এবং natural language statements-এর মতো দেখায় যা programming code-এর মতো।"
+    },
+    {
+      "id": 47,
+      "question": "Which one is the first high level programming language?",
+      "options": {
+        "a": "C",
+        "b": "COBOL",
+        "c": "FORTRAN",
+        "d": "C++"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "FORTRAN",
+      "explanation": "FORTRAN (Formula Translation) হলো প্রথম high-level programming language যা 1957 সালে IBM তৈরি করে। এটি বৈজ্ঞানিক ও গাণিতিক computation-এর জন্য তৈরি হয়েছিল।"
+    },
+    {
+      "id": 48,
+      "question": "Which one is the first search engine?",
+      "options": {
+        "a": "Google",
+        "b": "Archie",
+        "c": "Alta vista",
+        "d": "WAIS"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Archie",
+      "explanation": "Archie হলো বিশ্বের প্রথম search engine যা 1990 সালে তৈরি হয়। এটি FTP servers-এর files index করত। Google 1998 সালে, AltaVista 1995 সালে তৈরি হয়।"
+    },
+    {
+      "id": 49,
+      "question": "In a computer, folder opening is denied by which of the following names?",
+      "options": {
+        "a": "con",
+        "b": "com",
+        "c": "mak",
+        "d": "make"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "con",
+      "explanation": "Windows-এ \"con\" নামে folder তৈরি করা যায় না কারণ এটি system-এর reserved name। Windows এই নামটি specific system tasks-এর জন্য সংরক্ষণ করে রাখে। com1, com2 ইত্যাদিও reserved।"
+    },
+    {
+      "id": 50,
+      "question": "A computer system needs to store 100 different symbols. In this case, how many bits of data is required for each symbol?",
+      "options": {
+        "a": "4",
+        "b": "5",
+        "c": "6",
+        "d": "7"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "7",
+      "explanation": "100টি ভিন্ন symbol store করতে কমপক্ষে কতটি bit দরকার তা নির্ণয়: 2^6 = 64 (যথেষ্ট নয়), 2^7 = 128 ≥ 100। তাই কমপক্ষে 7 bits দরকার। ASCII-ও 7-bit code যা 128টি character represent করে।"
+    },
+    {
+      "id": 51,
+      "question": "In a two-level memory hierarchy, the access time of the memory is 12 nanoseconds. The hit ratio is 0.98. What is the average access time of the two-level memory system?",
+      "options": {
+        "a": "13.5 nsec",
+        "b": "42 nsec",
+        "c": "7.56 nsec",
+        "d": "76 nsec"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "42 nsec",
+      "explanation": "Two-level memory average access time: T_avg = H×T1 + (1-H)×T2। H=0.98, T1=12ns (cache), T2=1500ns (main memory)। T_avg = 0.98×12 + (1-0.98)×1×1500 = 11.76 + 30 = 41.76 ≈ 42 ns।"
+    },
+    {
+      "id": 52,
+      "question": "Which of the following uses the flip-flop circuit in a memory cell?",
+      "options": {
+        "a": "DRAM",
+        "b": "EEPROM",
+        "c": "SDRAM",
+        "d": "SRAM"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "SRAM",
+      "explanation": "SRAM (Static RAM) flip-flop circuit ব্যবহার করে memory cell তৈরি করে। প্রতিটি cell 4-6টি transistor দিয়ে তৈরি bistable circuit। এটি মান ধরে রাখে যতক্ষণ power থাকে। DRAM capacitor ব্যবহার করে, তাই বারবার refresh দরকার।"
     }
   ]
 }

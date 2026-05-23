@@ -424,6 +424,19 @@
       "correct_answer_text": "T",
       "page": "Linux Processes",
       "explanation": "Linux process state 'T' মানে সেই process বন্ধ (stopped) বা স্থগিত (suspended) অবস্থায় আছে, সাধারণত Ctrl+Z বা SIGSTOP signal দ্বারা। R = Running, S = Sleeping, D = Uninterruptible Sleep, Z = Zombie।"
+    },
+    {
+      "id": 31,
+      "question": "Which UNIX/Linux command is used to make all files and sub-directories in the directory \"progs\" executable by all users?",
+      "options": {
+        "a": "chmod -R a+x progs",
+        "b": "chmod -R 222 progs",
+        "c": "chmod -X a+x progs",
+        "d": "chmod -X 222 progs"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "chmod -R a+x progs",
+      "explanation": "chmod -R a+x progs — এখানে -R মানে recursive (সব subdirectory সহ), a মানে all users (owner, group, others), +x মানে execute permission যোগ করা। তাই এই command \"progs\" directory-র সব files ও subdirectories সব users-এর জন্য executable করে।"
     }
   ]
 }

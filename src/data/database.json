@@ -982,6 +982,149 @@
       "correct_answer": "d",
       "correct_answer_text": "Determinant is not a candidate key",
       "explanation": "3NF একটি non-candidate-key determinant অনুমোদন করে যদি dependent একটি prime attribute হয়। BCNF সব determinant-কে candidate key হতে বাধ্য করে — কোনো ব্যতিক্রম নেই। তাই 3NF-তে আছে কিন্তু BCNF-তে নেই এমন relation-এ এমন determinant থাকে যেটি candidate key নয়।"
+    },
+    {
+      "id": 76,
+      "question": "For every relationship, how many possible sets of minimum cardinalities are there?",
+      "options": {
+        "a": "Two",
+        "b": "Three",
+        "c": "Four",
+        "d": "Six"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Four",
+      "explanation": "প্রতিটি relationship-এ দুটি entity থাকে এবং প্রতিটির জন্য minimum cardinality 0 অথবা 1 হতে পারে। তাই সম্ভাব্য combinations = 2 × 2 = 4 (0,0), (0,1), (1,0), (1,1)।"
+    },
+    {
+      "id": 77,
+      "question": "What does a COMMIT statement do to a CURSOR?",
+      "options": {
+        "a": "Open the cursor",
+        "b": "Fetch the cursor",
+        "c": "Close the cursor",
+        "d": "None of this"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "None of this",
+      "explanation": "COMMIT statement cursor-এ সরাসরি কিছু করে না। COMMIT current transaction-এ database-এ করা সব পরিবর্তন permanent করে দেয়। Cursor open, fetch বা close করা COMMIT-এর কাজ নয়।"
+    },
+    {
+      "id": 78,
+      "question": "Which data structure is used for indexing?",
+      "options": {
+        "a": "Binary tree",
+        "b": "B+ tree",
+        "c": "Stack",
+        "d": "Link List"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "B+ tree",
+      "explanation": "Database indexing-এ B+ tree ব্যবহার হয় কারণ এটি sorted data রাখে এবং O(log n) সময়ে search, insert ও delete করতে পারে। সব data leaf node-এ থাকে এবং leaf nodes linked থাকায় range query দ্রুত হয়।"
+    },
+    {
+      "id": 79,
+      "question": "Which one is not a unary operation in relational algebra?",
+      "options": {
+        "a": "Select",
+        "b": "Project",
+        "c": "Union",
+        "d": "Rename"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Union",
+      "explanation": "Relational algebra-তে তিনটি unary operation আছে: SELECT, PROJECT এবং RENAME — এগুলো একটি relation-এর উপর কাজ করে। Union একটি binary operation কারণ এটি দুটি relation-এর উপর কাজ করে।"
+    },
+    {
+      "id": 80,
+      "question": "Which one is an entity?",
+      "options": {
+        "a": "Roll no",
+        "b": "Student",
+        "c": "Passport no",
+        "d": "Department ID"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Student",
+      "explanation": "Entity হলো real world-এর একটি object বা concept যার সম্পর্কে তথ্য সংরক্ষণ করা হয়। Student একটি entity। Roll no, Passport no, Department ID হলো attributes — entity-র বৈশিষ্ট্য বা property।"
+    },
+    {
+      "id": 81,
+      "question": "In a table attribute named interest is defined as follows: interest numeric(2,1). Which one is the correct format for the interest column?",
+      "options": {
+        "a": "65.2",
+        "b": "7.2",
+        "c": "19.02",
+        "d": "1.03"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "7.2",
+      "explanation": "NUMERIC(precision, scale)-এ precision = মোট digit সংখ্যা, scale = দশমিকের পরে digit সংখ্যা। NUMERIC(2,1) মানে মোট 2 digit, দশমিকের পরে 1 digit। তাই সঠিক format: X.X যেমন 7.2। 65.2 তে 3 digit (precision=3), তাই বাদ।"
+    },
+    {
+      "id": 82,
+      "question": "What type of join is needed when you wish to include rows that do not have matching values?",
+      "options": {
+        "a": "Equal join",
+        "b": "Natural join",
+        "c": "Outer join",
+        "d": "Inner join"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Outer join",
+      "explanation": "Outer Join ব্যবহার করা হয় যখন non-matching rows-ও result-এ রাখতে হয়। Inner join শুধু matching records দেখায়। Outer join-এ দুই table-এর matching ও non-matching উভয় records-ই output-এ আসে।"
+    },
+    {
+      "id": 83,
+      "question": "Finding valuable patterns from the data in a database is known as —",
+      "options": {
+        "a": "Data Visualization",
+        "b": "Data Mining",
+        "c": "Data Analytics",
+        "d": "All of the above"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Data Mining",
+      "explanation": "Data Mining হলো large database থেকে valuable patterns ও hidden information খুঁজে বের করার প্রক্রিয়া। এতে database systems, statistical methods এবং machine learning ব্যবহার হয়। Data Visualization হলো data দৃশ্যমান করা, Analytics হলো বিশ্লেষণ।"
+    },
+    {
+      "id": 84,
+      "question": "What will be the output of the following SQL: \"Select ROUND(232.420, -2) AS Round Value\"?",
+      "options": {
+        "a": "240",
+        "b": "200",
+        "c": "233",
+        "d": "Syntax error"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "200",
+      "explanation": "ROUND(232.420, -2) — negative decimal মানে দশমিকের বামদিক থেকে round করা হয়। -2 মানে hundreds place-এ round করা: 232.420 → 200। MySQL ROUND() function number ও decimal places নেয়, negative decimals left-side rounding করে।"
+    },
+    {
+      "id": 85,
+      "question": "Which one of the following statements is valid for a Database Management System?",
+      "options": {
+        "a": "Super key and candidate keys are similar",
+        "b": "Candidate Keys and Unique Keys are similar",
+        "c": "Unique Keys and Primary Keys are similar",
+        "d": "Candidate Keys and Primary Keys are similar"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Unique Keys and Primary Keys are similar",
+      "explanation": "Unique Key ও Primary Key উভয়ই column-এ unique values নিশ্চিত করে। পার্থক্য হলো Primary Key NULL allow করে না, কিন্তু Unique Key একটি NULL value allow করে। একটি table-এ একটিই Primary Key থাকে, কিন্তু একাধিক Unique Key থাকতে পারে।"
+    },
+    {
+      "id": 86,
+      "question": "What is the min and max number of tables required to convert an ER diagram with 2 entities and 1 relationship between them with partial participation constraints of both entities?",
+      "options": {
+        "a": "Min 1 and max 2",
+        "b": "Min 1 and max 3",
+        "c": "Min 2 and max 3",
+        "d": "Min 2 and max 2"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Min 2 and max 3",
+      "explanation": "ER diagram-এ 2 entities ও 1 relationship-এর জন্য: Maximum 3টি table (many-to-many relationship-এ relationship-এর জন্য আলাদা table)। Minimum 2টি table (partial participation-এ উভয় entity-র জন্য, relationship merge করা যায়)।"
     }
   ]
 }

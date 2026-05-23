@@ -238,6 +238,19 @@
       "correct_answer_text": "EA = 5+R1",
       "page": "Addressing Modes",
       "explanation": "Indexed addressing mode-এ effective address (EA) হলো base register-এর মান এবং constant offset-এর যোগফল। MOV 5(R1),LOC-এ EA = 5 + R1, অর্থাৎ R1 register-এর মানের সাথে 5 যোগ করে effective address পাওয়া যায়।"
+    },
+    {
+      "id": 18,
+      "question": "Sequence Control Register আর কি নামে পরিচিত?",
+      "options": {
+        "a": "Program Counter",
+        "b": "Instruction Counter",
+        "c": "Sequence Register",
+        "d": "Controlling Register"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Program Counter",
+      "explanation": "Sequence Control Register-কে Program Counter (PC) নামেও পরিচিত। এটি পরবর্তী execute হবে এমন instruction-এর memory address ধারণ করে। প্রতিটি instruction fetch-এর পর এটি automatically increment হয়।"
     }
   ]
 }

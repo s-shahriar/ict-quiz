@@ -1,0 +1,31 @@
+{
+  "topic": "Theory of Computation",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Complement of a regular set is —",
+      "options": {
+        "a": "CFG",
+        "b": "regular",
+        "c": "CSG",
+        "d": "None of these"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "regular",
+      "explanation": "Regular set বা regular language complement operation-এর অধীনে closed। অর্থাৎ যদি কোনো language regular হয়, তাহলে তার complement-ও regular। Regular languages সব Boolean operation (union, intersection, complement)-এর অধীনে closed।"
+    },
+    {
+      "id": 2,
+      "question": "Number of steps required to get \"aab\" from A → aA|a|b —",
+      "options": {
+        "a": "4",
+        "b": "3",
+        "c": "5",
+        "d": "6"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "3",
+      "explanation": "A → aA|a|b grammar থেকে \"aab\" derive করতে: Step 1: A → aA, Step 2: aA → aaA, Step 3: aaA → aab। মোট 3টি ধাপ লাগে।"
+    }
+  ]
+}
