@@ -728,6 +728,45 @@
       "correct_answer": "c",
       "correct_answer_text": "Application",
       "explanation": "DNS OSI model-এর Application Layer (Layer 7)-এ কাজ করে। এটি Transport Layer-এ UDP/TCP এবং Network Layer-এ IP ব্যবহার করে, কিন্তু DNS নিজে একটি application-layer protocol। HTTP, FTP, SMTP ও application layer-এ।"
+    },
+    {
+      "id": 54,
+      "question": "What is TCP/IP tunneling?",
+      "options": {
+        "a": "Encrypting TCP packets using AES",
+        "b": "Encapsulating one protocol's packets inside another protocol's packets for transmission",
+        "c": "Routing packets through multiple DNS servers",
+        "d": "Splitting large packets into smaller fragments"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Encapsulating one protocol's packets inside another protocol's packets for transmission",
+      "explanation": "TCP/IP Tunneling হলো এক protocol-এর packet অন্য protocol-এর packet-এর ভেতরে encapsulate করে পাঠানো। যেমন — VPN-এ private network-এর packet, public internet-এর TCP/IP packet-এর ভেতরে wrap হয়ে যায়। Encryption আলাদা feature, tunneling নিজেই encryption নয়।"
+    },
+    {
+      "id": 55,
+      "question": "Which of the following is a common application of TCP/IP tunneling?",
+      "options": {
+        "a": "DNS caching",
+        "b": "Virtual Private Network (VPN)",
+        "c": "ARP resolution",
+        "d": "MAC address filtering"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Virtual Private Network (VPN)",
+      "explanation": "VPN TCP/IP tunneling-এর সবচেয়ে প্রচলিত application। VPN private network traffic কে public internet-এর উপর দিয়ে securely পাঠাতে tunneling ব্যবহার করে। DNS caching, ARP resolution এবং MAC filtering সম্পূর্ণ আলাদা নেটওয়ার্ক কনসেপ্ট।"
+    },
+    {
+      "id": 56,
+      "question": "In TCP/IP tunneling, which layer typically handles the encapsulation?",
+      "options": {
+        "a": "Physical Layer",
+        "b": "Data Link Layer",
+        "c": "Network or Transport Layer",
+        "d": "Application Layer only"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Network or Transport Layer",
+      "explanation": "TCP/IP tunneling সাধারণত Network Layer (Layer 3) বা Transport Layer (Layer 4)-এ encapsulation করে। GRE Network Layer tunneling protocol। SSL/TLS VPN Transport Layer-এ কাজ করে। Protocol অনুযায়ী layer ভিন্ন হতে পারে — কিন্তু Physical বা শুধু Application Layer এ নয়।"
     }
   ]
 }

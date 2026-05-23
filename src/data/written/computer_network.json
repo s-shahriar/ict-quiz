@@ -1198,6 +1198,37 @@
       }
     },
     {
+      "id": "cn_021",
+      "q": "How does TCP/IP Tunneling work? Explain its mechanism and real-world applications.",
+      "tags": [
+        "TCP/IP tunneling",
+        "encapsulation",
+        "VPN",
+        "GRE",
+        "SSH tunneling",
+        "IPsec",
+        "network security",
+        "protocol"
+      ],
+      "answer": {
+        "summary": [
+          "TCP/IP Tunneling হলো এক protocol-এর packet কে অন্য protocol-এর payload হিসেবে wrap (encapsulate) করে network-এ পাঠানোর পদ্ধতি।",
+          "এটি private বা incompatible নেটওয়ার্ককে public internet-এর উপর দিয়ে securely সংযুক্ত করতে ব্যবহৃত হয়।"
+        ],
+        "points": [
+          "Core Concept — Encapsulation:\nOriginal packet (inner packet) কে আরেকটি protocol-এর header দিয়ে মুড়িয়ে দেওয়া হয়।\nNetwork-এ transit হওয়ার সময় মাঝের router গুলো শুধু outer header দেখে — inner packet সম্পর্কে জানে না।\nDestination-এ পৌঁছে outer header খুলে ফেলা হয় (decapsulation) এবং original packet পাওয়া যায়।",
+          "Step-by-Step Process:\nStep 1 — Sender original data packet তৈরি করে (e.g. private IP: 192.168.1.10 থেকে 10.0.0.5 এ)।\nStep 2 — Tunnel endpoint (e.g. VPN client) এই packet কে encrypt করে নতুন outer IP header যোগ করে (public IP ব্যবহার করে)।\nStep 3 — Encapsulated packet public internet-এ পাঠানো হয়।\nStep 4 — Destination tunnel endpoint outer header সরায়, decrypt করে, original packet পায়।\nStep 5 — Original packet তার গন্তব্যে পৌঁছে দেওয়া হয়।",
+          "Common Tunneling Protocols:\nGRE (Generic Routing Encapsulation) — Layer 3 tunneling, encryption নেই, multicast support আছে।\nIPsec — Layer 3, strong encryption (AES), enterprise VPN-এ বহুল ব্যবহৃত।\nSSH Tunneling — Application layer port forwarding, encrypted channel তৈরি করে।\nSSL/TLS VPN — HTTPS port (443) ব্যবহার করে, firewall bypass সহজ।\nL2TP (Layer 2 Tunneling Protocol) — Layer 2 tunneling, সাধারণত IPsec এর সাথে ব্যবহৃত হয়।",
+          "Application 1 — VPN (Virtual Private Network):\nRemote employee বাড়ি থেকে company network-এ secure access পায়।\nPublic internet-এর উপর দিয়ে encrypted tunnel তৈরি হয়।\nমনে হয় employee office-এ বসেই কাজ করছে।",
+          "Application 2 — Bypassing Firewall/Censorship:\nSSH tunneling দিয়ে blocked port-এর traffic অন্য allowed port (e.g. 443) দিয়ে পাঠানো যায়।\nGeo-restricted content access করতে VPN tunnel ব্যবহার হয়।",
+          "Application 3 — Connecting Different Networks:\nদুটি আলাদা private network কে public internet-এর উপর দিয়ে একটি নেটওয়ার্কের মতো connect করা (Site-to-Site VPN)।\nIPv6 traffic কে IPv4 network-এর উপর দিয়ে পাঠানো (6in4 tunneling)।",
+          "Application 4 — Cloud & Data Center:\nCloud server এবং on-premise নেটওয়ার্কের মধ্যে secure tunnel।\nKubernetes cluster গুলোর মধ্যে encrypted communication।"
+        ],
+        "diagram": "TCP/IP TUNNELING — HOW IT WORKS:\n\n Original Packet:\n ┌─────────────────────────────────┐\n │ Src: 192.168.1.10  Dst: 10.0.0.5│  ← Private IPs\n │         DATA PAYLOAD             │\n └─────────────────────────────────┘\n              ↓ Encapsulate\n Tunneled Packet (sent over internet):\n ┌──────────────────────────────────────────────┐\n │ Outer IP: Src: 203.0.113.1  Dst: 198.51.100.1│ ← Public IPs\n │ ┌──────────────────────────────────────────┐  │\n │ │ Tunnel Header (GRE/IPsec/etc.)           │  │\n │ │ ┌──────────────────────────────────────┐ │  │\n │ │ │ Inner IP: 192.168.1.10 → 10.0.0.5   │ │  │\n │ │ │         DATA PAYLOAD                  │ │  │\n │ │ └──────────────────────────────────────┘ │  │\n │ └──────────────────────────────────────────┘  │\n └──────────────────────────────────────────────┘\n              ↓ Decapsulate at destination\n Original Packet restored → forwarded to 10.0.0.5\n\n VPN USE CASE:\n Home PC ──[encrypted tunnel]──→ VPN Server ──→ Company Network\n (192.168.1.10)    Public Internet   (203.0.113.1)    (10.0.0.x)",
+        "mnemonic": "Tunneling = Envelope in Envelope। চিঠির মতো ভাবো: ভেতরের চিঠি (private packet) একটি বড় খামে (public IP) ভরে পাঠাও — ডাকঘর (internet) শুধু বড় খাম দেখে, ভেতরে কী আছে জানে না।"
+      }
+    },
+    {
       "id": "cn_020",
       "q": "Explain how OSPF (Open Shortest Path First) works for packet delivery at the Network Layer. Describe its step-by-step process.",
       "tags": [
