@@ -37,11 +37,7 @@
           ]
         ],
         "table": {
-          "headers": [
-            "ACID",
-            "মানে",
-            "Bank উদাহরণ"
-          ],
+          "headers": ["ACID", "মানে", "Bank উদাহরণ"],
           "rows": [
             [
               "Atomicity",
@@ -104,6 +100,72 @@
           ]
         ],
         "mnemonic": "মনে রাখো: WHERE = row filter (আগে), HAVING = group filter (পরে)। Aggregate function সবসময় HAVING এ। Order: FROM → WHERE → GROUP BY → HAVING → SELECT।"
+      }
+    },
+    {
+      "id": "db_003",
+      "q": "What is ON DELETE CASCADE? What happens when it is used vs not used in a foreign key relationship?",
+      "tags": [
+        "SQL",
+        "foreign key",
+        "ON DELETE CASCADE",
+        "referential integrity",
+        "DDL"
+      ],
+      "answer": {
+        "summary": [
+          "ON DELETE CASCADE হলো Foreign Key constraint এর একটি option — যখন parent row delete হয়, স্বয়ংক্রিয়ভাবে সব related child row-ও delete হয়ে যায়।",
+          "না থাকলে: parent delete করলে প্রথমে manually child row গুলো delete করতে হবে, নয়তো error আসবে — referential integrity violate হবে।"
+        ],
+        "points": [
+          "Foreign Key = child table এর একটি column যা parent table এর Primary Key কে refer করে",
+          "ON DELETE CASCADE ব্যবহার করলে: parent row মুছলে সেই parent কে refer করা সব child row অটোমেটিক মুছে যায়",
+          "ON DELETE CASCADE না থাকলে: parent row delete করতে গেলে SQL error আসবে — কারণ child table এ এখনও সেই parent কে refer করা row আছে (orphan হয়ে যাবে)",
+          "না থাকলে সমাধান: আগে child row গুলো manually DELETE করো, তারপর parent delete করো",
+          "বিকল্প options: ON DELETE SET NULL (child এ NULL বসে), ON DELETE SET DEFAULT (child এ default বসে), ON DELETE RESTRICT (delete আটকায় — default behavior)",
+          "CASCADE ব্যবহারে সতর্কতা: accidentally parent delete করলে সব child data চলে যাবে — backup ছাড়া বড় table এ সাবধানে ব্যবহার করো"
+        ],
+        "diagram": "উদাহরণ: Department (parent) ← Employees (child)\n\n┌──────────────────────┐     ┌────────────────────────────┐\n│   Department         │     │   Employees                │\n├──────────────────────┤     ├────────────────────────────┤\n│ dept_id  (PK) │ name │     │ emp_id │ name  │ dept_id(FK)│\n├───────────────┼──────┤     ├────────┼───────┼────────────┤\n│     1         │  IT  │     │  101   │ Rahim │     1      │\n│     2         │  HR  │     │  102   │ Karim │     1      │\n│     3         │  FIN │     │  103   │ Salam │     2      │\n└──────────────────────┘     └────────────────────────────┘\n\n── WITH ON DELETE CASCADE ──────────────────────\n  DELETE FROM Department WHERE dept_id = 1;\n  → IT department মুছে যায়\n  → emp_id 101 (Rahim) ও 102 (Karim) ও অটোমেটিক মুছে যায়\n  → কোনো error নেই, সব পরিষ্কার ✅\n\n── WITHOUT ON DELETE CASCADE (default) ─────────\n  DELETE FROM Department WHERE dept_id = 1;\n  → ❌ ERROR: foreign key constraint violated!\n  → কারণ Employees table এ এখনও dept_id=1 আছে\n  → আগে Employees থেকে মুছতে হবে, তারপর Department\n\nSQL Syntax:\n  CREATE TABLE Employees (\n      emp_id   INT PRIMARY KEY,\n      name     VARCHAR(100),\n      dept_id  INT,\n      FOREIGN KEY (dept_id)\n          REFERENCES Department(dept_id)\n          ON DELETE CASCADE   ← এই লাইনটা\n  );",
+        "mistakes": [
+          [
+            "CASCADE মানে parent ও child একসাথে insert হয়",
+            "না — CASCADE শুধু DELETE (ও UPDATE) এর সময় কাজ করে, INSERT এ না"
+          ],
+          [
+            "ON DELETE CASCADE না থাকলে child table এ NULL বসে",
+            "না — ডিফল্ট behavior হলো RESTRICT (error দেখাবে)। NULL বসাতে চাইলে ON DELETE SET NULL লিখতে হবে"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "ON DELETE Option",
+            "Parent Delete করলে Child এ কী হয়",
+            "কখন ব্যবহার"
+          ],
+          "rows": [
+            [
+              "CASCADE",
+              "Child row ও অটোমেটিক delete হয়",
+              "Child data parent ছাড়া অর্থহীন (e.g., Order → OrderItems)"
+            ],
+            [
+              "SET NULL",
+              "Child এ NULL বসে (orphan থাকে)",
+              "Child parent ছাড়াও থাকতে পারে (e.g., Employee → Manager)"
+            ],
+            [
+              "SET DEFAULT",
+              "Child এ default value বসে",
+              "Default value define করা আছে এমন column এ"
+            ],
+            [
+              "RESTRICT / NO ACTION",
+              "Error দেখায়, delete আটকায়",
+              "Default behavior — manually handle করতে চাইলে"
+            ]
+          ]
+        },
+        "mnemonic": "CASCADE = জলপ্রপাত — parent পড়লে child-ও পড়ে যায়! SET NULL = parent চলে গেলে child এ শূন্য জায়গা। RESTRICT = দরজায় পাহারা — parent যেতে চাইলে child আটকায়। মনে রাখো: CASCADE = সব মিলে যায়, RESTRICT = কিছুই যায় না।"
       }
     }
   ]
