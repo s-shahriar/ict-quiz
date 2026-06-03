@@ -392,6 +392,416 @@
         ],
         "mnemonic": "RAID Controller = রাঁধুনি → hardware নিজে array বানিয়ে logical volume দেয়। HBA = খালি ট্রে → raw disk (pass-through) সরাসরি OS-কে দেয়, RAID রাঁধে software (ZFS)।"
       }
+    },
+    {
+      "id": "server_006",
+      "q": "KVM vs VMware — what is the difference, and which is better for what?",
+      "tags": [
+        "KVM",
+        "VMware",
+        "ESXi",
+        "hypervisor",
+        "virtualization",
+        "vSphere"
+      ],
+      "answer": {
+        "summary": [
+          "KVM (Kernel-based Virtual Machine) = open-source Type-1 hypervisor যা Linux kernel-এর একটি module (kvm.ko) — kernel-কেই hypervisor বানায়। ফ্রি (GPL)।",
+          "VMware ESXi = proprietary Type-1 bare-metal hypervisor যা নিজেই একটি OS; enterprise-এর industry standard। Paid license।",
+          "KVM = cloud/OpenStack/budget/Linux-এর জন্য ভালো; VMware = পরিপক্ব enterprise feature + support দরকার হলে ভালো।"
+        ],
+        "points": [
+          "KVM: Linux kernel-এর ভেতরের module (kvm.ko) যা kernel-কেই Type-1 hypervisor বানায়; VM চালাতে QEMU (emulation) + libvirt (management) ব্যবহার হয়।",
+          "KVM tooling: virt-manager, Proxmox, oVirt/RHEV, OpenStack — open source। AWS Nitro, Google Cloud, অনেক cloud KVM-ভিত্তিক।",
+          "VMware ESXi: bare-metal Type-1 hypervisor যা নিজেই একটি OS (আলাদা host OS লাগে না); vCenter/vSphere দিয়ে manage হয়।",
+          "VMware-এর পরিপক্ব enterprise feature: vMotion (live migration), DRS (load balancing), HA, Fault Tolerance — polished ও GUI-friendly। (KVM-এও live migration আছে, তবে tooling-নির্ভর।)",
+          "License/cost: KVM ফ্রি ও open source (GPL); VMware proprietary ও ব্যয়বহুল (Broadcom-এর পর আরও বেশি)।",
+          "Support: KVM = community + Red Hat-এর commercial option; VMware = vendor-এর commercial support।",
+          "নোট: VMware ESXi = Type-1 (bare-metal); VMware Workstation/Player = Type-2 (hosted, desktop-এ চলে) — দুটো আলাদা product।"
+        ],
+        "diagram": "KVM — Linux kernel নিজেই hypervisor (module)\n   ┌─────┬─────┬─────┐\n   │ VM  │ VM  │ VM  │  ← QEMU প্রতি VM emulate করে\n   ├─────┴─────┴─────┤\n   │ QEMU + libvirt   │  ← management (virt-manager/Proxmox)\n   ├──────────────────┤\n   │ Linux Kernel     │  ← kvm.ko module = hypervisor\n   │   + KVM module   │\n   ├──────────────────┤\n   │    Hardware      │\n   └──────────────────┘\n   open source, free (GPL) │ Linux লাগে\n\n────────────────────────────────────────\n\nVMware — ESXi নিজেই bare-metal OS/hypervisor\n   ┌─────┬─────┬─────┐\n   │ VM  │ VM  │ VM  │\n   ├─────┴─────┴─────┤\n   │  ESXi hypervisor │  ← নিজেই OS (Type-1 bare-metal)\n   ├──────────────────┤\n   │    Hardware      │\n   └──────────────────┘\n          ▲\n   vCenter দিয়ে manage → vMotion / DRS / HA / FT\n   proprietary, paid license\n\n────────────────────────────────────────\n         KVM                 VMware (ESXi)\n   ┌──────────────┐    ┌──────────────┐\n   │ kernel module │    │ bare-metal OS │\n   │ free / GPL    │    │ paid license  │\n   └──────────────┘    └──────────────┘\n   cloud, OpenStack,    enterprise DC,\n   Proxmox, budget      polished + support",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "KVM",
+            "VMware (ESXi)"
+          ],
+          "rows": [
+            [
+              "ধরন",
+              "Type-1, Linux kernel module",
+              "Type-1, bare-metal নিজস্ব OS"
+            ],
+            [
+              "License",
+              "Open source, free (GPL)",
+              "Proprietary, paid (ব্যয়বহুল)"
+            ],
+            [
+              "Host OS",
+              "Linux লাগে",
+              "নিজেই OS (host OS লাগে না)"
+            ],
+            [
+              "Management",
+              "libvirt, virt-manager, Proxmox, OpenStack",
+              "vCenter / vSphere"
+            ],
+            [
+              "Enterprise features",
+              "live migration ইত্যাদি — tooling-নির্ভর",
+              "vMotion, DRS, HA, FT (পরিপক্ব, polished)"
+            ],
+            [
+              "Support",
+              "community + Red Hat (commercial option)",
+              "commercial vendor support"
+            ],
+            [
+              "ব্যবহার",
+              "cloud, OpenStack, budget, Linux shop",
+              "enterprise DC, mixed-OS, GUI-friendly"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "KVM মানে শুধু একটা সাধারণ virtualization app (যেমন VirtualBox)",
+            "না — KVM হলো Linux kernel-এর ভেতরের module যা kernel-কেই Type-1 hypervisor বানায়"
+          ],
+          [
+            "VMware আর ESXi সম্পূর্ণ আলাদা জিনিস",
+            "ESXi হলো VMware-এর bare-metal hypervisor; এটিই vSphere/vCenter suite-এর কেন্দ্র"
+          ]
+        ],
+        "mnemonic": "KVM = \"Kernel-এর ভেতরের hypervisor\" (Linux module, free, open source)। VMware ESXi = \"নিজের বাড়িওয়ালা\" (নিজেই OS, paid, পরিপক্ব enterprise সুবিধা + support)।"
+      }
+    },
+    {
+      "id": "server_007",
+      "q": "What is Kubernetes? Explain its architecture.",
+      "tags": [
+        "kubernetes",
+        "k8s",
+        "container orchestration",
+        "control plane",
+        "worker node",
+        "pod"
+      ],
+      "answer": {
+        "summary": [
+          "Kubernetes (K8s) = open-source container orchestration platform — container deploy, scale, heal ও manage স্বয়ংক্রিয় করে।",
+          "Cluster = Control Plane (মস্তিষ্ক — সিদ্ধান্ত নেয়) + Worker Nodes (যেখানে container/Pod আসলে চলে)।",
+          "Declarative: তুমি \"desired state\" বলো, K8s সেটা ধরে রাখে → self-healing, auto-scaling, rolling update।"
+        ],
+        "points": [
+          "Control Plane (master): পুরো cluster-এর সিদ্ধান্ত নেয় ও desired state বজায় রাখে — ৪টি মূল অংশ:",
+          { "sub": "API Server (kube-apiserver): cluster-এর \"front door\" — সব command/communication এর মধ্য দিয়ে যায় (REST API)।" },
+          { "sub": "etcd: distributed key-value store — cluster-এর সব state/config রাখে (cluster-এর \"database\")।" },
+          { "sub": "Scheduler (kube-scheduler): নতুন Pod কোন node-এ চলবে তা ঠিক করে (resource অনুযায়ী)।" },
+          { "sub": "Controller Manager: controller চালায় (node, replication...) — actual state কে desired state-এ আনে।" },
+          "Worker Node: যেখানে আসল container (Pod) চলে — ৩টি মূল অংশ:",
+          { "sub": "kubelet: প্রতি node-এর agent — Pod/container ঠিকমতো চলছে কিনা দেখে, API server-এর সাথে কথা বলে।" },
+          { "sub": "kube-proxy: node-এর networking ও service load-balancing সামলায়।" },
+          { "sub": "Container Runtime (containerd/CRI-O): আসলে container চালায়।" },
+          "Pod: K8s-এর smallest deployable unit — এক বা একাধিক container যারা একই network/storage শেয়ার করে।",
+          "মূল object: Deployment (rollout/scale), Service (stable network endpoint), Namespace, ConfigMap/Secret, Ingress।",
+          "কেন দরকার: self-healing (container মরলে আবার চালু), auto-scaling, load balancing, rolling update — সব declarative ভাবে।"
+        ],
+        "diagram": "        kubectl / user\n             │  (REST API)\n             ▼\n ╔═══════════════════════════════════╗\n ║  CONTROL PLANE (master/মস্তিষ্ক)   ║\n ║  ┌────────────┐  ┌─────────────┐  ║\n ║  │            │◄─│  Scheduler  │  ║ ← Pod কোথায় চলবে\n ║  │ API Server │  └─────────────┘  ║\n ║  │(front door)│  ┌─────────────┐  ║\n ║  │            │◄─│ Controller  │  ║ ← desired state\n ║  │            │  │  Manager    │  ║   বজায় রাখে\n ║  │            │  └─────────────┘  ║\n ║  │            │◄─┐ ┌──────────┐  ║\n ║  └────────────┘  └─│  etcd    │  ║ ← cluster state DB\n ║                    └──────────┘  ║\n ╚═══════════════════════════════════╝\n        │ schedule / control\n        ▼\n ┌───────────────────┐ ┌───────────────────┐\n │  WORKER NODE 1    │ │  WORKER NODE 2    │\n │  ┌─────┐ ┌─────┐  │ │  ┌─────┐ ┌─────┐  │\n │  │Pod  │ │Pod  │  │ │  │Pod  │ │Pod  │  │ ← container চলে\n │  │[ctr]│ │[ctr]│  │ │  │[ctr]│ │[ctr]│  │\n │  └─────┘ └─────┘  │ │  └─────┘ └─────┘  │\n │  kubelet          │ │  kubelet          │ ← agent\n │  kube-proxy       │ │  kube-proxy       │ ← networking\n │  container runtime│ │  container runtime│ ← containerd\n └───────────────────┘ └───────────────────┘\n\n Control Plane = সিদ্ধান্ত নেয় │ Worker = container চালায়",
+        "table": {
+          "headers": [
+            "Component",
+            "কোথায়",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "API Server",
+              "Control Plane",
+              "cluster-এর front door, সব communication"
+            ],
+            [
+              "etcd",
+              "Control Plane",
+              "cluster state/config store (DB)"
+            ],
+            [
+              "Scheduler",
+              "Control Plane",
+              "Pod কোন node-এ চলবে ঠিক করে"
+            ],
+            [
+              "Controller Manager",
+              "Control Plane",
+              "desired state বজায় রাখে"
+            ],
+            [
+              "kubelet",
+              "Worker Node",
+              "Pod/container চলছে কিনা দেখে"
+            ],
+            [
+              "kube-proxy",
+              "Worker Node",
+              "networking + service load-balance"
+            ],
+            [
+              "Container Runtime",
+              "Worker Node",
+              "আসলে container চালায়"
+            ],
+            [
+              "Pod",
+              "Worker Node",
+              "smallest unit (container রাখে)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Kubernetes নিজেই container চালায়",
+            "না — container চালায় Container Runtime (containerd/CRI-O); K8s শুধু orchestrate করে"
+          ],
+          [
+            "Pod আর Container একই জিনিস",
+            "না — Pod হলো wrapper যেটাতে এক বা একাধিক container থাকে (network/storage শেয়ার করে)"
+          ]
+        ],
+        "mnemonic": "Control Plane-এর ৪ অঙ্গ = \"A-S-E-C\": API server, Scheduler, Etcd, Controller manager। Worker-এর ৩: kubelet চালায়, kube-proxy জোড়ে, runtime দৌড়ায়।"
+      }
+    },
+    {
+      "id": "server_008",
+      "q": "Docker vs Kubernetes — what is the difference, and how are they related?",
+      "tags": [
+        "docker",
+        "kubernetes",
+        "container",
+        "orchestration",
+        "docker swarm",
+        "compose"
+      ],
+      "answer": {
+        "summary": [
+          "এরা প্রতিদ্বন্দ্বী নয়, পরিপূরক: Docker container বানায় ও চালায়; Kubernetes অনেক container-কে অনেক machine জুড়ে orchestrate করে।",
+          "Docker = single host-এ container build/run (Dockerfile → image → container)। Kubernetes = multi-host cluster-এ scale, self-heal, load-balance।",
+          "সরাসরি তুলনা করলে আসলে দাঁড়ায়: orchestration-এ Docker Swarm/Compose vs Kubernetes।"
+        ],
+        "points": [
+          "Docker: container platform — Dockerfile দিয়ে image build করে container run করে; মূলত একটি machine (host) কেন্দ্রিক।",
+          "Kubernetes: orchestrator — অনেক node জুড়ে container deploy, auto-scale, self-heal, rolling update, load-balance করে।",
+          "সম্পর্ক: K8s container চালাতে একটি container runtime ব্যবহার করে (আগে Docker, এখন containerd/CRI-O) — অর্থাৎ K8s Docker-এর তৈরি image-ই চালায়।",
+          "Scope পার্থক্য: Docker = build + run (one host); Kubernetes = manage at scale (many hosts/cluster)।",
+          "Docker-এর নিজস্ব orchestration: Docker Compose = একই host-এ multi-container; Docker Swarm = Docker-এর সরল orchestrator। Kubernetes = শক্তিশালী, industry-standard (কিন্তু জটিল)।",
+          "কখন কোনটা: ছোট/একক app, dev/test → Docker (+Compose); বড় scale, HA, auto-scaling, production cluster → Kubernetes।"
+        ],
+        "diagram": "ভুল ধারণা: Docker ⚔ Kubernetes (প্রতিদ্বন্দ্বী?)\nসঠিক:      Docker  +  Kubernetes  (পরিপূরক)\n\n DOCKER — container বানায় ও চালায় (১ host)\n   Dockerfile ─► [ image ] ─► [ container ]\n   ┌──────────────────────────┐\n   │  Host (1 machine)         │\n   │  [ctr]  [ctr]  [ctr]      │\n   │  Docker Engine            │\n   └──────────────────────────┘\n\n KUBERNETES — অনেক container, অনেক machine\n        [ Control Plane ] ← orchestrate\n         │  scale / heal / load-balance\n         ▼\n   ┌────────┐ ┌────────┐ ┌────────┐\n   │ Node 1 │ │ Node 2 │ │ Node 3 │\n   │[ctr]   │ │[ctr]   │ │[ctr]   │\n   │[ctr]   │ │[ctr]   │ │[ctr]   │\n   └────────┘ └────────┘ └────────┘\n   container চালায় → runtime (containerd/CRI-O)\n\n────────────────────────────────────────\n   Docker              Kubernetes\n   ┌────────────┐    ┌────────────┐\n   │ build + run │    │ orchestrate │\n   │ ১ host      │    │ many hosts  │\n   │ সরল         │    │ শক্তিশালী/জটিল│\n   └────────────┘    └────────────┘",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Docker",
+            "Kubernetes"
+          ],
+          "rows": [
+            [
+              "কাজ",
+              "container build + run",
+              "অনেক container orchestrate"
+            ],
+            [
+              "Scope",
+              "একটি host",
+              "multi-host cluster"
+            ],
+            [
+              "Scaling",
+              "manual / সীমিত",
+              "auto-scaling + self-healing"
+            ],
+            [
+              "Load balancing",
+              "নিজে নেই",
+              "built-in (Service)"
+            ],
+            [
+              "Orchestration",
+              "Compose / Swarm (সরল)",
+              "পূর্ণ, industry-standard"
+            ],
+            [
+              "জটিলতা",
+              "সহজ",
+              "জটিল (শেখা কঠিন)"
+            ],
+            [
+              "ব্যবহার",
+              "dev, single app, image build",
+              "production, large scale, HA"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Docker আর Kubernetes একে অপরের বিকল্প/প্রতিদ্বন্দ্বী",
+            "না — পরিপূরক; Docker container বানায়, Kubernetes সেগুলো orchestrate করে"
+          ],
+          [
+            "Kubernetes চালাতে Docker বাধ্যতামূলক",
+            "না — K8s যেকোনো CRI-compatible runtime (containerd/CRI-O) চালাতে পারে; v1.24+ এ dockershim সরানো হয়েছে"
+          ]
+        ],
+        "mnemonic": "Docker = \"বাক্স বানায় ও খোলে\" (container build/run, ১ ঘর)। Kubernetes = \"অনেক বাক্সের ম্যানেজার\" (অনেক ঘরে scale/heal/LB)। একসাথে = পরিপূরক, প্রতিদ্বন্দ্বী নয়।"
+      }
+    },
+    {
+      "id": "server_009",
+      "q": "What are the modes of SELinux, and how is it configured?",
+      "tags": [
+        "SELinux",
+        "MAC",
+        "enforcing",
+        "permissive",
+        "disabled",
+        "security context"
+      ],
+      "answer": {
+        "summary": [
+          "SELinux = Mandatory Access Control (MAC) layer — label/context দিয়ে access নিয়ন্ত্রণ করে।",
+          "৩ mode: Enforcing (block+log), Permissive (শুধু log), Disabled (বন্ধ)।"
+        ],
+        "points": [
+          "SELinux প্রতিটি access (process একটি file বা port ব্যবহার করতে চাইলে) policy-র সাথে যাচাই করে। অনুমতি না থাকলে সেই চেষ্টাকে বলে denial।",
+          "তিনটি mode আসলে একটিই প্রশ্নের উত্তর — denial হলে SELinux কী করবে:",
+          { "sub": "Enforcing: denial আটকে দেয় এবং log রাখে। অননুমোদিত access বাস্তবে বন্ধ হয়, তাই এটিই প্রকৃত নিরাপত্তা এবং production-এর উপযুক্ত mode।" },
+          { "sub": "Permissive: denial আটকায় না, শুধু log-এ নথিভুক্ত করে। নতুন app চালু করার সময় উপযোগী — কাজ বন্ধ না করেই দেখা যায় policy কী কী আটকাত, পরে সেই log থেকে audit2allow দিয়ে সঠিক policy বানিয়ে Enforcing-এ ফেরা যায়।" },
+          { "sub": "Disabled: SELinux কিছুই যাচাই করে না — কোনো policy, label বা log নেই। সম্পূর্ণ বন্ধ, যা নিরুৎসাহিত।" },
+          "Config (স্থায়ী): /etc/selinux/config ফাইলে SELINUX=enforcing|permissive|disabled লিখে দিতে হয় (reboot প্রয়োজন)।",
+          "Command (সাময়িক): getenforce বর্তমান mode দেখায়; setenforce 0/1 দিয়ে Permissive/Enforcing করা যায়; sestatus বিস্তারিত status দেখায়।",
+          "Context: প্রতিটি file ও process-এর label = user:role:type:level (মূল অংশ হলো type); দেখা যায় ls -Z বা ps -Z দিয়ে।"
+        ],
+        "diagram": "কাজ কীভাবে হয়:\n  process একটি file/port access করতে চায়\n        │  policy যাচাই করে\n        ├─ অনুমতি আছে  →  allow ✓\n        └─ অনুমতি নেই  →  \"denial\"  →  mode ঠিক করে কী হবে\n\ndenial হলে তিন mode-এর আচরণ:\n  ┌─────────────┬─────────────┬─────────────┐\n  │  Enforcing  │ Permissive  │  Disabled   │\n  ├─────────────┼─────────────┼─────────────┤\n  │ block + log │   শুধু log   │  কিছুই না   │\n  │  (আটকায়)   │ (চলতে দেয়)  │   (বন্ধ)    │\n  └─────────────┴─────────────┴─────────────┘\n  Permissive: app ভাঙে না; log থেকে audit2allow\n  দিয়ে policy বানিয়ে Enforcing-এ ফেরা যায়।\n\nConfig (স্থায়ী, reboot লাগে):  /etc/selinux/config\n  SELINUX=enforcing|permissive|disabled\n  SELINUXTYPE=targeted\n\nCommand (সাময়িক):\n  setenforce 0 = Permissive    setenforce 1 = Enforcing",
+        "table": {
+          "headers": [
+            "Command / File",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "getenforce",
+              "বর্তমান mode দেখায়"
+            ],
+            [
+              "setenforce 0 / 1",
+              "Permissive / Enforcing (temp)"
+            ],
+            [
+              "sestatus",
+              "বিস্তারিত status"
+            ],
+            [
+              "/etc/selinux/config",
+              "persistent mode (reboot লাগে)"
+            ],
+            [
+              "ls -Z / ps -Z",
+              "file / process-এর context"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "setenforce দিয়ে SELinux Disabled করা যায়",
+            "না — শুধু Enforcing↔Permissive; Disabled = /etc/selinux/config + reboot"
+          ]
+        ],
+        "mnemonic": "\"E-P-D\": Enforcing আটকায়, Permissive টুকে রাখে, Disabled ঘুমায়।"
+      }
+    },
+    {
+      "id": "server_010",
+      "q": "NAS vs SAN vs DAS — what is the difference, and which is used for what?",
+      "tags": [
+        "DAS",
+        "NAS",
+        "SAN",
+        "storage",
+        "block-level",
+        "file-level"
+      ],
+      "answer": {
+        "summary": [
+          "DAS = storage সরাসরি একটি server-এ যুক্ত (network ছাড়া), block-level — শুধু সেই host ব্যবহার করে।",
+          "NAS = LAN-এ যুক্ত storage appliance; NFS/SMB দিয়ে file share করে — অনেক client পায় (file-level)।",
+          "SAN = dedicated high-speed network (Fibre Channel/iSCSI) যা server-কে block-level storage দেয় (local disk-এর মতো); enterprise/high-performance।"
+        ],
+        "points": [
+          "DAS (Direct Attached Storage): server-এর ভেতরের disk বা সরাসরি যুক্ত enclosure (SATA/SAS/USB)। network নেই → শুধু ওই host access করে; block-level।",
+          "NAS (Network Attached Storage): নিজস্ব OS সহ appliance, LAN/Ethernet-এ যুক্ত; NFS/SMB/CIFS দিয়ে file share করে → অনেক client একসাথে file পায় (file-level)।",
+          "SAN (Storage Area Network): আলাদা ডেডিকেটেড high-speed network (Fibre Channel বা iSCSI); server-কে raw block device দেয় → server একে local disk হিসেবে দেখে। database/VM/high-performance-এর জন্য।",
+          "মূল পার্থক্য (access level): DAS = block, NAS = file, SAN = block — এটাই NAS vs SAN-এর আসল ফারাক।",
+          "Cost/complexity: DAS সস্তা ও সরল; NAS মাঝারি; SAN ব্যয়বহুল ও জটিল।",
+          "কখন কোনটা: একক server/PC → DAS; office/home file sharing, backup, media → NAS; বড় data center, database, VM storage, কম latency → SAN।"
+        ],
+        "diagram": "DAS — সরাসরি যুক্ত (network নেই), block-level\n   [Server] ━━(SAS/SATA/USB)━━ [Disk/Enclosure]\n   শুধু এই server access করে\n\nNAS — LAN-এ file share (file-level)\n   [Client]┐\n   [Client]┼─(Ethernet/LAN)─► [NAS appliance]\n   [Client]┘   NFS / SMB / CIFS    │ নিজস্ব OS\n   অনেক client একই file পায\n\nSAN — dedicated network, block-level\n   [Server]┐\n   [Server]┼═(Fibre Channel/iSCSI)═► [SAN storage]\n   [Server]┘   raw block (local disk-এর মতো)\n   server গুলো block device হিসেবে দেখে\n\n────────────────────────────────────────\n          DAS        NAS          SAN\n  access  block      file         block\n  network নেই        LAN          dedicated(FC/iSCSI)\n  share   ১ host     অনেক(file)   অনেক(block)\n  cost    সস্তা      মাঝারি       ব্যয়বহুল",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "DAS",
+            "NAS",
+            "SAN"
+          ],
+          "rows": [
+            [
+              "Connection",
+              "সরাসরি (SAS/SATA/USB)",
+              "LAN / Ethernet",
+              "dedicated (FC/iSCSI)"
+            ],
+            [
+              "Access level",
+              "Block",
+              "File",
+              "Block"
+            ],
+            [
+              "Protocol",
+              "SATA/SAS/USB",
+              "NFS/SMB/CIFS",
+              "Fibre Channel/iSCSI"
+            ],
+            [
+              "Sharing",
+              "একক host",
+              "অনেক client (file)",
+              "অনেক server (block)"
+            ],
+            [
+              "Cost / complexity",
+              "সস্তা, সরল",
+              "মাঝারি",
+              "ব্যয়বহুল, জটিল"
+            ],
+            [
+              "ব্যবহার",
+              "একক server / PC",
+              "file share, backup, media",
+              "DB, VM, high-performance"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "NAS আর SAN একই জিনিস",
+            "না — NAS file-level (NFS/SMB), SAN block-level (FC/iSCSI); SAN server-কে raw disk দেয়, NAS file দেয়"
+          ],
+          [
+            "DAS share করা যায় না বলে অকেজো",
+            "না — single high-performance server বা সরল/সস্তা setup-এ DAS-ই যথেষ্ট"
+          ]
+        ],
+        "mnemonic": "DAS একার (তারে বাঁধা, block)। NAS file ভাগে (LAN-এ NFS/SMB, সবাই file পায়)। SAN block-এর হাইওয়ে (dedicated FC/iSCSI, server raw disk পায়)।"
+      }
     }
   ]
 }

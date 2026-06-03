@@ -297,3 +297,8 @@ Every answer ends with a Bengali mnemonic using one of:
 - [x] `server_003` — Tower vs Rack vs Blade Server *(rich visualization — the standard reference)*
 - [x] `server_004` — ECC memory: what, why needed, where not needed
 - [x] `server_005` — RAID controller vs HBA: difference + which is better for what
+- [x] `server_006` — KVM vs VMware: difference + which is better for what
+- [x] `server_007` — Kubernetes: what it is + architecture (control plane / worker nodes)
+- [x] `server_008` — Docker vs Kubernetes: difference + how they relate
+- [x] `server_009` — SELinux: modes (enforcing/permissive/disabled) + configuration
+- [x] `server_010` — NAS vs SAN vs DAS: difference + which is used for what
