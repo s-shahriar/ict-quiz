@@ -1,5 +1,9 @@
 import { useState, useMemo } from 'react'
+import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, Star, Bookmark } from 'lucide-react'
+import { TOPICS } from '../data/index.js'
+import { useMasteredContext } from '../contexts/MasteredContext.jsx'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -10,20 +14,31 @@ function shuffle(arr) {
   return a
 }
 
-export default function QuizMode({ topic, mastered, important, onNail, onUnnail, onMarkImportant, onUnmarkImportant, onBack, onHome }) {
+export default function QuizMode() {
+  const { topicId } = useParams()
+  const navigate = useNavigate()
+  const topic = TOPICS.find(t => t.id === topicId)
+  const { value: mastered, add: nail, remove: unnail } = useMasteredContext()
+  const { value: important, add: markImportant, remove: unmarkImportant } = useImportantContext()
+
   const questions = useMemo(
-    () => shuffle(
-      topic.questions
-        .map((q, i) => ({ ...q, _origIndex: i }))
-        .filter(q => q.options && q.correct_answer)
-    ),
+    () => topic
+      ? shuffle(
+          topic.questions
+            .map((q, i) => ({ ...q, _origIndex: i }))
+            .filter(q => q.options && q.correct_answer)
+        )
+      : [],
     [topic]
   )
+
   const [idx, setIdx] = useState(0)
   const [selected, setSelected] = useState(null)
   const [revealed, setRevealed] = useState(false)
   const [score, setScore] = useState(0)
   const [done, setDone] = useState(false)
+
+  if (!topic) return <Navigate to="/" replace />
 
   const q = questions[idx]
   const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
@@ -51,7 +66,7 @@ export default function QuizMode({ topic, mastered, important, onNail, onUnnail,
   }
 
   if (!q || done) {
-    return <ScoreScreen score={score} total={questions.length} topic={topic} onRetry={retry} onHome={onHome} />
+    return <ScoreScreen score={score} total={questions.length} topic={topic} onRetry={retry} onHome={() => navigate('/')} />
   }
 
   const progress = ((idx + (revealed ? 1 : 0)) / questions.length) * 100
@@ -60,7 +75,7 @@ export default function QuizMode({ topic, mastered, important, onNail, onUnnail,
   return (
     <div className="quiz-page anim-fade">
       <div className="quiz-topbar">
-        <button className="back-btn" onClick={onBack}>
+        <button className="back-btn" onClick={() => navigate('/mcq/' + topic.id)}>
           <ChevronLeft size={15} /> Back
         </button>
         <span className="quiz-topic-pill" style={{ color: topic.color }}>{topic.shortName}</span>
@@ -126,7 +141,7 @@ export default function QuizMode({ topic, mastered, important, onNail, onUnnail,
             <div className="quiz-mark-btns">
               <button
                 className={`quiz-nail-btn${isNailed ? ' nailed' : ''}`}
-                onClick={() => isNailed ? onUnnail?.(qid) : onNail?.(qid)}
+                onClick={() => isNailed ? unnail(qid) : nail(qid)}
                 title={isNailed ? 'Nailed — click to un-nail' : 'Mark as Nailed It'}
               >
                 <Star size={16} fill={isNailed ? 'currentColor' : 'none'} strokeWidth={1.8} />
@@ -134,7 +149,7 @@ export default function QuizMode({ topic, mastered, important, onNail, onUnnail,
               </button>
               <button
                 className={`quiz-important-btn${isImportant ? ' marked' : ''}`}
-                onClick={() => isImportant ? onUnmarkImportant?.(qid) : onMarkImportant?.(qid)}
+                onClick={() => isImportant ? unmarkImportant(qid) : markImportant(qid)}
                 title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
               >
                 <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />

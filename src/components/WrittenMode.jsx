@@ -1,9 +1,27 @@
+import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronUp, Home, LayoutGrid, PenLine, Star } from 'lucide-react'
 import { useState } from 'react'
-import { ChevronLeft, Home, ChevronDown, ChevronUp, BookOpenText, PenLine, Bookmark, Star, LayoutGrid } from 'lucide-react'
-import { WrittenCardBody } from './WrittenCardBody.jsx'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
+import { TOPICS } from '../data/index.js'
+import { getWrittenCount, getWrittenData } from '../data/written/index.js'
 import CategorySidebar from './CategorySidebar.jsx'
+import { WrittenCardBody } from './WrittenCardBody.jsx'
 
-export default function WrittenMode({ topic, topics, writtenData, important, writtenMastered, onMarkImportant, onUnmarkImportant, onNailWritten, onUnnailWritten, onBack, onHome, onChangeTopic }) {
+const WRITTEN_TOPICS = TOPICS
+  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
+  .filter(t => t.writtenCount > 0)
+
+export default function WrittenMode() {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
+  const { value: writtenMastered, add: onNailWritten, remove: onUnnailWritten } = useWrittenMasteredContext()
+
+  const topicId = searchParams.get('topic') || WRITTEN_TOPICS[0]?.id
+  const topic = WRITTEN_TOPICS.find(t => t.id === topicId) || WRITTEN_TOPICS[0]
+  const writtenData = topic ? getWrittenData(topic.id) : { questions: [] }
+
   const questions = writtenData?.questions || []
   const [openIds, setOpenIds] = useState({})
   const [filterImportant, setFilterImportant] = useState(false)
@@ -27,39 +45,36 @@ export default function WrittenMode({ topic, topics, writtenData, important, wri
     ? nonNailed.filter(q => important?.has(qid(q)))
     : nonNailed
 
+  if (!topic) return null
+
   return (
     <div className="written-page anim-fade">
       <div className="written-topbar">
-        <button className="back-btn" onClick={onBack}>
+        <button className="back-btn" onClick={() => navigate('/', { state: { module: 'written' } })}>
           <ChevronLeft size={15} /> All Categories
         </button>
         <div className="written-topic-pill" style={{ color: topic.color, borderColor: `${topic.color}55` }}>
           <PenLine size={13} />
-          {topic.shortName} — Written Q&amp;A
+          {topic.shortName} — Written Q&A
         </div>
         <div className="topbar-right-actions">
-          {topics && onChangeTopic && (
-            <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
-              <LayoutGrid size={16} />
-            </button>
-          )}
-          <button className="study-home-btn" onClick={onHome} title="Home">
+          <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
+            <LayoutGrid size={16} />
+          </button>
+          <button className="study-home-btn" onClick={() => navigate('/')} title="Home">
             <Home size={16} />
           </button>
         </div>
       </div>
 
-      {topics && onChangeTopic && (
-        <CategorySidebar
-          topics={topics}
-          currentTopicId={topic.id}
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          onSelect={onChangeTopic}
-        />
-      )}
+      <CategorySidebar
+        topics={WRITTEN_TOPICS}
+        currentTopicId={topic.id}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        onSelect={(t) => navigate('/written?topic=' + t.id)}
+      />
 
-      {/* Filter bar */}
       <div className="study-filter-bar">
         <button
           className={`study-filter-btn${!filterImportant ? ' active' : ''}`}
@@ -120,7 +135,6 @@ function WrittenCard({ q, idx, topicColor, isOpen, isImportant, isNailed, onTogg
   return (
     <div className={`written-card${isOpen ? ' open' : ''}`} style={{ '--c': topicColor }}>
 
-      {/* ── Header ── */}
       <div className="written-card-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="written-card-toggle">
           <span className="written-qnum" style={{ color: topicColor }}>Q{idx + 1}</span>
@@ -145,7 +159,6 @@ function WrittenCard({ q, idx, topicColor, isOpen, isImportant, isNailed, onTogg
         </button>
       </div>
 
-      {/* ── Body ── */}
       {isOpen && (
         <div className="anim-slide">
           <WrittenCardBody a={a} topicColor={topicColor} />

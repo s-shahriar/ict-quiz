@@ -1,10 +1,22 @@
 import { useState } from 'react'
+import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Filter, LayoutGrid } from 'lucide-react'
+import { TOPICS } from '../data/index.js'
+import { useMasteredContext } from '../contexts/MasteredContext.jsx'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import CategorySidebar from './CategorySidebar.jsx'
 
-export default function StudyMode({ topic, topics, mastered, important, onNail, onMarkImportant, onUnmarkImportant, onBack, onHome, onChangeTopic }) {
+export default function StudyMode() {
+  const { topicId } = useParams()
+  const navigate = useNavigate()
+  const topic = TOPICS.find(t => t.id === topicId)
+  const { value: mastered, add: onNail } = useMasteredContext()
+  const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
+
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  if (!topic) return <Navigate to="/" replace />
 
   const allQ = topic.questions
     .map((q, i) => ({ q, qid: `${topic.id}__${i}` }))
@@ -22,33 +34,28 @@ export default function StudyMode({ topic, topics, mastered, important, onNail, 
   return (
     <div className="study-page anim-fade">
       <div className="study-topbar">
-        <button className="back-btn" onClick={onBack}>
+        <button className="back-btn" onClick={() => navigate('/mcq/' + topic.id)}>
           <ChevronLeft size={15} /> Back
         </button>
         <span className="study-title" style={{ color: topic.color }}>{topic.name}</span>
         <div className="topbar-right-actions">
-          {topics && onChangeTopic && (
-            <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
-              <LayoutGrid size={16} />
-            </button>
-          )}
-          <button className="study-home-btn" onClick={onHome} title="Home">
+          <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
+            <LayoutGrid size={16} />
+          </button>
+          <button className="study-home-btn" onClick={() => navigate('/')} title="Home">
             <Home size={16} />
           </button>
         </div>
       </div>
 
-      {topics && onChangeTopic && (
-        <CategorySidebar
-          topics={topics}
-          currentTopicId={topic.id}
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          onSelect={onChangeTopic}
-        />
-      )}
+      <CategorySidebar
+        topics={TOPICS}
+        currentTopicId={topic.id}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        onSelect={(t) => navigate('/mcq/' + t.id + '/study')}
+      />
 
-      {/* Filter bar */}
       <div className="study-filter-bar">
         <button
           className={`study-filter-btn${!filterImportant ? ' active' : ''}`}
@@ -70,7 +77,7 @@ export default function StudyMode({ topic, topics, mastered, important, onNail, 
       {nailedCt > 0 && !filterImportant && (
         <div className="nailed-notice" style={{ borderColor: `${topic.color}40`, color: topic.color }}>
           <Star size={13} fill="currentColor" />
-          <span>{nailedCt} টি question Nailed — <button onClick={onHome} className="nailed-notice-link">Nailed It</button> এ দেখো</span>
+          <span>{nailedCt} টি question Nailed — <button onClick={() => navigate('/nailed')} className="nailed-notice-link">Nailed It</button> এ দেখো</span>
         </div>
       )}
 
@@ -81,7 +88,7 @@ export default function StudyMode({ topic, topics, mastered, important, onNail, 
             : <Star size={38} style={{ color: topic.color, opacity: 0.5, marginBottom: 12 }} fill="currentColor" />
           }
           <p>{filterImportant ? 'কোনো Important প্রশ্ন নেই।' : 'সব প্রশ্ন Nailed করা হয়েছে! 🎉'}</p>
-          <button className="back-btn" style={{ marginTop: 16 }} onClick={onHome}>হোমে ফিরে যাও</button>
+          <button className="back-btn" style={{ marginTop: 16 }} onClick={() => navigate('/')}>হোমে ফিরে যাও</button>
         </div>
       ) : (
         <div className="study-list">
@@ -94,8 +101,8 @@ export default function StudyMode({ topic, topics, mastered, important, onNail, 
               nailed={mastered.has(qid)}
               isImportant={important?.has(qid) ?? false}
               onNail={() => onNail(qid)}
-              onMarkImportant={() => onMarkImportant?.(qid)}
-              onUnmarkImportant={() => onUnmarkImportant?.(qid)}
+              onMarkImportant={() => onMarkImportant(qid)}
+              onUnmarkImportant={() => onUnmarkImportant(qid)}
             />
           ))}
         </div>

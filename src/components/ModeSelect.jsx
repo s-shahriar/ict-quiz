@@ -1,10 +1,18 @@
+import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import { ChevronLeft, Brain, BookOpen } from 'lucide-react'
+import { TOPICS } from '../data/index.js'
 
-export default function ModeSelect({ topic, onQuiz, onStudy, onBack }) {
+export default function ModeSelect() {
+  const { topicId } = useParams()
+  const navigate = useNavigate()
+  const topic = TOPICS.find(t => t.id === topicId)
+
+  if (!topic) return <Navigate to="/" replace />
+
   const Icon = topic.icon
   return (
     <div className="mode-page anim-fade">
-      <button className="back-btn" onClick={onBack}>
+      <button className="back-btn" onClick={() => navigate('/')}>
         <ChevronLeft size={15} /> All Topics
       </button>
 
@@ -26,7 +34,7 @@ export default function ModeSelect({ topic, onQuiz, onStudy, onBack }) {
       </div>
 
       <div className="mode-cards">
-        <button className="mode-card" onClick={onQuiz}>
+        <button className="mode-card" onClick={() => navigate('quiz')}>
           <div className="mode-card-icon" style={{ background: `${topic.color}1a`, color: topic.color }}>
             <Brain size={26} />
           </div>
@@ -35,12 +43,12 @@ export default function ModeSelect({ topic, onQuiz, onStudy, onBack }) {
           <span className="mode-card-cta" style={{ color: topic.color }}>Start Quiz →</span>
         </button>
 
-        <button className="mode-card" onClick={onStudy}>
+        <button className="mode-card" onClick={() => navigate('study')}>
           <div className="mode-card-icon" style={{ background: `${topic.color}1a`, color: topic.color }}>
             <BookOpen size={26} />
           </div>
           <h3>Study Mode</h3>
-          <p>Browse all Q&amp;As at your own pace. Reveal answers when ready. Great for revision.</p>
+          <p>Browse all Q&amp;A at your own pace. Reveal answers when ready. Great for revision.</p>
           <span className="mode-card-cta" style={{ color: topic.color }}>Start Reading →</span>
         </button>
       </div>

@@ -1,8 +1,16 @@
 import { useState, useRef } from 'react'
 import { X, Copy, Check, Upload, Download, ShieldCheck } from 'lucide-react'
-import { generateCypher, parseCypher } from '../lib/backup.js'
+import { useMasteredContext } from '../contexts/MasteredContext.jsx'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
+import useBackup from '../hooks/useBackup.js'
 
-export default function BackupModal({ mastered, important, writtenMastered, topics, writtenTList, onRestore, onClose }) {
+export default function BackupModal({ onClose }) {
+  const { value: mastered, add: addMastered } = useMasteredContext()
+  const { value: important, add: addImportant } = useImportantContext()
+  const { value: writtenMastered, add: addWrittenMastered } = useWrittenMasteredContext()
+  const { exportBackup, importBackup } = useBackup()
+
   const [tab, setTab]           = useState('export')
   const [copied, setCopied]     = useState(false)
   const [importText, setImportText] = useState('')
@@ -10,7 +18,7 @@ export default function BackupModal({ mastered, important, writtenMastered, topi
   const [restoreSummary, setRestoreSummary] = useState(null)
   const textRef = useRef(null)
 
-  const cypher = generateCypher(mastered, important, writtenMastered, topics, writtenTList)
+  const cypher = exportBackup(mastered, important, writtenMastered)
   const nailedCount         = mastered.size
   const writtenNailedCount  = writtenMastered.size
   const importantCount      = [...important].filter(id => !id.startsWith('written__')).length
@@ -27,12 +35,15 @@ export default function BackupModal({ mastered, important, writtenMastered, topi
     setError('')
     setRestoreSummary(null)
     try {
-      const { nailed, important: imp, writtenNailed, writtenImportant } = parseCypher(importText, topics, writtenTList)
+      const { nailed, important: imp, writtenNailed, writtenImportant } = importBackup(importText)
       const newNailed          = nailed.filter(id => !mastered.has(id)).length
       const newImportant       = imp.filter(id => !important.has(id)).length
       const newWrittenNailed   = writtenNailed.filter(id => !writtenMastered.has(id)).length
       const newWrittenImportant = writtenImportant.filter(id => !important.has(id)).length
-      onRestore(nailed, imp, writtenNailed, writtenImportant)
+      nailed.forEach(id => addMastered(id))
+      imp.forEach(id => addImportant(id))
+      writtenNailed.forEach(id => addWrittenMastered(id))
+      writtenImportant.forEach(id => addImportant(id))
       setRestoreSummary({ newNailed, newImportant, newWrittenNailed, newWrittenImportant })
       setTimeout(onClose, 2800)
     } catch (e) {

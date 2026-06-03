@@ -1,7 +1,16 @@
 import { useState } from 'react'
+import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX, Star, Bookmark } from 'lucide-react'
+import { useMasteredContext } from '../contexts/MasteredContext.jsx'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
 
-export default function ExamMode({ questions, label, mastered, important, onNail, onUnnail, onMarkImportant, onUnmarkImportant, onHome }) {
+export default function ExamMode() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { value: mastered, add: onNail, remove: onUnnail } = useMasteredContext()
+  const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
+
+  const { questions, label } = location.state || {}
   const [idx, setIdx]           = useState(0)
   const [selected, setSelected] = useState(null)
   const [revealed, setRevealed] = useState(false)
@@ -9,8 +18,12 @@ export default function ExamMode({ questions, label, mastered, important, onNail
   const [done, setDone]         = useState(false)
   const [stopConfirm, setStopConfirm] = useState(false)
 
+  if (!questions) return <Navigate to="/exam" replace />
+
+  const goHome = () => navigate('/')
+
   const handleStop = () => {
-    if (stopConfirm) { onHome(); return }
+    if (stopConfirm) { goHome(); return }
     setStopConfirm(true)
     setTimeout(() => setStopConfirm(false), 3000)
   }
@@ -40,7 +53,7 @@ export default function ExamMode({ questions, label, mastered, important, onNail
   }
 
   if (!q || done) {
-    return <ExamScore score={score} total={questions.length} label={label} onRetry={retry} onHome={onHome} />
+    return <ExamScore score={score} total={questions.length} label={label} onRetry={retry} onHome={goHome} />
   }
 
   const progress  = ((idx + (revealed ? 1 : 0)) / questions.length) * 100
@@ -122,7 +135,7 @@ export default function ExamMode({ questions, label, mastered, important, onNail
               <div className="quiz-mark-btns">
                 <button
                   className={`quiz-nail-btn${isNailed ? ' nailed' : ''}`}
-                  onClick={() => isNailed ? onUnnail?.(qid) : onNail?.(qid)}
+                  onClick={() => isNailed ? onUnnail(qid) : onNail(qid)}
                   title={isNailed ? 'Nailed — click to un-nail' : 'Mark as Nailed It'}
                 >
                   <Star size={16} fill={isNailed ? 'currentColor' : 'none'} strokeWidth={1.8} />
@@ -130,7 +143,7 @@ export default function ExamMode({ questions, label, mastered, important, onNail
                 </button>
                 <button
                   className={`quiz-important-btn${isImportant ? ' marked' : ''}`}
-                  onClick={() => isImportant ? onUnmarkImportant?.(qid) : onMarkImportant?.(qid)}
+                  onClick={() => isImportant ? onUnmarkImportant(qid) : onMarkImportant(qid)}
                   title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
                 >
                   <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />

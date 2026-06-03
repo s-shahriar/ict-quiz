@@ -1,10 +1,20 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
-import { getWrittenData } from '../data/written/index.js'
+import { getWrittenData, getWrittenCount } from '../data/written/index.js'
+import { TOPICS } from '../data/index.js'
+import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 
-export default function WrittenNailedScreen({ writtenTopics, writtenMastered, onUnnail, onHome }) {
-  const nailedByTopic = writtenTopics.map(t => {
+const WRITTEN_TOPICS = TOPICS
+  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
+  .filter(t => t.writtenCount > 0)
+
+export default function WrittenNailedScreen() {
+  const navigate = useNavigate()
+  const { value: writtenMastered, remove: onUnnail } = useWrittenMasteredContext()
+
+  const nailedByTopic = WRITTEN_TOPICS.map(t => {
     const data = getWrittenData(t.id)
     const items = (data.questions || [])
       .map(q => ({ q, qid: `written__${t.id}__${q.id}` }))
@@ -17,14 +27,14 @@ export default function WrittenNailedScreen({ writtenTopics, writtenMastered, on
   return (
     <div className="nailed-screen nailed-screen--wide anim-fade">
       <div className="nailed-screen-topbar">
-        <button className="back-btn" onClick={onHome}>
+        <button className="back-btn" onClick={() => navigate('/', { state: { module: 'written' } })}>
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
           <Star size={16} fill="currentColor" style={{ color: '#f59e0b' }} />
           Nailed It — Written
         </div>
-        <button className="study-home-btn" onClick={onHome} title="Home">
+        <button className="study-home-btn" onClick={() => navigate('/', { state: { module: 'written' } })} title="Home">
           <Home size={16} />
         </button>
       </div>

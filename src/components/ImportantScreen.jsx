@@ -1,7 +1,15 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bookmark, X, ChevronDown, ChevronUp, Home, Lightbulb } from 'lucide-react'
+import { TOPICS } from '../data/index.js'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
 
-export default function ImportantScreen({ topics, important, onUnmark, onHome }) {
+export default function ImportantScreen() {
+  const navigate = useNavigate()
+  const { value: important, remove: onUnmark } = useImportantContext()
+
+  const topics = TOPICS
+
   const importantByTopic = topics.map(t => {
     const items = t.questions
       .map((q, i) => ({ q, qid: `${t.id}__${i}` }))
@@ -15,14 +23,14 @@ export default function ImportantScreen({ topics, important, onUnmark, onHome })
   return (
     <div className="nailed-screen anim-fade">
       <div className="nailed-screen-topbar">
-        <button className="back-btn" onClick={onHome}>
+        <button className="back-btn" onClick={() => navigate('/')}>
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
           <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
           Important
         </div>
-        <button className="study-home-btn" onClick={onHome} title="Home">
+        <button className="study-home-btn" onClick={() => navigate('/')} title="Home">
           <Home size={16} />
         </button>
       </div>

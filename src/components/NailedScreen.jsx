@@ -1,7 +1,15 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home, Lightbulb } from 'lucide-react'
+import { TOPICS } from '../data/index.js'
+import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 
-export default function NailedScreen({ topics, mastered, onUnnail, onHome }) {
+export default function NailedScreen() {
+  const navigate = useNavigate()
+  const { value: mastered, remove: onUnnail } = useMasteredContext()
+
+  const topics = TOPICS
+
   const nailedByTopic = topics.map(t => {
     const items = t.questions
       .map((q, i) => ({ q, qid: `${t.id}__${i}` }))
@@ -15,14 +23,14 @@ export default function NailedScreen({ topics, mastered, onUnnail, onHome }) {
   return (
     <div className="nailed-screen anim-fade">
       <div className="nailed-screen-topbar">
-        <button className="back-btn" onClick={onHome}>
+        <button className="back-btn" onClick={() => navigate('/')}>
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
           <Star size={16} fill="currentColor" style={{ color: '#f59e0b' }} />
           Nailed It
         </div>
-        <button className="study-home-btn" onClick={onHome} title="Home">
+        <button className="study-home-btn" onClick={() => navigate('/')} title="Home">
           <Home size={16} />
         </button>
       </div>

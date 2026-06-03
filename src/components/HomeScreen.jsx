@@ -1,8 +1,27 @@
+import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck } from 'lucide-react'
+import { TOPICS } from '../data/index.js'
+import { getWrittenCount } from '../data/written/index.js'
+import { useMasteredContext } from '../contexts/MasteredContext.jsx'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 
-export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelectWritten, onExam, onNailed, onImportant, onWrittenImportant, onWrittenNailed, onBackup, mastered, important, writtenMastered, activeModule, onModuleChange }) {
-  const module    = activeModule
-  const setModule = onModuleChange
+const WRITTEN_TOPICS = TOPICS
+  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
+  .filter(t => t.writtenCount > 0)
+
+export default function HomeScreen({ onBackup }) {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { value: mastered } = useMasteredContext()
+  const { value: important } = useImportantContext()
+  const { value: writtenMastered } = useWrittenMasteredContext()
+
+  const [module, setModule] = useState(location.state?.module === 'written' ? 'written' : 'mcq')
+
+  const topics = TOPICS
+  const writtenTopics = WRITTEN_TOPICS
 
   const totalNailed = topics.reduce((s, t) =>
     s + t.questions.filter((q, i) => q.options && q.correct_answer && mastered.has(`${t.id}__${i}`)).length
@@ -39,9 +58,8 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
 
       {module === 'mcq' ? (
         <>
-          {/* Action cards row */}
           <div className="home-action-row home-action-row--3">
-            <button className="action-card exam-card" onClick={onExam}>
+            <button className="action-card exam-card" onClick={() => navigate('/exam')}>
               <div className="ac-shine" aria-hidden="true" />
               <div className="ac-icon-wrap ac-icon-wrap--exam">
                 <Zap size={22} className="ac-icon" />
@@ -55,7 +73,7 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
               </div>
             </button>
 
-            <button className="action-card nailed-card" onClick={onNailed}>
+            <button className="action-card nailed-card" onClick={() => navigate('/nailed')}>
               <div className="ac-shine" aria-hidden="true" />
               <div className="ac-icon-wrap ac-icon-wrap--nailed">
                 <Star size={20} fill="currentColor" className="ac-icon" />
@@ -69,7 +87,7 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
               </div>
             </button>
 
-            <button className="action-card important-card" onClick={onImportant}>
+            <button className="action-card important-card" onClick={() => navigate('/important')}>
               <div className="ac-shine" aria-hidden="true" />
               <div className="ac-icon-wrap ac-icon-wrap--important">
                 <Bookmark size={20} fill="currentColor" className="ac-icon" />
@@ -92,13 +110,13 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
 
           <p className="section-label">Choose a Topic</p>
           <main className="topics-grid">
-            {topics.map(t => <TopicCard key={t.id} topic={t} onClick={() => onSelectMCQ(t)} />)}
+            {topics.map(t => <TopicCard key={t.id} topic={t} onClick={() => navigate('/mcq/' + t.id)} />)}
           </main>
         </>
       ) : (
         <>
           <div className="home-action-row">
-            <button className="action-card nailed-card" onClick={onWrittenNailed}>
+            <button className="action-card nailed-card" onClick={() => navigate('/written/nailed')}>
               <div className="ac-shine" aria-hidden="true" />
               <div className="ac-icon-wrap ac-icon-wrap--nailed">
                 <Star size={20} fill="currentColor" className="ac-icon" />
@@ -112,7 +130,7 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
               </div>
             </button>
 
-            <button className="action-card important-card" onClick={onWrittenImportant}>
+            <button className="action-card important-card" onClick={() => navigate('/written/important')}>
               <div className="ac-shine" aria-hidden="true" />
               <div className="ac-icon-wrap ac-icon-wrap--important">
                 <Bookmark size={20} fill="currentColor" className="ac-icon" />
@@ -130,7 +148,7 @@ export default function HomeScreen({ topics, writtenTopics, onSelectMCQ, onSelec
           <p className="section-label">Choose a Category</p>
           <main className="topics-grid">
             {writtenTopics.map(t => (
-              <WrittenCategoryCard key={t.id} topic={t} onClick={() => onSelectWritten(t)} />
+              <WrittenCategoryCard key={t.id} topic={t} onClick={() => navigate('/written?topic=' + t.id)} />
             ))}
           </main>
         </>

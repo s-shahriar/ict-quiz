@@ -1,5 +1,8 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Zap, Minus, Plus } from 'lucide-react'
+import { TOPICS } from '../data/index.js'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -10,7 +13,11 @@ function shuffle(arr) {
   return a
 }
 
-export default function ExamConfig({ topics, important, onStart, onBack }) {
+export default function ExamConfig() {
+  const navigate = useNavigate()
+  const { value: important } = useImportantContext()
+  const topics = TOPICS
+
   const [topicId, setTopicId] = useState('all')
   const [count, setCount] = useState(10)
 
@@ -62,12 +69,12 @@ export default function ExamConfig({ topics, important, onStart, onBack }) {
     const label = topicId === 'important' ? 'Important Questions'
       : topicId === 'all' ? 'All Topics'
       : topics.find(t => t.id === topicId)?.name
-    onStart({ questions, label })
+    navigate('/exam/run', { state: { questions, label } })
   }
 
   return (
     <div className="exam-config-page anim-fade">
-      <button className="back-btn" onClick={onBack}>
+      <button className="back-btn" onClick={() => navigate('/')}>
         <ChevronLeft size={15} /> Back
       </button>
 
