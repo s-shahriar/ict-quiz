@@ -1,11 +1,7 @@
 import { useCallback } from 'react'
 import { generateCypher, parseCypher } from '../lib/backup.js'
 import { TOPICS } from '../data/index.js'
-import { getWrittenData, getWrittenCount } from '../data/written/index.js'
-
-const WRITTEN_TOPICS = TOPICS
-  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
-  .filter(t => t.writtenCount > 0)
+import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
 
 const WRITTEN_TLIST = WRITTEN_TOPICS.map(t => {
   const data = getWrittenData(t.id)

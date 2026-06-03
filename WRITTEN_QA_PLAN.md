@@ -23,8 +23,13 @@ The goal: exam-ready, memorable, quick-to-revise answers that stick.
 | `microprocessor` | Microprocessor | ✅ |
 | `c_programming` | C Programming | ✅ |
 | `software_engineering` | Software Engineering | ✅ |
+| `server` | Server | ⭐ Written-only (no MCQ counterpart) |
 
 When you give me a question, I will auto-assign it to the right category.
+
+> **Note:** `server` is a Written-only category (it has no MCQ topic). It is registered
+> via `WRITTEN_ONLY_TOPICS` in `src/data/written/index.js` so it shows in the Written
+> module without creating an empty MCQ card.
 
 ---
 
@@ -87,7 +92,7 @@ src/data/written/
 - ✅ Use **bullet points** — not paragraphs
 - ✅ Keep it **precise** — exam-ready, not textbook-heavy
 - ✅ Add a **mnemonic** at the end of every answer
-- ✅ Add **ASCII sketch/diagram** wherever it helps visualize (network topologies, OS layers, memory layout, RAID, etc.)
+- ✅ Add a **rich ASCII visualization** in the `diagram` field — not a bare sketch. **Draw the actual thing** (a tower box, a rack with U-slots, a blade chassis), **label every part** with `←` callouts, and end multi-item topics with an **at-a-glance comparison strip**. See §7 for the full standard. The goal: understand it in one glance.
 - ✅ Use **table** when a difference/comparison is asked
 
 ### When user says "আরও বুঝিয়ে দাও" / "explain further"
@@ -180,20 +185,66 @@ Add a "Written Q&A" button on the Home Screen (distinct style from topic cards).
 
 ---
 
-## 7. Diagram / Sketch Guidelines (for my answers)
+## 7. Visualization Standard (the heart of every answer)
 
-I will use ASCII art inline in the `diagram` field. Examples of what gets a diagram:
+Diagrams are **visual-first**, not decorative. A good `diagram` lets you grasp the concept in one glance — so I draw the *real object*, label its parts, and finish with a comparison strip. ASCII art goes inline in the `diagram` field (rendered in a monospace `<pre>` box).
 
-| Question type | Diagram |
+### The 4 rules every visualization follows
+
+1. **Draw the actual thing, not an abstraction.** A tower server looks like a standing box with drive bays and fans; a rack looks like a cabinet with stacked U-slots; a blade chassis looks like thin blades in a shared frame. Don't draw three identical rectangles.
+2. **Label every meaningful part** with `←` callouts (e.g. `← cooling fans`, `← 1U server`, `← shared backplane`). Mix Bengali + English labels freely.
+3. **End multi-item topics with an at-a-glance strip** — a tiny side-by-side of all items plus the one or two axes that matter (`Density: Tower < Rack < Blade`).
+4. **Keep it readable on a phone.** Stack big illustrations vertically (one per numbered step) rather than side-by-side when each is wide; reserve side-by-side for the small summary strip. Use box-drawing chars (`┌ ─ ┐ │ ╔ ═ ╟ ▌ ▤ ◍ ●`) for texture.
+
+### Worked example — the standard to match (`server_003`)
+
+```
+1) TOWER SERVER — দাঁড়ানো PC-এর মতো, standalone
+   ┌───────────────┐
+   │ ● POWERCERT   │  ← front panel
+   │ │ ▤ ▤ ▤ ▤ ▤ │ │  ← HDD bays
+   │ │  ◍   ◍    │ │  ← cooling fans
+   └───────────────┘
+   floor-standing │ 1 box = 1 server
+
+2) RACK SERVER — flat unit, 19" rack-এ stack, U-তে মাপা
+   ╔═══════════════╗
+   ║▐ ●● ▦▦▦▦ [==]▐║ 1U   ← প্রতি drawer = 1 server
+   ╟───────────────╢
+   ║▐ ●● ▦▦▦▦▦ [=]▐║ 2U
+   ╚═══════════════╝
+
+3) BLADE SERVER — পাতলা blade, shared chassis-এ গাঁথা
+   ╔═══════════════════╗
+   ║ │▌│▌│▌│▌│▌│▌│▌│  ║  ← প্রতি ▌ = 1 blade = 1 server
+   ╟───────────────────╢
+   ║ ▣ SHARED power/cool║  ← এক backplane সব blade-কে দেয়
+   ╚═══════════════════╝
+
+────────────────────────────────
+  Tower      Rack       Blade      ← at-a-glance strip
+  ┌──┐      ╔════╗     ╔═══════╗
+  │  │      ║════║     ║║║║║║║║║
+  └──┘      ╚════╝     ╚═══════╝
+  Density: Tower < Rack < Blade
+```
+
+### Per-topic visualization ideas
+
+| Question type | Visualization |
 |---|---|
-| Network topology | ASCII nodes + connections |
-| OSI / TCP-IP layers | Stacked box diagram |
-| RAID layout | Drive grid showing parity |
-| Memory layout (OS/micro) | Stack/heap/segment boxes |
-| Tree / graph (DSA) | ASCII tree |
-| Logic gates (Digital Logic) | Gate symbol in text |
-| Process states (OS) | State machine arrows |
-| ER Diagram (Database) | Entity-relationship boxes |
+| Server form factors / hardware | Draw each chassis distinctly + density strip |
+| VM vs Container | Side-by-side layered stacks (App/OS/Hypervisor vs App/Engine/kernel) |
+| Network topology | ASCII nodes + labelled connections |
+| OSI / TCP-IP layers | Stacked box diagram, each layer labelled |
+| RAID layout | Drive grid showing data + parity blocks |
+| Memory layout (OS/micro) | Stack/heap/segment boxes with addresses |
+| Tree / graph (DSA) | ASCII tree with node values |
+| Logic gates (Digital Logic) | Gate symbols + truth-value flow |
+| Process states (OS) | State machine with labelled arrows |
+| ER Diagram (Database) | Entity boxes + relationship lines |
+
+> If a diagram isn't clear in one glance, I redraw it — just say **"sketch টা বুঝলাম না"**.
 
 ---
 
@@ -234,8 +285,15 @@ Every answer ends with a Bengali mnemonic using one of:
 
 ## Status
 
-- [ ] Data structure finalized
-- [ ] `src/data/written/` files created
-- [ ] UI components built
-- [ ] App.jsx wired up
-- [ ] First batch of questions populated
+- [x] Data structure finalized
+- [x] `src/data/written/` files created
+- [x] UI components built
+- [x] App.jsx wired up
+- [x] First batch of questions populated
+
+### Server category (`server.json`)
+- [x] `server_001` — Differences between VM and Container
+- [x] `server_002` — Pros and Cons of VM and Container
+- [x] `server_003` — Tower vs Rack vs Blade Server *(rich visualization — the standard reference)*
+- [x] `server_004` — ECC memory: what, why needed, where not needed
+- [x] `server_005` — RAID controller vs HBA: difference + which is better for what

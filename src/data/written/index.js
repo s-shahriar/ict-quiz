@@ -1,3 +1,6 @@
+import { ServerCog } from 'lucide-react'
+
+import { TOPICS } from '../index.js'
 import computerFundamental from './computer_fundamental.json'
 import operatingSystem from './operating_system.json'
 import dsa from './dsa.json'
@@ -8,6 +11,7 @@ import microprocessor from './microprocessor.json'
 import database from './database.json'
 import oop from './oop.json'
 import cProgramming from './c_programming.json'
+import server from './server.json'
 
 const WRITTEN_DATA = {
   computer_fundamental: computerFundamental,
@@ -20,7 +24,26 @@ const WRITTEN_DATA = {
   database: database,
   oop: oop,
   c_programming: cProgramming,
+  server: server,
 }
+
+// Categories that exist only in the Written module (no MCQ counterpart in TOPICS).
+const WRITTEN_ONLY_TOPICS = [
+  {
+    id: 'server',
+    name: 'Server',
+    shortName: 'Server',
+    icon: ServerCog,
+    color: '#2dd4bf',
+    questions: [],
+  },
+]
+
+// Single source of truth for Written categories: MCQ topics + written-only ones,
+// keeping only those that actually have written questions.
+export const WRITTEN_TOPICS = [...TOPICS, ...WRITTEN_ONLY_TOPICS]
+  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
+  .filter(t => t.writtenCount > 0)
 
 export function getWrittenData(topicId) {
   return WRITTEN_DATA[topicId] || { category: topicId, questions: [] }

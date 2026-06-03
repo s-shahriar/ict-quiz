@@ -1,0 +1,397 @@
+{
+  "category": "server",
+  "questions": [
+    {
+      "id": "server_001",
+      "q": "What are the differences between a Virtual Machine (VM) and a Container?",
+      "tags": [
+        "virtual machine",
+        "container",
+        "hypervisor",
+        "docker",
+        "virtualization"
+      ],
+      "answer": {
+        "summary": [
+          "VM = পুরো Guest OS সহ virtualized machine, Hypervisor এর উপর চলে (hardware-level virtualization)।",
+          "Container = শুধু app + dependencies, host OS এর kernel শেয়ার করে (OS-level virtualization)।",
+          "VM ভারী ও ধীর (GB, boot এ মিনিট); Container হালকা ও দ্রুত (MB, boot এ সেকেন্ড)।"
+        ],
+        "points": [
+          "VM: প্রতিটি VM এর নিজস্ব Guest OS থাকে → Hypervisor (VMware, VirtualBox, Hyper-V) hardware কে virtualize করে।",
+          "Container: কোনো Guest OS নেই → Container Engine (Docker) host OS এর kernel শেয়ার করে।",
+          "Isolation: VM = শক্তিশালী isolation (সম্পূর্ণ আলাদা OS); Container = process-level isolation (তুলনায় দুর্বল)।",
+          "Size: VM = কয়েক GB; Container = কয়েক MB।",
+          "Boot time: VM = মিনিট; Container = সেকেন্ড/মিলিসেকেন্ড।",
+          "Portability: Container বেশি portable — একই image যেকোনো host এ একইভাবে চলে।",
+          "Density: একটি physical server এ কম VM কিন্তু অনেক বেশি Container চালানো যায়।"
+        ],
+        "diagram": "      VIRTUAL MACHINE                    CONTAINER\n  ┌─────┬─────┬─────┐              ┌─────┬─────┬─────┐\n  │ App │ App │ App │              │ App │ App │ App │\n  ├─────┼─────┼─────┤              ├─────┴─────┴─────┤\n  │ OS  │ OS  │ OS  │ ← প্রতি VM   │  (no guest OS)  │\n  ├─────┴─────┴─────┤   এর OS      ├─────────────────┤\n  │   Hypervisor    │              │ Container Engine│ ← Docker\n  ├─────────────────┤              ├─────────────────┤\n  │ Host OS / Server │              │  Host OS (kernel│ ← kernel\n  ├─────────────────┤              │     শেয়ার)     │   শেয়ার\n  │     Hardware    │              ├─────────────────┤\n  └─────────────────┘              │     Hardware    │\n                                   └─────────────────┘\n\n  VM   = প্রতিটির আলাদা OS  → ভারী, strong isolation\n  Cont = kernel শেয়ার করা  → হালকা, fast, কম isolation",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Virtual Machine",
+            "Container"
+          ],
+          "rows": [
+            [
+              "Virtualization",
+              "Hardware-level (Hypervisor)",
+              "OS-level (kernel শেয়ার)"
+            ],
+            [
+              "Guest OS",
+              "প্রতিটির নিজস্ব OS আছে",
+              "নেই — host OS এর kernel ব্যবহার"
+            ],
+            [
+              "Size",
+              "কয়েক GB",
+              "কয়েক MB"
+            ],
+            [
+              "Boot time",
+              "মিনিট",
+              "সেকেন্ড / মিলিসেকেন্ড"
+            ],
+            [
+              "Isolation",
+              "শক্তিশালী (full OS)",
+              "দুর্বল (process-level)"
+            ],
+            [
+              "Portability",
+              "কম",
+              "বেশি (image যেকোনো host এ চলে)"
+            ],
+            [
+              "উদাহরণ",
+              "VMware, VirtualBox, Hyper-V",
+              "Docker, Podman, LXC"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Container আর VM আসলে একই জিনিস",
+            "না — VM এর নিজস্ব Guest OS আছে, Container host OS এর kernel শেয়ার করে"
+          ],
+          [
+            "Container এ OS না থাকায় এটি সবসময় বেশি secure",
+            "না — kernel শেয়ার করায় isolation দুর্বল, তাই attack surface বেশি"
+          ]
+        ],
+        "mnemonic": "VM = আলাদা বাড়ি (প্রতিটির নিজস্ব রান্নাঘর = OS)। Container = এক বিল্ডিং-এর আলাদা ফ্ল্যাট (শেয়ার্ড বিল্ডিং = host kernel)।"
+      }
+    },
+    {
+      "id": "server_002",
+      "q": "What are the Pros and Cons of Virtual Machines and Containers?",
+      "tags": [
+        "virtual machine",
+        "container",
+        "pros and cons",
+        "advantages",
+        "disadvantages"
+      ],
+      "answer": {
+        "summary": [
+          "VM = শক্তিশালী isolation ও full OS support, কিন্তু ভারী ও ধীর।",
+          "Container = হালকা, দ্রুত ও portable, কিন্তু isolation দুর্বল ও host kernel-নির্ভর।",
+          "নিরাপত্তা/আলাদা OS দরকার হলে VM; দ্রুত deploy ও scaling দরকার হলে Container।"
+        ],
+        "points": [
+          "VM সুবিধা: শক্তিশালী isolation (সম্পূর্ণ আলাদা OS), যেকোনো OS চালানো যায় (Linux host এ Windows VM), নিরাপত্তা ভালো।",
+          "VM অসুবিধা: ভারী (GB), boot ধীর (মিনিট), বেশি RAM/CPU লাগে, একটি host এ কম VM (কম density)।",
+          "Container সুবিধা: হালকা (MB), দ্রুত boot (সেকেন্ড), highly portable, বেশি density, CI/CD ও microservices-এর জন্য আদর্শ।",
+          "Container অসুবিধা: দুর্বল isolation, host OS kernel এর উপর নির্ভরশীল (Linux container এর Linux kernel লাগে), security ঝুঁকি বেশি।"
+        ],
+        "diagram": "  কখন কোনটা?\n  ┌──────────────────────────┬──────────────────────────┐\n  │  VM বেছে নাও যখন →        │  Container বেছে নাও যখন → │\n  ├──────────────────────────┼──────────────────────────┤\n  │ • আলাদা OS দরকার         │ • দ্রুত deploy/scale দরকার│\n  │ • শক্ত isolation/security │ • হালকা ও portable চাই   │\n  │ • legacy app চালানো       │ • microservices / CI-CD  │\n  └──────────────────────────┴──────────────────────────┘",
+        "table": {
+          "headers": [
+            "",
+            "Pros (সুবিধা)",
+            "Cons (অসুবিধা)"
+          ],
+          "rows": [
+            [
+              "Virtual Machine",
+              "Strong isolation, full/আলাদা OS, ভালো security",
+              "ভারী (GB), ধীর boot, বেশি resource, কম density"
+            ],
+            [
+              "Container",
+              "হালকা (MB), দ্রুত boot, portable, বেশি density",
+              "দুর্বল isolation, host kernel-নির্ভর, security ঝুঁকি"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Container সবদিক দিয়েই VM এর চেয়ে ভালো",
+            "না — isolation ও security তে VM এগিয়ে; Container speed ও portability তে এগিয়ে"
+          ],
+          [
+            "VM এর চেয়ে Container সবসময় কম resource খরচ করে তাই VM অপ্রয়োজনীয়",
+            "না — আলাদা OS বা শক্ত isolation দরকার হলে VM অপরিহার্য"
+          ]
+        ],
+        "mnemonic": "VM = \"নিরাপদ কিন্তু ভারী\"। Container = \"দ্রুত কিন্তু ভাগাভাগি (shared kernel)\"।"
+      }
+    },
+    {
+      "id": "server_003",
+      "q": "Differences between Tower Server, Rack Server, and Blade Server.",
+      "tags": [
+        "tower server",
+        "rack server",
+        "blade server",
+        "form factor",
+        "data center"
+      ],
+      "answer": {
+        "summary": [
+          "এগুলো Server এর তিনটি form factor (গঠন/আকার): Tower, Rack, Blade।",
+          "Tower = PC টাওয়ারের মতো standalone; Rack = 19-inch rack এ বসানো flat unit (U-তে মাপা); Blade = chassis/enclosure-এ ঢোকানো পাতলা modular blade।",
+          "Density বাড়ে এই ক্রমে: Tower < Rack < Blade।"
+        ],
+        "points": [
+          "Tower Server: দেখতে desktop tower এর মতো, standalone — আলাদা করে যেকোনো জায়গায় রাখা যায়। ছোট অফিস/একক server এর জন্য আদর্শ।",
+          "Rack Server: rack-mountable flat unit; উচ্চতা \"U\"-তে মাপা হয় (1U = 1.75 inch)। data center-এ একটির উপর একটি stack করা হয়।",
+          "Blade Server: পাতলা \"blade\" যা একটি blade enclosure/chassis-এ slot করে — power, cooling, networking সব blade একসাথে শেয়ার করে। সর্বোচ্চ density।",
+          "Space: Tower সবচেয়ে বেশি জায়গা নেয়; Rack কম; Blade সবচেয়ে কম (per server)।",
+          "Cabling: Tower/Rack-এ প্রতিটির আলাদা cable; Blade-এ chassis শেয়ার করায় cable অনেক কম।",
+          "Cost: Tower সস্তা (entry-level); Rack মাঝারি; Blade-এর initial chassis খরচ বেশি, তবে বড় scale-এ efficient।",
+          "Cooling/Power: Blade chassis শেয়ার করে → power ও cooling efficient; Tower/Rack-এ প্রতিটির আলাদা।"
+        ],
+        "diagram": "1) TOWER SERVER — দাঁড়ানো PC-এর মতো, standalone\n   ┌───────────────┐\n   │ ● POWERCERT   │  ← front panel\n   │ │░░░░░░░░░░░│ │  ← drive bays\n   │ │ ▤ ▤ ▤ ▤ ▤ │ │  ← HDD bays\n   │ │  ◍   ◍    │ │  ← cooling fans\n   │ ⏻             │  ← power button\n   └───────────────┘\n   floor-standing │ 1 box = 1 server\n\n2) RACK SERVER — flat unit, 19\" rack-এ stack, U-তে মাপা\n   ╔═══════════════════════════╗\n   ║▐ ●● ▦▦▦▦▦▦▦▦ [====] ▐║ 1U\n   ╟───────────────────────────╢\n   ║▐ ●● ▦▦▦▦▦▦▦▦ [====] ▐║ 1U\n   ╟───────────────────────────╢\n   ║▐ ●● ▦▦▦▦▦▦▦▦▦▦ [==] ▐║ 2U\n   ╟───────────────────────────╢\n   ║▐ ●● ▦▦▦▦▦▦▦▦ [====] ▐║ 1U\n   ╚═══════════════════════════╝\n   প্রতি drawer = 1 server │ উপরে-নিচে stack\n\n3) BLADE SERVER — পাতলা blade, shared chassis-এ গাঁথা\n   ╔═══════════════════════════════╗\n   ║ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐    ║\n   ║ │▌│▌│▌│▌│▌│▌│▌│▌│▌│▌│▌│▌│    ║ ← প্রতি ▌\n   ║ │▌│▌│▌│▌│▌│▌│▌│▌│▌│▌│▌│▌│    ║   = 1 blade\n   ║ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘    ║   = 1 server\n   ╟───────────────────────────────╢\n   ║ ▣ SHARED power  ▣ cooling      ║ ← এক backplane\n   ║ ▣ SHARED networking / mgmt     ║   সব blade-কে দেয়\n   ╚═══════════════════════════════╝\n   highest density │ সবচেয়ে কম cable\n\n────────────────────────────────────────\n  Tower        Rack            Blade\n  ┌──┐        ╔════╗          ╔═══════╗\n  │  │        ║════║          ║║║║║║║║║\n  │  │        ║════║          ║║║║║║║║║\n  └──┘        ║════║          ╚═══════╝\n  1 box      few / rack      many / chassis\n\n  Density: Tower < Rack < Blade\n  Space:   most  → less → least (per server)\n  Cabling: আলাদা → আলাদা → শেয়ার্ড (সবচেয়ে কম)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Tower",
+            "Rack",
+            "Blade"
+          ],
+          "rows": [
+            [
+              "গঠন",
+              "Standalone PC-tower",
+              "Flat unit, rack-এ বসে",
+              "পাতলা blade, chassis-এ বসে"
+            ],
+            [
+              "মাপ",
+              "বড় cabinet",
+              "U (1U/2U...)",
+              "Blade slot"
+            ],
+            [
+              "Density",
+              "সবচেয়ে কম",
+              "মাঝারি",
+              "সবচেয়ে বেশি"
+            ],
+            [
+              "Space",
+              "বেশি জায়গা",
+              "কম",
+              "সবচেয়ে কম (per server)"
+            ],
+            [
+              "Cabling",
+              "প্রতিটির আলাদা",
+              "প্রতিটির আলাদা",
+              "chassis শেয়ার (কম cable)"
+            ],
+            [
+              "Power/Cooling",
+              "আলাদা",
+              "আলাদা",
+              "শেয়ার্ড (efficient)"
+            ],
+            [
+              "Cost",
+              "সস্তা (entry)",
+              "মাঝারি",
+              "initial বেশি, scale-এ efficient"
+            ],
+            [
+              "ব্যবহার",
+              "ছোট অফিস / একক",
+              "Data center (সাধারণ)",
+              "বড় data center, high density"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Blade server সবচেয়ে বড় আকারের server",
+            "না — blade সবচেয়ে পাতলা/ছোট; কিন্তু chassis-এ অনেক bundle হওয়ায় density সবচেয়ে বেশি"
+          ],
+          [
+            "Rack server মানে rack (cabinet) নিজেই",
+            "না — rack হলো cabinet; rack server হলো সেই rack-এ বসার মতো করে বানানো server unit"
+          ]
+        ],
+        "mnemonic": "টাওয়ার দাঁড়ায় (standalone PC), র‍্যাক সাজে (তাকে U-তে), ব্লেড গাঁথে (chassis-এ শেয়ার করে)।"
+      }
+    },
+    {
+      "id": "server_004",
+      "q": "What is ECC memory? Why is it needed, and where is it NOT needed?",
+      "tags": [
+        "ECC memory",
+        "error correction",
+        "SEC-DED",
+        "RAM",
+        "server",
+        "soft error"
+      ],
+      "answer": {
+        "summary": [
+          "ECC (Error-Correcting Code) memory = এমন RAM যা extra check bits রেখে memory error detect ও correct করে।",
+          "একটি bit উল্টে গেলে (soft error) ECC তা নিজে থেকে ঠিক করে — single-bit correct, double-bit detect (SEC-DED)।",
+          "দরকার: server/data center/critical system। দরকার নেই: সাধারণ desktop, laptop, gaming PC।"
+        ],
+        "points": [
+          "RAM-এ মাঝে মাঝে bit flip হয় — cosmic ray, electrical noise, voltage fluctuation একটি bit 0↔1 উল্টে দেয় (soft error)।",
+          "ECC module-এ data chips ছাড়া একটি extra chip থাকে যা check/parity bits রাখে → error ধরা ও শুধরানোর তথ্য দেয়।",
+          "SEC-DED: Single Error Correct — 1-bit ভুল নিজে থেকে ঠিক করে; Double Error Detect — 2-bit ভুল ধরে (correct করে না, কিন্তু silent corruption আটকায়)।",
+          "কেন দরকার: server, data center, banking/financial, scientific computing — ECC ছাড়া silent data corruption → crash, ভুল হিসাব। 24/7 uptime + বড় RAM (যত বেশি RAM, তত বেশি error সম্ভাবনা)।",
+          "কোথায় দরকার নেই: সাধারণ desktop, laptop, gaming PC — মাঝেমধ্যে bit flip বড় ক্ষতি করে না; cost ও সামান্য performance overhead বাঁচানো হয়।",
+          "Support লাগে: CPU + motherboard ECC support না করলে কাজ করে না (সাধারণত Xeon/EPYC + server board); অনেক consumer chip ECC support করে না।"
+        ],
+        "diagram": "NON-ECC DIMM (desktop) — শুধু data chips\n  ┌──┬──┬──┬──┬──┬──┬──┬──┐\n  │▣ │▣ │▣ │▣ │▣ │▣ │▣ │▣ │  ← 8 chips = data only\n  └──┴──┴──┴──┴──┴──┴──┴──┘\n  bit flip হলে → কেউ ধরে না  ✗ (silent corruption)\n\nECC DIMM (server) — data + extra check chip\n  ┌──┬──┬──┬──┬──┬──┬──┬──┬───┐\n  │▣ │▣ │▣ │▣ │▣ │▣ │▣ │▣ │▣◆ │ ← ৯ম chip = ECC/check bits\n  └──┴──┴──┴──┴──┴──┴──┴──┴───┘\n  bit flip হলে → ধরে + ঠিক করে  ✓\n\nহয় কীভাবে (SEC-DED):\n  Write: data ─► [check bits তৈরি] ─► RAM-এ রাখে\n  Read:  RAM  ─► [আবার হিসাব + মিলিয়ে দেখা]\n                 │\n                 ├─ মিল ✓ ───────────► pass\n                 ├─ 1-bit অমিল ─► AUTO-CORRECT ✓\n                 └─ 2-bit অমিল ─► DETECT only (halt) ⚠\n\n────────────────────────────────────────\n           ECC                 Non-ECC\n   ┌──────────────┐      ┌──────────────┐\n   │ 1-bit: fix ✓ │      │  detection ✗ │\n   │ 2-bit: detect│      │  কিছু না     │\n   └──────────────┘      └──────────────┘\n   server / critical     desktop / gaming",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "ECC Memory",
+            "Non-ECC Memory"
+          ],
+          "rows": [
+            [
+              "Error handling",
+              "1-bit auto-correct, 2-bit detect",
+              "কোনো detection/correction নেই"
+            ],
+            [
+              "Chips / module",
+              "data + extra check chip",
+              "শুধু data chips"
+            ],
+            [
+              "Cost",
+              "বেশি",
+              "কম"
+            ],
+            [
+              "Speed",
+              "সামান্য ধীর (~2% overhead)",
+              "সামান্য দ্রুত"
+            ],
+            [
+              "Support দরকার",
+              "ECC-capable CPU + board (Xeon/EPYC)",
+              "যেকোনো সাধারণ board"
+            ],
+            [
+              "ব্যবহার",
+              "Server, data center, workstation, critical",
+              "Desktop, laptop, gaming"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "ECC RAM সব ধরনের error ঠিক করে দেয়",
+            "না — single-bit error correct করে; double-bit শুধু detect করে (correct নয়)"
+          ],
+          [
+            "ECC RAM যেকোনো PC-তে লাগালেই কাজ করে",
+            "না — CPU ও motherboard ECC support না করলে ECC mode চলে না"
+          ]
+        ],
+        "mnemonic": "ECC = \"Error: Catch & Correct\"। ৯ম chip = পাহারাদার — একটা ভুল ধরে শুধরে দেয়, দুটো ভুল ধরে থামিয়ে দেয়।"
+      }
+    },
+    {
+      "id": "server_005",
+      "q": "RAID controller vs HBA controller — what is the difference, and which one is better for what?",
+      "tags": [
+        "RAID controller",
+        "HBA",
+        "host bus adapter",
+        "storage",
+        "JBOD",
+        "ZFS"
+      ],
+      "answer": {
+        "summary": [
+          "মূল প্রশ্ন — disks কে সামলাবে? RAID Controller = hardware নিজে সামলায় (রাঁধুনি); HBA = software (OS) সামলায়, HBA শুধু কাঁচা disk তুলে দেয় (খালি ট্রে)।",
+          "RAID Controller = hardware যা একাধিক disk-কে RAID array (0/1/5/6/10) বানিয়ে OS-কে একটি logical volume দেখায় (নিজস্ব engine + cache/BBU)।",
+          "HBA (Host Bus Adapter) = প্রতিটি physical disk সরাসরি OS-কে pass করে (pass-through/JBOD) — কোনো RAID logic বা cache নেই; RAID তখন software (ZFS/Ceph) করে।"
+        ],
+        "points": [
+          "মূল ধারণা — disks কে manage করবে? RAID Controller হলে hardware নিজে (\"রাঁধুনি\"); HBA হলে software/OS (\"খালি ট্রে\", কাঁচা disk তুলে দেয়)।",
+          "RAID Controller (রাঁধুনি): নিজস্ব processor + cache সহ hardware; disks-কে RAID array (0/1/5/6/10) বানিয়ে OS-কে একটি logical volume দেখায় — OS ভেতরের physical disk দেখে না। parity হিসাব controller নিজে করে → CPU offload, সাথে battery-backed write cache (BBU)।",
+          "HBA = Host Bus Adapter (খালি ট্রে): শুধু disks-কে host bus-এর সাথে যুক্ত করে; কোনো RAID logic/cache নেই — প্রতিটি physical disk OS-কে raw/সরাসরি (pass-through বা JBOD) দেখায়, SMART health data সহ।",
+          "মূল পার্থক্য: RAID controller physical disks লুকিয়ে \"রান্না-করা\" logical volume দেয়; HBA \"কাঁচা\" raw disks সরাসরি OS-কে দেয় — RAID তখন software (ZFS, Ceph, Storage Spaces) করে।",
+          "RAID Controller কখন ভালো: hardware RAID দরকার (set & forget), boot volume, Windows server, BBU write cache দিয়ে data নিরাপত্তা, OS-agnostic RAID।",
+          "HBA কখন ভালো: software-defined storage (ZFS, TrueNAS, Ceph, Storage Spaces) — এরা নিজেই \"রাঁধুনি\", তাই raw disk সরাসরি চায়; মাঝখানে RAID controller থাকলে কাজে বাধা দেয়/data ঝুঁকি বাড়ায়।",
+          "টিপ: ZFS-এ সবসময় HBA ব্যবহার করো; অনেক RAID card-কে \"IT mode\"-এ flash করে HBA হিসেবে চালানো যায়।"
+        ],
+        "diagram": "মূল প্রশ্ন: disks কে সামলাবে — hardware না software?\n\n RAID CONTROLLER (রাঁধুনি) — hardware নিজে array বানায়\n\n   OS দেখে:  [ ১টি logical volume 🍽️ ]  ← ভেতরে কয়টা disk জানে না\n                    ▲\n      ┌──────────────────────────────┐\n      │  RAID Controller             │\n      │  • RAID engine (0/1/5/6/10)  │ ← array বানায়\n      │  • cache + BBU battery 🔋     │\n      └──────────────────────────────┘\n        [D1]  [D2]  [D3]  [D4]   ← physical disks (লুকানো)\n\n────────────────────────────────────────\n\n HBA (খালি ট্রে) — software RAID করে\n\n   OS দেখে:  [D1] [D2] [D3] [D4]  ← প্রতিটি raw disk + SMART (কাঁচা)\n                    ▲\n      ┌──────────────────────────────┐\n      │  HBA (pass-through / JBOD)    │\n      │  ✗ no RAID  ✗ no cache        │\n      └──────────────────────────────┘\n        [D1]  [D2]  [D3]  [D4]\n   RAID টা software \"রাঁধে\" → ZFS / Ceph / Storage Spaces\n\n────────────────────────────────────────\n        RAID Controller          HBA\n        ┌──────────────┐    ┌──────────────┐\n        │ array বানায়   │    │ raw pass     │\n        │ +cache/BBU 🔋 │    │ software RAID │\n        └──────────────┘    └──────────────┘\n        hardware RAID,        ZFS/Ceph,\n        boot, Windows         scale-out NAS",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "RAID Controller",
+            "HBA"
+          ],
+          "rows": [
+            [
+              "কাজ",
+              "disks → RAID array → logical volume",
+              "disks সরাসরি OS-কে pass (JBOD)"
+            ],
+            [
+              "RAID logic",
+              "hardware-এ (controller করে)",
+              "নেই — software করে (ZFS/Ceph)"
+            ],
+            [
+              "Cache / BBU",
+              "আছে (battery-backed write cache)",
+              "নেই"
+            ],
+            [
+              "OS কী দেখে",
+              "logical volume (disks লুকানো)",
+              "প্রতিটি raw disk + SMART"
+            ],
+            [
+              "দাম / জটিলতা",
+              "বেশি",
+              "কম (সরল)"
+            ],
+            [
+              "ভালো যার জন্য",
+              "hardware RAID, boot, Windows, OS-agnostic",
+              "ZFS/Ceph/TrueNAS, software RAID, scale-out"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "HBA মানেই নিম্নমানের, RAID controller সবসময় ভালো",
+            "না — ZFS/Ceph-এর জন্য HBA-ই সঠিক; সেখানে hardware RAID controller বরং সমস্যা করে"
+          ],
+          [
+            "HBA নিজে RAID করতে পারে",
+            "না — HBA শুধু pass-through; RAID করতে হলে software বা RAID controller লাগে"
+          ]
+        ],
+        "mnemonic": "RAID Controller = রাঁধুনি → hardware নিজে array বানিয়ে logical volume দেয়। HBA = খালি ট্রে → raw disk (pass-through) সরাসরি OS-কে দেয়, RAID রাঁধে software (ZFS)।"
+      }
+    }
+  ]
+}

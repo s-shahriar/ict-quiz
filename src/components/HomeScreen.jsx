@@ -2,14 +2,10 @@ import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
-import { getWrittenCount } from '../data/written/index.js'
+import { WRITTEN_TOPICS } from '../data/written/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
-
-const WRITTEN_TOPICS = TOPICS
-  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
-  .filter(t => t.writtenCount > 0)
 
 export default function HomeScreen({ onBackup }) {
   const navigate = useNavigate()

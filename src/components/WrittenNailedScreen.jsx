@@ -1,14 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
-import { getWrittenData, getWrittenCount } from '../data/written/index.js'
-import { TOPICS } from '../data/index.js'
+import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
-
-const WRITTEN_TOPICS = TOPICS
-  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
-  .filter(t => t.writtenCount > 0)
 
 export default function WrittenNailedScreen() {
   const navigate = useNavigate()

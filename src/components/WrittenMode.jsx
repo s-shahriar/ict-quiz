@@ -3,14 +3,9 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
-import { TOPICS } from '../data/index.js'
-import { getWrittenCount, getWrittenData } from '../data/written/index.js'
+import { WRITTEN_TOPICS, getWrittenData } from '../data/written/index.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
-
-const WRITTEN_TOPICS = TOPICS
-  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
-  .filter(t => t.writtenCount > 0)
 
 export default function WrittenMode() {
   const navigate = useNavigate()

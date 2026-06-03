@@ -1,14 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bookmark, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
-import { getWrittenData, getWrittenCount } from '../data/written/index.js'
-import { TOPICS } from '../data/index.js'
+import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
-
-const WRITTEN_TOPICS = TOPICS
-  .map(t => ({ ...t, writtenCount: getWrittenCount(t.id) }))
-  .filter(t => t.writtenCount > 0)
 
 export default function WrittenImportantScreen() {
   const navigate = useNavigate()
