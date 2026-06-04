@@ -305,3 +305,14 @@ Every answer ends with a Bengali mnemonic using one of:
 - [x] `server_011` — Data center networking: topologies (three-tier vs spine-leaf) + key tech
 - [x] `server_012` — SDN: what it is, why needed, architecture (N/S API), use cases
 - [x] `server_013` — Load Balancer: static vs dynamic algorithms + why needed
+- [x] `server_014` — Kubernetes vs OpenShift: what each is + differences
+- [x] `server_015` — Infrastructure as Code (IaC): what it is + why needed
+- [x] `server_016` — ELK Stack: components (Elasticsearch/Logstash/Kibana/Beats) + flow
+- [x] `server_017` — Microservices vs Monolithic: what each is + differences
+- [x] `server_018` — RTO, RPO, Failover: disaster recovery concepts
+- [x] `server_019` — Spine-Leaf architecture (placed before server_011 in display order)
+- [x] `server_020` — Snapshots vs Backup vs Replicas: what each is + differences
+- [x] `server_021` — VM Lifecycle: states + operations (snapshot/migrate/clone)
+- [x] `server_022` — Storage protocols: iSCSI, Fibre Channel, NFS, SMB/CIFS (block vs file)
+- [x] `server_023` — CI/CD & DevOps pipeline: Code→Build→Test→Package→Deploy→Monitor
+- [x] `server_025` — Live Migration (basic idea) + High Availability in virtualization

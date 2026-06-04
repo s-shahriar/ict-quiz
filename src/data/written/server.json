@@ -806,6 +806,76 @@
       }
     },
     {
+      "id": "server_019",
+      "q": "Explain the Spine-Leaf network architecture.",
+      "tags": [
+        "spine-leaf",
+        "clos",
+        "data center",
+        "ECMP",
+        "ToR",
+        "topology"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Spine-Leaf = data center-এর আধুনিক ২-স্তর network topology (Clos fabric)। দুই ধরনের switch: Leaf (নিচে, server যুক্ত) ও Spine (উপরে, backbone)।",
+          "নিয়ম: প্রতিটি Leaf প্রতিটি Spine-এর সাথে যুক্ত; কিন্তু Leaf↔Leaf বা Spine↔Spine সরাসরি যুক্ত নয়। ফলে যেকোনো server থেকে যেকোনো server = ঠিক ২ hop (predictable)।",
+          "East-West traffic ও ECMP multipath-এর জন্য আদর্শ; পুরোনো 3-tier-এর bottleneck ও STP সমস্যা এড়ায়।"
+        ],
+        "points": [
+          "দুই স্তর:",
+          { "sub": "Leaf switch: access স্তর; server/storage এতে যুক্ত হয় (= ToR, Top of Rack)।" },
+          { "sub": "Spine switch: backbone; শুধু Leaf-দের জুড়ে দেয়, কোনো server সরাসরি যুক্ত নয়।" },
+          "সংযোগের নিয়ম: প্রতিটি Leaf প্রতিটি Spine-এ যুক্ত (দুই স্তরের মাঝে full mesh); কিন্তু Leaf↔Leaf বা Spine↔Spine সরাসরি link নেই।",
+          "Predictable latency: যেকোনো দুই server-এর মধ্যে path সবসময় Leaf → Spine → Leaf = ঠিক ২ hop; তাই latency সমান ও আগে থেকে জানা।",
+          "ECMP (Equal-Cost Multi-Path): একাধিক সমান path থাকায় traffic সব Spine-এ ভাগ হয়ে যায় (সব link active, STP-র মতো কোনো link block নয়) → পুরো bandwidth ব্যবহার।",
+          "Scaling: bandwidth বাড়াতে আরেকটি Spine যোগ করো; port/server বাড়াতে আরেকটি Leaf যোগ করো — horizontally scale করা সহজ।",
+          "কেন (3-tier-এর তুলনায়): আধুনিক traffic বেশিরভাগ East-West (server↔server); 3-tier-এ তা বেশি hop ও bottleneck তৈরি করত, Spine-Leaf সমান hop ও সব path active দিয়ে সমাধান করে।"
+        ],
+        "diagram": "Spine-Leaf (Clos) — ২ স্তর\n\n   ┌──────┐    ┌──────┐    ┌──────┐\n   │Spine1│    │Spine2│    │Spine3│   ← backbone (server নেই)\n   └─┬─┬─┬┘    └┬─┬─┬─┘    └┬─┬─┬─┘\n     │ │ └─────┼─┼─┼───────┘ │ │     প্রতিটি Leaf\n     │ └───────┼─┼─┼─────────┘ │     প্রতিটি Spine-এ যুক্ত\n   ┌─┴────┐  ┌─┴─┴─┴┐  ┌───────┴─┐\n   │Leaf 1│  │Leaf 2│  │  Leaf 3 │   ← ToR (server যুক্ত)\n   └──┬───┘  └──┬───┘  └────┬────┘\n    servers   servers     servers\n\n  নিয়ম: Leaf↔Spine যুক্ত; Leaf↔Leaf / Spine↔Spine নয়\n  যেকোনো server↔server = Leaf → Spine → Leaf = ঠিক ২ hop\n  সব path active (ECMP), কোনোটা block নয়",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Leaf",
+            "Spine"
+          ],
+          "rows": [
+            [
+              "অবস্থান",
+              "নিচের স্তর (access)",
+              "উপরের স্তর (backbone)"
+            ],
+            [
+              "যুক্ত হয়",
+              "server/storage + সব Spine",
+              "শুধু সব Leaf"
+            ],
+            [
+              "= কী",
+              "ToR (Top of Rack)",
+              "core / backbone switch"
+            ],
+            [
+              "server যুক্ত?",
+              "হ্যাঁ",
+              "না"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Leaf-গুলো একে অন্যের সাথে সরাসরি যুক্ত থাকে",
+            "না — Leaf শুধু Spine-এর সাথে যুক্ত; Leaf↔Leaf সরাসরি link নেই, যোগাযোগ Spine হয়ে যায়"
+          ],
+          [
+            "Spine switch-এ server যুক্ত হয়",
+            "না — server শুধু Leaf-এ যুক্ত; Spine শুধু Leaf-দের জুড়ে backbone হিসেবে কাজ করে"
+          ]
+        ],
+        "mnemonic": "Leaf = পাতা (নিচে, server ঝোলে = ToR)। Spine = মেরুদণ্ড (উপরে, সব পাতা জোড়ে)। প্রতি পাতা প্রতি মেরুদণ্ডে → যেকোনো server↔server ঠিক ২ hop, সব path active (ECMP)।"
+      }
+    },
+    {
       "id": "server_011",
       "q": "Explain Data Center Networking technology (topologies and key technologies).",
       "tags": [
@@ -834,7 +904,7 @@
           { "sub": "Storage networking: FC, FCoE, iSCSI দিয়ে storage একই network-এ আনা।" },
           "মূল technology:",
           { "sub": "vPC (virtual Port Channel): STP block ছাড়াই দুই switch জুড়ে multipath (পুরোনো stacking/VSS-এর আধুনিক বিকল্প)।" },
-          { "sub": "VXLAN + EVPN: L3-এর উপর L2 overlay — বড় scale ও multitenancy (STP-এর বদলে)।" },
+          { "sub": "VXLAN: VLAN-এর বড় ভাই। VLAN শুধু L2-তে network আলাদা করে (সর্বোচ্চ 4094টা)। VXLAN একই কাজ করে কিন্তু (১) ~16 মিলিয়ন segment দেয় (বড় cloud/multi-tenant-এ লাগে), আর (২) L2-কে L3 network-এর উপর দিয়ে পাঠায় (L2 frame-কে IP packet-এ মুড়ে) — তাই দূরের rack-ও যেন একই L2-তে, VM migrate সহজ। (সাথে EVPN address শেখায়।)" },
           { "sub": "FEX (Fabric Extender): ToR switch-কে কেন্দ্রীয় switch-এর extension বানায়।" },
           { "sub": "High bandwidth: 10G / 25G / 40G / 100G (SFP28, QSFP28 transceiver)।" },
           "Topology:",
@@ -1056,6 +1126,791 @@
           ]
         ],
         "mnemonic": "Static = \"অন্ধ বণ্টন\" (নিয়ম মেনে, load না দেখে) — Round Robin, IP Hash। Dynamic = \"চোখ খোলা বণ্টন\" (load দেখে) — Least Connection / Response / Resource।"
+      }
+    },
+    {
+      "id": "server_014",
+      "q": "Kubernetes vs OpenShift — what is each, and how do they differ?",
+      "tags": [
+        "kubernetes",
+        "openshift",
+        "red hat",
+        "container platform",
+        "enterprise",
+        "distribution"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতেই বুঝে নাও — Kubernetes (K8s) = open-source container orchestration engine (ভিত্তি)। OpenShift = Red Hat-এর enterprise platform যা Kubernetes-এর উপরে বানানো (K8s + বাড়তি সুবিধা)।",
+          "মানে OpenShift-এর ভেতরে Kubernetes-ই চলে, কিন্তু সাথে developer tool, web console, built-in CI/CD, image registry, কড়া security ও vendor support যোগ করা।",
+          "K8s = কাঁচা engine (নিজে সব বসাও, ফ্রি); OpenShift = তৈরি product (batteries included, কিন্তু paid/subscription)।"
+        ],
+        "points": [
+          "Kubernetes কী: শুধু container orchestrator — deploy, scale, self-heal করে। কিন্তু registry, CI/CD, monitoring, security policy ইত্যাদি তুমি নিজে যোগ করো (DIY)।",
+          "OpenShift কী: Red Hat-এর Kubernetes distribution — Kubernetes-কে ভিত্তি ধরে enterprise-ready বানানো; অনেক জিনিস আগে থেকেই যুক্ত।",
+          "OpenShift যা বাড়তি দেয়:",
+          { "sub": "Web console + developer tooling, যেমন S2I (Source-to-Image): তোমার source code (Git থেকে) নিয়ে OpenShift নিজে container image বানিয়ে দেয় — Dockerfile লিখতে হয় না। তুমি শুধু code দাও + একটা builder image (Node/Python/Java runtime), S2I সেই builder-এর ভেতরে তোমার code ঢুকিয়ে চালানোর-উপযোগী image তৈরি করে। মানে: code push করো → image তৈরি।" },
+          { "sub": "Built-in CI/CD (Pipelines) এবং integrated image registry।" },
+          { "sub": "কড়া security default (random UID, root container নিষেধ, SCC — Security Context Constraints)।" },
+          { "sub": "নিজস্ব OS (RHEL CoreOS) ও Red Hat-এর enterprise support।" },
+          "License/cost: K8s ফ্রি ও open source (CNCF); OpenShift subscription/paid (support সহ)।",
+          "Setup: K8s নিজে setup করে সব tool যোগ করতে হয় (নমনীয় কিন্তু পরিশ্রম); OpenShift আগে থেকেই গোছানো (দ্রুত কিন্তু opinionated)।",
+          "কখন কোনটা: পূর্ণ নিয়ন্ত্রণ, কম খরচ ও flexibility চাইলে → vanilla Kubernetes; enterprise-এ ready-made platform, support ও কড়া security চাইলে → OpenShift।"
+        ],
+        "diagram": "OpenShift = Kubernetes + enterprise মোড়ক\n\n  ┌─────────────────────────────────────────┐\n  │ Web console │ CI/CD │ Registry │ Security │ ← বাড়তি\n  │ S2I builds  │ RHEL CoreOS │ Red Hat support│   (OpenShift\n  │             │             │                │    যোগ করে)\n  ├─────────────────────────────────────────┤\n  │           Kubernetes (ভিত্তি)             │ ← orchestration\n  │        deploy / scale / self-heal         │   engine\n  └─────────────────────────────────────────┘\n\n  Vanilla K8s = শুধু নিচের অংশ; উপরের সব নিজে যোগ করো।\n  OpenShift   = পুরোটা একসাথে তৈরি (paid)।",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Kubernetes",
+            "OpenShift"
+          ],
+          "rows": [
+            [
+              "কী",
+              "open-source orchestration engine (ভিত্তি)",
+              "Red Hat enterprise platform (K8s + বাড়তি)"
+            ],
+            [
+              "Cost",
+              "ফ্রি, open source",
+              "Subscription / paid"
+            ],
+            [
+              "Setup",
+              "নিজে সব যোগ করো (DIY)",
+              "আগে থেকেই গোছানো (batteries included)"
+            ],
+            [
+              "Console",
+              "সীমিত dashboard",
+              "পূর্ণ developer web console"
+            ],
+            [
+              "CI/CD + Registry",
+              "আলাদা যোগ করতে হয়",
+              "built-in"
+            ],
+            [
+              "Security",
+              "শিথিল default",
+              "কড়া (SCC, root নিষেধ)"
+            ],
+            [
+              "Support",
+              "community",
+              "Red Hat enterprise support"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "OpenShift আর Kubernetes আলাদা প্রতিদ্বন্দ্বী orchestrator",
+            "না — OpenShift Kubernetes-এর উপরেই বানানো; ভেতরে Kubernetes-ই চলে, OpenShift শুধু enterprise feature যোগ করে"
+          ],
+          [
+            "OpenShift পুরোপুরি ফ্রি",
+            "না — community সংস্করণ OKD open source হলেও enterprise OpenShift subscription/paid"
+          ]
+        ],
+        "mnemonic": "Kubernetes = কাঁচা engine (নিজে সব বসাও, ফ্রি)। OpenShift = K8s + enterprise মোড়ক (console / CI-CD / security / support, paid) — সংক্ষেপে \"OpenShift = Kubernetes, ব্যাটারিসহ\"।"
+      }
+    },
+    {
+      "id": "server_015",
+      "q": "What is Infrastructure as Code (IaC)? Why is it needed?",
+      "tags": [
+        "IaC",
+        "infrastructure as code",
+        "terraform",
+        "ansible",
+        "declarative",
+        "automation"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — IaC (Infrastructure as Code) = server, network, storage ইত্যাদি infrastructure হাতে (console-এ click করে) না বানিয়ে code/config file দিয়ে সংজ্ঞায়িত ও তৈরি করা।",
+          "infrastructure এখন code, তাই Git-এ version control করা যায়, এক command-এ বারবার হুবহু একই environment তৈরি/ধ্বংস করা যায়।",
+          "লাভ: দ্রুত, consistent, ভুল কম, সহজে scale ও পুনরায় তৈরি।"
+        ],
+        "points": [
+          "সমস্যা যা সমাধান করে: হাতে server/network বানানো ধীর, ভুলের ঝুঁকি, প্রতিবার একটু আলাদা হয়ে যায় (config drift), এবং repeatable নয়।",
+          "IaC: পুরো infrastructure একটা code file-এ লেখা থাকে; এক command-এ পুরো environment তৈরি বা মুছে ফেলা যায়, প্রতিবার হুবহু একই।",
+          "Declarative vs Imperative:",
+          { "sub": "Declarative: শুধু \"কী চাও\" (end state) বলো — যেমন \"৩টা server চাই\"; tool নিজে কীভাবে বানাবে ঠিক করে (Terraform, CloudFormation)।" },
+          { "sub": "Imperative: ধাপে ধাপে \"কীভাবে করবে\" লেখো (script-এর মতো)।" },
+          "Idempotency: একই code বারবার চালালেও ফল একই থাকে — duplicate resource তৈরি হয় না।",
+          "Version control: infra Git-এ থাকে → history, review, rollback; এবং code নিজেই documentation।",
+          "Tool ও ধরন:",
+          { "sub": "Provisioning (নতুন infra তৈরি): Terraform, AWS CloudFormation, Pulumi।" },
+          { "sub": "Configuration management (existing server-এ software/config বসানো): Ansible, Chef, Puppet।" }
+        ],
+        "diagram": "পুরোনো ধরন — হাতে (manual)\n   Admin → console-এ click click → server বানায়\n   ধীর │ ভুলের ঝুঁকি │ প্রতিবার আলাদা (drift)\n\nIaC — code দিয়ে\n   ┌────────────────────────┐\n   │  infra code (.tf)        │  \"৩টা server, ১ network...\"\n   └───────────┬────────────┘\n               │ এক command (apply)\n               ▼\n   ┌────────────────────────┐\n   │  Tool (Terraform...)     │ → cloud-এ বানায়\n   └───────────┬────────────┘\n        [Srv]  [Srv]  [Srv]    হুবহু, বারবার একই\n\n   code Git-এ → version control, review, rollback",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Manual (হাতে)",
+            "IaC (code)"
+          ],
+          "rows": [
+            [
+              "গতি",
+              "ধীর",
+              "দ্রুত (এক command)"
+            ],
+            [
+              "Consistency",
+              "প্রতিবার আলাদা (drift)",
+              "হুবহু একই (repeatable)"
+            ],
+            [
+              "ভুল",
+              "বেশি (মানুষ)",
+              "কম (automated)"
+            ],
+            [
+              "Version control",
+              "নেই",
+              "Git-এ (history/rollback)"
+            ],
+            [
+              "Scale",
+              "কঠিন",
+              "সহজ"
+            ],
+            [
+              "Documentation",
+              "আলাদা লিখতে হয়",
+              "code-ই doc"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "IaC মানে শুধু কিছু shell script লিখে রাখা",
+            "না — IaC-এর মূল লক্ষ্য declarative, idempotent ও version-controlled desired-state; নিছক এককালীন script নয়"
+          ],
+          [
+            "Terraform আর Ansible একই কাজ করে",
+            "না — Terraform মূলত provisioning (নতুন infra তৈরি), Ansible মূলত configuration management (existing server setup)"
+          ]
+        ],
+        "mnemonic": "IaC = \"infrastructure-কে software-এর মতো ট্রিট করো\" — Git-এ রাখো, version করো, এক command-এ বারবার হুবহু বানাও। Declarative = \"কী চাই বলো\"; Imperative = \"কীভাবে করব বলো\"।"
+      }
+    },
+    {
+      "id": "server_016",
+      "q": "What is the ELK Stack? Explain its components.",
+      "tags": [
+        "ELK",
+        "elasticsearch",
+        "logstash",
+        "kibana",
+        "beats",
+        "logging"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — ELK Stack = তিনটি open-source tool একসাথে: Elasticsearch + Logstash + Kibana; মূলত অনেক জায়গার log এক জায়গায় এনে search ও visualize করার জন্য।",
+          "কাজের ধারা: Logstash log সংগ্রহ ও process করে → Elasticsearch store ও index করে (দ্রুত search) → Kibana dashboard-এ দেখায়।",
+          "পরে Beats যোগ হয়ে নাম হয় \"Elastic Stack\" (Beats = হালকা agent যা server থেকে log/metric পাঠায়)।"
+        ],
+        "points": [
+          "কেন দরকার: অনেক server/service-এ log ছড়িয়ে থাকে; সমস্যা হলে প্রতিটা server-এ আলাদা খোঁজা কঠিন। ELK সব log এক জায়গায় এনে centralized search, visualize ও monitor করতে দেয়।",
+          "Component গুলো:",
+          { "sub": "Elasticsearch: search ও analytics engine — data store ও index করে, দ্রুত full-text search দেয়। (হৃদয় / database)" },
+          { "sub": "Logstash: data pipeline — নানা উৎস থেকে log নেয়, parse/transform/enrich করে, Elasticsearch-এ পাঠায়। (processor)" },
+          { "sub": "Kibana: visualization UI — Elasticsearch-এর data নিয়ে dashboard, chart ও search interface দেখায়। (চোখ / dashboard)" },
+          { "sub": "Beats (পরে যুক্ত): হালকা agent (Filebeat=log, Metricbeat=metric) যা server থেকে data সংগ্রহ করে পাঠায়। (collector)" },
+          "Data flow: উৎস/Beats → Logstash (process) → Elasticsearch (store + index) → Kibana (visualize)।",
+          "Use case: log analysis, application/infrastructure monitoring, security analytics (SIEM), search ও observability।"
+        ],
+        "diagram": "অনেক server-এর log ছড়ানো → এক জায়গায় আনা\n\n  [Server logs]   [App logs]   [Metrics]\n        │             │            │\n        └──── Beats (হালকা agent) ──┘  ← সংগ্রহ করে পাঠায়\n                     │\n                     ▼\n            ┌──────────────┐\n            │   Logstash   │  ← parse / transform / enrich\n            └──────┬───────┘\n                   ▼\n            ┌──────────────┐\n            │Elasticsearch │  ← store + index + দ্রুত search\n            └──────┬───────┘\n                   ▼\n            ┌──────────────┐\n            │    Kibana    │  ← dashboard / chart / search UI\n            └──────────────┘\n\n  Logstash রাঁধে, Elasticsearch জমায়+খোঁজে, Kibana দেখায়।",
+        "table": {
+          "headers": [
+            "Component",
+            "ভূমিকা",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "Elasticsearch",
+              "হৃদয় (DB)",
+              "data store, index, দ্রুত search"
+            ],
+            [
+              "Logstash",
+              "processor",
+              "log সংগ্রহ, parse/transform, পাঠানো"
+            ],
+            [
+              "Kibana",
+              "চোখ (UI)",
+              "dashboard, chart, visualize, search"
+            ],
+            [
+              "Beats",
+              "collector",
+              "server থেকে log/metric পাঠায় (হালকা agent)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Elasticsearch নিজেই log সংগ্রহ করে",
+            "না — সংগ্রহ ও প্রক্রিয়া করে Beats ও Logstash; Elasticsearch শুধু store ও search করে"
+          ],
+          [
+            "ELK শুধু log-এর জন্য",
+            "না — যেকোনো data search/analytics, metrics ও security (SIEM)-ও করা যায়"
+          ]
+        ],
+        "mnemonic": "ELK = Elasticsearch (জমায় ও খোঁজে) + Logstash (সংগ্রহ ও প্রক্রিয়া) + Kibana (দেখায়)। নাম ELK হলেও flow চলে L → E → K: \"Logstash রাঁধে, Elasticsearch জমায়, Kibana দেখায়\" (+Beats = collector)।"
+      }
+    },
+    {
+      "id": "server_017",
+      "q": "Microservices vs Monolithic architecture — what is each, and how do they differ?",
+      "tags": [
+        "microservices",
+        "monolithic",
+        "architecture",
+        "scalability",
+        "deployment",
+        "distributed"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Monolithic = পুরো application একটা একক unit-এ (এক codebase, এক deploy); Microservices = application অনেক ছোট স্বাধীন service-এ ভাগ করা, প্রতিটি আলাদা deploy হয় ও network দিয়ে কথা বলে।",
+          "Monolith সহজে শুরু কিন্তু বড় হলে জটিল, পুরোটা একসাথে scale/deploy করতে হয়; Microservices আলাদা scale/deploy দেয় কিন্তু distributed system-এর জটিলতা আনে।",
+          "ছোট app/team → Monolith; বড় complex app/অনেক team → Microservices।"
+        ],
+        "points": [
+          "Monolithic: UI, business logic, data access — সব এক codebase ও এক process-এ; একসাথে build ও deploy হয়।",
+          "Microservices: প্রতিটি service একটি নির্দিষ্ট business কাজ করে, স্বাধীনভাবে deploy হয়, API/REST/messaging দিয়ে একে অন্যের সাথে কথা বলে, প্রায়ই নিজস্ব database রাখে।",
+          "মূল পার্থক্য:",
+          { "sub": "Deploy: mono = পুরোটা একসাথে; micro = প্রতি service আলাদা।" },
+          { "sub": "Scaling: mono = পুরো app scale করতে হয়; micro = শুধু যে service-এ চাপ সেটা scale করা যায়।" },
+          { "sub": "Failure: mono = এক bug পুরো app ফেলে দিতে পারে; micro = সমস্যা এক service-এ আটকে থাকে (isolation)।" },
+          { "sub": "Tech stack: mono = এক stack; micro = প্রতি service আলাদা language/stack ব্যবহার করতে পারে।" },
+          { "sub": "Communication: mono = in-process function call (দ্রুত); micro = network call (latency ও জটিলতা যোগ করে)।" },
+          "Trade-off: Monolith সহজ ও দ্রুত শুরু কিন্তু scale-এ আনাড়ি; Microservices নমনীয় ও scalable কিন্তু operational complexity বেশি (service discovery, monitoring, distributed tracing, প্রায়ই Kubernetes লাগে)।",
+          "কখন কোনটা: ছোট/সরল app, ছোট team, দ্রুত শুরু → Monolith; বড় complex app, অনেক team, আলাদা scale/deploy দরকার → Microservices।"
+        ],
+        "diagram": "MONOLITHIC — সব এক unit-এ\n   ┌─────────────────────────┐\n   │  ┌────┐ ┌─────┐ ┌─────┐  │\n   │  │ UI │ │Logic│ │ Data│  │ ← সব এক codebase/process\n   │  └────┘ └─────┘ └─────┘  │\n   └────────────┬────────────┘\n           [ এক Database ]\n   এক deploy │ পুরোটা একসাথে scale\n\nMICROSERVICES — অনেক ছোট স্বাধীন service\n   ┌────────┐  ┌────────┐  ┌─────────┐\n   │  Auth  │  │ Order  │  │ Payment │ ← প্রতিটি স্বাধীন\n   │ service│  │ service│  │ service │   (আলাদা deploy)\n   └───┬────┘  └───┬────┘  └────┬────┘\n     [DB]        [DB]         [DB]     ← প্রায়ই নিজস্ব DB\n       └─── API / REST / messaging ──┘ ← network-এ কথা\n   প্রতি service আলাদা scale/deploy",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Monolithic",
+            "Microservices"
+          ],
+          "rows": [
+            [
+              "গঠন",
+              "এক codebase / unit",
+              "অনেক ছোট স্বাধীন service"
+            ],
+            [
+              "Deploy",
+              "পুরোটা একসাথে",
+              "প্রতি service আলাদা"
+            ],
+            [
+              "Scaling",
+              "পুরো app",
+              "নির্দিষ্ট service"
+            ],
+            [
+              "Failure",
+              "এক bug পুরো app ফেলে",
+              "এক service-এ আটকে (isolated)"
+            ],
+            [
+              "Database",
+              "সাধারণত এক shared",
+              "প্রায়ই প্রতি service-এর নিজস্ব"
+            ],
+            [
+              "Communication",
+              "in-process (দ্রুত)",
+              "network call (latency)"
+            ],
+            [
+              "কখন",
+              "ছোট app / team",
+              "বড় complex app / অনেক team"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Microservices সবসময় Monolith-এর চেয়ে ভালো",
+            "না — ছোট app-এ microservices অযথা জটিলতা আনে; সঠিক প্রসঙ্গে Monolith-ই ভালো"
+          ],
+          [
+            "Microservices মানে শুধু কোড আলাদা ফাইল/module-এ রাখা",
+            "না — প্রতিটি স্বাধীনভাবে deploy ও run হয়, network দিয়ে কথা বলে, প্রায়ই নিজস্ব DB রাখে"
+          ]
+        ],
+        "mnemonic": "Monolith = \"এক দেহ\" (সব একসাথে, একসাথে scale/পড়ে যায়)। Microservices = \"অনেক স্বাধীন অঙ্গ\" (প্রতিটি আলাদা deploy/scale, network-এ কথা)। সহজ শুরু = Monolith; বড় scale = Microservices।"
+      }
+    },
+    {
+      "id": "server_018",
+      "q": "What are RTO, RPO, and Failover in disaster recovery?",
+      "tags": [
+        "RTO",
+        "RPO",
+        "failover",
+        "disaster recovery",
+        "backup",
+        "high availability"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — তিনটাই disaster recovery (DR)-এর ধারণা। RTO = কত সময়ের মধ্যে service ফিরিয়ে আনতে হবে (downtime সহনসীমা); RPO = কতটুকু data হারানো গ্রহণযোগ্য (শেষ backup থেকে কত পেছনের); Failover = primary মরলে standby system-এ স্বয়ংক্রিয়ভাবে সরে যাওয়া।",
+          "সহজ সূত্র: RPO পেছনে তাকায় (কত data হারাবে), RTO সামনে তাকায় (কত সময়ে ফিরবে), Failover হলো দ্রুত ফেরার উপায়।",
+          "ছোট RPO → ঘন ঘন backup/replication; ছোট RTO → দ্রুত recovery/failover।"
+        ],
+        "points": [
+          "RTO (Recovery Time Objective): disaster-এর পর service চালু করতে সর্বোচ্চ যত সময় নেওয়া যায় — \"কতক্ষণ down থাকা চলবে?\"। ছোট RTO চাইলে hot standby / automatic failover দরকার।",
+          "RPO (Recovery Point Objective): সর্বোচ্চ যতটুকু data হারানো গ্রহণযোগ্য, সময়ে মাপা — \"কত পেছনের data পর্যন্ত ঠিক থাকবে?\"। এটাই backup/replication কত ঘন ঘন হবে ঠিক করে। যেমন RPO = ১ ঘণ্টা মানে প্রতি ঘণ্টায় backup → সর্বোচ্চ ১ ঘণ্টার data হারাবে।",
+          "Failover: primary system (server/DB/site) মরলে আগে থেকে প্রস্তুত standby-তে সরে গিয়ে service চালু রাখা। Automatic failover RTO কমায়।",
+          "সম্পর্ক: Replication ছোট RPO দেয় (data পেছনে কম হারায়); Failover ছোট RTO দেয় (দ্রুত ফেরা)।",
+          "Failover ধরন:",
+          { "sub": "Active-Passive: standby অপেক্ষায় থাকে, primary মরলে চালু হয়।" },
+          { "sub": "Active-Active: দুটোই একসাথে চলে, একটা মরলেও অন্যটা সামলে নেয়।" }
+        ],
+        "diagram": "DR timeline:\n\n  শেষ backup        💥 DISASTER       service ফিরল\n      │                 │                  │\n      │◄───── RPO ─────►│◄────── RTO ─────►│\n      │   data loss     │    downtime      │\n   কত data হারাবে?   ← সমস্যা →   কত সময়ে ফিরবে?\n\n  RPO = পেছনে তাকায় (data) │ RTO = সামনে তাকায় (সময়)\n\nFailover — primary মরলে standby-তে সরে যাওয়া\n   [Primary] ──✗ মরল──► [Standby]  ← স্বয়ংক্রিয়ভাবে চালু\n        service চলতেই থাকে (RTO কম রাখে)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "RPO",
+            "RTO"
+          ],
+          "rows": [
+            [
+              "প্রশ্ন",
+              "কত data হারানো চলবে?",
+              "কত সময়ে ফিরতে হবে?"
+            ],
+            [
+              "মাপে",
+              "data loss (সময়ে)",
+              "downtime (সময়)"
+            ],
+            [
+              "দিক",
+              "পেছনে (শেষ backup)",
+              "সামনে (recovery)"
+            ],
+            [
+              "কমাতে যা লাগে",
+              "ঘন ঘন backup/replication",
+              "hot standby / automatic failover"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "RTO আর RPO একই জিনিস",
+            "না — RTO = কত সময়ে ফিরবে (downtime); RPO = কত data হারাবে (data loss)। একটা সময়, একটা data"
+          ],
+          [
+            "Failover হলে কোনো data হারাবে না",
+            "না — Failover দ্রুত service ফেরায় (RTO), কিন্তু কত data হারাবে তা RPO/replication-এর উপর নির্ভর করে"
+          ]
+        ],
+        "mnemonic": "RPO = Point (কোন বিন্দু পর্যন্ত data ঠিক — পেছনে, data loss)। RTO = Time (কত সময়ে ফিরবে — সামনে, downtime)। Failover = primary মরলে standby-তে লাফ (RTO কমায়)।"
+      }
+    },
+    {
+      "id": "server_020",
+      "q": "Snapshots vs Backup vs Replicas — what is each, and how do they differ?",
+      "tags": [
+        "snapshot",
+        "backup",
+        "replica",
+        "disaster recovery",
+        "high availability",
+        "storage"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Snapshot = একই storage-এ নির্দিষ্ট মুহূর্তের অবস্থা (দ্রুত rollback)। Backup = আলাদা জায়গায় স্বাধীন কপি (disaster recovery)। Replica = অন্য system-এ live synced কপি (high availability/failover)।",
+          "মূল তফাত: Snapshot original storage-এর উপর নির্ভরশীল; Backup স্বাধীন ও durable; Replica সবসময় sync থাকে (ভুলও copy করে)।",
+          "তিনটাই আলাদা কাজে — একটা আরেকটার বিকল্প নয়।"
+        ],
+        "points": [
+          "Snapshot: কোনো volume/VM/disk-এর নির্দিষ্ট মুহূর্তের image, সাধারণত একই storage-এ। দ্রুত ও space-সাশ্রয়ী (copy-on-write — শুধু পরিবর্তন রাখে)। কাজ: update-এর আগে নিয়ে রাখো, ভুল হলে দ্রুত rollback। দুর্বলতা: underlying storage মরলে snapshot-ও মরে — তাই এটি সত্যিকারের backup নয়।",
+          "Backup: data-র আলাদা, স্বাধীন কপি — ভিন্ন জায়গা/medium-এ। original সম্পূর্ণ হারালেও restore করা যায়। ধীর ও বেশি storage, কিন্তু durable; long-term retention, disaster recovery ও compliance-এর জন্য (3-2-1 rule)।",
+          "Replica: অন্য server/site-এ data-র live, ক্রমাগত synced কপি (real-time/near-real-time)। কাজ: high availability — primary মরলে replica দায়িত্ব নেয় (failover)। দুর্বলতা: সব কিছু copy করে — delete/corruption-ও সঙ্গে সঙ্গে replica-তে চলে যায়; কোনো history নেই, তাই backup নয়।",
+          "বড় ফাঁদ: Replica বা Snapshot-কে backup ভাবা ভুল। Replica ভুল তাৎক্ষণিক sync করে, Snapshot storage-এর সাথে মরে; শুধু স্বাধীন, history-সহ Backup-ই data loss/corruption/disaster থেকে বাঁচায়।",
+          "কোনটা কীসের জন্য:",
+          { "sub": "Snapshot → দ্রুত rollback (oops, undo)।" },
+          { "sub": "Backup → disaster recovery + long-term retention।" },
+          { "sub": "Replica → high availability + failover (RTO কমায়)।" }
+        ],
+        "diagram": "SNAPSHOT — একই storage-এ মুহূর্তের ছবি\n   [ Storage ]\n     ├─ Live data\n     └─ Snapshot (T1) ← শুধু পরিবর্তন (CoW), দ্রুত rollback\n   ⚠ storage মরলে snapshot-ও মরে (backup নয়)\n\nBACKUP — আলাদা জায়গায় স্বাধীন কপি\n   [ Original ] ──copy──► [ Backup: ভিন্ন স্থান/medium ]\n   original হারালেও restore হয় │ history থাকে │ durable\n\nREPLICA — অন্য system-এ live synced কপি\n   [ Primary ] ══live sync══► [ Replica ]\n   primary মরলে replica চালায় (failover, HA)\n   ⚠ delete/ভুলও সঙ্গে সঙ্গে copy হয় (history নেই → backup নয়)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Snapshot",
+            "Backup",
+            "Replica"
+          ],
+          "rows": [
+            [
+              "কোথায়",
+              "একই storage",
+              "আলাদা/স্বাধীন স্থান",
+              "অন্য system (live)"
+            ],
+            [
+              "কখনকার",
+              "নির্দিষ্ট মুহূর্ত",
+              "মুহূর্ত (retained)",
+              "সবসময় current (synced)"
+            ],
+            [
+              "মূল কাজ",
+              "দ্রুত rollback",
+              "DR + retention",
+              "HA / failover"
+            ],
+            [
+              "স্বাধীন?",
+              "না (storage-নির্ভর)",
+              "হ্যাঁ",
+              "না (sync-নির্ভর)"
+            ],
+            [
+              "ভুল/corruption",
+              "rollback সম্ভব",
+              "আগের copy থেকে restore",
+              "ভুলও copy করে ❌"
+            ],
+            [
+              "backup হিসেবে?",
+              "না",
+              "হ্যাঁ",
+              "না"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Replica থাকলে আর backup লাগে না",
+            "না — replica ভুল/delete তাৎক্ষণিক copy করে; ভুল হলে replica-তেও নষ্ট হয়। backup-এর স্বাধীন history লাগে"
+          ],
+          [
+            "Snapshot মানেই backup",
+            "না — snapshot একই storage-এ; storage মরলে snapshot-ও যায়। backup আলাদা ও স্বাধীন"
+          ]
+        ],
+        "mnemonic": "Snapshot = মুহূর্তের ছবি, একই জায়গায় (undo/rollback)। Backup = আলাদা জায়গায় স্বাধীন কপি (disaster থেকে বাঁচায়)। Replica = live যমজ (primary মরলে চালায়, কিন্তু ভুলও copy করে)। মনে রাখো — Replica/Snapshot ≠ Backup।"
+      }
+    },
+    {
+      "id": "server_021",
+      "q": "Explain the VM (Virtual Machine) Lifecycle.",
+      "tags": [
+        "VM lifecycle",
+        "virtual machine",
+        "hypervisor",
+        "suspend",
+        "snapshot",
+        "migration"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — VM Lifecycle = একটি virtual machine তৈরি থেকে মুছে ফেলা পর্যন্ত যে ধাপগুলো পার হয়, যা hypervisor নিয়ন্ত্রণ করে।",
+          "মূল ধাপ: Create → Power On → Running → (Pause/Suspend ও Resume) → Power Off → Delete।",
+          "পাশাপাশি operation: Snapshot (অবস্থা সংরক্ষণ/rollback), Migrate (অন্য host-এ সরানো), Clone (নকল তৈরি)।"
+        ],
+        "points": [
+          "Create / Provision: VM সংজ্ঞায়িত করা — vCPU, RAM, disk, network বরাদ্দ; template বা ISO থেকে তৈরি। তখন VM আছে কিন্তু বন্ধ।",
+          "Power On / Start: VM boot হয়, guest OS load হয় → Running অবস্থায় যায়।",
+          "Running: VM সক্রিয়, কাজ করছে।",
+          "Pause vs Suspend:",
+          { "sub": "Pause: RAM-এ ধরে রেখে সাময়িক থামানো — দ্রুত resume, কিন্তু RAM দখলে থাকে।" },
+          { "sub": "Suspend (save state): অবস্থা disk-এ সংরক্ষণ করে RAM মুক্ত করে — অনেকটা hibernate।" },
+          "Resume: pause/suspend থেকে আবার Running-এ ফেরা।",
+          "Power Off / Shutdown: VM বন্ধ (graceful OS shutdown বা hard power off)। সংজ্ঞা ও disk থেকে যায়, আবার চালু করা যায়।",
+          "জীবদ্দশায় operation: Snapshot (নির্দিষ্ট মুহূর্ত সংরক্ষণ → rollback), Migrate/live migration (চালু অবস্থায় অন্য host-এ সরানো, যেমন vMotion), Clone (হুবহু নকল)।",
+          "Delete / Destroy: VM ও তার resource মুছে ফেলা (decommission)।"
+        ],
+        "diagram": "VM Lifecycle (hypervisor নিয়ন্ত্রণ করে)\n\n   ┌─────────┐  create/provision (vCPU,RAM,disk বরাদ্দ)\n   │ Created │  ← template/ISO থেকে\n   └────┬────┘\n        │ Power On (boot)\n        ▼\n   ┌─────────┐    Pause/Suspend    ┌───────────┐\n   │ Running │ ──────────────────► │ Paused /  │\n   │         │ ◄────────────────── │ Suspended │\n   └────┬────┘       Resume        └───────────┘\n        │ Power Off / Shutdown\n        ▼\n   ┌─────────┐   Power On (আবার চালু)\n   │ Stopped │ ──────────────► Running\n   └────┬────┘\n        │ Delete / Destroy\n        ▼\n   [ মুছে গেল, resource মুক্ত ]\n\n   জীবদ্দশায় যেকোনো সময়: Snapshot │ Migrate │ Clone",
+        "table": {
+          "headers": [
+            "অবস্থা / কাজ",
+            "মানে"
+          ],
+          "rows": [
+            [
+              "Created / Provisioned",
+              "সংজ্ঞায়িত (vCPU/RAM/disk), কিন্তু বন্ধ"
+            ],
+            [
+              "Running",
+              "চালু, কাজ করছে"
+            ],
+            [
+              "Paused",
+              "RAM-এ ধরে রাখা (দ্রুত resume, RAM দখলে)"
+            ],
+            [
+              "Suspended",
+              "অবস্থা disk-এ save (RAM মুক্ত, hibernate-এর মতো)"
+            ],
+            [
+              "Stopped / Powered Off",
+              "বন্ধ, কিন্তু সংজ্ঞা ও disk আছে"
+            ],
+            [
+              "Snapshot",
+              "নির্দিষ্ট মুহূর্তের অবস্থা (rollback)"
+            ],
+            [
+              "Migrate",
+              "অন্য host-এ সরানো (live = চালু অবস্থায়)"
+            ],
+            [
+              "Deleted",
+              "মুছে গেছে, resource মুক্ত"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Pause আর Suspend একই জিনিস",
+            "না — Pause RAM-এ ধরে রাখে (RAM দখলে); Suspend disk-এ save করে RAM মুক্ত করে (hibernate-এর মতো)"
+          ],
+          [
+            "Power off করলে VM মুছে যায়",
+            "না — power off শুধু বন্ধ; সংজ্ঞা ও disk থেকে যায়, আবার চালু করা যায়। মুছতে হলে Delete/Destroy লাগে"
+          ]
+        ],
+        "mnemonic": "VM জীবনচক্র = \"জন্ম → চালু → ঘুম → বন্ধ → মৃত্যু\": Create → Power On (Running) → Pause/Suspend → Power Off → Delete। পাশে সবসময় Snapshot / Migrate / Clone।"
+      }
+    },
+    {
+      "id": "server_022",
+      "q": "Explain the common Storage Protocols (iSCSI, Fibre Channel, NFS, SMB/CIFS).",
+      "tags": [
+        "iSCSI",
+        "fibre channel",
+        "NFS",
+        "SMB",
+        "CIFS",
+        "storage protocol"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — এই ৪টা হলো storage পৌঁছে দেওয়ার পদ্ধতি, আর এরা আগের চেনা দুই ভাগেই পড়ে: block (খালি disk দেয় → SAN) ও file (shared folder দেয় → NAS)।",
+          "খালি disk দেয়: iSCSI (সাধারণ network তারে, সস্তা) ও Fibre Channel (আলাদা fast highway, দামি)।",
+          "Folder দেয়: NFS (Linux) ও SMB/CIFS (Windows)।"
+        ],
+        "points": [
+          "ভাগ ১ — খালি disk দেয় (block; server নিজে format করে, SAN ব্যবহার করে)। পার্থক্য শুধু কোন রাস্তা দিয়ে যায়:",
+          { "sub": "iSCSI: তোমার সাধারণ Ethernet/IP network তারেই block storage পাঠায় → সস্তা, আলাদা hardware লাগে না, setup সহজ (তবে অন্য traffic-এর সাথে রাস্তা শেয়ার করে)।" },
+          { "sub": "Fibre Channel (FC): শুধু storage-এর জন্য আলাদা, dedicated super-fast network (আলাদা FC card/switch/fiber তার) → দামি, কিন্তু দ্রুত, low-latency ও খুব নির্ভরযোগ্য (অন্য traffic-এর ধাক্কা নেই)।" },
+          "ভাগ ২ — shared folder দেয় (file; Google Drive-এর মতো, NAS ব্যবহার করে)। পার্থক্য মূলত কোন OS-এর জন্য:",
+          { "sub": "NFS: মূলত Linux/Unix-এর folder sharing (Unix permission ব্যবহার করে, হালকা ও সরল)।" },
+          { "sub": "SMB/CIFS: মূলত Windows-এর folder sharing (Active Directory/Windows ACL-এর সাথে মেলে, printer sharing-ও করে)।" },
+          "মনে রাখো: block (iSCSI, FC) → খালি disk দেয়; file (NFS, SMB) → folder দেয়। এই দুই ভাগ আগে থেকেই চেনা — SAN vs NAS।"
+        ],
+        "diagram": "Storage কীভাবে পৌঁছায়?\n\nখালি disk দেয় (block → SAN)\n   iSCSI         →  সাধারণ network তারে    (সস্তা)\n   Fibre Channel →  আলাদা fast highway-তে   (দামি, দ্রুত)\n\nshared folder দেয় (file → NAS)\n   NFS       →  Linux-এর জন্য\n   SMB/CIFS  →  Windows-এর জন্য",
+        "table": {
+          "headers": [
+            "Protocol",
+            "কী দেয়",
+            "মূল পার্থক্য"
+          ],
+          "rows": [
+            [
+              "iSCSI",
+              "খালি disk (block, SAN)",
+              "সাধারণ network তারে → সস্তা, সহজ"
+            ],
+            [
+              "Fibre Channel",
+              "খালি disk (block, SAN)",
+              "আলাদা dedicated network → দ্রুত, দামি"
+            ],
+            [
+              "NFS",
+              "shared folder (file, NAS)",
+              "Linux-এর জন্য (Unix permission)"
+            ],
+            [
+              "SMB/CIFS",
+              "shared folder (file, NAS)",
+              "Windows-এর জন্য (AD/ACL, printer-ও)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "iSCSI আর Fibre Channel folder share করে",
+            "না — দুটোই খালি disk (block) দেয় (SAN); folder share করে NFS/SMB"
+          ],
+          [
+            "NFS মূলত Windows-এ আর SMB মূলত Linux-এ",
+            "উল্টো — NFS মূলত Linux/Unix, SMB/CIFS মূলত Windows"
+          ]
+        ],
+        "mnemonic": "খালি disk দেয়: iSCSI (সাধারণ তার, সস্তা) + FC (আলাদা highway, দ্রুত)। Folder দেয়: NFS (Linux) + SMB (Windows)।"
+      }
+    },
+    {
+      "id": "server_023",
+      "q": "Explain the CI/CD and DevOps pipeline (Code → Build → Test → Package → Deploy → Monitor).",
+      "tags": [
+        "CI/CD",
+        "devops",
+        "pipeline",
+        "continuous integration",
+        "continuous deployment",
+        "automation"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — CI/CD = code পরিবর্তন থেকে production পর্যন্ত পুরো পথ automate করা। CI (Continuous Integration) = ঘন ঘন code merge + auto build/test; CD (Continuous Delivery/Deployment) = auto package + deploy।",
+          "Pipeline: Code → Build → Test → Package → Deploy → Monitor — প্রতিটি ধাপ automated।",
+          "লাভ: দ্রুত ও নির্ভরযোগ্য release, আগেভাগে bug ধরা, কম manual কাজ।"
+        ],
+        "points": [
+          "DevOps: Dev (development) ও Ops (operations) একসাথে — automation ও collaboration-এর সংস্কৃতি; CI/CD হলো সেটি বাস্তবায়নের pipeline।",
+          "Pipeline ধাপ:",
+          { "sub": "Code: developer code লেখে, Git-এ push করে (version control)।" },
+          { "sub": "Build: code compile + dependency এনে artifact তৈরি।" },
+          { "sub": "Test: automated test চালানো (unit, integration) — bug আগেভাগে ধরা।" },
+          { "sub": "Package: deployable artifact-এ বাঁধা (container image/jar) → registry-তে রাখা।" },
+          { "sub": "Deploy: environment-এ release (staging/production)।" },
+          { "sub": "Monitor: production-এ নজর (log, metric, alert) — feedback loop, সমস্যা হলে আবার শুরু।" },
+          "CI vs CD: CI = code merge হলেই auto build+test (integration bug দ্রুত ধরা)। Continuous Delivery = deploy-ready কিন্তু production-এ ছাড়তে manual approve। Continuous Deployment = production পর্যন্ত পুরো auto।",
+          "Tool: Git, Jenkins / GitLab CI / GitHub Actions, Docker, Kubernetes, Terraform, Prometheus/Grafana।"
+        ],
+        "diagram": "CI/CD Pipeline (DevOps)\n\n [Code] → [Build] → [Test] → [Package] → [Deploy] → [Monitor]\n  Git      compile   auto     artifact    staging/   log/metric\n  push     +deps     test     → registry  prod       /alert\n\n └──── CI: auto build + test ────┘ └─── CD: auto deploy ───┘\n\n  Monitor → feedback ──────────────────────────► আবার Code\n  (সমস্যা ধরা পড়লে চক্র আবার শুরু)",
+        "table": {
+          "headers": [
+            "ধাপ",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "Code",
+              "developer code লেখে → Git push"
+            ],
+            [
+              "Build",
+              "compile + dependency → artifact"
+            ],
+            [
+              "Test",
+              "automated test (unit/integration)"
+            ],
+            [
+              "Package",
+              "deployable artifact (image/jar) → registry"
+            ],
+            [
+              "Deploy",
+              "environment-এ release (staging/prod)"
+            ],
+            [
+              "Monitor",
+              "log/metric/alert — feedback loop"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "CI আর CD একই জিনিস",
+            "না — CI = auto build/test (integration); CD = auto package/deploy (delivery বা deployment)"
+          ],
+          [
+            "Continuous Delivery মানেই production-এ auto deploy",
+            "না — Delivery = deploy-ready (manual approve লাগে); approve ছাড়া auto production হলো Continuous Deployment"
+          ]
+        ],
+        "mnemonic": "Pipeline = C-B-T-P-D-M: Code, Build, Test, Package, Deploy, Monitor। CI = আগের অংশ (build+test), CD = পরের অংশ (deploy)। Monitor → feedback → আবার Code।"
+      }
+    },
+    {
+      "id": "server_025",
+      "q": "Explain Live Migration (basic idea) and High Availability in virtualization.",
+      "tags": [
+        "live migration",
+        "high availability",
+        "vMotion",
+        "virtualization",
+        "failover",
+        "cluster"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Live Migration = চালু অবস্থায় একটি VM-কে এক physical host থেকে আরেক host-এ সরানো, প্রায় শূন্য downtime-এ (VM চলতেই থাকে)। High Availability (HA) = host মরে গেলেও service চালু রাখা — VM স্বয়ংক্রিয়ভাবে অন্য host-এ আবার চালু হয়।",
+          "মূল তফাত: Live Migration = পরিকল্পিত, host ভালো থাকতেই সরানো (maintenance/load balance); HA = অপ্রত্যাশিত failure-এর পর স্বয়ংক্রিয় recovery।",
+          "দুটোই কাজ করতে cluster (একাধিক host) + shared storage লাগে।"
+        ],
+        "points": [
+          "Live Migration কী: চালু VM-কে downtime ছাড়া অন্য host-এ সরানো (VMware vMotion, KVM live migration)। ব্যবহার: host maintenance/patch, busy host থেকে load সরানো।",
+          "Live Migration কীভাবে হয় (basic idea):",
+          { "sub": "VM source host-এ চলতে চলতে তার RAM destination host-এ copy হতে থাকে।" },
+          { "sub": "copy চলাকালীন যে memory page বদলায় (dirty page), সেগুলো বারবার আবার copy হয়।" },
+          { "sub": "শেষে অল্প memory বাকি থাকলে VM মুহূর্তের জন্য থামিয়ে শেষ অংশ + CPU state পাঠিয়ে destination-এ resume করা হয় — pause মাত্র মিলিসেকেন্ড।" },
+          { "sub": "সাধারণত shared storage থাকে (দুই host একই VM disk দেখে), তাই শুধু memory+state সরে, disk নয়।" },
+          "High Availability কী: host crash করলে তার VM গুলো cluster-এর অন্য host-এ স্বয়ংক্রিয়ভাবে restart হয় (VMware HA)। restart-এর সময় সামান্য downtime থাকে, কিন্তু service দ্রুত ফেরে।",
+          "মূল পার্থক্য: Live Migration = পরিকল্পিত, host সুস্থ, VM চলন্ত অবস্থায় সরে (০ downtime); HA = অপরিকল্পিত failure, host মরা, VM অন্যত্র আবার চালু হয় (সামান্য downtime)।",
+          "দুটোরই দরকার: একাধিক host-এর cluster ও shared storage; HA মূলত virtualization-এ failover — RTO কমায়।"
+        ],
+        "diagram": "LIVE MIGRATION — চালু VM সরানো (planned, ০ downtime)\n   Host A (সুস্থ)                 Host B\n   [ VM চলছে ] ══RAM+state copy══► [ VM চলছে ]\n        └─────── shared storage (disk) ───────┘\n   VM থামে না (শেষে মিলিসেকেন্ড pause)\n   কাজ: maintenance / load balance\n\nHIGH AVAILABILITY — host মরলে auto restart\n   Host A  💥 crash             Host B\n   [ VM ✗ ] ──────────────► [ VM আবার চালু ] ← auto\n        └─────── shared storage ───────┘\n   সামান্য downtime (restart) │ service দ্রুত ফেরে",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Live Migration",
+            "High Availability"
+          ],
+          "rows": [
+            [
+              "কখন",
+              "পরিকল্পিত (host সুস্থ)",
+              "অপ্রত্যাশিত failure (host মরা)"
+            ],
+            [
+              "VM-এর কী হয়",
+              "চলন্ত অবস্থায় সরে",
+              "অন্য host-এ আবার restart"
+            ],
+            [
+              "Downtime",
+              "প্রায় ০ (মিলিসেকেন্ড)",
+              "সামান্য (restart-এর সময়)"
+            ],
+            [
+              "উদ্দেশ্য",
+              "maintenance, load balance",
+              "failure থেকে recovery"
+            ],
+            [
+              "ধরন",
+              "proactive (আগেভাগে)",
+              "reactive (পরে)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Live Migration আর HA একই জিনিস",
+            "না — Live Migration পরিকল্পিতভাবে চলন্ত VM সরায় (host ভালো); HA host মরার পর VM অন্যত্র restart করে"
+          ],
+          [
+            "HA মানে কোনো downtime নেই",
+            "না — HA-তে VM restart হয়, তাই অল্প downtime থাকে; সত্যিকারের ০ downtime চাইলে Fault Tolerance (live mirror) লাগে"
+          ]
+        ],
+        "mnemonic": "Live Migration = \"চলন্ত গাড়ি বদলানো\" (host সুস্থ, VM থামে না, পরিকল্পিত)। HA = \"গাড়ি নষ্ট হলে নতুন গাড়িতে তোলা\" (host মরা, VM আবার চালু, সামান্য দেরি)।"
       }
     }
   ]
