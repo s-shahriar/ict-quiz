@@ -8,6 +8,7 @@ import HomeScreen from './components/HomeScreen.jsx'
 import ImportantScreen from './components/ImportantScreen.jsx'
 import ModeSelect from './components/ModeSelect.jsx'
 import NailedScreen from './components/NailedScreen.jsx'
+import PracticeMode from './components/PracticeMode.jsx'
 import QuizMode from './components/QuizMode.jsx'
 import StudyMode from './components/StudyMode.jsx'
 import WrittenImportantScreen from './components/WrittenImportantScreen.jsx'
@@ -61,6 +62,7 @@ function AppRoutes() {
         <Route path="/exam/run" element={<ExamMode />} />
         <Route path="/nailed" element={<NailedScreen />} />
         <Route path="/important" element={<ImportantScreen />} />
+        <Route path="/practice" element={<PracticeMode />} />
         <Route path="/written" element={<WrittenMode />} />
         <Route path="/written/nailed" element={<WrittenNailedScreen />} />
         <Route path="/written/important" element={<WrittenImportantScreen />} />
