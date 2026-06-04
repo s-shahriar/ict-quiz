@@ -1912,6 +1912,218 @@
         ],
         "mnemonic": "Live Migration = \"চলন্ত গাড়ি বদলানো\" (host সুস্থ, VM থামে না, পরিকল্পিত)। HA = \"গাড়ি নষ্ট হলে নতুন গাড়িতে তোলা\" (host মরা, VM আবার চালু, সামান্য দেরি)।"
       }
+    },
+    {
+      "id": "server_026",
+      "q": "What is a LUN (Logical Unit Number)? Why is it needed?",
+      "tags": [
+        "LUN",
+        "logical unit number",
+        "SAN",
+        "storage",
+        "block",
+        "LUN masking"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — LUN (Logical Unit Number) = একটা storage array (SAN) থেকে কেটে বের করা এক টুকরো storage, যেটা server-কে একটা আলাদা \"disk\" হিসেবে দেখানো হয়; LUN হলো সেই টুকরোর পরিচয়/নম্বর।",
+          "মনে আছে — SAN server-কে \"খালি disk\" (block) দেয়? সেই খালি disk-টাই আসলে একটা LUN।",
+          "কেন দরকার: storage array-তে অনেক physical disk একসাথে থাকে; LUN দিয়ে সেই pool-কে আলাদা টুকরোয় ভাগ করে নির্দিষ্ট server-কে দেওয়া যায়।"
+        ],
+        "points": [
+          "LUN কী: storage array-র disk pool (সাধারণত RAID) থেকে একটা logical volume কেটে বের করা হয়; প্রতিটি এমন volume-কে একটা number (LUN) দিয়ে server-এর কাছে একটা single disk হিসেবে উপস্থাপন করা হয়।",
+          "server-এর দিক থেকে: LUN একটা raw disk (block device)-এর মতো দেখায় — server এটাকে format করে, filesystem বসায় (ঠিক নিজের hard disk-এর মতো)।",
+          "কেন দরকার:",
+          { "sub": "storage array-তে বিশাল disk pool; LUN দিয়ে তা manageable টুকরোয় ভাগ করা যায়।" },
+          { "sub": "নির্দিষ্ট LUN নির্দিষ্ট server-কে বরাদ্দ করা যায় (এক server-এর storage আরেকজন দেখবে না)।" },
+          { "sub": "physical disk না ছুঁয়ে flexible ভাবে storage বরাদ্দ ও বাড়ানো যায়।" },
+          "LUN Masking / Zoning: কোন server কোন LUN দেখতে পাবে তা নিয়ন্ত্রণ করা — নিরাপত্তা ও isolation।",
+          "উৎপত্তি: LUN আসলে SCSI-র শব্দ — একটা SCSI target-এ device চিনতে ব্যবহৃত number; SAN-এ এটাই logical storage volume বোঝায়।"
+        ],
+        "diagram": "Storage Array (অনেক physical disk, RAID pool)\n   ┌──────────────────────────────────────┐\n   │  [disk][disk][disk][disk] ... (pool)   │\n   └──────────────────────────────────────┘\n        │ pool থেকে টুকরো কেটে নম্বর দেওয়া\n        ▼\n   ┌────────┐   ┌────────┐   ┌────────┐\n   │ LUN 0  │   │ LUN 1  │   │ LUN 2  │  ← প্রতিটি = এক \"disk\"\n   └───┬────┘   └───┬────┘   └───┬────┘\n       │            │            │   (SAN: iSCSI/FC)\n   [Server A]   [Server B]   [Server C]\n   প্রতি server তার LUN-কে নিজের খালি disk হিসেবে দেখে\n   (format করে, filesystem বসায়)\n\n  LUN Masking → কোন server কোন LUN দেখবে নিয়ন্ত্রণ",
+        "table": {
+          "headers": [
+            "প্রশ্ন",
+            "উত্তর"
+          ],
+          "rows": [
+            [
+              "LUN কী?",
+              "storage pool থেকে কাটা এক টুকরো, নম্বর দিয়ে চেনা"
+            ],
+            [
+              "কোন level?",
+              "Block-level (raw disk) — SAN দেয়"
+            ],
+            [
+              "server কী দেখে?",
+              "একটা খালি disk (format করে ব্যবহার)"
+            ],
+            [
+              "কেন দরকার?",
+              "pool-কে টুকরোয় ভাগ + নির্দিষ্ট server-কে বরাদ্দ"
+            ],
+            [
+              "নিরাপত্তা?",
+              "LUN Masking — কে কোন LUN দেখবে নিয়ন্ত্রণ"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "LUN একটা physical hard disk",
+            "না — LUN logical; এক বা একাধিক physical disk-এর (RAID) pool থেকে কাটা একটা volume, যা server-এর কাছে একটা disk-এর মতো দেখায়"
+          ],
+          [
+            "LUN file share করে",
+            "না — LUN block-level (raw disk); file share করে NAS (NFS/SMB)। LUN-কে server নিজে format করে"
+          ]
+        ],
+        "mnemonic": "LUN = SAN-এর দেওয়া \"খালি disk\"-এর নাম-নম্বর। বড় disk pool → টুকরো করে নম্বর দেওয়া (LUN) → প্রতি server নিজের disk হিসেবে পায়।"
+      }
+    },
+    {
+      "id": "server_027",
+      "q": "What are the types of Disaster Recovery sites (Hot, Warm, Cold)?",
+      "tags": [
+        "disaster recovery",
+        "hot site",
+        "warm site",
+        "cold site",
+        "RTO",
+        "DR"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — DR site = primary site মরে গেলে যে backup location-এ গিয়ে service চালু করা হয়। প্রস্তুতির মাত্রা অনুযায়ী তিন ধরন: Hot, Warm, Cold।",
+          "Hot = সম্পূর্ণ চালু ও synced (প্রায় সাথে সাথে takeover, RTO কম, দামি)। Cold = শুধু খালি জায়গা+অবকাঠামো (hardware বসিয়ে backup restore করতে হয়, RTO বেশি, সস্তা)। Warm = মাঝামাঝি।",
+          "মূল trade-off: যত দ্রুত recovery (RTO কম), তত খরচ বেশি।"
+        ],
+        "points": [
+          "Hot site: production-এর হুবহু চালু copy; data ক্রমাগত replicate হয়; failure-এ প্রায় সাথে সাথে takeover। RTO/RPO সবচেয়ে কম (মিনিট/সেকেন্ড), কিন্তু সবচেয়ে দামি।",
+          "Warm site: hardware/অবকাঠামো প্রস্তুত, কিন্তু data পুরোপুরি up-to-date নয় (পর্যায়ক্রমে sync)। takeover-এর আগে কিছু setup/restore লাগে। RTO মাঝারি (ঘণ্টা), খরচ মাঝারি।",
+          "Cold site: শুধু জায়গা + মৌলিক অবকাঠামো (power, cooling, network); কোনো server/data প্রস্তুত নয়। hardware আনতে/বসাতে ও backup restore করতে হয়। RTO সবচেয়ে বেশি (দিন), কিন্তু সবচেয়ে সস্তা।",
+          "trade-off: Hot (দ্রুত, দামি) → Warm (মাঝামাঝি) → Cold (ধীর, সস্তা)। RTO/RPO যত কম চাই, তত বেশি খরচ।"
+        ],
+        "diagram": "DR Sites — প্রস্তুতি বনাম খরচ\n\n  HOT   ┌───────────────────────────┐  RTO: মিনিট/সেকেন্ড\n        │ চালু + data live synced    │  দামি (সবচেয়ে)\n        │ প্রায় সাথে সাথে takeover    │\n        └───────────────────────────┘\n\n  WARM  ┌───────────────────────────┐  RTO: ঘণ্টা\n        │ hardware ready, data পুরোনো │  মাঝারি খরচ\n        │ কিছু restore/setup লাগে     │\n        └───────────────────────────┘\n\n  COLD  ┌───────────────────────────┐  RTO: দিন\n        │ শুধু জায়গা + power/cooling   │  সস্তা (সবচেয়ে)\n        │ hardware বসাও + restore     │\n        └───────────────────────────┘\n\n  দ্রুত recovery  ↔  বেশি খরচ",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Hot",
+            "Warm",
+            "Cold"
+          ],
+          "rows": [
+            [
+              "প্রস্তুতি",
+              "পুরো চালু + synced",
+              "hardware ready, data পুরোনো",
+              "শুধু জায়গা + অবকাঠামো"
+            ],
+            [
+              "RTO",
+              "মিনিট/সেকেন্ড",
+              "ঘণ্টা",
+              "দিন"
+            ],
+            [
+              "খরচ",
+              "সবচেয়ে বেশি",
+              "মাঝারি",
+              "সবচেয়ে কম"
+            ],
+            [
+              "takeover",
+              "প্রায় সাথে সাথে",
+              "কিছু setup পরে",
+              "hardware+restore পরে"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Cold site দ্রুত recovery দেয়",
+            "না — Cold সবচেয়ে ধীর (দিন লাগে); দ্রুত recovery চাইলে Hot site"
+          ],
+          [
+            "Hot site সবচেয়ে ভালো, তাই সবার Hot নেওয়া উচিত",
+            "না — Hot সবচেয়ে দামি; দরকার (RTO/RPO) ও বাজেট বুঝে Warm/Cold বেছে নেওয়া হয়"
+          ]
+        ],
+        "mnemonic": "Hot = গরম ইঞ্জিন চালু (সাথে সাথে চলে, দামি)। Warm = ইঞ্জিন গরম, একটু সময় লাগে। Cold = ঠান্ডা/বন্ধ (চালু করতে অনেক সময়, সস্তা)। তাপ ↑ = গতি ↑ = খরচ ↑।"
+      }
+    },
+    {
+      "id": "server_028",
+      "q": "Backup types — Full vs Incremental vs Differential.",
+      "tags": [
+        "backup",
+        "full backup",
+        "incremental",
+        "differential",
+        "restore",
+        "disaster recovery"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — তিন backup কৌশল, পার্থক্য কতটুকু data copy করে: Full = সব data প্রতিবার; Incremental = শেষ backup-এর পর যা বদলেছে; Differential = শেষ Full-এর পর যা বদলেছে।",
+          "মূল তফাত: Incremental শেষ যেকোনো backup-এর পর থেকে; Differential শেষ Full-এর পর থেকে।",
+          "Full = ধীর backup/সহজ restore; Incremental = দ্রুত backup/জটিল restore; Differential = মাঝামাঝি।"
+        ],
+        "points": [
+          "Full backup: প্রতিবার সম্পূর্ণ data copy। সবচেয়ে বেশি storage ও সময়, কিন্তু restore সবচেয়ে সহজ (শুধু একটা backup লাগে)।",
+          "Incremental backup: শেষ backup-এর (Full বা আগের incremental) পর যা বদলেছে শুধু তাই copy। সবচেয়ে দ্রুত ও কম storage। কিন্তু restore-এ শেষ Full + তারপরের সব incremental ক্রমানুসারে লাগে (জটিল ও ধীর restore)।",
+          "Differential backup: শেষ Full-এর পর যা বদলেছে সব copy। প্রতিদিন আকার বাড়ে (পরের Full পর্যন্ত)। restore-এ শুধু শেষ Full + শেষ differential লাগে (incremental-এর চেয়ে সহজ restore)।",
+          "মূল পার্থক্য: Incremental \"শেষ backup-এর পর\"; Differential \"শেষ Full-এর পর\"।",
+          "trade-off: backup size/speed — Full (বড়/ধীর) > Differential > Incremental (ছোট/দ্রুত)। restore সহজতা — Full > Differential > Incremental।"
+        ],
+        "diagram": "সোম = Full backup, তারপর প্রতিদিন কী copy হয়:\n\n             সোম    মঙ্গল    বুধ      বৃহঃ\n Full       [সব]   [সব]    [সব]     [সব]    ← প্রতিবার পুরোটা\n\n Increment  [সব]   [মঙ্গল]  [বুধ]    [বৃহঃ]  ← আগের backup-এর পর যা বদলেছে\n\n Different  [সব]   [মঙ্গল]  [মঙ্গল+বুধ] [মঙ্গল+বুধ+বৃহঃ]\n                              ← শেষ Full (সোম)-এর পর সব, বাড়তে থাকে\n\n Restore (বৃহঃ পর্যন্ত):\n   Full       → শুধু বৃহঃ-এর full\n   Increment  → সোম Full + মঙ্গল + বুধ + বৃহঃ (সব, ক্রমে)\n   Different  → সোম Full + বৃহঃ differential (শুধু ২টা)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Full",
+            "Incremental",
+            "Differential"
+          ],
+          "rows": [
+            [
+              "কী copy করে",
+              "সব data",
+              "শেষ backup-এর পর পরিবর্তন",
+              "শেষ Full-এর পর পরিবর্তন"
+            ],
+            [
+              "Backup size/speed",
+              "বড় / ধীর",
+              "ছোট / দ্রুত",
+              "মাঝারি"
+            ],
+            [
+              "Restore-এ লাগে",
+              "শুধু Full",
+              "Full + সব incremental",
+              "Full + শেষ differential"
+            ],
+            [
+              "Restore সহজতা",
+              "সহজ",
+              "জটিল",
+              "মাঝারি"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Incremental আর Differential একই জিনিস",
+            "না — Incremental শেষ backup-এর পর থেকে; Differential শেষ Full-এর পর থেকে। restore-এ Incremental-এ সব লাগে, Differential-এ শুধু শেষটা"
+          ],
+          [
+            "Incremental-এর restore সবচেয়ে সহজ কারণ আকার ছোট",
+            "না — backup ছোট/দ্রুত ঠিকই, কিন্তু restore সবচেয়ে জটিল (Full + সব incremental ক্রমে লাগে)"
+          ]
+        ],
+        "mnemonic": "Full = সব, প্রতিবার। Incremental = \"শেষ backup-এর পর\" (ছোট, কিন্তু restore-এ পুরো চেইন লাগে)। Differential = \"শেষ Full-এর পর\" (বাড়ে, restore-এ শুধু Full + শেষটা)।"
+      }
     }
   ]
 }
