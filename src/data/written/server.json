@@ -2124,6 +2124,434 @@
         ],
         "mnemonic": "Full = সব, প্রতিবার। Incremental = \"শেষ backup-এর পর\" (ছোট, কিন্তু restore-এ পুরো চেইন লাগে)। Differential = \"শেষ Full-এর পর\" (বাড়ে, restore-এ শুধু Full + শেষটা)।"
       }
+    },
+    {
+      "id": "server_029",
+      "q": "OLTP vs OLAP — what is each, and how do they differ?",
+      "tags": [
+        "OLTP",
+        "OLAP",
+        "database",
+        "data warehouse",
+        "transaction",
+        "analytics"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — OLTP (Online Transaction Processing) = প্রতিদিনের লেনদেন সামলায় (ছোট, দ্রুত read/write — যেমন ব্যাংক transaction, order)। OLAP (Online Analytical Processing) = বড় historical data নিয়ে বিশ্লেষণ/report করে (জটিল query, aggregation — যেমন dashboard, BI)।",
+          "সহজ কথায়: OLTP = ব্যবসা চালায় (transaction); OLAP = ব্যবসা বিশ্লেষণ করে (insight)।",
+          "OLTP-র data সাধারণত ETL দিয়ে OLAP (data warehouse)-এ গিয়ে বিশ্লেষণ হয়।"
+        ],
+        "points": [
+          "OLTP: অনেক ছোট ও দ্রুত transaction (INSERT/UPDATE/DELETE); current/operational data; normalized schema (redundancy কম); অনেক concurrent user (গ্রাহক/কর্মী)। উদাহরণ: ATM, e-commerce order, banking।",
+          "OLAP: কম কিন্তু জটিল read query (aggregation, join, group by) বিশাল historical data-র উপর; denormalized schema (star/snowflake, দ্রুত read); কম user (analyst/manager)। উদাহরণ: data warehouse, BI dashboard, report।",
+          "মূল পার্থক্য:",
+          { "sub": "উদ্দেশ্য: OLTP transaction চালানো; OLAP বিশ্লেষণ।" },
+          { "sub": "Operation: OLTP ছোট read/write; OLAP জটিল read (aggregation)।" },
+          { "sub": "Data: OLTP current/detailed; OLAP historical/aggregated/বিশাল।" },
+          { "sub": "Schema: OLTP normalized; OLAP denormalized।" },
+          "সম্পর্ক: OLTP-তে দৈনিক data জমে → ETL (Extract-Transform-Load) দিয়ে OLAP/data warehouse-এ নেওয়া হয় → সেখানে বিশ্লেষণ। দুটো প্রতিদ্বন্দ্বী নয়, পরিপূরক।"
+        ],
+        "diagram": "OLTP — ব্যবসা চালায় (transaction)\n   গ্রাহক/কর্মী → [ছোট দ্রুত read/write]\n   INSERT/UPDATE │ current data │ normalized\n   যেমন: ATM, order, banking\n\nOLAP — ব্যবসা বিশ্লেষণ করে (insight)\n   analyst → [জটিল query, aggregation]\n   SELECT...GROUP BY │ historical/বিশাল │ denormalized\n   যেমন: dashboard, BI report\n\nসম্পর্ক:\n   [OLTP operational DB] ──ETL──► [OLAP data warehouse]\n      দৈনিক transaction            বিশ্লেষণের জন্য জমা",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "OLTP",
+            "OLAP"
+          ],
+          "rows": [
+            [
+              "উদ্দেশ্য",
+              "transaction চালানো",
+              "বিশ্লেষণ / report"
+            ],
+            [
+              "Operation",
+              "ছোট read/write (INSERT/UPDATE)",
+              "জটিল read (aggregation)"
+            ],
+            [
+              "Data",
+              "current, detailed",
+              "historical, aggregated"
+            ],
+            [
+              "Schema",
+              "normalized",
+              "denormalized (star)"
+            ],
+            [
+              "User",
+              "অনেক (গ্রাহক/কর্মী)",
+              "কম (analyst)"
+            ],
+            [
+              "Size / speed",
+              "GB, মিলিসেকেন্ড",
+              "TB+, query দীর্ঘ"
+            ],
+            [
+              "উদাহরণ",
+              "ATM, e-commerce",
+              "data warehouse, BI"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "OLAP দিয়ে দৈনিক transaction চালানো হয়",
+            "না — OLAP বিশ্লেষণের জন্য; দৈনিক transaction OLTP চালায়। OLAP জটিল read-এ optimized, ছোট write-এ নয়"
+          ],
+          [
+            "OLTP আর OLAP প্রতিদ্বন্দ্বী, একটাই বেছে নিতে হবে",
+            "না — দুটো পরিপূরক; OLTP transaction চালায়, তার data OLAP-এ গিয়ে বিশ্লেষণ হয়"
+          ]
+        ],
+        "mnemonic": "OLTP-র T = Transaction (ব্যবসা চালায়, ছোট দ্রুত write)। OLAP-র A = Analytical (ব্যবসা বিশ্লেষণ, বড় জটিল read)। T চালায়, A বোঝে।"
+      }
+    },
+    {
+      "id": "server_030",
+      "q": "What is the Hadoop ecosystem? Explain its main components.",
+      "tags": [
+        "hadoop",
+        "big data",
+        "HDFS",
+        "MapReduce",
+        "YARN",
+        "spark"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Hadoop = বড় (Big Data) distributed storage ও processing-এর open-source framework; একগুচ্ছ tool মিলে \"ecosystem\"।",
+          "তিনটি core: HDFS (data distributed store), MapReduce (parallel processing), YARN (resource management ও scheduling)।",
+          "উপরের স্তরে আরও tool: Hive, HBase, Pig, Spark (query/DB/scripting/fast) এবং Sqoop, Flume/Kafka (data ingest)।"
+        ],
+        "points": [
+          "Core তিনটি (ভিত্তি):",
+          { "sub": "HDFS (Hadoop Distributed File System): বিশাল data অনেক machine জুড়ে distributed ভাবে store করে (block-এ ভাগ করে replicate করে)।" },
+          { "sub": "MapReduce: parallel processing model — কাজ Map (ভাগ) → Reduce (একত্র) ধাপে অনেক node-এ চালায়।" },
+          { "sub": "YARN: resource management ও job scheduling — কোন কাজ কোন node-এ কত resource পাবে নিয়ন্ত্রণ করে।" },
+          "উপরের স্তরের tool:",
+          { "sub": "Hive: SQL-এর মতো query (HiveQL) দিয়ে data বিশ্লেষণ (MapReduce না লিখেই)।" },
+          { "sub": "HBase: HDFS-এর উপর NoSQL distributed database (real-time read/write)।" },
+          { "sub": "Pig: data flow scripting language (Pig Latin)।" },
+          { "sub": "Spark: in-memory দ্রুত processing engine — MapReduce-এর চেয়ে অনেক দ্রুত।" },
+          "Data ingest/transfer:",
+          { "sub": "Sqoop: RDBMS ↔ Hadoop-এ structured data transfer।" },
+          { "sub": "Flume / Kafka: streaming/log data ingest।" }
+        ],
+        "diagram": "Hadoop Ecosystem (Big Data framework)\n\n  Ingest:  Sqoop (RDBMS↔)   Flume/Kafka (streaming/log)\n                        │\n                        ▼\n  ┌──────────────────────────────────────────────┐\n  │ Access/Process:  Hive(SQL)  Pig(script)        │\n  │                  Spark(fast)  HBase(NoSQL)      │\n  └──────────────────────────────────────────────┘\n                        │\n  ┌──────────────────────────────────────────────┐\n  │ YARN — resource management ও scheduling        │\n  └──────────────────────────────────────────────┘\n                        │\n  ┌──────────────────────────────────────────────┐\n  │ MapReduce — parallel processing (Map → Reduce) │\n  └──────────────────────────────────────────────┘\n                        │\n  ┌──────────────────────────────────────────────┐\n  │ HDFS — distributed storage (ভিত্তি)            │\n  └──────────────────────────────────────────────┘\n\n  মূল: HDFS জমায়, MapReduce/Spark process করে, YARN সামলায়",
+        "table": {
+          "headers": [
+            "Component",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "HDFS",
+              "Hadoop Distributed File System — data distributed store"
+            ],
+            [
+              "MapReduce",
+              "Parallel data processing model (Map → Reduce)"
+            ],
+            [
+              "YARN",
+              "Resource management ও job scheduling"
+            ],
+            [
+              "Hive",
+              "SQL-এর মতো query (HiveQL) দিয়ে বিশ্লেষণ"
+            ],
+            [
+              "HBase",
+              "NoSQL distributed database (HDFS-এর উপর)"
+            ],
+            [
+              "Pig",
+              "Data flow scripting language"
+            ],
+            [
+              "Spark",
+              "In-memory দ্রুত processing (MapReduce-এর চেয়ে দ্রুত)"
+            ],
+            [
+              "Sqoop",
+              "RDBMS ↔ Hadoop data transfer"
+            ],
+            [
+              "Flume / Kafka",
+              "Streaming / log data ingest"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Hadoop একটা single software",
+            "না — Hadoop একটা ecosystem (অনেক tool); core তিনটি HDFS+MapReduce+YARN, বাকিগুলো তার উপরে বসে"
+          ],
+          [
+            "Spark চালাতে Hadoop বাধ্যতামূলক",
+            "না — Spark আলাদাও চলতে পারে, তবে প্রায়ই HDFS/YARN-এর সাথে ব্যবহৃত হয়; এটি MapReduce-এর দ্রুত বিকল্প"
+          ]
+        ],
+        "mnemonic": "HDFS জমায় (storage), MapReduce/Spark process করে, YARN সামলায় (resource)। উপরে Hive (SQL), HBase (NoSQL), Pig (script); পাশে Sqoop/Flume/Kafka (data আনে)।"
+      }
+    },
+    {
+      "id": "server_031",
+      "q": "What is Active Directory and the Domain Controller concept?",
+      "tags": [
+        "active directory",
+        "domain controller",
+        "windows server",
+        "domain",
+        "OU",
+        "authentication"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Active Directory (AD) = Microsoft-এর directory service; Windows network-এর সব user, computer, group ইত্যাদির কেন্দ্রীয় database — কেন্দ্রীয়ভাবে login ও management করে।",
+          "Domain Controller (DC) = যে server-এ AD চলে; এটি AD database রাখে, user login authenticate করে, policy প্রয়োগ করে — domain-এর \"দারোয়ান\"।",
+          "লাভ: এক জায়গা থেকে সব user/computer নিয়ন্ত্রণ, এবং এক login সারা domain-এ (Single Sign-On)।"
+        ],
+        "points": [
+          "AD কী: network-এর সব object (user, computer, group, printer) এক কেন্দ্রীয় database-এ; কে কী access পাবে তা এখান থেকেই ঠিক হয়।",
+          "Domain: এক administrative সীমানার অধীনে user/computer-এর যৌক্তিক গোষ্ঠী (যেমন company.local)।",
+          "Domain Controller (DC): AD DS চালানো server — AD database-এর copy রাখে, login authenticate করে, policy push করে। একাধিক DC redundancy দেয় (একটা মরলেও login চলে)।",
+          "কাঠামো: Forest (সর্বোচ্চ) > Tree > Domain > OU (Organizational Unit — object গোছানোর folder) > Object।",
+          "লাভ: কেন্দ্রীয় management, Single Sign-On (এক login সব resource-এ), এবং Group Policy দিয়ে নিয়ম প্রয়োগ।"
+        ],
+        "diagram": "Active Directory কাঠামো\n   Forest\n     └─ Domain (company.local)\n          ├─ OU: Sales → [user][computer]\n          ├─ OU: IT    → [user][computer]\n          └─ ...\n\nDomain Controller (DC) = AD চালায়\n   [Client login] → [DC: authenticate?] → ✓ access\n   একাধিক DC = redundancy (একে অপরে replicate)",
+        "table": {
+          "headers": [
+            "Term",
+            "মানে"
+          ],
+          "rows": [
+            [
+              "Active Directory",
+              "user/computer-এর কেন্দ্রীয় database (service)"
+            ],
+            [
+              "Domain Controller",
+              "AD চালানো server (login authenticate)"
+            ],
+            [
+              "Domain",
+              "এক প্রশাসনিক সীমানার গোষ্ঠী"
+            ],
+            [
+              "OU",
+              "object গোছানোর folder (Organizational Unit)"
+            ],
+            [
+              "Forest / Tree",
+              "একাধিক domain-এর সংগঠন"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Active Directory আর Domain Controller একই জিনিস",
+            "না — AD হলো service/database; DC হলো সেই server যেখানে AD চলে"
+          ],
+          [
+            "একটা DC-ই যথেষ্ট",
+            "প্রায়ই একাধিক DC রাখা হয় redundancy-র জন্য — একটা মরলেও login/authentication চলে"
+          ]
+        ],
+        "mnemonic": "AD = কেন্দ্রীয় খাতা (সব user/computer)। DC = সেই খাতা রাখা ও login যাচাই করা দারোয়ান-server। OU = খাতার folder।"
+      }
+    },
+    {
+      "id": "server_032",
+      "q": "What is the role of DNS in Active Directory?",
+      "tags": [
+        "DNS",
+        "active directory",
+        "SRV record",
+        "domain controller",
+        "windows server"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — DNS = নাম → server খুঁজে পাওয়ার phonebook (শুধু website নয়)। AD-তে computer-রা DNS দিয়ে Domain Controller (login server)-কে খুঁজে পায়।",
+          "PC শুধু domain-এর নাম জানে (company.local), DC-র IP জানে না; তাই DNS-কে জিজ্ঞেস করে \"DC কোথায়?\" → DNS IP বলে দেয় → PC সেখানে গিয়ে login করে।",
+          "DNS নেই = DC খুঁজে পাওয়া নেই = login, Group Policy, replication সব fail।"
+        ],
+        "points": [
+          "তুমি যা জানো: DNS = নাম ↔ IP। শুধু যোগ করো — এই phonebook শুধু website নয়, যেকোনো server খুঁজতে কাজে লাগে; AD-তে সেটা Domain Controller।",
+          "সমস্যা: PC login করতে DC-র সাথে কথা বলতে হবে, কিন্তু PC জানে না DC কোন server বা তার IP কত — শুধু domain-এর নাম (company.local) জানে।",
+          "সমাধান: PC DNS-কে জিজ্ঞেস করে \"company.local-এর DC কোথায়?\" → DNS উত্তর দেয় \"dc1 = 10.0.0.5\" → PC সেখানে গিয়ে login যাচাই করে।",
+          "SRV record: AD DNS-এ বিশেষ entry যা শুধু নাম→IP নয়, বলে \"কোন server এই service (DC/login/LDAP/Kerberos) দেয়\"; PC এটাই query করে।",
+          "নির্ভরতা: DNS ভুল/বন্ধ থাকলে PC DC খুঁজে পায় না → login, Group Policy, replication সব ব্যর্থ। তাই সাধারণত DC নিজেই DNS server চালায়।"
+        ],
+        "diagram": "PC চালু → login চাই\n   │ \"company.local-এর DC (login server) কোথায়?\"\n   ▼  ← DNS-কে জিজ্ঞাসা (SRV record)\n [DNS] → \"dc1 = 10.0.0.5\"\n   │\n   ▼\n [PC] → 10.0.0.5 (DC) → login ✓\n\n DNS বন্ধ = DC খুঁজে পাওয়া নেই = login fail\n\n মনে রাখো — একই DNS, শুধু কী খুঁজছে আলাদা:\n   Internet-এ:  google.com → IP            (website খোঁজে)\n   AD-তে:       company.local-এর DC → IP   (login server খোঁজে)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "ভূমিকা"
+          ],
+          "rows": [
+            [
+              "DNS",
+              "নাম → server (IP); AD-তে DC খুঁজে দেয়"
+            ],
+            [
+              "কী খোঁজে",
+              "website নয় — Domain Controller (login server)"
+            ],
+            [
+              "SRV record",
+              "কোন server DC/login service দেয় বলে"
+            ],
+            [
+              "DNS নেই হলে",
+              "DC খুঁজে পাওয়া নেই → login/GPO fail"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "DNS শুধু internet-এ website খুঁজতে লাগে",
+            "না — AD-তে computer DNS দিয়েই Domain Controller (login server) খুঁজে পায়"
+          ],
+          [
+            "AD আর DNS আলাদা, একটা ছাড়া আরেকটা চলে",
+            "না — DNS ছাড়া PC DC খুঁজে পায় না, তাই AD-ই অচল হয়ে যায়"
+          ]
+        ],
+        "mnemonic": "DNS = AD-র phonebook — PC এতে \"DC (login server) কোথায়?\" দেখে IP পায়। website নয়, এখানে Domain Controller খুঁজছে। DNS নেই = login নেই।"
+      }
+    },
+    {
+      "id": "server_034",
+      "q": "What is Group Policy (GPO)? Explain the basic idea.",
+      "tags": [
+        "group policy",
+        "GPO",
+        "active directory",
+        "windows server",
+        "LSDOU"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Group Policy = AD domain-এ user ও computer-এর setting কেন্দ্রীয়ভাবে নিয়ন্ত্রণ করার উপায়। GPO (Group Policy Object) = এমন setting-এর একটা সংকলন।",
+          "উদাহরণ: password নিয়ম, desktop/security setting, software install, USB নিষেধ — admin একবার সেট করলে সব machine-এ প্রয়োগ হয়।",
+          "GPO domain/OU/site-এ link করা হয় এবং নির্দিষ্ট ক্রমে প্রয়োগ হয়।"
+        ],
+        "points": [
+          "GPO কী: একগুচ্ছ setting (computer ও user-এর জন্য) যা AD-র মাধ্যমে অনেক machine-এ একসাথে প্রয়োগ করা যায়।",
+          "কী নিয়ন্ত্রণ করা যায়: password policy, screen lock, software deployment, drive/USB restriction, login script ইত্যাদি।",
+          "কোথায় link হয়: GPO domain, OU বা site-এ link করা হয় → সেই scope-এর সব object-এ প্রয়োগ।",
+          "প্রয়োগের ক্রম (LSDOU): Local → Site → Domain → OU; পরেরটা আগেরটাকে override করতে পারে।",
+          "লাভ: admin একবার সেট করে হাজারো machine নিয়ন্ত্রণ করে — consistency ও security।"
+        ],
+        "diagram": "Group Policy — কেন্দ্রীয়ভাবে নিয়ম প্রয়োগ\n\n  Admin → [GPO তৈরি: password নিয়ম, USB নিষেধ...]\n              │ link করে\n              ▼\n      Domain / OU / Site\n              │ প্রয়োগ হয়\n        ┌─────┼─────┐\n     [PC]   [PC]   [PC]   ← সব machine একই নিয়ম পায়\n\n  প্রয়োগের ক্রম: Local → Site → Domain → OU (LSDOU)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "ব্যাখ্যা"
+          ],
+          "rows": [
+            [
+              "GPO",
+              "setting-এর সংকলন (computer + user)"
+            ],
+            [
+              "কী করে",
+              "password/security/software/restriction প্রয়োগ"
+            ],
+            [
+              "কোথায় link",
+              "Domain / OU / Site"
+            ],
+            [
+              "প্রয়োগের ক্রম",
+              "LSDOU (Local→Site→Domain→OU)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "GPO শুধু একটা computer-এ কাজ করে",
+            "না — GPO domain/OU-তে link করে অনেক machine-এ একসাথে প্রয়োগ হয়"
+          ],
+          [
+            "সব GPO সমান, প্রয়োগের ক্রম গুরুত্বপূর্ণ নয়",
+            "না — LSDOU ক্রমে প্রয়োগ হয়; পরেরটা আগেরটাকে override করতে পারে"
+          ]
+        ],
+        "mnemonic": "GPO = কেন্দ্রীয় নিয়মের বাক্স; একবার সেট, সব machine-এ প্রয়োগ। ক্রম = LSDOU (Local, Site, Domain, OU)।"
+      }
+    },
+    {
+      "id": "server_035",
+      "q": "NTFS permission vs Share permission — what is the difference?",
+      "tags": [
+        "NTFS",
+        "share permission",
+        "windows server",
+        "file access",
+        "permissions"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Windows-এ file/folder access নিয়ন্ত্রণের দুই ধরনের permission: Share ও NTFS।",
+          "Share permission: শুধু network দিয়ে shared folder access করলে কাজ করে (locally নয়); কম বিস্তারিত (Read/Change/Full)।",
+          "NTFS permission: locally ও network — দুইভাবেই কাজ করে; বিস্তারিত (Read/Write/Modify/Full), আলাদা file/folder-এ সেট করা যায়।"
+        ],
+        "points": [
+          "Share permission: folder share করলে network user-দের জন্য প্রযোজ্য; শুধু remote access-এ; option কম (Read, Change, Full Control)।",
+          "NTFS permission: NTFS file system-এর file/folder-এ সেট; locally ও network দুইভাবেই প্রযোজ্য; fine-grained (Read, Write, Modify, Full Control ইত্যাদি)।",
+          "একসাথে হলে (network access): Share ও NTFS দুটোই প্রযোজ্য — effective permission = দুটোর মধ্যে সবচেয়ে কঠোরটা (most restrictive wins)।",
+          "locally (একই machine-এ বসে): শুধু NTFS প্রযোজ্য, Share নয়।",
+          "best practice: Share permission উদার রাখো (যেমন Everyone–Full/Change), আসল নিয়ন্ত্রণ NTFS দিয়ে করো।"
+        ],
+        "diagram": "NTFS vs Share permission\n\n  Network দিয়ে access:\n     [User] ──► Share perm ──► NTFS perm ──► file\n                  (দুটোই check হয়)\n     Effective = সবচেয়ে কঠোরটা (most restrictive)\n     যেমন: Share=Full, NTFS=Read → পাবে Read\n\n  Locally (machine-এ বসে):\n     [User] ──► শুধু NTFS perm ──► file\n                  (Share লাগে না)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Share permission",
+            "NTFS permission"
+          ],
+          "rows": [
+            [
+              "কখন প্রযোজ্য",
+              "শুধু network (remote)",
+              "locally + network দুই-ই"
+            ],
+            [
+              "বিস্তারিততা",
+              "কম (Read/Change/Full)",
+              "বেশি (Read/Write/Modify/Full)"
+            ],
+            [
+              "কোথায় সেট",
+              "shared folder-এ",
+              "file/folder-এ (NTFS)"
+            ],
+            [
+              "একসাথে হলে",
+              "most restrictive জেতে",
+              "most restrictive জেতে"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Share permission locally-ও কাজ করে",
+            "না — Share শুধু network access-এ; machine-এ বসে access করলে শুধু NTFS প্রযোজ্য"
+          ],
+          [
+            "NTFS আর Share মিললে উদারটা (বেশি অনুমতি) জেতে",
+            "না — সবচেয়ে কঠোরটা (most restrictive) জেতে"
+          ]
+        ],
+        "mnemonic": "Share = শুধু দরজা দিয়ে (network) ঢুকলে; NTFS = সবসময় (local + network)। দুটো মিললে সবচেয়ে কড়া নিয়মটাই খাটে (most restrictive wins)।"
+      }
     }
   ]
 }
