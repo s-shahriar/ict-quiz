@@ -739,7 +739,9 @@
           "DAS (Direct Attached Storage): server-এর ভেতরের disk বা সরাসরি যুক্ত enclosure (SATA/SAS/USB)। network নেই → শুধু ওই host access করে; block-level।",
           "NAS (Network Attached Storage): নিজস্ব OS সহ appliance, LAN/Ethernet-এ যুক্ত; NFS/SMB/CIFS দিয়ে file share করে → অনেক client একসাথে file পায় (file-level)।",
           "SAN (Storage Area Network): আলাদা ডেডিকেটেড high-speed network (Fibre Channel বা iSCSI); server-কে raw block device দেয় → server একে local disk হিসেবে দেখে। database/VM/high-performance-এর জন্য।",
-          "মূল পার্থক্য (access level): DAS = block, NAS = file, SAN = block — এটাই NAS vs SAN-এর আসল ফারাক।",
+          "মূল পার্থক্য — server কী \"দেখে\": খালি disk, নাকি তৈরি file? (এটাই NAS vs SAN-এর আসল ফারাক):",
+          { "sub": "Block-level (DAS, SAN): storage একটা খালি disk দেয়; server এটাকে নিজের নতুন hard disk হিসেবে দেখে — নিজে format করে, filesystem বসায়, file নিজে সামলায়। storage জানেই না ভেতরে কী file আছে। প্রতি server নিজের আলাদা disk পায় (ভাগাভাগি নয়)। দ্রুত — database/VM-এর জন্য ভালো।" },
+          { "sub": "File-level (NAS): NAS-এর নিজের filesystem আছে; তুমি একটা shared folder দেখো (Google Drive-এর মতো) — শুধু নাম বলে file চাও (NFS/SMB), NAS ভেতরের সব সামলে file দেয়। format করার দরকার নেই, পারোও না। অনেকে একই file একসাথে পায় — file ভাগাভাগির জন্য।" },
           "Cost/complexity: DAS সস্তা ও সরল; NAS মাঝারি; SAN ব্যয়বহুল ও জটিল।",
           "কখন কোনটা: একক server/PC → DAS; office/home file sharing, backup, media → NAS; বড় data center, database, VM storage, কম latency → SAN।"
         ],
@@ -800,7 +802,260 @@
             "না — single high-performance server বা সরল/সস্তা setup-এ DAS-ই যথেষ্ট"
           ]
         ],
-        "mnemonic": "DAS একার (তারে বাঁধা, block)। NAS file ভাগে (LAN-এ NFS/SMB, সবাই file পায়)। SAN block-এর হাইওয়ে (dedicated FC/iSCSI, server raw disk পায়)।"
+        "mnemonic": "ধরার প্রশ্ন: \"file দেখছি, নাকি খালি disk?\" — DAS = খালি disk তারে (একার)। NAS = shared folder network-এ (সবাই file নেয়)। SAN = খালি disk network-এ (\"নিজের disk\" মনে হয়, format করো)।"
+      }
+    },
+    {
+      "id": "server_011",
+      "q": "Explain Data Center Networking technology (topologies and key technologies).",
+      "tags": [
+        "data center",
+        "networking",
+        "spine-leaf",
+        "three-tier",
+        "VXLAN",
+        "SDN"
+      ],
+      "answer": {
+        "summary": [
+          "Data center networking traditional campus network-এর মূল ভিত্তি একই রাখে — switch, VLAN, IP, L3 routing — কিন্তু scale, multitenancy ও storage-এর জন্য বাড়তি প্রযুক্তি যোগ করে।",
+          "মূল পার্থক্য: data center L2-তে বড় করে scale করে (STP-নির্ভরতা কমিয়ে), আর vPC, VXLAN/EVPN, FC/FCoE storage ও বেশি redundancy ব্যবহার করে।",
+          "দুই topology: Campus 3-tier (Core–Distribution–Access) এবং আধুনিক Spine-Leaf।"
+        ],
+        "points": [
+          "আগে বুঝে নাও — L2 = একই network-এর ভেতরে MAC দিয়ে কথা (Switch); L3 = আলাদা network-এর মধ্যে IP দিয়ে কথা (Router)। Spine-Leaf-এর link গুলো L3 (routed), আর VXLAN তার উপর একটা নকল L2 overlay বানায় যাতে VM migrate করা যায়।",
+          "Campus network-এর সাথে মিল (Similarities):",
+          { "sub": "একই building block — Switch, VLAN, IP।" },
+          { "sub": "Edge-এ server, appliance ও storage যুক্ত হয়।" },
+          { "sub": "L3 service একই — gateway/FHRP, এবং routing protocol: OSPF, EIGRP, BGP, IS-IS।" },
+          "পার্থক্য — data center যা বাড়তি করে (Differences):",
+          { "sub": "L2-তে scale: VM migration-এর জন্য বড় L2 domain দরকার, তাই STP-নির্ভরতা কমায়। STP কীভাবে bandwidth নষ্ট করে — redundancy-র জন্য দুটো link লাগালে STP loop ঠেকাতে একটা block করে রাখে; সেই link traffic হারায় না, কিন্তু অলস বসে থাকে (যেমন 2×10G-এর মধ্যে মাত্র 10G ব্যবহার হয়, বাকি 10G শুধু backup)। vPC/ECMP দুটো link-ই active রাখে → পুরো 20G কাজে লাগে, loop-ও হয় না। (এছাড়া বড় L2-তে broadcast ও MAC table scale-এও চাপ পড়ে।)" },
+          { "sub": "Multitenancy: এক physical fabric-এ অনেক VM/tenant আলাদা রাখা।" },
+          { "sub": "Storage networking: FC, FCoE, iSCSI দিয়ে storage একই network-এ আনা।" },
+          "মূল technology:",
+          { "sub": "vPC (virtual Port Channel): STP block ছাড়াই দুই switch জুড়ে multipath (পুরোনো stacking/VSS-এর আধুনিক বিকল্প)।" },
+          { "sub": "VXLAN + EVPN: L3-এর উপর L2 overlay — বড় scale ও multitenancy (STP-এর বদলে)।" },
+          { "sub": "FEX (Fabric Extender): ToR switch-কে কেন্দ্রীয় switch-এর extension বানায়।" },
+          { "sub": "High bandwidth: 10G / 25G / 40G / 100G (SFP28, QSFP28 transceiver)।" },
+          "Topology:",
+          { "sub": "Campus 3-tier: Core – Distribution – Access; ঐতিহ্যবাহী, North-South traffic-এর জন্য।" },
+          { "sub": "Spine-Leaf: প্রতিটি Leaf প্রতিটি Spine-এ যুক্ত (L3 fabric) — সমান hop, East-West traffic-এর জন্য আদর্শ।" },
+          "Redundancy: dual power supply, এবং NX-OS-এর modular design (প্রতিটি feature যেমন OSPF আলাদা module হিসেবে চালু/বন্ধ করা যায়, fault isolate হয়)।"
+        ],
+        "diagram": "একই ভিত্তি, বাড়তি প্রযুক্তি:\n  Campus ─┐ switch, VLAN, IP, L3 routing (OSPF/BGP)\n          ├─ এগুলো দুই জায়গায় একই\n  DataCtr ─┘ + L2 scale, VXLAN/EVPN, vPC,\n             FC/FCoE storage, বেশি redundancy\n\nTOPOLOGY ১ — Campus 3-tier (North-South)\n          ┌────────┐\n          │  Core  │\n          └───┬────┘\n        ┌─────┴─────┐\n     ┌──┴──┐     ┌──┴──┐\n     │Dist │     │Dist │     ← Distribution\n     └──┬──┘     └──┬──┘\n     ┌──┴───┐    ┌──┴───┐\n     │Access│    │Access│    ← Access (server যুক্ত)\n     └──────┘    └──────┘\n\nTOPOLOGY ২ — Spine-Leaf (East-West, L3 fabric)\n     ┌──────┐        ┌──────┐\n     │Spine1│        │Spine2│\n     └─┬──┬─┘        └─┬──┬─┘\n       │  └─────┬──────┘  │     প্রতি Leaf ↔\n       └─────┐  │  ┌──────┘     প্রতি Spine\n     ┌─────┐ │  │  │ ┌─────┐\n     │Leaf1│─┘  │  └─│Leaf2│    ← Leaf (ToR)\n     └─┬───┘    │    └───┬─┘\n     server     │      server\n   সমান hop, সব path active",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Campus / Traditional",
+            "Data Center"
+          ],
+          "rows": [
+            [
+              "Topology",
+              "3-tier (Core-Dist-Access)",
+              "Spine-Leaf (L3 fabric)"
+            ],
+            [
+              "L2 scale",
+              "STP দিয়ে loop-free (path block)",
+              "STP কমিয়ে scale (vPC, VXLAN)"
+            ],
+            [
+              "Overlay",
+              "সাধারণত নেই",
+              "VXLAN + EVPN"
+            ],
+            [
+              "Storage",
+              "আলাদা network",
+              "FC, FCoE, iSCSI একই fabric-এ"
+            ],
+            [
+              "Bandwidth",
+              "1G / 10G",
+              "10/25/40/100G (SFP28/QSFP28)"
+            ],
+            [
+              "Redundancy",
+              "standard",
+              "dual PSU, modular NX-OS"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Data center networking campus-এর সাথে সম্পূর্ণ আলাদা",
+            "না — switch, VLAN, IP, L3 routing (OSPF/BGP) একই; data center শুধু scale, storage ও multitenancy-র জন্য বাড়তি tech যোগ করে"
+          ],
+          [
+            "STP data center-এ মূল ভরসা",
+            "না — STP path block করে bandwidth নষ্ট করে; data center vPC/VXLAN দিয়ে STP কমিয়ে সব path active রাখে"
+          ]
+        ],
+        "mnemonic": "মিল = Switch + VLAN/IP + L3 routing। পার্থক্য = data center \"L2-তে scale করে, STP কমায়, VXLAN/EVPN + storage (FC/FCoE) + বেশি redundancy যোগ করে\"।"
+      }
+    },
+    {
+      "id": "server_012",
+      "q": "What is SDN (Software Defined Networking)? Why is it needed, and what are its use cases?",
+      "tags": [
+        "SDN",
+        "controller",
+        "control plane",
+        "data plane",
+        "OpenFlow",
+        "northbound",
+        "southbound"
+      ],
+      "answer": {
+        "summary": [
+          "SDN (Software Defined Networking) = network-এর \"সিদ্ধান্ত নেওয়ার অংশ\" (control plane) device থেকে আলাদা করে একটা কেন্দ্রীয় Controller-এ আনা; device গুলো শুধু packet forward করে (data plane)।",
+          "Traditional-এ প্রতিটি router/switch-এর নিজের আলাদা brain, তাই প্রতিটা আলাদা configure করতে হয়। SDN-এ এক Controller-ই পুরো network-এর brain।",
+          "লাভ: কেন্দ্রীয় নিয়ন্ত্রণ, automation/programmability ও দ্রুত পরিবর্তন।"
+        ],
+        "points": [
+          "আগে বুঝে নাও — Control plane = কোথায় traffic যাবে তা সিদ্ধান্ত নেয় (brain); Data plane = আসলে packet forward করে (muscle)।",
+          "Traditional networking-এর সমস্যা: প্রতিটি device-এ control + data দুই plane-ই থাকে, প্রতিটা আলাদা CLI-তে configure করতে হয় → বড় network-এ ধীর, ভুলের ঝুঁকি, vendor-specific।",
+          "SDN যা করে: control plane device থেকে তুলে একটা কেন্দ্রীয় SDN Controller-এ রাখে; device \"বোকা\" হয়ে শুধু forward করে। Controller পুরো network-এর global view রেখে সিদ্ধান্ত দেয়।",
+          "তিন স্তর (architecture):",
+          { "sub": "Application Layer: network app (security, load balancing, monitoring) — software হিসেবে server/VM-তে চলে, packet ছোঁয় না; শুধু \"কী চাই\" তা ঠিক করে দেয় (intent)।" },
+          { "sub": "Control Layer: SDN Controller — মূল brain; app-এর intent কে device rule-এ অনুবাদ করে switch-এ পাঠায়।" },
+          { "sub": "Infrastructure/Physical Layer: switch/router — সেই rule অনুযায়ী packet forward/drop করে (বাস্তবায়ন)।" },
+          "তাই switch শুধু forward করলেও security/LB হারায় না — যেমন security app বলে \"X block করো\" → Controller rule বানায় → switch X-এর packet drop করে। বুদ্ধি app-এ, হাত switch-এ।",
+          "দুই API:",
+          { "sub": "Northbound API: Controller ↔ application (সাধারণত REST) — app Controller-কে বলে কী দরকার।" },
+          { "sub": "Southbound API: Controller ↔ device (যেমন OpenFlow) — Controller device-কে নির্দেশ পাঠায়।" },
+          "কেন দরকার: কেন্দ্রীয় management, programmable (script/API দিয়ে network বদলানো), agility (দ্রুত পরিবর্তন), অনেকটা vendor-agnostic, এবং cloud/VM-এর dynamic চাহিদার সাথে মানানসই।",
+          "Use case: data center ও cloud networking, network virtualization (VXLAN/overlay), SD-WAN, multi-tenant isolation, traffic engineering, কেন্দ্রীয় security policy।"
+        ],
+        "diagram": "Traditional — প্রতি device-এর নিজের brain\n   [Router]    [Router]    [Router]\n   brain+      brain+      brain+      ← প্রতিটা আলাদা\n   forward     forward     forward       configure করতে হয়\n\nSDN — brain কেন্দ্রীয়, device শুধু forward\n            ┌───────────────┐\n            │ SDN Controller │  ← এক brain, global view\n            └──┬────┬────┬──┘\n     [Switch]──┘    │    └──[Switch]   ← শুধু forward (বোকা)\n               [Switch]\n\nতিন স্তর + API:\n  ┌────────────────────────────┐\n  │ Application Layer (Apps)    │  security, LB, monitor\n  └─────────────┬──────────────┘\n         Northbound API (REST)\n  ┌─────────────┴──────────────┐\n  │ Control Layer (Controller)  │  ← brain\n  └─────────────┬──────────────┘\n        Southbound API (OpenFlow)\n  ┌─────────────┴──────────────┐\n  │ Physical Layer (switches)   │  ← forward only\n  └────────────────────────────┘",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Traditional",
+            "SDN"
+          ],
+          "rows": [
+            [
+              "Control plane",
+              "প্রতি device-এ আলাদা",
+              "কেন্দ্রীয় Controller-এ"
+            ],
+            [
+              "Configure",
+              "প্রতিটা device আলাদা (CLI)",
+              "Controller থেকে কেন্দ্রীয়ভাবে"
+            ],
+            [
+              "View",
+              "device শুধু নিজেরটা জানে",
+              "Controller-এর global view"
+            ],
+            [
+              "Programmability",
+              "কম (manual)",
+              "বেশি (API/script)"
+            ],
+            [
+              "পরিবর্তন",
+              "ধীর",
+              "দ্রুত, automated"
+            ],
+            [
+              "Vendor",
+              "device-নির্ভর",
+              "অনেকটা vendor-agnostic"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "SDN মানে physical router/switch আর লাগে না",
+            "না — device থাকে; শুধু তাদের control plane (brain) কেন্দ্রীয় Controller-এ সরে যায়, device forward করে"
+          ],
+          [
+            "Northbound আর Southbound API একই জিনিস",
+            "না — Northbound = Controller↔app (উপরে, REST); Southbound = Controller↔device (নিচে, OpenFlow)"
+          ]
+        ],
+        "mnemonic": "Control plane = brain (সিদ্ধান্ত), Data plane = muscle (forward); SDN brain-টা টেনে কেন্দ্রে আনে। North = উপরে app-এর দিকে, South = নিচে device-এর দিকে।"
+      }
+    },
+    {
+      "id": "server_013",
+      "q": "What is a Load Balancer? Explain static vs dynamic load balancing algorithms.",
+      "tags": [
+        "load balancer",
+        "round robin",
+        "least connections",
+        "static",
+        "dynamic",
+        "scalability"
+      ],
+      "answer": {
+        "summary": [
+          "Load Balancer = client-এর request অনেকগুলো server-এ ভাগ করে দেয়, যাতে এক server-এ চাপ না পড়ে — availability, scalability ও performance বাড়ে।",
+          "দুই ধরনের algorithm: Static (fixed নিয়ম, server-এর বর্তমান অবস্থা দেখে না) ও Dynamic (server-এর বর্তমান load দেখে সিদ্ধান্ত নেয়)।",
+          "Static: Round Robin, IP Hash। Dynamic: Least Connections, Least Response Time, Resource-based।"
+        ],
+        "points": [
+          "কাজ: client ও server গুচ্ছের মাঝে বসে incoming traffic একাধিক server-এ ছড়িয়ে দেয়; সাথে health check করে — কোনো server মরলে তাকে বাদ দেয়।",
+          "কেন দরকার: এক server সব traffic নিতে পারে না; LB load ভাগ করে (overload ঠেকায়), redundancy দেয় (একটা মরলেও চলে), সহজ horizontal scaling (server যোগ করলেই হলো)।",
+          "Static algorithm — fixed নিয়ম, server কতটা ব্যস্ত তা দেখে না:",
+          { "sub": "Round Robin: পালাক্রমে এক এক করে প্রতিটি server-এ পাঠায় (১→২→৩→১...)।" },
+          { "sub": "IP Hash: client-এর IP hash করে — একই client সবসময় একই server-এ যায় (session persistence / sticky)।" },
+          "Dynamic algorithm — server-এর বর্তমান অবস্থা দেখে সিদ্ধান্ত:",
+          { "sub": "Least Connections: এখন যে server-এ সবচেয়ে কম active connection, তাকে দেয়।" },
+          { "sub": "Least Response Time: যে server দ্রুত সাড়া দিচ্ছে, তাকে দেয়।" },
+          { "sub": "Resource-based: server-এর CPU/RAM load দেখে কম-load-এর server-কে দেয়।" },
+          "মূল কথা: Static সহজ ও দ্রুত (কম overhead) কিন্তু server অসমান busy হলে ভুল বণ্টন হতে পারে; Dynamic বেশি স্মার্ট (current load বোঝে) কিন্তু একটু বেশি overhead।"
+        ],
+        "diagram": "        [ Client ]\n            │ request\n            ▼\n      ┌──────────────┐\n      │ Load Balancer │ ← traffic ভাগ করে + health check\n      └──┬────┬────┬─┘\n    [Server1][Server2][Server3]\n\nকোন server-কে দেবে?\n\n  STATIC (fixed, load দেখে না)\n    Round Robin → ১→২→৩→১→২→৩ ... পালাক্রমে\n    IP Hash     → একই client = একই server (sticky)\n\n  DYNAMIC (current load দেখে)\n    Least Connections → কম connection-এর server\n    Least Resp Time   → দ্রুত সাড়া দেওয়া server\n    Resource-based    → কম CPU/RAM-load server",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Static",
+            "Dynamic"
+          ],
+          "rows": [
+            [
+              "নিয়ম",
+              "fixed, আগে থেকে ঠিক",
+              "server-এর বর্তমান অবস্থা দেখে"
+            ],
+            [
+              "Server load দেখে?",
+              "না",
+              "হ্যাঁ"
+            ],
+            [
+              "উদাহরণ",
+              "Round Robin, IP Hash",
+              "Least Conn, Least Resp Time, Resource-based"
+            ],
+            [
+              "সুবিধা",
+              "সহজ, দ্রুত, কম overhead",
+              "স্মার্ট, অসমান load-এ ভালো"
+            ],
+            [
+              "অসুবিধা",
+              "অসমান busy হলে ভুল বণ্টন",
+              "একটু বেশি overhead / জটিল"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Round Robin server-এর load বুঝে কাজ করে",
+            "না — Round Robin static; শুধু পালাক্রমে দেয়, busy server-কেও সমান পাঠায়। load বুঝতে Least Connections (dynamic) দরকার"
+          ],
+          [
+            "Load balancer মানে শুধু traffic ভাগ করা",
+            "না — health check করে মরা server বাদ দেয়, session persistence ও সহজ scaling-ও দেয়"
+          ]
+        ],
+        "mnemonic": "Static = \"অন্ধ বণ্টন\" (নিয়ম মেনে, load না দেখে) — Round Robin, IP Hash। Dynamic = \"চোখ খোলা বণ্টন\" (load দেখে) — Least Connection / Response / Resource।"
       }
     }
   ]

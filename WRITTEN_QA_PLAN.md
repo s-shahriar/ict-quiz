@@ -302,3 +302,6 @@ Every answer ends with a Bengali mnemonic using one of:
 - [x] `server_008` — Docker vs Kubernetes: difference + how they relate
 - [x] `server_009` — SELinux: modes (enforcing/permissive/disabled) + configuration
 - [x] `server_010` — NAS vs SAN vs DAS: difference + which is used for what
+- [x] `server_011` — Data center networking: topologies (three-tier vs spine-leaf) + key tech
+- [x] `server_012` — SDN: what it is, why needed, architecture (N/S API), use cases
+- [x] `server_013` — Load Balancer: static vs dynamic algorithms + why needed
