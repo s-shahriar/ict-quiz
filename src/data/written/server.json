@@ -2552,6 +2552,79 @@
         ],
         "mnemonic": "Share = শুধু দরজা দিয়ে (network) ঢুকলে; NTFS = সবসময় (local + network)। দুটো মিললে সবচেয়ে কড়া নিয়মটাই খাটে (most restrictive wins)।"
       }
+    },
+    {
+      "id": "server_036",
+      "q": "What are the Data Center Tiers (Tier I, II, III, IV)? Explain the differences.",
+      "tags": [
+        "data center tier",
+        "uptime institute",
+        "redundancy",
+        "availability",
+        "fault tolerant",
+        "N+1"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Data Center Tier = Uptime Institute-এর একটি শ্রেণীবিভাগ যা data center-কে redundancy ও availability (uptime) অনুযায়ী Tier I থেকে Tier IV-তে ভাগ করে।",
+          "যত উপরের Tier, তত বেশি redundancy ও uptime — কিন্তু খরচও তত বেশি: Tier I (basic) → Tier IV (fault tolerant)।",
+          "মূল পার্থক্য: power/cooling path কয়টি, redundancy কতটুকু, আর downtime ছাড়া maintenance করা যায় কিনা।"
+        ],
+        "points": [
+          "Tier I (Basic): একটিমাত্র power ও cooling path, কোনো redundancy নেই; সামান্য maintenance-এও পুরো বন্ধ রাখতে হয়। uptime ~99.671% (~28.8 ঘণ্টা/বছর downtime)।",
+          "Tier II (Redundant Components): একটিমাত্র path, কিন্তু redundant component (N+1) — বাড়তি UPS/generator/cooling। uptime ~99.741% (~22 ঘণ্টা/বছর)।",
+          "Tier III (Concurrently Maintainable): একাধিক power/cooling path (একটি active), N+1 redundancy; কোনো অংশ বন্ধ না করেই maintenance করা যায় (planned কাজে downtime নেই)। uptime ~99.982% (~1.6 ঘণ্টা/বছর)।",
+          "Tier IV (Fault Tolerant): একাধিক active path, 2N / 2N+1 redundancy; যেকোনো একটি failure ঘটলেও কোনো প্রভাব ছাড়াই চালু থাকে। uptime ~99.995% (~26 মিনিট/বছর)।",
+          "মূল প্রবণতা: Tier I → IV যেতে redundancy বাড়ে, uptime বাড়ে, খরচও বাড়ে।",
+          "কোনটা কখন: ছোট/non-critical → Tier I-II; enterprise 24x7 (bank, hospital) → Tier III; mission-critical, প্রায় শূন্য downtime দরকার → Tier IV।"
+        ],
+        "diagram": "DATA CENTER TIERS  (redundancy ↑ = uptime ↑ = খরচ ↑)\n\n  Tier IV  │ 2N, Fault Tolerant       │ 99.995% │ ~26 min/yr\n           │ যেকোনো single failure-এও চলে │\n  ─────────┼──────────────────────────┼─────────┼───────────\n  Tier III │ N+1, Concurrently        │ 99.982% │ ~1.6 hr/yr\n           │ Maintainable (downtime ছাড়া maintenance)\n  ─────────┼──────────────────────────┼─────────┼───────────\n  Tier II  │ N+1 redundant components │ 99.741% │ ~22 hr/yr\n  ─────────┼──────────────────────────┼─────────┼───────────\n  Tier I   │ Basic — single path,     │ 99.671% │ ~28.8 hr/yr\n           │ no redundancy            │\n\n  নিচ (Tier I) → উপরে (Tier IV): কম → বেশি redundancy",
+        "table": {
+          "headers": [
+            "Tier",
+            "Redundancy",
+            "Uptime",
+            "Downtime/বছর"
+          ],
+          "rows": [
+            [
+              "Tier I",
+              "নেই (single path)",
+              "99.671%",
+              "~28.8 ঘণ্টা"
+            ],
+            [
+              "Tier II",
+              "N+1 component",
+              "99.741%",
+              "~22 ঘণ্টা"
+            ],
+            [
+              "Tier III",
+              "N+1, concurrently maintainable",
+              "99.982%",
+              "~1.6 ঘণ্টা"
+            ],
+            [
+              "Tier IV",
+              "2N, fault tolerant",
+              "99.995%",
+              "~26 মিনিট"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Tier-এর সংখ্যা যত বেশি, data center তত খারাপ",
+            "না — উল্টো; Tier যত উপরে (IV) তত বেশি redundancy ও uptime (ভালো), তবে খরচও বেশি"
+          ],
+          [
+            "Tier III আর Tier IV একই — দুটোতেই কখনো downtime হয় না",
+            "না — Tier III শুধু concurrently maintainable (planned maintenance-এ downtime নেই); Tier IV fault tolerant — অপ্রত্যাশিত যেকোনো single failure-এও চালু থাকে (এক ধাপ উপরে)"
+          ]
+        ],
+        "mnemonic": "Tier I = Basic (no backup), II = N+1 (বাড়তি যন্ত্র), III = Concurrently Maintainable (downtime ছাড়া maintenance), IV = Fault Tolerant (single failure-এও চলে)। উপরে গেলে redundancy + uptime + খরচ — সব বাড়ে।"
+      }
     }
   ]
 }

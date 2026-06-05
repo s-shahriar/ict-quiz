@@ -2,7 +2,7 @@ import { BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft
 import { useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useThemeContext } from '../contexts/ThemeContext.jsx'
-import { checkAnswer, getPracticeData } from '../data/practice/index.js'
+import { checkAnswer, getPracticeData, normalizeCommand } from '../data/practice/index.js'
 
 const TABS = [
   { id: 'info', label: 'Info', icon: BookOpen },
@@ -95,7 +95,7 @@ export default function PracticeMode() {
 
       <div className="practice-content">
         {tab === 'info' && <InfoPanel info={topic.info} name={topic.name} />}
-        {tab === 'commands' && <CommandsPanel commands={topic.commands} />}
+        {tab === 'commands' && <CommandsPanel commands={topic.commands} practice={topic.practice} />}
         {tab === 'practice' && <CommandPractice key={topic.id} problems={topic.practice} />}
       </div>
     </div>
@@ -159,14 +159,32 @@ function InfoPanel({ info, name }) {
   )
 }
 
-function CommandsPanel({ commands }) {
-  if (!commands?.length) return null
+// Merge the curated command reference with every command used in practice
+// (primary accepted answer), deduped — so the Commands tab is a complete list.
+function buildCommandList(commands = [], practice = []) {
+  const seen = new Set()
+  const list = []
+  const add = (cmd, desc) => {
+    if (!cmd) return
+    const key = normalizeCommand(cmd)
+    if (seen.has(key)) return
+    seen.add(key)
+    list.push({ cmd, desc: desc || '' })
+  }
+  commands.forEach(c => add(c.cmd, c.desc))
+  practice.forEach(p => add(p.accept?.[0], p.explain))
+  return list
+}
+
+function CommandsPanel({ commands, practice }) {
+  const list = buildCommandList(commands, practice)
+  if (!list.length) return null
   return (
     <div className="practice-commands">
-      {commands.map((c, i) => (
+      {list.map((c, i) => (
         <div key={i} className="practice-cmd-row">
           <code className="practice-cmd">{c.cmd}</code>
-          <span className="practice-cmd-desc">{c.desc}</span>
+          {c.desc && <span className="practice-cmd-desc">{c.desc}</span>}
         </div>
       ))}
     </div>
