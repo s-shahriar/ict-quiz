@@ -568,10 +568,12 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   box-shadow: var(--shadow-sm);
 }
+
+.quiz-topbar .back-btn { flex-shrink: 0; }
 
 .quiz-topic-pill {
   font-family: 'Space Grotesk', sans-serif;
@@ -579,6 +581,11 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   padding: 5px 14px; border-radius: 24px;
   border: 1.5px solid currentColor;
   opacity: 0.9; letter-spacing: 0.01em;
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .quiz-score-pill {
@@ -590,6 +597,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  flex-shrink: 0;
 }
 
 /* ── Progress ─── */
@@ -1174,7 +1182,15 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   justify-content: space-between;
   gap: 10px;
   box-shadow: var(--shadow-sm);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+}
+
+.written-topbar .back-btn {
+  flex-shrink: 0;
+}
+
+.written-topbar .topbar-right-actions {
+  flex-shrink: 0;
 }
 
 .written-topic-pill {
@@ -1187,6 +1203,26 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   letter-spacing: 0.01em;
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .written-topbar {
+    gap: 6px;
+    padding: 10px 12px;
+  }
+  .written-topbar .back-btn {
+    padding: 7px 11px;
+    font-size: 0.75rem;
+  }
+  .written-topic-pill {
+    font-size: 0.68rem;
+    padding: 5px 10px;
+  }
 }
 
 .written-empty {

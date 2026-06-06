@@ -14,7 +14,6 @@ import operatingSystem from './operating_system.json'
 import softwareEngineering from './software_engineering.json'
 import machineLearning from './machine_learning.json'
 import theoryOfComputation from './theory_of_computation.json'
-import python from './python.json'
 
 export const TOPICS = [
   {
@@ -128,13 +127,5 @@ export const TOPICS = [
     icon: Layers,
     color: '#fb7185',
     questions: theoryOfComputation.questions || [],
-  },
-  {
-    id: 'python',
-    name: 'Python',
-    shortName: 'Python',
-    icon: Code2,
-    color: '#facc15',
-    questions: python.questions || [],
   },
 ]
