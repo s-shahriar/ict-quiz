@@ -61,20 +61,7 @@ export default function PracticeMode() {
         </div>
       </div>
 
-      {/* Topic selector — chips on desktop */}
-      <div className="practice-topic-row">
-        {data.topics.map(t => (
-          <button
-            key={t.id}
-            className={`practice-topic-chip${t.id === topic.id ? ' active' : ''}`}
-            onClick={() => selectTopic(t.id)}
-          >
-            {t.name}
-          </button>
-        ))}
-      </div>
-
-      {/* Topic selector — dropdown on mobile */}
+      {/* Topic selector — dropdown on all screen sizes */}
       <TopicDropdown topics={data.topics} current={topic} onSelect={selectTopic} />
 
       {/* Tabs */}

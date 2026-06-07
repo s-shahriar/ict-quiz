@@ -1256,6 +1256,260 @@
         "diagram": "OSPF PROCESS:\n\n Step 1: LSA Broadcast\n ┌──────┐   LSA   ┌──────┐   LSA   ┌──────┐\n │  R1  │ ──────→ │  R2  │ ──────→ │  R3  │\n │      │ ←────── │      │ ←────── │      │\n └──────┘         └──────┘         └──────┘\n  \"My link to R2 = 1Gbps, cost=1\"\n\n Step 2: LSDB (Same map in every router)\n ┌──────────────────────────────┐\n │  Network Map (LSDB)          │\n │  R1 ─── R2: cost 1           │\n │  R2 ─── R3: cost 2           │\n │  R1 ─── R3: cost 5           │\n └──────────────────────────────┘\n\n Step 3: SPF — Dijkstra's Algorithm\n  R1 → R3: Via R2 = 1+2 = 3 ✅ (best)\n           Direct  = 5   ❌\n\n Step 4: Routing Table\n  Destination  Next-Hop  Cost\n  R3 network   R2        3\n\n Step 5: Packet from R1 to R3\n  Packet → R1 checks table → sends to R2 → R2 sends to R3 ✅",
         "mnemonic": "OSPF = L-L-S-R-P: LSA → LSDB → SPF → Routing Table → Packet Forward। মনে রাখো: 'Link করো, Learn করো, Shortest নাও, Route করো, Packet পাঠাও'"
       }
+    },
+    {
+      "id": "cn_022",
+      "q": "Excessive broadcast traffic (broadcast storm) in a LAN — what are the causes and solutions?",
+      "tags": [
+        "broadcast storm",
+        "broadcast traffic",
+        "switching loop",
+        "STP",
+        "VLAN",
+        "broadcast domain",
+        "storm control"
+      ],
+      "answer": {
+        "summary": [
+          "Broadcast storm = অতিরিক্ত broadcast packet তৈরি হয়ে পুরো LAN এ ছড়িয়ে পড়া — network অচল হয়ে যায়।",
+          "মূল কারণ: Layer-2 switching loop (redundant link, loop prevention নেই), বড় broadcast domain, malware, ও ARP/DHCP flooding।",
+          "সমাধান: STP দিয়ে loop বন্ধ, VLAN দিয়ে broadcast domain ছোট করা, storm control, ও endpoint secure করা।"
+        ],
+        "points": [
+          "কারণ ১ — Layer-2 Switching Loop (সবচেয়ে সাধারণ): দুই switch এর মধ্যে redundant cable থাকলে এবং loop prevention না থাকলে broadcast frame ঘুরতেই থাকে। Switch broadcast কে সব port এ forward করে, তাই frame loop এ অসীমবার ঘোরে — exponentially বাড়ে।",
+          {
+            "sub": "Layer-2 তে TTL নেই, তাই switch broadcast frame কখনো drop করে না — loop থাকলে storm কখনো নিজে থামে না।"
+          },
+          "কারণ ২ — বড় Broadcast Domain: এক VLAN/subnet এ অনেক device থাকলে স্বাভাবিক broadcast (ARP ইত্যাদি) এর পরিমাণই বিশাল হয়ে যায়।",
+          "কারণ ৩ — Malware / Virus: আক্রান্ত host ইচ্ছাকৃতভাবে প্রচুর broadcast request পাঠিয়ে network জ্যাম করে।",
+          "কারণ ৪ — ARP / DHCP Flooding: client থেকে অস্বাভাবিক বেশি ARP request বা DHCP broadcast এলে traffic বেড়ে যায়। Misconfigured বা faulty NIC/switch-ও এমন করতে পারে।",
+          "প্রভাব (Effects): network congestion, host ও switch এর CPU 100% হয়ে যায়, network ধীর হয়, packet loss ও communication failure।",
+          "সমাধান ১ — STP (Spanning Tree Protocol) চালু করা: Layer-2 loop detect করে redundant port block করে দেয় — broadcast storm এর মূল কারণ বন্ধ। এটাই সবচেয়ে জরুরি ধাপ।",
+          "সমাধান ২ — Network Segment করা: VLAN ও subnet দিয়ে broadcast domain ছোট করা — router broadcast forward করে না, তাই broadcast এক VLAN এর বাইরে যায় না।",
+          "সমাধান ৩ — Broadcast Storm Control: switch এ broadcast traffic এর rate limit সেট করা — threshold ছাড়ালে port অটো block হয়।",
+          "সমাধান ৪ — Monitoring: network monitoring tool দিয়ে কোন device storm তৈরি করছে তা খুঁজে বের করা।",
+          "সমাধান ৫ — Endpoint secure করা: malware scan করে আক্রান্ত host পরিষ্কার বা আলাদা করা।"
+        ],
+        "diagram": "BROADCAST STORM — Layer-2 loop এ frame অসীমবার ঘোরে\n\n         Host পাঠালো ১টা broadcast\n                  │\n                  ▼\n            ┌──────────┐\n      ┌────▶│ Switch A │────┐\n      │     └──────────┘    │\n      │  redundant link ↕   │ ← loop! কোনো STP নেই\n      │     ┌──────────┐    │\n      └─────│ Switch B │◀───┘\n            └──────────┘\n   Switch broadcast কে সব port এ forward করে →\n   frame A→B→A→B→A→B… থামে না, প্রতি চক্রে গুণিতক হারে বাড়ে\n   ফল: 1 frame → হাজারো frame → 🔴 network জ্যাম, CPU 100%\n\n\nSOLUTION 1 — STP redundant port BLOCK করে loop ভাঙে\n            ┌──────────┐\n      ┌────▶│ Switch A │────┐\n      │     └──────────┘    │\n  FORWARD              ✕ BLOCKED  ← STP এই port বন্ধ রাখে\n      │     ┌──────────┐    │\n      └─────│ Switch B │    ┘\n            └──────────┘\n   loop নেই → broadcast একবার গিয়েই থামে ✅\n   (link টা backup থাকে — main fail করলে STP port চালু করে)\n\n\nSOLUTION 2 — VLAN দিয়ে broadcast domain ছোট করা\n  ┌───── VLAN 10 ─────┐   ┌───── VLAN 20 ─────┐\n  │ PC  PC  PC        │   │ PC  PC  PC        │\n  │ broadcast এখানেই   │   │ broadcast এখানেই   │\n  │ আটকে থাকে         │   │ আটকে থাকে         │\n  └───────────────────┘   └───────────────────┘\n         ← router VLAN এর broadcast পার করে না →\n   এক বড় domain এর বদলে অনেক ছোট domain = কম storm",
+        "mistakes": [
+          [
+            "Broadcast storm router দিয়েই থেমে যায়",
+            "router broadcast forward করে না (domain আলাদা রাখে), কিন্তু loop টা switch-এর Layer-2 সমস্যা — তাই STP লাগে, শুধু router যথেষ্ট নয়"
+          ],
+          [
+            "Redundant link থাকাই খারাপ, সরিয়ে ফেলা উচিত",
+            "না — redundancy fault-tolerance এর জন্য দরকার; সমাধান link সরানো নয়, STP দিয়ে loop নিয়ন্ত্রণ করা"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "কারণ",
+            "সমাধান"
+          ],
+          "rows": [
+            [
+              "Layer-2 switching loop",
+              "STP (Spanning Tree Protocol) চালু করা"
+            ],
+            [
+              "বড় broadcast domain",
+              "VLAN / subnet দিয়ে segment করা"
+            ],
+            [
+              "অতিরিক্ত broadcast rate",
+              "Switch এ Broadcast Storm Control"
+            ],
+            [
+              "Malware / virus",
+              "Endpoint scan ও আক্রান্ত host আলাদা করা"
+            ],
+            [
+              "Faulty device খুঁজে পাওয়া",
+              "Network monitoring tool"
+            ]
+          ]
+        },
+        "mnemonic": "Broadcast storm = লাউডস্পিকারে কথা সবাই শোনে; দুই স্পিকার মুখোমুখি (loop) হলে শব্দ ঘুরে ঘুরে বাড়তেই থাকে (feedback)। থামানোর উপায়: STP দিয়ে এক স্পিকার বন্ধ (loop break), VLAN দিয়ে ঘর ভাগ (domain ছোট), storm control দিয়ে আওয়াজের সীমা।"
+      }
+    },
+    {
+      "id": "cn_023",
+      "q": "A core router receives a packet with destination IP 192.168.20.45. Its forwarding table has overlapping routes: 192.168.0.0/16, 192.168.16.0/20, 192.168.20.0/22, 192.168.20.32/27. Which route (interface) does the router use to forward this packet?",
+      "tags": [
+        "longest prefix match",
+        "LPM",
+        "routing table",
+        "forwarding",
+        "subnet",
+        "prefix length"
+      ],
+      "answer": {
+        "summary": [
+          "Router একাধিক route মিললে Longest Prefix Match (LPM) নিয়ম মানে — সবচেয়ে specific (সবচেয়ে বড় prefix length) route বেছে নেয়।",
+          "192.168.20.45 চারটি route-এর সবগুলোর সাথেই মেলে, কিন্তু /27 সবচেয়ে লম্বা।",
+          "উত্তর: packet টি 192.168.20.32/27 route এর interface দিয়ে forward হবে।"
+        ],
+        "points": [
+          "LPM নিয়ম: destination IP যত route এর সাথে মেলে, তার মধ্যে যেটির prefix length সবচেয়ে বড় (সবচেয়ে কম host, সবচেয়ে নির্দিষ্ট) সেটিই নেওয়া হয়।",
+          "192.168.0.0/16 → range 192.168.0.0 – 192.168.255.255 → 192.168.20.45 মেলে ✓ (prefix 16)",
+          "192.168.16.0/20 → range 192.168.16.0 – 192.168.31.255 → মেলে ✓ (prefix 20)",
+          "192.168.20.0/22 → range 192.168.20.0 – 192.168.23.255 → মেলে ✓ (prefix 22)",
+          "192.168.20.32/27 → range 192.168.20.32 – 192.168.20.63 → 45 এই সীমার ভেতরে, মেলে ✓ (prefix 27)",
+          "চারটিই মেলে, সবচেয়ে বড় prefix = /27 → তাই router 192.168.20.32/27 route এর interface ব্যবহার করবে।"
+        ],
+        "diagram": "Destination IP: 192.168.20.45\n\n Route                 Covers                          মেলে? Prefix\n ─────────────────────────────────────────────────────────────────\n 192.168.0.0/16   →  192.168.0.0   – 192.168.255.255    ✓    /16\n 192.168.16.0/20  →  192.168.16.0  – 192.168.31.255     ✓    /20\n 192.168.20.0/22  →  192.168.20.0  – 192.168.23.255     ✓    /22\n 192.168.20.32/27 →  192.168.20.32 – 192.168.20.63      ✓    /27 ← longest\n\n কেন /27 মেলে — শেষ octet দেখো:\n   45 (decimal) = 0010 1101\n   /27 block = 32–63 → 45 এই block-এর ভেতরে ✓\n\n Prefix length bar (যত লম্বা তত specific, তত কম host):\n   /16 ████████\n   /20 ██████████\n   /22 ███████████\n   /27 ██████████████  ◀── WINNER (most specific)\n\n চারটাই match → router সবচেয়ে লম্বা prefix নেয়\n ┌────────────────────────────────────────────┐\n │  ANSWER:  192.168.20.32/27 এর interface     │\n └────────────────────────────────────────────┘",
+        "mistakes": [
+          [
+            "প্রথমে যে route মেলে router সেটাই নেয়",
+            "না — router সব মিল দেখে, তারপর সবচেয়ে লম্বা prefix (most specific) নেয়, প্রথম মিল নয়"
+          ],
+          [
+            "ছোট prefix (/16) বেশি IP cover করে তাই সেটাই ভালো",
+            "না — বেশি cover মানে কম নির্দিষ্ট; LPM সবচেয়ে নির্দিষ্ট (বড় prefix) route বেছে নেয়"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "Route",
+            "Range",
+            "Prefix"
+          ],
+          "rows": [
+            [
+              "192.168.0.0/16",
+              "192.168.0.0 – 192.168.255.255",
+              "16"
+            ],
+            [
+              "192.168.16.0/20",
+              "192.168.16.0 – 192.168.31.255",
+              "20"
+            ],
+            [
+              "192.168.20.0/22",
+              "192.168.20.0 – 192.168.23.255",
+              "22"
+            ],
+            [
+              "192.168.20.32/27 ✅",
+              "192.168.20.32 – 192.168.20.63",
+              "27 (longest)"
+            ]
+          ]
+        },
+        "mnemonic": "LPM = সবচেয়ে নির্দিষ্ট ঠিকানা জেতে। অনেক route মিললেও যেটা সবচেয়ে বেশি bit মেলায় সেটাই নেওয়া হয় — ঠিক যেমন শুধু 'ঢাকা' না লিখে 'ঢাকা, ধানমন্ডি, রোড ৫' লিখলে কুরিয়ার সেই নির্দিষ্ট ঠিকানাটাই নেয়।"
+      }
+    },
+    {
+      "id": "cn_024",
+      "q": "A corporate network pool experiences IP exhaustion due to a high volume of transient guest devices. What lease-duration parameter adjustment resolves this?",
+      "tags": [
+        "DHCP",
+        "lease time",
+        "IP exhaustion",
+        "address pool",
+        "guest network",
+        "lease duration"
+      ],
+      "answer": {
+        "summary": [
+          "IP exhaustion এর কারণ: guest device disconnect করার পরও DHCP lease দীর্ঘ সময় সেই IP ধরে রাখে → IP গুলো reserved থেকে যায়, নতুন device পায় না।",
+          "সমাধান: DHCP lease duration (lease time) কমানো — দিন থেকে কয়েক ঘণ্টায় নামানো।",
+          "ফল: transient guest এর IP দ্রুত expire হয়ে pool এ ফেরত আসে, নতুন device পায়।"
+        ],
+        "points": [
+          "DHCP lease কী: একটি IP কতক্ষণ একটি device এর জন্য সংরক্ষিত থাকবে তার সময়সীমা। Lease time বড় (যেমন 7 দিন) হলে device চলে গেলেও IP ততদিন আটকে থাকে।",
+          "সমস্যা: transient guest অল্প সময়ের জন্য connect করে চলে যায়, কিন্তু লম্বা lease এর কারণে তাদের IP অনেকক্ষণ pool এ ফেরত আসে না → অল্প সক্রিয় device থাকলেও pool ভরে যায়।",
+          "সমাধান: lease duration কমাও — যেমন 7 দিন থেকে 1–4 ঘণ্টা (guest turnover অনুযায়ী মান নির্বাচন)।",
+          "কেন কাজ করে: short lease → অব্যবহৃত IP দ্রুত expire → DHCP server সেগুলো reclaim করে নতুন device কে allocate করে → exhaustion এড়ানো যায়।",
+          "সতর্কতা: lease অতিরিক্ত ছোট দিলে DHCP renew/discover broadcast traffic বেড়ে যায় — তাই guest turnover এর সাথে ভারসাম্য রেখে মান বসাতে হয়।"
+        ],
+        "diagram": "সমস্যা — লম্বা lease (7 দিন): IP আটকে থাকে\n\n Guest connect ─┐                         guest চলে গেছে\n                ▼                              │ কিন্তু IP\n  IP 192.168.1.50 ব্যস্ত ████████████████████│ এখনো reserved\n  ◀──────────────── 7 দিন lease ───────────────────▶\n  guest ১ ঘণ্টা পরে চলে গেলেও IP ৭ দিন আটকে → pool শেষ 🔴\n\n\nসমাধান — ছোট lease (1–4 ঘণ্টা): IP দ্রুত ফেরে\n\n Guest connect ─┐  guest চলে গেল\n                ▼      │\n  IP 192.168.1.50 ███──┘ expire → pool এ ফেরত ✅\n  ◀── 2h lease ──▶ │\n                   ▼ একই IP নতুন guest পায়\n  IP 192.168.1.50 ███ (নতুন device)\n  দ্রুত reclaim → একই pool বহু guest সামলায় ✅\n\n নিয়ম: lease time ছোট → IP turnover দ্রুত → exhaustion কমে\n        (তবে খুব ছোট হলে renew broadcast বাড়ে — ভারসাম্য রাখো)",
+        "mistakes": [
+          [
+            "Pool এ আরও IP (বড় subnet) যোগ করাই একমাত্র সমাধান",
+            "সেটা দামি ও সাময়িক; আসল সমস্যা lease সময়মতো expire না হওয়া — lease duration কমালেই সমাধান হয়"
+          ],
+          [
+            "Lease যত ছোট তত ভালো",
+            "না — অতি ছোট lease এ ঘন ঘন renew broadcast network এ চাপ বাড়ায়; guest turnover অনুযায়ী মাঝামাঝি মান নিতে হয়"
+          ]
+        ],
+        "mnemonic": "DHCP lease = হোটেল রুম booking। লম্বা booking (7 দিন) এ অতিথি চলে গেলেও রুম খালি দেখায় না → নতুন অতিথি পায় না। ছোট booking (কয়েক ঘণ্টা) এ রুম দ্রুত খালি হয়ে আবার ভাড়া যায়। সমাধান: lease time কমাও, pool বাড়িও না।"
+      }
+    },
+    {
+      "id": "cn_025",
+      "q": "A satellite link has one-way propagation delay 250 ms and transmission rate 1 Mbps. Frame size is 1000 bytes. (a) Find the link utilization (efficiency) if Stop-and-Wait is used. (b) What minimum window size achieves ~100% efficiency?",
+      "tags": [
+        "stop-and-wait",
+        "sliding window",
+        "utilization",
+        "efficiency",
+        "bandwidth-delay product",
+        "satellite link"
+      ],
+      "answer": {
+        "summary": [
+          "Stop-and-Wait এ একটি frame পাঠিয়ে ACK এর জন্য পুরো RTT অপেক্ষা করতে হয় — তাই long-delay satellite link এ efficiency খুব কম (≈ 1.57%)।",
+          "100% efficiency পেতে sliding window লাগে যাতে ACK ফেরার আগেই পুরো link ভরে frame পাঠানো যায়।",
+          "ন্যূনতম window size W ≥ 1 + 2a = 63.5 → W = 64 frame।"
+        ],
+        "points": [
+          "দেওয়া আছে: one-way propagation delay Tp = 250 ms = 0.25 s, rate = 1 Mbps = 1,000,000 bps, frame = 1000 byte = 8000 bit।",
+          "Step 1 — Transmission time: Tt = frame size ÷ bandwidth = 8000 ÷ 1,000,000 = 0.008 s = 8 ms।",
+          "Step 2 — RTT: ACK ফিরে আসতে যাওয়া-আসা দুই দিকের delay = 2 × Tp = 2 × 250 = 500 ms।",
+          "Step 3 — Stop-and-Wait efficiency: U = Tt ÷ (Tt + RTT) = 8 ÷ (8 + 500) = 8 ÷ 508 ≈ 0.01575 ≈ 1.57%। অর্থাৎ link এর মাত্র ~1.57% সময় কাজে লাগে, বাকিটা ACK এর অপেক্ষায় নষ্ট।",
+          "Step 4 — a (অনুপাত): a = Tp ÷ Tt = 250 ÷ 8 = 31.25।",
+          "Step 5 — ন্যূনতম window: sliding window এ 100% utilization এর শর্ত W ≥ 1 + 2a = 1 + 2(31.25) = 63.5। Window পূর্ণ frame সংখ্যা হতে হয়, তাই উপরে round → W = 64 frame।"
+        ],
+        "diagram": "STOP-AND-WAIT — একটা frame পাঠাও, পুরো RTT অপেক্ষা করো\n\n Sender │█│←8ms                                  │█│\n        │  ╲ frame                          ACK ╱  │\n        │   ╲                                  ╱   │\n Receiver│    ╲___________________________╱       │\n        │◀──────── RTT = 500 ms ─────────▶│\n  এক cycle = 8 ms পাঠানো + 500 ms অপেক্ষা = 508 ms\n  কাজে লাগল মাত্র 8 ms\n\n  U = Tt/(Tt+RTT) = 8/508 ≈ 1.57%   🔴 (link প্রায় খালি বসে থাকে)\n\n\nSLIDING WINDOW — ACK ফেরার আগেই link ভরে দাও\n\n Sender │█│█│█│ … │█│  ← একসাথে W টা frame পাঠানো হয়\n        │ ╲ ╲ ╲     ╲                              │\n Receiver│  ╲_╲_╲_____╲ … প্রথম ACK ফেরার মধ্যেই link ভরা\n        │◀──── 1 frame + RTT = (1+2a)·Tt ────▶│\n\n  a = Tp/Tt = 250/8 = 31.25\n  W ≥ 1 + 2a = 1 + 62.5 = 63.5  →  W = 64 frame\n\n  ┌──────────────────────────────────────────┐\n  │ Stop-and-Wait efficiency ≈ 1.57%          │\n  │ 100% এর জন্য ন্যূনতম window = 64 frame     │\n  └──────────────────────────────────────────┘",
+        "mistakes": [
+          [
+            "RTT = one-way delay = 250 ms",
+            "না — RTT যাওয়া-আসা দুই দিক = 2 × 250 = 500 ms; এটা ভুল করলে efficiency ও window দুটোই ভুল হয়"
+          ],
+          [
+            "W = 63.5 লেখা যায়",
+            "না — window পূর্ণসংখ্যক frame হতে হয়, তাই উপরে round করে W = 64"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "রাশি",
+            "সূত্র",
+            "মান"
+          ],
+          "rows": [
+            [
+              "Transmission time Tt",
+              "frame ÷ bandwidth = 8000 ÷ 10⁶",
+              "8 ms"
+            ],
+            [
+              "RTT",
+              "2 × Tp = 2 × 250",
+              "500 ms"
+            ],
+            [
+              "Stop-and-Wait U",
+              "Tt ÷ (Tt + RTT) = 8 ÷ 508",
+              "≈ 1.57%"
+            ],
+            [
+              "a",
+              "Tp ÷ Tt = 250 ÷ 8",
+              "31.25"
+            ],
+            [
+              "Min window W",
+              "1 + 2a = 63.5 → round up",
+              "64 frame"
+            ]
+          ]
+        },
+        "mnemonic": "Stop-and-Wait = একটা চিঠি পাঠিয়ে উত্তরের জন্য বসে থাকা — দূরত্ব বেশি (satellite) হলে বেশিরভাগ সময় শুধু অপেক্ষা (1.57%)। সমাধান: উত্তর আসার আগেই একগাদা চিঠি পাঠাও (sliding window)। কতগুলো? W = 1 + 2a; এখানে a = Tp/Tt = 31.25 → W = 64। সূত্র মনে রাখো: 'এক frame + পুরো RTT ভরাও' = 1 + 2a।"
+      }
     }
   ]
 }

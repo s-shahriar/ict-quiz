@@ -312,6 +312,79 @@
         },
         "mnemonic": "e-Banking Security Stack: WAF → SSL → DMZ → 2FA → IDS → LB (We Secure Data, 2 Factor Is Life-saving, Balance)"
       }
+    },
+    {
+      "id": "sec_006",
+      "q": "What is Cross-Site Scripting (XSS)? Differentiate Reflected XSS and Stored XSS in terms of how the payload is delivered to the victim.",
+      "tags": [
+        "XSS",
+        "cross-site scripting",
+        "reflected XSS",
+        "stored XSS",
+        "web security",
+        "JavaScript injection"
+      ],
+      "answer": {
+        "summary": [
+          "XSS = বিশ্বস্ত website এ attacker এর malicious client-side script (সাধারণত JavaScript) ঢুকিয়ে দেওয়ার দুর্বলতা।",
+          "Victim পেজটি খুললে script তার browser এ চলে — cookie, session token, sensitive data চুরি হতে পারে।",
+          "Payload delivery দিয়ে ভাগ: Reflected = URL/request এর সাথে আসে (server bounce করে ফেরত দেয়), Stored = server এ জমা থাকে (প্রতিটি visitor কে দেওয়া হয়)।"
+        ],
+        "points": [
+          "মূল কথা: XSS এ browser server এর পাঠানো script কে \"trusted\" ভাবে বিনা প্রশ্নে চালায়। দুর্বলতার আসল কারণ — user input কে output এ দেওয়ার আগে validate/encode করা হয় না, তাই input এর ভেতরের <script> কোড হিসেবে গণ্য হয়।",
+          "Reflected XSS — payload delivery: script HTTP request এর অংশ হিসেবে যায় (URL parameter, form input)। Server সেই input কে কোনো response পেজে হুবহু \"reflect\" করে ফেরত দেয়, browser সেটা execute করে। Server এ কিছু জমা থাকে না — তাই non-persistent।",
+          "Reflected — কীভাবে victim আক্রান্ত হয়: attacker কে আগে victim কে একটা crafted malicious link এ click করাতে হয় (email/message এ পাঠিয়ে)। একটা ক্লিক = এক victim। তাই scope সাধারণত নির্দিষ্ট একজন।",
+          "Stored XSS — payload delivery: script server এ স্থায়ীভাবে জমা থাকে (database, comment, profile field, review)। কেউ ক্লিক করার দরকার নেই — page টি যেই খুলবে, server নিজেই তাকে জমানো script সহ পেজ পাঠাবে, browser execute করবে। তাই persistent।",
+          "Stored — কেন বেশি বিপজ্জনক: একবার জমা হলে যত user ওই পেজ দেখবে সবাই আক্রান্ত হয় — কোনো ফাঁদ/লিংক লাগে না। তাই attack scope অনেক বড় (সব visitor), Reflected এর চেয়ে গুরুতর।",
+          "প্রতিরোধ: input validation, output encoding (HTML escape), Content-Security-Policy (CSP) header, এবং cookie তে HttpOnly flag (script যেন cookie পড়তে না পারে)।"
+        ],
+        "diagram": "XSS: user input কে escape না করায় browser তা \"trusted script\" ভেবে চালায়\n\n REFLECTED XSS  (non-persistent — server bounce করে ফেরত দেয়)\n ─────────────────────────────────────────────────────────\n  Attacker                                  Victim\n     │  ① crafted malicious link পাঠায়         │\n     │  site.com/search?q=<script>…</script>   │\n     └─────────────────────────────────────────▶│ ② click করে\n                                                 │\n                              ┌──────────┐  ③ request\n                              │  SERVER  │◀─────┘\n                              │ (জমা রাখে │\n                              │   না!)    │──────┐ ④ input হুবহু\n                              └──────────┘      │   response এ reflect\n                                                 ▼\n                                         ⑤ Victim এর browser এ\n                                            script চলে 🔴 (একজন victim)\n\n\n STORED XSS  (persistent — server এ জমা, সবাইকে পরিবেশন)\n ─────────────────────────────────────────────────────────\n  Attacker                                 Victim 1 ┐\n     │ ① comment/profile এ                 Victim 2 ├─ যে-ই পেজ\n     │   <script>…</script> জমা দেয়         Victim 3 ┘   খুলবে\n     ▼                                          ▲\n ┌──────────────────────┐                       │ ③ page + জমানো\n │       SERVER         │                       │    script পাঠায়\n │  ┌────────────────┐  │  ② DB তে স্থায়ী জমা   │   (click লাগে না!)\n │  │  DATABASE      │  │───────────────────────┘\n │  │ <script>…</…>  │  │  ④ প্রত্যেক visitor এর\n │  └────────────────┘  │     browser এ script চলে 🔴🔴🔴\n └──────────────────────┘     (সব user আক্রান্ত)\n\n একনজরে:\n   Reflected:  payload request-এ আসে   → click লাগে → ১ জন → non-persistent\n   Stored   :  payload server-এ জমা থাকে → click লাগে না → সবাই → persistent",
+        "mistakes": [
+          [
+            "Reflected ও Stored XSS দুটোতেই victim কে link এ click করতে হয়",
+            "না — শুধু Reflected এ click দরকার। Stored এ পেজ খুললেই server জমানো script পাঠিয়ে দেয়, আলাদা ফাঁদ লাগে না"
+          ],
+          [
+            "XSS এ server এর data চুরি হয়",
+            "না — XSS client-side আক্রমণ; victim এর browser এ script চলে cookie/session token চুরি করে, server এর DB সরাসরি নয়"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "",
+            "Reflected XSS",
+            "Stored XSS"
+          ],
+          "rows": [
+            [
+              "Payload কোথায়",
+              "HTTP request এ (URL, form input)",
+              "Server এ স্থায়ী জমা (DB, comment, profile)"
+            ],
+            [
+              "Delivery",
+              "Victim কে crafted link এ click করাতে হয়",
+              "Page খুললেই server নিজে পাঠায়"
+            ],
+            [
+              "Server storage",
+              "জমা থাকে না",
+              "জমা থাকে, বহু user কে পরিবেশন"
+            ],
+            [
+              "Attack scope",
+              "সাধারণত নির্দিষ্ট একজন victim",
+              "যত user পেজ দেখে সবাই"
+            ],
+            [
+              "Persistence",
+              "Non-persistent",
+              "Persistent"
+            ]
+          ]
+        },
+        "mnemonic": "Reflected = আয়না: তুমি যা পাঠাও server তাই ফেরত দেখায় (link এ click লাগে, এক victim, জমা থাকে না)। Stored = ফাঁদ পেতে রাখা: attacker একবার DB তে script রেখে দেয়, এরপর যে-ই পেজ খুলবে সে-ই ফাঁদে পড়বে (click লাগে না, সবাই আক্রান্ত, persistent)।"
+      }
     }
   ]
 }

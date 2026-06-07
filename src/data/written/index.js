@@ -3,6 +3,7 @@ import { ServerCog } from 'lucide-react'
 import { TOPICS } from '../index.js'
 import computerFundamental from './computer_fundamental.json'
 import operatingSystem from './operating_system.json'
+import linux from './linux.json'
 import dsa from './dsa.json'
 import computerNetwork from './computer_network.json'
 import informationSecurity from './information_security.json'
@@ -16,6 +17,7 @@ import server from './server.json'
 const WRITTEN_DATA = {
   computer_fundamental: computerFundamental,
   operating_system: operatingSystem,
+  linux: linux,
   dsa: dsa,
   computer_network: computerNetwork,
   information_security: informationSecurity,

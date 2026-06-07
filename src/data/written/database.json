@@ -167,6 +167,73 @@
         },
         "mnemonic": "CASCADE = জলপ্রপাত — parent পড়লে child-ও পড়ে যায়! SET NULL = parent চলে গেলে child এ শূন্য জায়গা। RESTRICT = দরজায় পাহারা — parent যেতে চাইলে child আটকায়। মনে রাখো: CASCADE = সব মিলে যায়, RESTRICT = কিছুই যায় না।"
       }
+    },
+    {
+      "id": "db_004",
+      "q": "Explain the distinct filtering behaviour of a WHERE clause versus a HAVING clause in a SQL statement that contains an aggregate (GROUP BY) operation.",
+      "tags": [
+        "WHERE",
+        "HAVING",
+        "GROUP BY",
+        "aggregate",
+        "SQL",
+        "query execution order"
+      ],
+      "answer": {
+        "summary": [
+          "WHERE ও HAVING দুটোই filter করে, কিন্তু query execution এর ভিন্ন পর্যায়ে।",
+          "WHERE = grouping/aggregation এর আগে individual row filter করে (aggregate function ব্যবহার করা যায় না)।",
+          "HAVING = GROUP BY ও aggregate হিসাবের পরে group filter করে (COUNT/AVG/SUM ব্যবহার করা যায়)।"
+        ],
+        "points": [
+          "Execution order: FROM → WHERE → GROUP BY → Aggregate (SUM/COUNT/AVG) → HAVING → SELECT → ORDER BY। এই ক্রমই WHERE ও HAVING এর পার্থক্যের মূল।",
+          "WHERE: প্রতিটি row আলাদা করে যাচাই করে — শর্ত না মিললে সেই row গ্রুপিং এ ঢোকেই না। তখনো কোনো group/aggregate তৈরি হয়নি, তাই WHERE এ AVG()/COUNT() ব্যবহার করা যায় না।",
+          "HAVING: GROUP BY দিয়ে group তৈরি ও aggregate হিসাব শেষ হওয়ার পরে চলে — পুরো group কে রাখা বা বাদ দেওয়ার সিদ্ধান্ত নেয়। তাই HAVING এ aggregate function (AVG, COUNT, SUM) ব্যবহার করা যায়।",
+          "উদাহরণ পার্থক্য: WHERE Salary > 45000 → আগে কম-salary row বাদ, তারপর group ও average হিসাব। HAVING AVG(Salary) > 45000 → আগে সব row নিয়ে group ও average, তারপর যেসব dept এর average > 45000 শুধু সেগুলো রাখা।",
+          "Performance টিপ: যেটা row-level এ filter করা যায় তা WHERE এ করো — তাহলে কম row group এ যায়, query দ্রুত হয়। শুধু aggregate-নির্ভর শর্ত HAVING এ রাখো।"
+        ],
+        "diagram": "SQL Execution Pipeline — filter দুই জায়গায়\n\n  FROM  (Employees টেবিল)\n    │\n    ▼\n  WHERE   ◀── row-level filter (group এর আগে)\n    │        Salary > 45000 → কম salary row বাদ\n    ▼\n  GROUP BY Dept   → groups:  IT { … },  HR { … }\n    │\n    ▼\n  Aggregate:  AVG(Salary), COUNT(*) …\n    │\n    ▼\n  HAVING  ◀── group-level filter (aggregate এর পরে)\n    │        AVG(Salary) > 50000 → পুরো group রাখো/বাদ\n    ▼\n  SELECT → ORDER BY → ফলাফল\n\nExample data:          WHERE Salary>45000, GROUP BY Dept:\n  Dept  Salary           বাদ: HR 40000, HR 45000\n  IT    50000            IT = avg(50000,60000) = 55000\n  IT    60000            HR = (কোনো row বাঁচেনি)\n  HR    40000\n  HR    45000          HAVING AVG(Salary)>45000 (WHERE ছাড়া):\n                         সব row → IT avg=55000 ✓ রাখে\n                                  HR avg=42500 ✗ বাদ",
+        "mistakes": [
+          [
+            "WHERE এ AVG()/COUNT() এর মতো aggregate function ব্যবহার করা যায়",
+            "না — WHERE চলে aggregate হওয়ার আগে; aggregate-নির্ভর শর্ত HAVING এ দিতে হয়"
+          ],
+          [
+            "HAVING দিয়েই সব filter করা যায়, WHERE এর দরকার নেই",
+            "যায়, কিন্তু তখন সব row group এ ঢোকে → ধীর। Row-level শর্ত WHERE এ দিলে আগেই বাদ পড়ে, query দ্রুত হয়"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "",
+            "WHERE",
+            "HAVING"
+          ],
+          "rows": [
+            [
+              "কী filter করে",
+              "একক row (individual rows)",
+              "GROUP BY দিয়ে তৈরি group"
+            ],
+            [
+              "কখন চলে",
+              "Aggregation এর আগে",
+              "Aggregation এর পরে"
+            ],
+            [
+              "Aggregate function?",
+              "ব্যবহার করা যায় না",
+              "যায় (COUNT, AVG, SUM)"
+            ],
+            [
+              "উদ্দেশ্য",
+              "Grouping এর আগে কোন row রাখবে",
+              "Aggregation এর পরে কোন group রাখবে"
+            ]
+          ]
+        },
+        "mnemonic": "WHERE = ঢোকার গেটে চেক (দল তৈরির আগে প্রতিটি লোককে আলাদা যাচাই)। HAVING = দল তৈরির পরে দল বাছাই (পুরো dept এর গড় দেখে রাখা/বাদ)। তাই AVG/COUNT এর মতো aggregate শুধু HAVING এ চলে, WHERE এ নয়।"
+      }
     }
   ]
 }

@@ -415,6 +415,78 @@
         "diagram": "Single-threaded (Sequential):\n  Thread-1: [Task A]──[Task B]──[Task C]──[Task D]\n  Time: ──────────────────────────────────────────▶\n  Total = A + B + C + D\n\nMulti-threaded (Concurrent):\n  Thread-1: [Task A]────────────[Task D]\n  Thread-2:    [Task B]──────────────────\n  Thread-3:       [Task C]────────────────\n  Time: ──────────────────────▶ (অনেক কম!)\n\nReal example — Web Server:\n  Client 1 request → Thread 1 handle করে\n  Client 2 request → Thread 2 handle করে  (একসাথে!)\n  Client 3 request → Thread 3 handle করে\n  Single thread এ: Client 2,3 কে wait করতে হতো",
         "mnemonic": "Multithreading = একজনের বদলে পুরো team কাজ করে। Single thread = একা সব করো (ধীর)। Multi-thread = কাজ ভাগ করো, একসাথে শেষ করো (দ্রুত)। কিন্তু team এ সমন্বয় না থাকলে (synchronization) ঝামেলা হয়।"
       }
+    },
+    {
+      "id": "os_009",
+      "q": "Differentiate a process from a thread regarding memory space allocation.",
+      "tags": [
+        "process",
+        "thread",
+        "address space",
+        "memory allocation",
+        "shared memory",
+        "isolation"
+      ],
+      "answer": {
+        "summary": [
+          "Process: প্রতিটি process নিজস্ব আলাদা address space পায় — Code, Data, Heap, Stack সব আলাদা ও isolated।",
+          "Thread: একই process এর সব thread সেই address space (Code, Data, Heap) share করে — শুধু নিজের Stack ও registers আলাদা।",
+          "তাই Process = isolated ও ভারী, Thread = shared ও হালকা।"
+        ],
+        "points": [
+          "Process এর memory: OS প্রতিটি process কে নিজস্ব virtual address space দেয় — Code (text), Data/Globals, Heap ও Stack আলাদা। MMU (hardware) enforce করে যাতে এক process অন্য process এর memory সরাসরি ছুঁতে না পারে।",
+          "Thread এর memory: thread গুলো parent process এর Code, Data ও Heap share করে। শুধু প্রতিটি thread এর নিজের Stack ও CPU registers (PC, SP) আলাদা — কারণ প্রতিটি thread এর নিজস্ব আলাদা call sequence ও local variable থাকে।",
+          "Data sharing: Process আলাদা memory তে থাকায় data ভাগ করতে IPC লাগে (pipe, shared memory, message queue)। Thread একই Heap/Global দেখে, তাই variable সরাসরি share করে — IPC লাগে না।",
+          "Memory isolation: Process সম্পূর্ণ isolated — একটার memory corrupt হলে বা crash করলে অন্যটা অক্ষত থাকে। Thread isolated নয় — একটা thread heap নষ্ট করলে পুরো process ক্ষতিগ্রস্ত হয়।",
+          "Allocation overhead: নতুন Process তৈরিতে পুরো address space + page table আলাদা করে allocate করতে হয় → ভারী। নতুন Thread তৈরিতে শুধু একটা Stack ও register set লাগে → হালকা, এবং context switch ও দ্রুত (address space/page table বদলায় না, TLB flush লাগে না)।"
+        ],
+        "diagram": "PROCESS — প্রতিটির নিজস্ব সম্পূর্ণ address space\n┌── Process A ───────┐      ┌── Process B ───────┐\n│ ┌────────────────┐ │      │ ┌────────────────┐ │\n│ │ Code (text)    │ │      │ │ Code (text)    │ │\n│ ├────────────────┤ │      │ ├────────────────┤ │\n│ │ Data / Globals │ │      │ │ Data / Globals │ │\n│ ├────────────────┤ │      │ ├────────────────┤ │\n│ │ Heap        ↓  │ │      │ │ Heap        ↓  │ │\n│ │                │ │      │ │                │ │\n│ │ Stack       ↑  │ │      │ │ Stack       ↑  │ │\n│ └────────────────┘ │      │ └────────────────┘ │\n└────────────────────┘      └────────────────────┘\n      ✕──── একে অপরের memory ছুঁতে পারে না (isolated) ────✕\n\n\nTHREADS — এক process এর ভেতরে, memory share করে\n┌── Process ────────────────────────────────────┐\n│ ┌─────────────────────┐  ← Code / Data / Heap  │\n│ │  Code   Data   Heap │    তিন thread-ই share │\n│ └─────────────────────┘                        │\n│  ┌────────┐ ┌────────┐ ┌────────┐              │\n│  │Stack T1│ │Stack T2│ │Stack T3│ ← শুধু এটা   │\n│  │ regs T1│ │ regs T2│ │ regs T3│   আলাদা      │\n│  └────────┘ └────────┘ └────────┘              │\n└────────────────────────────────────────────────┘\n\nএকনজরে — কী shared, কী আলাদা  (✓=shared, ✕=আলাদা):\n  Process :  Code ✕  Data ✕  Heap ✕  Stack ✕   (সব আলাদা)\n  Thread  :  Code ✓  Data ✓  Heap ✓  Stack ✕   (শুধু Stack আলাদা)",
+        "mistakes": [
+          [
+            "Thread এর নিজস্ব কোনো memory নেই, সব share",
+            "না — প্রতিটি thread এর Stack ও registers আলাদা থাকে; শুধু Code/Data/Heap share হয়"
+          ],
+          [
+            "Process রা সরাসরি একে অপরের variable পড়তে পারে",
+            "না — process isolated; data ভাগ করতে IPC (shared memory/pipe) লাগে"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "",
+            "Process",
+            "Thread"
+          ],
+          "rows": [
+            [
+              "Memory space",
+              "নিজস্ব আলাদা address space",
+              "একই address space share করে"
+            ],
+            [
+              "Data sharing",
+              "IPC লাগে (pipe / shared mem)",
+              "সরাসরি shared variable"
+            ],
+            [
+              "Memory isolation",
+              "সম্পূর্ণ isolated",
+              "isolated নয় (একই memory)"
+            ],
+            [
+              "কী আলাদা থাকে",
+              "Code, Data, Heap, Stack সব",
+              "শুধু Stack + registers"
+            ],
+            [
+              "Allocation overhead",
+              "বেশি (নতুন address space)",
+              "কম (memory share করে)"
+            ]
+          ]
+        },
+        "mnemonic": "Process = আলাদা বাড়ি — ভেতরের সব কিছু নিজের (Code/Data/Heap/Stack)। Thread = একই বাড়িতে আলাদা বিছানা — ঘর (Data/Heap) share, শুধু নিজের বিছানা (Stack) আলাদা। তাই thread রা সহজে কথা বলে (shared memory), আর process দের চিঠি পাঠাতে হয় (IPC)।"
+      }
     }
   ]
 }

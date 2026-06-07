@@ -1263,22 +1263,11 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   .practice-topbar .study-home-btn { width: 34px; height: 34px; }
 }
 
-/* Topic selector chips */
-.practice-topic-row {
-  display: flex; gap: 8px; overflow-x: auto;
-  padding: 4px 2px 12px; margin-bottom: 6px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-bright) transparent;
+/* Topic dropdown (all screen sizes) */
+.practice-topic-dropdown {
+  display: block; position: relative; margin-bottom: 16px;
+  max-width: 380px;
 }
-.practice-topic-row::-webkit-scrollbar { height: 5px; }
-.practice-topic-row::-webkit-scrollbar-track { background: transparent; }
-.practice-topic-row::-webkit-scrollbar-thumb {
-  background: var(--border-bright); border-radius: 999px;
-}
-.practice-topic-row::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-/* Topic dropdown (mobile) */
-.practice-topic-dropdown { display: none; position: relative; margin-bottom: 16px; }
 .practice-dd-trigger {
   width: 100%; display: flex; align-items: center; justify-content: space-between;
   gap: 10px; padding: 12px 16px; border-radius: 12px;
@@ -1308,21 +1297,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 
 @media (max-width: 600px) {
-  .practice-topic-row { display: none; }
-  .practice-topic-dropdown { display: block; }
-}
-.practice-topic-chip {
-  flex: 0 0 auto;
-  padding: 7px 14px; border-radius: 999px;
-  border: 1px solid var(--border); background: var(--surface-glass);
-  color: var(--text-2); font-size: 0.82rem; font-weight: 600;
-  cursor: pointer; white-space: nowrap; transition: all .15s;
-}
-.practice-topic-chip:hover { border-color: var(--border-bright); color: var(--text); }
-.practice-topic-chip.active {
-  border-color: transparent; color: #fff;
-  background: var(--grad-brand);
-  box-shadow: var(--shadow-sm);
+  .practice-topic-dropdown { max-width: none; }
 }
 
 /* Info/Commands/Practice tabs */

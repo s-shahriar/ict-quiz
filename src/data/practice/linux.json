@@ -34,7 +34,11 @@
         { "cmd": "ls -l", "desc": "directory-র বিস্তারিত list" },
         { "cmd": "cat /etc/os-release", "desc": "একটি config file-এর ভেতর দেখা" },
         { "cmd": "ls -l | grep \"^d\"", "desc": "শুধু directory গুলো দেখা (pipe)" },
-        { "cmd": "find /etc -name \"*.conf\" | wc -l", "desc": ".conf file গণনা (pipe)" }
+        { "cmd": "ls /etc | wc -l", "desc": "একটি directory-তে কতগুলো file/entry আছে গণনা (pipe)" },
+        { "cmd": "find /etc -name \"*.conf\" | wc -l", "desc": ".conf file গণনা (pipe)" },
+        { "cmd": "find . -type f -name \"*.pdf\" | wc -l", "desc": "current + sub directory-তে কতগুলো .pdf file আছে গণনা (-type f)" },
+        { "cmd": "find . -type d -name \"Android\" | wc -l", "desc": "Android নামের কতগুলো directory আছে গণনা (-type d)" },
+        { "cmd": "find / -name \"myFile.txt\"", "desc": "পুরো system-এ (root / থেকে) ঐ নামের সব কিছু খোঁজা" }
       ],
       "practice": [
         { "prompt": "/etc directory-তে navigate করো", "accept": ["cd /etc", "cd /etc/"], "explain": "cd = change directory" },
@@ -43,7 +47,11 @@
         { "prompt": "নিজের home directory-তে ফিরে যাও", "accept": ["cd ~", "cd", "cd $HOME"], "explain": "cd একা বা cd ~ → home-এ নিয়ে যায়" },
         { "prompt": "/etc/os-release file-টির ভেতরের লেখা দেখাও", "accept": ["cat /etc/os-release"], "explain": "cat = file-এর content প্রিন্ট করে" },
         { "prompt": "ls আর grep pipe করে current directory-র শুধু directory গুলো দেখাও (যে লাইন d দিয়ে শুরু)", "accept": ["ls -l | grep \"^d\"", "ls -l | grep '^d'", "ls -la | grep \"^d\"", "ls -la | grep '^d'"], "explain": "pipe (|) এক command-এর output পরের command-এ পাঠায়" },
-        { "prompt": "/etc-এর ভেতর কতগুলো .conf file আছে গুনে দেখাও (find + wc)", "accept": ["find /etc -name \"*.conf\" | wc -l", "find /etc -name '*.conf' | wc -l"], "explain": "wc -l = লাইন (এখানে file) গণনা" }
+        { "prompt": "/etc-এর ভেতর কতগুলো .conf file আছে গুনে দেখাও (find + wc)", "accept": ["find /etc -name \"*.conf\" | wc -l", "find /etc -name '*.conf' | wc -l"], "explain": "wc -l = লাইন (এখানে file) গণনা" },
+        { "prompt": "/etc directory-তে কতগুলো file/entry আছে গুনে দেখাও (ls + wc)", "accept": ["ls /etc | wc -l", "ls -1 /etc | wc -l"], "explain": "ls-এর output প্রতি লাইনে একটি নাম; wc -l লাইন গণনা করে = entry সংখ্যা" },
+        { "prompt": "current ও তার sub directory মিলিয়ে কতগুলো .pdf file আছে গুনে দেখাও (find -type f + wc)", "accept": ["find . -type f -name \"*.pdf\" | wc -l", "find . -type f -name '*.pdf' | wc -l", "find . -name \"*.pdf\" -type f | wc -l"], "explain": "-type f = শুধু file (directory বাদ); wc -l দিয়ে গণনা" },
+        { "prompt": "current directory থেকে Android নামের কতগুলো directory আছে গুনে দেখাও (find -type d + wc)", "accept": ["find . -type d -name \"Android\" | wc -l", "find . -type d -name 'Android' | wc -l", "find . -name \"Android\" -type d | wc -l"], "explain": "-type d = শুধু directory (file বাদ)" },
+        { "prompt": "পুরো system-এ (root / থেকে) myFile.txt নামের file খুঁজে বের করো", "accept": ["find / -name \"myFile.txt\"", "find / -name 'myFile.txt'", "sudo find / -name \"myFile.txt\""], "explain": "/ থেকে search মানে পুরো filesystem; -type ছাড়া file ও directory দুটোই মেলে" }
       ]
     },
     {
@@ -77,8 +85,12 @@
         { "cmd": "touch file.txt", "desc": "খালি file তৈরি" },
         { "cmd": "find . -name \"*.log\"", "desc": ".log file খোঁজা" },
         { "cmd": "find / -size +100M", "desc": "100MB-এর বড় file খোঁজা" },
+        { "cmd": "find /var/log -type f -name \"*.log\" -delete", "desc": "খুঁজে পাওয়া সব .log file মুছে ফেলা (-delete)" },
+        { "cmd": "grep \"error\" app.log", "desc": "একটি file-এর ভেতর 'error' শব্দ খোঁজা" },
+        { "cmd": "grep -i \"error\" app.log", "desc": "case-insensitive খোঁজা (Error/ERROR-ও মেলে)" },
+        { "cmd": "grep -w \"error\" app.log", "desc": "আস্ত শব্দ মেলানো (\"errors\"/\"myerror\" বাদ)" },
         { "cmd": "grep -ri \"error\" /var/log", "desc": "recursive + case-insensitive text খোঁজা" },
-        { "cmd": "grep \"error\" app.log | wc -l", "desc": "error কতবার আছে গণনা (pipe)" },
+        { "cmd": "grep \"error\" app.log | wc -l", "desc": "error যুক্ত লাইন কতটি গণনা (pipe)" },
         { "cmd": "tar -czf backup.tar.gz /data", "desc": "directory compress (archive)" },
         { "cmd": "tar -xzf backup.tar.gz", "desc": "archive extract" }
       ],
@@ -88,7 +100,10 @@
         { "prompt": "temp/ directory ও তার ভেতরের সব কিছু মুছে ফেলো", "accept": ["rm -r temp/", "rm -r temp", "rm -rf temp/", "rm -rf temp"], "explain": "-r = recursive (directory-র জন্য)" },
         { "prompt": "a/b/c এই nested directory গুলো একসাথে তৈরি করো", "accept": ["mkdir -p a/b/c"], "explain": "-p = parent directory গুলোও বানিয়ে নেয়" },
         { "prompt": "current directory ও সব subfolder-এ .log দিয়ে শেষ হওয়া file খুঁজে বের করো", "accept": ["find . -name \"*.log\"", "find . -name '*.log'"], "explain": "find <path> -name <pattern>" },
+        { "prompt": "/var/log-এর সব .log file খুঁজে মুছে ফেলো (find -delete)", "accept": ["find /var/log -type f -name \"*.log\" -delete", "find /var/log -type f -name '*.log' -delete", "find /var/log -name \"*.log\" -delete", "find /var/log -name '*.log' -delete"], "explain": "-delete = খুঁজে পাওয়া প্রতিটি file মুছে দেয়" },
         { "prompt": "app.log file-এর ভেতরে 'error' শব্দটি খুঁজে বের করো", "accept": ["grep error app.log", "grep 'error' app.log", "grep \"error\" app.log"], "explain": "grep <word> <file>" },
+        { "prompt": "app.log-এ case-insensitive ভাবে 'error' খোঁজো (Error/ERROR-ও মিলবে)", "accept": ["grep -i error app.log", "grep -i 'error' app.log", "grep -i \"error\" app.log"], "explain": "-i = case-insensitive" },
+        { "prompt": "app.log-এ আস্ত শব্দ হিসেবে 'error' খোঁজো (\"errors\"/\"myerror\" বাদ)", "accept": ["grep -w error app.log", "grep -w 'error' app.log", "grep -w \"error\" app.log"], "explain": "-w = whole word match (শব্দের সীমানা মেলায়)" },
         { "prompt": "/var/log-এর সব file-এ recursive ও case-insensitive ভাবে 'error' খোঁজো", "accept": ["grep -ri error /var/log", "grep -ri 'error' /var/log", "grep -ir error /var/log", "grep -ir 'error' /var/log"], "explain": "-r = recursive, -i = case-insensitive" },
         { "prompt": "app.log-এ 'error' শব্দ কতবার আছে গুনে দেখাও (grep + wc pipe)", "accept": ["grep error app.log | wc -l", "grep 'error' app.log | wc -l"], "explain": "grep output পাইপ করে wc -l দিয়ে গণনা" },
         { "prompt": "/data directory-কে backup.tar.gz নামে compress করো", "accept": ["tar -czf backup.tar.gz /data"], "explain": "-c create, -z gzip, -f filename" }
@@ -312,7 +327,10 @@
         { "cmd": "crontab -e", "desc": "cron job edit করা" },
         { "cmd": "crontab -l", "desc": "cron job list দেখা" },
         { "cmd": "crontab -r", "desc": "সব cron job মুছে ফেলা" },
-        { "cmd": "* * * * * cmd >> /var/log/out.log 2>&1", "desc": "output ও error log-এ পাঠানো" }
+        { "cmd": "0 0 * * * /backup.sh", "desc": "প্রতিদিন রাত 12টায় (00:00) চালানো" },
+        { "cmd": "*/5 * * * * /script.sh", "desc": "প্রতি 5 মিনিট অন্তর চালানো" },
+        { "cmd": "* * * * * cmd >> /var/log/out.log 2>&1", "desc": "output ও error log-এ পাঠানো" },
+        { "cmd": "*/5 * * * * /script.sh >> /var/log/script.log 2>&1", "desc": "প্রতি 5 মিনিটে চালিয়ে output+error log-এ যোগ" }
       ],
       "practice": [
         { "prompt": "cron job edit করার জন্য crontab খোলো", "accept": ["crontab -e"], "explain": "-e = edit" },
@@ -334,15 +352,23 @@
       },
       "commands": [
         { "cmd": "cat /var/log/syslog", "desc": "log file-এর পুরো content" },
+        { "cmd": "head -n 15 /var/log/syslog", "desc": "প্রথম 15 লাইন (tail-এর উল্টো)" },
         { "cmd": "tail -n 50 /var/log/syslog", "desc": "শেষ 50 লাইন" },
         { "cmd": "tail -f /var/log/syslog", "desc": "live ভাবে নতুন log দেখা" },
+        { "cmd": "sed -n '20,22p' /var/log/syslog", "desc": "নির্দিষ্ট লাইন range (20-22) print" },
+        { "cmd": "sed -n '20p' /var/log/syslog", "desc": "শুধু একটি নির্দিষ্ট লাইন (20তম) print" },
+        { "cmd": "grep error /var/log/auth.log", "desc": "log file-এ একটি শব্দ (error) খোঁজা" },
         { "cmd": "grep error /var/log/syslog | tail -20", "desc": "error-যুক্ত লাইনের শেষ 20টা (pipe)" },
         { "cmd": "grep \"Failed password\" /var/log/auth.log | wc -l", "desc": "failed login গণনা (pipe)" },
+        { "cmd": "journalctl -u nginx", "desc": "service-এর systemd log দেখা" },
         { "cmd": "journalctl -u nginx --since today", "desc": "service-এর আজকের log" }
       ],
       "practice": [
         { "prompt": "/var/log/syslog file-টির শেষ অংশ live ভাবে দেখতে থাকো (follow)", "accept": ["tail -f /var/log/syslog"], "explain": "-f = follow (নতুন লাইন আসতে থাকলে দেখায়)" },
         { "prompt": "/var/log/syslog-এর শেষ 50 লাইন দেখাও", "accept": ["tail -n 50 /var/log/syslog", "tail -50 /var/log/syslog"], "explain": "-n 50 = শেষ 50 লাইন" },
+        { "prompt": "/var/log/syslog-এর প্রথম 15 লাইন দেখাও", "accept": ["head -n 15 /var/log/syslog", "head -15 /var/log/syslog"], "explain": "head = শুরুর অংশ; -n 15 = প্রথম 15 লাইন" },
+        { "prompt": "/var/log/syslog-এর 20 থেকে 22 নম্বর লাইন print করো (sed)", "accept": ["sed -n '20,22p' /var/log/syslog", "sed -n \"20,22p\" /var/log/syslog"], "explain": "sed -n 'start,endp' = ঐ range-এর লাইন গুলো print" },
+        { "prompt": "/var/log/syslog-এর শুধু 20তম লাইন print করো (sed)", "accept": ["sed -n '20p' /var/log/syslog", "sed -n \"20p\" /var/log/syslog"], "explain": "sed -n 'Np' = শুধু N নম্বর লাইন" },
         { "prompt": "/var/log/auth.log file-এ 'error' শব্দটি খুঁজে বের করো", "accept": ["grep error /var/log/auth.log", "grep 'error' /var/log/auth.log", "grep \"error\" /var/log/auth.log"], "explain": "grep <word> <file>" },
         { "prompt": "nginx service-এর systemd log দেখাও", "accept": ["journalctl -u nginx", "sudo journalctl -u nginx"], "explain": "journalctl -u <service>" },
         { "prompt": "/var/log/syslog-এ error যুক্ত লাইনের শেষ 20টা দেখাও (grep + tail pipe)", "accept": ["grep error /var/log/syslog | tail -20", "grep error /var/log/syslog | tail -n 20", "grep 'error' /var/log/syslog | tail -20"], "explain": "grep output পাইপ করে tail দিয়ে শেষ অংশ" },
