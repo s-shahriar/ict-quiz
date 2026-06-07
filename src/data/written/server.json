@@ -496,14 +496,28 @@
         ],
         "points": [
           "Control Plane (master): পুরো cluster-এর সিদ্ধান্ত নেয় ও desired state বজায় রাখে — ৪টি মূল অংশ:",
-          { "sub": "API Server (kube-apiserver): cluster-এর \"front door\" — সব command/communication এর মধ্য দিয়ে যায় (REST API)।" },
-          { "sub": "etcd: distributed key-value store — cluster-এর সব state/config রাখে (cluster-এর \"database\")।" },
-          { "sub": "Scheduler (kube-scheduler): নতুন Pod কোন node-এ চলবে তা ঠিক করে (resource অনুযায়ী)।" },
-          { "sub": "Controller Manager: controller চালায় (node, replication...) — actual state কে desired state-এ আনে।" },
+          {
+            "sub": "API Server (kube-apiserver): cluster-এর \"front door\" — সব command/communication এর মধ্য দিয়ে যায় (REST API)।"
+          },
+          {
+            "sub": "etcd: distributed key-value store — cluster-এর সব state/config রাখে (cluster-এর \"database\")।"
+          },
+          {
+            "sub": "Scheduler (kube-scheduler): নতুন Pod কোন node-এ চলবে তা ঠিক করে (resource অনুযায়ী)।"
+          },
+          {
+            "sub": "Controller Manager: controller চালায় (node, replication...) — actual state কে desired state-এ আনে।"
+          },
           "Worker Node: যেখানে আসল container (Pod) চলে — ৩টি মূল অংশ:",
-          { "sub": "kubelet: প্রতি node-এর agent — Pod/container ঠিকমতো চলছে কিনা দেখে, API server-এর সাথে কথা বলে।" },
-          { "sub": "kube-proxy: node-এর networking ও service load-balancing সামলায়।" },
-          { "sub": "Container Runtime (containerd/CRI-O): আসলে container চালায়।" },
+          {
+            "sub": "kubelet: প্রতি node-এর agent — Pod/container ঠিকমতো চলছে কিনা দেখে, API server-এর সাথে কথা বলে।"
+          },
+          {
+            "sub": "kube-proxy: node-এর networking ও service load-balancing সামলায়।"
+          },
+          {
+            "sub": "Container Runtime (containerd/CRI-O): আসলে container চালায়।"
+          },
           "Pod: K8s-এর smallest deployable unit — এক বা একাধিক container যারা একই network/storage শেয়ার করে।",
           "মূল object: Deployment (rollout/scale), Service (stable network endpoint), Namespace, ConfigMap/Secret, Ingress।",
           "কেন দরকার: self-healing (container মরলে আবার চালু), auto-scaling, load balancing, rolling update — সব declarative ভাবে।"
@@ -673,9 +687,15 @@
         "points": [
           "SELinux প্রতিটি access (process একটি file বা port ব্যবহার করতে চাইলে) policy-র সাথে যাচাই করে। অনুমতি না থাকলে সেই চেষ্টাকে বলে denial।",
           "তিনটি mode আসলে একটিই প্রশ্নের উত্তর — denial হলে SELinux কী করবে:",
-          { "sub": "Enforcing: denial আটকে দেয় এবং log রাখে। অননুমোদিত access বাস্তবে বন্ধ হয়, তাই এটিই প্রকৃত নিরাপত্তা এবং production-এর উপযুক্ত mode।" },
-          { "sub": "Permissive: denial আটকায় না, শুধু log-এ নথিভুক্ত করে। নতুন app চালু করার সময় উপযোগী — কাজ বন্ধ না করেই দেখা যায় policy কী কী আটকাত, পরে সেই log থেকে audit2allow দিয়ে সঠিক policy বানিয়ে Enforcing-এ ফেরা যায়।" },
-          { "sub": "Disabled: SELinux কিছুই যাচাই করে না — কোনো policy, label বা log নেই। সম্পূর্ণ বন্ধ, যা নিরুৎসাহিত।" },
+          {
+            "sub": "Enforcing: denial আটকে দেয় এবং log রাখে। অননুমোদিত access বাস্তবে বন্ধ হয়, তাই এটিই প্রকৃত নিরাপত্তা এবং production-এর উপযুক্ত mode।"
+          },
+          {
+            "sub": "Permissive: denial আটকায় না, শুধু log-এ নথিভুক্ত করে। নতুন app চালু করার সময় উপযোগী — কাজ বন্ধ না করেই দেখা যায় policy কী কী আটকাত, পরে সেই log থেকে audit2allow দিয়ে সঠিক policy বানিয়ে Enforcing-এ ফেরা যায়।"
+          },
+          {
+            "sub": "Disabled: SELinux কিছুই যাচাই করে না — কোনো policy, label বা log নেই। সম্পূর্ণ বন্ধ, যা নিরুৎসাহিত।"
+          },
           "Config (স্থায়ী): /etc/selinux/config ফাইলে SELINUX=enforcing|permissive|disabled লিখে দিতে হয় (reboot প্রয়োজন)।",
           "Command (সাময়িক): getenforce বর্তমান mode দেখায়; setenforce 0/1 দিয়ে Permissive/Enforcing করা যায়; sestatus বিস্তারিত status দেখায়।",
           "Context: প্রতিটি file ও process-এর label = user:role:type:level (মূল অংশ হলো type); দেখা যায় ls -Z বা ps -Z দিয়ে।"
@@ -740,8 +760,12 @@
           "NAS (Network Attached Storage): নিজস্ব OS সহ appliance, LAN/Ethernet-এ যুক্ত; NFS/SMB/CIFS দিয়ে file share করে → অনেক client একসাথে file পায় (file-level)।",
           "SAN (Storage Area Network): আলাদা ডেডিকেটেড high-speed network (Fibre Channel বা iSCSI); server-কে raw block device দেয় → server একে local disk হিসেবে দেখে। database/VM/high-performance-এর জন্য।",
           "মূল পার্থক্য — server কী \"দেখে\": খালি disk, নাকি তৈরি file? (এটাই NAS vs SAN-এর আসল ফারাক):",
-          { "sub": "Block-level (DAS, SAN): storage একটা খালি disk দেয়; server এটাকে নিজের নতুন hard disk হিসেবে দেখে — নিজে format করে, filesystem বসায়, file নিজে সামলায়। storage জানেই না ভেতরে কী file আছে। প্রতি server নিজের আলাদা disk পায় (ভাগাভাগি নয়)। দ্রুত — database/VM-এর জন্য ভালো।" },
-          { "sub": "File-level (NAS): NAS-এর নিজের filesystem আছে; তুমি একটা shared folder দেখো (Google Drive-এর মতো) — শুধু নাম বলে file চাও (NFS/SMB), NAS ভেতরের সব সামলে file দেয়। format করার দরকার নেই, পারোও না। অনেকে একই file একসাথে পায় — file ভাগাভাগির জন্য।" },
+          {
+            "sub": "Block-level (DAS, SAN): storage একটা খালি disk দেয়; server এটাকে নিজের নতুন hard disk হিসেবে দেখে — নিজে format করে, filesystem বসায়, file নিজে সামলায়। storage জানেই না ভেতরে কী file আছে। প্রতি server নিজের আলাদা disk পায় (ভাগাভাগি নয়)। দ্রুত — database/VM-এর জন্য ভালো।"
+          },
+          {
+            "sub": "File-level (NAS): NAS-এর নিজের filesystem আছে; তুমি একটা shared folder দেখো (Google Drive-এর মতো) — শুধু নাম বলে file চাও (NFS/SMB), NAS ভেতরের সব সামলে file দেয়। format করার দরকার নেই, পারোও না। অনেকে একই file একসাথে পায় — file ভাগাভাগির জন্য।"
+          },
           "Cost/complexity: DAS সস্তা ও সরল; NAS মাঝারি; SAN ব্যয়বহুল ও জটিল।",
           "কখন কোনটা: একক server/PC → DAS; office/home file sharing, backup, media → NAS; বড় data center, database, VM storage, কম latency → SAN।"
         ],
@@ -806,76 +830,6 @@
       }
     },
     {
-      "id": "server_019",
-      "q": "Explain the Spine-Leaf network architecture.",
-      "tags": [
-        "spine-leaf",
-        "clos",
-        "data center",
-        "ECMP",
-        "ToR",
-        "topology"
-      ],
-      "answer": {
-        "summary": [
-          "শুরুতে বুঝে নাও — Spine-Leaf = data center-এর আধুনিক ২-স্তর network topology (Clos fabric)। দুই ধরনের switch: Leaf (নিচে, server যুক্ত) ও Spine (উপরে, backbone)।",
-          "নিয়ম: প্রতিটি Leaf প্রতিটি Spine-এর সাথে যুক্ত; কিন্তু Leaf↔Leaf বা Spine↔Spine সরাসরি যুক্ত নয়। ফলে যেকোনো server থেকে যেকোনো server = ঠিক ২ hop (predictable)।",
-          "East-West traffic ও ECMP multipath-এর জন্য আদর্শ; পুরোনো 3-tier-এর bottleneck ও STP সমস্যা এড়ায়।"
-        ],
-        "points": [
-          "দুই স্তর:",
-          { "sub": "Leaf switch: access স্তর; server/storage এতে যুক্ত হয় (= ToR, Top of Rack)।" },
-          { "sub": "Spine switch: backbone; শুধু Leaf-দের জুড়ে দেয়, কোনো server সরাসরি যুক্ত নয়।" },
-          "সংযোগের নিয়ম: প্রতিটি Leaf প্রতিটি Spine-এ যুক্ত (দুই স্তরের মাঝে full mesh); কিন্তু Leaf↔Leaf বা Spine↔Spine সরাসরি link নেই।",
-          "Predictable latency: যেকোনো দুই server-এর মধ্যে path সবসময় Leaf → Spine → Leaf = ঠিক ২ hop; তাই latency সমান ও আগে থেকে জানা।",
-          "ECMP (Equal-Cost Multi-Path): একাধিক সমান path থাকায় traffic সব Spine-এ ভাগ হয়ে যায় (সব link active, STP-র মতো কোনো link block নয়) → পুরো bandwidth ব্যবহার।",
-          "Scaling: bandwidth বাড়াতে আরেকটি Spine যোগ করো; port/server বাড়াতে আরেকটি Leaf যোগ করো — horizontally scale করা সহজ।",
-          "কেন (3-tier-এর তুলনায়): আধুনিক traffic বেশিরভাগ East-West (server↔server); 3-tier-এ তা বেশি hop ও bottleneck তৈরি করত, Spine-Leaf সমান hop ও সব path active দিয়ে সমাধান করে।"
-        ],
-        "diagram": "Spine-Leaf (Clos) — ২ স্তর\n\n   ┌──────┐    ┌──────┐    ┌──────┐\n   │Spine1│    │Spine2│    │Spine3│   ← backbone (server নেই)\n   └─┬─┬─┬┘    └┬─┬─┬─┘    └┬─┬─┬─┘\n     │ │ └─────┼─┼─┼───────┘ │ │     প্রতিটি Leaf\n     │ └───────┼─┼─┼─────────┘ │     প্রতিটি Spine-এ যুক্ত\n   ┌─┴────┐  ┌─┴─┴─┴┐  ┌───────┴─┐\n   │Leaf 1│  │Leaf 2│  │  Leaf 3 │   ← ToR (server যুক্ত)\n   └──┬───┘  └──┬───┘  └────┬────┘\n    servers   servers     servers\n\n  নিয়ম: Leaf↔Spine যুক্ত; Leaf↔Leaf / Spine↔Spine নয়\n  যেকোনো server↔server = Leaf → Spine → Leaf = ঠিক ২ hop\n  সব path active (ECMP), কোনোটা block নয়",
-        "table": {
-          "headers": [
-            "বিষয়",
-            "Leaf",
-            "Spine"
-          ],
-          "rows": [
-            [
-              "অবস্থান",
-              "নিচের স্তর (access)",
-              "উপরের স্তর (backbone)"
-            ],
-            [
-              "যুক্ত হয়",
-              "server/storage + সব Spine",
-              "শুধু সব Leaf"
-            ],
-            [
-              "= কী",
-              "ToR (Top of Rack)",
-              "core / backbone switch"
-            ],
-            [
-              "server যুক্ত?",
-              "হ্যাঁ",
-              "না"
-            ]
-          ]
-        },
-        "mistakes": [
-          [
-            "Leaf-গুলো একে অন্যের সাথে সরাসরি যুক্ত থাকে",
-            "না — Leaf শুধু Spine-এর সাথে যুক্ত; Leaf↔Leaf সরাসরি link নেই, যোগাযোগ Spine হয়ে যায়"
-          ],
-          [
-            "Spine switch-এ server যুক্ত হয়",
-            "না — server শুধু Leaf-এ যুক্ত; Spine শুধু Leaf-দের জুড়ে backbone হিসেবে কাজ করে"
-          ]
-        ],
-        "mnemonic": "Leaf = পাতা (নিচে, server ঝোলে = ToR)। Spine = মেরুদণ্ড (উপরে, সব পাতা জোড়ে)। প্রতি পাতা প্রতি মেরুদণ্ডে → যেকোনো server↔server ঠিক ২ hop, সব path active (ECMP)।"
-      }
-    },
-    {
       "id": "server_011",
       "q": "Explain Data Center Networking technology (topologies and key technologies).",
       "tags": [
@@ -895,21 +849,45 @@
         "points": [
           "আগে বুঝে নাও — L2 = একই network-এর ভেতরে MAC দিয়ে কথা (Switch); L3 = আলাদা network-এর মধ্যে IP দিয়ে কথা (Router)। Spine-Leaf-এর link গুলো L3 (routed), আর VXLAN তার উপর একটা নকল L2 overlay বানায় যাতে VM migrate করা যায়।",
           "Campus network-এর সাথে মিল (Similarities):",
-          { "sub": "একই building block — Switch, VLAN, IP।" },
-          { "sub": "Edge-এ server, appliance ও storage যুক্ত হয়।" },
-          { "sub": "L3 service একই — gateway/FHRP, এবং routing protocol: OSPF, EIGRP, BGP, IS-IS।" },
+          {
+            "sub": "একই building block — Switch, VLAN, IP।"
+          },
+          {
+            "sub": "Edge-এ server, appliance ও storage যুক্ত হয়।"
+          },
+          {
+            "sub": "L3 service একই — gateway/FHRP, এবং routing protocol: OSPF, EIGRP, BGP, IS-IS।"
+          },
           "পার্থক্য — data center যা বাড়তি করে (Differences):",
-          { "sub": "L2-তে scale: VM migration-এর জন্য বড় L2 domain দরকার, তাই STP-নির্ভরতা কমায়। STP কীভাবে bandwidth নষ্ট করে — redundancy-র জন্য দুটো link লাগালে STP loop ঠেকাতে একটা block করে রাখে; সেই link traffic হারায় না, কিন্তু অলস বসে থাকে (যেমন 2×10G-এর মধ্যে মাত্র 10G ব্যবহার হয়, বাকি 10G শুধু backup)। vPC/ECMP দুটো link-ই active রাখে → পুরো 20G কাজে লাগে, loop-ও হয় না। (এছাড়া বড় L2-তে broadcast ও MAC table scale-এও চাপ পড়ে।)" },
-          { "sub": "Multitenancy: এক physical fabric-এ অনেক VM/tenant আলাদা রাখা।" },
-          { "sub": "Storage networking: FC, FCoE, iSCSI দিয়ে storage একই network-এ আনা।" },
+          {
+            "sub": "L2-তে scale: VM migration-এর জন্য বড় L2 domain দরকার, তাই STP-নির্ভরতা কমায়। STP কীভাবে bandwidth নষ্ট করে — redundancy-র জন্য দুটো link লাগালে STP loop ঠেকাতে একটা block করে রাখে; সেই link traffic হারায় না, কিন্তু অলস বসে থাকে (যেমন 2×10G-এর মধ্যে মাত্র 10G ব্যবহার হয়, বাকি 10G শুধু backup)। vPC/ECMP দুটো link-ই active রাখে → পুরো 20G কাজে লাগে, loop-ও হয় না। (এছাড়া বড় L2-তে broadcast ও MAC table scale-এও চাপ পড়ে।)"
+          },
+          {
+            "sub": "Multitenancy: এক physical fabric-এ অনেক VM/tenant আলাদা রাখা।"
+          },
+          {
+            "sub": "Storage networking: FC, FCoE, iSCSI দিয়ে storage একই network-এ আনা।"
+          },
           "মূল technology:",
-          { "sub": "vPC (virtual Port Channel): STP block ছাড়াই দুই switch জুড়ে multipath (পুরোনো stacking/VSS-এর আধুনিক বিকল্প)।" },
-          { "sub": "VXLAN: VLAN-এর বড় ভাই। VLAN শুধু L2-তে network আলাদা করে (সর্বোচ্চ 4094টা)। VXLAN একই কাজ করে কিন্তু (১) ~16 মিলিয়ন segment দেয় (বড় cloud/multi-tenant-এ লাগে), আর (২) L2-কে L3 network-এর উপর দিয়ে পাঠায় (L2 frame-কে IP packet-এ মুড়ে) — তাই দূরের rack-ও যেন একই L2-তে, VM migrate সহজ। (সাথে EVPN address শেখায়।)" },
-          { "sub": "FEX (Fabric Extender): ToR switch-কে কেন্দ্রীয় switch-এর extension বানায়।" },
-          { "sub": "High bandwidth: 10G / 25G / 40G / 100G (SFP28, QSFP28 transceiver)।" },
+          {
+            "sub": "vPC (virtual Port Channel): STP block ছাড়াই দুই switch জুড়ে multipath (পুরোনো stacking/VSS-এর আধুনিক বিকল্প)।"
+          },
+          {
+            "sub": "VXLAN: VLAN-এর বড় ভাই। VLAN শুধু L2-তে network আলাদা করে (সর্বোচ্চ 4094টা)। VXLAN একই কাজ করে কিন্তু (১) ~16 মিলিয়ন segment দেয় (বড় cloud/multi-tenant-এ লাগে), আর (২) L2-কে L3 network-এর উপর দিয়ে পাঠায় (L2 frame-কে IP packet-এ মুড়ে) — তাই দূরের rack-ও যেন একই L2-তে, VM migrate সহজ। (সাথে EVPN address শেখায়।)"
+          },
+          {
+            "sub": "FEX (Fabric Extender): ToR switch-কে কেন্দ্রীয় switch-এর extension বানায়।"
+          },
+          {
+            "sub": "High bandwidth: 10G / 25G / 40G / 100G (SFP28, QSFP28 transceiver)।"
+          },
           "Topology:",
-          { "sub": "Campus 3-tier: Core – Distribution – Access; ঐতিহ্যবাহী, North-South traffic-এর জন্য।" },
-          { "sub": "Spine-Leaf: প্রতিটি Leaf প্রতিটি Spine-এ যুক্ত (L3 fabric) — সমান hop, East-West traffic-এর জন্য আদর্শ।" },
+          {
+            "sub": "Campus 3-tier: Core – Distribution – Access; ঐতিহ্যবাহী, North-South traffic-এর জন্য।"
+          },
+          {
+            "sub": "Spine-Leaf: প্রতিটি Leaf প্রতিটি Spine-এ যুক্ত (L3 fabric) — সমান hop, East-West traffic-এর জন্য আদর্শ।"
+          },
           "Redundancy: dual power supply, এবং NX-OS-এর modular design (প্রতিটি feature যেমন OSPF আলাদা module হিসেবে চালু/বন্ধ করা যায়, fault isolate হয়)।"
         ],
         "diagram": "একই ভিত্তি, বাড়তি প্রযুক্তি:\n  Campus ─┐ switch, VLAN, IP, L3 routing (OSPF/BGP)\n          ├─ এগুলো দুই জায়গায় একই\n  DataCtr ─┘ + L2 scale, VXLAN/EVPN, vPC,\n             FC/FCoE storage, বেশি redundancy\n\nTOPOLOGY ১ — Campus 3-tier (North-South)\n          ┌────────┐\n          │  Core  │\n          └───┬────┘\n        ┌─────┴─────┐\n     ┌──┴──┐     ┌──┴──┐\n     │Dist │     │Dist │     ← Distribution\n     └──┬──┘     └──┬──┘\n     ┌──┴───┐    ┌──┴───┐\n     │Access│    │Access│    ← Access (server যুক্ত)\n     └──────┘    └──────┘\n\nTOPOLOGY ২ — Spine-Leaf (East-West, L3 fabric)\n     ┌──────┐        ┌──────┐\n     │Spine1│        │Spine2│\n     └─┬──┬─┘        └─┬──┬─┘\n       │  └─────┬──────┘  │     প্রতি Leaf ↔\n       └─────┐  │  ┌──────┘     প্রতি Spine\n     ┌─────┐ │  │  │ ┌─────┐\n     │Leaf1│─┘  │  └─│Leaf2│    ← Leaf (ToR)\n     └─┬───┘    │    └───┬─┘\n     server     │      server\n   সমান hop, সব path active",
@@ -988,13 +966,23 @@
           "Traditional networking-এর সমস্যা: প্রতিটি device-এ control + data দুই plane-ই থাকে, প্রতিটা আলাদা CLI-তে configure করতে হয় → বড় network-এ ধীর, ভুলের ঝুঁকি, vendor-specific।",
           "SDN যা করে: control plane device থেকে তুলে একটা কেন্দ্রীয় SDN Controller-এ রাখে; device \"বোকা\" হয়ে শুধু forward করে। Controller পুরো network-এর global view রেখে সিদ্ধান্ত দেয়।",
           "তিন স্তর (architecture):",
-          { "sub": "Application Layer: network app (security, load balancing, monitoring) — software হিসেবে server/VM-তে চলে, packet ছোঁয় না; শুধু \"কী চাই\" তা ঠিক করে দেয় (intent)।" },
-          { "sub": "Control Layer: SDN Controller — মূল brain; app-এর intent কে device rule-এ অনুবাদ করে switch-এ পাঠায়।" },
-          { "sub": "Infrastructure/Physical Layer: switch/router — সেই rule অনুযায়ী packet forward/drop করে (বাস্তবায়ন)।" },
+          {
+            "sub": "Application Layer: network app (security, load balancing, monitoring) — software হিসেবে server/VM-তে চলে, packet ছোঁয় না; শুধু \"কী চাই\" তা ঠিক করে দেয় (intent)।"
+          },
+          {
+            "sub": "Control Layer: SDN Controller — মূল brain; app-এর intent কে device rule-এ অনুবাদ করে switch-এ পাঠায়।"
+          },
+          {
+            "sub": "Infrastructure/Physical Layer: switch/router — সেই rule অনুযায়ী packet forward/drop করে (বাস্তবায়ন)।"
+          },
           "তাই switch শুধু forward করলেও security/LB হারায় না — যেমন security app বলে \"X block করো\" → Controller rule বানায় → switch X-এর packet drop করে। বুদ্ধি app-এ, হাত switch-এ।",
           "দুই API:",
-          { "sub": "Northbound API: Controller ↔ application (সাধারণত REST) — app Controller-কে বলে কী দরকার।" },
-          { "sub": "Southbound API: Controller ↔ device (যেমন OpenFlow) — Controller device-কে নির্দেশ পাঠায়।" },
+          {
+            "sub": "Northbound API: Controller ↔ application (সাধারণত REST) — app Controller-কে বলে কী দরকার।"
+          },
+          {
+            "sub": "Southbound API: Controller ↔ device (যেমন OpenFlow) — Controller device-কে নির্দেশ পাঠায়।"
+          },
           "কেন দরকার: কেন্দ্রীয় management, programmable (script/API দিয়ে network বদলানো), agility (দ্রুত পরিবর্তন), অনেকটা vendor-agnostic, এবং cloud/VM-এর dynamic চাহিদার সাথে মানানসই।",
           "Use case: data center ও cloud networking, network virtualization (VXLAN/overlay), SD-WAN, multi-tenant isolation, traffic engineering, কেন্দ্রীয় security policy।"
         ],
@@ -1072,12 +1060,22 @@
           "কাজ: client ও server গুচ্ছের মাঝে বসে incoming traffic একাধিক server-এ ছড়িয়ে দেয়; সাথে health check করে — কোনো server মরলে তাকে বাদ দেয়।",
           "কেন দরকার: এক server সব traffic নিতে পারে না; LB load ভাগ করে (overload ঠেকায়), redundancy দেয় (একটা মরলেও চলে), সহজ horizontal scaling (server যোগ করলেই হলো)।",
           "Static algorithm — fixed নিয়ম, server কতটা ব্যস্ত তা দেখে না:",
-          { "sub": "Round Robin: পালাক্রমে এক এক করে প্রতিটি server-এ পাঠায় (১→২→৩→১...)।" },
-          { "sub": "IP Hash: client-এর IP hash করে — একই client সবসময় একই server-এ যায় (session persistence / sticky)।" },
+          {
+            "sub": "Round Robin: পালাক্রমে এক এক করে প্রতিটি server-এ পাঠায় (১→২→৩→১...)।"
+          },
+          {
+            "sub": "IP Hash: client-এর IP hash করে — একই client সবসময় একই server-এ যায় (session persistence / sticky)।"
+          },
           "Dynamic algorithm — server-এর বর্তমান অবস্থা দেখে সিদ্ধান্ত:",
-          { "sub": "Least Connections: এখন যে server-এ সবচেয়ে কম active connection, তাকে দেয়।" },
-          { "sub": "Least Response Time: যে server দ্রুত সাড়া দিচ্ছে, তাকে দেয়।" },
-          { "sub": "Resource-based: server-এর CPU/RAM load দেখে কম-load-এর server-কে দেয়।" },
+          {
+            "sub": "Least Connections: এখন যে server-এ সবচেয়ে কম active connection, তাকে দেয়।"
+          },
+          {
+            "sub": "Least Response Time: যে server দ্রুত সাড়া দিচ্ছে, তাকে দেয়।"
+          },
+          {
+            "sub": "Resource-based: server-এর CPU/RAM load দেখে কম-load-এর server-কে দেয়।"
+          },
           "মূল কথা: Static সহজ ও দ্রুত (কম overhead) কিন্তু server অসমান busy হলে ভুল বণ্টন হতে পারে; Dynamic বেশি স্মার্ট (current load বোঝে) কিন্তু একটু বেশি overhead।"
         ],
         "diagram": "        [ Client ]\n            │ request\n            ▼\n      ┌──────────────┐\n      │ Load Balancer │ ← traffic ভাগ করে + health check\n      └──┬────┬────┬─┘\n    [Server1][Server2][Server3]\n\nকোন server-কে দেবে?\n\n  STATIC (fixed, load দেখে না)\n    Round Robin → ১→২→৩→১→২→৩ ... পালাক্রমে\n    IP Hash     → একই client = একই server (sticky)\n\n  DYNAMIC (current load দেখে)\n    Least Connections → কম connection-এর server\n    Least Resp Time   → দ্রুত সাড়া দেওয়া server\n    Resource-based    → কম CPU/RAM-load server",
@@ -1149,10 +1147,18 @@
           "Kubernetes কী: শুধু container orchestrator — deploy, scale, self-heal করে। কিন্তু registry, CI/CD, monitoring, security policy ইত্যাদি তুমি নিজে যোগ করো (DIY)।",
           "OpenShift কী: Red Hat-এর Kubernetes distribution — Kubernetes-কে ভিত্তি ধরে enterprise-ready বানানো; অনেক জিনিস আগে থেকেই যুক্ত।",
           "OpenShift যা বাড়তি দেয়:",
-          { "sub": "Web console + developer tooling, যেমন S2I (Source-to-Image): তোমার source code (Git থেকে) নিয়ে OpenShift নিজে container image বানিয়ে দেয় — Dockerfile লিখতে হয় না। তুমি শুধু code দাও + একটা builder image (Node/Python/Java runtime), S2I সেই builder-এর ভেতরে তোমার code ঢুকিয়ে চালানোর-উপযোগী image তৈরি করে। মানে: code push করো → image তৈরি।" },
-          { "sub": "Built-in CI/CD (Pipelines) এবং integrated image registry।" },
-          { "sub": "কড়া security default (random UID, root container নিষেধ, SCC — Security Context Constraints)।" },
-          { "sub": "নিজস্ব OS (RHEL CoreOS) ও Red Hat-এর enterprise support।" },
+          {
+            "sub": "Web console + developer tooling, যেমন S2I (Source-to-Image): তোমার source code (Git থেকে) নিয়ে OpenShift নিজে container image বানিয়ে দেয় — Dockerfile লিখতে হয় না। তুমি শুধু code দাও + একটা builder image (Node/Python/Java runtime), S2I সেই builder-এর ভেতরে তোমার code ঢুকিয়ে চালানোর-উপযোগী image তৈরি করে। মানে: code push করো → image তৈরি।"
+          },
+          {
+            "sub": "Built-in CI/CD (Pipelines) এবং integrated image registry।"
+          },
+          {
+            "sub": "কড়া security default (random UID, root container নিষেধ, SCC — Security Context Constraints)।"
+          },
+          {
+            "sub": "নিজস্ব OS (RHEL CoreOS) ও Red Hat-এর enterprise support।"
+          },
           "License/cost: K8s ফ্রি ও open source (CNCF); OpenShift subscription/paid (support সহ)।",
           "Setup: K8s নিজে setup করে সব tool যোগ করতে হয় (নমনীয় কিন্তু পরিশ্রম); OpenShift আগে থেকেই গোছানো (দ্রুত কিন্তু opinionated)।",
           "কখন কোনটা: পূর্ণ নিয়ন্ত্রণ, কম খরচ ও flexibility চাইলে → vanilla Kubernetes; enterprise-এ ready-made platform, support ও কড়া security চাইলে → OpenShift।"
@@ -1236,13 +1242,21 @@
           "সমস্যা যা সমাধান করে: হাতে server/network বানানো ধীর, ভুলের ঝুঁকি, প্রতিবার একটু আলাদা হয়ে যায় (config drift), এবং repeatable নয়।",
           "IaC: পুরো infrastructure একটা code file-এ লেখা থাকে; এক command-এ পুরো environment তৈরি বা মুছে ফেলা যায়, প্রতিবার হুবহু একই।",
           "Declarative vs Imperative:",
-          { "sub": "Declarative: শুধু \"কী চাও\" (end state) বলো — যেমন \"৩টা server চাই\"; tool নিজে কীভাবে বানাবে ঠিক করে (Terraform, CloudFormation)।" },
-          { "sub": "Imperative: ধাপে ধাপে \"কীভাবে করবে\" লেখো (script-এর মতো)।" },
+          {
+            "sub": "Declarative: শুধু \"কী চাও\" (end state) বলো — যেমন \"৩টা server চাই\"; tool নিজে কীভাবে বানাবে ঠিক করে (Terraform, CloudFormation)।"
+          },
+          {
+            "sub": "Imperative: ধাপে ধাপে \"কীভাবে করবে\" লেখো (script-এর মতো)।"
+          },
           "Idempotency: একই code বারবার চালালেও ফল একই থাকে — duplicate resource তৈরি হয় না।",
           "Version control: infra Git-এ থাকে → history, review, rollback; এবং code নিজেই documentation।",
           "Tool ও ধরন:",
-          { "sub": "Provisioning (নতুন infra তৈরি): Terraform, AWS CloudFormation, Pulumi।" },
-          { "sub": "Configuration management (existing server-এ software/config বসানো): Ansible, Chef, Puppet।" }
+          {
+            "sub": "Provisioning (নতুন infra তৈরি): Terraform, AWS CloudFormation, Pulumi।"
+          },
+          {
+            "sub": "Configuration management (existing server-এ software/config বসানো): Ansible, Chef, Puppet।"
+          }
         ],
         "diagram": "পুরোনো ধরন — হাতে (manual)\n   Admin → console-এ click click → server বানায়\n   ধীর │ ভুলের ঝুঁকি │ প্রতিবার আলাদা (drift)\n\nIaC — code দিয়ে\n   ┌────────────────────────┐\n   │  infra code (.tf)        │  \"৩টা server, ১ network...\"\n   └───────────┬────────────┘\n               │ এক command (apply)\n               ▼\n   ┌────────────────────────┐\n   │  Tool (Terraform...)     │ → cloud-এ বানায়\n   └───────────┬────────────┘\n        [Srv]  [Srv]  [Srv]    হুবহু, বারবার একই\n\n   code Git-এ → version control, review, rollback",
         "table": {
@@ -1317,10 +1331,18 @@
         "points": [
           "কেন দরকার: অনেক server/service-এ log ছড়িয়ে থাকে; সমস্যা হলে প্রতিটা server-এ আলাদা খোঁজা কঠিন। ELK সব log এক জায়গায় এনে centralized search, visualize ও monitor করতে দেয়।",
           "Component গুলো:",
-          { "sub": "Elasticsearch: search ও analytics engine — data store ও index করে, দ্রুত full-text search দেয়। (হৃদয় / database)" },
-          { "sub": "Logstash: data pipeline — নানা উৎস থেকে log নেয়, parse/transform/enrich করে, Elasticsearch-এ পাঠায়। (processor)" },
-          { "sub": "Kibana: visualization UI — Elasticsearch-এর data নিয়ে dashboard, chart ও search interface দেখায়। (চোখ / dashboard)" },
-          { "sub": "Beats (পরে যুক্ত): হালকা agent (Filebeat=log, Metricbeat=metric) যা server থেকে data সংগ্রহ করে পাঠায়। (collector)" },
+          {
+            "sub": "Elasticsearch: search ও analytics engine — data store ও index করে, দ্রুত full-text search দেয়। (হৃদয় / database)"
+          },
+          {
+            "sub": "Logstash: data pipeline — নানা উৎস থেকে log নেয়, parse/transform/enrich করে, Elasticsearch-এ পাঠায়। (processor)"
+          },
+          {
+            "sub": "Kibana: visualization UI — Elasticsearch-এর data নিয়ে dashboard, chart ও search interface দেখায়। (চোখ / dashboard)"
+          },
+          {
+            "sub": "Beats (পরে যুক্ত): হালকা agent (Filebeat=log, Metricbeat=metric) যা server থেকে data সংগ্রহ করে পাঠায়। (collector)"
+          },
           "Data flow: উৎস/Beats → Logstash (process) → Elasticsearch (store + index) → Kibana (visualize)।",
           "Use case: log analysis, application/infrastructure monitoring, security analytics (SIEM), search ও observability।"
         ],
@@ -1388,11 +1410,21 @@
           "Monolithic: UI, business logic, data access — সব এক codebase ও এক process-এ; একসাথে build ও deploy হয়।",
           "Microservices: প্রতিটি service একটি নির্দিষ্ট business কাজ করে, স্বাধীনভাবে deploy হয়, API/REST/messaging দিয়ে একে অন্যের সাথে কথা বলে, প্রায়ই নিজস্ব database রাখে।",
           "মূল পার্থক্য:",
-          { "sub": "Deploy: mono = পুরোটা একসাথে; micro = প্রতি service আলাদা।" },
-          { "sub": "Scaling: mono = পুরো app scale করতে হয়; micro = শুধু যে service-এ চাপ সেটা scale করা যায়।" },
-          { "sub": "Failure: mono = এক bug পুরো app ফেলে দিতে পারে; micro = সমস্যা এক service-এ আটকে থাকে (isolation)।" },
-          { "sub": "Tech stack: mono = এক stack; micro = প্রতি service আলাদা language/stack ব্যবহার করতে পারে।" },
-          { "sub": "Communication: mono = in-process function call (দ্রুত); micro = network call (latency ও জটিলতা যোগ করে)।" },
+          {
+            "sub": "Deploy: mono = পুরোটা একসাথে; micro = প্রতি service আলাদা।"
+          },
+          {
+            "sub": "Scaling: mono = পুরো app scale করতে হয়; micro = শুধু যে service-এ চাপ সেটা scale করা যায়।"
+          },
+          {
+            "sub": "Failure: mono = এক bug পুরো app ফেলে দিতে পারে; micro = সমস্যা এক service-এ আটকে থাকে (isolation)।"
+          },
+          {
+            "sub": "Tech stack: mono = এক stack; micro = প্রতি service আলাদা language/stack ব্যবহার করতে পারে।"
+          },
+          {
+            "sub": "Communication: mono = in-process function call (দ্রুত); micro = network call (latency ও জটিলতা যোগ করে)।"
+          },
           "Trade-off: Monolith সহজ ও দ্রুত শুরু কিন্তু scale-এ আনাড়ি; Microservices নমনীয় ও scalable কিন্তু operational complexity বেশি (service discovery, monitoring, distributed tracing, প্রায়ই Kubernetes লাগে)।",
           "কখন কোনটা: ছোট/সরল app, ছোট team, দ্রুত শুরু → Monolith; বড় complex app, অনেক team, আলাদা scale/deploy দরকার → Microservices।"
         ],
@@ -1477,8 +1509,12 @@
           "Failover: primary system (server/DB/site) মরলে আগে থেকে প্রস্তুত standby-তে সরে গিয়ে service চালু রাখা। Automatic failover RTO কমায়।",
           "সম্পর্ক: Replication ছোট RPO দেয় (data পেছনে কম হারায়); Failover ছোট RTO দেয় (দ্রুত ফেরা)।",
           "Failover ধরন:",
-          { "sub": "Active-Passive: standby অপেক্ষায় থাকে, primary মরলে চালু হয়।" },
-          { "sub": "Active-Active: দুটোই একসাথে চলে, একটা মরলেও অন্যটা সামলে নেয়।" }
+          {
+            "sub": "Active-Passive: standby অপেক্ষায় থাকে, primary মরলে চালু হয়।"
+          },
+          {
+            "sub": "Active-Active: দুটোই একসাথে চলে, একটা মরলেও অন্যটা সামলে নেয়।"
+          }
         ],
         "diagram": "DR timeline:\n\n  শেষ backup        💥 DISASTER       service ফিরল\n      │                 │                  │\n      │◄───── RPO ─────►│◄────── RTO ─────►│\n      │   data loss     │    downtime      │\n   কত data হারাবে?   ← সমস্যা →   কত সময়ে ফিরবে?\n\n  RPO = পেছনে তাকায় (data) │ RTO = সামনে তাকায় (সময়)\n\nFailover — primary মরলে standby-তে সরে যাওয়া\n   [Primary] ──✗ মরল──► [Standby]  ← স্বয়ংক্রিয়ভাবে চালু\n        service চলতেই থাকে (RTO কম রাখে)",
         "table": {
@@ -1524,6 +1560,80 @@
       }
     },
     {
+      "id": "server_019",
+      "q": "Explain the Spine-Leaf network architecture.",
+      "tags": [
+        "spine-leaf",
+        "clos",
+        "data center",
+        "ECMP",
+        "ToR",
+        "topology"
+      ],
+      "answer": {
+        "summary": [
+          "শুরুতে বুঝে নাও — Spine-Leaf = data center-এর আধুনিক ২-স্তর network topology (Clos fabric)। দুই ধরনের switch: Leaf (নিচে, server যুক্ত) ও Spine (উপরে, backbone)।",
+          "নিয়ম: প্রতিটি Leaf প্রতিটি Spine-এর সাথে যুক্ত; কিন্তু Leaf↔Leaf বা Spine↔Spine সরাসরি যুক্ত নয়। ফলে যেকোনো server থেকে যেকোনো server = ঠিক ২ hop (predictable)।",
+          "East-West traffic ও ECMP multipath-এর জন্য আদর্শ; পুরোনো 3-tier-এর bottleneck ও STP সমস্যা এড়ায়।"
+        ],
+        "points": [
+          "দুই স্তর:",
+          {
+            "sub": "Leaf switch: access স্তর; server/storage এতে যুক্ত হয় (= ToR, Top of Rack)।"
+          },
+          {
+            "sub": "Spine switch: backbone; শুধু Leaf-দের জুড়ে দেয়, কোনো server সরাসরি যুক্ত নয়।"
+          },
+          "সংযোগের নিয়ম: প্রতিটি Leaf প্রতিটি Spine-এ যুক্ত (দুই স্তরের মাঝে full mesh); কিন্তু Leaf↔Leaf বা Spine↔Spine সরাসরি link নেই।",
+          "Predictable latency: যেকোনো দুই server-এর মধ্যে path সবসময় Leaf → Spine → Leaf = ঠিক ২ hop; তাই latency সমান ও আগে থেকে জানা।",
+          "ECMP (Equal-Cost Multi-Path): একাধিক সমান path থাকায় traffic সব Spine-এ ভাগ হয়ে যায় (সব link active, STP-র মতো কোনো link block নয়) → পুরো bandwidth ব্যবহার।",
+          "Scaling: bandwidth বাড়াতে আরেকটি Spine যোগ করো; port/server বাড়াতে আরেকটি Leaf যোগ করো — horizontally scale করা সহজ।",
+          "কেন (3-tier-এর তুলনায়): আধুনিক traffic বেশিরভাগ East-West (server↔server); 3-tier-এ তা বেশি hop ও bottleneck তৈরি করত, Spine-Leaf সমান hop ও সব path active দিয়ে সমাধান করে।"
+        ],
+        "diagram": "Spine-Leaf (Clos) — ২ স্তর\n\n   ┌──────┐    ┌──────┐    ┌──────┐\n   │Spine1│    │Spine2│    │Spine3│   ← backbone (server নেই)\n   └─┬─┬─┬┘    └┬─┬─┬─┘    └┬─┬─┬─┘\n     │ │ └─────┼─┼─┼───────┘ │ │     প্রতিটি Leaf\n     │ └───────┼─┼─┼─────────┘ │     প্রতিটি Spine-এ যুক্ত\n   ┌─┴────┐  ┌─┴─┴─┴┐  ┌───────┴─┐\n   │Leaf 1│  │Leaf 2│  │  Leaf 3 │   ← ToR (server যুক্ত)\n   └──┬───┘  └──┬───┘  └────┬────┘\n    servers   servers     servers\n\n  নিয়ম: Leaf↔Spine যুক্ত; Leaf↔Leaf / Spine↔Spine নয়\n  যেকোনো server↔server = Leaf → Spine → Leaf = ঠিক ২ hop\n  সব path active (ECMP), কোনোটা block নয়",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Leaf",
+            "Spine"
+          ],
+          "rows": [
+            [
+              "অবস্থান",
+              "নিচের স্তর (access)",
+              "উপরের স্তর (backbone)"
+            ],
+            [
+              "যুক্ত হয়",
+              "server/storage + সব Spine",
+              "শুধু সব Leaf"
+            ],
+            [
+              "= কী",
+              "ToR (Top of Rack)",
+              "core / backbone switch"
+            ],
+            [
+              "server যুক্ত?",
+              "হ্যাঁ",
+              "না"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Leaf-গুলো একে অন্যের সাথে সরাসরি যুক্ত থাকে",
+            "না — Leaf শুধু Spine-এর সাথে যুক্ত; Leaf↔Leaf সরাসরি link নেই, যোগাযোগ Spine হয়ে যায়"
+          ],
+          [
+            "Spine switch-এ server যুক্ত হয়",
+            "না — server শুধু Leaf-এ যুক্ত; Spine শুধু Leaf-দের জুড়ে backbone হিসেবে কাজ করে"
+          ]
+        ],
+        "mnemonic": "Leaf = পাতা (নিচে, server ঝোলে = ToR)। Spine = মেরুদণ্ড (উপরে, সব পাতা জোড়ে)। প্রতি পাতা প্রতি মেরুদণ্ডে → যেকোনো server↔server ঠিক ২ hop, সব path active (ECMP)।"
+      }
+    },
+    {
       "id": "server_020",
       "q": "Snapshots vs Backup vs Replicas — what is each, and how do they differ?",
       "tags": [
@@ -1546,9 +1656,15 @@
           "Replica: অন্য server/site-এ data-র live, ক্রমাগত synced কপি (real-time/near-real-time)। কাজ: high availability — primary মরলে replica দায়িত্ব নেয় (failover)। দুর্বলতা: সব কিছু copy করে — delete/corruption-ও সঙ্গে সঙ্গে replica-তে চলে যায়; কোনো history নেই, তাই backup নয়।",
           "বড় ফাঁদ: Replica বা Snapshot-কে backup ভাবা ভুল। Replica ভুল তাৎক্ষণিক sync করে, Snapshot storage-এর সাথে মরে; শুধু স্বাধীন, history-সহ Backup-ই data loss/corruption/disaster থেকে বাঁচায়।",
           "কোনটা কীসের জন্য:",
-          { "sub": "Snapshot → দ্রুত rollback (oops, undo)।" },
-          { "sub": "Backup → disaster recovery + long-term retention।" },
-          { "sub": "Replica → high availability + failover (RTO কমায়)।" }
+          {
+            "sub": "Snapshot → দ্রুত rollback (oops, undo)।"
+          },
+          {
+            "sub": "Backup → disaster recovery + long-term retention।"
+          },
+          {
+            "sub": "Replica → high availability + failover (RTO কমায়)।"
+          }
         ],
         "diagram": "SNAPSHOT — একই storage-এ মুহূর্তের ছবি\n   [ Storage ]\n     ├─ Live data\n     └─ Snapshot (T1) ← শুধু পরিবর্তন (CoW), দ্রুত rollback\n   ⚠ storage মরলে snapshot-ও মরে (backup নয়)\n\nBACKUP — আলাদা জায়গায় স্বাধীন কপি\n   [ Original ] ──copy──► [ Backup: ভিন্ন স্থান/medium ]\n   original হারালেও restore হয় │ history থাকে │ durable\n\nREPLICA — অন্য system-এ live synced কপি\n   [ Primary ] ══live sync══► [ Replica ]\n   primary মরলে replica চালায় (failover, HA)\n   ⚠ delete/ভুলও সঙ্গে সঙ্গে copy হয় (history নেই → backup নয়)",
         "table": {
@@ -1632,8 +1748,12 @@
           "Power On / Start: VM boot হয়, guest OS load হয় → Running অবস্থায় যায়।",
           "Running: VM সক্রিয়, কাজ করছে।",
           "Pause vs Suspend:",
-          { "sub": "Pause: RAM-এ ধরে রেখে সাময়িক থামানো — দ্রুত resume, কিন্তু RAM দখলে থাকে।" },
-          { "sub": "Suspend (save state): অবস্থা disk-এ সংরক্ষণ করে RAM মুক্ত করে — অনেকটা hibernate।" },
+          {
+            "sub": "Pause: RAM-এ ধরে রেখে সাময়িক থামানো — দ্রুত resume, কিন্তু RAM দখলে থাকে।"
+          },
+          {
+            "sub": "Suspend (save state): অবস্থা disk-এ সংরক্ষণ করে RAM মুক্ত করে — অনেকটা hibernate।"
+          },
           "Resume: pause/suspend থেকে আবার Running-এ ফেরা।",
           "Power Off / Shutdown: VM বন্ধ (graceful OS shutdown বা hard power off)। সংজ্ঞা ও disk থেকে যায়, আবার চালু করা যায়।",
           "জীবদ্দশায় operation: Snapshot (নির্দিষ্ট মুহূর্ত সংরক্ষণ → rollback), Migrate/live migration (চালু অবস্থায় অন্য host-এ সরানো, যেমন vMotion), Clone (হুবহু নকল)।",
@@ -1712,11 +1832,19 @@
         ],
         "points": [
           "ভাগ ১ — খালি disk দেয় (block; server নিজে format করে, SAN ব্যবহার করে)। পার্থক্য শুধু কোন রাস্তা দিয়ে যায়:",
-          { "sub": "iSCSI: তোমার সাধারণ Ethernet/IP network তারেই block storage পাঠায় → সস্তা, আলাদা hardware লাগে না, setup সহজ (তবে অন্য traffic-এর সাথে রাস্তা শেয়ার করে)।" },
-          { "sub": "Fibre Channel (FC): শুধু storage-এর জন্য আলাদা, dedicated super-fast network (আলাদা FC card/switch/fiber তার) → দামি, কিন্তু দ্রুত, low-latency ও খুব নির্ভরযোগ্য (অন্য traffic-এর ধাক্কা নেই)।" },
+          {
+            "sub": "iSCSI: তোমার সাধারণ Ethernet/IP network তারেই block storage পাঠায় → সস্তা, আলাদা hardware লাগে না, setup সহজ (তবে অন্য traffic-এর সাথে রাস্তা শেয়ার করে)।"
+          },
+          {
+            "sub": "Fibre Channel (FC): শুধু storage-এর জন্য আলাদা, dedicated super-fast network (আলাদা FC card/switch/fiber তার) → দামি, কিন্তু দ্রুত, low-latency ও খুব নির্ভরযোগ্য (অন্য traffic-এর ধাক্কা নেই)।"
+          },
           "ভাগ ২ — shared folder দেয় (file; Google Drive-এর মতো, NAS ব্যবহার করে)। পার্থক্য মূলত কোন OS-এর জন্য:",
-          { "sub": "NFS: মূলত Linux/Unix-এর folder sharing (Unix permission ব্যবহার করে, হালকা ও সরল)।" },
-          { "sub": "SMB/CIFS: মূলত Windows-এর folder sharing (Active Directory/Windows ACL-এর সাথে মেলে, printer sharing-ও করে)।" },
+          {
+            "sub": "NFS: মূলত Linux/Unix-এর folder sharing (Unix permission ব্যবহার করে, হালকা ও সরল)।"
+          },
+          {
+            "sub": "SMB/CIFS: মূলত Windows-এর folder sharing (Active Directory/Windows ACL-এর সাথে মেলে, printer sharing-ও করে)।"
+          },
           "মনে রাখো: block (iSCSI, FC) → খালি disk দেয়; file (NFS, SMB) → folder দেয়। এই দুই ভাগ আগে থেকেই চেনা — SAN vs NAS।"
         ],
         "diagram": "Storage কীভাবে পৌঁছায়?\n\nখালি disk দেয় (block → SAN)\n   iSCSI         →  সাধারণ network তারে    (সস্তা)\n   Fibre Channel →  আলাদা fast highway-তে   (দামি, দ্রুত)\n\nshared folder দেয় (file → NAS)\n   NFS       →  Linux-এর জন্য\n   SMB/CIFS  →  Windows-এর জন্য",
@@ -1782,12 +1910,24 @@
         "points": [
           "DevOps: Dev (development) ও Ops (operations) একসাথে — automation ও collaboration-এর সংস্কৃতি; CI/CD হলো সেটি বাস্তবায়নের pipeline।",
           "Pipeline ধাপ:",
-          { "sub": "Code: developer code লেখে, Git-এ push করে (version control)।" },
-          { "sub": "Build: code compile + dependency এনে artifact তৈরি।" },
-          { "sub": "Test: automated test চালানো (unit, integration) — bug আগেভাগে ধরা।" },
-          { "sub": "Package: deployable artifact-এ বাঁধা (container image/jar) → registry-তে রাখা।" },
-          { "sub": "Deploy: environment-এ release (staging/production)।" },
-          { "sub": "Monitor: production-এ নজর (log, metric, alert) — feedback loop, সমস্যা হলে আবার শুরু।" },
+          {
+            "sub": "Code: developer code লেখে, Git-এ push করে (version control)।"
+          },
+          {
+            "sub": "Build: code compile + dependency এনে artifact তৈরি।"
+          },
+          {
+            "sub": "Test: automated test চালানো (unit, integration) — bug আগেভাগে ধরা।"
+          },
+          {
+            "sub": "Package: deployable artifact-এ বাঁধা (container image/jar) → registry-তে রাখা।"
+          },
+          {
+            "sub": "Deploy: environment-এ release (staging/production)।"
+          },
+          {
+            "sub": "Monitor: production-এ নজর (log, metric, alert) — feedback loop, সমস্যা হলে আবার শুরু।"
+          },
           "CI vs CD: CI = code merge হলেই auto build+test (integration bug দ্রুত ধরা)। Continuous Delivery = deploy-ready কিন্তু production-এ ছাড়তে manual approve। Continuous Deployment = production পর্যন্ত পুরো auto।",
           "Tool: Git, Jenkins / GitLab CI / GitHub Actions, Docker, Kubernetes, Terraform, Prometheus/Grafana।"
         ],
@@ -1838,7 +1978,7 @@
       }
     },
     {
-      "id": "server_025",
+      "id": "server_024",
       "q": "Explain Live Migration (basic idea) and High Availability in virtualization.",
       "tags": [
         "live migration",
@@ -1857,10 +1997,18 @@
         "points": [
           "Live Migration কী: চালু VM-কে downtime ছাড়া অন্য host-এ সরানো (VMware vMotion, KVM live migration)। ব্যবহার: host maintenance/patch, busy host থেকে load সরানো।",
           "Live Migration কীভাবে হয় (basic idea):",
-          { "sub": "VM source host-এ চলতে চলতে তার RAM destination host-এ copy হতে থাকে।" },
-          { "sub": "copy চলাকালীন যে memory page বদলায় (dirty page), সেগুলো বারবার আবার copy হয়।" },
-          { "sub": "শেষে অল্প memory বাকি থাকলে VM মুহূর্তের জন্য থামিয়ে শেষ অংশ + CPU state পাঠিয়ে destination-এ resume করা হয় — pause মাত্র মিলিসেকেন্ড।" },
-          { "sub": "সাধারণত shared storage থাকে (দুই host একই VM disk দেখে), তাই শুধু memory+state সরে, disk নয়।" },
+          {
+            "sub": "VM source host-এ চলতে চলতে তার RAM destination host-এ copy হতে থাকে।"
+          },
+          {
+            "sub": "copy চলাকালীন যে memory page বদলায় (dirty page), সেগুলো বারবার আবার copy হয়।"
+          },
+          {
+            "sub": "শেষে অল্প memory বাকি থাকলে VM মুহূর্তের জন্য থামিয়ে শেষ অংশ + CPU state পাঠিয়ে destination-এ resume করা হয় — pause মাত্র মিলিসেকেন্ড।"
+          },
+          {
+            "sub": "সাধারণত shared storage থাকে (দুই host একই VM disk দেখে), তাই শুধু memory+state সরে, disk নয়।"
+          },
           "High Availability কী: host crash করলে তার VM গুলো cluster-এর অন্য host-এ স্বয়ংক্রিয়ভাবে restart হয় (VMware HA)। restart-এর সময় সামান্য downtime থাকে, কিন্তু service দ্রুত ফেরে।",
           "মূল পার্থক্য: Live Migration = পরিকল্পিত, host সুস্থ, VM চলন্ত অবস্থায় সরে (০ downtime); HA = অপরিকল্পিত failure, host মরা, VM অন্যত্র আবার চালু হয় (সামান্য downtime)।",
           "দুটোরই দরকার: একাধিক host-এর cluster ও shared storage; HA মূলত virtualization-এ failover — RTO কমায়।"
@@ -1914,7 +2062,7 @@
       }
     },
     {
-      "id": "server_026",
+      "id": "server_025",
       "q": "What is a LUN (Logical Unit Number)? Why is it needed?",
       "tags": [
         "LUN",
@@ -1934,9 +2082,15 @@
           "LUN কী: storage array-র disk pool (সাধারণত RAID) থেকে একটা logical volume কেটে বের করা হয়; প্রতিটি এমন volume-কে একটা number (LUN) দিয়ে server-এর কাছে একটা single disk হিসেবে উপস্থাপন করা হয়।",
           "server-এর দিক থেকে: LUN একটা raw disk (block device)-এর মতো দেখায় — server এটাকে format করে, filesystem বসায় (ঠিক নিজের hard disk-এর মতো)।",
           "কেন দরকার:",
-          { "sub": "storage array-তে বিশাল disk pool; LUN দিয়ে তা manageable টুকরোয় ভাগ করা যায়।" },
-          { "sub": "নির্দিষ্ট LUN নির্দিষ্ট server-কে বরাদ্দ করা যায় (এক server-এর storage আরেকজন দেখবে না)।" },
-          { "sub": "physical disk না ছুঁয়ে flexible ভাবে storage বরাদ্দ ও বাড়ানো যায়।" },
+          {
+            "sub": "storage array-তে বিশাল disk pool; LUN দিয়ে তা manageable টুকরোয় ভাগ করা যায়।"
+          },
+          {
+            "sub": "নির্দিষ্ট LUN নির্দিষ্ট server-কে বরাদ্দ করা যায় (এক server-এর storage আরেকজন দেখবে না)।"
+          },
+          {
+            "sub": "physical disk না ছুঁয়ে flexible ভাবে storage বরাদ্দ ও বাড়ানো যায়।"
+          },
           "LUN Masking / Zoning: কোন server কোন LUN দেখতে পাবে তা নিয়ন্ত্রণ করা — নিরাপত্তা ও isolation।",
           "উৎপত্তি: LUN আসলে SCSI-র শব্দ — একটা SCSI target-এ device চিনতে ব্যবহৃত number; SAN-এ এটাই logical storage volume বোঝায়।"
         ],
@@ -1983,7 +2137,7 @@
       }
     },
     {
-      "id": "server_027",
+      "id": "server_026",
       "q": "What are the types of Disaster Recovery sites (Hot, Warm, Cold)?",
       "tags": [
         "disaster recovery",
@@ -2054,7 +2208,7 @@
       }
     },
     {
-      "id": "server_028",
+      "id": "server_027",
       "q": "Backup types — Full vs Incremental vs Differential.",
       "tags": [
         "backup",
@@ -2126,7 +2280,7 @@
       }
     },
     {
-      "id": "server_029",
+      "id": "server_028",
       "q": "OLTP vs OLAP — what is each, and how do they differ?",
       "tags": [
         "OLTP",
@@ -2146,10 +2300,18 @@
           "OLTP: অনেক ছোট ও দ্রুত transaction (INSERT/UPDATE/DELETE); current/operational data; normalized schema (redundancy কম); অনেক concurrent user (গ্রাহক/কর্মী)। উদাহরণ: ATM, e-commerce order, banking।",
           "OLAP: কম কিন্তু জটিল read query (aggregation, join, group by) বিশাল historical data-র উপর; denormalized schema (star/snowflake, দ্রুত read); কম user (analyst/manager)। উদাহরণ: data warehouse, BI dashboard, report।",
           "মূল পার্থক্য:",
-          { "sub": "উদ্দেশ্য: OLTP transaction চালানো; OLAP বিশ্লেষণ।" },
-          { "sub": "Operation: OLTP ছোট read/write; OLAP জটিল read (aggregation)।" },
-          { "sub": "Data: OLTP current/detailed; OLAP historical/aggregated/বিশাল।" },
-          { "sub": "Schema: OLTP normalized; OLAP denormalized।" },
+          {
+            "sub": "উদ্দেশ্য: OLTP transaction চালানো; OLAP বিশ্লেষণ।"
+          },
+          {
+            "sub": "Operation: OLTP ছোট read/write; OLAP জটিল read (aggregation)।"
+          },
+          {
+            "sub": "Data: OLTP current/detailed; OLAP historical/aggregated/বিশাল।"
+          },
+          {
+            "sub": "Schema: OLTP normalized; OLAP denormalized।"
+          },
           "সম্পর্ক: OLTP-তে দৈনিক data জমে → ETL (Extract-Transform-Load) দিয়ে OLAP/data warehouse-এ নেওয়া হয় → সেখানে বিশ্লেষণ। দুটো প্রতিদ্বন্দ্বী নয়, পরিপূরক।"
         ],
         "diagram": "OLTP — ব্যবসা চালায় (transaction)\n   গ্রাহক/কর্মী → [ছোট দ্রুত read/write]\n   INSERT/UPDATE │ current data │ normalized\n   যেমন: ATM, order, banking\n\nOLAP — ব্যবসা বিশ্লেষণ করে (insight)\n   analyst → [জটিল query, aggregation]\n   SELECT...GROUP BY │ historical/বিশাল │ denormalized\n   যেমন: dashboard, BI report\n\nসম্পর্ক:\n   [OLTP operational DB] ──ETL──► [OLAP data warehouse]\n      দৈনিক transaction            বিশ্লেষণের জন্য জমা",
@@ -2211,7 +2373,7 @@
       }
     },
     {
-      "id": "server_030",
+      "id": "server_029",
       "q": "What is the Hadoop ecosystem? Explain its main components.",
       "tags": [
         "hadoop",
@@ -2229,17 +2391,35 @@
         ],
         "points": [
           "Core তিনটি (ভিত্তি):",
-          { "sub": "HDFS (Hadoop Distributed File System): বিশাল data অনেক machine জুড়ে distributed ভাবে store করে (block-এ ভাগ করে replicate করে)।" },
-          { "sub": "MapReduce: parallel processing model — কাজ Map (ভাগ) → Reduce (একত্র) ধাপে অনেক node-এ চালায়।" },
-          { "sub": "YARN: resource management ও job scheduling — কোন কাজ কোন node-এ কত resource পাবে নিয়ন্ত্রণ করে।" },
+          {
+            "sub": "HDFS (Hadoop Distributed File System): বিশাল data অনেক machine জুড়ে distributed ভাবে store করে (block-এ ভাগ করে replicate করে)।"
+          },
+          {
+            "sub": "MapReduce: parallel processing model — কাজ Map (ভাগ) → Reduce (একত্র) ধাপে অনেক node-এ চালায়।"
+          },
+          {
+            "sub": "YARN: resource management ও job scheduling — কোন কাজ কোন node-এ কত resource পাবে নিয়ন্ত্রণ করে।"
+          },
           "উপরের স্তরের tool:",
-          { "sub": "Hive: SQL-এর মতো query (HiveQL) দিয়ে data বিশ্লেষণ (MapReduce না লিখেই)।" },
-          { "sub": "HBase: HDFS-এর উপর NoSQL distributed database (real-time read/write)।" },
-          { "sub": "Pig: data flow scripting language (Pig Latin)।" },
-          { "sub": "Spark: in-memory দ্রুত processing engine — MapReduce-এর চেয়ে অনেক দ্রুত।" },
+          {
+            "sub": "Hive: SQL-এর মতো query (HiveQL) দিয়ে data বিশ্লেষণ (MapReduce না লিখেই)।"
+          },
+          {
+            "sub": "HBase: HDFS-এর উপর NoSQL distributed database (real-time read/write)।"
+          },
+          {
+            "sub": "Pig: data flow scripting language (Pig Latin)।"
+          },
+          {
+            "sub": "Spark: in-memory দ্রুত processing engine — MapReduce-এর চেয়ে অনেক দ্রুত।"
+          },
           "Data ingest/transfer:",
-          { "sub": "Sqoop: RDBMS ↔ Hadoop-এ structured data transfer।" },
-          { "sub": "Flume / Kafka: streaming/log data ingest।" }
+          {
+            "sub": "Sqoop: RDBMS ↔ Hadoop-এ structured data transfer।"
+          },
+          {
+            "sub": "Flume / Kafka: streaming/log data ingest।"
+          }
         ],
         "diagram": "Hadoop Ecosystem (Big Data framework)\n\n  Ingest:  Sqoop (RDBMS↔)   Flume/Kafka (streaming/log)\n                        │\n                        ▼\n  ┌──────────────────────────────────────────────┐\n  │ Access/Process:  Hive(SQL)  Pig(script)        │\n  │                  Spark(fast)  HBase(NoSQL)      │\n  └──────────────────────────────────────────────┘\n                        │\n  ┌──────────────────────────────────────────────┐\n  │ YARN — resource management ও scheduling        │\n  └──────────────────────────────────────────────┘\n                        │\n  ┌──────────────────────────────────────────────┐\n  │ MapReduce — parallel processing (Map → Reduce) │\n  └──────────────────────────────────────────────┘\n                        │\n  ┌──────────────────────────────────────────────┐\n  │ HDFS — distributed storage (ভিত্তি)            │\n  └──────────────────────────────────────────────┘\n\n  মূল: HDFS জমায়, MapReduce/Spark process করে, YARN সামলায়",
         "table": {
@@ -2300,7 +2480,7 @@
       }
     },
     {
-      "id": "server_031",
+      "id": "server_030",
       "q": "What is Active Directory and the Domain Controller concept?",
       "tags": [
         "active directory",
@@ -2366,7 +2546,7 @@
       }
     },
     {
-      "id": "server_032",
+      "id": "server_031",
       "q": "What is the role of DNS in Active Directory?",
       "tags": [
         "DNS",
@@ -2427,7 +2607,7 @@
       }
     },
     {
-      "id": "server_034",
+      "id": "server_032",
       "q": "What is Group Policy (GPO)? Explain the basic idea.",
       "tags": [
         "group policy",
@@ -2488,7 +2668,7 @@
       }
     },
     {
-      "id": "server_035",
+      "id": "server_033",
       "q": "NTFS permission vs Share permission — what is the difference?",
       "tags": [
         "NTFS",
@@ -2554,7 +2734,7 @@
       }
     },
     {
-      "id": "server_036",
+      "id": "server_034",
       "q": "What are the Data Center Tiers (Tier I, II, III, IV)? Explain the differences.",
       "tags": [
         "data center tier",
@@ -2576,6 +2756,7 @@
           "Tier III (Concurrently Maintainable): একাধিক power/cooling path (একটি active), N+1 redundancy; কোনো অংশ বন্ধ না করেই maintenance করা যায় (planned কাজে downtime নেই)। uptime ~99.982% (~1.6 ঘণ্টা/বছর)।",
           "Tier IV (Fault Tolerant): একাধিক active path, 2N / 2N+1 redundancy; যেকোনো একটি failure ঘটলেও কোনো প্রভাব ছাড়াই চালু থাকে। uptime ~99.995% (~26 মিনিট/বছর)।",
           "মূল প্রবণতা: Tier I → IV যেতে redundancy বাড়ে, uptime বাড়ে, খরচও বাড়ে।",
+          "নোট (uptime %): এই 99.671%–99.995% সংখ্যাগুলো বহুল-উদ্ধৃত classic/industry figure; Uptime Institute আনুষ্ঠানিকভাবে এখন per-Tier uptime % প্রকাশ করে না — Tier নির্ধারিত হয় topology ও redundancy (single/multiple path, N+1, 2N, concurrently maintainable, fault tolerant) দিয়ে, নির্দিষ্ট uptime % দিয়ে নয়। তাই পরীক্ষায় উল্লেখ করা চলে, কিন্তু এগুলো প্রাতিষ্ঠানিক spec নয়, আনুমানিক।",
           "কোনটা কখন: ছোট/non-critical → Tier I-II; enterprise 24x7 (bank, hospital) → Tier III; mission-critical, প্রায় শূন্য downtime দরকার → Tier IV।"
         ],
         "diagram": "DATA CENTER TIERS  (redundancy ↑ = uptime ↑ = খরচ ↑)\n\n  Tier IV  │ 2N, Fault Tolerant       │ 99.995% │ ~26 min/yr\n           │ যেকোনো single failure-এও চলে │\n  ─────────┼──────────────────────────┼─────────┼───────────\n  Tier III │ N+1, Concurrently        │ 99.982% │ ~1.6 hr/yr\n           │ Maintainable (downtime ছাড়া maintenance)\n  ─────────┼──────────────────────────┼─────────┼───────────\n  Tier II  │ N+1 redundant components │ 99.741% │ ~22 hr/yr\n  ─────────┼──────────────────────────┼─────────┼───────────\n  Tier I   │ Basic — single path,     │ 99.671% │ ~28.8 hr/yr\n           │ no redundancy            │\n\n  নিচ (Tier I) → উপরে (Tier IV): কম → বেশি redundancy",
@@ -2621,9 +2802,134 @@
           [
             "Tier III আর Tier IV একই — দুটোতেই কখনো downtime হয় না",
             "না — Tier III শুধু concurrently maintainable (planned maintenance-এ downtime নেই); Tier IV fault tolerant — অপ্রত্যাশিত যেকোনো single failure-এও চালু থাকে (এক ধাপ উপরে)"
+          ],
+          [
+            "Tier-এর সংজ্ঞা মানেই নির্দিষ্ট uptime % (যেমন Tier IV = 99.995%)",
+            "মূলত না — Tier মাপা হয় topology ও redundancy দিয়ে; uptime % গুলো industry-derived আনুমানিক, Uptime Institute-এর আনুষ্ঠানিক per-tier spec নয়"
           ]
         ],
         "mnemonic": "Tier I = Basic (no backup), II = N+1 (বাড়তি যন্ত্র), III = Concurrently Maintainable (downtime ছাড়া maintenance), IV = Fault Tolerant (single failure-এও চলে)। উপরে গেলে redundancy + uptime + খরচ — সব বাড়ে।"
+      }
+    },
+    {
+      "id": "server_035",
+      "q": "Draw and explain the DMZ (Demilitarized Zone) network architecture.",
+      "tags": [
+        "DMZ",
+        "firewall",
+        "screened subnet",
+        "network security",
+        "perimeter",
+        "three-legged"
+      ],
+      "answer": {
+        "summary": [
+          "DMZ = Internet ও ভেতরের LAN-এর মাঝে একটা semi-trusted zone, যেখানে বাইরে থেকে access লাগে এমন server (web/mail/DNS) রাখা হয়; ভেতরের LAN সরাসরি Internet-এ কখনো খোলা থাকে না।"
+        ],
+        "points": [],
+        "diagram": "DMZ (Demilitarized Zone) — দুই রকম design\n\n1) SINGLE FIREWALL (three-legged) — ১ firewall, ৩ interface\n                  ┌───────────────┐\n   Internet ──────┤               │\n  (untrusted)     │   Firewall    ├──── DMZ\n                  │ (3 interfaces)│     [Web][Mail][DNS] ← public\n   Internal ──────┤               │\n   LAN (trusted)  └───────────────┘\n   সস্তা, সরল │ ⚠ এই ১ firewall fail = সব expose\n\n2) DUAL FIREWALL (screened subnet) — ২ firewall, মাঝে DMZ\n   Internet ─[Outer FW]─── DMZ ───[Inner FW]─ Internal LAN\n  (untrusted)            [Web]               (trusted)\n                         [Mail]              users, AD/DC,\n                         [DNS]               DB, file server\n   বেশি secure │ outer ভাঙলেও inner LAN আলাদা থাকে\n\n────────────────────────────────────────\n  Trust:  Internet (untrusted) < DMZ (semi) < LAN (trusted)\n\nনোট: DMZ-এর server hack হলেও সে ভেতরের LAN-এ\nসরাসরি ঢুকতে পারে না — মাঝে firewall আছে।\n\"MZ\" (Militarized Zone) = পুরো trusted ভেতরের LAN।",
+        "mnemonic": "DMZ = বাইরের লোক যেটুকু দরকার তাই ঢোকে (web/mail/dns); ভেতরের LAN দুই firewall-এর পেছনে লুকানো।"
+      }
+    },
+    {
+      "id": "server_036",
+      "q": "Draw the placement of a Web server, WAF (Web Application Firewall) and the 3-tier web architecture.",
+      "tags": [
+        "WAF",
+        "web application firewall",
+        "reverse proxy",
+        "load balancer",
+        "three-tier",
+        "web architecture"
+      ],
+      "answer": {
+        "summary": [
+          "একটা web request নিরাপত্তা স্তর পেরিয়ে 3-tier application-এ পৌঁছায়: Network Firewall (L3/L4) → WAF (L7) → Reverse Proxy/Load Balancer → Web → App → DB।"
+        ],
+        "points": [],
+        "diagram": "Web request-এর পথ + 3-tier architecture\n\n   [ Client ]\n       │ HTTP / HTTPS\n       ▼\n ┌──────────────────┐\n │ Network Firewall │ ← L3/L4: IP/port দেখে allow/block\n └────────┬─────────┘\n          ▼\n ┌──────────────────┐\n │       WAF        │ ← L7: HTTP বোঝে; SQLi/XSS/bot আটকায়\n └────────┬─────────┘\n          ▼\n ┌──────────────────┐\n │ Reverse Proxy /  │ ← request বিলি + SSL termination\n │ Load Balancer    │\n └────────┬─────────┘\n          ▼\n   3-TIER APPLICATION\n ┌───────────┐  presentation (UI, static)\n │ Web tier  │\n └─────┬─────┘\n ┌─────┴─────┐  business logic (API, processing)\n │ App tier  │\n └─────┬─────┘\n ┌─────┴─────┐  data (database)\n │ DB tier   │\n └───────────┘\n\nনোট: Network Firewall আর WAF আলাদা স্তর, বিকল্প নয় —\nNetwork FW IP/port (L3/L4) দেখে, WAF HTTP-এর ভেতরের\napplication-attack (SQLi/XSS) দেখে (L7)।",
+        "mnemonic": "Network FW দেখে IP/port (L3/4); WAF দেখে HTTP content (L7)। পেছনে 3 tier: Web → App → DB।"
+      }
+    },
+    {
+      "id": "server_037",
+      "q": "Draw and explain Access Control (RBAC model and the AAA flow).",
+      "tags": [
+        "access control",
+        "RBAC",
+        "AAA",
+        "authentication",
+        "authorization",
+        "DAC",
+        "MAC"
+      ],
+      "answer": {
+        "summary": [
+          "Access control ঠিক করে কে কোন resource-এ কী করতে পারবে। RBAC = role-এ permission দিয়ে (user→role→permission); AAA = প্রতিটি access-এ Authentication → Authorization → Accounting।"
+        ],
+        "points": [],
+        "diagram": "ACCESS CONTROL — কে কী access পাবে\n\nA) RBAC (Role-Based Access Control)\n   [User] ──assign──► [Role] ──grant──► [Permission] ─► [Resource]\n    Karim          \"Accountant\"        read/write        ledger\n   user-কে সরাসরি নয়, role-এ permission বসে।\n   নতুন কর্মী = শুধু role assign (সহজ management)।\n\nB) AAA flow — access-এর ৩ ধাপ\n   [User] → Authentication → Authorization → Accounting\n            তুমি কে?          কী করতে পারো?    কী করলে (log)\n            password/MFA       role / policy     audit trail\n\n────────────────────────────────────────\n  মডেল ভেদে \"কে নিয়ম ঠিক করে\":\n   DAC  → resource-এর owner (নমনীয়)\n   MAC  → system / label (সবচেয়ে কড়া, military)\n   RBAC → role অনুযায়ী (enterprise-এ common)\n\nনোট: Authentication = পরিচয় যাচাই; Authorization =\nকী অনুমতি; Accounting = কী করল তার হিসাব/log — তিনটি\nআলাদা ধাপ, একটার সাথে অন্যটা গুলিয়ো না।",
+        "mnemonic": "RBAC = role-এ permission (user→role→permission)। AAA = কে (Authn) → কী পারো (Authz) → কী করলে (Acct)।"
+      }
+    },
+    {
+      "id": "server_038",
+      "q": "Draw the VPN architecture — Site-to-Site vs Remote Access.",
+      "tags": [
+        "VPN",
+        "site-to-site",
+        "remote access",
+        "IPsec",
+        "tunnel",
+        "encryption"
+      ],
+      "answer": {
+        "summary": [
+          "VPN = public Internet-এর উপর একটা encrypted tunnel বানিয়ে নিরাপদে যোগাযোগ। Site-to-Site দুই network জোড়ে (gateway↔gateway); Remote Access একক user-কে office-এ যুক্ত করে (device↔gateway)।"
+        ],
+        "points": [],
+        "diagram": "VPN — public Internet-এ encrypted tunnel\n\n1) SITE-TO-SITE — দুই office/network জোড়ে\n   [Office A LAN] ─[VPN GW]══tunnel══[VPN GW]─ [Office B LAN]\n                            (Internet)\n   gateway-to-gateway, always-on; user টের পায় না\n\n2) REMOTE ACCESS — একক user → office\n   [Laptop + VPN client] ══tunnel══ [VPN GW] ─ Internal LAN\n        (বাসা / বাইরে)       (Internet)        (file/app server)\n   user নিজে client software দিয়ে connect করে\n\n────────────────────────────────────────\n  tunnel-এর ভেতরে data encrypted → মাঝপথে কেউ পড়তে পারে না\n  protocol: IPsec, SSL/TLS, WireGuard\n\nনোট: VPN আলাদা তার বসায় না — public Internet-কেই\nencryption দিয়ে \"private link\"-এর মতো বানায়।",
+        "mnemonic": "VPN = public Internet-এ encrypted tunnel। Site-to-site = office↔office; Remote = device↔office।"
+      }
+    },
+    {
+      "id": "server_039",
+      "q": "Draw and explain VLAN-based network segmentation.",
+      "tags": [
+        "VLAN",
+        "segmentation",
+        "trunk",
+        "inter-VLAN routing",
+        "802.1Q",
+        "broadcast domain"
+      ],
+      "answer": {
+        "summary": [
+          "VLAN = একটা physical switch-কে যৌক্তিকভাবে আলাদা network (broadcast domain)-এ ভাগ করা। একই VLAN = একই subnet, সরাসরি কথা বলে; ভিন্ন VLAN-এর মধ্যে কথা বলতে router/L3 (inter-VLAN routing) লাগে।"
+        ],
+        "points": [],
+        "diagram": "VLAN — এক physical switch, যৌক্তিকভাবে আলাদা network\n\n         ┌──────────────── Switch ────────────────┐\n   PC ───┤ VLAN10   VLAN10    VLAN20    VLAN20     ├─── PC\n  (HR)   │  [HR]     [HR]     [Sales]   [Sales]    │  (Sales)\n         └────────────────────┬─────────────────── ┘\n                              │ trunk port\n                              │ (সব VLAN বহন করে, 802.1Q tag)\n                              ▼\n                     [ Router / L3 switch ]\n                inter-VLAN routing: VLAN↔VLAN কথা\n\n────────────────────────────────────────\n  একই VLAN  = একই subnet → সরাসরি কথা বলে\n  ভিন্ন VLAN = ভিন্ন subnet → router ছাড়া কথা বলতে পারে না\n  access port = device এক VLAN-এ; trunk = অনেক VLAN বহন\n\nনোট: VLAN যৌক্তিক ভাগ — cable পাল্টাতে হয় না।\nলাভ: segmentation, security isolation, কম broadcast।",
+        "mnemonic": "VLAN = এক switch-কে যৌক্তিকভাবে ভাগ; ভিন্ন VLAN কথা বলতে router (inter-VLAN routing) লাগে।"
+      }
+    },
+    {
+      "id": "server_040",
+      "q": "Draw a High Availability (HA) failover cluster (heartbeat + shared storage).",
+      "tags": [
+        "high availability",
+        "failover cluster",
+        "heartbeat",
+        "VIP",
+        "shared storage",
+        "active-passive"
+      ],
+      "answer": {
+        "summary": [
+          "HA cluster = একাধিক node একসাথে, একটা মরলেও service চলতে থাকে। Client একটা Virtual IP (VIP) দেখে; node-রা heartbeat দিয়ে একে অপরকে পাহারা দেয়; data থাকে shared storage-এ যাতে যেকোনো node চালাতে পারে।"
+        ],
+        "points": [],
+        "diagram": "HIGH AVAILABILITY CLUSTER — node মরলেও service চলে\n\n          [ Clients ]\n               │ Virtual IP (VIP) — সবসময় active node-এ\n               ▼\n   ┌──────────────┐   heartbeat    ┌──────────────┐\n   │   Node A     │◄──────────────►│   Node B     │\n   │  (Active)    │  \"বেঁচে আছো?\"   │  (Passive /  │\n   │ service চালু  │                │   standby)   │\n   └──────┬───────┘                └──────┬───────┘\n          └───────────┬───────────────────┘\n                      ▼\n            [ Shared Storage (SAN/LUN) ]\n            দুই node একই data দেখে\n\n  Node A 💥 মরলে → heartbeat বন্ধ → Node B\n  VIP + service নিয়ে নেয় (failover)\n\n────────────────────────────────────────\n  Active-Passive = একটা চলে, অন্যটা standby\n  Active-Active  = দুটোই চলে, load ভাগ করে\n\nনোট: \"Split-brain\" = heartbeat link ছিঁড়লে দুই node-ই\nনিজেকে active ভাবে → quorum/fencing দিয়ে ঠেকানো হয়।",
+        "mnemonic": "Heartbeat থামলে standby node VIP+service নেয় (failover); shared storage-এ data এক, VIP-এ client এক।"
       }
     }
   ]
