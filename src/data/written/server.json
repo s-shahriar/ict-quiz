@@ -316,85 +316,6 @@
     },
     {
       "id": "server_005",
-      "q": "RAID controller vs HBA controller — what is the difference, and which one is better for what?",
-      "tags": [
-        "RAID controller",
-        "HBA",
-        "host bus adapter",
-        "storage",
-        "JBOD",
-        "ZFS"
-      ],
-      "answer": {
-        "summary": [
-          "মূল প্রশ্ন — disks কে সামলাবে? RAID Controller = hardware নিজে সামলায় (রাঁধুনি); HBA = software (OS) সামলায়, HBA শুধু কাঁচা disk তুলে দেয় (খালি ট্রে)।",
-          "RAID Controller = hardware যা একাধিক disk-কে RAID array (0/1/5/6/10) বানিয়ে OS-কে একটি logical volume দেখায় (নিজস্ব engine + cache/BBU)।",
-          "HBA (Host Bus Adapter) = প্রতিটি physical disk সরাসরি OS-কে pass করে (pass-through/JBOD) — কোনো RAID logic বা cache নেই; RAID তখন software (ZFS/Ceph) করে।"
-        ],
-        "points": [
-          "মূল ধারণা — disks কে manage করবে? RAID Controller হলে hardware নিজে (\"রাঁধুনি\"); HBA হলে software/OS (\"খালি ট্রে\", কাঁচা disk তুলে দেয়)।",
-          "RAID Controller (রাঁধুনি): নিজস্ব processor + cache সহ hardware; disks-কে RAID array (0/1/5/6/10) বানিয়ে OS-কে একটি logical volume দেখায় — OS ভেতরের physical disk দেখে না। parity হিসাব controller নিজে করে → CPU offload, সাথে battery-backed write cache (BBU)।",
-          "HBA = Host Bus Adapter (খালি ট্রে): শুধু disks-কে host bus-এর সাথে যুক্ত করে; কোনো RAID logic/cache নেই — প্রতিটি physical disk OS-কে raw/সরাসরি (pass-through বা JBOD) দেখায়, SMART health data সহ।",
-          "মূল পার্থক্য: RAID controller physical disks লুকিয়ে \"রান্না-করা\" logical volume দেয়; HBA \"কাঁচা\" raw disks সরাসরি OS-কে দেয় — RAID তখন software (ZFS, Ceph, Storage Spaces) করে।",
-          "RAID Controller কখন ভালো: hardware RAID দরকার (set & forget), boot volume, Windows server, BBU write cache দিয়ে data নিরাপত্তা, OS-agnostic RAID।",
-          "HBA কখন ভালো: software-defined storage (ZFS, TrueNAS, Ceph, Storage Spaces) — এরা নিজেই \"রাঁধুনি\", তাই raw disk সরাসরি চায়; মাঝখানে RAID controller থাকলে কাজে বাধা দেয়/data ঝুঁকি বাড়ায়।",
-          "টিপ: ZFS-এ সবসময় HBA ব্যবহার করো; অনেক RAID card-কে \"IT mode\"-এ flash করে HBA হিসেবে চালানো যায়।"
-        ],
-        "diagram": "মূল প্রশ্ন: disks কে সামলাবে — hardware না software?\n\n RAID CONTROLLER (রাঁধুনি) — hardware নিজে array বানায়\n\n   OS দেখে:  [ ১টি logical volume 🍽️ ]  ← ভেতরে কয়টা disk জানে না\n                    ▲\n      ┌──────────────────────────────┐\n      │  RAID Controller             │\n      │  • RAID engine (0/1/5/6/10)  │ ← array বানায়\n      │  • cache + BBU battery 🔋     │\n      └──────────────────────────────┘\n        [D1]  [D2]  [D3]  [D4]   ← physical disks (লুকানো)\n\n────────────────────────────────────────\n\n HBA (খালি ট্রে) — software RAID করে\n\n   OS দেখে:  [D1] [D2] [D3] [D4]  ← প্রতিটি raw disk + SMART (কাঁচা)\n                    ▲\n      ┌──────────────────────────────┐\n      │  HBA (pass-through / JBOD)    │\n      │  ✗ no RAID  ✗ no cache        │\n      └──────────────────────────────┘\n        [D1]  [D2]  [D3]  [D4]\n   RAID টা software \"রাঁধে\" → ZFS / Ceph / Storage Spaces\n\n────────────────────────────────────────\n        RAID Controller          HBA\n        ┌──────────────┐    ┌──────────────┐\n        │ array বানায়   │    │ raw pass     │\n        │ +cache/BBU 🔋 │    │ software RAID │\n        └──────────────┘    └──────────────┘\n        hardware RAID,        ZFS/Ceph,\n        boot, Windows         scale-out NAS",
-        "table": {
-          "headers": [
-            "বিষয়",
-            "RAID Controller",
-            "HBA"
-          ],
-          "rows": [
-            [
-              "কাজ",
-              "disks → RAID array → logical volume",
-              "disks সরাসরি OS-কে pass (JBOD)"
-            ],
-            [
-              "RAID logic",
-              "hardware-এ (controller করে)",
-              "নেই — software করে (ZFS/Ceph)"
-            ],
-            [
-              "Cache / BBU",
-              "আছে (battery-backed write cache)",
-              "নেই"
-            ],
-            [
-              "OS কী দেখে",
-              "logical volume (disks লুকানো)",
-              "প্রতিটি raw disk + SMART"
-            ],
-            [
-              "দাম / জটিলতা",
-              "বেশি",
-              "কম (সরল)"
-            ],
-            [
-              "ভালো যার জন্য",
-              "hardware RAID, boot, Windows, OS-agnostic",
-              "ZFS/Ceph/TrueNAS, software RAID, scale-out"
-            ]
-          ]
-        },
-        "mistakes": [
-          [
-            "HBA মানেই নিম্নমানের, RAID controller সবসময় ভালো",
-            "না — ZFS/Ceph-এর জন্য HBA-ই সঠিক; সেখানে hardware RAID controller বরং সমস্যা করে"
-          ],
-          [
-            "HBA নিজে RAID করতে পারে",
-            "না — HBA শুধু pass-through; RAID করতে হলে software বা RAID controller লাগে"
-          ]
-        ],
-        "mnemonic": "RAID Controller = রাঁধুনি → hardware নিজে array বানিয়ে logical volume দেয়। HBA = খালি ট্রে → raw disk (pass-through) সরাসরি OS-কে দেয়, RAID রাঁধে software (ZFS)।"
-      }
-    },
-    {
-      "id": "server_006",
       "q": "KVM vs VMware — what is the difference, and which is better for what?",
       "tags": [
         "KVM",
@@ -478,7 +399,7 @@
       }
     },
     {
-      "id": "server_007",
+      "id": "server_006",
       "q": "What is Kubernetes? Explain its architecture.",
       "tags": [
         "kubernetes",
@@ -586,7 +507,7 @@
       }
     },
     {
-      "id": "server_008",
+      "id": "server_007",
       "q": "Docker vs Kubernetes — what is the difference, and how are they related?",
       "tags": [
         "docker",
@@ -669,7 +590,7 @@
       }
     },
     {
-      "id": "server_009",
+      "id": "server_008",
       "q": "NAS vs SAN vs DAS — what is the difference, and which is used for what?",
       "tags": [
         "DAS",
@@ -760,7 +681,7 @@
       }
     },
     {
-      "id": "server_010",
+      "id": "server_009",
       "q": "Explain Data Center Networking technology (topologies and key technologies).",
       "tags": [
         "data center",
@@ -883,7 +804,7 @@
       }
     },
     {
-      "id": "server_011",
+      "id": "server_010",
       "q": "What is SDN (Software Defined Networking)? Why is it needed, and what are its use cases?",
       "tags": [
         "SDN",
@@ -979,7 +900,7 @@
       }
     },
     {
-      "id": "server_012",
+      "id": "server_011",
       "q": "What is a Load Balancer? Explain static vs dynamic load balancing algorithms.",
       "tags": [
         "load balancer",
@@ -1066,7 +987,7 @@
       }
     },
     {
-      "id": "server_013",
+      "id": "server_012",
       "q": "Kubernetes vs OpenShift — what is each, and how do they differ?",
       "tags": [
         "kubernetes",
@@ -1161,7 +1082,7 @@
       }
     },
     {
-      "id": "server_014",
+      "id": "server_013",
       "q": "What is Infrastructure as Code (IaC)? Why is it needed?",
       "tags": [
         "IaC",
@@ -1251,7 +1172,7 @@
       }
     },
     {
-      "id": "server_015",
+      "id": "server_014",
       "q": "What is the ELK Stack? Explain its components.",
       "tags": [
         "ELK",
@@ -1329,7 +1250,7 @@
       }
     },
     {
-      "id": "server_016",
+      "id": "server_015",
       "q": "Microservices vs Monolithic architecture — what is each, and how do they differ?",
       "tags": [
         "microservices",
@@ -1426,7 +1347,7 @@
       }
     },
     {
-      "id": "server_017",
+      "id": "server_016",
       "q": "What are RTO, RPO, and Failover in disaster recovery?",
       "tags": [
         "RTO",
@@ -1499,7 +1420,7 @@
       }
     },
     {
-      "id": "server_018",
+      "id": "server_017",
       "q": "Explain the Spine-Leaf network architecture.",
       "tags": [
         "spine-leaf",
@@ -1574,7 +1495,7 @@
       }
     },
     {
-      "id": "server_019",
+      "id": "server_018",
       "q": "Snapshots vs Backup vs Replicas — what is each, and how do they differ?",
       "tags": [
         "snapshot",
@@ -1667,7 +1588,7 @@
       }
     },
     {
-      "id": "server_020",
+      "id": "server_019",
       "q": "Explain the VM (Virtual Machine) Lifecycle.",
       "tags": [
         "VM lifecycle",
@@ -1754,7 +1675,7 @@
       }
     },
     {
-      "id": "server_021",
+      "id": "server_020",
       "q": "Explain the common Storage Protocols (iSCSI, Fibre Channel, NFS, SMB/CIFS).",
       "tags": [
         "iSCSI",
@@ -1831,7 +1752,7 @@
       }
     },
     {
-      "id": "server_022",
+      "id": "server_021",
       "q": "Explain the CI/CD and DevOps pipeline (Code → Build → Test → Package → Deploy → Monitor).",
       "tags": [
         "CI/CD",
@@ -1918,7 +1839,7 @@
       }
     },
     {
-      "id": "server_023",
+      "id": "server_022",
       "q": "Explain Live Migration (basic idea) and High Availability in virtualization.",
       "tags": [
         "live migration",
@@ -2002,7 +1923,7 @@
       }
     },
     {
-      "id": "server_024",
+      "id": "server_023",
       "q": "What is a LUN (Logical Unit Number)? Why is it needed?",
       "tags": [
         "LUN",
@@ -2077,7 +1998,7 @@
       }
     },
     {
-      "id": "server_025",
+      "id": "server_024",
       "q": "What are the types of Disaster Recovery sites (Hot, Warm, Cold)?",
       "tags": [
         "disaster recovery",
@@ -2148,7 +2069,7 @@
       }
     },
     {
-      "id": "server_026",
+      "id": "server_025",
       "q": "Backup types — Full vs Incremental vs Differential.",
       "tags": [
         "backup",
@@ -2220,7 +2141,7 @@
       }
     },
     {
-      "id": "server_027",
+      "id": "server_026",
       "q": "OLTP vs OLAP — what is each, and how do they differ?",
       "tags": [
         "OLTP",
@@ -2313,7 +2234,7 @@
       }
     },
     {
-      "id": "server_028",
+      "id": "server_027",
       "q": "What is Active Directory and the Domain Controller concept?",
       "tags": [
         "active directory",
@@ -2379,7 +2300,7 @@
       }
     },
     {
-      "id": "server_029",
+      "id": "server_028",
       "q": "What is the role of DNS in Active Directory?",
       "tags": [
         "DNS",
@@ -2440,7 +2361,7 @@
       }
     },
     {
-      "id": "server_030",
+      "id": "server_029",
       "q": "What is Group Policy (GPO)? Explain the basic idea.",
       "tags": [
         "group policy",
@@ -2501,7 +2422,7 @@
       }
     },
     {
-      "id": "server_031",
+      "id": "server_030",
       "q": "What are the Data Center Tiers (Tier I, II, III, IV)? Explain the differences.",
       "tags": [
         "data center tier",
@@ -2579,7 +2500,7 @@
       }
     },
     {
-      "id": "server_032",
+      "id": "server_031",
       "q": "Draw and explain the DMZ (Demilitarized Zone) network architecture.",
       "tags": [
         "DMZ",
@@ -2599,7 +2520,7 @@
       }
     },
     {
-      "id": "server_033",
+      "id": "server_032",
       "q": "Draw the placement of a Web server, WAF (Web Application Firewall) and the 3-tier web architecture.",
       "tags": [
         "WAF",
@@ -2619,7 +2540,7 @@
       }
     },
     {
-      "id": "server_034",
+      "id": "server_033",
       "q": "Draw and explain Access Control (RBAC model and the AAA flow).",
       "tags": [
         "access control",
@@ -2640,7 +2561,7 @@
       }
     },
     {
-      "id": "server_035",
+      "id": "server_034",
       "q": "Draw the VPN architecture — Site-to-Site vs Remote Access.",
       "tags": [
         "VPN",
@@ -2660,7 +2581,7 @@
       }
     },
     {
-      "id": "server_036",
+      "id": "server_035",
       "q": "Draw and explain VLAN-based network segmentation.",
       "tags": [
         "VLAN",
@@ -2680,7 +2601,7 @@
       }
     },
     {
-      "id": "server_037",
+      "id": "server_036",
       "q": "Draw a High Availability (HA) failover cluster (heartbeat + shared storage).",
       "tags": [
         "high availability",
