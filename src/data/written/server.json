@@ -670,76 +670,6 @@
     },
     {
       "id": "server_009",
-      "q": "What are the modes of SELinux, and how is it configured?",
-      "tags": [
-        "SELinux",
-        "MAC",
-        "enforcing",
-        "permissive",
-        "disabled",
-        "security context"
-      ],
-      "answer": {
-        "summary": [
-          "SELinux = Mandatory Access Control (MAC) layer — label/context দিয়ে access নিয়ন্ত্রণ করে।",
-          "৩ mode: Enforcing (block+log), Permissive (শুধু log), Disabled (বন্ধ)।"
-        ],
-        "points": [
-          "SELinux প্রতিটি access (process একটি file বা port ব্যবহার করতে চাইলে) policy-র সাথে যাচাই করে। অনুমতি না থাকলে সেই চেষ্টাকে বলে denial।",
-          "তিনটি mode আসলে একটিই প্রশ্নের উত্তর — denial হলে SELinux কী করবে:",
-          {
-            "sub": "Enforcing: denial আটকে দেয় এবং log রাখে। অননুমোদিত access বাস্তবে বন্ধ হয়, তাই এটিই প্রকৃত নিরাপত্তা এবং production-এর উপযুক্ত mode।"
-          },
-          {
-            "sub": "Permissive: denial আটকায় না, শুধু log-এ নথিভুক্ত করে। নতুন app চালু করার সময় উপযোগী — কাজ বন্ধ না করেই দেখা যায় policy কী কী আটকাত, পরে সেই log থেকে audit2allow দিয়ে সঠিক policy বানিয়ে Enforcing-এ ফেরা যায়।"
-          },
-          {
-            "sub": "Disabled: SELinux কিছুই যাচাই করে না — কোনো policy, label বা log নেই। সম্পূর্ণ বন্ধ, যা নিরুৎসাহিত।"
-          },
-          "Config (স্থায়ী): /etc/selinux/config ফাইলে SELINUX=enforcing|permissive|disabled লিখে দিতে হয় (reboot প্রয়োজন)।",
-          "Command (সাময়িক): getenforce বর্তমান mode দেখায়; setenforce 0/1 দিয়ে Permissive/Enforcing করা যায়; sestatus বিস্তারিত status দেখায়।",
-          "Context: প্রতিটি file ও process-এর label = user:role:type:level (মূল অংশ হলো type); দেখা যায় ls -Z বা ps -Z দিয়ে।"
-        ],
-        "diagram": "কাজ কীভাবে হয়:\n  process একটি file/port access করতে চায়\n        │  policy যাচাই করে\n        ├─ অনুমতি আছে  →  allow ✓\n        └─ অনুমতি নেই  →  \"denial\"  →  mode ঠিক করে কী হবে\n\ndenial হলে তিন mode-এর আচরণ:\n  ┌─────────────┬─────────────┬─────────────┐\n  │  Enforcing  │ Permissive  │  Disabled   │\n  ├─────────────┼─────────────┼─────────────┤\n  │ block + log │   শুধু log   │  কিছুই না   │\n  │  (আটকায়)   │ (চলতে দেয়)  │   (বন্ধ)    │\n  └─────────────┴─────────────┴─────────────┘\n  Permissive: app ভাঙে না; log থেকে audit2allow\n  দিয়ে policy বানিয়ে Enforcing-এ ফেরা যায়।\n\nConfig (স্থায়ী, reboot লাগে):  /etc/selinux/config\n  SELINUX=enforcing|permissive|disabled\n  SELINUXTYPE=targeted\n\nCommand (সাময়িক):\n  setenforce 0 = Permissive    setenforce 1 = Enforcing",
-        "table": {
-          "headers": [
-            "Command / File",
-            "কাজ"
-          ],
-          "rows": [
-            [
-              "getenforce",
-              "বর্তমান mode দেখায়"
-            ],
-            [
-              "setenforce 0 / 1",
-              "Permissive / Enforcing (temp)"
-            ],
-            [
-              "sestatus",
-              "বিস্তারিত status"
-            ],
-            [
-              "/etc/selinux/config",
-              "persistent mode (reboot লাগে)"
-            ],
-            [
-              "ls -Z / ps -Z",
-              "file / process-এর context"
-            ]
-          ]
-        },
-        "mistakes": [
-          [
-            "setenforce দিয়ে SELinux Disabled করা যায়",
-            "না — শুধু Enforcing↔Permissive; Disabled = /etc/selinux/config + reboot"
-          ]
-        ],
-        "mnemonic": "\"E-P-D\": Enforcing আটকায়, Permissive টুকে রাখে, Disabled ঘুমায়।"
-      }
-    },
-    {
-      "id": "server_010",
       "q": "NAS vs SAN vs DAS — what is the difference, and which is used for what?",
       "tags": [
         "DAS",
@@ -830,7 +760,7 @@
       }
     },
     {
-      "id": "server_011",
+      "id": "server_010",
       "q": "Explain Data Center Networking technology (topologies and key technologies).",
       "tags": [
         "data center",
@@ -944,7 +874,7 @@
       }
     },
     {
-      "id": "server_012",
+      "id": "server_011",
       "q": "What is SDN (Software Defined Networking)? Why is it needed, and what are its use cases?",
       "tags": [
         "SDN",
@@ -1040,7 +970,7 @@
       }
     },
     {
-      "id": "server_013",
+      "id": "server_012",
       "q": "What is a Load Balancer? Explain static vs dynamic load balancing algorithms.",
       "tags": [
         "load balancer",
@@ -1127,7 +1057,7 @@
       }
     },
     {
-      "id": "server_014",
+      "id": "server_013",
       "q": "Kubernetes vs OpenShift — what is each, and how do they differ?",
       "tags": [
         "kubernetes",
@@ -1222,7 +1152,7 @@
       }
     },
     {
-      "id": "server_015",
+      "id": "server_014",
       "q": "What is Infrastructure as Code (IaC)? Why is it needed?",
       "tags": [
         "IaC",
@@ -1312,7 +1242,7 @@
       }
     },
     {
-      "id": "server_016",
+      "id": "server_015",
       "q": "What is the ELK Stack? Explain its components.",
       "tags": [
         "ELK",
@@ -1390,7 +1320,7 @@
       }
     },
     {
-      "id": "server_017",
+      "id": "server_016",
       "q": "Microservices vs Monolithic architecture — what is each, and how do they differ?",
       "tags": [
         "microservices",
@@ -1487,7 +1417,7 @@
       }
     },
     {
-      "id": "server_018",
+      "id": "server_017",
       "q": "What are RTO, RPO, and Failover in disaster recovery?",
       "tags": [
         "RTO",
@@ -1560,7 +1490,7 @@
       }
     },
     {
-      "id": "server_019",
+      "id": "server_018",
       "q": "Explain the Spine-Leaf network architecture.",
       "tags": [
         "spine-leaf",
@@ -1588,9 +1518,10 @@
           "Predictable latency: যেকোনো দুই server-এর মধ্যে path সবসময় Leaf → Spine → Leaf = ঠিক ২ hop; তাই latency সমান ও আগে থেকে জানা।",
           "ECMP (Equal-Cost Multi-Path): একাধিক সমান path থাকায় traffic সব Spine-এ ভাগ হয়ে যায় (সব link active, STP-র মতো কোনো link block নয়) → পুরো bandwidth ব্যবহার।",
           "Scaling: bandwidth বাড়াতে আরেকটি Spine যোগ করো; port/server বাড়াতে আরেকটি Leaf যোগ করো — horizontally scale করা সহজ।",
+          "APIC (Application Policy Infrastructure Controller): Leaf-এ যুক্ত controller, যা একটি GUI দিয়ে পুরো fabric তথা Leaf-গুলো কেন্দ্রীয়ভাবে control করে।",
           "কেন (3-tier-এর তুলনায়): আধুনিক traffic বেশিরভাগ East-West (server↔server); 3-tier-এ তা বেশি hop ও bottleneck তৈরি করত, Spine-Leaf সমান hop ও সব path active দিয়ে সমাধান করে।"
         ],
-        "diagram": "Spine-Leaf (Clos) — ২ স্তর\n\n   ┌──────┐    ┌──────┐    ┌──────┐\n   │Spine1│    │Spine2│    │Spine3│   ← backbone (server নেই)\n   └─┬─┬─┬┘    └┬─┬─┬─┘    └┬─┬─┬─┘\n     │ │ └─────┼─┼─┼───────┘ │ │     প্রতিটি Leaf\n     │ └───────┼─┼─┼─────────┘ │     প্রতিটি Spine-এ যুক্ত\n   ┌─┴────┐  ┌─┴─┴─┴┐  ┌───────┴─┐\n   │Leaf 1│  │Leaf 2│  │  Leaf 3 │   ← ToR (server যুক্ত)\n   └──┬───┘  └──┬───┘  └────┬────┘\n    servers   servers     servers\n\n  নিয়ম: Leaf↔Spine যুক্ত; Leaf↔Leaf / Spine↔Spine নয়\n  যেকোনো server↔server = Leaf → Spine → Leaf = ঠিক ২ hop\n  সব path active (ECMP), কোনোটা block নয়",
+        "diagram": " Spine-Leaf fabric — ২ স্তর + APIC controller\n\n Spine    ┌───────┐                    ┌───────┐\n          │ Spine │                    │ Spine │     ← backbone (server নেই)\n          └───┬───┘                    └───┬───┘\n        ╔═════╧══════════════════════════════╧═════╗\n        ║   FULL-MESH fabric — প্রতি Leaf প্রতি       ║   সব path\n        ║   Spine-এ যুক্ত (L3 routed + VXLAN)        ║   active (ECMP)\n        ╚══╤════════╤═══════════╤════════════╤══════╝\n           │        │           │            │        প্রতি Leaf-এর ২ uplink\n        ┌──┴──┐  ┌──┴──┐     ┌──┴──┐     ┌───┴─┐\n Leaf   │Leaf │  │Leaf │     │Leaf │     │Leaf │     ← ToR (server/APIC যুক্ত)\n        └──┬──┘  └──┬──┘     └──┬──┘     └──┬──┘\n         server   server       └──────┬────┘\n                            ┌──────────┴───────┐\n                            │      APIC         │  ← controller\n                            └──────────┬───────┘\n                                       │\n                                    ┌──┴──┐\n                                    │ GUI │ ──→ Leaf-গুলো control করে\n                                    └──┬──┘\n                                       │\n                                     Admin\n\n  নিয়ম: Leaf↔Spine full mesh; Leaf↔Leaf / Spine↔Spine সরাসরি নয়\n  APIC = Leaf-এ যুক্ত controller; GUI দিয়ে পুরো fabric control করে",
         "table": {
           "headers": [
             "বিষয়",
@@ -1634,7 +1565,7 @@
       }
     },
     {
-      "id": "server_020",
+      "id": "server_019",
       "q": "Snapshots vs Backup vs Replicas — what is each, and how do they differ?",
       "tags": [
         "snapshot",
@@ -1727,7 +1658,7 @@
       }
     },
     {
-      "id": "server_021",
+      "id": "server_020",
       "q": "Explain the VM (Virtual Machine) Lifecycle.",
       "tags": [
         "VM lifecycle",
@@ -1814,7 +1745,7 @@
       }
     },
     {
-      "id": "server_022",
+      "id": "server_021",
       "q": "Explain the common Storage Protocols (iSCSI, Fibre Channel, NFS, SMB/CIFS).",
       "tags": [
         "iSCSI",
@@ -1891,7 +1822,7 @@
       }
     },
     {
-      "id": "server_023",
+      "id": "server_022",
       "q": "Explain the CI/CD and DevOps pipeline (Code → Build → Test → Package → Deploy → Monitor).",
       "tags": [
         "CI/CD",
@@ -1978,7 +1909,7 @@
       }
     },
     {
-      "id": "server_024",
+      "id": "server_023",
       "q": "Explain Live Migration (basic idea) and High Availability in virtualization.",
       "tags": [
         "live migration",
@@ -2062,7 +1993,7 @@
       }
     },
     {
-      "id": "server_025",
+      "id": "server_024",
       "q": "What is a LUN (Logical Unit Number)? Why is it needed?",
       "tags": [
         "LUN",
@@ -2137,7 +2068,7 @@
       }
     },
     {
-      "id": "server_026",
+      "id": "server_025",
       "q": "What are the types of Disaster Recovery sites (Hot, Warm, Cold)?",
       "tags": [
         "disaster recovery",
@@ -2208,7 +2139,7 @@
       }
     },
     {
-      "id": "server_027",
+      "id": "server_026",
       "q": "Backup types — Full vs Incremental vs Differential.",
       "tags": [
         "backup",
@@ -2280,7 +2211,7 @@
       }
     },
     {
-      "id": "server_028",
+      "id": "server_027",
       "q": "OLTP vs OLAP — what is each, and how do they differ?",
       "tags": [
         "OLTP",
@@ -2373,7 +2304,7 @@
       }
     },
     {
-      "id": "server_029",
+      "id": "server_028",
       "q": "What is the Hadoop ecosystem? Explain its main components.",
       "tags": [
         "hadoop",
@@ -2480,7 +2411,7 @@
       }
     },
     {
-      "id": "server_030",
+      "id": "server_029",
       "q": "What is Active Directory and the Domain Controller concept?",
       "tags": [
         "active directory",
@@ -2546,7 +2477,7 @@
       }
     },
     {
-      "id": "server_031",
+      "id": "server_030",
       "q": "What is the role of DNS in Active Directory?",
       "tags": [
         "DNS",
@@ -2607,7 +2538,7 @@
       }
     },
     {
-      "id": "server_032",
+      "id": "server_031",
       "q": "What is Group Policy (GPO)? Explain the basic idea.",
       "tags": [
         "group policy",
@@ -2668,7 +2599,7 @@
       }
     },
     {
-      "id": "server_033",
+      "id": "server_032",
       "q": "NTFS permission vs Share permission — what is the difference?",
       "tags": [
         "NTFS",
@@ -2734,7 +2665,7 @@
       }
     },
     {
-      "id": "server_034",
+      "id": "server_033",
       "q": "What are the Data Center Tiers (Tier I, II, III, IV)? Explain the differences.",
       "tags": [
         "data center tier",
@@ -2812,7 +2743,7 @@
       }
     },
     {
-      "id": "server_035",
+      "id": "server_034",
       "q": "Draw and explain the DMZ (Demilitarized Zone) network architecture.",
       "tags": [
         "DMZ",
@@ -2832,7 +2763,7 @@
       }
     },
     {
-      "id": "server_036",
+      "id": "server_035",
       "q": "Draw the placement of a Web server, WAF (Web Application Firewall) and the 3-tier web architecture.",
       "tags": [
         "WAF",
@@ -2852,7 +2783,7 @@
       }
     },
     {
-      "id": "server_037",
+      "id": "server_036",
       "q": "Draw and explain Access Control (RBAC model and the AAA flow).",
       "tags": [
         "access control",
@@ -2873,7 +2804,7 @@
       }
     },
     {
-      "id": "server_038",
+      "id": "server_037",
       "q": "Draw the VPN architecture — Site-to-Site vs Remote Access.",
       "tags": [
         "VPN",
@@ -2893,7 +2824,7 @@
       }
     },
     {
-      "id": "server_039",
+      "id": "server_038",
       "q": "Draw and explain VLAN-based network segmentation.",
       "tags": [
         "VLAN",
@@ -2913,7 +2844,7 @@
       }
     },
     {
-      "id": "server_040",
+      "id": "server_039",
       "q": "Draw a High Availability (HA) failover cluster (heartbeat + shared storage).",
       "tags": [
         "high availability",
