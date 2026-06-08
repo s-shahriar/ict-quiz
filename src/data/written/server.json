@@ -813,14 +813,23 @@
           },
           "Topology:",
           {
-            "sub": "Campus 3-tier: Core – Distribution – Access; ঐতিহ্যবাহী, North-South traffic-এর জন্য।"
+            "sub": "Campus 3-tier: Core – Distribution – Access; ঐতিহ্যবাহী, North-South traffic-এর জন্য। তিন স্তর:"
+          },
+          {
+            "sub": "Core (backbone): network-এর মেরুদণ্ড — শুধু super-fast packet switching, কোনো policy/filtering নয় (যাতে দেরি না হয়); Distribution গুলোকে জুড়ে দেয় ও বাইরে (WAN/internet) যাওয়ার পথ।"
+          },
+          {
+            "sub": "Distribution (aggregation): Core ও Access-এর মাঝের বুদ্ধিমান স্তর — এখানেই L3 routing, VLAN-গুলোর মাঝে যোগাযোগ, ACL/security policy ও redundancy; অনেক Access switch-এর traffic একত্র করে Core-এ পাঠায়।"
+          },
+          {
+            "sub": "Access (edge): শেষ স্তর — end-user device ও server সরাসরি এতে যুক্ত হয় (বেশি port density); কাজ হলো device-কে network-এ ঢোকানো (port security, PoE, VLAN assign)।"
           },
           {
             "sub": "Spine-Leaf: প্রতিটি Leaf প্রতিটি Spine-এ যুক্ত (L3 fabric) — সমান hop, East-West traffic-এর জন্য আদর্শ।"
           },
           "Redundancy: dual power supply, এবং NX-OS-এর modular design (প্রতিটি feature যেমন OSPF আলাদা module হিসেবে চালু/বন্ধ করা যায়, fault isolate হয়)।"
         ],
-        "diagram": "একই ভিত্তি, বাড়তি প্রযুক্তি:\n  Campus ─┐ switch, VLAN, IP, L3 routing (OSPF/BGP)\n          ├─ এগুলো দুই জায়গায় একই\n  DataCtr ─┘ + L2 scale, VXLAN/EVPN, vPC,\n             FC/FCoE storage, বেশি redundancy\n\nTOPOLOGY ১ — Campus 3-tier (North-South)\n          ┌────────┐\n          │  Core  │\n          └───┬────┘\n        ┌─────┴─────┐\n     ┌──┴──┐     ┌──┴──┐\n     │Dist │     │Dist │     ← Distribution\n     └──┬──┘     └──┬──┘\n     ┌──┴───┐    ┌──┴───┐\n     │Access│    │Access│    ← Access (server যুক্ত)\n     └──────┘    └──────┘\n\nTOPOLOGY ২ — Spine-Leaf (East-West, L3 fabric)\n     ┌──────┐        ┌──────┐\n     │Spine1│        │Spine2│\n     └─┬──┬─┘        └─┬──┬─┘\n       │  └─────┬──────┘  │     প্রতি Leaf ↔\n       └─────┐  │  ┌──────┘     প্রতি Spine\n     ┌─────┐ │  │  │ ┌─────┐\n     │Leaf1│─┘  │  └─│Leaf2│    ← Leaf (ToR)\n     └─┬───┘    │    └───┬─┘\n     server     │      server\n   সমান hop, সব path active",
+        "diagram": "একই ভিত্তি, বাড়তি প্রযুক্তি:\n  Campus ─┐ switch, VLAN, IP, L3 routing (OSPF/BGP)\n          ├─ এগুলো দুই জায়গায় একই\n  DataCtr ─┘ + L2 scale, VXLAN/EVPN, vPC,\n             FC/FCoE storage, বেশি redundancy\n\nTOPOLOGY ১ — Campus 3-tier (North-South)\n          ┌────────┐\n          │  Core  │          ← backbone: super-fast switching, policy নেই\n          └───┬────┘\n        ┌─────┴─────┐\n     ┌──┴──┐     ┌──┴──┐\n     │Dist │     │Dist │     ← Distribution: L3 routing, VLAN, ACL, redundancy\n     └──┬──┘     └──┬──┘\n     ┌──┴───┐    ┌──┴───┐\n     │Access│    │Access│    ← Access: end-device/server যুক্ত (port security, PoE)\n     └──────┘    └──────┘\n\nTOPOLOGY ২ — Spine-Leaf (East-West, L3 fabric)\n     ┌──────┐        ┌──────┐\n     │Spine1│        │Spine2│\n     └─┬──┬─┘        └─┬──┬─┘\n       │  └─────┬──────┘  │     প্রতি Leaf ↔\n       └─────┐  │  ┌──────┘     প্রতি Spine\n     ┌─────┐ │  │  │ ┌─────┐\n     │Leaf1│─┘  │  └─│Leaf2│    ← Leaf (ToR)\n     └─┬───┘    │    └───┬─┘\n     server     │      server\n   সমান hop, সব path active",
         "table": {
           "headers": [
             "বিষয়",
