@@ -14,6 +14,7 @@ const ImportantScreen = lazy(() => import('./components/ImportantScreen.jsx'))
 const ModeSelect = lazy(() => import('./components/ModeSelect.jsx'))
 const NailedScreen = lazy(() => import('./components/NailedScreen.jsx'))
 const PracticeMode = lazy(() => import('./components/PracticeMode.jsx'))
+const PracticeImportantScreen = lazy(() => import('./components/PracticeImportantScreen.jsx'))
 const QuizMode = lazy(() => import('./components/QuizMode.jsx'))
 const StudyMode = lazy(() => import('./components/StudyMode.jsx'))
 const WrittenImportantScreen = lazy(() => import('./components/WrittenImportantScreen.jsx'))
@@ -65,6 +66,7 @@ function AppRoutes() {
           <Route path="/nailed" element={<NailedScreen />} />
           <Route path="/important" element={<ImportantScreen />} />
           <Route path="/practice" element={<PracticeMode />} />
+          <Route path="/practice/important" element={<PracticeImportantScreen />} />
           <Route path="/written" element={<WrittenMode />} />
           <Route path="/written/nailed" element={<WrittenNailedScreen />} />
           <Route path="/written/important" element={<WrittenImportantScreen />} />

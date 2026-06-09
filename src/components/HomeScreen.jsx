@@ -37,6 +37,8 @@ export default function HomeScreen({ onBackup }) {
 
   const totalWrittenNailed = writtenMastered?.size ?? 0
 
+  const totalPracticeImportant = [...important].filter(id => id.startsWith('practice__')).length
+
   return (
     <div className="home anim-fade">
       <header className="home-header">
@@ -161,6 +163,22 @@ export default function HomeScreen({ onBackup }) {
 
       {module === 'practice' && (
         <>
+          <div className="home-action-row">
+            <button className="action-card important-card" onClick={() => navigate('/practice/important')}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--important">
+                <Bookmark size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Important</div>
+                <div className="ac-sub">{totalPracticeImportant} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--important">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+          </div>
+
           <p className="section-label">Choose a Category</p>
           <main className="topics-grid">
             {PRACTICE_CATEGORIES.map(c => (

@@ -40,3 +40,29 @@ export function checkAnswer(input, accept, { caseInsensitive = false } = {}) {
   const norm = normalizeCommand(input, { lower: caseInsensitive })
   return (accept || []).some(a => normalizeCommand(a, { lower: caseInsensitive }) === norm)
 }
+
+// Build the Commands-tab list: curated commands + each practice item's primary
+// accepted answer, deduped by normalized form.
+export function buildCommandList(commands = [], practice = []) {
+  const seen = new Set()
+  const list = []
+  const add = (cmd, desc) => {
+    if (!cmd) return
+    const key = normalizeCommand(cmd)
+    if (seen.has(key)) return
+    seen.add(key)
+    list.push({ cmd, desc: desc || '' })
+  }
+  commands.forEach(c => add(c.cmd, c.desc))
+  practice.forEach(p => add(p.accept?.[0], p.explain))
+  return list
+}
+
+// Namespaced "important" ids for practice — prefixed "practice__" so they never
+// collide with the written ("written__") or mcq ("topic__index") important sets.
+export function practiceCmdId(category, topic, cmd) {
+  return `practice__${category}__${topic}__c__${normalizeCommand(cmd)}`
+}
+export function practiceDrillId(category, topic, index) {
+  return `practice__${category}__${topic}__q__${index}`
+}

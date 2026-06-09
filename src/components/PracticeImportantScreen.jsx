@@ -1,0 +1,119 @@
+import { Bookmark, ChevronDown, ChevronLeft, ChevronUp, Dumbbell, Home, Terminal, X } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId, practiceDrillId } from '../data/practice/index.js'
+
+export default function PracticeImportantScreen() {
+  const navigate = useNavigate()
+  const { value: important, remove: onUnmark } = useImportantContext()
+
+  const groups = PRACTICE_CATEGORIES.map(cat => {
+    const data = getPracticeData(cat.id)
+    if (!data) return null
+    const items = []
+    for (const topic of data.topics || []) {
+      ;(topic.practice || []).forEach((p, i) => {
+        const id = practiceDrillId(cat.id, topic.id, i)
+        if (important.has(id)) {
+          items.push({ kind: 'drill', id, topic, prompt: p.prompt, answer: p.accept?.[0], desc: p.explain })
+        }
+      })
+      buildCommandList(topic.commands, topic.practice).forEach(c => {
+        const id = practiceCmdId(cat.id, topic.id, c.cmd)
+        if (important.has(id)) {
+          items.push({ kind: 'cmd', id, topic, cmd: c.cmd, desc: c.desc })
+        }
+      })
+    }
+    return { cat, items }
+  }).filter(g => g && g.items.length > 0)
+
+  const total = groups.reduce((s, g) => s + g.items.length, 0)
+
+  return (
+    <div className="nailed-screen nailed-screen--wide anim-fade">
+      <div className="nailed-screen-topbar">
+        <button className="back-btn" onClick={() => navigate('/', { state: { module: 'practice' } })}>
+          <ChevronLeft size={15} /> Back
+        </button>
+        <div className="nailed-screen-title">
+          <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
+          Important — Practice
+        </div>
+        <button className="study-home-btn" onClick={() => navigate('/', { state: { module: 'practice' } })} title="Home">
+          <Home size={16} />
+        </button>
+      </div>
+
+      {total === 0 ? (
+        <div className="nailed-screen-empty">
+          <Bookmark size={48} style={{ color: '#ef4444', opacity: 0.3 }} />
+          <p>No important practice items yet.</p>
+          <span>Open any Practice category and tap the <Bookmark size={12} style={{ display: 'inline', verticalAlign: 'middle' }} /> icon on a drill or command to save it here.</span>
+        </div>
+      ) : (
+        <>
+          <div className="nailed-screen-summary">
+            <span className="nailed-screen-total important-total">{total}</span>
+            <span className="nailed-screen-total-label">important practice item{total !== 1 ? 's' : ''} across {groups.length} categor{groups.length !== 1 ? 'ies' : 'y'}</span>
+          </div>
+          <div className="nailed-screen-list">
+            {groups.map(({ cat, items }) => (
+              <PracticeImportantGroup key={cat.id} cat={cat} items={items} onUnmark={onUnmark} onOpen={navigate} />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+function PracticeImportantGroup({ cat, items, onUnmark, onOpen }) {
+  const [open, setOpen] = useState(true)
+  return (
+    <div className="nailed-group" style={{ '--c': cat.color }}>
+      <button className="nailed-group-header" onClick={() => setOpen(v => !v)}>
+        <div className="nailed-group-label">
+          <span className="nailed-group-dot" style={{ background: cat.color }} />
+          <span style={{ color: cat.color }}>{cat.name}</span>
+          <span className="nailed-group-badge" style={{ background: `${cat.color}20`, color: cat.color }}>
+            {items.length}
+          </span>
+        </div>
+        {open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+      </button>
+
+      {open && (
+        <div className="nailed-group-body anim-slide" style={{ padding: '8px 6px 10px', gap: 10 }}>
+          {items.map(item => (
+            <div
+              key={item.id}
+              className="practice-imp-item"
+              onClick={() => onOpen(`/practice?category=${cat.id}&topic=${item.topic.id}`)}
+            >
+              <div className="practice-imp-item-head">
+                <span className="practice-imp-tag">
+                  {item.kind === 'drill' ? <Dumbbell size={11} /> : <Terminal size={11} />}
+                  {item.topic.name}
+                </span>
+                <button
+                  className="nailed-unnail-btn"
+                  onClick={e => { e.stopPropagation(); onUnmark(item.id) }}
+                  title="Remove from Important"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+              {item.kind === 'drill' && <div className="practice-imp-prompt">{item.prompt}</div>}
+              {item.kind === 'drill'
+                ? item.answer && <code className="practice-cmd">{item.answer}</code>
+                : <code className="practice-cmd">{item.cmd}</code>}
+              {item.desc && <span className="practice-cmd-desc">{item.desc}</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}

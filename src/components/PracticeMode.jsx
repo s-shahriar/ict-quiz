@@ -1,8 +1,9 @@
-import { BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Home, Lightbulb, Moon, Sun, Table2, Terminal, XCircle } from 'lucide-react'
+import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Home, Lightbulb, Moon, Sun, Table2, Terminal, XCircle } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useThemeContext } from '../contexts/ThemeContext.jsx'
-import { checkAnswer, getPracticeData, normalizeCommand } from '../data/practice/index.js'
+import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId, practiceDrillId } from '../data/practice/index.js'
 
 const TABS = [
   { id: 'info', label: 'Info', icon: BookOpen },
@@ -13,6 +14,7 @@ const TABS = [
 export default function PracticeMode() {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useThemeContext()
+  const { value: important, toggle: toggleImportant } = useImportantContext()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const categoryId = searchParams.get('category') || 'linux'
@@ -29,6 +31,10 @@ export default function PracticeMode() {
   }
 
   const selectTopic = (id) => { setParam('topic', id); setTab('info') }
+
+  // Important ids are namespaced per category+topic (see practiceCmdId/practiceDrillId).
+  const cmdImpId = (cmd) => practiceCmdId(categoryId, topic?.id, cmd)
+  const drillImpId = (i) => practiceDrillId(categoryId, topic?.id, i)
 
   if (!data || !topic) {
     return (
@@ -84,11 +90,13 @@ export default function PracticeMode() {
         {tab === 'info' && <InfoPanel info={topic.info} name={topic.name} />}
         {tab === 'commands' && <>
           <SampleTables data={data.sampleData} />
-          <CommandsPanel commands={topic.commands} practice={topic.practice} />
+          <CommandsPanel commands={topic.commands} practice={topic.practice}
+            important={important} makeId={cmdImpId} onToggleImportant={toggleImportant} />
         </>}
         {tab === 'practice' && <>
           <SampleTables data={data.sampleData} />
-          <CommandPractice key={topic.id} problems={topic.practice} caseInsensitive={categoryId === 'sql'} />
+          <CommandPractice key={topic.id} problems={topic.practice} caseInsensitive={categoryId === 'sql'}
+            important={important} makeId={drillImpId} onToggleImportant={toggleImportant} />
         </>}
       </div>
     </div>
@@ -192,31 +200,46 @@ function SampleTables({ data }) {
   )
 }
 
-// Merge the curated command reference with every command used in practice
-// (primary accepted answer), deduped — so the Commands tab is a complete list.
-function buildCommandList(commands = [], practice = []) {
-  const seen = new Set()
-  const list = []
-  const add = (cmd, desc) => {
-    if (!cmd) return
-    const key = normalizeCommand(cmd)
-    if (seen.has(key)) return
-    seen.add(key)
-    list.push({ cmd, desc: desc || '' })
-  }
-  commands.forEach(c => add(c.cmd, c.desc))
-  practice.forEach(p => add(p.accept?.[0], p.explain))
-  return list
-}
-
-function CommandsPanel({ commands, practice }) {
+function CommandsPanel({ commands, practice, important, makeId, onToggleImportant }) {
   const list = buildCommandList(commands, practice)
+  const [impOnly, setImpOnly] = useState(false)
   if (!list.length) return null
+  const isImp = (cmd) => important?.has(makeId(cmd))
+  const importantCount = list.filter(c => isImp(c.cmd)).length
+  const visible = impOnly ? list.filter(c => isImp(c.cmd)) : list
   return (
     <div className="practice-commands">
-      {list.map((c, i) => (
+      <div className="study-filter-bar">
+        <button
+          className={`study-filter-btn${!impOnly ? ' active' : ''}`}
+          onClick={() => setImpOnly(false)}
+          style={!impOnly ? { borderColor: 'var(--accent)', color: 'var(--accent)', background: 'var(--accent-light)' } : {}}
+        >
+          সব ({list.length})
+        </button>
+        <button
+          className={`study-filter-btn${impOnly ? ' active' : ''}`}
+          onClick={() => setImpOnly(true)}
+          style={impOnly ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+        >
+          <Bookmark size={11} fill={impOnly ? 'currentColor' : 'none'} />
+          Important ({importantCount})
+        </button>
+      </div>
+      {visible.length === 0 ? (
+        <p className="practice-info-line">কোনো important command নেই — 🔖 চিহ্নে ট্যাপ করে যোগ করো।</p>
+      ) : visible.map((c, i) => (
         <div key={i} className="practice-cmd-row">
-          <code className="practice-cmd">{c.cmd}</code>
+          <div className="practice-cmd-head">
+            <code className="practice-cmd">{c.cmd}</code>
+            <button
+              className={`practice-imp-btn${isImp(c.cmd) ? ' marked' : ''}`}
+              onClick={() => onToggleImportant(makeId(c.cmd))}
+              title={isImp(c.cmd) ? 'Remove from Important' : 'Mark as Important'}
+            >
+              <Bookmark size={14} fill={isImp(c.cmd) ? 'currentColor' : 'none'} />
+            </button>
+          </div>
           {c.desc && <span className="practice-cmd-desc">{c.desc}</span>}
         </div>
       ))}
@@ -224,7 +247,8 @@ function CommandsPanel({ commands, practice }) {
   )
 }
 
-function CommandPractice({ problems, caseInsensitive = false }) {
+function CommandPractice({ problems, caseInsensitive = false, important, makeId, onToggleImportant }) {
+  const [impOnly, setImpOnly] = useState(false)
   const [idx, setIdx] = useState(0)
   const [input, setInput] = useState('')
   const [status, setStatus] = useState('idle') // idle | correct | wrong
@@ -232,30 +256,31 @@ function CommandPractice({ problems, caseInsensitive = false }) {
   const [solved, setSolved] = useState(() => new Set())
   const inputRef = useRef(null)
 
-  const total = problems?.length || 0
-  const problem = problems?.[idx]
+  const all = problems || []
+  const isImp = (i) => important?.has(makeId(i))
+  const importantCount = all.filter((_, i) => isImp(i)).length
+
+  // Pool the user is cycling through, carrying each item's original index so
+  // importance ids and the solved-set stay stable when the filter is toggled.
+  const pool = all.map((p, i) => ({ p, i })).filter(x => !impOnly || isImp(x.i))
+  const total = pool.length
+  const viewIdx = total ? Math.min(idx, total - 1) : 0
+  const current = pool[viewIdx]
+
+  const reset = () => { setInput(''); setStatus('idle'); setRevealed(false) }
+  const goTo = (ni) => { setIdx(ni); reset(); requestAnimationFrame(() => inputRef.current?.focus()) }
+  const next = () => { if (total) goTo((viewIdx + 1) % total) }
+  const prev = () => { if (total) goTo((viewIdx - 1 + total) % total) }
+  const setFilter = (v) => { setImpOnly(v); setIdx(0); reset() }
 
   const submit = () => {
-    if (!input.trim() || status === 'correct') return
-    if (checkAnswer(input, problem.accept, { caseInsensitive })) {
+    if (!input.trim() || status === 'correct' || !current) return
+    if (checkAnswer(input, current.p.accept, { caseInsensitive })) {
       setStatus('correct')
-      setSolved(prev => new Set(prev).add(idx))
+      setSolved(prev => new Set(prev).add(current.i))
     } else {
       setStatus('wrong')
     }
-  }
-
-  const next = () => {
-    const ni = (idx + 1) % total
-    goTo(ni)
-  }
-
-  const goTo = (ni) => {
-    setIdx(ni)
-    setInput('')
-    setStatus('idle')
-    setRevealed(false)
-    requestAnimationFrame(() => inputRef.current?.focus())
   }
 
   const onKeyDown = (e) => {
@@ -266,16 +291,57 @@ function CommandPractice({ problems, caseInsensitive = false }) {
     }
   }
 
-  if (!problem) return <p className="practice-info-line">এই topic-এ এখনো practice নেই।</p>
+  const filterBar = (
+    <div className="study-filter-bar">
+      <button
+        className={`study-filter-btn${!impOnly ? ' active' : ''}`}
+        onClick={() => setFilter(false)}
+        style={!impOnly ? { borderColor: 'var(--accent)', color: 'var(--accent)', background: 'var(--accent-light)' } : {}}
+      >
+        সব ({all.length})
+      </button>
+      <button
+        className={`study-filter-btn${impOnly ? ' active' : ''}`}
+        onClick={() => setFilter(true)}
+        style={impOnly ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+      >
+        <Bookmark size={11} fill={impOnly ? 'currentColor' : 'none'} />
+        Important ({importantCount})
+      </button>
+    </div>
+  )
+
+  if (!current) {
+    return (
+      <div className="practice-drill">
+        {filterBar}
+        <p className="practice-info-line">
+          {impOnly ? 'কোনো important practice নেই — 🔖 চিহ্নে ট্যাপ করে যোগ করো।' : 'এই topic-এ এখনো practice নেই।'}
+        </p>
+      </div>
+    )
+  }
+
+  const problem = current.p
 
   return (
     <div className="practice-drill">
+      {filterBar}
       <div className="practice-progress">
-        <span>প্রশ্ন {idx + 1} / {total}</span>
+        <span>প্রশ্ন {viewIdx + 1} / {total}</span>
         <span className="practice-score">{solved.size} solved</span>
       </div>
 
-      <div className="practice-prompt">{problem.prompt}</div>
+      <div className="practice-prompt-row">
+        <div className="practice-prompt">{problem.prompt}</div>
+        <button
+          className={`practice-imp-btn${isImp(current.i) ? ' marked' : ''}`}
+          onClick={() => onToggleImportant(makeId(current.i))}
+          title={isImp(current.i) ? 'Remove from Important' : 'Mark as Important — পারি না, পরে practice করব'}
+        >
+          <Bookmark size={16} fill={isImp(current.i) ? 'currentColor' : 'none'} />
+        </button>
+      </div>
 
       <div className={`practice-terminal status-${status}`}>
         <span className="practice-dollar">$</span>
@@ -326,7 +392,10 @@ function CommandPractice({ problems, caseInsensitive = false }) {
         <button className="practice-btn ghost" onClick={() => setRevealed(r => !r)}>
           {revealed ? 'উত্তর লুকাও' : 'উত্তর দেখাও'}
         </button>
-        <button className="practice-btn ghost" onClick={next}>Skip →</button>
+        <button className="practice-btn ghost" onClick={prev} disabled={total < 2} title="আগের প্রশ্ন">
+          <ChevronLeft size={14} /> আগের
+        </button>
+        <button className="practice-btn ghost" onClick={next} disabled={total < 2}>Skip →</button>
       </div>
     </div>
   )
