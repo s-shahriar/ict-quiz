@@ -1,23 +1,24 @@
 import { Moon, Sun } from 'lucide-react'
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import BackupModal from './components/BackupModal.jsx'
-import ExamConfig from './components/ExamConfig.jsx'
-import ExamMode from './components/ExamMode.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
-import ImportantScreen from './components/ImportantScreen.jsx'
-import ModeSelect from './components/ModeSelect.jsx'
-import NailedScreen from './components/NailedScreen.jsx'
-import PracticeMode from './components/PracticeMode.jsx'
-import QuizMode from './components/QuizMode.jsx'
-import StudyMode from './components/StudyMode.jsx'
-import WrittenImportantScreen from './components/WrittenImportantScreen.jsx'
-import WrittenMode from './components/WrittenMode.jsx'
-import WrittenNailedScreen from './components/WrittenNailedScreen.jsx'
 import { ImportantProvider } from './contexts/ImportantContext.jsx'
 import { MasteredProvider } from './contexts/MasteredContext.jsx'
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext.jsx'
 import { WrittenMasteredProvider } from './contexts/WrittenMasteredContext.jsx'
+
+const ExamConfig = lazy(() => import('./components/ExamConfig.jsx'))
+const ExamMode = lazy(() => import('./components/ExamMode.jsx'))
+const ImportantScreen = lazy(() => import('./components/ImportantScreen.jsx'))
+const ModeSelect = lazy(() => import('./components/ModeSelect.jsx'))
+const NailedScreen = lazy(() => import('./components/NailedScreen.jsx'))
+const PracticeMode = lazy(() => import('./components/PracticeMode.jsx'))
+const QuizMode = lazy(() => import('./components/QuizMode.jsx'))
+const StudyMode = lazy(() => import('./components/StudyMode.jsx'))
+const WrittenImportantScreen = lazy(() => import('./components/WrittenImportantScreen.jsx'))
+const WrittenMode = lazy(() => import('./components/WrittenMode.jsx'))
+const WrittenNailedScreen = lazy(() => import('./components/WrittenNailedScreen.jsx'))
 
 export default function App() {
   return (
@@ -53,21 +54,23 @@ function AppRoutes() {
         </button>
       )}
 
-      <Routes>
-        <Route path="/" element={<HomeScreen onBackup={() => setShowBackup(true)} />} />
-        <Route path="/mcq/:topicId" element={<ModeSelect />} />
-        <Route path="/mcq/:topicId/quiz" element={<QuizMode />} />
-        <Route path="/mcq/:topicId/study" element={<StudyMode />} />
-        <Route path="/exam" element={<ExamConfig />} />
-        <Route path="/exam/run" element={<ExamMode />} />
-        <Route path="/nailed" element={<NailedScreen />} />
-        <Route path="/important" element={<ImportantScreen />} />
-        <Route path="/practice" element={<PracticeMode />} />
-        <Route path="/written" element={<WrittenMode />} />
-        <Route path="/written/nailed" element={<WrittenNailedScreen />} />
-        <Route path="/written/important" element={<WrittenImportantScreen />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<HomeScreen onBackup={() => setShowBackup(true)} />} />
+          <Route path="/mcq/:topicId" element={<ModeSelect />} />
+          <Route path="/mcq/:topicId/quiz" element={<QuizMode />} />
+          <Route path="/mcq/:topicId/study" element={<StudyMode />} />
+          <Route path="/exam" element={<ExamConfig />} />
+          <Route path="/exam/run" element={<ExamMode />} />
+          <Route path="/nailed" element={<NailedScreen />} />
+          <Route path="/important" element={<ImportantScreen />} />
+          <Route path="/practice" element={<PracticeMode />} />
+          <Route path="/written" element={<WrittenMode />} />
+          <Route path="/written/nailed" element={<WrittenNailedScreen />} />
+          <Route path="/written/important" element={<WrittenImportantScreen />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
 
       {showBackup && <BackupModal onClose={() => setShowBackup(false)} />}
     </div>
