@@ -323,7 +323,7 @@
         { "cmd": "crontab -l", "desc": "cron job list দেখা" },
         { "cmd": "crontab -r", "desc": "সব cron job মুছে ফেলা" },
         { "cmd": "0 0 * * * /backup.sh", "desc": "প্রতিদিন রাত 12টায় (00:00) চালানো" },
-        { "cmd": "*/5 * * * * /script.sh", "desc": "প্রতি 5 মিনিট অন্তর চালানো" },
+        { "cmd": "*/5 * * * * /script.sh", "desc": "প্রতি 5 মিনিট অন্তর চালানো (minute field */5 = প্রতি ৫ম মিনিটে; */N = step value)" },
         { "cmd": "* * * * * cmd >> /var/log/out.log 2>&1", "desc": "output ও error log-এ পাঠানো" },
         { "cmd": "*/5 * * * * /script.sh >> /var/log/script.log 2>&1", "desc": "প্রতি 5 মিনিটে চালিয়ে output+error log-এ যোগ" }
       ],
