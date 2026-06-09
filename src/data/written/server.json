@@ -2541,27 +2541,6 @@
     },
     {
       "id": "server_033",
-      "q": "Draw and explain Access Control (RBAC model and the AAA flow).",
-      "tags": [
-        "access control",
-        "RBAC",
-        "AAA",
-        "authentication",
-        "authorization",
-        "DAC",
-        "MAC"
-      ],
-      "answer": {
-        "summary": [
-          "Access control ঠিক করে কে কোন resource-এ কী করতে পারবে। RBAC = role-এ permission দিয়ে (user→role→permission); AAA = প্রতিটি access-এ Authentication → Authorization → Accounting।"
-        ],
-        "points": [],
-        "diagram": "ACCESS CONTROL — কে কী access পাবে\n\nA) RBAC (Role-Based Access Control)\n   [User] ──assign──► [Role] ──grant──► [Permission] ─► [Resource]\n    Karim          \"Accountant\"        read/write        ledger\n   user-কে সরাসরি নয়, role-এ permission বসে।\n   নতুন কর্মী = শুধু role assign (সহজ management)।\n\nB) AAA flow — access-এর ৩ ধাপ\n   [User] → Authentication → Authorization → Accounting\n            তুমি কে?          কী করতে পারো?    কী করলে (log)\n            password/MFA       role / policy     audit trail\n\n────────────────────────────────────────\n  মডেল ভেদে \"কে নিয়ম ঠিক করে\":\n   DAC  → resource-এর owner (নমনীয়)\n   MAC  → system / label (সবচেয়ে কড়া, military)\n   RBAC → role অনুযায়ী (enterprise-এ common)\n\nনোট: Authentication = পরিচয় যাচাই; Authorization =\nকী অনুমতি; Accounting = কী করল তার হিসাব/log — তিনটি\nআলাদা ধাপ, একটার সাথে অন্যটা গুলিয়ো না।",
-        "mnemonic": "RBAC = role-এ permission (user→role→permission)। AAA = কে (Authn) → কী পারো (Authz) → কী করলে (Acct)।"
-      }
-    },
-    {
-      "id": "server_034",
       "q": "Draw the VPN architecture — Site-to-Site vs Remote Access.",
       "tags": [
         "VPN",
@@ -2581,27 +2560,7 @@
       }
     },
     {
-      "id": "server_035",
-      "q": "Draw and explain VLAN-based network segmentation.",
-      "tags": [
-        "VLAN",
-        "segmentation",
-        "trunk",
-        "inter-VLAN routing",
-        "802.1Q",
-        "broadcast domain"
-      ],
-      "answer": {
-        "summary": [
-          "VLAN = একটা physical switch-কে যৌক্তিকভাবে আলাদা network (broadcast domain)-এ ভাগ করা। একই VLAN = একই subnet, সরাসরি কথা বলে; ভিন্ন VLAN-এর মধ্যে কথা বলতে router/L3 (inter-VLAN routing) লাগে।"
-        ],
-        "points": [],
-        "diagram": "VLAN — এক physical switch, যৌক্তিকভাবে আলাদা network\n\n         ┌──────────────── Switch ────────────────┐\n   PC ───┤ VLAN10   VLAN10    VLAN20    VLAN20     ├─── PC\n  (HR)   │  [HR]     [HR]     [Sales]   [Sales]    │  (Sales)\n         └────────────────────┬─────────────────── ┘\n                              │ trunk port\n                              │ (সব VLAN বহন করে, 802.1Q tag)\n                              ▼\n                     [ Router / L3 switch ]\n                inter-VLAN routing: VLAN↔VLAN কথা\n\n────────────────────────────────────────\n  একই VLAN  = একই subnet → সরাসরি কথা বলে\n  ভিন্ন VLAN = ভিন্ন subnet → router ছাড়া কথা বলতে পারে না\n  access port = device এক VLAN-এ; trunk = অনেক VLAN বহন\n\nনোট: VLAN যৌক্তিক ভাগ — cable পাল্টাতে হয় না।\nলাভ: segmentation, security isolation, কম broadcast।",
-        "mnemonic": "VLAN = এক switch-কে যৌক্তিকভাবে ভাগ; ভিন্ন VLAN কথা বলতে router (inter-VLAN routing) লাগে।"
-      }
-    },
-    {
-      "id": "server_036",
+      "id": "server_034",
       "q": "Draw a High Availability (HA) failover cluster (heartbeat + shared storage).",
       "tags": [
         "high availability",
