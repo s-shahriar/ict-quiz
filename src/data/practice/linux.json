@@ -86,11 +86,6 @@
         { "cmd": "find . -name \"*.log\"", "desc": ".log file খোঁজা" },
         { "cmd": "find / -size +100M", "desc": "100MB-এর বড় file খোঁজা" },
         { "cmd": "find /var/log -type f -name \"*.log\" -delete", "desc": "খুঁজে পাওয়া সব .log file মুছে ফেলা (-delete)" },
-        { "cmd": "grep \"error\" app.log", "desc": "একটি file-এর ভেতর 'error' শব্দ খোঁজা" },
-        { "cmd": "grep -i \"error\" app.log", "desc": "case-insensitive খোঁজা (Error/ERROR-ও মেলে)" },
-        { "cmd": "grep -w \"error\" app.log", "desc": "আস্ত শব্দ মেলানো (\"errors\"/\"myerror\" বাদ)" },
-        { "cmd": "grep -ri \"error\" /var/log", "desc": "recursive + case-insensitive text খোঁজা" },
-        { "cmd": "grep \"error\" app.log | wc -l", "desc": "error যুক্ত লাইন কতটি গণনা (pipe)" },
         { "cmd": "tar -czf backup.tar.gz /data", "desc": "directory compress (archive)" },
         { "cmd": "tar -xzf backup.tar.gz", "desc": "archive extract" }
       ],
