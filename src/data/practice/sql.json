@@ -1,0 +1,424 @@
+{
+  "category": "sql",
+  "name": "SQL",
+  "sampleData": {
+    "branch": {
+      "columns": ["branch_id", "branch_name", "location", "manager"],
+      "rows": [
+        [1, "Dhaka HQ", "Dhaka", "Karim"],
+        [2, "Chittagong", "Chittagong", "Rahim"],
+        [3, "Sylhet", "Sylhet", "Hasan"]
+      ]
+    },
+    "employee": {
+      "columns": ["employee_id", "name", "branch_id", "gender", "join_date", "birthdate", "city"],
+      "rows": [
+        [1, "Ayesha", 1, "Female", "2026-03-01", "1998-06-15", "Dhaka"],
+        [2, "Bashir", 1, "Male", "2023-11-20", "1995-01-30", "Dhaka"],
+        [3, "Chowdhury", 2, "Male", "2024-01-15", "1999-09-10", "Chittagong"],
+        [4, "Dina", 2, "Female", "2022-07-05", "1992-12-25", "Chittagong"],
+        [5, "Emon", 3, "Male", "2026-05-10", "2000-03-18", "Sylhet"],
+        [6, "Faria", 3, "Female", "2023-02-28", "1997-08-08", "Sylhet"]
+      ]
+    },
+    "salary": {
+      "columns": ["salary_id", "employee_id", "amount", "date"],
+      "rows": [
+        [1, 1, 55000, "2026-06-01"],
+        [2, 2, 72000, "2026-06-01"],
+        [3, 3, 50000, "2026-05-05"],
+        [4, 4, 90000, "2026-05-05"],
+        [5, 5, 50000, "2026-06-01"]
+      ]
+    }
+  },
+  "topics": [
+    {
+      "id": "schema",
+      "name": "Schema (3 Tables)",
+      "info": {
+        "summary": [
+          "তিনটি table: employee (কর্মী), branch (শাখা), salary (বেতন)।",
+          "employee.branch_id → branch.branch_id এবং salary.employee_id → employee.employee_id (foreign key দিয়ে যুক্ত)।",
+          "প্রায় সব প্রশ্নই এই তিন table-কে JOIN করে তৈরি হয়, তাই column-গুলো মনে রাখো।"
+        ],
+        "table": {
+          "headers": [
+            "Table",
+            "Columns"
+          ],
+          "rows": [
+            [
+              "employee",
+              "employee_id, name, branch_id, gender, join_date, birthdate, city"
+            ],
+            [
+              "branch",
+              "branch_id, branch_name, location, manager"
+            ],
+            [
+              "salary",
+              "salary_id, employee_id, amount, date"
+            ]
+          ]
+        }
+      },
+      "commands": [
+        {
+          "cmd": "CREATE TABLE branch (\n  branch_id INT PRIMARY KEY AUTO_INCREMENT,\n  branch_name VARCHAR(100) NOT NULL,\n  location VARCHAR(100),\n  manager VARCHAR(100)\n);",
+          "desc": "branch table তৈরি"
+        },
+        {
+          "cmd": "CREATE TABLE employee (\n  employee_id INT PRIMARY KEY AUTO_INCREMENT,\n  name VARCHAR(100) NOT NULL,\n  branch_id INT,\n  gender ENUM('Male','Female') NOT NULL,\n  join_date DATE,\n  birthdate DATE,\n  city VARCHAR(100),\n  FOREIGN KEY (branch_id) REFERENCES branch(branch_id)\n);",
+          "desc": "employee table তৈরি (branch_id → branch)"
+        },
+        {
+          "cmd": "CREATE TABLE salary (\n  salary_id INT PRIMARY KEY AUTO_INCREMENT,\n  employee_id INT,\n  amount DECIMAL(10,2),\n  date DATE,\n  FOREIGN KEY (employee_id) REFERENCES employee(employee_id)\n);",
+          "desc": "salary table তৈরি (employee_id → employee)"
+        }
+      ],
+      "practice": [
+        {
+          "prompt": "branch table-এর সব column ও row দেখাও",
+          "accept": [
+            "SELECT * FROM branch;"
+          ],
+          "explain": "SELECT * = সব column; FROM branch = ঐ table থেকে"
+        },
+        {
+          "prompt": "employee table-এর সব row দেখাও",
+          "accept": [
+            "SELECT * FROM employee;"
+          ],
+          "explain": "* মানে সব column, কোনো শর্ত না দিলে সব row আসে"
+        }
+      ]
+    },
+    {
+      "id": "aggregation",
+      "name": "Aggregation & Grouping",
+      "info": {
+        "summary": [
+          "GROUP BY দিয়ে row-গুলোকে দলে ভাগ করে প্রতি দলে aggregate (COUNT/SUM/AVG) বের করা হয়।",
+          "ORDER BY ... DESC + LIMIT 1 দিয়ে \"সবচেয়ে বেশি/কম\" বের করা যায়।",
+          "branch-ভিত্তিক হিসাব করতে তিন table (employee, branch, salary) JOIN করতে হয়।"
+        ],
+        "table": {
+          "headers": [
+            "Function / Clause",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "COUNT(*)",
+              "row সংখ্যা গণনা"
+            ],
+            [
+              "SUM(col)",
+              "যোগফল"
+            ],
+            [
+              "AVG(col)",
+              "গড়"
+            ],
+            [
+              "GROUP BY",
+              "একই মানের row একদলে"
+            ],
+            [
+              "ORDER BY ... DESC",
+              "বড় থেকে ছোট সাজানো"
+            ],
+            [
+              "LIMIT n",
+              "প্রথম n টি row"
+            ]
+          ]
+        }
+      },
+      "commands": [
+        {
+          "cmd": "COUNT(*)",
+          "desc": "কতগুলো row আছে"
+        },
+        {
+          "cmd": "GROUP BY gender",
+          "desc": "gender অনুযায়ী দল করা"
+        },
+        {
+          "cmd": "SUM(s.amount)",
+          "desc": "মোট বেতন"
+        },
+        {
+          "cmd": "AVG(s.amount)",
+          "desc": "গড় বেতন"
+        },
+        {
+          "cmd": "ORDER BY total DESC LIMIT 1",
+          "desc": "সর্বোচ্চ একটি বের করা"
+        }
+      ],
+      "practice": [
+        {
+          "prompt": "পুরুষ ও নারী কর্মীর সংখ্যা বের করো (gender অনুযায়ী count)",
+          "accept": [
+            "SELECT gender, COUNT(*) AS count\nFROM employee\nGROUP BY gender;"
+          ],
+          "explain": "GROUP BY gender → প্রতিটি gender-এর জন্য COUNT(*) গণনা করে"
+        },
+        {
+          "prompt": "প্রতিটি branch-এর মোট বেতন খরচ (total salary expenditure) বের করো",
+          "accept": [
+            "SELECT b.branch_name, SUM(s.amount) AS total_expenditure\nFROM employee e\nJOIN branch b ON e.branch_id = b.branch_id\nJOIN salary s ON e.employee_id = s.employee_id\nGROUP BY b.branch_name;"
+          ],
+          "explain": "তিন table JOIN করে branch অনুযায়ী SUM(amount)"
+        },
+        {
+          "prompt": "প্রতিটি branch-এর গড় বেতন (average salary) বের করো",
+          "accept": [
+            "SELECT b.branch_name, AVG(s.amount) AS avg_salary\nFROM employee e\nJOIN branch b ON e.branch_id = b.branch_id\nJOIN salary s ON e.employee_id = s.employee_id\nGROUP BY b.branch_name;"
+          ],
+          "explain": "SUM-এর জায়গায় AVG ব্যবহার করলেই গড়"
+        },
+        {
+          "prompt": "সবচেয়ে বেশি কর্মী আছে এমন branch বের করো",
+          "accept": [
+            "SELECT b.branch_name, COUNT(e.employee_id) AS total_employees\nFROM branch b\nJOIN employee e ON e.branch_id = b.branch_id\nGROUP BY b.branch_name\nORDER BY total_employees DESC\nLIMIT 1;"
+          ],
+          "explain": "branch অনুযায়ী employee গুনে ORDER BY DESC LIMIT 1 দিয়ে শীর্ষ একটি"
+        },
+        {
+          "prompt": "সবচেয়ে বেশি মোট বেতন খরচ হয় এমন branch বের করো",
+          "accept": [
+            "SELECT b.branch_name, SUM(s.amount) AS total_expenditure\nFROM employee e\nJOIN branch b ON e.branch_id = b.branch_id\nJOIN salary s ON e.employee_id = s.employee_id\nGROUP BY b.branch_name\nORDER BY total_expenditure DESC\nLIMIT 1;"
+          ],
+          "explain": "মোট খরচের query-তে ORDER BY DESC LIMIT 1 যোগ করলেই শীর্ষ branch"
+        }
+      ]
+    },
+    {
+      "id": "joins",
+      "name": "Joins",
+      "info": {
+        "summary": [
+          "JOIN দিয়ে দুই table-এর মিল-করা row একসাথে আনা হয় (foreign key দিয়ে শর্ত মেলানো)।",
+          "INNER JOIN = দুই পাশেই মিল থাকলে; LEFT JOIN = বাঁ table-এর সব row, ডান পাশে না মিললে NULL।",
+          "DISTINCT দিয়ে ডুপ্লিকেট বাদ, WHERE দিয়ে শর্তে filter।"
+        ],
+        "table": {
+          "headers": [
+            "Clause",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "JOIN ... ON",
+              "দুই table মেলানো (inner)"
+            ],
+            [
+              "LEFT JOIN",
+              "বাঁ table-এর সব row রাখে"
+            ],
+            [
+              "IS NULL",
+              "মিল নেই এমন row ধরা"
+            ],
+            [
+              "DISTINCT",
+              "ডুপ্লিকেট বাদ"
+            ],
+            [
+              "WHERE",
+              "শর্ত দিয়ে filter"
+            ]
+          ]
+        }
+      },
+      "commands": [
+        {
+          "cmd": "JOIN branch b ON e.branch_id = b.branch_id",
+          "desc": "employee ↔ branch মেলানো"
+        },
+        {
+          "cmd": "JOIN salary s ON e.employee_id = s.employee_id",
+          "desc": "employee ↔ salary মেলানো"
+        },
+        {
+          "cmd": "LEFT JOIN salary s ON e.employee_id = s.employee_id",
+          "desc": "salary না থাকলেও employee থাকে"
+        },
+        {
+          "cmd": "WHERE s.amount > 60000",
+          "desc": "শর্ত দিয়ে filter"
+        }
+      ],
+      "practice": [
+        {
+          "prompt": "প্রতিটি কর্মীর নাম ও তার branch-এর নাম দেখাও",
+          "accept": [
+            "SELECT e.name, b.branch_name\nFROM employee e\nJOIN branch b ON e.branch_id = b.branch_id;"
+          ],
+          "explain": "branch_id দিয়ে employee ও branch table JOIN"
+        },
+        {
+          "prompt": "60000-এর বেশি বেতন পায় এমন কর্মীদের নাম ও বেতন দেখাও",
+          "accept": [
+            "SELECT DISTINCT e.name, s.amount\nFROM employee e\nJOIN salary s ON e.employee_id = s.employee_id\nWHERE s.amount > 60000;"
+          ],
+          "explain": "salary JOIN + WHERE amount > 60000; DISTINCT দিয়ে পুনরাবৃত্তি বাদ"
+        },
+        {
+          "prompt": "সবচেয়ে বেশি বেতন পাওয়া কর্মী বের করো",
+          "accept": [
+            "SELECT e.name, s.amount\nFROM employee e\nJOIN salary s ON e.employee_id = s.employee_id\nORDER BY s.amount DESC\nLIMIT 1;"
+          ],
+          "explain": "amount অনুযায়ী DESC সাজিয়ে প্রথম row"
+        },
+        {
+          "prompt": "যেসব কর্মীর কোনো salary record নেই তাদের দেখাও",
+          "accept": [
+            "SELECT e.name\nFROM employee e\nLEFT JOIN salary s ON e.employee_id = s.employee_id\nWHERE s.salary_id IS NULL;"
+          ],
+          "explain": "LEFT JOIN রাখে সব employee; salary না থাকলে s.salary_id NULL হয়"
+        }
+      ]
+    },
+    {
+      "id": "dates",
+      "name": "Date Functions",
+      "info": {
+        "summary": [
+          "MONTH(), YEAR(), CURDATE()/CURRENT_DATE দিয়ে তারিখ থেকে অংশ বের করে তুলনা করা হয়।",
+          "INTERVAL দিয়ে তারিখ যোগ/বিয়োগ করা যায় (যেমন গত মাস = CURRENT_DATE - INTERVAL 1 MONTH)।",
+          "\"গত মাস\" মেলাতে মাস ও সাল দুটোই মেলানো নিরাপদ (year boundary-র জন্য)।"
+        ],
+        "table": {
+          "headers": [
+            "Function",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "YEAR(date)",
+              "তারিখ থেকে সাল বের করে"
+            ],
+            [
+              "MONTH(date)",
+              "তারিখ থেকে মাস বের করে"
+            ],
+            [
+              "CURDATE() / CURRENT_DATE",
+              "আজকের তারিখ"
+            ],
+            [
+              "- INTERVAL 1 MONTH",
+              "এক মাস আগে"
+            ]
+          ]
+        }
+      },
+      "commands": [
+        {
+          "cmd": "YEAR(join_date) = YEAR(CURDATE())",
+          "desc": "চলতি বছরে join"
+        },
+        {
+          "cmd": "MONTH(s.date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)",
+          "desc": "গত মাস"
+        },
+        {
+          "cmd": "YEAR(s.date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)",
+          "desc": "গত মাসের সাল"
+        }
+      ],
+      "practice": [
+        {
+          "prompt": "গত মাসে যারা বেতন পেয়েছে তাদের নাম দেখাও",
+          "accept": [
+            "SELECT DISTINCT e.name\nFROM employee e\nJOIN salary s ON e.employee_id = s.employee_id\nWHERE MONTH(s.date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)\n  AND YEAR(s.date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH);"
+          ],
+          "explain": "salary.date-এর মাস ও সাল দুটোই গত মাসের সাথে মেলানো"
+        },
+        {
+          "prompt": "এই বছর যারা join করেছে তাদের নাম দেখাও",
+          "accept": [
+            "SELECT name\nFROM employee\nWHERE YEAR(join_date) = YEAR(CURDATE());"
+          ],
+          "explain": "join_date-এর সাল = চলতি সাল (YEAR(CURDATE()))"
+        }
+      ]
+    },
+    {
+      "id": "subqueries",
+      "name": "Subqueries & Derived Tables",
+      "info": {
+        "summary": [
+          "Subquery = query-র ভেতরে আরেকটি query; derived table = FROM-এর ভেতরে subquery-কে অস্থায়ী table হিসেবে ব্যবহার।",
+          "HAVING = GROUP BY-এর পর দলের উপর শর্ত (WHERE row-এর উপর, HAVING দলের উপর)।",
+          "\"branch-এর গড়ের চেয়ে বেশি\" টাইপ প্রশ্নে প্রতি branch-এর হিসাব derived table-এ বের করে মূল table-এর সাথে মেলানো হয়।"
+        ],
+        "table": {
+          "headers": [
+            "Tool",
+            "কাজ"
+          ],
+          "rows": [
+            [
+              "Subquery in IN()",
+              "ভেতরের query-র ফল দিয়ে filter"
+            ],
+            [
+              "HAVING COUNT(*) > 1",
+              "দল-ভিত্তিক শর্ত"
+            ],
+            [
+              "Derived table FROM (...) t",
+              "subquery-কে table বানানো"
+            ],
+            [
+              "MAX(birthdate)",
+              "সবচেয়ে নতুন জন্ম = কম বয়স"
+            ]
+          ]
+        }
+      },
+      "commands": [
+        {
+          "cmd": "... IN (SELECT amount FROM salary GROUP BY amount HAVING COUNT(*) > 1)",
+          "desc": "একাধিকবার আসা বেতন"
+        },
+        {
+          "cmd": "JOIN (SELECT branch_id, MAX(birthdate) ... GROUP BY branch_id) AS t",
+          "desc": "প্রতি branch-এ youngest (derived table)"
+        },
+        {
+          "cmd": "WHERE s.amount > ba.avg_salary",
+          "desc": "branch গড়ের সাথে তুলনা"
+        }
+      ],
+      "practice": [
+        {
+          "prompt": "একই বেতন পায় এমন (duplicate salary) কর্মীদের দেখাও",
+          "accept": [
+            "SELECT e.name, s.amount\nFROM employee e\nJOIN salary s ON e.employee_id = s.employee_id\nWHERE s.amount IN (\n  SELECT amount\n  FROM salary\n  GROUP BY amount\n  HAVING COUNT(*) > 1\n);"
+          ],
+          "explain": "ভেতরের query একাধিকবার আসা amount বের করে; বাইরে সেগুলোতে filter"
+        },
+        {
+          "prompt": "প্রতিটি branch-এর সবচেয়ে কম বয়সী (youngest) কর্মী বের করো",
+          "accept": [
+            "SELECT b.branch_name, e.name, e.birthdate\nFROM employee e\nJOIN branch b ON e.branch_id = b.branch_id\nJOIN (\n  SELECT branch_id, MAX(birthdate) AS youngest_birthdate\n  FROM employee\n  GROUP BY branch_id\n) AS t ON e.branch_id = t.branch_id\n     AND e.birthdate = t.youngest_birthdate;"
+          ],
+          "explain": "derived table প্রতি branch-এ MAX(birthdate) (নতুন জন্ম = কম বয়স) বের করে, তারপর মূল table-এর সাথে মেলানো"
+        },
+        {
+          "prompt": "নিজ branch-এর গড় বেতনের চেয়ে বেশি পায় এমন কর্মীদের দেখাও",
+          "accept": [
+            "SELECT e.name, s.amount, b.branch_name\nFROM employee e\nJOIN salary s ON e.employee_id = s.employee_id\nJOIN branch b ON e.branch_id = b.branch_id\nJOIN (\n  SELECT e.branch_id, AVG(s.amount) AS avg_salary\n  FROM employee e\n  JOIN salary s ON e.employee_id = s.employee_id\n  GROUP BY e.branch_id\n) AS ba ON e.branch_id = ba.branch_id\nWHERE s.amount > ba.avg_salary;"
+          ],
+          "explain": "derived table প্রতি branch-এর গড় বের করে; বাইরে amount > সেই গড় শর্ত"
+        }
+      ]
+    }
+  ]
+}

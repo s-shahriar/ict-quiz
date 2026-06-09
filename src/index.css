@@ -1359,20 +1359,76 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* Commands reference */
 .practice-commands { display: flex; flex-direction: column; gap: 8px; }
 .practice-cmd-row {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px;
-  padding: 11px 14px; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: stretch; gap: 7px;
+  padding: 11px 12px; border-radius: 12px;
   border: 1px solid var(--border); background: var(--surface-glass);
   transition: border-color .15s;
 }
 .practice-cmd-row:hover { border-color: var(--border-bright); }
 .practice-cmd {
+  display: block; width: 100%;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.86rem; color: var(--accent);
-  background: var(--accent-light);
-  padding: 2px 8px; border-radius: 6px;
-  max-width: 100%; overflow-wrap: anywhere; word-break: break-word;
+  font-size: 0.8rem; line-height: 1.6;
+  white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 2;
+  color: #e6edf3; background: #0b0f14;
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
 }
-.practice-cmd-desc { color: var(--text-2); font-size: 0.86rem; overflow-wrap: anywhere; }
+:root:not([data-theme='dark']) .practice-cmd {
+  color: #0f172a; background: #f1f5f9; border-color: #e2e8f0;
+}
+.practice-cmd-desc { color: var(--text-2); font-size: 0.86rem; overflow-wrap: anywhere; padding: 0 2px; }
+
+/* Sample data reference (collapsible, mobile-friendly) */
+.sample-data {
+  margin-bottom: 14px; border: 1px solid var(--border);
+  border-radius: 12px; background: var(--surface-glass); overflow: hidden;
+}
+.sample-data-toggle {
+  width: 100%; display: flex; align-items: center; gap: 7px;
+  padding: 11px 14px; background: none; border: none; cursor: pointer;
+  color: var(--text-1); font-weight: 600; font-size: 0.87rem; text-align: left;
+}
+.sample-data-hint { color: var(--text-3); font-weight: 400; font-size: 0.78rem; }
+.sample-data-chev { margin-left: auto; flex-shrink: 0; transition: transform .2s; }
+.sample-data-chev.open { transform: rotate(180deg); }
+.sample-data-tables {
+  display: flex; flex-direction: column; gap: 14px; padding: 2px 14px 14px;
+}
+.sample-table-name {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78rem; font-weight: 700; color: var(--accent-2); margin-bottom: 6px;
+}
+.sample-table-scroll {
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--border); border-radius: 8px;
+}
+.sample-table { border-collapse: collapse; width: 100%; font-size: 0.76rem; }
+.sample-table th, .sample-table td {
+  padding: 6px 10px; text-align: left; white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.sample-table thead th {
+  color: #cbd5e1; background: #0b0f14; font-weight: 700;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+}
+.sample-table tbody td { color: var(--text-2); }
+.sample-table tbody tr:last-child td { border-bottom: none; }
+.sample-table tbody tr:nth-child(even) td { background: rgba(148, 163, 184, 0.05); }
+/* sticky first column = row identity stays visible while scrolling on mobile.
+   The bg rules below are ordered after the zebra rule with matching specificity
+   so the opaque column always wins (otherwise scrolled cells show through). */
+.sample-table th:first-child, .sample-table td:first-child {
+  position: sticky; left: 0; z-index: 1;
+  border-right: 1px solid rgba(148, 163, 184, 0.22);
+}
+.sample-table tbody tr td:first-child { background: #0e1726; font-weight: 700; color: var(--text-1); }
+.sample-table thead tr th:first-child { background: #0b0f14; }
+:root:not([data-theme='dark']) .sample-table thead th { color: #334155; background: #eef2f7; }
+:root:not([data-theme='dark']) .sample-table tbody tr:nth-child(even) td { background: #f7f8fc; }
+:root:not([data-theme='dark']) .sample-table tbody tr td:first-child { background: #f1f5f9; color: #1e293b; }
+:root:not([data-theme='dark']) .sample-table thead tr th:first-child { background: #e7ebf2; }
 
 /* Interactive drill */
 .practice-drill { display: flex; flex-direction: column; gap: 14px; }
@@ -1419,10 +1475,16 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   border: 1px dashed var(--border-bright); background: var(--surface-glass);
 }
 .practice-answer code {
-  font-family: ui-monospace, monospace; color: var(--accent);
-  background: var(--accent-light);
-  padding: 2px 8px; border-radius: 6px;
-  max-width: 100%; overflow-wrap: anywhere; word-break: break-word;
+  flex-basis: 100%; display: block;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem; line-height: 1.6;
+  white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 2;
+  color: #e6edf3; background: #0b0f14;
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+:root:not([data-theme='dark']) .practice-answer code {
+  color: #0f172a; background: #f1f5f9; border-color: #e2e8f0;
 }
 
 .practice-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }

@@ -1,4 +1,4 @@
-import { BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Home, Lightbulb, Moon, Sun, Terminal, XCircle } from 'lucide-react'
+import { BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Home, Lightbulb, Moon, Sun, Table2, Terminal, XCircle } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useThemeContext } from '../contexts/ThemeContext.jsx'
@@ -82,8 +82,14 @@ export default function PracticeMode() {
 
       <div className="practice-content">
         {tab === 'info' && <InfoPanel info={topic.info} name={topic.name} />}
-        {tab === 'commands' && <CommandsPanel commands={topic.commands} practice={topic.practice} />}
-        {tab === 'practice' && <CommandPractice key={topic.id} problems={topic.practice} />}
+        {tab === 'commands' && <>
+          <SampleTables data={data.sampleData} />
+          <CommandsPanel commands={topic.commands} practice={topic.practice} />
+        </>}
+        {tab === 'practice' && <>
+          <SampleTables data={data.sampleData} />
+          <CommandPractice key={topic.id} problems={topic.practice} caseInsensitive={categoryId === 'sql'} />
+        </>}
       </div>
     </div>
   )
@@ -146,6 +152,46 @@ function InfoPanel({ info, name }) {
   )
 }
 
+// Collapsible sample-data panel so users can relate queries to real rows.
+// Renders nothing for categories without sampleData (e.g. Linux).
+function SampleTables({ data }) {
+  const [open, setOpen] = useState(true)
+  if (!data) return null
+  const tables = Object.entries(data)
+  if (!tables.length) return null
+  return (
+    <div className="sample-data">
+      <button className="sample-data-toggle" onClick={() => setOpen(o => !o)} aria-expanded={open}>
+        <Table2 size={14} />
+        <span>Sample Data</span>
+        <span className="sample-data-hint">— query গুলো এই rows-এর উপর চলে</span>
+        <ChevronDown size={16} className={`sample-data-chev${open ? ' open' : ''}`} />
+      </button>
+      {open && (
+        <div className="sample-data-tables">
+          {tables.map(([name, t]) => (
+            <div key={name} className="sample-table-block">
+              <div className="sample-table-name">{name}</div>
+              <div className="sample-table-scroll">
+                <table className="sample-table">
+                  <thead>
+                    <tr>{t.columns.map((c, i) => <th key={i}>{c}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {t.rows.map((row, i) => (
+                      <tr key={i}>{row.map((cell, j) => <td key={j}>{cell}</td>)}</tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // Merge the curated command reference with every command used in practice
 // (primary accepted answer), deduped — so the Commands tab is a complete list.
 function buildCommandList(commands = [], practice = []) {
@@ -178,7 +224,7 @@ function CommandsPanel({ commands, practice }) {
   )
 }
 
-function CommandPractice({ problems }) {
+function CommandPractice({ problems, caseInsensitive = false }) {
   const [idx, setIdx] = useState(0)
   const [input, setInput] = useState('')
   const [status, setStatus] = useState('idle') // idle | correct | wrong
@@ -191,7 +237,7 @@ function CommandPractice({ problems }) {
 
   const submit = () => {
     if (!input.trim() || status === 'correct') return
-    if (checkAnswer(input, problem.accept)) {
+    if (checkAnswer(input, problem.accept, { caseInsensitive })) {
       setStatus('correct')
       setSolved(prev => new Set(prev).add(idx))
     } else {
