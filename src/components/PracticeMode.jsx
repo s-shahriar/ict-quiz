@@ -96,8 +96,9 @@ export default function PracticeMode() {
         </>}
         {tab === 'practice' && <>
           <SampleTables data={data.sampleData} />
-          <CommandPractice key={topic.id} problems={topic.practice} caseInsensitive={categoryId === 'sql'}
-            important={important} makeId={cmdImpId} onToggleImportant={toggleImportant} />
+          <CommandPractice key={topic.id} problems={topic.practice}
+            important={important} onToggleImportant={toggleImportant}
+            idOf={p => cmdImpId(p.accept?.[0])} ciOf={() => categoryId === 'sql'} />
         </>}
       </div>
     </div>
@@ -248,7 +249,7 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
   )
 }
 
-function CommandPractice({ problems, caseInsensitive = false, important, makeId, onToggleImportant }) {
+export function CommandPractice({ problems, important, onToggleImportant, idOf, ciOf = () => false, showFilter = true, showTopicTag = false }) {
   const [impOnly, setImpOnly] = useState(false)
   const [idx, setIdx] = useState(0)
   const [input, setInput] = useState('')
@@ -258,12 +259,11 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
   const inputRef = useRef(null)
 
   const all = problems || []
-  // Importance is keyed by the drill's primary command (accept[0]) — the same
-  // key the Commands tab uses — so marking it here also marks it there.
-  const drillCmd = (p) => p?.accept?.[0]
-  const drillId = (p) => makeId(drillCmd(p))
-  const isImp = (p) => !!drillCmd(p) && important?.has(drillId(p))
-  const importantCount = all.filter(p => isImp(p)).length
+  // Importance is keyed by command string (via idOf) — the same key the
+  // Commands tab uses — so marking it here also marks it there.
+  const drillId = (p) => idOf(p)
+  const isImp = (p) => { const id = idOf(p); return !!id && important?.has(id) }
+  const importantCount = all.filter(isImp).length
 
   // Pool the user is cycling through, carrying each item's original index so
   // the solved-set stays stable when the filter is toggled.
@@ -280,7 +280,7 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
 
   const submit = () => {
     if (!input.trim() || status === 'correct' || !current) return
-    if (checkAnswer(input, current.p.accept, { caseInsensitive })) {
+    if (checkAnswer(input, current.p.accept, { caseInsensitive: ciOf(current.p) })) {
       setStatus('correct')
       setSolved(prev => new Set(prev).add(current.i))
     } else {
@@ -296,7 +296,7 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
     }
   }
 
-  const filterBar = (
+  const filterBar = showFilter ? (
     <div className="study-filter-bar">
       <button
         className={`study-filter-btn${!impOnly ? ' active' : ''}`}
@@ -314,7 +314,7 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
         Important ({importantCount})
       </button>
     </div>
-  )
+  ) : null
 
   if (!current) {
     return (
@@ -336,6 +336,10 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
         <span>প্রশ্ন {viewIdx + 1} / {total}</span>
         <span className="practice-score">{solved.size} solved</span>
       </div>
+
+      {showTopicTag && problem._topicName && (
+        <div className="practice-topic-tag">{problem._catName ? problem._catName + ' · ' : ''}{problem._topicName}</div>
+      )}
 
       <div className="practice-prompt-row">
         <div className="practice-prompt">{problem.prompt}</div>

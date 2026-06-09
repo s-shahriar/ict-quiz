@@ -63,6 +63,9 @@ export default function PracticeImportantScreen() {
             <span className="nailed-screen-total important-total">{total}</span>
             <span className="nailed-screen-total-label">important practice item{total !== 1 ? 's' : ''} across {groups.length} categor{groups.length !== 1 ? 'ies' : 'y'}</span>
           </div>
+          <button className="practice-runall-btn" onClick={() => navigate('/practice/important/run')}>
+            <Dumbbell size={16} /> সব Important practice করো ({total})
+          </button>
           <div className="nailed-screen-list">
             {groups.map(({ cat, items }) => (
               <PracticeImportantGroup key={cat.id} cat={cat} items={items} onUnmark={onUnmark} onOpen={navigate} />
