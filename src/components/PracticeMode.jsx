@@ -356,7 +356,7 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
           placeholder="command লিখে Enter চাপো..."
           onChange={e => { setInput(e.target.value); if (status === 'wrong') setStatus('idle') }}
           onKeyDown={onKeyDown}
-          disabled={status === 'correct'}
+          readOnly={status === 'correct'}
         />
       </div>
 
