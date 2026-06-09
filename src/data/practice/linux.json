@@ -371,73 +371,6 @@
       ]
     },
     {
-      "id": "packages",
-      "name": "Package Management",
-      "info": {
-        "summary": [
-          "Linux-এ software install/update/remove করা হয় package manager দিয়ে।",
-          "Debian/Ubuntu → apt; RHEL/CentOS/Fedora → dnf (বা পুরোনো yum)।",
-          "install-এর আগে package list update করে নেওয়া ভালো অভ্যাস।"
-        ],
-        "table": {
-          "headers": ["কাজ", "apt (Ubuntu/Debian)", "dnf (RHEL/CentOS)"],
-          "rows": [
-            ["list update", "apt update", "dnf check-update"],
-            ["install", "apt install nginx", "dnf install nginx"],
-            ["remove", "apt remove nginx", "dnf remove nginx"],
-            ["upgrade all", "apt upgrade", "dnf upgrade"],
-            ["search", "apt search nginx", "dnf search nginx"]
-          ]
-        }
-      },
-      "commands": [
-        { "cmd": "sudo apt update", "desc": "package list refresh করা" },
-        { "cmd": "sudo apt install nginx", "desc": "package install" },
-        { "cmd": "sudo apt install -y nginx", "desc": "confirmation ছাড়াই install" },
-        { "cmd": "sudo apt remove nginx", "desc": "package remove" },
-        { "cmd": "sudo apt upgrade", "desc": "সব package update" },
-        { "cmd": "apt list --installed", "desc": "installed package list" },
-        { "cmd": "sudo dnf install httpd", "desc": "RHEL/CentOS-এ install" }
-      ],
-      "practice": [
-        { "prompt": "package list refresh/update করো (Ubuntu)", "accept": ["sudo apt update", "apt update", "sudo apt-get update"], "explain": "install-এর আগে list update করা ভালো" },
-        { "prompt": "nginx package install করো (Ubuntu)", "accept": ["sudo apt install nginx", "apt install nginx", "sudo apt-get install nginx"], "explain": "apt install <package>" },
-        { "prompt": "confirmation prompt ছাড়াই (-y) nginx install করো", "accept": ["sudo apt install -y nginx", "apt install -y nginx", "sudo apt-get install -y nginx"], "explain": "-y = সব প্রশ্নে yes" },
-        { "prompt": "nginx package remove করো (Ubuntu)", "accept": ["sudo apt remove nginx", "apt remove nginx", "sudo apt-get remove nginx"], "explain": "apt remove <package>" },
-        { "prompt": "system-এর সব package upgrade করো (Ubuntu)", "accept": ["sudo apt upgrade", "apt upgrade"], "explain": "apt upgrade = installed package update" },
-        { "prompt": "RHEL/CentOS-এ dnf দিয়ে httpd install করো", "accept": ["sudo dnf install httpd", "dnf install httpd", "sudo yum install httpd"], "explain": "dnf/yum = RHEL-এর package manager" }
-      ]
-    },
-    {
-      "id": "sysinfo",
-      "name": "System Info & Monitoring",
-      "info": {
-        "summary": [
-          "Server-এর অবস্থা দ্রুত জানার commands — OS, uptime, memory, লগইন user।",
-          "uname = kernel/OS; uptime = কতক্ষণ চালু + load; free = RAM; who/w = কে লগইন।",
-          "এগুলো troubleshooting ও health check-এ প্রতিদিন লাগে।"
-        ]
-      },
-      "commands": [
-        { "cmd": "uname -a", "desc": "kernel ও OS-এর বিস্তারিত তথ্য" },
-        { "cmd": "hostnamectl", "desc": "hostname ও OS বিস্তারিত" },
-        { "cmd": "uptime", "desc": "কতক্ষণ চালু আছে + load average" },
-        { "cmd": "free -h", "desc": "RAM ব্যবহার (human-readable)" },
-        { "cmd": "who", "desc": "বর্তমানে লগইন user" },
-        { "cmd": "w", "desc": "লগইন user + কী করছে" },
-        { "cmd": "last", "desc": "সাম্প্রতিক login history" },
-        { "cmd": "date", "desc": "current date ও time" }
-      ],
-      "practice": [
-        { "prompt": "kernel ও OS-এর বিস্তারিত তথ্য দেখাও", "accept": ["uname -a"], "explain": "-a = all information" },
-        { "prompt": "server কতক্ষণ ধরে চালু আছে ও load দেখাও", "accept": ["uptime"], "explain": "uptime = চালু সময় + load average" },
-        { "prompt": "RAM ব্যবহার human-readable ভাবে দেখাও", "accept": ["free -h"], "explain": "-h = human readable" },
-        { "prompt": "বর্তমানে কারা লগইন করে আছে দেখাও", "accept": ["who", "w"], "explain": "who / w = logged-in users" },
-        { "prompt": "সাম্প্রতিক login history দেখাও", "accept": ["last"], "explain": "last = login history" },
-        { "prompt": "server-এর hostname ও OS-এর বিস্তারিত তথ্য দেখাও", "accept": ["hostnamectl"], "explain": "hostnamectl = hostname ও OS info" }
-      ]
-    },
-    {
       "id": "services",
       "name": "Service Management",
       "info": {
@@ -472,53 +405,20 @@
     },
     {
       "id": "transfer",
-      "name": "File Transfer & Sync",
+      "name": "File Transfer",
       "info": {
         "summary": [
-          "scp = SSH-এর উপর দিয়ে file copy; rsync = দ্রুত, incremental sync (শুধু পরিবর্তন পাঠায়)।",
-          "rsync backup, deploy ও mirror-এ আদর্শ — বড় data-তে scp-এর চেয়ে efficient।",
-          "rsync-এ source-এর শেষে / থাকা গুরুত্বপূর্ণ (folder-এর ভেতরের content বোঝায়)।"
+          "scp = SSH-এর উপর দিয়ে নিরাপদে file copy (local ↔ remote)।",
+          "remote path-এর format: user@host:/path — উৎস বা গন্তব্য যেকোনোটি remote হতে পারে।"
         ]
       },
       "commands": [
         { "cmd": "scp file.txt user@host:/tmp/", "desc": "remote server-এ file পাঠানো" },
-        { "cmd": "scp user@host:/tmp/file.txt .", "desc": "remote থেকে file আনা" },
-        { "cmd": "rsync -av /data/ /backup/", "desc": "local sync (archive + verbose)" },
-        { "cmd": "rsync -avz /data/ user@host:/backup/", "desc": "remote sync (compress সহ)" },
-        { "cmd": "rsync -av --delete /data/ /backup/", "desc": "হুবহু mirror (extra file মুছে)" }
+        { "cmd": "scp user@host:/tmp/file.txt .", "desc": "remote থেকে file আনা" }
       ],
       "practice": [
         { "prompt": "report.txt file-টি user@server:/tmp/-এ scp দিয়ে পাঠাও", "accept": ["scp report.txt user@server:/tmp/", "scp report.txt user@server:/tmp"], "explain": "scp <file> user@host:/path" },
-        { "prompt": "user@server:/tmp/data.txt file-টি current directory-তে scp দিয়ে আনো", "accept": ["scp user@server:/tmp/data.txt .", "scp user@server:/tmp/data.txt ./"], "explain": "scp user@host:/path <local>" },
-        { "prompt": "local /data/ folder-কে /backup/-এ rsync দিয়ে sync করো (archive + verbose)", "accept": ["rsync -av /data/ /backup/", "rsync -av /data/ /backup", "rsync -avh /data/ /backup/"], "explain": "-a archive, -v verbose" },
-        { "prompt": "local /data/-কে user@server:/backup/-এ compress সহ rsync করো", "accept": ["rsync -avz /data/ user@server:/backup/", "rsync -avz /data/ user@server:/backup"], "explain": "-z = compress (network-এ দ্রুত)" },
-        { "prompt": "/data/-কে /backup/-এ হুবহু mirror করো (extra file মুছে দিয়ে)", "accept": ["rsync -av --delete /data/ /backup/", "rsync -av --delete /data/ /backup"], "explain": "--delete = dest-এর বাড়তি file মুছে দেয়" }
-      ]
-    },
-    {
-      "id": "maintenance",
-      "name": "System Maintenance",
-      "info": {
-        "summary": [
-          "Server reboot/shutdown ও disk cleanup-এর সাধারণ commands।",
-          "Production-এ reboot সাবধানে — আগে থেকে জানিয়ে, scheduled সময়ে, change control মেনে।",
-          "shutdown-এ সময় দেওয়া যায় (যেমন +10 = 10 মিনিট পর), দরকারে বাতিলও করা যায়।"
-        ]
-      },
-      "commands": [
-        { "cmd": "sudo reboot", "desc": "server এখনই restart" },
-        { "cmd": "sudo shutdown -h now", "desc": "এখনই shutdown (বন্ধ)" },
-        { "cmd": "sudo shutdown -r +10", "desc": "10 মিনিট পর restart" },
-        { "cmd": "sudo shutdown -c", "desc": "scheduled shutdown বাতিল" },
-        { "cmd": "sudo apt autoremove", "desc": "অপ্রয়োজনীয় package মুছে জায়গা খালি" },
-        { "cmd": "df -h", "desc": "cleanup-এর আগে জায়গা চেক" }
-      ],
-      "practice": [
-        { "prompt": "server এখনই restart (reboot) করো", "accept": ["sudo reboot", "reboot", "sudo systemctl reboot", "sudo shutdown -r now"], "explain": "reboot = restart" },
-        { "prompt": "server এখনই shutdown করো", "accept": ["sudo shutdown -h now", "shutdown -h now", "sudo poweroff", "sudo systemctl poweroff"], "explain": "-h now = halt now" },
-        { "prompt": "10 মিনিট পর server restart করার schedule করো", "accept": ["sudo shutdown -r +10", "shutdown -r +10"], "explain": "-r +10 = 10 মিনিট পর reboot" },
-        { "prompt": "scheduled shutdown বাতিল করো", "accept": ["sudo shutdown -c", "shutdown -c"], "explain": "-c = cancel" },
-        { "prompt": "অপ্রয়োজনীয় package মুছে জায়গা খালি করো (Ubuntu)", "accept": ["sudo apt autoremove", "apt autoremove"], "explain": "autoremove = unused dependency মুছে" }
+        { "prompt": "user@server:/tmp/data.txt file-টি current directory-তে scp দিয়ে আনো", "accept": ["scp user@server:/tmp/data.txt .", "scp user@server:/tmp/data.txt ./"], "explain": "scp user@host:/path <local>" }
       ]
     }
   ]
