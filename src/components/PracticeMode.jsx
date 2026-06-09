@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useThemeContext } from '../contexts/ThemeContext.jsx'
-import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId, practiceDrillId } from '../data/practice/index.js'
+import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId } from '../data/practice/index.js'
 
 const TABS = [
   { id: 'info', label: 'Info', icon: BookOpen },
@@ -32,9 +32,10 @@ export default function PracticeMode() {
 
   const selectTopic = (id) => { setParam('topic', id); setTab('info') }
 
-  // Important ids are namespaced per category+topic (see practiceCmdId/practiceDrillId).
+  // Importance is keyed by command string (see practiceCmdId) so the same item
+  // is marked in both the Practice and Commands tabs. A drill keys off its
+  // primary command (accept[0]).
   const cmdImpId = (cmd) => practiceCmdId(categoryId, topic?.id, cmd)
-  const drillImpId = (i) => practiceDrillId(categoryId, topic?.id, i)
 
   if (!data || !topic) {
     return (
@@ -96,7 +97,7 @@ export default function PracticeMode() {
         {tab === 'practice' && <>
           <SampleTables data={data.sampleData} />
           <CommandPractice key={topic.id} problems={topic.practice} caseInsensitive={categoryId === 'sql'}
-            important={important} makeId={drillImpId} onToggleImportant={toggleImportant} />
+            important={important} makeId={cmdImpId} onToggleImportant={toggleImportant} />
         </>}
       </div>
     </div>
@@ -257,12 +258,16 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
   const inputRef = useRef(null)
 
   const all = problems || []
-  const isImp = (i) => important?.has(makeId(i))
-  const importantCount = all.filter((_, i) => isImp(i)).length
+  // Importance is keyed by the drill's primary command (accept[0]) — the same
+  // key the Commands tab uses — so marking it here also marks it there.
+  const drillCmd = (p) => p?.accept?.[0]
+  const drillId = (p) => makeId(drillCmd(p))
+  const isImp = (p) => !!drillCmd(p) && important?.has(drillId(p))
+  const importantCount = all.filter(p => isImp(p)).length
 
   // Pool the user is cycling through, carrying each item's original index so
-  // importance ids and the solved-set stay stable when the filter is toggled.
-  const pool = all.map((p, i) => ({ p, i })).filter(x => !impOnly || isImp(x.i))
+  // the solved-set stays stable when the filter is toggled.
+  const pool = all.map((p, i) => ({ p, i })).filter(x => !impOnly || isImp(x.p))
   const total = pool.length
   const viewIdx = total ? Math.min(idx, total - 1) : 0
   const current = pool[viewIdx]
@@ -335,11 +340,11 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
       <div className="practice-prompt-row">
         <div className="practice-prompt">{problem.prompt}</div>
         <button
-          className={`practice-imp-btn${isImp(current.i) ? ' marked' : ''}`}
-          onClick={() => onToggleImportant(makeId(current.i))}
-          title={isImp(current.i) ? 'Remove from Important' : 'Mark as Important — পারি না, পরে practice করব'}
+          className={`practice-imp-btn${isImp(current.p) ? ' marked' : ''}`}
+          onClick={() => onToggleImportant(drillId(current.p))}
+          title={isImp(current.p) ? 'Remove from Important' : 'Mark as Important — পারি না, পরে practice করব'}
         >
-          <Bookmark size={16} fill={isImp(current.i) ? 'currentColor' : 'none'} />
+          <Bookmark size={16} fill={isImp(current.p) ? 'currentColor' : 'none'} />
         </button>
       </div>
 
@@ -374,7 +379,10 @@ function CommandPractice({ problems, caseInsensitive = false, important, makeId,
 
       {revealed && (
         <div className="practice-answer">
-          <Lightbulb size={14} /> উত্তর: <code>{problem.accept[0]}</code>
+          <span className="practice-answer-label"><Lightbulb size={14} /> উত্তর:</span>
+          {(problem.answers?.length ? problem.answers : [problem.accept[0]]).map((a, i) => (
+            <code key={i}>{a}</code>
+          ))}
           {problem.explain && <span className="practice-explain">{problem.explain}</span>}
         </div>
       )}

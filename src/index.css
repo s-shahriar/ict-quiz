@@ -1511,6 +1511,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   padding: 10px 12px; border-radius: 10px;
   border: 1px dashed var(--border-bright); background: var(--surface-glass);
 }
+.practice-answer-label { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
 .practice-answer code {
   flex-basis: 100%; display: block;
   font-family: ui-monospace, monospace;

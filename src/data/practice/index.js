@@ -54,15 +54,21 @@ export function buildCommandList(commands = [], practice = []) {
     list.push({ cmd, desc: desc || '' })
   }
   commands.forEach(c => add(c.cmd, c.desc))
-  practice.forEach(p => add(p.accept?.[0], p.explain))
+  // A drill may list multiple equally-valid forms in `answers` (e.g. with and
+  // without `-type f`); show each so the user sees both styles. Fall back to
+  // the primary accepted answer.
+  practice.forEach(p => {
+    const forms = (p.answers && p.answers.length) ? p.answers : [p.accept?.[0]]
+    forms.forEach(f => add(f, p.explain))
+  })
   return list
 }
 
-// Namespaced "important" ids for practice — prefixed "practice__" so they never
-// collide with the written ("written__") or mcq ("topic__index") important sets.
+// Namespaced "important" id for practice, keyed by the (normalized) command
+// string — prefixed "practice__" so it never collides with the written
+// ("written__") or mcq ("topic__index") sets. Keying by command (not drill
+// index) links a drill to its command card: marking it in the Practice tab
+// also marks it in the Commands tab, and vice versa.
 export function practiceCmdId(category, topic, cmd) {
-  return `practice__${category}__${topic}__c__${normalizeCommand(cmd)}`
-}
-export function practiceDrillId(category, topic, index) {
-  return `practice__${category}__${topic}__q__${index}`
+  return `practice__${category}__${topic}__${normalizeCommand(cmd)}`
 }

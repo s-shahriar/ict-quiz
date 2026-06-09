@@ -2,7 +2,7 @@ import { Bookmark, ChevronDown, ChevronLeft, ChevronUp, Dumbbell, Home, Terminal
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
-import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId, practiceDrillId } from '../data/practice/index.js'
+import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
 
 export default function PracticeImportantScreen() {
   const navigate = useNavigate()
@@ -13,15 +13,20 @@ export default function PracticeImportantScreen() {
     if (!data) return null
     const items = []
     for (const topic of data.topics || []) {
-      ;(topic.practice || []).forEach((p, i) => {
-        const id = practiceDrillId(cat.id, topic.id, i)
-        if (important.has(id)) {
-          items.push({ kind: 'drill', id, topic, prompt: p.prompt, answer: p.accept?.[0], desc: p.explain })
+      const seen = new Set()
+      // Drills first (keyed by their primary command); a command card sharing
+      // that id is the same mark, so skip it to avoid listing it twice.
+      ;(topic.practice || []).forEach(p => {
+        const id = practiceCmdId(cat.id, topic.id, p.accept?.[0] || '')
+        if (p.accept?.[0] && important.has(id) && !seen.has(id)) {
+          seen.add(id)
+          items.push({ kind: 'drill', id, topic, prompt: p.prompt, answer: p.accept[0], desc: p.explain })
         }
       })
       buildCommandList(topic.commands, topic.practice).forEach(c => {
         const id = practiceCmdId(cat.id, topic.id, c.cmd)
-        if (important.has(id)) {
+        if (important.has(id) && !seen.has(id)) {
+          seen.add(id)
           items.push({ kind: 'cmd', id, topic, cmd: c.cmd, desc: c.desc })
         }
       })

@@ -2,9 +2,20 @@ import { useState } from 'react'
 
 const STORAGE_KEY = 'ict-important'
 
+// Legacy practice ids used a per-tab scheme (…__q__<index> for drills,
+// …__c__<cmd> for commands). They're now keyed by command string so the two
+// tabs link, which makes the old ids dead — drop them once on load.
+const LEGACY_PRACTICE = /^practice__.+__[qc]__/
+
 function load() {
-  try { return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')) }
-  catch { return new Set() }
+  try {
+    const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
+    const cleaned = Array.isArray(arr) ? arr.filter(id => !LEGACY_PRACTICE.test(id)) : []
+    if (cleaned.length !== (arr?.length ?? 0)) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned))
+    }
+    return new Set(cleaned)
+  } catch { return new Set() }
 }
 
 function save(set) {
