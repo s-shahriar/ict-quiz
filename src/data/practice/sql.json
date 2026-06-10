@@ -236,7 +236,7 @@
             "SELECT FullName FROM EmployeeDetails\nWHERE EmpId IN (\n  SELECT EmpId FROM EmployeeSalary\n  WHERE Salary BETWEEN 5000 AND 10000\n);",
             "SELECT DISTINCT e.FullName\nFROM EmployeeDetails e\nJOIN EmployeeSalary s ON e.EmpId = s.EmpId\nWHERE s.Salary BETWEEN 5000 AND 10000;"
           ],
-          "explain": "দুইভাবে করা যায় — (1) Subquery: ভেতরের query salary 5000–10000 হওয়া EmpId দেয়, বাইরে সেই FullName আনে। (2) JOIN: EmpId দিয়ে দুই table মিলিয়ে WHERE BETWEEN; এক employee-র একাধিক salary থাকলে DISTINCT দরকার। BETWEEN দুই প্রান্ত সহ।"
+          "explain": "দুইভাবে করা যায় —\n(1) Subquery: ভেতরের query salary 5000–10000 হওয়া EmpId দেয়, বাইরে সেই FullName আনে।\n(2) JOIN: EmpId দিয়ে দুই table মিলিয়ে WHERE BETWEEN; এক employee-র একাধিক salary থাকলে DISTINCT দরকার।\nBETWEEN দুই প্রান্ত সহ।"
         },
         {
           "prompt": "EmployeeSalary-তে salary record আছে এমন সব employee record EmployeeDetails থেকে বের করো (EXISTS দিয়ে)।",
@@ -254,7 +254,7 @@
             "SELECT * FROM EmployeeDetails\nWHERE EmpId IN (\n  SELECT EmpId FROM EmployeeSalary\n);",
             "SELECT DISTINCT e.*\nFROM EmployeeDetails e\nJOIN EmployeeSalary s ON e.EmpId = s.EmpId;"
           ],
-          "explain": "তিনভাবে করা যায় — (1) EXISTS: প্রতিটি E-র জন্য EmployeeSalary-তে মিল-করা EmpId থাকলে subquery row ফেরায়, তখন সেই E আসে। (2) IN: EmployeeSalary-র EmpId তালিকায় থাকলে। (3) JOIN: EmpId দিয়ে মিলিয়ে DISTINCT (এক employee-র একাধিক salary থাকলে একবার আসে)।"
+          "explain": "তিনভাবে করা যায় —\n(1) EXISTS: প্রতিটি E-র জন্য EmployeeSalary-তে মিল-করা EmpId থাকলে subquery row ফেরায়, তখন সেই E আসে।\n(2) IN: EmployeeSalary-র EmpId তালিকায় থাকলে।\n(3) JOIN: EmpId দিয়ে মিলিয়ে DISTINCT (এক employee-র একাধিক salary থাকলে একবার আসে)।"
         }
       ]
     },

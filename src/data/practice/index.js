@@ -52,13 +52,25 @@ export function checkAnswer(input, accept, { caseInsensitive = false } = {}) {
 // Build the Commands-tab list: curated commands + each practice item's primary
 // accepted answer, deduped by normalized form.
 export function buildCommandList(commands = [], practice = []) {
+  // Every form used by a practice drill — so a curated snippet that merely
+  // repeats a drill's command is dropped (the drill card shows it better, with
+  // its question and explanation).
+  const practiceForms = new Set()
+  practice.forEach(p => {
+    const primary = p.accept?.[0]
+    if (!primary) return
+    const forms = (p.answers && p.answers.length) ? p.answers : [primary]
+    forms.forEach(f => practiceForms.add(normalizeCommand(f)))
+  })
+
   const list = []
-  // Curated command snippets: one card each, deduped by normalized form.
+  // Curated command snippets: one card each, deduped, and skipped when they
+  // duplicate a practice drill's command.
   const seenCmd = new Set()
   commands.forEach(c => {
     if (!c.cmd) return
     const key = normalizeCommand(c.cmd)
-    if (seenCmd.has(key)) return
+    if (seenCmd.has(key) || practiceForms.has(key)) return
     seenCmd.add(key)
     list.push({ cmds: [c.cmd], desc: c.desc || '', prompt: '', key: c.cmd })
   })

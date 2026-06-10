@@ -1388,7 +1388,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   overflow-wrap: anywhere; padding: 2px 2px 0;
   border-left: 3px solid var(--accent); padding-left: 9px;
 }
-.practice-cmd-desc { color: var(--text-2); font-size: 0.86rem; overflow-wrap: anywhere; padding: 0 2px; }
+.practice-cmd-desc { color: var(--text-2); font-size: 0.86rem; overflow-wrap: anywhere; padding: 0 2px; white-space: pre-line; }
 
 /* Sample data reference (collapsible, mobile-friendly) */
 .sample-data {
@@ -1539,7 +1539,8 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .practice-feedback.correct { color: var(--green); }
 .practice-feedback.wrong { color: #f87171; }
 .practice-explain {
-  color: var(--text-3); font-weight: 400; font-size: 0.84rem;
+  flex-basis: 100%; color: var(--text-3); font-weight: 400; font-size: 0.84rem;
+  white-space: pre-line;
 }
 .practice-answer {
   display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
