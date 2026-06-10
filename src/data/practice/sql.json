@@ -464,6 +464,75 @@
       ]
     },
     {
+      "id": "a-dml",
+      "set": "A",
+      "name": "Update & Delete",
+      "info": {
+        "summary": [
+          "UPDATE দিয়ে existing row-এর value বদলানো হয়: UPDATE table SET col = value WHERE শর্ত।",
+          "DELETE দিয়ে শর্ত-মেলানো row মুছে ফেলা হয়: DELETE FROM table WHERE শর্ত।",
+          "WHERE না দিলে UPDATE/DELETE পুরো table-এর সব row-এ চলে — তাই WHERE খুব গুরুত্বপূর্ণ।"
+        ],
+        "table": {
+          "headers": ["Clause", "কাজ"],
+          "rows": [
+            ["UPDATE ... SET", "column-এর value বদলানো"],
+            ["SET col = col * 1.1", "বর্তমান value থেকে হিসাব"],
+            ["DELETE FROM", "row মুছে ফেলা"],
+            ["WHERE", "কোন row-এ চলবে তা ঠিক করা"]
+          ]
+        }
+      },
+      "commands": [
+        {"cmd": "UPDATE EmployeeSalary SET Salary = 20000 WHERE EmpId = 2", "desc": "এক row-এর salary বদলানো"},
+        {"cmd": "UPDATE EmployeeSalary SET Salary = Salary * 1.10", "desc": "সবার salary 10% বাড়ানো"},
+        {"cmd": "DELETE FROM EmployeeSalary WHERE EmpId = 5", "desc": "এক row মুছে ফেলা"}
+      ],
+      "practice": [
+        {
+          "prompt": "EmpId 2-এর salary 20000 করে দাও (update)।",
+          "accept": [
+            "UPDATE EmployeeSalary SET Salary = 20000 WHERE EmpId = 2;"
+          ],
+          "answers": ["UPDATE EmployeeSalary\nSET Salary = 20000\nWHERE EmpId = 2;"],
+          "explain": "UPDATE ... SET Salary = 20000 দিয়ে value বদলায়; WHERE EmpId = 2 দিয়ে শুধু ঐ একটি row-এ চলে।"
+        },
+        {
+          "prompt": "সব employee-র salary 10% বাড়িয়ে দাও।",
+          "accept": [
+            "UPDATE EmployeeSalary SET Salary = Salary * 1.10;",
+            "UPDATE EmployeeSalary SET Salary = Salary * 1.1;"
+          ],
+          "answers": ["UPDATE EmployeeSalary\nSET Salary = Salary * 1.10;"],
+          "explain": "Salary = Salary * 1.10 মানে বর্তমান salary-র 110% (10% বেশি)। WHERE নেই, তাই সব row-এ চলে।"
+        },
+        {
+          "prompt": "'P1' project-এর সব employee-কে 'P2' project-এ সরিয়ে দাও।",
+          "accept": [
+            "UPDATE EmployeeSalary SET Project = 'P2' WHERE Project = 'P1';"
+          ],
+          "answers": ["UPDATE EmployeeSalary\nSET Project = 'P2'\nWHERE Project = 'P1';"],
+          "explain": "WHERE Project = 'P1' শুধু P1-এর row বেছে নেয়, তারপর Project = 'P2' সেট করে।"
+        },
+        {
+          "prompt": "EmpId 5-এর salary record মুছে ফেলো (delete)।",
+          "accept": [
+            "DELETE FROM EmployeeSalary WHERE EmpId = 5;"
+          ],
+          "answers": ["DELETE FROM EmployeeSalary\nWHERE EmpId = 5;"],
+          "explain": "DELETE FROM ... WHERE EmpId = 5 দিয়ে শুধু ঐ একটি row মুছে ফেলা হয়।"
+        },
+        {
+          "prompt": "5000-এর কম salary-র সব record মুছে ফেলো।",
+          "accept": [
+            "DELETE FROM EmployeeSalary WHERE Salary < 5000;"
+          ],
+          "answers": ["DELETE FROM EmployeeSalary\nWHERE Salary < 5000;"],
+          "explain": "WHERE Salary < 5000 শর্ত-মেলানো row-গুলোকে বেছে নিয়ে মুছে ফেলে।"
+        }
+      ]
+    },
+    {
       "id": "a-hospital",
       "set": "A",
       "name": "Hospital DB (BUET 2021)",
