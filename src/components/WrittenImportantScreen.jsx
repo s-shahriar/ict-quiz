@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Bookmark, X, ChevronDown, Home } from 'lucide-react'
+import { ChevronLeft, Bookmark, X, Home } from 'lucide-react'
 import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
@@ -8,6 +8,7 @@ import { WrittenCardBody } from './WrittenCardBody.jsx'
 export default function WrittenImportantScreen() {
   const navigate = useNavigate()
   const { value: important, remove: onUnmark } = useImportantContext()
+  const [activeId, setActiveId] = useState(null)
 
   const importantByTopic = WRITTEN_TOPICS.map(t => {
     const data = getWrittenData(t.id)
@@ -18,6 +19,7 @@ export default function WrittenImportantScreen() {
   }).filter(g => g.items.length > 0)
 
   const total = importantByTopic.reduce((s, g) => s + g.items.length, 0)
+  const activeGroup = importantByTopic.find(g => g.topic.id === activeId) || importantByTopic[0]
 
   return (
     <div className="nailed-screen nailed-screen--wide anim-fade">
@@ -46,42 +48,33 @@ export default function WrittenImportantScreen() {
             <span className="nailed-screen-total important-total">{total}</span>
             <span className="nailed-screen-total-label">important written question{total !== 1 ? 's' : ''} across {importantByTopic.length} topic{importantByTopic.length !== 1 ? 's' : ''}</span>
           </div>
-          <div className="nailed-screen-list">
-            {importantByTopic.map(({ topic: t, items }) => (
-              <WrittenImportantGroup key={t.id} topic={t} items={items} onUnmark={onUnmark} />
-            ))}
+          <div className="nailed-cat-bar">
+            {importantByTopic.map(({ topic: t, items }) => {
+              const Icon = t.icon
+              const on = activeGroup?.topic.id === t.id
+              return (
+                <button
+                  key={t.id}
+                  className={`nailed-cat-chip${on ? ' active' : ''}`}
+                  style={{ '--c': t.color }}
+                  onClick={() => setActiveId(t.id)}
+                >
+                  {Icon && <span className="nailed-cat-chip-ic"><Icon size={16} /></span>}
+                  <span className="nailed-cat-chip-name">{t.name}</span>
+                  <span className="nailed-cat-chip-count">{items.length}</span>
+                </button>
+              )
+            })}
           </div>
+
+          {activeGroup && (
+            <div className="nailed-screen-list anim-fade" style={{ gap: 10 }}>
+              {activeGroup.items.map(({ q, qid }) => (
+                <WrittenImportantCard key={qid} q={q} qid={qid} topicColor={activeGroup.topic.color} onUnmark={onUnmark} />
+              ))}
+            </div>
+          )}
         </>
-      )}
-    </div>
-  )
-}
-
-function WrittenImportantGroup({ topic: t, items, onUnmark }) {
-  const [open, setOpen] = useState(true)
-  const Icon = t.icon
-
-  return (
-    <div className="nailed-group" style={{ '--c': t.color }}>
-      <button className="nailed-group-header" onClick={() => setOpen(v => !v)}>
-        {Icon && <div className="nailed-group-icon"><Icon size={20} /></div>}
-        <div className="nailed-group-info">
-          <span className="nailed-group-name">{t.name}</span>
-          <span className="nailed-group-sub">{items.length} answer{items.length !== 1 ? 's' : ''}</span>
-        </div>
-        <span className="nailed-group-badge" style={{ background: `${t.color}20`, color: t.color }}>
-          <Bookmark size={11} fill="currentColor" />
-          {items.length}
-        </span>
-        <ChevronDown size={18} className={`nailed-group-chev${open ? ' open' : ''}`} />
-      </button>
-
-      {open && (
-        <div className="nailed-group-body anim-slide" style={{ padding: '8px 6px 10px', gap: 10 }}>
-          {items.map(({ q, qid }) => (
-            <WrittenImportantCard key={qid} q={q} qid={qid} topicColor={t.color} onUnmark={onUnmark} />
-          ))}
-        </div>
       )}
     </div>
   )

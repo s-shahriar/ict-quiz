@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Bookmark, X, ChevronDown, Home, Lightbulb } from 'lucide-react'
+import { ChevronLeft, Bookmark, X, Home, Lightbulb } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 
 export default function ImportantScreen() {
   const navigate = useNavigate()
   const { value: important, remove: onUnmark } = useImportantContext()
+  const [activeId, setActiveId] = useState(null)
 
   const topics = TOPICS
 
@@ -19,6 +20,7 @@ export default function ImportantScreen() {
   }).filter(g => g.items.length > 0)
 
   const total = importantByTopic.reduce((s, g) => s + g.items.length, 0)
+  const activeGroup = importantByTopic.find(g => g.topic.id === activeId) || importantByTopic[0]
 
   return (
     <div className="nailed-screen anim-fade">
@@ -50,66 +52,58 @@ export default function ImportantScreen() {
           <div className="nailed-screen-hint">
             These questions still appear in Exam Mode. Tap <X size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> to remove.
           </div>
-          <div className="nailed-screen-list">
-            {importantByTopic.map(({ topic: t, items }) => (
-              <ImportantTopicGroup key={t.id} topic={t} items={items} onUnmark={onUnmark} />
-            ))}
+
+          <div className="nailed-cat-bar">
+            {importantByTopic.map(({ topic: t, items }) => {
+              const Icon = t.icon
+              const on = activeGroup?.topic.id === t.id
+              return (
+                <button
+                  key={t.id}
+                  className={`nailed-cat-chip${on ? ' active' : ''}`}
+                  style={{ '--c': t.color }}
+                  onClick={() => setActiveId(t.id)}
+                >
+                  {Icon && <span className="nailed-cat-chip-ic"><Icon size={16} /></span>}
+                  <span className="nailed-cat-chip-name">{t.name}</span>
+                  <span className="nailed-cat-chip-count">{items.length}</span>
+                </button>
+              )
+            })}
           </div>
-        </>
-      )}
-    </div>
-  )
-}
 
-function ImportantTopicGroup({ topic: t, items, onUnmark }) {
-  const [open, setOpen] = useState(true)
-  const Icon = t.icon
-
-  return (
-    <div className="nailed-group" style={{ '--c': t.color }}>
-      <button className="nailed-group-header" onClick={() => setOpen(v => !v)}>
-        {Icon && <div className="nailed-group-icon"><Icon size={20} /></div>}
-        <div className="nailed-group-info">
-          <span className="nailed-group-name">{t.name}</span>
-          <span className="nailed-group-sub">{items.length} question{items.length !== 1 ? 's' : ''}</span>
-        </div>
-        <span className="nailed-group-badge" style={{ background: `${t.color}20`, color: t.color }}>
-          <Bookmark size={11} fill="currentColor" />
-          {items.length}
-        </span>
-        <ChevronDown size={18} className={`nailed-group-chev${open ? ' open' : ''}`} />
-      </button>
-
-      {open && (
-        <div className="nailed-group-body anim-slide">
-          {items.map(({ q, qid }) => (
-            <div key={qid} className="nailed-row">
-              <Bookmark size={11} fill="currentColor" style={{ color: '#ef4444', flexShrink: 0, marginTop: 3 }} />
-              <div className="nailed-row-body">
-                <span className="nailed-row-text">{q.question}</span>
-                {q.correct_answer && q.options?.[q.correct_answer] && (
-                  <div className="nailed-row-answer">
-                    <span className="nailed-ans-key">{q.correct_answer.toUpperCase()}</span>
-                    <span className="nailed-ans-text">{q.options[q.correct_answer]}</span>
+          {activeGroup && (
+            <div className="nailed-screen-list anim-fade" style={{ '--c': activeGroup.topic.color }}>
+              {activeGroup.items.map(({ q, qid }) => (
+                <div key={qid} className="nailed-row">
+                  <Bookmark size={11} fill="currentColor" style={{ color: '#ef4444', flexShrink: 0, marginTop: 3 }} />
+                  <div className="nailed-row-body">
+                    <span className="nailed-row-text">{q.question}</span>
+                    {q.correct_answer && q.options?.[q.correct_answer] && (
+                      <div className="nailed-row-answer">
+                        <span className="nailed-ans-key">{q.correct_answer.toUpperCase()}</span>
+                        <span className="nailed-ans-text">{q.options[q.correct_answer]}</span>
+                      </div>
+                    )}
+                    {q.explanation && (
+                      <div className="nailed-row-explanation">
+                        <Lightbulb size={11} style={{ color: '#ef4444', flexShrink: 0, marginTop: 1 }} />
+                        <span>{q.explanation}</span>
+                      </div>
+                    )}
                   </div>
-                )}
-                {q.explanation && (
-                  <div className="nailed-row-explanation">
-                    <Lightbulb size={11} style={{ color: '#ef4444', flexShrink: 0, marginTop: 1 }} />
-                    <span>{q.explanation}</span>
-                  </div>
-                )}
-              </div>
-              <button
-                className="nailed-unnail-btn"
-                onClick={() => onUnmark(qid)}
-                title="Remove from Important"
-              >
-                <X size={13} />
-              </button>
+                  <button
+                    className="nailed-unnail-btn"
+                    onClick={() => onUnmark(qid)}
+                    title="Remove from Important"
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   )

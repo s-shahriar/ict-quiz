@@ -1,4 +1,4 @@
-import { Bookmark, ChevronDown, ChevronLeft, Dumbbell, Home, Terminal, X } from 'lucide-react'
+import { Bookmark, ChevronLeft, Dumbbell, Home, Terminal, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -7,6 +7,7 @@ import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId }
 export default function PracticeImportantScreen() {
   const navigate = useNavigate()
   const { value: important, remove: onUnmark } = useImportantContext()
+  const [activeId, setActiveId] = useState(null)
 
   const groups = PRACTICE_CATEGORIES.map(cat => {
     const data = getPracticeData(cat.id)
@@ -35,6 +36,7 @@ export default function PracticeImportantScreen() {
   }).filter(g => g && g.items.length > 0)
 
   const total = groups.reduce((s, g) => s + g.items.length, 0)
+  const activeGroup = groups.find(g => g.cat.id === activeId) || groups[0]
 
   return (
     <div className="nailed-screen nailed-screen--wide anim-fade">
@@ -66,64 +68,57 @@ export default function PracticeImportantScreen() {
           <button className="practice-runall-btn" onClick={() => navigate('/practice/important/run')}>
             <Dumbbell size={16} /> সব Important practice করো ({total})
           </button>
-          <div className="nailed-screen-list">
-            {groups.map(({ cat, items }) => (
-              <PracticeImportantGroup key={cat.id} cat={cat} items={items} onUnmark={onUnmark} onOpen={navigate} />
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
 
-function PracticeImportantGroup({ cat, items, onUnmark, onOpen }) {
-  const [open, setOpen] = useState(true)
-  const Icon = cat.icon || Terminal
-  return (
-    <div className="nailed-group" style={{ '--c': cat.color }}>
-      <button className="nailed-group-header" onClick={() => setOpen(v => !v)}>
-        <div className="nailed-group-icon"><Icon size={20} /></div>
-        <div className="nailed-group-info">
-          <span className="nailed-group-name">{cat.name}</span>
-          <span className="nailed-group-sub">{items.length} important item{items.length !== 1 ? 's' : ''}</span>
-        </div>
-        <span className="nailed-group-badge" style={{ background: `${cat.color}20`, color: cat.color }}>
-          <Bookmark size={11} fill="currentColor" />
-          {items.length}
-        </span>
-        <ChevronDown size={18} className={`nailed-group-chev${open ? ' open' : ''}`} />
-      </button>
-
-      {open && (
-        <div className="nailed-group-body anim-slide" style={{ padding: '8px 6px 10px', gap: 10 }}>
-          {items.map(item => (
-            <div
-              key={item.id}
-              className="practice-imp-item"
-              onClick={() => onOpen(`/practice?category=${cat.id}&topic=${item.topic.id}`)}
-            >
-              <div className="practice-imp-item-head">
-                <span className="practice-imp-tag">
-                  {item.kind === 'drill' ? <Dumbbell size={11} /> : <Terminal size={11} />}
-                  {item.topic.name}
-                </span>
+          <div className="nailed-cat-bar">
+            {groups.map(({ cat, items }) => {
+              const Icon = cat.icon || Terminal
+              const on = activeGroup?.cat.id === cat.id
+              return (
                 <button
-                  className="nailed-unnail-btn"
-                  onClick={e => { e.stopPropagation(); onUnmark(item.id) }}
-                  title="Remove from Important"
+                  key={cat.id}
+                  className={`nailed-cat-chip${on ? ' active' : ''}`}
+                  style={{ '--c': cat.color }}
+                  onClick={() => setActiveId(cat.id)}
                 >
-                  <X size={13} />
+                  <span className="nailed-cat-chip-ic"><Icon size={16} /></span>
+                  <span className="nailed-cat-chip-name">{cat.name}</span>
+                  <span className="nailed-cat-chip-count">{items.length}</span>
                 </button>
-              </div>
-              {item.kind === 'drill' && <div className="practice-imp-prompt">{item.prompt}</div>}
-              {item.kind === 'drill'
-                ? item.answer && <code className="practice-cmd">{item.answer}</code>
-                : <code className="practice-cmd">{item.cmd}</code>}
-              {item.desc && <span className="practice-cmd-desc">{item.desc}</span>}
+              )
+            })}
+          </div>
+
+          {activeGroup && (
+            <div className="nailed-screen-list anim-fade" style={{ '--c': activeGroup.cat.color }}>
+              {activeGroup.items.map(item => (
+                <div
+                  key={item.id}
+                  className="practice-imp-item"
+                  onClick={() => navigate(`/practice?category=${activeGroup.cat.id}&topic=${item.topic.id}`)}
+                >
+                  <div className="practice-imp-item-head">
+                    <span className="practice-imp-tag">
+                      {item.kind === 'drill' ? <Dumbbell size={11} /> : <Terminal size={11} />}
+                      {item.topic.name}
+                    </span>
+                    <button
+                      className="nailed-unnail-btn"
+                      onClick={e => { e.stopPropagation(); onUnmark(item.id) }}
+                      title="Remove from Important"
+                    >
+                      <X size={13} />
+                    </button>
+                  </div>
+                  {item.kind === 'drill' && <div className="practice-imp-prompt">{item.prompt}</div>}
+                  {item.kind === 'drill'
+                    ? item.answer && <code className="practice-cmd">{item.answer}</code>
+                    : <code className="practice-cmd">{item.cmd}</code>}
+                  {item.desc && <span className="practice-cmd-desc">{item.desc}</span>}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   )
