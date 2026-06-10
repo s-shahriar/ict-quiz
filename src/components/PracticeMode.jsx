@@ -24,6 +24,14 @@ export default function PracticeMode() {
   const topic = data?.topics.find(t => t.id === topicId) || data?.topics?.[0]
   const [tab, setTab] = useState('info')
 
+  // Sample tables can differ per topic or per set (e.g. SET A's Employee
+  // topics vs its Hospital problem; SET B's employee/branch/salary). Resolve in
+  // order: the topic's own sampleData, then the set-specific schema, then the
+  // category-wide default.
+  const sampleData = topic?.sampleData
+    || (topic?.set && data?.sampleDataBySet?.[topic.set])
+    || data?.sampleData
+
   const setParam = (key, value) => {
     const next = new URLSearchParams(searchParams)
     next.set(key, value)
@@ -90,12 +98,12 @@ export default function PracticeMode() {
       <div className="practice-content">
         {tab === 'info' && <InfoPanel info={topic.info} name={topic.name} />}
         {tab === 'commands' && <>
-          <SampleTables data={data.sampleData} />
+          <SampleTables data={sampleData} />
           <CommandsPanel commands={topic.commands} practice={topic.practice}
             important={important} makeId={cmdImpId} onToggleImportant={toggleImportant} />
         </>}
         {tab === 'practice' && <>
-          <SampleTables data={data.sampleData} />
+          <SampleTables data={sampleData} />
           <CommandPractice key={topic.id} problems={topic.practice}
             important={important} onToggleImportant={toggleImportant}
             idOf={p => cmdImpId(p.accept?.[0])} ciOf={() => categoryId === 'sql'} />
@@ -107,25 +115,45 @@ export default function PracticeMode() {
 
 function TopicDropdown({ topics, current, onSelect }) {
   const [open, setOpen] = useState(false)
+  // Group topics by their `set` label (e.g. "A" / "B") so the menu shows
+  // "SET A" / "SET B" section headers. Categories without a `set` (e.g. Linux)
+  // collapse into one flat, header-less list.
+  const groups = []
+  topics.forEach(t => {
+    const key = t.set || ''
+    let g = groups.find(x => x.key === key)
+    if (!g) { g = { key, items: [] }; groups.push(g) }
+    g.items.push(t)
+  })
+  const showHeaders = groups.some(g => g.key)
   return (
     <div className="practice-topic-dropdown">
       <button className="practice-dd-trigger" onClick={() => setOpen(o => !o)} aria-expanded={open}>
-        <span className="practice-dd-current">{current.name}</span>
+        <span className="practice-dd-current">
+          {current.set ? `SET ${current.set} · ` : ''}{current.name}
+        </span>
         <ChevronDown size={18} className={`practice-dd-chev${open ? ' open' : ''}`} />
       </button>
       {open && (
         <>
           <div className="practice-dd-backdrop" onClick={() => setOpen(false)} />
           <div className="practice-dd-menu">
-            {topics.map(t => (
-              <button
-                key={t.id}
-                className={`practice-dd-item${t.id === current.id ? ' active' : ''}`}
-                onClick={() => { onSelect(t.id); setOpen(false) }}
-              >
-                <span>{t.name}</span>
-                {t.id === current.id && <Check size={15} />}
-              </button>
+            {groups.map(g => (
+              <div key={g.key || '_'} className="practice-dd-group">
+                {showHeaders && g.key && (
+                  <div className="practice-dd-group-label">SET {g.key}</div>
+                )}
+                {g.items.map(t => (
+                  <button
+                    key={t.id}
+                    className={`practice-dd-item${t.id === current.id ? ' active' : ''}`}
+                    onClick={() => { onSelect(t.id); setOpen(false) }}
+                  >
+                    <span>{t.name}</span>
+                    {t.id === current.id && <Check size={15} />}
+                  </button>
+                ))}
+              </div>
             ))}
           </div>
         </>
@@ -189,7 +217,9 @@ function SampleTables({ data }) {
                   </thead>
                   <tbody>
                     {t.rows.map((row, i) => (
-                      <tr key={i}>{row.map((cell, j) => <td key={j}>{cell}</td>)}</tr>
+                      <tr key={i}>{row.map((cell, j) => (
+                        <td key={j}>{cell === null ? <span className="sample-null">NULL</span> : cell}</td>
+                      ))}</tr>
                     ))}
                   </tbody>
                 </table>
