@@ -377,36 +377,25 @@
       "name": "Date & Time",
       "info": {
         "summary": [
-          "current date-time: Oracle-এ SYSDATE FROM DUAL; MySQL-এ NOW() বা CURRENT_TIMESTAMP।",
           "YEAR(), MONTH(), DAY() তারিখ থেকে সাল/মাস/দিন বের করে শর্ত মেলাতে কাজে লাগে।",
+          "current date-time: MySQL-এ NOW() বা CURRENT_TIMESTAMP দিয়ে পাওয়া যায়।",
           "এক বছরের সব record পেতে YEAR(col) = 2016, অথবা BETWEEN দিয়ে বছরের শুরু–শেষ range।"
         ],
         "table": {
           "headers": ["Function", "কাজ"],
           "rows": [
-            ["SYSDATE / NOW()", "এখনকার date-time"],
             ["YEAR(col)", "সাল (যেমন 2016)"],
             ["MONTH(col)", "মাস (1–12)"],
-            ["DAY(col)", "দিন (1–31)"]
+            ["DAY(col)", "দিন (1–31)"],
+            ["NOW() / CURRENT_TIMESTAMP", "এখনকার date-time"]
           ]
         }
       },
       "commands": [
-        {"cmd": "SELECT NOW();", "desc": "current date-time (MySQL)"},
-        {"cmd": "SELECT SYSDATE FROM DUAL;", "desc": "current date-time (Oracle)"},
-        {"cmd": "WHERE YEAR(DateOfJoining) = 2016", "desc": "2016 সালে join"}
+        {"cmd": "WHERE YEAR(DateOfJoining) = 2016", "desc": "2016 সালে join"},
+        {"cmd": "SELECT NOW();", "desc": "current date-time (MySQL)"}
       ],
       "practice": [
-        {
-          "prompt": "current date-time বের করো।",
-          "accept": [
-            "SELECT SYSDATE FROM DUAL;",
-            "SELECT NOW();",
-            "SELECT CURRENT_TIMESTAMP;"
-          ],
-          "answers": ["SELECT SYSDATE FROM DUAL;"],
-          "explain": "Oracle-এ SYSDATE (DUAL pseudo-table থেকে) current date-time দেয়; MySQL-এ NOW() বা CURRENT_TIMESTAMP।"
-        },
         {
           "prompt": "EmployeeDetails থেকে যারা 2016 সালে join করেছে তাদের সব record বের করো।",
           "accept": [
@@ -430,7 +419,7 @@
       "name": "Top-N & Nth Highest",
       "info": {
         "summary": [
-          "top N: MySQL-এ ORDER BY ... DESC LIMIT N; SQL Server-এ SELECT TOP N; Oracle-এ WHERE ROWNUM <= N।",
+          "top N: MySQL-এ ORDER BY ... DESC LIMIT N; SQL Server-এ SELECT TOP N।",
           "Nth highest: DESC সাজিয়ে প্রথম (N-1) টি skip করে পরের 1টি — LIMIT 1 OFFSET N-1 বা LIMIT N-1, 1।",
           "Nth lowest একই নিয়ম, শুধু ORDER BY ASC; একই salary একাধিক থাকলে SELECT DISTINCT Salary।"
         ],
@@ -439,7 +428,6 @@
           "rows": [
             ["top N (MySQL)", "ORDER BY col DESC LIMIT N"],
             ["top N (SQL Server)", "SELECT TOP N ..."],
-            ["top N (Oracle)", "WHERE ROWNUM <= N"],
             ["Nth highest", "DESC LIMIT 1 OFFSET N-1"],
             ["Nth lowest", "ASC LIMIT 1 OFFSET N-1"]
           ]
@@ -448,7 +436,6 @@
       "commands": [
         {"cmd": "ORDER BY Salary DESC LIMIT 3", "desc": "top 3 (MySQL)"},
         {"cmd": "SELECT TOP 3 * FROM EmployeeSalary ORDER BY Salary DESC", "desc": "top 3 (SQL Server)"},
-        {"cmd": "WHERE ROWNUM <= 3", "desc": "top 3 (Oracle)"},
         {"cmd": "ORDER BY Salary DESC LIMIT 1 OFFSET 2", "desc": "3rd highest (N-1 = 2)"}
       ],
       "practice": [
@@ -459,20 +446,6 @@
           ],
           "answers": ["SELECT * FROM EmployeeSalary\nORDER BY Salary DESC\nLIMIT 3;"],
           "explain": "salary DESC সাজিয়ে LIMIT 3 প্রথম 3টি (সবচেয়ে বেশি) row রাখে। top N-এ N বদলাও।"
-        },
-        {
-          "prompt": "একই top 3 record SQL Server (TOP) বা Oracle (ROWNUM) দিয়ে বের করো।",
-          "accept": [
-            "SELECT TOP 3 * FROM EmployeeSalary ORDER BY Salary DESC;",
-            "SELECT TOP (3) * FROM EmployeeSalary ORDER BY Salary DESC;",
-            "SELECT * FROM EmployeeSalary WHERE ROWNUM <= 3;",
-            "SELECT * FROM EmployeeSalary WHERE ROWNUM <= 3 ORDER BY Salary DESC;"
-          ],
-          "answers": [
-            "SELECT TOP 3 * FROM EmployeeSalary\nORDER BY Salary DESC;",
-            "SELECT * FROM EmployeeSalary\nWHERE ROWNUM <= 3;"
-          ],
-          "explain": "SQL Server-এ SELECT TOP N (TOP N PERCENT দিলে শতকরা); Oracle-এ WHERE ROWNUM <= N। দুটোই MySQL LIMIT-এর সমতুল্য।"
         },
         {
           "prompt": "EmployeeSalary থেকে 3rd highest salary বের করো (MySQL — LIMIT/OFFSET)।",
