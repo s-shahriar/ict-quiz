@@ -236,9 +236,9 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
   const list = buildCommandList(commands, practice)
   const [impOnly, setImpOnly] = useState(false)
   if (!list.length) return null
-  const isImp = (cmd) => important?.has(makeId(cmd))
-  const importantCount = list.filter(c => isImp(c.cmd)).length
-  const visible = impOnly ? list.filter(c => isImp(c.cmd)) : list
+  const isImp = (c) => !!c.key && important?.has(makeId(c.key))
+  const importantCount = list.filter(isImp).length
+  const visible = impOnly ? list.filter(isImp) : list
   return (
     <div className="practice-commands">
       <div className="study-filter-bar">
@@ -264,13 +264,15 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
         <div key={i} className="practice-cmd-row">
           {c.prompt && <div className="practice-cmd-q">{c.prompt}</div>}
           <div className="practice-cmd-head">
-            <code className="practice-cmd">{c.cmd}</code>
+            <div className="practice-cmd-forms">
+              {c.cmds.map((cmd, j) => <code key={j} className="practice-cmd">{cmd}</code>)}
+            </div>
             <button
-              className={`practice-imp-btn${isImp(c.cmd) ? ' marked' : ''}`}
-              onClick={() => onToggleImportant(makeId(c.cmd))}
-              title={isImp(c.cmd) ? 'Remove from Important' : 'Mark as Important'}
+              className={`practice-imp-btn${isImp(c) ? ' marked' : ''}`}
+              onClick={() => onToggleImportant(makeId(c.key))}
+              title={isImp(c) ? 'Remove from Important' : 'Mark as Important'}
             >
-              <Bookmark size={14} fill={isImp(c.cmd) ? 'currentColor' : 'none'} />
+              <Bookmark size={14} fill={isImp(c) ? 'currentColor' : 'none'} />
             </button>
           </div>
           {c.desc && <span className="practice-cmd-desc">{c.desc}</span>}

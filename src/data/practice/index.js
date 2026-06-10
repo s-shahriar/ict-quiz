@@ -52,23 +52,30 @@ export function checkAnswer(input, accept, { caseInsensitive = false } = {}) {
 // Build the Commands-tab list: curated commands + each practice item's primary
 // accepted answer, deduped by normalized form.
 export function buildCommandList(commands = [], practice = []) {
-  const seen = new Set()
   const list = []
-  const add = (cmd, desc, prompt) => {
-    if (!cmd) return
-    const key = normalizeCommand(cmd)
-    if (seen.has(key)) return
-    seen.add(key)
-    list.push({ cmd, desc: desc || '', prompt: prompt || '' })
-  }
-  commands.forEach(c => add(c.cmd, c.desc))
-  // A drill may list multiple equally-valid forms in `answers` (e.g. with and
-  // without `-type f`); show each so the user sees both styles. Fall back to
-  // the primary accepted answer. The drill's `prompt` (the question) is carried
-  // through so the Commands tab can show what each query actually answers.
+  // Curated command snippets: one card each, deduped by normalized form.
+  const seenCmd = new Set()
+  commands.forEach(c => {
+    if (!c.cmd) return
+    const key = normalizeCommand(c.cmd)
+    if (seenCmd.has(key)) return
+    seenCmd.add(key)
+    list.push({ cmds: [c.cmd], desc: c.desc || '', prompt: '', key: c.cmd })
+  })
+  // Each practice drill becomes ONE card. A drill may list several equally-valid
+  // forms in `answers` (e.g. subquery vs JOIN); they're shown together under the
+  // single question rather than as separate duplicate cards. Bookmarking keys
+  // off the drill's primary accepted answer so it stays in sync with the
+  // Practice tab.
+  const seenDrill = new Set()
   practice.forEach(p => {
-    const forms = (p.answers && p.answers.length) ? p.answers : [p.accept?.[0]]
-    forms.forEach(f => add(f, p.explain, p.prompt))
+    const primary = p.accept?.[0]
+    if (!primary) return
+    const key = normalizeCommand(primary)
+    if (seenDrill.has(key)) return
+    seenDrill.add(key)
+    const forms = (p.answers && p.answers.length) ? p.answers : [primary]
+    list.push({ cmds: forms, desc: p.explain || '', prompt: p.prompt || '', key: primary })
   })
   return list
 }
