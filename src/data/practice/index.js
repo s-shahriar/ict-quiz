@@ -32,10 +32,11 @@ export function getPracticeData(categoryId) {
 export function normalizeCommand(s, { lower = false } = {}) {
   let v = (s || '').trim().replace(/\s+/g, ' ').replace(/\s*;+\s*$/, '')
   if (lower) {
-    // SQL: spacing around comparison operators is insignificant, so standardize
-    // it — `Project='P1'` must match `Project = 'P1'`. Multi-char operators are
-    // listed first so `<=`/`>=`/`<>`/`!=` aren't split into single chars.
-    v = v.replace(/\s*(<=|>=|<>|!=|=|<|>)\s*/g, ' $1 ').replace(/\s+/g, ' ').trim()
+    // SQL: spacing around operators and punctuation is insignificant, so
+    // standardize it — `Project='P1'` matches `Project = 'P1'`, and
+    // `mod(EmpId,2)` matches `MOD(EmpId, 2)`. Multi-char operators are listed
+    // first so `<=`/`>=`/`<>`/`!=` aren't split into single chars.
+    v = v.replace(/\s*(<=|>=|<>|!=|=|<|>|,|\(|\))\s*/g, ' $1 ').replace(/\s+/g, ' ').trim()
     v = v.toLowerCase()
   }
   return v
