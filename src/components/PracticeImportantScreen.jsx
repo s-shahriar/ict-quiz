@@ -1,4 +1,4 @@
-import { Bookmark, ChevronDown, ChevronLeft, ChevronUp, Dumbbell, Home, Terminal, X } from 'lucide-react'
+import { Bookmark, ChevronDown, ChevronLeft, Dumbbell, Home, Terminal, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -24,10 +24,10 @@ export default function PracticeImportantScreen() {
         }
       })
       buildCommandList(topic.commands, topic.practice).forEach(c => {
-        const id = practiceCmdId(cat.id, topic.id, c.cmd)
+        const id = practiceCmdId(cat.id, topic.id, c.key)
         if (important.has(id) && !seen.has(id)) {
           seen.add(id)
-          items.push({ kind: 'cmd', id, topic, cmd: c.cmd, desc: c.desc })
+          items.push({ kind: 'cmd', id, topic, cmd: c.cmds[0], desc: c.desc })
         }
       })
     }
@@ -79,17 +79,20 @@ export default function PracticeImportantScreen() {
 
 function PracticeImportantGroup({ cat, items, onUnmark, onOpen }) {
   const [open, setOpen] = useState(true)
+  const Icon = cat.icon || Terminal
   return (
     <div className="nailed-group" style={{ '--c': cat.color }}>
       <button className="nailed-group-header" onClick={() => setOpen(v => !v)}>
-        <div className="nailed-group-label">
-          <span className="nailed-group-dot" style={{ background: cat.color }} />
-          <span style={{ color: cat.color }}>{cat.name}</span>
-          <span className="nailed-group-badge" style={{ background: `${cat.color}20`, color: cat.color }}>
-            {items.length}
-          </span>
+        <div className="nailed-group-icon"><Icon size={20} /></div>
+        <div className="nailed-group-info">
+          <span className="nailed-group-name">{cat.name}</span>
+          <span className="nailed-group-sub">{items.length} important item{items.length !== 1 ? 's' : ''}</span>
         </div>
-        {open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+        <span className="nailed-group-badge" style={{ background: `${cat.color}20`, color: cat.color }}>
+          <Bookmark size={11} fill="currentColor" />
+          {items.length}
+        </span>
+        <ChevronDown size={18} className={`nailed-group-chev${open ? ' open' : ''}`} />
       </button>
 
       {open && (

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Bookmark, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
+import { ChevronLeft, Bookmark, X, ChevronDown, Home } from 'lucide-react'
 import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
@@ -59,18 +59,21 @@ export default function WrittenImportantScreen() {
 
 function WrittenImportantGroup({ topic: t, items, onUnmark }) {
   const [open, setOpen] = useState(true)
+  const Icon = t.icon
 
   return (
     <div className="nailed-group" style={{ '--c': t.color }}>
       <button className="nailed-group-header" onClick={() => setOpen(v => !v)}>
-        <div className="nailed-group-label">
-          <span className="nailed-group-dot" style={{ background: t.color }} />
-          <span style={{ color: t.color }}>{t.name}</span>
-          <span className="nailed-group-badge" style={{ background: `${t.color}20`, color: t.color }}>
-            {items.length}
-          </span>
+        {Icon && <div className="nailed-group-icon"><Icon size={20} /></div>}
+        <div className="nailed-group-info">
+          <span className="nailed-group-name">{t.name}</span>
+          <span className="nailed-group-sub">{items.length} answer{items.length !== 1 ? 's' : ''}</span>
         </div>
-        {open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+        <span className="nailed-group-badge" style={{ background: `${t.color}20`, color: t.color }}>
+          <Bookmark size={11} fill="currentColor" />
+          {items.length}
+        </span>
+        <ChevronDown size={18} className={`nailed-group-chev${open ? ' open' : ''}`} />
       </button>
 
       {open && (

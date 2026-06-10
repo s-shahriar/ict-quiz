@@ -535,7 +535,7 @@
     {
       "id": "a-hospital",
       "set": "A",
-      "name": "Hospital DB (BUET 2021)",
+      "name": "Hospital DB",
       "sampleData": {
         "Patient": {
           "columns": ["patientNo", "patName", "patAddr", "DOB"],

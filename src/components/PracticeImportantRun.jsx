@@ -28,10 +28,10 @@ export default function PracticeImportantRun() {
       // Reference-only commands marked important (no drill behind them) — turn
       // each into a drill: prompt = its description, answer = the command.
       for (const c of buildCommandList(topic.commands, topic.practice)) {
-        const id = practiceCmdId(cat.id, topic.id, c.cmd)
+        const id = practiceCmdId(cat.id, topic.id, c.key)
         if (important.has(id) && !seen.has(id)) {
           seen.add(id)
-          drills.push({ prompt: c.desc || 'এই command টি লেখো', accept: [c.cmd], _impId: id, ...meta })
+          drills.push({ prompt: c.prompt || c.desc || 'এই command টি লেখো', accept: [c.key], answers: c.cmds, _impId: id, ...meta })
         }
       }
     }
