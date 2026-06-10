@@ -1,5 +1,5 @@
 import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Home, Lightbulb, Moon, Sun, Table2, Terminal, XCircle } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useThemeContext } from '../contexts/ThemeContext.jsx'
@@ -262,6 +262,7 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
         <p className="practice-info-line">কোনো important command নেই — 🔖 চিহ্নে ট্যাপ করে যোগ করো।</p>
       ) : visible.map((c, i) => (
         <div key={i} className="practice-cmd-row">
+          {c.prompt && <div className="practice-cmd-q">{c.prompt}</div>}
           <div className="practice-cmd-head">
             <code className="practice-cmd">{c.cmd}</code>
             <button
@@ -318,13 +319,21 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
     }
   }
 
+  // Plain Enter submits (or advances when correct); Shift+Enter inserts a
+  // newline so multi-line SQL can be typed.
   const onKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       if (status === 'correct') next()
       else submit()
     }
   }
+
+  // Auto-grow the textarea to fit its content (and shrink back on reset).
+  useEffect(() => {
+    const el = inputRef.current
+    if (el) { el.style.height = 'auto'; el.style.height = `${el.scrollHeight}px` }
+  }, [input])
 
   const filterBar = showFilter ? (
     <div className="study-filter-bar">
@@ -384,15 +393,16 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
 
       <div className={`practice-terminal status-${status}`}>
         <span className="practice-dollar">$</span>
-        <input
+        <textarea
           ref={inputRef}
           className="practice-input"
+          rows={1}
           value={input}
           spellCheck={false}
           autoCapitalize="off"
           autoCorrect="off"
           autoComplete="off"
-          placeholder="command লিখে Enter চাপো..."
+          placeholder="command লিখে Enter চাপো... (Shift+Enter = নতুন লাইন)"
           onChange={e => { setInput(e.target.value); if (status === 'wrong') setStatus('idle') }}
           onKeyDown={onKeyDown}
           readOnly={status === 'correct'}

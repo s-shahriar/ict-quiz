@@ -54,20 +54,21 @@ export function checkAnswer(input, accept, { caseInsensitive = false } = {}) {
 export function buildCommandList(commands = [], practice = []) {
   const seen = new Set()
   const list = []
-  const add = (cmd, desc) => {
+  const add = (cmd, desc, prompt) => {
     if (!cmd) return
     const key = normalizeCommand(cmd)
     if (seen.has(key)) return
     seen.add(key)
-    list.push({ cmd, desc: desc || '' })
+    list.push({ cmd, desc: desc || '', prompt: prompt || '' })
   }
   commands.forEach(c => add(c.cmd, c.desc))
   // A drill may list multiple equally-valid forms in `answers` (e.g. with and
   // without `-type f`); show each so the user sees both styles. Fall back to
-  // the primary accepted answer.
+  // the primary accepted answer. The drill's `prompt` (the question) is carried
+  // through so the Commands tab can show what each query actually answers.
   practice.forEach(p => {
     const forms = (p.answers && p.answers.length) ? p.answers : [p.accept?.[0]]
-    forms.forEach(f => add(f, p.explain))
+    forms.forEach(f => add(f, p.explain, p.prompt))
   })
   return list
 }

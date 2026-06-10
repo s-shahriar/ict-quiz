@@ -1383,6 +1383,11 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 :root:not([data-theme='dark']) .practice-cmd {
   color: #0f172a; background: #f1f5f9; border-color: #e2e8f0;
 }
+.practice-cmd-q {
+  color: var(--text); font-size: 0.88rem; font-weight: 600; line-height: 1.5;
+  overflow-wrap: anywhere; padding: 2px 2px 0;
+  border-left: 3px solid var(--accent); padding-left: 9px;
+}
 .practice-cmd-desc { color: var(--text-2); font-size: 0.86rem; overflow-wrap: anywhere; padding: 0 2px; }
 
 /* Sample data reference (collapsible, mobile-friendly) */
@@ -1507,18 +1512,22 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .practice-imp-prompt { font-size: 0.92rem; font-weight: 600; color: var(--text); line-height: 1.5; }
 
 .practice-terminal {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: flex-start; gap: 8px;
   padding: 12px 14px; border-radius: 10px;
   border: 1px solid var(--border-bright);
   background: #0b0f14; transition: border-color .15s;
 }
 .practice-terminal.status-correct { border-color: var(--green); }
 .practice-terminal.status-wrong { border-color: #ef4444; }
-.practice-dollar { color: var(--accent-2); font-family: ui-monospace, monospace; font-weight: 700; }
+.practice-dollar {
+  color: var(--accent-2); font-family: ui-monospace, monospace; font-weight: 700;
+  font-size: 0.92rem; line-height: 1.5; padding-top: 2px; flex: 0 0 auto;
+}
 .practice-input {
   flex: 1; min-width: 0; border: none; background: transparent; outline: none;
   color: #e6edf3; font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.92rem; padding: 2px 0;
+  font-size: 0.92rem; line-height: 1.5; padding: 2px 0;
+  resize: none; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .practice-input::placeholder { color: #4b5563; }
 
