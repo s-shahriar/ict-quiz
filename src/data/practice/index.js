@@ -79,5 +79,10 @@ export function buildCommandList(commands = [], practice = []) {
 // index) links a drill to its command card: marking it in the Practice tab
 // also marks it in the Commands tab, and vice versa.
 export function practiceCmdId(category, topic, cmd) {
-  return `practice__${category}__${topic}__${normalizeCommand(cmd)}`
+  // Normalize the key the same way the category matches answers, so a drill and
+  // its Commands-tab card resolve to one id even when formatted differently
+  // (e.g. SQL's single-line accept[0] vs the multi-line answers[0]). Without
+  // this, SQL's case/spacing/newline differences would break the link.
+  const lower = category === 'sql'
+  return `practice__${category}__${topic}__${normalizeCommand(cmd, { lower })}`
 }

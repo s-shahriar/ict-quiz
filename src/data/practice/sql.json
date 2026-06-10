@@ -226,44 +226,57 @@
           "prompt": "যেসব employee-র salary 5000 থেকে 10000-এর মধ্যে (দুই প্রান্ত সহ), তাদের নাম বের করো।",
           "accept": [
             "SELECT FullName FROM EmployeeDetails WHERE EmpId IN (SELECT EmpId FROM EmployeeSalary WHERE Salary BETWEEN 5000 AND 10000);",
-            "SELECT FullName FROM EmployeeDetails WHERE EmpId IN (SELECT EmpId FROM EmployeeSalary WHERE Salary >= 5000 AND Salary <= 10000);"
+            "SELECT FullName FROM EmployeeDetails WHERE EmpId IN (SELECT EmpId FROM EmployeeSalary WHERE Salary >= 5000 AND Salary <= 10000);",
+            "SELECT DISTINCT e.FullName FROM EmployeeDetails e JOIN EmployeeSalary s ON e.EmpId = s.EmpId WHERE s.Salary BETWEEN 5000 AND 10000;",
+            "SELECT DISTINCT e.FullName FROM EmployeeDetails e INNER JOIN EmployeeSalary s ON e.EmpId = s.EmpId WHERE s.Salary BETWEEN 5000 AND 10000;",
+            "SELECT DISTINCT e.FullName FROM EmployeeDetails e JOIN EmployeeSalary s ON e.EmpId = s.EmpId WHERE s.Salary >= 5000 AND s.Salary <= 10000;",
+            "SELECT e.FullName FROM EmployeeDetails e JOIN EmployeeSalary s ON e.EmpId = s.EmpId WHERE s.Salary BETWEEN 5000 AND 10000;"
           ],
-          "answers": ["SELECT FullName FROM EmployeeDetails\nWHERE EmpId IN (\n  SELECT EmpId FROM EmployeeSalary\n  WHERE Salary BETWEEN 5000 AND 10000\n);"],
-          "explain": "ভেতরের subquery salary 5000–10000 হওয়া EmpId দেয়; বাইরের query সেই EmpId-গুলোর FullName আনে। BETWEEN দুই প্রান্ত সহ।"
+          "answers": [
+            "SELECT FullName FROM EmployeeDetails\nWHERE EmpId IN (\n  SELECT EmpId FROM EmployeeSalary\n  WHERE Salary BETWEEN 5000 AND 10000\n);",
+            "SELECT DISTINCT e.FullName\nFROM EmployeeDetails e\nJOIN EmployeeSalary s ON e.EmpId = s.EmpId\nWHERE s.Salary BETWEEN 5000 AND 10000;"
+          ],
+          "explain": "দুইভাবে করা যায় — (1) Subquery: ভেতরের query salary 5000–10000 হওয়া EmpId দেয়, বাইরে সেই FullName আনে। (2) JOIN: EmpId দিয়ে দুই table মিলিয়ে WHERE BETWEEN; এক employee-র একাধিক salary থাকলে DISTINCT দরকার। BETWEEN দুই প্রান্ত সহ।"
         },
         {
           "prompt": "EmployeeSalary-তে salary record আছে এমন সব employee record EmployeeDetails থেকে বের করো (EXISTS দিয়ে)।",
           "accept": [
             "SELECT * FROM EmployeeDetails E WHERE EXISTS (SELECT * FROM EmployeeSalary S WHERE E.EmpId = S.EmpId);",
-            "SELECT * FROM EmployeeDetails E WHERE EXISTS (SELECT 1 FROM EmployeeSalary S WHERE E.EmpId = S.EmpId);"
+            "SELECT * FROM EmployeeDetails E WHERE EXISTS (SELECT 1 FROM EmployeeSalary S WHERE E.EmpId = S.EmpId);",
+            "SELECT * FROM EmployeeDetails WHERE EmpId IN (SELECT EmpId FROM EmployeeSalary);",
+            "SELECT * FROM EmployeeDetails E WHERE E.EmpId IN (SELECT EmpId FROM EmployeeSalary);",
+            "SELECT * FROM EmployeeDetails E WHERE E.EmpId IN (SELECT S.EmpId FROM EmployeeSalary S);",
+            "SELECT DISTINCT e.* FROM EmployeeDetails e JOIN EmployeeSalary s ON e.EmpId = s.EmpId;",
+            "SELECT DISTINCT e.* FROM EmployeeDetails e INNER JOIN EmployeeSalary s ON e.EmpId = s.EmpId;"
           ],
-          "answers": ["SELECT * FROM EmployeeDetails E\nWHERE EXISTS (\n  SELECT * FROM EmployeeSalary S\n  WHERE E.EmpId = S.EmpId\n);"],
-          "explain": "EXISTS correlated subquery: প্রতিটি E-র জন্য EmployeeSalary-তে মিল-করা EmpId থাকলে subquery row ফেরায়, তখন সেই E আসে।"
+          "answers": [
+            "SELECT * FROM EmployeeDetails E\nWHERE EXISTS (\n  SELECT * FROM EmployeeSalary S\n  WHERE E.EmpId = S.EmpId\n);",
+            "SELECT * FROM EmployeeDetails\nWHERE EmpId IN (\n  SELECT EmpId FROM EmployeeSalary\n);",
+            "SELECT DISTINCT e.*\nFROM EmployeeDetails e\nJOIN EmployeeSalary s ON e.EmpId = s.EmpId;"
+          ],
+          "explain": "তিনভাবে করা যায় — (1) EXISTS: প্রতিটি E-র জন্য EmployeeSalary-তে মিল-করা EmpId থাকলে subquery row ফেরায়, তখন সেই E আসে। (2) IN: EmployeeSalary-র EmpId তালিকায় থাকলে। (3) JOIN: EmpId দিয়ে মিলিয়ে DISTINCT (এক employee-র একাধিক salary থাকলে একবার আসে)।"
         }
       ]
     },
     {
       "id": "a-duplicates",
       "set": "A",
-      "name": "Duplicates (find & remove)",
+      "name": "Duplicates (find)",
       "info": {
         "summary": [
           "একই মানের একাধিক row = duplicate; GROUP BY + HAVING COUNT(*) > 1 দিয়ে এদের চিহ্নিত করা হয়।",
-          "HAVING দলের উপর শর্ত দেয় (WHERE single row-এর উপর) — তাই COUNT-এর মতো aggregate-এ HAVING লাগে।",
-          "মুছতে হলে duplicate দলের EmpId বের করে DELETE ... WHERE EmpId IN (...) — আলাদা temporary table ছাড়াই।"
+          "HAVING দলের উপর শর্ত দেয় (WHERE single row-এর উপর) — তাই COUNT-এর মতো aggregate-এ HAVING লাগে।"
         ],
         "table": {
           "headers": ["Clause", "কাজ"],
           "rows": [
             ["GROUP BY col, ...", "একই মানের row একদলে"],
-            ["HAVING COUNT(*) > 1", "একাধিকবার আসা দল"],
-            ["DELETE ... WHERE IN", "duplicate দল মুছে ফেলা"]
+            ["HAVING COUNT(*) > 1", "একাধিকবার আসা দল"]
           ]
         }
       },
       "commands": [
-        {"cmd": "GROUP BY EmpId, Project, Salary HAVING COUNT(*) > 1", "desc": "duplicate দল খোঁজা"},
-        {"cmd": "DELETE FROM EmployeeSalary WHERE EmpId IN (...)", "desc": "duplicate মুছে ফেলা"}
+        {"cmd": "GROUP BY EmpId, Project, Salary HAVING COUNT(*) > 1", "desc": "duplicate দল খোঁজা"}
       ],
       "practice": [
         {
@@ -273,14 +286,6 @@
           ],
           "answers": ["SELECT EmpId, Project, Salary, COUNT(*)\nFROM EmployeeSalary\nGROUP BY EmpId, Project, Salary\nHAVING COUNT(*) > 1;"],
           "explain": "সব column-এ GROUP BY করে যেসব দলে COUNT(*) > 1 সেগুলোই duplicate। HAVING দল-ভিত্তিক শর্ত (WHERE row-ভিত্তিক)।"
-        },
-        {
-          "prompt": "Temporary table ছাড়া একটি table থেকে duplicate record মুছে ফেলো।",
-          "accept": [
-            "DELETE FROM EmployeeSalary WHERE EmpId IN (SELECT EmpId FROM EmployeeSalary GROUP BY Project, Salary HAVING COUNT(*) > 1);"
-          ],
-          "answers": ["DELETE FROM EmployeeSalary\nWHERE EmpId IN (\n  SELECT EmpId\n  FROM EmployeeSalary\n  GROUP BY Project, Salary\n  HAVING COUNT(*) > 1\n);"],
-          "explain": "GROUP BY Project, Salary দিয়ে duplicate দল বের করে সেই দলের EmpId-গুলো DELETE করা হয় — আলাদা temporary table লাগে না।"
         }
       ]
     },
