@@ -30,8 +30,15 @@ export function getPracticeData(categoryId) {
 // drop a trailing semicolon (harmless for shell, forgiving for SQL). Pass
 // { lower: true } to also lowercase — used for case-insensitive languages (SQL).
 export function normalizeCommand(s, { lower = false } = {}) {
-  const v = (s || '').trim().replace(/\s+/g, ' ').replace(/\s*;+\s*$/, '')
-  return lower ? v.toLowerCase() : v
+  let v = (s || '').trim().replace(/\s+/g, ' ').replace(/\s*;+\s*$/, '')
+  if (lower) {
+    // SQL: spacing around comparison operators is insignificant, so standardize
+    // it — `Project='P1'` must match `Project = 'P1'`. Multi-char operators are
+    // listed first so `<=`/`>=`/`<>`/`!=` aren't split into single chars.
+    v = v.replace(/\s*(<=|>=|<>|!=|=|<|>)\s*/g, ' $1 ').replace(/\s+/g, ' ').trim()
+    v = v.toLowerCase()
+  }
+  return v
 }
 
 // Check whether a user's answer matches any accepted command.
