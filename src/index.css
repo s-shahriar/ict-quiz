@@ -3078,3 +3078,13 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   color: var(--text-3);
   font-size: 13px;
 }
+
+/* Deep-linked question highlight (from search results) */
+.gs-focus-pulse {
+  animation: gs-focus-pulse 2.2s ease-out;
+}
+@keyframes gs-focus-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c, var(--accent)) 70%, transparent); }
+  15%  { box-shadow: 0 0 0 4px color-mix(in srgb, var(--c, var(--accent)) 45%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}

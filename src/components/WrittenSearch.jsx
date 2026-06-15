@@ -84,7 +84,7 @@ export default function WrittenSearch({ onActiveChange }) {
                     key={`${topic.id}-${q.id}`}
                     q={q}
                     topic={topic}
-                    onOpen={() => navigate('/written?topic=' + topic.id)}
+                    onOpen={() => navigate('/written?topic=' + topic.id + '&q=' + q.id)}
                   />
                 ))}
               </div>

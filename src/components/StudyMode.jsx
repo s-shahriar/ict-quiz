@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useParams, useNavigate, Navigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useParams, useNavigate, Navigate, useSearchParams } from 'react-router-dom'
 import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Filter, LayoutGrid } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
@@ -16,6 +16,19 @@ export default function StudyMode() {
 
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // Deep-link: ?q=<index> scrolls to and pulses a specific question.
+  const [searchParams] = useSearchParams()
+  const focusIdx = searchParams.get('q')
+  useEffect(() => {
+    if (focusIdx == null || !topic) return
+    const el = document.getElementById('study-q-' + topic.id + '__' + focusIdx)
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    el.classList.add('gs-focus-pulse')
+    const t = setTimeout(() => el.classList.remove('gs-focus-pulse'), 2200)
+    return () => clearTimeout(t)
+  }, [focusIdx, topic])
 
   if (!topic) return <Navigate to="/" replace />
 
@@ -96,6 +109,7 @@ export default function StudyMode() {
           {visible.map(({ q, qid }, i) => (
             <StudyCard
               key={qid}
+              domId={'study-q-' + qid}
               question={q}
               index={i}
               color={topic.color}
@@ -112,7 +126,7 @@ export default function StudyMode() {
   )
 }
 
-function StudyCard({ question: q, index, color, nailed, isImportant, onNail, onMarkImportant, onUnmarkImportant }) {
+function StudyCard({ domId, question: q, index, color, nailed, isImportant, onNail, onMarkImportant, onUnmarkImportant }) {
   const [shown, setShown]       = useState(false)
   const [selected, setSelected] = useState(null)
   const opts = ['a','b','c','d'].filter(k => q.options?.[k])
@@ -124,7 +138,7 @@ function StudyCard({ question: q, index, color, nailed, isImportant, onNail, onM
   }
 
   return (
-    <div className={`study-card${nailed ? ' study-card-nailed' : ''}`} style={{ '--c': color }}>
+    <div id={domId} className={`study-card${nailed ? ' study-card-nailed' : ''}`} style={{ '--c': color }}>
       <div className="study-card-top">
         <span className="study-qnum" style={{ color }}>Q{index + 1}</span>
         <div className="study-card-actions">

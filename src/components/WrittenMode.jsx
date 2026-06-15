@@ -1,5 +1,5 @@
 import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronUp, Home, LayoutGrid, PenLine, Star } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
@@ -39,6 +39,19 @@ export default function WrittenMode() {
   const visibleQuestions = filterImportant
     ? nonNailed.filter(q => important?.has(qid(q)))
     : nonNailed
+
+  // Deep-link: ?q=<questionId> opens and scrolls to a specific written answer.
+  const focusQ = searchParams.get('q')
+  useEffect(() => {
+    if (!focusQ) return
+    setOpenIds(prev => ({ ...prev, [focusQ]: true }))
+    const el = document.getElementById('written-q-' + focusQ)
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    el.classList.add('gs-focus-pulse')
+    const t = setTimeout(() => el.classList.remove('gs-focus-pulse'), 2200)
+    return () => clearTimeout(t)
+  }, [focusQ, topicId])
 
   if (!topic) return null
 
@@ -106,6 +119,7 @@ export default function WrittenMode() {
             {visibleQuestions.map((q, idx) => (
               <WrittenCard
                 key={q.id}
+                domId={'written-q-' + q.id}
                 q={q}
                 idx={idx}
                 topicColor={topic.color}
@@ -124,11 +138,11 @@ export default function WrittenMode() {
   )
 }
 
-function WrittenCard({ q, idx, topicColor, isOpen, isImportant, isNailed, onToggle, onToggleImportant, onToggleNailed }) {
+function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, onToggle, onToggleImportant, onToggleNailed }) {
   const a = q.answer
 
   return (
-    <div className={`written-card${isOpen ? ' open' : ''}`} style={{ '--c': topicColor }}>
+    <div id={domId} className={`written-card${isOpen ? ' open' : ''}`} style={{ '--c': topicColor }}>
 
       <div className="written-card-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="written-card-toggle">

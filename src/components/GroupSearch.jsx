@@ -33,7 +33,7 @@ export default function GroupSearch({ topics, onActiveChange }) {
           normalize(q.explanation)
         if (tokens.every(tok => haystack.includes(tok))) {
           seen.add(key)
-          out.push({ q, topic: t })
+          out.push({ q, topic: t, index: i })
         }
       })
     }
@@ -81,12 +81,12 @@ export default function GroupSearch({ topics, onActiveChange }) {
           ) : (
             <>
               <div className="gs-list">
-                {pageItems.map(({ q, topic }) => (
+                {pageItems.map(({ q, topic, index }) => (
                   <ResultCard
                     key={`${topic.id}-${q.question}`}
                     q={q}
                     topic={topic}
-                    onOpen={() => navigate('/mcq/' + topic.id + '/study')}
+                    onOpen={() => navigate('/mcq/' + topic.id + '/study?q=' + index)}
                   />
                 ))}
               </div>
