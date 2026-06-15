@@ -234,6 +234,66 @@
         },
         "mnemonic": "WHERE = ঢোকার গেটে চেক (দল তৈরির আগে প্রতিটি লোককে আলাদা যাচাই)। HAVING = দল তৈরির পরে দল বাছাই (পুরো dept এর গড় দেখে রাখা/বাদ)। তাই AVG/COUNT এর মতো aggregate শুধু HAVING এ চলে, WHERE এ নয়।"
       }
+    },
+    {
+      "id": "db_005",
+      "q": "An IT department assigns employees to projects. An employee can work on multiple projects, and a project can involve multiple employees. Determine the mapping cardinality and explain how it can be represented in an ER model.",
+      "tags": [
+        "ER model",
+        "mapping cardinality",
+        "many-to-many",
+        "M:N",
+        "junction table",
+        "relationship",
+        "database design"
+      ],
+      "answer": {
+        "summary": [
+          "এখানে mapping cardinality হলো Many-to-Many (M:N) — একজন employee অনেক project-এ, আবার একটি project-এ অনেক employee।",
+          "ER model-এ এটা দুই entity (Employee, Project)-এর মাঝে একটি relationship (Works_On) দিয়ে দেখানো হয়, Employee পাশে M ও Project পাশে N।",
+          "Relational table-এ নামাতে M:N সরাসরি বসে না — একটি junction (bridge) table লাগে যার composite primary key (emp_id, project_id) এবং দুটোই foreign key।"
+        ],
+        "points": [
+          "Mapping cardinality = এক entity-র একটি instance অন্য entity-র কয়টি instance-এর সাথে যুক্ত হতে পারে তা বোঝায়। প্রকার: One-to-One (1:1), One-to-Many (1:N), Many-to-Many (M:N)।",
+          "এই সমস্যায়: একজন Employee অনেক Project-এ কাজ করতে পারে, আবার একটি Project-এ অনেক Employee থাকতে পারে — দুই দিকেই 'many', তাই cardinality = Many-to-Many (M:N)।",
+          "ER diagram: Employee ও Project দুটি entity (rectangle), মাঝে Works_On relationship (diamond); সংযোগ রেখায় Employee পাশে M এবং Project পাশে N লেখা হয়।",
+          "M:N relationship-এ প্রায়ই descriptive attribute থাকে (যেমন assigned_date, hours_worked) — এগুলো কোনো entity-র নয়, relationship-এর নিজস্ব attribute, junction table-এ বসে।",
+          "Relational schema-তে রূপান্তর: তিনটি table — Employee(emp_id PK, ...), Project(project_id PK, ...), এবং junction Works_On(emp_id, project_id, ...) যেখানে (emp_id, project_id) composite primary key এবং emp_id ও project_id দুটোই foreign key।",
+          "junction table কেন লাগে: relational table-এর একটি column একাধিক মান রাখতে পারে না; junction table ছাড়া M:N দেখাতে গেলে data redundancy ও repeating group তৈরি হতো।"
+        ],
+        "diagram": "Mapping Cardinality নির্ণয়:\n\n  Employee  ──<  works on  >──  Project\n  একজন employee  →  অনেক project\n  একটি project   →  অনেক employee\n  দুই দিকেই 'অনেক'   ⇒   Many-to-Many ( M : N )\n\nER Diagram:\n┌────────────┐      M       ╱╲       N      ┌────────────┐\n│  EMPLOYEE  │───────────<  Works_On  >───────────│  PROJECT   │\n│  (entity)  │              ╲╱               │  (entity)  │\n└────────────┘               │               └────────────┘\n  emp_id (PK)      assigned_date, hours_worked      project_id (PK)\n  name             (relationship-এর নিজস্ব attribute)  title\n\n  পড়ার নিয়ম: Employee পাশে M, Project পাশে N —\n  এক পাশের একটি instance অন্য পাশের অনেক instance-এর সাথে যুক্ত।\n\nRelational Schema-তে রূপান্তর  (M:N → junction table):\n┌───────────────┐   ┌────────────────────────────┐   ┌───────────────┐\n│   Employee    │   │    Works_On  (junction)    │   │    Project    │\n├───────────────┤   ├────────────────────────────┤   ├───────────────┤\n│ emp_id   (PK) │◀──│ emp_id      (PK, FK)       │   │ project_id(PK)│\n│ name          │   │ project_id  (PK, FK)      │──▶│ title         │\n│ dept          │   │ hours_worked              │   │ budget        │\n└───────────────┘   └────────────────────────────┘   └───────────────┘\n           composite primary key = ( emp_id , project_id )\n\nWorks_On sample rows:\n  emp_id │ project_id │ hours_worked\n  ───────┼────────────┼──────────────\n   101   │    P1      │     40        ← Rahim, P1-এ কাজ করে\n   101   │    P2      │     20        ← একই Rahim, আরেক project-এ\n   102   │    P1      │     35        ← একই P1, আরেক employee\n\n  একই emp_id একাধিক project-এ, একই project_id একাধিক employee-তে\n  → এটাই Many-to-Many।",
+        "mistakes": [
+          [
+            "Many-to-Many relationship শুধু Employee ও Project — দুটি table দিয়েই relational schema-তে করা যায়",
+            "না — M:N দুই table-এ বসে না; একটি তৃতীয় junction table লাগে যার composite key (emp_id, project_id)।"
+          ],
+          [
+            "junction table-এ একটা নতুন id-ই primary key হিসেবে যথেষ্ট, emp_id/project_id-কে আলাদা করে কিছু করতে হয় না",
+            "composite key (emp_id, project_id) একই assignment দুবার হওয়া আটকায়; আর emp_id ও project_id দুটোকেই foreign key করতে হয় referential integrity-র জন্য।"
+          ]
+        ],
+        "table": {
+          "headers": ["Mapping Cardinality", "মানে", "উদাহরণ"],
+          "rows": [
+            [
+              "One-to-One (1:1)",
+              "এক পাশের একটি ↔ অন্য পাশের একটি",
+              "Person ↔ Passport"
+            ],
+            [
+              "One-to-Many (1:N)",
+              "এক পাশের একটি ↔ অন্য পাশের অনেক",
+              "Department → Employees"
+            ],
+            [
+              "Many-to-Many (M:N)",
+              "দুই পাশেই অনেক — junction table লাগে",
+              "Employee ↔ Project (এই প্রশ্ন)"
+            ]
+          ]
+        },
+        "mnemonic": "দুই দিকেই 'many' হলে Many-to-Many (M:N)। M:N কখনো দুই table-এ বসে না — মাঝে একটি junction/bridge table লাগে, যার composite key = দুই পাশের PK একসাথে। Relationship-এর নিজস্ব attribute (hours, date) সেই junction table-এই বসে।"
+      }
     }
   ]
 }
