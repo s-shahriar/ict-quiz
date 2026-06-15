@@ -200,8 +200,8 @@
         ],
         "points": [
           "Firewall কী? একটি network security device বা software যা trusted internal network ও untrusted external network (internet) এর মধ্যে barrier হিসেবে কাজ করে। Predefined security rules এর ভিত্তিতে traffic allow বা block করে",
-          "Stateful Inspection Firewall: শুধু packet header (IP address, Port number) ও connection state track করে। TCP connection এর state মনে রাখে (SYN, established, closed)। Application-level content দেখতে পারে না। কম resource প্রয়োজন, দ্রুত কিন্তু সীমিত",
-          "Next-Generation Firewall (NGFW): Deep Packet Inspection (DPI) — packet এর ভেতরের data পর্যন্ত দেখতে পারে। Application awareness — নির্দিষ্ট app (Facebook, Skype, Zoom) চেনে ও block করতে পারে। Integrated IPS (Intrusion Prevention System), Anti-virus, Sandboxing। User identity-based policy (কে access করছে সেটা দেখে)"
+          "Stateful Inspection Firewall: OSI Layer 4 (Transport) পর্যন্ত কাজ করে — শুধু packet header (IP address, Port number, protocol) ও connection state track করে। TCP connection এর state মনে রাখে (SYN, established, closed)। Application-level content দেখতে পারে না। কম resource প্রয়োজন, দ্রুত কিন্তু সীমিত। উদাহরণ: iptables, Cisco ASA (basic mode)",
+          "Next-Generation Firewall (NGFW): OSI Layer 7 (Application) পর্যন্ত কাজ করে। Deep Packet Inspection (DPI) — packet এর ভেতরের data পর্যন্ত দেখতে পারে। Application awareness — নির্দিষ্ট app (Facebook, Skype, Zoom) চেনে ও block করতে পারে। Integrated IPS (Intrusion Prevention System), Anti-virus, Sandboxing। User identity-based policy (কে access করছে সেটা দেখে)। খরচ বেশি। উদাহরণ: Palo Alto, FortiGate, Check Point NGFW, Sophos XG"
         ],
         "table": {
           "headers": [
@@ -210,6 +210,11 @@
             "Next-Generation Firewall (NGFW)"
           ],
           "rows": [
+            [
+              "OSI Layer",
+              "Layer 4 (Transport) পর্যন্ত — IP, port, protocol",
+              "Layer 7 (Application) পর্যন্ত — app ও user চেনে"
+            ],
             [
               "Inspection Depth",
               "শুধু packet header ও connection state",
@@ -239,10 +244,20 @@
               "ব্যবহার",
               "Basic network security",
               "Enterprise, banking, high-security environment"
+            ],
+            [
+              "Cost",
+              "তুলনামূলক কম খরচ",
+              "বেশি খরচ"
+            ],
+            [
+              "Example",
+              "iptables (stateful), Cisco ASA (basic mode)",
+              "Palo Alto, FortiGate, Check Point NGFW, Sophos XG"
             ]
           ]
         },
-        "mnemonic": "Stateful = দরজায় পাসপোর্ট দেখে। NGFW = ব্যাগের ভেতর পর্যন্ত X-ray করে, app চেনে, মানুষ চেনে।"
+        "mnemonic": "Stateful = দরজায় পাসপোর্ট দেখে (Layer 4 পর্যন্ত)। NGFW = ব্যাগের ভেতর পর্যন্ত X-ray করে, app চেনে, মানুষ চেনে (Layer 7 পর্যন্ত)।"
       }
     },
     {
