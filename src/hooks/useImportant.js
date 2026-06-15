@@ -39,6 +39,13 @@ export default function useImportant() {
     return next
   })
 
+  const removeMany = (ids) => setValue(prev => {
+    const next = new Set(prev)
+    ids.forEach(id => next.delete(id))
+    save(next)
+    return next
+  })
+
   const toggle = (id) => setValue(prev => {
     const next = new Set(prev)
     if (next.has(id)) next.delete(id)
@@ -49,5 +56,5 @@ export default function useImportant() {
 
   const has = (id) => value.has(id)
 
-  return { value, add, remove, toggle, has }
+  return { value, add, remove, removeMany, toggle, has }
 }

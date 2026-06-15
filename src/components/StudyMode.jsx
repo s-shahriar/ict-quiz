@@ -4,6 +4,7 @@ import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Fil
 import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { duplicateQidsOf } from '../lib/questionIndex.js'
 import CategorySidebar from './CategorySidebar.jsx'
 
 export default function StudyMode() {
@@ -11,7 +12,7 @@ export default function StudyMode() {
   const navigate = useNavigate()
   const topic = TOPICS.find(t => t.id === topicId)
   const { value: mastered, add: onNail } = useMasteredContext()
-  const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
+  const { value: important, add: onMarkImportant, removeMany: onUnmarkImportant } = useImportantContext()
 
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -99,10 +100,10 @@ export default function StudyMode() {
               index={i}
               color={topic.color}
               nailed={mastered.has(qid)}
-              isImportant={important?.has(qid) ?? false}
+              isImportant={duplicateQidsOf(qid).some(id => important?.has(id))}
               onNail={() => onNail(qid)}
               onMarkImportant={() => onMarkImportant(qid)}
-              onUnmarkImportant={() => onUnmarkImportant(qid)}
+              onUnmarkImportant={() => onUnmarkImportant(duplicateQidsOf(qid))}
             />
           ))}
         </div>

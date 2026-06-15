@@ -3,12 +3,13 @@ import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX, Star, Bookmark } from 'lucide-react'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { duplicateQidsOf } from '../lib/questionIndex.js'
 
 export default function ExamMode() {
   const location = useLocation()
   const navigate = useNavigate()
   const { value: mastered, add: onNail, remove: onUnnail } = useMasteredContext()
-  const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
+  const { value: important, add: onMarkImportant, removeMany: onUnmarkImportant } = useImportantContext()
 
   const { questions, label } = location.state || {}
   const [idx, setIdx]           = useState(0)
@@ -31,8 +32,11 @@ export default function ExamMode() {
   const q    = questions[idx]
   const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
   const qid  = q?._topicId != null ? `${q._topicId}__${q._origIndex}` : null
+  // A question can have duplicate copies (different qids). Treat it as important
+  // if ANY copy is marked, and unmark every copy so it reliably clears.
+  const dupeQids = qid ? duplicateQidsOf(qid) : []
   const isNailed = qid ? mastered?.has(qid) : false
-  const isImportant = qid ? important?.has(qid) : false
+  const isImportant = qid ? dupeQids.some(id => important?.has(id)) : false
 
   const pick = (key) => {
     if (revealed) return
@@ -143,7 +147,7 @@ export default function ExamMode() {
                 </button>
                 <button
                   className={`quiz-important-btn${isImportant ? ' marked' : ''}`}
-                  onClick={() => isImportant ? onUnmarkImportant(qid) : onMarkImportant(qid)}
+                  onClick={() => isImportant ? onUnmarkImportant(dupeQids) : onMarkImportant(qid)}
                   title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
                 >
                   <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />

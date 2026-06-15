@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bookmark, X, Home, Lightbulb } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { duplicateQidsOf } from '../lib/questionIndex.js'
 
 export default function ImportantScreen() {
   const navigate = useNavigate()
-  const { value: important, remove: onUnmark } = useImportantContext()
+  const { value: important, removeMany } = useImportantContext()
+  // Remove every duplicate copy of the question so it fully clears.
+  const onUnmark = (qid) => removeMany(duplicateQidsOf(qid))
   const [activeId, setActiveId] = useState(null)
 
   const topics = TOPICS

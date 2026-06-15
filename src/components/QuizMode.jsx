@@ -4,6 +4,7 @@ import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb,
 import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { duplicateQidsOf } from '../lib/questionIndex.js'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -19,7 +20,7 @@ export default function QuizMode() {
   const navigate = useNavigate()
   const topic = TOPICS.find(t => t.id === topicId)
   const { value: mastered, add: nail, remove: unnail } = useMasteredContext()
-  const { value: important, add: markImportant, remove: unmarkImportant } = useImportantContext()
+  const { value: important, add: markImportant, removeMany: unmarkImportant } = useImportantContext()
 
   const questions = useMemo(
     () => topic
@@ -43,8 +44,9 @@ export default function QuizMode() {
   const q = questions[idx]
   const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
   const qid = q ? `${topic.id}__${q._origIndex}` : null
+  const dupeQids = qid ? duplicateQidsOf(qid) : []
   const isNailed = qid ? mastered?.has(qid) : false
-  const isImportant = qid ? important?.has(qid) : false
+  const isImportant = qid ? dupeQids.some(id => important?.has(id)) : false
 
   const pick = (key) => {
     if (revealed) return
@@ -149,7 +151,7 @@ export default function QuizMode() {
               </button>
               <button
                 className={`quiz-important-btn${isImportant ? ' marked' : ''}`}
-                onClick={() => isImportant ? unmarkImportant(qid) : markImportant(qid)}
+                onClick={() => isImportant ? unmarkImportant(dupeQids) : markImportant(qid)}
                 title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
               >
                 <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />
