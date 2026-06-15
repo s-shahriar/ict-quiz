@@ -972,8 +972,6 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   border-radius: 16px; padding: 20px 22px 18px;
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 180px;
 }
 .study-card:hover {
   box-shadow:
@@ -1591,8 +1589,6 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: box-shadow 0.22s ease, border-color 0.22s ease;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 72px;
 }
 .written-card.open {
   box-shadow:

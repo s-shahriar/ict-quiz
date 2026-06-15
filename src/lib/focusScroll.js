@@ -1,11 +1,11 @@
-// Reliably bring a deep-linked element into view. Handles two races that made
-// it flaky: (1) the element may not be mounted yet when the effect runs, and
-// (2) layout shifts after the first scroll — study cards use
-// `content-visibility: auto` (heights are estimated until rendered) and written
-// cards expand on open. So we retry until the node exists, then re-center a few
-// times as layout settles, and finally pulse it.
+// Reliably bring a deep-linked element into view. Tries immediately, retries a
+// few times if the node isn't mounted yet (lazy routes / late render), then
+// re-centers a couple times as fonts/images settle, and pulses the target.
 //
-// Returns a cleanup function (cancel + clear timers) for use from useEffect.
+// Uses setTimeout (not requestAnimationFrame) so it also works under headless
+// virtual-time rendering, where rAF callbacks may not fire.
+//
+// Returns a cleanup function for use from useEffect.
 export function focusScroll(getEl) {
   let cancelled = false
   let pulseTimer = null
@@ -16,19 +16,19 @@ export function focusScroll(getEl) {
     if (cancelled) return
     const el = getEl()
     if (!el) {
-      if (findTries++ < 40) requestAnimationFrame(step)
+      if (findTries++ < 40) setTimeout(step, 16)
       return
     }
-    el.scrollIntoView({ block: 'center' }) // instant — avoids fighting layout shift
-    if (corrections++ < 4) {
-      setTimeout(step, 110)
+    el.scrollIntoView({ block: 'center' })
+    if (corrections++ < 3) {
+      setTimeout(step, 120)
       return
     }
     el.classList.add('gs-focus-pulse')
     pulseTimer = setTimeout(() => el.classList.remove('gs-focus-pulse'), 2200)
   }
 
-  requestAnimationFrame(step)
+  step()
 
   return () => {
     cancelled = true
