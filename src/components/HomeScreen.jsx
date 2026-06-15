@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck, Dumbbell } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { WRITTEN_TOPICS } from '../data/written/index.js'
@@ -17,7 +17,9 @@ export default function HomeScreen({ onBackup }) {
   const { value: important } = useImportantContext()
   const { value: writtenMastered } = useWrittenMasteredContext()
 
-  const initialModule = location.state?.module
+  const [searchParams] = useSearchParams()
+  const urlSearch = searchParams.get('search') || ''
+  const initialModule = location.state?.module || searchParams.get('module')
   const [module, setModule] = useState(
     initialModule === 'written' || initialModule === 'practice' ? initialModule : 'mcq'
   )
@@ -67,7 +69,7 @@ export default function HomeScreen({ onBackup }) {
 
       {module === 'mcq' && (
         <>
-          <GroupSearch topics={topics} onActiveChange={setMcqSearching} />
+          <GroupSearch topics={topics} onActiveChange={setMcqSearching} initialQuery={module === 'mcq' ? urlSearch : ''} />
         </>
       )}
 
@@ -132,7 +134,7 @@ export default function HomeScreen({ onBackup }) {
 
       {module === 'written' && (
         <>
-          <WrittenSearch onActiveChange={setWrittenSearching} />
+          <WrittenSearch onActiveChange={setWrittenSearching} initialQuery={module === 'written' ? urlSearch : ''} />
         </>
       )}
 

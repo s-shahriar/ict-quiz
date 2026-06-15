@@ -10,9 +10,9 @@ const PAGE_SIZE = 8
 // Search across all MCQ questions in the given topics. Flexible matching:
 // every query word must appear (in any order) in the question, options, or
 // explanation. Bangla-aware via NFC normalization in lib/normalize.
-export default function GroupSearch({ topics, onActiveChange }) {
+export default function GroupSearch({ topics, onActiveChange, initialQuery = '' }) {
   const navigate = useNavigate()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(initialQuery)
   const [page, setPage]   = useState(1)
   const debounced = useDebounce(query, 250)
   const tokens = tokenize(debounced)
@@ -86,7 +86,9 @@ export default function GroupSearch({ topics, onActiveChange }) {
                     key={`${topic.id}-${q.question}`}
                     q={q}
                     topic={topic}
-                    onOpen={() => navigate('/mcq/' + topic.id + '/study?q=' + index)}
+                    onOpen={() => navigate('/mcq/' + topic.id + '/study?q=' + index, {
+                      state: { backTo: '/?module=mcq&search=' + encodeURIComponent(query) }
+                    })}
                   />
                 ))}
               </div>

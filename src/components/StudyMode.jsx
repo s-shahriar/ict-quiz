@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate, Navigate, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate, Navigate, useSearchParams, useLocation } from 'react-router-dom'
 import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Filter, LayoutGrid } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
@@ -11,6 +11,8 @@ import CategorySidebar from './CategorySidebar.jsx'
 export default function StudyMode() {
   const { topicId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+  const backTo = location.state?.backTo  // set when arriving from search — return there
   const topic = TOPICS.find(t => t.id === topicId)
   const { value: mastered, add: onNail } = useMasteredContext()
   const { value: important, add: onMarkImportant, removeMany: onUnmarkImportant } = useImportantContext()
@@ -45,7 +47,7 @@ export default function StudyMode() {
   return (
     <div className="study-page anim-fade">
       <div className="study-topbar">
-        <button className="back-btn" onClick={() => navigate('/mcq/' + topic.id)}>
+        <button className="back-btn" onClick={() => navigate(backTo || '/mcq/' + topic.id)}>
           <ChevronLeft size={15} /> Back
         </button>
         <span className="study-title" style={{ color: topic.color }}>{topic.name}</span>

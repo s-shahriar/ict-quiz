@@ -9,9 +9,9 @@ import Pagination from './shared/Pagination'
 const PAGE_SIZE = 6
 
 // Search across all Written Q&A. Each question is { id, q, tags, answer:{ summary[], points[], ... } }.
-export default function WrittenSearch({ onActiveChange }) {
+export default function WrittenSearch({ onActiveChange, initialQuery = '' }) {
   const navigate = useNavigate()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(initialQuery)
   const [page, setPage]   = useState(1)
   const debounced = useDebounce(query, 250)
   const tokens = tokenize(debounced)
@@ -84,7 +84,9 @@ export default function WrittenSearch({ onActiveChange }) {
                     key={`${topic.id}-${q.id}`}
                     q={q}
                     topic={topic}
-                    onOpen={() => navigate('/written?topic=' + topic.id + '&q=' + q.id)}
+                    onOpen={() => navigate('/written?topic=' + topic.id + '&q=' + q.id, {
+                      state: { backTo: '/?module=written&search=' + encodeURIComponent(query) }
+                    })}
                   />
                 ))}
               </div>

@@ -1,6 +1,6 @@
 import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronUp, Home, LayoutGrid, PenLine, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 import { WRITTEN_TOPICS, getWrittenData } from '../data/written/index.js'
@@ -11,6 +11,8 @@ import { WrittenCardBody } from './WrittenCardBody.jsx'
 export default function WrittenMode() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const location = useLocation()
+  const backTo = location.state?.backTo  // set when arriving from search — return there
   const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
   const { value: writtenMastered, add: onNailWritten, remove: onUnnailWritten } = useWrittenMasteredContext()
 
@@ -54,8 +56,8 @@ export default function WrittenMode() {
   return (
     <div className="written-page anim-fade">
       <div className="written-topbar">
-        <button className="back-btn" onClick={() => navigate('/', { state: { module: 'written' } })}>
-          <ChevronLeft size={15} /> All Categories
+        <button className="back-btn" onClick={() => backTo ? navigate(backTo) : navigate('/', { state: { module: 'written' } })}>
+          <ChevronLeft size={15} /> {backTo ? 'Back' : 'All Categories'}
         </button>
         <div className="written-topic-pill" style={{ color: topic.color, borderColor: `${topic.color}55` }}>
           <PenLine size={13} />
