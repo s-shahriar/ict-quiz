@@ -2857,3 +2857,224 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   padding: 2px 6px;
   flex-shrink: 0;
 }
+
+/* ===================================================================== */
+/* Home — module question search (MCQ + Written)                         */
+/* ===================================================================== */
+
+.group-search {
+  max-width: 720px;
+  margin: 0 auto 26px;
+  padding: 0 16px;
+}
+
+.gs-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.gs-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--text-3);
+  pointer-events: none;
+}
+.gs-input {
+  width: 100%;
+  background: var(--surface-glass);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 13px 44px 13px 44px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.gs-input:focus {
+  outline: none;
+  border-color: var(--border-bright);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12), var(--shadow-sm);
+}
+.gs-input::placeholder { color: var(--text-3); }
+.gs-clear {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  transition: color 0.15s;
+}
+.gs-clear:hover { color: var(--text); }
+
+.gs-results { margin-top: 16px; }
+
+.gs-meta {
+  font-size: 0.78rem;
+  font-family: "JetBrains Mono", monospace;
+  color: var(--text-3);
+  margin-bottom: 12px;
+}
+
+.gs-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.gs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gs-card {
+  background: var(--surface-glass);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--c, var(--accent));
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.gs-card-topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: "Space Grotesk", sans-serif;
+  color: var(--c, var(--accent));
+  background: color-mix(in srgb, var(--c, var(--accent)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c, var(--accent)) 28%, transparent);
+  border-radius: 20px;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.gs-card-topic:hover {
+  background: color-mix(in srgb, var(--c, var(--accent)) 20%, transparent);
+  border-color: var(--c, var(--accent));
+}
+.gs-card-open { opacity: 0.7; }
+
+.gs-card-q {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.gs-card-ans {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.gs-ans-key {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--c, var(--accent));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.gs-ans-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.gs-card-exp {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--text-2);
+  background: var(--elevated);
+  border-radius: 10px;
+  padding: 9px 11px;
+}
+
+.gs-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 9px;
+}
+.gs-tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-family: "JetBrains Mono", monospace;
+  color: var(--c, var(--accent));
+  background: color-mix(in srgb, var(--c, var(--accent)) 10%, transparent);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.pag-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  border-radius: 11px;
+  padding: 6px 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: color 0.15s, background 0.15s;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.pag-btn:hover:not(:disabled) {
+  background: var(--elevated);
+  color: var(--text);
+}
+.pag-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.pag-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.pag-ellipsis {
+  width: 24px;
+  text-align: center;
+  color: var(--text-3);
+  font-size: 13px;
+}

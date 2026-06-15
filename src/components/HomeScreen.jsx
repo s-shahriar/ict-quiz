@@ -7,6 +7,8 @@ import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
+import GroupSearch from './GroupSearch.jsx'
+import WrittenSearch from './WrittenSearch.jsx'
 
 export default function HomeScreen({ onBackup }) {
   const navigate = useNavigate()
@@ -19,6 +21,8 @@ export default function HomeScreen({ onBackup }) {
   const [module, setModule] = useState(
     initialModule === 'written' || initialModule === 'practice' ? initialModule : 'mcq'
   )
+  const [mcqSearching, setMcqSearching] = useState(false)
+  const [writtenSearching, setWrittenSearching] = useState(false)
 
   const topics = TOPICS
   const writtenTopics = WRITTEN_TOPICS
@@ -62,6 +66,12 @@ export default function HomeScreen({ onBackup }) {
       </header>
 
       {module === 'mcq' && (
+        <>
+          <GroupSearch topics={topics} onActiveChange={setMcqSearching} />
+        </>
+      )}
+
+      {module === 'mcq' && !mcqSearching && (
         <>
           <div className="home-action-row home-action-row--3">
             <button className="action-card exam-card" onClick={() => navigate('/exam')}>
@@ -121,6 +131,12 @@ export default function HomeScreen({ onBackup }) {
       )}
 
       {module === 'written' && (
+        <>
+          <WrittenSearch onActiveChange={setWrittenSearching} />
+        </>
+      )}
+
+      {module === 'written' && !writtenSearching && (
         <>
           <div className="home-action-row">
             <button className="action-card nailed-card" onClick={() => navigate('/written/nailed')}>
