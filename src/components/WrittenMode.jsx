@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 import { WRITTEN_TOPICS, getWrittenData } from '../data/written/index.js'
+import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 
@@ -44,13 +45,8 @@ export default function WrittenMode() {
   const focusQ = searchParams.get('q')
   useEffect(() => {
     if (!focusQ) return
-    setOpenIds(prev => ({ ...prev, [focusQ]: true }))
-    const el = document.getElementById('written-q-' + focusQ)
-    if (!el) return
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    el.classList.add('gs-focus-pulse')
-    const t = setTimeout(() => el.classList.remove('gs-focus-pulse'), 2200)
-    return () => clearTimeout(t)
+    setOpenIds(prev => prev[focusQ] ? prev : { ...prev, [focusQ]: true })
+    return focusScroll(() => document.getElementById('written-q-' + focusQ))
   }, [focusQ, topicId])
 
   if (!topic) return null

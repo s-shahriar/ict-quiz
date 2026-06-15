@@ -5,6 +5,7 @@ import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { duplicateQidsOf } from '../lib/questionIndex.js'
+import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 
 export default function StudyMode() {
@@ -20,15 +21,11 @@ export default function StudyMode() {
   // Deep-link: ?q=<index> scrolls to and pulses a specific question.
   const [searchParams] = useSearchParams()
   const focusIdx = searchParams.get('q')
+  const focusTopicId = topic?.id
   useEffect(() => {
-    if (focusIdx == null || !topic) return
-    const el = document.getElementById('study-q-' + topic.id + '__' + focusIdx)
-    if (!el) return
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    el.classList.add('gs-focus-pulse')
-    const t = setTimeout(() => el.classList.remove('gs-focus-pulse'), 2200)
-    return () => clearTimeout(t)
-  }, [focusIdx, topic])
+    if (focusIdx == null || !focusTopicId) return
+    return focusScroll(() => document.getElementById('study-q-' + focusTopicId + '__' + focusIdx))
+  }, [focusIdx, focusTopicId])
 
   if (!topic) return <Navigate to="/" replace />
 
