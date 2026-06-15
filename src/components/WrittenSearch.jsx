@@ -84,9 +84,11 @@ export default function WrittenSearch({ onActiveChange, initialQuery = '' }) {
                     key={`${topic.id}-${q.id}`}
                     q={q}
                     topic={topic}
-                    onOpen={() => navigate('/written?topic=' + topic.id + '&q=' + q.id, {
-                      state: { backTo: '/?module=written&search=' + encodeURIComponent(query) }
-                    })}
+                    onOpen={() => {
+                      const home = '/?module=written&search=' + encodeURIComponent(query)
+                      navigate(home, { replace: true })
+                      navigate('/written?topic=' + topic.id + '&q=' + q.id, { state: { backTo: home } })
+                    }}
                   />
                 ))}
               </div>

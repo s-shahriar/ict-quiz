@@ -18,10 +18,14 @@ export default function HomeScreen({ onBackup }) {
   const { value: writtenMastered } = useWrittenMasteredContext()
 
   const [searchParams] = useSearchParams()
-  const urlSearch = searchParams.get('search') || ''
-  const initialModule = location.state?.module || searchParams.get('module')
+  // Capture restore target once per mount (HomeScreen remounts on browser-back
+  // from a study/written page, so this picks up that URL's params).
+  const [restored] = useState(() => ({
+    module: location.state?.module || searchParams.get('module') || '',
+    search: searchParams.get('search') || '',
+  }))
   const [module, setModule] = useState(
-    initialModule === 'written' || initialModule === 'practice' ? initialModule : 'mcq'
+    restored.module === 'written' || restored.module === 'practice' ? restored.module : 'mcq'
   )
   const [mcqSearching, setMcqSearching] = useState(false)
   const [writtenSearching, setWrittenSearching] = useState(false)
@@ -69,7 +73,7 @@ export default function HomeScreen({ onBackup }) {
 
       {module === 'mcq' && (
         <>
-          <GroupSearch topics={topics} onActiveChange={setMcqSearching} initialQuery={module === 'mcq' ? urlSearch : ''} />
+          <GroupSearch topics={topics} onActiveChange={setMcqSearching} initialQuery={restored.module === 'mcq' ? restored.search : ''} />
         </>
       )}
 
@@ -134,7 +138,7 @@ export default function HomeScreen({ onBackup }) {
 
       {module === 'written' && (
         <>
-          <WrittenSearch onActiveChange={setWrittenSearching} initialQuery={module === 'written' ? urlSearch : ''} />
+          <WrittenSearch onActiveChange={setWrittenSearching} initialQuery={restored.module === 'written' ? restored.search : ''} />
         </>
       )}
 

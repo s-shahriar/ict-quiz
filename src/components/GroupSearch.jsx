@@ -86,9 +86,13 @@ export default function GroupSearch({ topics, onActiveChange, initialQuery = '' 
                     key={`${topic.id}-${q.question}`}
                     q={q}
                     topic={topic}
-                    onOpen={() => navigate('/mcq/' + topic.id + '/study?q=' + index, {
-                      state: { backTo: '/?module=mcq&search=' + encodeURIComponent(query) }
-                    })}
+                    onOpen={() => {
+                      // Make the home entry carry the search so BOTH the in-app
+                      // Back (via state) and the browser Back land on it.
+                      const home = '/?module=mcq&search=' + encodeURIComponent(query)
+                      navigate(home, { replace: true })
+                      navigate('/mcq/' + topic.id + '/study?q=' + index, { state: { backTo: home } })
+                    }}
                   />
                 ))}
               </div>
