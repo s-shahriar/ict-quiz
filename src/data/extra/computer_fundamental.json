@@ -1,0 +1,363 @@
+{
+  "category": "computer_fundamental",
+  "questions": [
+    {
+      "id": "cf_ex_001",
+      "q": "A bank account-opening form shows the customer's Bengali name correctly on the branch PC, but when the same data opens on an older back-office system it turns into garbled boxes (□□□). Explain what character encoding is, why ASCII fails here, and how Unicode/UTF-8 fixes it.",
+      "tags": [
+        "unicode",
+        "encoding",
+        "ascii",
+        "utf-8",
+        "character set"
+      ],
+      "answer": {
+        "summary": [
+          "সমস্যা encoding-এর — প্রতিটি অক্ষরকে কম্পিউটার ভিতরে একটি সংখ্যা (code) হিসেবে রাখা হয়; লেখা এক encoding-এ, পড়া আরেক encoding-এ হলেই □□ হয়।",
+          "ASCII শুধু রোমান অক্ষর (0–127) পারে, বাংলা তার মধ্যে নেই; Unicode/UTF-8 সব ভাষার অক্ষর ধরে।"
+        ],
+        "points": [
+          "Character encoding = অক্ষর ↔ সংখ্যা এর একটি ম্যাপ। কম্পিউটার শুধু সংখ্যা (bit) বোঝে, তাই 'A' বা 'ক'-কে একটি code number দিয়ে সংরক্ষণ করা হয়।",
+          "ASCII হলো 7-bit স্ট্যান্ডার্ড — মাত্র 128 টি code (A–Z, a–z, 0– 9, কিছু symbol)। এতে বাংলা, আরবি, চীনা কোনো অক্ষরের জায়গা নেই।",
+          "এইজন্য পুরনো ASCII-ভিত্তিক সিস্টেম বাংলা byte গুলো বুঝতে পারে না — অজানা code দেখলে fallback হিসেবে □ (tofu) দেখায়।",
+          "Unicode হলো একটি বিশাল universal চার্ট — পৃথিবীর প্রায় সব অক্ষরকে একটি ইউনিক code point দেয় (যেমন 'ক' = U+0995)।",
+          "UTF-8 হলো Unicode-এর একটি encoding পদ্ধতি — একটি অক্ষরকে 1 থেকে 4 byte-এ রাখে; ASCII অক্ষর এখনো 1 byte, তাই backward-compatible।",
+          "সমাধান: দুই সিস্টেমই UTF-8 ব্যবহার করলে (database, file, web page সব charset=UTF-8) বাংলা নাম সবখানে এক রকম দেখাবে, □ আসবে না।"
+        ],
+        "diagram": "বাংলা 'ক' এক সিস্টেম থেকে আরেকে গেলে কী হয়:\n\n  লেখা হলো 'ক'\n        │\n        ▼  encode (UTF-8)\n  ┌───────────────────────────┐\n  │ E0 A6 95   (3 bytes)      │ ← এই byte গুলো file/DB-তে সাভ\n  └───────────────────────────┘\n        │\n   ┌────┴──────────────┐\n   ▼                   ▼\n ┌──────────────┐   ┌──────────────────┐\n │ আধুনিক PC     │   │ পুরনো back-office │\n │ reads as     │   │ reads as         │\n │ UTF-8  ✔     │   │ ASCII/Latin-1 ✖  │\n │ → ক         │   │ → □□□  (tofu)   │\n └──────────────┘   └──────────────────┘\n   সঠিক দেখায়       অজানা code → box\n\nকেন □ আসে:\n  code point U+0995  ──┐\n                      ├→ ASCII table-এ নেই (0–127 only)\n  ASCII সীমা:        ┘   → ম্যাপ করতে পারে না → □\n  0        127            255\n  ●━━━━━━━━━●┅┅┅┅┅┅┅┅┅┅┅●\n  A..Z a..z            (বাংলা এখানে নেই)\n  └─ ASCII এতটুকুই পারে ─┘\n\nUnicode সীমা: 0 ............ 1,114,111 code points\n  ●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━●\n  A..z  ক..হ  أ..ي  一..  😀 ...  ← সব ভাষা এক ছাতার নিচে\n──────────────────────────────\n  ফিক্স: উভয় প্রান্তে charset = UTF-8 রাখুন",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "ASCII",
+            "Unicode / UTF-8"
+          ],
+          "rows": [
+            [
+              "আকার",
+              "7-bit (পরে 8-bit extended)",
+              "1–4 byte (UTF-8)"
+            ],
+            [
+              "অক্ষর সংখ্যা",
+              "128 (extended 256)",
+              "11 লক্ষ+ code point"
+            ],
+            [
+              "ভাষা",
+              "শুধু ইংরেজি/রোমান",
+              "বাংলাসহ প্রায় সব ভাষা + emoji"
+            ],
+            [
+              "বাংলা 'ক'",
+              "পারে না → □",
+              "U+0995 → সঠিক"
+            ],
+            [
+              "Compatibility",
+              "পুরনো, সীমিত",
+              "ASCII-এর superset (backward-compat)"
+            ],
+            [
+              "আজকের মান",
+              "প্রায় অপরাস্ত",
+              "web/DB-এর default standard"
+            ]
+          ]
+        },
+        "mnemonic": "ASCII শুধু ABC, বাংলা দিলেই □□; Unicode সব ভাষার ছাতা — UTF-8 রাখলে কাজ সারা।"
+      }
+    },
+    {
+      "id": "cf_ex_002",
+      "q": "The bank is buying a new database server and the vendor asks whether to fit SSD or HDD storage. As the IT officer, explain the difference between SSD and HDD and the trade-off (speed, cost, durability) so the team can decide.",
+      "tags": [
+        "ssd",
+        "hdd",
+        "storage",
+        "hardware",
+        "database server"
+      ],
+      "answer": {
+        "summary": [
+          "HDD = ঘুরন্ত ধাতব platter + নড়াচড়া head (যান্ত্রিক); SSD = কোনো নড়াচড়া অংশ নেই, flash memory chip-এ ডাটা।",
+          "SSD অনেক দ্রুত ও বেশি durable কিন্তু প্রতি GB-এ দাম বেশি; HDD ধীর কিন্তু সস্তায় বিশাল capacity দেয়।",
+          "DB server-এ random read/write বেশি → SSD ই প্রকৃত পছন্দ।"
+        ],
+        "points": [
+          "HDD-এ ডাটা ঘুরন্ত platter-এ magnetic হিসেবে লেখা; read/write head-কে সঠিক track-এ যেতে হয় — এই যান্ত্রিক নড়াচড়ার জন্য latency (seek time) বেশি।",
+          "SSD-তে কোনো moving part নেই — NAND flash cell-এ electrically ডাটা রাখা হয়, controller সরাসরি address থেকে পড়ে, তাই access প্রায় instant।",
+          "Speed: SSD-এ random access মাইক্রোসেকেন্ড, HDD-এ মিলিসেকেন্ড (প্রায় 100 গুণ বা বেশি পার্থক্য)। DB-এ হাজার random query থাকে বলে এটাই মুখ্য।",
+          "Durability: SSD-এ নড়াচড়া অংশ নেই বলে shock/vibration-এ বেশি টেকসই; HDD-এ head-crash বা যান্ত্রিক fail-এর ঝুঁকি বেশি। (তবে SSD cell-এর সীমিত write-cycle আছে)।",
+          "Cost/Capacity: একই টাকায় HDD অনেক বেশি TB দেয়; SSD প্রতি GB দামি। তাই বিশাল archive/backup-এ HDD এখনো জনপ্রিয়।",
+          "Power/Noise: SSD কম বিদ্যুৎ খায়, গরম কম, শব্দহীন; HDD ঘোরে বলে শব্দ ও তাপ বেশি।",
+          "বাস্তব সিদ্ধান্ত: DB রাখার hot storage-এ SSD (দ্রুত query), আর পুরনো log/backup সস্তা HDD-তে — এই hybrid সবচেয়ে cost-effective।"
+        ],
+        "diagram": "HDD — যান্ত্রিক: ঘুরন্ত platter + নড়াচড়া head\n  ┌───────────────────────────┐\n  │        ___head arm___      │\n  │      /            ● ← read/write head\n  │   ╭───────────────╮        │\n  │  ╭─╮   ╭─────╮    │        │\n  │  │ ╰──╮│     │    │ ← platter (ঘোরে ~7200 rpm)\n  │  │    ││  ◎  │    │        │\n  │  ╰────╯│     │    │        │\n  │   ╰────╯─────╯    │        │\n  │   ↑ spindle motor          │\n  └───────────────────────────┘\n  seek + ঘোরা = latency ↑ (ms)\n\nSSD — নড়াচড়া নেই: flash chip-এ সরাসরি address\n  ┌───────────────────────────┐\n  │  ┌────────┐  ┌────────┐    │\n  │  │▤▤▤▤▤▤▤▤│  │▤▤▤▤▤▤▤▤│ ← NAND flash cell\n  │  └────────┘  └────────┘    │\n  │  ┌────────┐  ┌────────┐    │\n  │  │▤▤▤▤▤▤▤▤│  │▤▤▤▤▤▤▤▤│    │\n  │  └────────┘  └────────┘    │\n  │      ┌──────────────┐      │\n  │      │  CONTROLLER  │ ← সরাসরি cell address\n  │      └──────────────┘      │\n  └───────────────────────────┘\n  নেই seek, নেই ঘোরা = latency ↓ (µs)\n\nগতির তুলনা (access time):\n  SSD  ▰ (µs)\n  HDD  ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰ (ms, অনেক বেশি)\n─────────────────────────────\n  DB এর জন্য: hot data → SSD, backup → HDD",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "HDD",
+            "SSD"
+          ],
+          "rows": [
+            [
+              "গঠন",
+              "ঘুরন্ত platter + head",
+              "flash chip, নড়াচড়া নেই"
+            ],
+            [
+              "গতি (access)",
+              "ধীর (ms)",
+              "দ্রুত (µs)"
+            ],
+            [
+              "দাম / GB",
+              "সস্তা",
+              "বেশি"
+            ],
+            [
+              "Capacity",
+              "বিশাল (সস্তায় TB)",
+              "সীমিত (দামি)"
+            ],
+            [
+              "Durability",
+              "shock-এ দুর্বল",
+              "shock-এ শক্ত (তবে write-limit)"
+            ],
+            [
+              "বিদ্যুৎ/শব্দ",
+              "বেশি, শব্দ করে",
+              "কম, শব্দহীন"
+            ],
+            [
+              "উপযুক্ত",
+              "backup, archive, বিশাল storage",
+              "DB, OS, high-speed I/O"
+            ]
+          ]
+        },
+        "mnemonic": "HDD ঘোরে তাই ধীর ও সস্তা; SSD নড়ে না তাই দ্রুত ও দামি।"
+      }
+    },
+    {
+      "id": "cf_ex_003",
+      "q": "A programmer complains: 'The CPU is very fast, but my program still feels slow — it seems to spend all its time waiting for data.' Explain the memory hierarchy (register → cache → RAM → disk) and the idea of locality so they understand where the wait comes from.",
+      "tags": [
+        "memory hierarchy",
+        "cache",
+        "ram",
+        "register",
+        "locality"
+      ],
+      "answer": {
+        "summary": [
+          "CPU দ্রুত হলেও ডাটা আসে ধীর memory থেকে — সেই অপেক্ষাই program ধীর মনে হয়।",
+          "Memory hierarchy: উপরে ছোট-দ্রুত-দামি (register/cache), নিচে বড়-ধীর-সস্তা (RAM/disk)।",
+          "Locality থাকলে বেশিরভাগ ডাটা cache-থেকেই পাওয়া যায় → wait কমে।"
+        ],
+        "points": [
+          "একটি level যত CPU-এর কাছে, তত দ্রুত কিন্তু তত ছোট ও দামি। তাই সব ডাটা register-এ রাখা সম্ভব নয় — স্তরে স্তরে ভাগ করতে হয়।",
+          "Register: CPU-এর ভিতরেই, সবচেয়ে দ্রুত (1 cycle), কিন্তু মাত্র কয়েকটি word রাখা যায়।",
+          "Cache (L1/L2/L3): CPU-এর কাছে ছোট SRAM; সাম্প্রতিক ও সম্ভাব্য পরের ডাটা এখানে রাখা হয় যাতে RAM পর্যন্ত যেতে না হয়।",
+          "RAM (main memory): বড়, কিন্তু cache-এর তুলনায় ধীর (অনেক গুণ); চলমান program ও ডাটা এখানে থাকে।",
+          "Disk (SSD/HDD): সবচেয়ে বড় ও সবচেয়ে ধীর; এখান থেকে পড়তে হলে CPU লক্ষ-কোটি cycle বসে থাকে — এইটাই বড় দেরি।",
+          "Locality দুই রকম: temporal (এইমাত্র ব্যবহৃত ডাটা আবার লাগবে) ও spatial (পাশের ডাটা লাগবে)। এই স্বভাবের জন্যই cache কাজ করে।",
+          "cache hit বেশি হলে CPU কম অপেক্ষা করে; cache miss বাড়লে বারবার RAM/disk-এ যেতে হয় — তখনই fast CPU-ও slow মনে হয়। সমাধান: cache-friendly কোড (যেমন array সারিবদ্ধ করে পড়া)।"
+        ],
+        "diagram": "MEMORY HIERARCHY — উপরে দ্রুত/ছোট, নিচে ধীর/বড়\n\n            ▲ গতি ↑  দাম ↑  আকার ↓\n           /  \\\n          / REG \\           ← CPU register: ~1 cycle, বাইটস\n         /────────\\\n        /  CACHE   \\         ← L1/L2/L3 (SRAM): কয়েক cycle, KB–MB\n       /────────────\\\n      /     RAM       \\      ← main memory (DRAM): ~100 cycle, GB\n     /──────────────────\\\n    /       DISK          \\  ← SSD/HDD: লক্ষ+ cycle, TB\n   /────────────────────────\\\n            ▼ গতি ↓  দাম ↓  আকার ↑\n\nCPU ডাটা খোঁজে এই ক্রমে:\n  CPU → REG → পেলে hit ✔ (দ্রুত)\n          ↓ না পেলে\n        CACHE → hit ✔\n          ↓ miss\n         RAM  → hit ✔\n          ↓ miss (page fault)\n         DISK → অনেক দেরি ✗\n\nlocality স্বভাব:\n  ┌ temporal: এইমাত্র পড়া ডাটা → আবার লাগবে\n  └ spatial : একটা পড়লে → পাশেরটাও লাগবে\n  → তাই cache এগুলো আগে এনে রাখে → hit বাড়ে\n─────────────────────────────\n  মূল কথা: wait আসে miss থেকে — hit বাড়ান",
+        "table": {
+          "headers": [
+            "স্তর",
+            "গতি",
+            "আকার",
+            "অবস্থান"
+          ],
+          "rows": [
+            [
+              "Register",
+              "সবচেয়ে দ্রুত (~1 cycle)",
+              "কয়েক byte",
+              "CPU-এর ভিতরে"
+            ],
+            [
+              "Cache (L1–L3)",
+              "খুব দ্রুত (কয়েক cycle)",
+              "KB–MB",
+              "CPU-এর গায়/কাছে"
+            ],
+            [
+              "RAM",
+              "মধ্যম (~100 cycle)",
+              "GB",
+              "মদারবোর্ডে"
+            ],
+            [
+              "Disk (SSD/HDD)",
+              "সবচেয়ে ধীর (লক্ষ cycle)",
+              "TB",
+              "আলাদা storage"
+            ]
+          ]
+        },
+        "mnemonic": "রেজিস্টার বুকে, ক্যাশ কাছে, RAM ঘরে, ডিস্ক দূরে — কাছেরটা দ্রুত, দূরেরটা ধীর।"
+      }
+    },
+    {
+      "id": "cf_ex_004",
+      "q": "An IT officer must configure a device with IP address 192.168.10.5 and the senior asks him to show what one octet (say 192 and 10) looks like in binary. Explain decimal ↔ binary conversion with a clear worked example.",
+      "tags": [
+        "binary",
+        "decimal",
+        "conversion",
+        "number system",
+        "ip address"
+      ],
+      "answer": {
+        "summary": [
+          "IP-এর প্রতিটি octet মানে 8-bit সংখ্যা (0–255); তাই decimal-কে 8-bit binary-তে লেখা শিখতে হয়।",
+          "Decimal → binary: place-value (128 64 32 16 8 4 2 1) থেকে বড় বড় বাদ দিয়ে 1/0 বসান।",
+          "192 = 11000000, 10 = 00001010।"
+        ],
+        "points": [
+          "প্রতিটি bit-এর একটি place value আছে — ডান থেকে বাঁ দিকে 1, 2, 4, 8, 16, 32, 64, 128। 8 bit মিলে সর্বোচ্চ 255।",
+          "Decimal → binary সহজ পদ্ধতি: সবচেয়ে বড় place-value (128) থেকে শুরু করুন; সংখ্যার মধ্যে ধরলে 1 লিখুন ও বিয়োগ করুন, না ধরলে 0।",
+          "উদাহরণ 192: 128 ≤ 192 → 1 (বাকি 64); 64 ≤ 64 → 1 (বাকি 0); বাকি সব 0 → 11000000।",
+          "উদাহরণ 10: 128,64,32,16 → 0; 8 ≤ 10 → 1 (বাকি 2); 4 > 2 → 0; 2 ≤ 2 → 1 (বাকি 0); 1 → 0 → 00001010।",
+          "Binary → decimal (উল্টো): যেখানে 1 আছে সেই place-value গুলো যোগ করুন। 11000000 = 128+64 = 192।",
+          "বিকল্প পদ্ধতি: বারবার 2 দিয়ে ভাগ করে remainder নিচে থেকে উপরে পড়লেও একই binary পাওয়া যায়।",
+          "কেন দরকার: subnet mask, network/host অংশ, AND অপারেশন — এসব binary-তে ভাবলেই পরিষ্কার বোঝা যায়।"
+        ],
+        "diagram": "একটি octet = 8 bit → place value (বাঁ ← ডান):\n\n  bit এর মান:  128  64  32  16   8   4   2   1\n                ─── ── ── ── ── ── ── ──\n\n█ 192 → binary:\n   128≤192? ✔  → 1   (192−128 = 64)\n    64≤64 ? ✔  → 1   (64−64   = 0)\n    32≤0 ? ✖  → 0\n    16≤0 ? ✖  → 0\n     8≤0 ? ✖  → 0\n     4≤0 ? ✖  → 0\n     2≤0 ? ✖  → 0\n     1≤0 ? ✖  → 0\n  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n  │ 1 │ 1 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │ = 11000000\n  └───┴───┴───┴───┴───┴───┴───┴───┘\n   128  64\n\n█ 10 → binary:\n  ┌───┬───┬───┬───┬───┬───┬───┬───┐\n  │ 0 │ 0 │ 0 │ 0 │ 1 │ 0 │ 1 │ 0 │ = 00001010\n  └───┴───┴───┴───┴───┴───┴───┴───┘\n              8      2\n   → 8 + 2 = 10 ✔ (উল্টো মিলিয়ে দেখা)\n\n█ পুরো IP: 192.168.10.5\n  192 = 11000000\n  168 = 10101000\n   10 = 00001010\n    5 = 00000101\n─────────────────────────────\n  নিয়ম: 1 এর place-value গুলো যোগ = decimal",
+        "table": {
+          "headers": [
+            "Place value",
+            "128",
+            "64",
+            "32",
+            "16",
+            "8",
+            "4",
+            "2",
+            "1"
+          ],
+          "rows": [
+            [
+              "192 →",
+              "1",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "168 →",
+              "1",
+              "0",
+              "1",
+              "0",
+              "1",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "10 →",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "1",
+              "0"
+            ],
+            [
+              "5 →",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "1"
+            ]
+          ]
+        },
+        "mnemonic": "বড় থেকে শুরু — 128-64-32-16-8-4-2-1; ধরলে 1 বসাও ও বিয়োগ করো, না ধরলে 0।"
+      }
+    },
+    {
+      "id": "cf_ex_005",
+      "q": "After a sudden power cut, an employee's unsaved Word document is completely lost, yet the installed Microsoft Office and Windows are still perfectly there when the PC restarts. Explain volatile (RAM) vs non-volatile (ROM/disk) memory and why this happens.",
+      "tags": [
+        "volatile",
+        "non-volatile",
+        "ram",
+        "rom",
+        "primary memory"
+      ],
+      "answer": {
+        "summary": [
+          "চলমান কাজ/অসেভড ডাটা থাকে RAM-এ — যা volatile, বিদ্যুৎ গেলে সব মুছে যায়।",
+          "Install করা software ও file থাকে disk/ROM-এ — যা non-volatile, বিদ্যুৎ ছাড়াও থাকে।",
+          "তাই unsaved doc হারায়, কিন্তু Office/Windows টিকে থাকে।"
+        ],
+        "points": [
+          "Volatile memory (RAM): বিদ্যুৎ থাকলেই ডাটা ধরে রাখে; বিদ্যুৎ গেলে charge হারিয়ে সব মুছে যায়। এটাই মূল কারণ unsaved কাজ হারানোর।",
+          "ধরন: একটি document খোলা অবস্থায় এর চলমান copy RAM-এ কাজ করে; Save দিলে তবেই সেটা disk-এ (non-volatile) লেখা হয়।",
+          "Non-volatile memory (ROM, SSD, HDD): বিদ্যুৎ ছাড়াও ডাটা ধরে রাখে। তাই install করা Office/Windows ও সেভ করা file restart-এর পরেও থাকে।",
+          "ROM (Read-Only Memory): firmware/BIOS রাখে; বিদ্যুৎ ছাড়াও টিকে থাকে বলে PC অন করলেই boot শুরু হতে পারে।",
+          "RAM দ্রুত কিন্তু temporary (working area); disk ধীর কিন্তু permanent (storage)। তাই দুটোই দরকার।",
+          "বাস্তব শিক্ষা: কাজ বারবার Save করুন অথবা auto-save/UPS রাখুন, যাতে RAM-এর কাজ দ্রুত disk-এ চলে যায়।",
+          "নোট: RAM ও ROM দুটোই primary memory, কিন্তু RAM volatile আর ROM non-volatile — এই পার্থক্যেই পুরো উত্তর।"
+        ],
+        "diagram": "বিদ্যুৎ থাকা অবস্থা (কাজ চলছে):\n  ┌──────────────── RAM (volatile) ────────────────┐\n  │  ◉ খোলা Word doc (unsaved)                     │\n  │  ◉ চলমান program state                        │ ← বিদ্যুৎে ধরে রাখা\n  └─────────────────────────────────────────────────┘\n  ┌──────────── DISK / ROM (non-volatile) ──────────┐\n  │  ▤ Windows, MS Office (installed)              │\n  │  ▤ সেভ করা file                             │ ← স্থায়ীভাবে লেখা\n  └─────────────────────────────────────────────────┘\n\n        ⚡ POWER CUT ⚡  (বিদ্যুৎ চলে গেল)\n                │\n                ▼\n  ┌──────────────── RAM (volatile) ────────────────┐\n  │  ✗ unsaved doc  ——→ মুছে গেল (charge গেল)     │\n  │  ✗ program state —→ সব খালি                    │\n  └─────────────────────────────────────────────────┘\n  ┌──────────── DISK / ROM (non-volatile) ──────────┐\n  │  ✔ Windows, MS Office  —→ এখনো আছে          │\n  │  ✔ আগে save করা file —→ এখনো আছে          │\n  └─────────────────────────────────────────────────┘\n─────────────────────────────\n  RAM = কাজের টেবিল (বিদ্যুৎে টিকে);  Disk = আলমারি (স্থায়ী)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Volatile (RAM)",
+            "Non-volatile (ROM/Disk)"
+          ],
+          "rows": [
+            [
+              "বিদ্যুৎ গেলে",
+              "সব মুছে যায়",
+              "ডাটা থাকে"
+            ],
+            [
+              "উদাহরণ",
+              "RAM (DRAM/SRAM)",
+              "ROM, SSD, HDD"
+            ],
+            [
+              "কাজ",
+              "চলমান working data",
+              "স্থায়ী storage"
+            ],
+            [
+              "গতি",
+              "দ্রুত",
+              "তুলনায় ধীর"
+            ],
+            [
+              "ডাটা রকম",
+              "temporary",
+              "permanent"
+            ],
+            [
+              "উদা. দৃশ্য",
+              "unsaved doc → হারায়",
+              "Office/Windows → থাকে"
+            ]
+          ]
+        },
+        "mnemonic": "RAM = কাজের টেবিল (বিদ্যুৎ গেলে খালি), Disk = আলমারি (সব রাখে) — Save মানে টেবিল থেকে আলমারিতে।"
+      }
+    }
+  ]
+}

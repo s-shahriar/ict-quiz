@@ -1,0 +1,256 @@
+{
+  "category": "operating_system",
+  "questions": [
+    {
+      "id": "os_ex_001",
+      "q": "In a core banking system, transaction T1 has locked Account-A's row and now needs Account-B's row, while transaction T2 has locked Account-B and now needs Account-A. Both transactions freeze forever. Explain what a DEADLOCK is, the four necessary (Coffman) conditions, and how to prevent it.",
+      "tags": [
+        "deadlock",
+        "coffman conditions",
+        "locking",
+        "concurrency"
+      ],
+      "answer": {
+        "summary": [
+          "Deadlock = দুই বা ততোধিক process/transaction এমনভাবে একে অন্যের ধরে রাখা resource (lock)-এর জন্য অপেক্ষা করে যে কেউই আর এগোতে পারে না — চিরস্থায়ী stuck।",
+          "এখানে T1 ধরে আছে A, চায় B; T2 ধরে আছে B, চায় A — একটা circular wait তৈরি হয়েছে।",
+          "চারটি Coffman condition একসাথে সত্য হলেই কেবল deadlock হয়; যেকোনো একটি ভাঙলে deadlock আটকানো যায়।"
+        ],
+        "points": [
+          "Mutual Exclusion: resource (row lock) এক সময়ে একজনই ধরতে পারে — share করা যায় না। এজন্যই T2-কে অপেক্ষা করতে হয় যতক্ষণ T1 A ছাড়ে না।",
+          "Hold and Wait: T1 একটা lock (A) ধরে রেখেই আরেকটার (B) জন্য অপেক্ষা করছে — হাতে রেখে আরও চায়, তাই dependency জমে।",
+          "No Preemption: OS/DB জোর করে T1-এর হাত থেকে A কেড়ে নিতে পারে না — transaction নিজে ছাড়ার আগ পর্যন্ত lock থাকে।",
+          "Circular Wait: T1 → (চায়) B → (ধরে) T2 → (চায়) A → (ধরে) T1 — একটা বৃত্ত সম্পূর্ণ হয়েছে; এটাই deadlock-এর ফাঁদ।",
+          "প্রতিরোধ (Prevention) — যেকোনো এক condition ভাঙো: সব lock একসাথে নাও (Hold&Wait ভাঙে), অথবা সব transaction সবসময় একই ক্রমে lock নিক (A আগে, তারপর B) — এতে circular wait কখনো হয় না।",
+          "প্রতিকার (আরও পথ): timeout দিয়ে অপেক্ষা কেটে দাও, অথবা DB-এর deadlock detector cycle পেলে একটি transaction-কে victim বানিয়ে rollback করে (No Preemption ভাঙে), তারপর retry।"
+        ],
+        "diagram": "DEADLOCK — Resource-Allocation Graph (cycle = আটকে গেছে)\n\n   held by            request\n  ┌────────┐          ┌────────┐\n  │  T1    │───────►  │  R2    │  ← Account-B lock\n  │ ট্রান্স১ │  চায় B   │ (রো B) │\n  └───▲────┘          └───┬────┘\n      │ ধরে আছে A          │ held by (T2 ধরে আছে)\n      │                   ▼\n  ┌───┴────┐          ┌────────┐\n  │  R1    │  ◄───────│  T2    │\n  │ (রো A) │   চায় A   │ ট্রান্স২ │\n  └────────┘  request └────────┘\n\n  বৃত্ত: T1 → R2 → T2 → R1 → T1   ← এই cycle-ই deadlock\n  ─────  কেউ ছাড়ে না, কেউ পায় না, দুজনেই freeze\n\n  ভাঙার উপায় (যেকোনো একটি):\n  ● সব lock একবারে নাও ............. Hold & Wait ✂\n  ● সবাই একই ক্রমে নাও (A→B) ....... Circular Wait ✂\n  ● timeout / detector → rollback .. No Preemption ✂",
+        "table": {
+          "headers": [
+            "Coffman শর্ত",
+            "মানে কী",
+            "কীভাবে ভাঙবে"
+          ],
+          "rows": [
+            [
+              "Mutual Exclusion",
+              "resource এক সময়ে একজনই ধরে",
+              "যেখানে সম্ভব shareable resource ব্যবহার"
+            ],
+            [
+              "Hold and Wait",
+              "ধরে রেখে আরও চায়",
+              "সব lock একবারেই নাও, নয়তো কিছুই না"
+            ],
+            [
+              "No Preemption",
+              "জোর করে কেড়ে নেওয়া যায় না",
+              "detector/timeout → victim rollback"
+            ],
+            [
+              "Circular Wait",
+              "wait-এর বৃত্ত তৈরি হয়",
+              "সব transaction একই global order-এ lock নিক"
+            ]
+          ]
+        },
+        "mnemonic": "MHNC — \"Mutual Hold, No Circle\": চারটি শর্ত একসাথে থাকলেই deadlock; একটাও ভাঙলে মুক্তি।"
+      }
+    },
+    {
+      "id": "os_ex_002",
+      "q": "A report-generation server at the bank must serve many concurrent users at once but hardware budget is tight. Should the developers spawn a new PROCESS per request or use multiple THREADS inside one process? Explain the difference and justify the choice.",
+      "tags": [
+        "process",
+        "thread",
+        "concurrency",
+        "memory"
+      ],
+      "answer": {
+        "summary": [
+          "Process = নিজস্ব আলাদা memory space সহ চলমান program-এর একটি স্বাধীন instance; Thread = একই process-এর ভেতরের হালকা execution unit যারা সেই process-এর memory শেয়ার করে।",
+          "অনেক concurrent user সস্তায় সামলাতে হলে thread বেছে নেওয়াই যুক্তিযুক্ত — কারণ thread তৈরি ও context-switch সস্তা এবং RAM কম লাগে।",
+          "তবে thread একই memory শেয়ার করায় একটা crash গোটা process ফেলে দিতে পারে ও data race-এর ঝুঁকি থাকে — তাই sync দরকার।"
+        ],
+        "points": [
+          "Memory: প্রতি process আলাদা address space পায় (code/heap/stack), তাই ১০০ process = ১০০ কপি memory — ব্যয়বহুল। thread-রা এক process-এর heap/code শেয়ার করে, শুধু নিজের stack আলাদা — RAM অনেক কম লাগে।",
+          "তৈরির খরচ: নতুন process তৈরি (fork/exec) ভারী কাজ; thread তৈরি হালকা ও দ্রুত — তাই বহু request দ্রুত সামলাতে thread সুবিধাজনক।",
+          "Context switch: process switch-এ পুরো memory map/TLB বদলাতে হয় (ধীর); একই process-এর thread-দের মধ্যে switch দ্রুত, কারণ memory map একই থাকে।",
+          "Communication: process-দের মধ্যে data দিতে IPC (pipe, socket, shared memory) লাগে — জটিল ও ধীর; thread-রা শেয়ার করা variable দিয়ে সরাসরি কথা বলে — সহজ।",
+          "Isolation vs ঝুঁকি: process আলাদা থাকায় একটা crash করলে বাকিরা বাঁচে (বেশি নিরাপদ); thread একই space শেয়ার করায় একটার crash/corruption গোটা process নামিয়ে দিতে পারে এবং race condition-এর ঝুঁকি থাকে।",
+          "সিদ্ধান্ত: budget কম + বহু হালকা concurrent request → thread (বা thread-pool) সেরা; কিন্তু strong isolation/নিরাপত্তা মুখ্য হলে process বাছাই ভালো।"
+        ],
+        "diagram": "ONE PROCESS, অনেক THREAD — memory শেয়ার করে (সস্তা)\n\n  ╔═══════════ PROCESS (report server) ═══════════╗\n  ║  শেয়ার্ড অংশ (সব thread একসাথে পায়):          ║\n  ║  ┌───────────┐  ┌───────────┐  ┌───────────┐  ║\n  ║  │  CODE     │  │  HEAP/DATA│  │ open files│  ║ ← এক কপি\n  ║  └───────────┘  └───────────┘  └───────────┘  ║   (RAM বাঁচে)\n  ║  ───────────────────────────────────────────  ║\n  ║  আলাদা অংশ (প্রতি thread-এর নিজের stack):     ║\n  ║   ● T1        ● T2        ● T3        ● T4     ║ ← user ১..৪\n  ║  [stack]     [stack]     [stack]     [stack]  ║   সমান্তরাল চলে\n  ║   PC/regs     PC/regs     PC/regs     PC/regs  ║\n  ╚═══════════════════════════════════════════════╝\n\n  তুলনায় — বহু PROCESS (ব্যয়বহুল):\n  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐\n  │ mem ১  │ │ mem ২  │ │ mem ৩  │ │ mem ৪  │ ← আলাদা\n  │ কপি     │ │ কপি     │ │ কপি     │ │ কপি     │   কপি সব\n  └────────┘ └────────┘ └────────┘ └────────┘   (RAM খায়)\n\n  Cost/RAM: Thread ছোট ছোট ● | Process বড় বড় □\n  Isolation: Thread কম (share) < Process বেশি (আলাদা)",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Process",
+            "Thread"
+          ],
+          "rows": [
+            [
+              "Memory",
+              "নিজস্ব আলাদা address space",
+              "process-এর memory শেয়ার করে"
+            ],
+            [
+              "তৈরির খরচ",
+              "ভারী (fork/exec)",
+              "হালকা ও দ্রুত"
+            ],
+            [
+              "Context switch",
+              "ধীর (memory map বদলায়)",
+              "দ্রুত (map একই থাকে)"
+            ],
+            [
+              "যোগাযোগ",
+              "IPC লাগে (pipe/socket)",
+              "শেয়ার্ড variable-এ সরাসরি"
+            ],
+            [
+              "একটা crash হলে",
+              "বাকিরা বাঁচে (isolated)",
+              "গোটা process পড়তে পারে"
+            ],
+            [
+              "উপযুক্ত যেখানে",
+              "strong isolation দরকার",
+              "সস্তায় বহু concurrent কাজ"
+            ]
+          ]
+        },
+        "mnemonic": "\"Process = আলাদা বাড়ি, Thread = এক বাড়ির রুম\" — রুম বানানো সস্তা, কিন্তু আগুন লাগলে গোটা বাড়ি পোড়ে।"
+      }
+    },
+    {
+      "id": "os_ex_003",
+      "q": "A bank's application server has become painfully slow. The CPU sits nearly idle, yet the disk light blinks constantly. Admins notice this started after too many heavy apps were opened at once. Explain VIRTUAL MEMORY / PAGING and why THRASHING is happening.",
+      "tags": [
+        "virtual memory",
+        "paging",
+        "thrashing",
+        "page fault"
+      ],
+      "answer": {
+        "summary": [
+          "Virtual Memory = প্রতিটি process-কে বাস্তব RAM-এর চেয়ে বড় একটা টানা address space-এর বিভ্রম দেওয়া হয়; বাস্তবে data ছোট ছোট page-এ ভাগ হয়ে RAM ও disk (swap)-এর মধ্যে ঘোরে।",
+          "চাওয়া page RAM-এ না থাকলে page fault হয় → OS সেটা disk থেকে তুলে আনে (ধীর)।",
+          "এখানে অতিরিক্ত app খোলায় RAM উপচে গেছে; OS ক্রমাগত page swap করছে বলে CPU বসে থাকে আর disk পাগলের মতো চলে — এটাই thrashing।"
+        ],
+        "points": [
+          "Paging: virtual address space সমান আকারের page-এ ভাঙা হয়, RAM ভাঙা হয় frame-এ; page table প্রতিটি virtual page কোন frame-এ (নাকি disk-এ) আছে তার map রাখে।",
+          "Page fault: process এমন page চায় যা RAM-এ নেই → CPU থামে, OS disk/swap থেকে page এনে খালি frame-এ বসায়, page table আপডেট করে, তারপর কাজ চলে — একটা fault মানেই ধীর disk I/O।",
+          "Swap: RAM ভরে গেলে OS কম-ব্যবহৃত page disk-এর swap area-তে সরিয়ে জায়গা খালি করে; পরে দরকার হলে আবার তুলে আনে।",
+          "Thrashing কেন: চালু process-দের মোট \"working set\" (তখন-দরকারি page) RAM-এর চেয়ে বড় হয়ে গেছে; যে page আনা হয়, তখনই আরেকটা দরকারি page বের করে দিতে হয় — তাই একই page বারবার আসে-যায়।",
+          "লক্ষণ: CPU idle অথচ disk ব্যস্ত — কারণ সময়ের বেশিরভাগ কাজে না, page swap করতেই কাটছে; কাজের গতি হুড়মুড় করে পড়ে যায়।",
+          "সমাধান: চালু process/app কমাও (multiprogramming degree কমাও), RAM বাড়াও, অথবা working set মাপে রাখো — তাহলে fault কমে, swap থামে, CPU আবার কাজ পায়।"
+        ],
+        "diagram": "VIRTUAL MEMORY: page table দিয়ে RAM ↔ DISK ম্যাপিং\n\n  Process-এর VIRTUAL page        RAM (frames)\n  ┌──────┐                       ┌──────────┐\n  │ P0   │──┐   PAGE TABLE       │ frame0:P2│\n  │ P1   │  │  ┌──────┬──────┐   │ frame1:P0│ ← hit\n  │ P2   │  └─►│ P0 → f1 (RAM)│   │ frame2:P5│\n  │ P3   │     │ P1 → DISK ✗ │   └──────────┘\n  │ P4   │     │ P2 → f0 (RAM)│        ▲\n  │ P5   │     │ P3 → DISK ✗ │  page fault→│ swap-in\n  └──────┘     └──────┬───────┘        │ (ধীর)\n                      │ চাওয়া page RAM-এ নেই\n                      ▼\n              ┌───────────────┐\n              │  DISK / SWAP  │ ← P1, P3, P4 এখানে\n              │  [P1][P3][P4] │   (আনতে হলে I/O)\n              └───────────────┘\n\n  THRASHING (RAM < working set):\n  RAM ভর্তি → ঢুকাতে গেলেই আরেকটা বের\n   in →[ পূর্ণ RAM ]→ out →[ পূর্ণ RAM ]→ out ...\n  ┌──────────────────────────────────────────┐\n  │ CPU: ▁▁▁▁▁ (idle, কাজ পায় না)            │\n  │ DISK:████████████ (সারাক্ষণ swap ব্যস্ত)  │ ← উপসর্গ\n  └──────────────────────────────────────────┘\n  নিরাময়: app কমাও / RAM বাড়াও → fault কমে",
+        "mnemonic": "\"RAM ছোট, চাহিদা বড় → page আসে-যায়, CPU হাঁ করে বসে থাকে\" — disk ব্যস্ত মানেই thrashing।"
+      }
+    },
+    {
+      "id": "os_ex_004",
+      "q": "The bank runs two very different workloads: an interactive teller counter where staff need instant responses, and an overnight batch job that crunches the day's reports. The OS team must pick CPU SCHEDULING algorithms. Compare FCFS, SJF, and Round-Robin and recommend one for each case.",
+      "tags": [
+        "cpu scheduling",
+        "fcfs",
+        "sjf",
+        "round robin",
+        "gantt chart"
+      ],
+      "answer": {
+        "summary": [
+          "CPU scheduling ঠিক করে ready process-দের মধ্যে কে কখন CPU পাবে; লক্ষ্য অনুযায়ী algorithm বদলায়।",
+          "Interactive teller counter → Round-Robin: ছোট time quantum-এ সবাই দ্রুত পালা পায়, তাই response time কম — কর্মী আটকে থাকে না।",
+          "Overnight batch → FCFS বা SJF: response দরকার নেই, বরং throughput/দক্ষতা মুখ্য; কাজের সময় জানা থাকলে SJF গড় অপেক্ষা কমায়।"
+        ],
+        "points": [
+          "FCFS (First-Come-First-Served): যে আগে আসে সে আগে পুরোটা চালায়। সহজ ও ন্যায্য, কিন্তু একটা বড় কাজ সামনে থাকলে পেছনের সবাই আটকে যায় (convoy effect) — interactive-এ খারাপ।",
+          "SJF (Shortest-Job-First): সবচেয়ে ছোট burst-এর কাজ আগে। গড় waiting time সবচেয়ে কম দেয়, কিন্তু কাজের দৈর্ঘ্য আগে জানতে হয় এবং বড় কাজ অনাহারে (starvation) পড়তে পারে — batch-এ কার্যকর।",
+          "Round-Robin: প্রত্যেকে ছোট time quantum পায়, শেষ না হলে লাইনের পেছনে যায়। response time দারুণ, interactive-এ আদর্শ; তবে quantum খুব ছোট হলে context-switch overhead বাড়ে।",
+          "Teller counter কেন RR: কর্মী চায় টিপলেই সাড়া; RR ঘুরিয়ে-ঘুরিয়ে সবাইকে দ্রুত CPU দেয়, তাই কেউ বেশিক্ষণ ঝুলে থাকে না — response time-ই এখানে মুখ্য।",
+          "Overnight batch কেন FCFS/SJF: রাতে কেউ বসে অপেক্ষা করছে না, তাই context-switch overhead এড়িয়ে পুরো CPU efficiency-তে দিলে ভালো; কাজের আকার জানা থাকলে SJF মোট turnaround কমায়।",
+          "সারকথা: quantity নয়, লক্ষ্য দেখে বাছো — response time চাইলে RR, throughput/কম গড়-অপেক্ষা চাইলে SJF/FCFS।"
+        ],
+        "diagram": "GANTT — একই ৩ কাজ (P1=৭, P2=৩, P3=২), তিন নীতি\n\n  FCFS (আসার ক্রমে P1,P2,P3):\n  │◄──── P1 ────►│◄─ P2 ─►│◄P3►│\n  0             7        10   12\n  P2/P3 বড় P1-এর পেছনে আটকে ← convoy effect\n\n  SJF (ছোট আগে P3,P2,P1):\n  │◄P3►│◄─ P2 ─►│◄──── P1 ────►│\n  0    2        5             12\n  ছোট কাজ আগে সেরে ← গড় waiting সবচেয়ে কম\n\n  ROUND-ROBIN (quantum=2, ঘুরে ঘুরে):\n  │P1│P2│P3│P1│P2│P1│P1│  (P3,P2 আগে শেষ)\n  0  2  4  6  8  9 11 12\n  প্রত্যেকে দ্রুত পালা পায় ← response time কম\n\n  ┌───────────────┬──────────────┬─────────────┐\n  │ teller (দ্রুত  │ overnight     │ overnight   │\n  │  সাড়া)        │ (গড় কমাও)    │ (সহজ/ন্যায্য)│\n  │   → RR        │   → SJF       │   → FCFS    │\n  └───────────────┴──────────────┴─────────────┘",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "FCFS",
+            "SJF",
+            "Round-Robin"
+          ],
+          "rows": [
+            [
+              "নিয়ম",
+              "আগে এলে আগে, পুরোটা",
+              "ছোট burst আগে",
+              "সমান quantum ঘুরিয়ে"
+            ],
+            [
+              "Response time",
+              "খারাপ",
+              "মাঝারি",
+              "সবচেয়ে ভালো"
+            ],
+            [
+              "গড় waiting",
+              "বেশি (convoy)",
+              "সবচেয়ে কম",
+              "মাঝারি"
+            ],
+            [
+              "Starvation",
+              "নেই",
+              "বড় কাজ অনাহারে",
+              "নেই"
+            ],
+            [
+              "Preemptive?",
+              "না",
+              "না (basic)",
+              "হ্যাঁ"
+            ],
+            [
+              "উপযুক্ত",
+              "সহজ batch",
+              "সময় জানা batch",
+              "interactive/teller"
+            ]
+          ]
+        },
+        "mnemonic": "\"সাড়া চাইলে Round, ছোট আগে চাইলে SJF, সরল হলে FCFS\" — লক্ষ্য দেখে scheduler বাছো।"
+      }
+    },
+    {
+      "id": "os_ex_005",
+      "q": "Two banking threads read the same account balance (1000) at the same moment; one adds a 500 deposit, the other adds a 300 deposit, but the final balance shows 1300 instead of 1800 — money vanished. Explain the RACE CONDITION and how a mutex/semaphore (critical section) fixes it.",
+      "tags": [
+        "race condition",
+        "mutex",
+        "semaphore",
+        "critical section",
+        "synchronization"
+      ],
+      "answer": {
+        "summary": [
+          "Race condition = দুই বা ততোধিক thread একই শেয়ার্ড data-তে একসাথে পড়া-লেখা করে, আর ফলাফল নির্ভর করে কে আগে চলল তার উপর — তাই মাঝেমধ্যে ভুল হয়।",
+          "balance = balance + amount আসলে তিন ধাপ (read → add → write); দুই thread ইন্টারলিভ হলে একজনের write অন্যজনের পুরনো read মুছে দেয় (lost update)।",
+          "সমাধান: update-এর অংশটুকু critical section বানিয়ে mutex/semaphore দিয়ে ঘিরে দাও — যাতে এক সময়ে একজনই ঢুকতে পারে।"
+        ],
+        "points": [
+          "কেন টাকা হারায়: দুই thread-ই balance=1000 পড়ে ফেলল আগে। T1 হিসাব করল 1000+500=1500, T2 হিসাব করল 1000+300=1300; শেষে যে পরে লেখে তার মানই থাকে (1300) — 500-এর deposit হারিয়ে গেল।",
+          "মূল সমস্যা: read-modify-write একটা atomic (অবিভাজ্য) ধাপ নয়; মাঝপথে অন্য thread ঢুকে পুরনো মান নিয়ে কাজ করলেই gap তৈরি হয়।",
+          "Critical section: শেয়ার্ড balance ছোঁয়ার কোড-অংশটুকুই সংকটাপন্ন; এখানে এক সময়ে একজনের বেশি thread থাকা যাবে না — এটুকুকেই রক্ষা করতে হবে।",
+          "Mutex (lock): ঢোকার আগে lock() নাও, বেরোনোর সময় unlock(); একজন lock ধরে থাকলে বাকিরা অপেক্ষা করে — তাই read→add→write পুরোটা নিরবচ্ছিন্নভাবে চলে (mutual exclusion)।",
+          "Semaphore: একটা counter — binary semaphore (0/1) mutex-এর মতোই একজনকে ঢুকতে দেয়; wait()/signal() দিয়ে কতজন একসাথে ঢুকবে নিয়ন্ত্রণ করা যায়।",
+          "ফল: lock দিলে T1 আগে পুরো update সেরে 1500 লেখে, তারপর T2 নতুন করে 1500 পড়ে 1800 লেখে — কোনো টাকা হারায় না, ফল সবসময় সঠিক।"
+        ],
+        "diagram": "RACE CONDITION — lock ছাড়া interleave (টাকা হারায়)\n\n  সময় ↓   T1 (+500)            T2 (+300)      balance\n  ─────────────────────────────────────────  1000\n  t1     read 1000                            1000\n  t2                    read 1000             1000  ← দুজনেই 1000!\n  t3     add →1500                            1000\n  t4                    add →1300             1000\n  t5     write 1500                           1500\n  t6                    write 1300            1300  ← 500 হারাল!\n  ফল: 1300 (হওয়া উচিত ছিল 1800) — LOST UPDATE\n\n  MUTEX দিয়ে ঠিক — critical section একজনই ঢোকে\n\n  ┌── lock() ──────────────────┐\n  │ CRITICAL SECTION (T1)      │  T2 অপেক্ষায় ⏳\n  │  read 1000 → add → 1500    │  (locked, ঢুকতে পারে না)\n  │  write 1500                │\n  └── unlock() ────────────────┘\n           │ এবার T2 ঢুকল\n           ▼\n  ┌── lock() ──────────────────┐\n  │ CRITICAL SECTION (T2)      │\n  │  read 1500 → add → 1800    │ ← নতুন সঠিক মান\n  │  write 1800                │\n  └── unlock() ────────────────┘\n  ফল: 1800 ✓  (কোনো টাকা হারায় না)",
+        "mnemonic": "\"এক দরজা, এক জন\" — critical section-এ mutex দিলে read-add-write ভাঙে না, তাই lost update হয় না।"
+      }
+    }
+  ]
+}

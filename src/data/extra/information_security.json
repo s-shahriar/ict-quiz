@@ -1,0 +1,517 @@
+{
+  "category": "information_security",
+  "questions": [
+    {
+      "id": "is_ex_001",
+      "q": "A bank wants to DETECT insider attacks and suspicious activity on its internal network, but it does NOT want any system to automatically block or drop traffic — because a false positive could cut off a live core-banking transaction and cause service disruption. Which system should it deploy, IDS or IPS, and why? Compare the two.",
+      "tags": [
+        "ids",
+        "ips",
+        "monitoring",
+        "detection"
+      ],
+      "answer": {
+        "summary": [
+          "এখানে IDS (Intrusion Detection System) উপযুক্ত — কারণ ব্যাংক শুধু detect + alert চায়, block চায় না।",
+          "IPS traffic-এর ভেতরে বসে packet drop করে; একটা false positive মানেই live transaction কেটে যাওয়া = service disruption।",
+          "IDS passive (copy দেখে, alert দেয়), IPS active (inline, drop করে)।"
+        ],
+        "points": [
+          "IDS \"out-of-band\" বসে — network traffic-এর একটা copy (mirror/SPAN port) দেখে। তাই এটা fail করলেও বা ভুল করলেও আসল traffic থামে না; service চালু থাকে।",
+          "IPS \"inline\" বসে — সব packet তার ভেতর দিয়ে যায়, সে match পেলে সাথে সাথে drop করে। সুবিধা: real-time protection; ঝুঁকি: false positive হলে বৈধ transaction-ও block হয়।",
+          "ব্যাংকের চাওয়া হলো insider activity ধরা ও alert করা, তারপর মানুষ (SOC analyst) যাচাই করে সিদ্ধান্ত নেবে — এই human-in-the-loop model-এর সাথে IDS মেলে।",
+          "Availability (CIA-এর A) core banking-এ সবচেয়ে গুরুত্বপূর্ণ — auto-block করলে availability ঝুঁকিতে পড়ে, তাই detection-only নিরাপদ পছন্দ।",
+          "Insider attack সাধারণত ধীর ও pattern-নির্ভর (unusual login time, বড় data pull); IDS logging + behaviour analysis দিয়ে এগুলো ধরা যায়, সাথে সাথে block করার দরকার নেই।",
+          "চাইলে hybrid: গুরুত্বপূর্ণ segment-এ IDS দিয়ে detect, আর perimeter (Internet edge)-এ IPS দিয়ে পরিষ্কার আক্রমণ auto-block — ভেতরে disruption এড়াতে IDS।"
+        ],
+        "diagram": "IDS — PASSIVE / OUT-OF-BAND (শুধু দেখে, থামায় না)\n\n   Internal Traffic ═══════════════▶ Server\n            │ (mirror/SPAN copy)\n            ▼\n     ┌─────────────┐\n     │     IDS     │  ← copy দেখে match করে\n     └─────┬───────┘\n           ▼\n        [ ALERT ] ──▶ SOC analyst ──▶ মানুষ সিদ্ধান্ত নেয়\n   ★ আসল traffic কখনো থামে না → no disruption\n\nIPS — ACTIVE / INLINE (পথের মাঝে বসে drop করে)\n\n   Traffic ──▶ ┌─────────┐ ──▶ Server\n               │   IPS   │\n               └─────────┘\n                    │ bad packet পেলে\n                    ▼\n                 [ DROP ]  ✗ block\n   ⚠ false positive হলে বৈধ transaction-ও কাটা পড়ে\n\n────────────── এক নজরে ──────────────\n  অবস্থান : IDS = পাশে (copy) │ IPS = পথে (inline)\n  কাজ     : IDS = detect+alert│ IPS = detect+block\n  ঝুঁকি   : IDS = miss হতে পারে│ IPS = disruption হতে পারে\n  ব্যাংকের চাওয়া (detect, no block) → ✔ IDS",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "IDS",
+            "IPS"
+          ],
+          "rows": [
+            [
+              "পূর্ণরূপ",
+              "Intrusion Detection System",
+              "Intrusion Prevention System"
+            ],
+            [
+              "অবস্থান",
+              "Out-of-band (traffic-এর copy দেখে)",
+              "Inline (সব packet এর ভেতর দিয়ে যায়)"
+            ],
+            [
+              "মূল কাজ",
+              "শুধু detect করে + alert দেয়",
+              "detect করে + packet drop/block করে"
+            ],
+            [
+              "প্রকৃতি",
+              "Passive (নিষ্ক্রিয়)",
+              "Active (সক্রিয়)"
+            ],
+            [
+              "Traffic-এ প্রভাব",
+              "কোনো delay/block নেই",
+              "সামান্য latency + block করতে পারে"
+            ],
+            [
+              "False positive হলে",
+              "শুধু ভুল alert, service চালু থাকে",
+              "বৈধ traffic-ও block → disruption"
+            ],
+            [
+              "এই ব্যাংকের জন্য",
+              "✔ উপযুক্ত (detect, disrupt নয়)",
+              "✘ ঝুঁকিপূর্ণ (auto-block চায় না)"
+            ]
+          ]
+        },
+        "mnemonic": "IDS ডাকে (Detect + alert), IPS আটকায় (Prevent + drop) — ‘disruption চাই না’ মানেই IDS।"
+      }
+    },
+    {
+      "id": "is_ex_002",
+      "q": "A bank's security architecture is laid out as: Internet → Firewall → IPS → Internal Network. The firewall performs port/IP-based filtering, while the IPS performs real-time signature-based detection and drops malicious packets. Draw this layered architecture, explain how a packet flows through it, and state the specific role of each layer.",
+      "tags": [
+        "firewall",
+        "ips",
+        "architecture",
+        "defense-in-depth"
+      ],
+      "answer": {
+        "summary": [
+          "এটি defense-in-depth (স্তরে স্তরে সুরক্ষা): প্রতিটি layer আলাদা ধরনের হুমকি সামলায়।",
+          "Firewall = মোটা ছাঁকনি (কোন IP/port ঢুকবে); IPS = সূক্ষ্ম ছাঁকনি (packet-এর ভেতরে খারাপ pattern আছে কিনা)।",
+          "একটা packet আগে firewall পাস করে, তারপর IPS scan করে, তবেই Internal Network-এ পৌঁছায়।"
+        ],
+        "points": [
+          "Layer 1 — Firewall: policy/rule দিয়ে ঠিক করে কোন source IP আর কোন port (যেমন 443, 22) ঢুকতে পারবে। এটা প্যাকেটের ‘খাম’ (header) দেখে সিদ্ধান্ত নেয়, ভেতরের content নয়।",
+          "Layer 2 — IPS: firewall যেসব packet ছেড়ে দিয়েছে সেগুলোর ভেতরের payload signature database-এর সাথে মিলিয়ে দেখে (SQL injection, malware, exploit pattern)। match পেলে সাথে সাথে drop করে।",
+          "কেন দুটোই দরকার: firewall বৈধ port (যেমন 443) খোলা রাখে, কিন্তু সেই বৈধ port দিয়েই আক্রমণ আসতে পারে — সেটা ধরার কাজ IPS-এর। একা firewall যথেষ্ট নয়।",
+          "ক্রম গুরুত্বপূর্ণ: আগে firewall বড় অংশের অবৈধ traffic ছেঁটে ফেলে, ফলে IPS-এর উপর কম load পড়ে — IPS তখন কম কিন্তু গুরুত্বপূর্ণ traffic গভীরভাবে scan করতে পারে।",
+          "IPS inline (পথের মাঝে) বসে বলে real-time drop সম্ভব; edge/perimeter-এ এই auto-block গ্রহণযোগ্য কারণ এখানে বাইরের অচেনা traffic আসে।",
+          "সবশেষে Internal Network (core banking servers, DB) — এই layer গুলো পার হওয়া ‘পরিষ্কার’ traffic-ই কেবল ভেতরে পৌঁছায়।"
+        ],
+        "diagram": "         ব্যাংকের নিরাপত্তা স্থাপত্য (Defense-in-Depth)\n\n  🌐 Internet\n      │  (সব ধরনের traffic — বৈধ + অবৈধ)\n      ▼\n  ┌──────────────────────┐\n  │   LAYER 1: FIREWALL   │  ← port/IP filter\n  │  allow 443, 22 …      │    (খাম/header দেখে)\n  │  deny অন্য সব IP/port │\n  └──────────┬───────────┘\n      অবৈধ IP/port ✗ এখানেই বাদ\n      │  (শুধু allowed traffic নামে)\n      ▼\n  ┌──────────────────────┐\n  │    LAYER 2: IPS       │  ← signature match\n  │  payload scan (inline)│    (ভেতরের content দেখে)\n  │  SQLi / malware ধরে   │\n  └──────────┬───────────┘\n      খারাপ packet ✗ DROP (real-time)\n      │  (পরিষ্কার traffic)\n      ▼\n  ╔══════════════════════╗\n  ║  INTERNAL NETWORK     ║  ← core banking\n  ║  App / DB / servers   ║    (সুরক্ষিত অঞ্চল)\n  ╚══════════════════════╝\n\n──────────── কে কী দেখে ────────────\n  Firewall : header (IP + port)     → কে ঢুকবে\n  IPS      : payload (packet ভেতর)  → কী নিয়ে ঢুকবে\n  একসাথে   : মোটা ছাঁকনি → সূক্ষ্ম ছাঁকনি → নিরাপদ ভেতর",
+        "mnemonic": "Firewall খাম দেখে (কে/কোন port), IPS চিঠি পড়ে (ভেতরে কী) — মোটা ছাঁকনির পর সূক্ষ্ম ছাঁকনি।"
+      }
+    },
+    {
+      "id": "is_ex_003",
+      "q": "During a security audit at a bank, it is found that customer login passwords are stored in the database as plain text. Explain why this is a fatal mistake, and describe the correct way to store passwords using hashing and salt. Also explain why hashing is preferred over encryption for passwords.",
+      "tags": [
+        "hashing",
+        "salt",
+        "password",
+        "encryption",
+        "authentication"
+      ],
+      "answer": {
+        "summary": [
+          "Plain text password রাখা মানে DB চুরি/leak হলেই সব গ্রাহকের password সরাসরি হাতে চলে যাওয়া — সর্বনাশা।",
+          "সঠিক উপায়: password + unique salt একসাথে hash করে শুধু hash + salt সংরক্ষণ করা।",
+          "Encryption নয়, hashing — কারণ hashing এক-মুখী (irreversible); password কখনো ফেরত পড়ার দরকারই নেই।"
+        ],
+        "points": [
+          "Plain text কেন fatal: একজন attacker বা insider যদি DB পড়ে ফেলে, প্রতিটি গ্রাহকের আসল password পেয়ে যায়। মানুষ password পুনর্ব্যবহার করে বলে অন্য ব্যাংক/ইমেইল account-ও ঝুঁকিতে পড়ে।",
+          "Hashing: hash function (যেমন bcrypt, Argon2, PBKDF2) password থেকে একটা fixed-length digest বানায় যা এক-মুখী — hash থেকে আসল password ফেরত বের করা কার্যত অসম্ভব।",
+          "Login-এ যাচাই: ব্যবহারকারী password দিলে সেটাকে আবার একই ভাবে hash করে, সংরক্ষিত hash-এর সাথে মেলানো হয়। আসল password কোথাও রাখতে হয় না।",
+          "Salt কেন লাগে: salt একটি random unique মান, প্রতিটি user-এর জন্য আলাদা, password-এর সাথে যোগ করে hash করা হয়। ফলে দুইজনের password এক হলেও hash আলাদা হয়।",
+          "Salt rainbow table (আগে থেকে বানানো hash-এর অভিধান) আক্রমণ ব্যর্থ করে — কারণ attacker-কে প্রতিটি salt-এর জন্য আলাদা করে টেবিল বানাতে হবে, যা অবাস্তব।",
+          "Encryption নয় কেন: encryption দ্বি-মুখী — key থাকলে আসল password ফেরত পাওয়া যায়। সেই key leak হলেই সব password উন্মুক্ত। password verify করতে reversibility দরকার নেই, তাই এক-মুখী hashing নিরাপদ।",
+          "সাথে slow hash + high cost factor ব্যবহার করা হয়, যাতে attacker কোটি কোটি guess দ্রুত করতে না পারে (brute-force ধীর করে দেয়)।"
+        ],
+        "diagram": "❌ ভুল উপায় — PLAIN TEXT\n   password: \"taka1234\" ──▶ DB: taka1234\n   DB leak হলেই ➜ সব password সরাসরি হাতে ✗✗\n\n✅ সঠিক উপায় — SALT + HASH\n\n   User password          Random unique salt\n   ┌───────────┐          ┌─────────────┐\n   │ \"taka1234\"│          │ \"x9$Kf2\" (per user)│\n   └─────┬─────┘          └──────┬──────┘\n         └────────┬──────────────┘\n                  ▼  (একসাথে যোগ)\n         ┌──────────────────┐\n         │  HASH function   │  ← এক-মুখী\n         │ bcrypt / Argon2  │    (irreversible)\n         └────────┬─────────┘\n                  ▼\n         digest: 9f2a…c7d1\n                  │\n                  ▼   DB-তে যা জমা থাকে:\n   ┌─────────────────────────────────┐\n   │ user │ salt   │ hash (digest)    │\n   │ rahim│ x9$Kf2 │ 9f2a…c7d1        │\n   └─────────────────────────────────┘\n   ★ আসল password কোথাও নেই\n\n── Login যাচাই ──\n  ইনপুট password + জমা salt → আবার hash → জমা hash-এর সাথে মেলে?\n            মিললে ✔ login   না মিললে ✘ reject\n\n──────── কেন hashing, encryption নয় ────────\n  Encryption : key দিয়ে ⇄ ফেরত পড়া যায় (দ্বি-মুখী) → ঝুঁকি\n  Hashing    : ফেরত পড়া যায় না (এক-মুখী) → নিরাপদ\n  Salt       : একই password → আলাদা hash → rainbow table ব্যর্থ",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Hashing",
+            "Encryption"
+          ],
+          "rows": [
+            [
+              "দিক",
+              "এক-মুখী (irreversible)",
+              "দ্বি-মুখী (reversible)"
+            ],
+            [
+              "আসল ফেরত পাওয়া",
+              "যায় না",
+              "key থাকলে যায়"
+            ],
+            [
+              "Key দরকার?",
+              "না",
+              "হ্যাঁ (key leak = বিপদ)"
+            ],
+            [
+              "Password-এর জন্য",
+              "✔ উপযুক্ত (verify যথেষ্ট)",
+              "✘ অপ্রয়োজনীয় ঝুঁকি"
+            ],
+            [
+              "উদাহরণ",
+              "bcrypt, Argon2, PBKDF2",
+              "AES, RSA"
+            ]
+          ]
+        },
+        "mnemonic": "Password ‘পড়ার’ জিনিস নয়, শুধু ‘মেলানোর’ জিনিস — তাই এক-মুখী Hash + প্রতিজনের আলাদা Salt।"
+      }
+    },
+    {
+      "id": "is_ex_004",
+      "q": "A bank must protect customer data in two situations: (1) data at-rest, stored inside the database, and (2) data in-transit, moving between the mobile banking app and the server. Explain the difference between symmetric and asymmetric encryption, and describe where each type best fits in this scenario.",
+      "tags": [
+        "encryption",
+        "symmetric",
+        "asymmetric",
+        "tls",
+        "data-protection"
+      ],
+      "answer": {
+        "summary": [
+          "Symmetric encryption: এক-ই key দিয়ে encrypt ও decrypt — দ্রুত, বড় data-র জন্য ভালো।",
+          "Asymmetric encryption: জোড়া key (public + private) — key নিরাপদে বিনিময়/পরিচয় যাচাইয়ে ভালো, কিন্তু ধীর।",
+          "বাস্তবে: at-rest DB = symmetric (AES); in-transit (app↔server, TLS) = asymmetric দিয়ে handshake, তারপর symmetric দিয়ে data।"
+        ],
+        "points": [
+          "Symmetric (যেমন AES): একটাই গোপন key দুই পক্ষের কাছে থাকে; একই key দিয়ে তালা ও চাবি খোলা। খুব দ্রুত, তাই বড় পরিমাণ data encrypt করতে আদর্শ।",
+          "Symmetric-এর সমস্যা: key-টা অপর পক্ষকে নিরাপদে পাঠানো কঠিন — মাঝপথে ধরা পড়লেই সব শেষ (key distribution problem)।",
+          "Asymmetric (যেমন RSA/ECC): জোড়া key — public key দিয়ে encrypt, শুধু matching private key দিয়ে decrypt। public key খোলাখুলি শেয়ার করা যায়, private key গোপন থাকে।",
+          "Asymmetric দিয়ে key distribution ও পরিচয় যাচাই (server certificate) সমাধান হয়, কিন্তু এটি গণনায় ধীর — তাই বড় data-র জন্য একা ব্যবহার করা হয় না।",
+          "Data at-rest (DB): এখানে data স্থির, শুধু ব্যাংকই encrypt/decrypt করে — এক-ই দল, তাই symmetric (AES) উপযুক্ত। দ্রুত এবং key বাইরে পাঠানোর দরকার নেই।",
+          "Data in-transit (mobile app ↔ server, HTTPS/TLS): প্রথমে asymmetric দিয়ে server-এর পরিচয় যাচাই ও একটি অস্থায়ী session key নিরাপদে বিনিময় হয়, তারপর সেই symmetric session key দিয়ে দ্রুত data আদান-প্রদান — এটাই hybrid model।",
+          "মূল কথা: asymmetric key বিনিময়ের ‘হ্যান্ডশেক’ সামলায়, symmetric আসল ‘bulk data’ সামলায় — দুটোই একসাথে ব্যবহার হয়।"
+        ],
+        "diagram": "SYMMETRIC — এক-ই key দুই দিকে\n\n   Data ──▶[ Encrypt 🔑 ]──▶ 🔒cipher──▶[ Decrypt 🔑 ]──▶ Data\n              same secret key             same secret key\n   ⚡ দ্রুত, বড় data-র জন্য │ ⚠ key নিরাপদে পাঠানো কঠিন\n\nASYMMETRIC — জোড়া key (public + private)\n\n   Sender: Data ──▶[ Encrypt 🔓public ]──▶ 🔒cipher\n                                              │\n   Receiver:                🔐private ──▶[ Decrypt ]──▶ Data\n   🔓 public শেয়ার করা যায় │ 🔐 private গোপন │ ⏳ ধীর\n\n──── ব্যাংকে কোথায় কোনটা ────\n\n  (1) AT-REST — DB-তে জমা data\n      ╔══════════════════╗\n      ║  DATABASE        ║\n      ║  🔒 AES (symmetric)║ ← এক-ই দল encrypt/decrypt\n      ╚══════════════════╝\n      দ্রুত, key বাইরে যায় না\n\n  (2) IN-TRANSIT — Mobile app ↔ Server (TLS)\n      📱 App ──── HTTPS/TLS ──── 🖥 Server\n         │  step 1: asymmetric → পরিচয় যাচাই + session key বিনিময়\n         │  step 2: symmetric  → সেই key দিয়ে দ্রুত data প্রবাহ\n         └────────── hybrid (দুটোই) ──────────┘\n\n──────── এক নজরে ────────\n  Symmetric  : 1 key │ দ্রুত │ at-rest (DB)\n  Asymmetric : 2 key │ ধীর  │ key বিনিময়/handshake\n  TLS = আগে asymmetric, পরে symmetric",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Symmetric",
+            "Asymmetric"
+          ],
+          "rows": [
+            [
+              "Key",
+              "একটাই গোপন key",
+              "জোড়া (public + private)"
+            ],
+            [
+              "Encrypt/Decrypt",
+              "একই key দুই কাজে",
+              "public দিয়ে encrypt, private দিয়ে decrypt"
+            ],
+            [
+              "গতি",
+              "দ্রুত",
+              "ধীর (গণনা ভারী)"
+            ],
+            [
+              "মূল সমস্যা",
+              "key নিরাপদে বিনিময়",
+              "ধীর, বড় data-য় অকার্যকর"
+            ],
+            [
+              "উদাহরণ",
+              "AES, DES, 3DES",
+              "RSA, ECC, Diffie-Hellman"
+            ],
+            [
+              "ব্যাংকে ব্যবহার",
+              "Data at-rest (DB encryption)",
+              "In-transit handshake / key exchange"
+            ]
+          ]
+        },
+        "mnemonic": "এক চাবি = Symmetric (দ্রুত, DB-তে); দুই চাবি = Asymmetric (নিরাপদ handshake) — TLS দুটোকেই কাজে লাগায়।"
+      }
+    },
+    {
+      "id": "is_ex_005",
+      "q": "An employee of a bank receives an urgent email that appears to be from the IT department, asking him to click a link and 'verify' his username and password on a page that looks exactly like the bank's internal portal. The URL is slightly misspelled. Identify the type of attack, explain its impact on the CIA triad, and outline the correct response steps.",
+      "tags": [
+        "phishing",
+        "social-engineering",
+        "cia-triad",
+        "incident-response"
+      ],
+      "answer": {
+        "summary": [
+          "এটি phishing (এক ধরনের social engineering) — মানুষকে ঠকিয়ে credential হাতানোর চেষ্টা।",
+          "মূল লক্ষ্য Confidentiality ভাঙা (password চুরি); সেখান থেকে Integrity ও Availability-ও ঝুঁকিতে পড়ে।",
+          "সঠিক প্রতিক্রিয়া: click/reply নয় → IT/Security-কে report → password পাল্টানো → ঘটনা ব্লক ও তদন্ত।"
+        ],
+        "points": [
+          "আক্রমণ শনাক্ত: এটি phishing — বিশ্বাসযোগ্য (IT department) সেজে, জরুরি ভাব (‘urgent verify’) তৈরি করে, নকল কিন্তু হুবহু দেখতে portal-এ credential চাওয়া হচ্ছে। ভুল বানানের URL হলো বড় সংকেত।",
+          "কেন social engineering: এটি technical দুর্বলতা নয়, মানুষের মনস্তত্ত্ব (তাড়াহুড়া, কর্তৃপক্ষের প্রতি আস্থা) কে target করে — তাই firewall/antivirus এটি সরাসরি ঠেকাতে পারে না।",
+          "Confidentiality (গোপনীয়তা): কর্মচারী password দিলে attacker গোপন credential পেয়ে যায় — এটাই প্রথম ও সরাসরি আঘাত।",
+          "Integrity (অখণ্ডতা): চুরি করা login দিয়ে attacker account/transaction data পরিবর্তন করতে পারে — তথ্যের নির্ভুলতা নষ্ট হয়।",
+          "Availability (প্রাপ্যতা): attacker password বদলে বৈধ ব্যবহারকারীকে বের করে দিতে পারে, বা ransomware ছড়িয়ে সিস্টেম অচল করতে পারে — সেবা বন্ধ।",
+          "প্রতিক্রিয়া (কর্মচারী): link-এ ক্লিক নয়, reply নয়, কিছু ডাউনলোড নয়; সাথে সাথে IT/Security team-কে report/forward করা; ভুলে credential দিয়ে ফেললে তখনই password পাল্টানো।",
+          "প্রতিক্রিয়া (প্রতিষ্ঠান): নকল domain/URL block করা, একই মেইল সবার inbox থেকে সরানো, আক্রান্ত account monitor/lock, ঘটনা log করা এবং কর্মীদের সচেতনতা (awareness) বাড়ানো; দীর্ঘমেয়াদে MFA চালু করা যাতে শুধু password চুরি হলেও ঢোকা না যায়।"
+        ],
+        "diagram": "PHISHING আক্রমণের চেহারা\n\n   ✉ From: IT-Support (নকল, সেজে আছে)\n   ┌───────────────────────────────────┐\n   │ ⚠ URGENT: এখনই আপনার account       │\n   │   verify করুন, নইলে বন্ধ হয়ে যাবে │ ← ভয়/তাড়াহুড়া\n   │   👉 http://bank-verify.cm/login   │ ← ভুল বানান URL\n   └───────────────────────────────────┘\n            │ ক্লিক করলে\n            ▼\n   ┌───────────────────────────────────┐\n   │  নকল portal (হুবহু আসলের মতো)      │\n   │  Username: [______]                │\n   │  Password: [______]  ──▶ 🕵 Attacker│\n   └───────────────────────────────────┘\n\n   CIA-triad-এ আঘাত\n   ┌─────────────┬──────────────────────────┐\n   │ Confidential│ password চুরি (সরাসরি আঘাত)│\n   │ Integrity   │ চুরি login দিয়ে data বদল  │\n   │ Availability│ password বদলে/ransomware  │\n   │             │ → বৈধ user আটকে, সেবা বন্ধ │\n   └─────────────┴──────────────────────────┘\n\n   সঠিক প্রতিক্রিয়া ধাপে ধাপে\n   ① ক্লিক/reply নয় ── ② IT/Security-কে report\n   ③ ভুলে দিলে → password পাল্টাও\n   ④ URL/domain block + মেইল সরাও\n   ⑤ account lock/monitor + log + তদন্ত\n   ⑥ awareness training + MFA চালু\n\n──── চেনার সংকেত (এক নজরে) ────\n  ভুল বানানের URL │ জরুরি ভয় দেখানো │ credential চাওয়া\n  অচেনা sender │ ব্যাকরণ ভুল │ সন্দেহ হলে = report",
+        "mnemonic": "থামো-ভাবো-জানাও: ক্লিক নয়, ভাবো (URL ভুল?), IT-কে জানাও — phishing হারায় সতর্ক চোখে।"
+      }
+    },
+    {
+      "id": "is_ex_006",
+      "q": "Bangladesh Bank's international payment (SWIFT) terminals were found sitting on the SAME flat network as ordinary staff PCs, email and internet browsing — echoing the real 2016 reserve-heist lesson. As the ICT security officer, explain why the SWIFT/interbank payment system MUST be isolated (network segmentation and air-gapping) from the general bank network and the internet, why a flat network is dangerous, and what specific controls you would enforce.",
+      "tags": [
+        "swift",
+        "segmentation",
+        "air-gap",
+        "vlan",
+        "isolation"
+      ],
+      "answer": {
+        "summary": [
+          "SWIFT payment টার্মিনাল সাধারণ অফিস নেটওয়ার্ক ও ইন্টারনেট থেকে সম্পূর্ণ আলাদা (isolated) রাখতে হবে।",
+          "flat network বিপজ্জনক — একটা সাধারণ PC হ্যাক হলেই attacker সেখান থেকে payment server-এ পৌঁছে যায় (lateral movement)।",
+          "সমাধান: আলাদা VLAN/zone, payment server-এ ইন্টারনেট নেই (air-gap), কড়া access control।"
+        ],
+        "points": [
+          "Flat network কেন সর্বনাশা: সব যন্ত্র একই segment-এ থাকলে ওদের মধ্যে কোনো দেয়াল নেই। একজন কর্মীর PC phishing/malware-এ আক্রান্ত হলে attacker সেই PC থেকে পাশে সরে সরে (lateral movement) সরাসরি SWIFT terminal-এ ঢুকে ভুয়া payment message পাঠাতে পারে — ২০১৬ রিজার্ভ চুরির মূল দুর্বলতাই ছিল এটি।",
+          "Network segmentation: নেটওয়ার্ককে আলাদা VLAN/zone-এ ভাগ করা হয় — অফিস zone, DMZ, আর payment zone। zone-গুলোর মাঝে internal firewall/ACL বসে, ফলে এক zone আক্রান্ত হলেও সংক্রমণ অন্য zone-এ ছড়ায় না (blast radius ছোট থাকে)।",
+          "Air-gapping: payment/SWIFT server-কে ইন্টারনেট থেকে সম্পূর্ণ বিচ্ছিন্ন রাখা — সেখানে email নেই, browsing নেই, USB নেই। বাইরের কোনো সরাসরি পথ না থাকায় remote attacker টার্মিনালে পৌঁছাতেই পারে না।",
+          "Least privilege access: শুধু নির্দিষ্ট, অনুমোদিত operator-রা payment terminal ব্যবহার করবে; MFA দিয়ে login, প্রতিটি লেনদেনে maker-checker (দুইজনের অনুমোদন), আর সব কাজ log হবে।",
+          "SWIFT-এর নিজস্ব CSP (Customer Security Programme) বাধ্যতামূলক করে যে secure zone থাকবে, general IT থেকে আলাদা থাকবে, ও কড়া access দেওয়া হবে — segmentation তাই compliance-এরও অংশ।",
+          "Data flow নিয়ন্ত্রণ: payment zone আর বাইরের জগতের মধ্যে যদি কোনো তথ্য যেতেই হয়, তা যাবে কেবল একটি কড়া নিয়ন্ত্রিত gateway/jump server দিয়ে — সরাসরি সংযোগ কখনো নয়।"
+        ],
+        "diagram": "❌ বিপজ্জনক — FLAT NETWORK (সব একসাথে)\n\n  🌐 Internet\n      │\n  ┌───┴───────────────────────────────┐\n  │  একই segment / একই সমতল নেটওয়ার্ক │\n  │  🖥 Staff PC   ✉ Email   🌐 Browsing│\n  │  💳 SWIFT Terminal  ← একই জায়গায়!  │\n  └───────────────────────────────────┘\n   একটা PC হ্যাক ➜ পাশে সরে (lateral) ➜ SWIFT দখল ✗✗\n\n✅ নিরাপদ — SEGMENTED + AIR-GAPPED\n\n  🌐 Internet\n      │\n      ▼\n  ┌──────────────────────┐\n  │ OFFICE ZONE (VLAN-A)  │  ← staff PC, email, browsing\n  │ 🖥🖥  ইন্টারনেট আছে    │\n  └──────────┬───────────┘\n             │  internal FIREWALL / ACL\n             │  ✗ সরাসরি যাওয়া বন্ধ\n             ▼  (শুধু jump server দিয়ে, কড়া নিয়ন্ত্রণে)\n  ╔══════════════════════╗\n  ║ PAYMENT ZONE (VLAN-B) ║  ← SWIFT terminal\n  ║ 💳 কোনো ইন্টারনেট নেই ║    (AIR-GAP)\n  ║ শুধু অনুমোদিত operator ║    MFA + maker-checker\n  ╚══════════════════════╝\n\n──────────── এক নজরে ────────────\n  Flat network : এক দেয়ালহীন ঘর → এক আগুনে সব পোড়ে\n  Segmentation : আলাদা কামরা → আগুন এক কামরায় আটকা\n  Air-gap      : payment ঘরে ইন্টারনেটের দরজাই নেই\n  Access       : least privilege + MFA + দুই-অনুমোদন",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Flat Network",
+            "Segmented + Air-gapped"
+          ],
+          "rows": [
+            [
+              "গঠন",
+              "সব যন্ত্র একই segment-এ",
+              "আলাদা VLAN/zone-এ বিভক্ত"
+            ],
+            [
+              "SWIFT terminal",
+              "অফিস PC-র পাশেই",
+              "আলাদা isolated zone-এ"
+            ],
+            [
+              "Internet payment server-এ",
+              "আছে",
+              "নেই (air-gap)"
+            ],
+            [
+              "এক PC হ্যাক হলে",
+              "সবকিছু ঝুঁকিতে (lateral)",
+              "সংক্রমণ এক zone-এ আটকা"
+            ],
+            [
+              "Access",
+              "খোলামেলা",
+              "least privilege + MFA + maker-checker"
+            ],
+            [
+              "ঝুঁকি",
+              "চরম (২০১৬ heist ধরন)",
+              "সীমিত (blast radius ছোট)"
+            ]
+          ]
+        },
+        "mnemonic": "Payment-কে আলাদা ঘরে রাখো, ইন্টারনেটের দরজা বন্ধ করো — flat মানে সব পুড়বে, segment মানে আগুন আটকা।"
+      }
+    },
+    {
+      "id": "is_ex_007",
+      "q": "Bangladesh Bank needs to host a PUBLIC-facing website and a mail server that the outside world can reach, but at the same time it must keep its internal core banking network completely protected from the internet. Design a DMZ (Demilitarized Zone) architecture using two firewalls, explain what should be placed in the DMZ versus the internal network and why, and trace how an external request flows through it.",
+      "tags": [
+        "dmz",
+        "firewall",
+        "architecture",
+        "web-server",
+        "defense-in-depth"
+      ],
+      "answer": {
+        "summary": [
+          "DMZ = একটি মধ্যবর্তী 'নিরপেক্ষ' অঞ্চল, দুটি firewall-এর মাঝে বসে — যেখানে public-facing সার্ভার থাকে।",
+          "public থেকে reach করা দরকার (web, mail) এমন সার্ভার DMZ-তে; core banking/DB ভেতরের internal network-এ।",
+          "কেন: ইন্টারনেট কখনো সরাসরি internal-এ পৌঁছাতে পারে না — মাঝে DMZ ঢাল হয়ে দাঁড়ায়।"
+        ],
+        "points": [
+          "DMZ ধারণা: এটি ইন্টারনেট আর internal network-এর মাঝখানের একটি buffer অঞ্চল। এখানে কেবল সেই সার্ভারগুলো রাখা হয় যেগুলো বাইরের জগতের সাথে কথা বলতেই হয় — public website, email (SMTP), DNS, reverse proxy।",
+          "দুই-firewall গঠন: বাইরের firewall (FW-1) ইন্টারনেট থেকে শুধু নির্দিষ্ট port (80/443, 25) DMZ পর্যন্ত ঢুকতে দেয়। ভেতরের firewall (FW-2) DMZ থেকে internal network-এ যাওয়া প্রায় সব কিছু বন্ধ রাখে, শুধু অতি-নিয়ন্ত্রিত প্রয়োজনীয় সংযোগ ছাড়ে।",
+          "DMZ-তে কী: web server, mail relay, reverse proxy, public DNS — অর্থাৎ যা হ্যাক হলেও গ্রাহকের টাকা/মূল data সরাসরি ঝুঁকিতে পড়ে না।",
+          "Internal-এ কী: core banking application, customer database, SWIFT, HR/accounts — এগুলোর কোনোটাই ইন্টারনেট থেকে সরাসরি দৃশ্যমান নয়।",
+          "কেন এই ভাগ: ধরুন DMZ-এর web server হ্যাক হলো। attacker তবুও internal database পায় না, কারণ মাঝে দ্বিতীয় firewall (FW-2) দাঁড়িয়ে — DMZ থেকে ভেতরে ঢোকা আলাদা করে ঠেকানো। এক ধাপ ভাঙলেও পুরো দুর্গ পড়ে না (defense-in-depth)।",
+          "Flow উদাহরণ: গ্রাহক website দেখতে চাইলে request FW-1 পার হয়ে DMZ-র web server-এ যায়; সেই web server যদি account balance দরকার হয়, সে সরাসরি DB ছোঁয় না — FW-2-এর নির্দিষ্ট নিয়ন্ত্রিত পথ দিয়ে internal-এর API-কে অনুরোধ পাঠায়, উত্তর ফেরত আনে।"
+        ],
+        "diagram": "        ব্যাংকের DMZ স্থাপত্য (দুই firewall)\n\n  🌐 Internet\n      │  (বাইরের সব — গ্রাহক + attacker)\n      ▼\n  ┌──────────────────────┐\n  │  FIREWALL-1 (বাইরের)  │  ← শুধু 80/443, 25 ঢুকতে দেয়\n  └──────────┬───────────┘\n             ▼\n  ┌──────────────────────────────────┐\n  │        DMZ (মধ্যবর্তী অঞ্চল)       │\n  │  🌐 Web Server   ✉ Mail Relay     │\n  │  🔎 Reverse Proxy / Public DNS    │\n  │  ← public-এর নাগালে, কিন্তু data নেই│\n  └──────────┬───────────────────────┘\n             │  FIREWALL-2 (ভেতরের)\n             │  ✗ প্রায় সব বন্ধ,\n             │  শুধু নির্দিষ্ট API call ছাড়ে\n             ▼\n  ╔══════════════════════════════════╗\n  ║   INTERNAL NETWORK (মূল অঞ্চল)    ║\n  ║  🏦 Core Banking  💾 Database      ║\n  ║  💳 SWIFT   👥 HR/Accounts         ║\n  ║  ← ইন্টারনেট থেকে সরাসরি অদৃশ্য     ║\n  ╚══════════════════════════════════╝\n\n── Request কীভাবে বয়ে যায় ──\n  গ্রাহক ─▶ FW-1 ─▶ DMZ web ─▶ FW-2 (নিয়ন্ত্রিত API) ─▶ internal DB\n         ◀── উত্তর একই পথে ফেরত ──◀\n\n──────────── এক নজরে ────────────\n  DMZ-তে      : public লাগে যা (web, mail, DNS)\n  Internal-এ  : গোপন যা (core banking, DB, SWIFT)\n  FW-1 ভাঙলেও : FW-2 এখনো internal-কে বাঁচায়\n  নীতি        : ইন্টারনেট কখনো সরাসরি internal ছোঁয় না",
+        "table": {
+          "headers": [
+            "অবস্থান",
+            "কী রাখা হয়",
+            "কেন"
+          ],
+          "rows": [
+            [
+              "DMZ",
+              "Web server, mail relay, DNS, reverse proxy",
+              "বাইরের জগতের reach করা দরকার; হ্যাক হলেও মূল data-তে পৌঁছায় না"
+            ],
+            [
+              "Internal",
+              "Core banking, database, SWIFT, HR",
+              "গোপন ও সংবেদনশীল; ইন্টারনেট থেকে সরাসরি অদৃশ্য থাকবে"
+            ],
+            [
+              "FW-1 (বাইরের)",
+              "শুধু 80/443, 25 → DMZ",
+              "ইন্টারনেট থেকে DMZ পর্যন্তই সীমিত প্রবেশ"
+            ],
+            [
+              "FW-2 (ভেতরের)",
+              "DMZ → internal প্রায় সব বন্ধ",
+              "DMZ হ্যাক হলেও internal সুরক্ষিত থাকে"
+            ]
+          ]
+        },
+        "mnemonic": "DMZ = দুই দেয়ালের মাঝের উঠান: বাইরের জন্য যা লাগে তা উঠানে, গুপ্তধন ভেতরঘরে — এক দেয়াল ভাঙলেও গুপ্তধন নিরাপদ।"
+      }
+    },
+    {
+      "id": "is_ex_008",
+      "q": "Bangladesh Bank's internet and mobile banking users keep getting their passwords phished and stolen, and attackers then log in with just the stolen password. The bank decides to enforce Multi-Factor Authentication (MFA / 2FA). Explain the three authentication factors (something you know / have / are), how an OTP or hardware token adds a second layer, and why MFA defeats a stolen-password attack.",
+      "tags": [
+        "mfa",
+        "2fa",
+        "otp",
+        "authentication",
+        "phishing-defense"
+      ],
+      "answer": {
+        "summary": [
+          "MFA/2FA মানে login-এ একাধিক আলাদা ধরনের প্রমাণ চাওয়া — শুধু password নয়।",
+          "তিন factor: something you KNOW (password/PIN), something you HAVE (OTP/token/phone), something you ARE (fingerprint/face)।",
+          "কেন কাজ করে: password চুরি হলেও attacker-এর কাছে দ্বিতীয় factor (গ্রাহকের ফোন/আঙুল) নেই, তাই ঢুকতে পারে না।"
+        ],
+        "points": [
+          "একক password-এর দুর্বলতা: password হলো 'something you know' — একটাই factor। phishing/keylogger দিয়ে চুরি হলে attacker হুবহু বৈধ user সেজে ঢুকে যায়; সিস্টেম আসল-নকল আলাদা করতে পারে না।",
+          "Factor 1 — Something you KNOW: গ্রাহক যা মনে রাখে — password, PIN, security question। সহজে phish/guess হয় বলে এটি একা যথেষ্ট নয়।",
+          "Factor 2 — Something you HAVE: গ্রাহকের হাতে থাকা বস্তু — মোবাইলে আসা OTP (SMS/authenticator app), hardware token, বা push approval। আক্রমণকারীর কাছে গ্রাহকের ফোন নেই, তাই এই factor সে দিতে পারে না।",
+          "Factor 3 — Something you ARE: গ্রাহকের শারীরিক বৈশিষ্ট্য (biometric) — fingerprint, face, iris। এটি নকল/হস্তান্তর করা কঠিন।",
+          "MFA-এর শর্ত: দুটি প্রমাণ আলাদা শ্রেণির (category) হতে হবে। দুটো password চাওয়া MFA নয়; password (know) + OTP (have) — এটাই আসল MFA।",
+          "কেন stolen-password আক্রমণ থামে: MFA থাকলে login-এ password (know) + OTP (have) দুটোই লাগে। attacker password চুরি করলেও গ্রাহকের ফোনে আসা OTP তার কাছে নেই — তাই সে দ্বিতীয় দেয়ালে আটকে যায়। একটি factor ফাঁস হলেও account অক্ষত থাকে।",
+          "OTP-এর বাড়তি শক্তি: OTP time-based ও এক-বারই ব্যবহারযোগ্য (৩০–৬০ সেকেন্ডে বদলায়), তাই পুরনো OTP ধরা পড়লেও পরে অকেজো — replay আক্রমণ ব্যর্থ হয়।"
+        ],
+        "diagram": "একক password কেন যথেষ্ট নয়\n\n  🕵 Attacker  ──(phish/চুরি)──▶ 🔑 password\n              ──▶ [ Login: শুধু password? ] ──▶ ✅ ঢুকে গেল ✗✗\n\nMFA — দুই আলাদা শ্রেণির প্রমাণ\n\n  গ্রাহক login করছে\n      │\n  ┌───┴──────────────────────┐\n  │ ① KNOW : password / PIN   │  🔑 (মনে রাখা)\n  └───┬──────────────────────┘\n      │ ঠিক আছে ➜ এখন দ্বিতীয় স্তর\n  ┌───┴──────────────────────┐\n  │ ② HAVE : ফোনে OTP / token │  📱 (হাতে থাকা, ৩০s-এ বদলায়)\n  └───┬──────────────────────┘\n      │ (চাইলে) ③ ARE : fingerprint 👆\n      ▼\n   দুটোই মিললে ✔ Login সফল\n\n── Attacker-এর অবস্থা ──\n  🕵 password চুরি ✔  কিন্তু  📱 গ্রাহকের ফোন/OTP ✗\n     ➜ দ্বিতীয় দেয়ালে আটকা ➜ ✘ ঢুকতে ব্যর্থ\n\n──────── তিন factor এক নজরে ────────\n  KNOW 🔑 জানা জিনিস │ HAVE 📱 কাছে থাকা জিনিস │ ARE 👆 আপনি নিজেই\n  নিয়ম: অন্তত ২টি আলাদা শ্রেণি = আসল MFA",
+        "table": {
+          "headers": [
+            "Factor",
+            "ধরন",
+            "উদাহরণ",
+            "দুর্বলতা"
+          ],
+          "rows": [
+            [
+              "Something you KNOW",
+              "জানা তথ্য",
+              "Password, PIN, security question",
+              "phish/guess/চুরি সহজ"
+            ],
+            [
+              "Something you HAVE",
+              "কাছে থাকা বস্তু",
+              "OTP (SMS/app), hardware token, push",
+              "ফোন/token হারালে; তবু চুরি করা কঠিন"
+            ],
+            [
+              "Something you ARE",
+              "শারীরিক বৈশিষ্ট্য",
+              "Fingerprint, face, iris",
+              "যন্ত্র/সেন্সর লাগে; নকল কঠিন"
+            ],
+            [
+              "MFA (২+ শ্রেণি)",
+              "সংমিশ্রণ",
+              "password + OTP",
+              "প্রায় নিরাপদ; একটি ফাঁস হলেও রক্ষা"
+            ]
+          ]
+        },
+        "mnemonic": "জানা 🔑 + কাছে 📱 + নিজে 👆 — অন্তত দুই আলাদা প্রমাণ; password চুরি হলেও ফোন তো attacker-এর হাতে নেই।"
+      }
+    },
+    {
+      "id": "is_ex_009",
+      "q": "Bangladesh Bank runs hundreds of servers, firewalls and applications that together produce millions of log lines every day, and real attacks stay hidden inside that noise because staff check each device separately. Explain how a Security Operations Center (SOC) backed by a SIEM system solves this through centralized log aggregation, correlation and real-time alerting, and why central logging beats checking each device one by one.",
+      "tags": [
+        "soc",
+        "siem",
+        "logging",
+        "monitoring",
+        "correlation"
+      ],
+      "answer": {
+        "summary": [
+          "SIEM = সব যন্ত্রের log এক জায়গায় জড়ো করে (aggregate), মিলিয়ে দেখে (correlate) ও সন্দেহ হলে সাথে সাথে alert দেয়।",
+          "SOC = ২৪/৭ নিরাপত্তা দল, যারা সেই alert দেখে যাচাই করে ও ব্যবস্থা নেয়।",
+          "কেন central: এক যন্ত্রে যা নিরীহ দেখায়, বহু যন্ত্রের log একসাথে মেলালে সেটাই আক্রমণের ছবি হয়ে ওঠে।"
+        ],
+        "points": [
+          "সমস্যা: প্রতিটি server/firewall আলাদা করে দেখলে দিনে লক্ষ লক্ষ log-এর মধ্যে আক্রমণের সূক্ষ্ম সংকেত হারিয়ে যায় — মানুষের পক্ষে হাতে হাতে এত log দেখা অসম্ভব, আর এক যন্ত্রের একটিমাত্র failed login কিছুই মনে হয় না।",
+          "Aggregation (একত্রীকরণ): SIEM সব উৎস — server, firewall, IDS/IPS, application, database — থেকে log টেনে একটি কেন্দ্রীয় জায়গায় জমা করে ও একই ফরম্যাটে সাজায় (normalize)। এক পর্দায় পুরো ব্যাংকের ছবি।",
+          "Correlation (সম্পর্ক মেলানো): SIEM-এর আসল শক্তি — বিচ্ছিন্ন ঘটনা জুড়ে নিয়ম মেলায়। যেমন 'একই IP থেকে ৫০টি server-এ পরপর failed login, তারপর একটিতে success' — আলাদা করে প্রতিটি নিরীহ, কিন্তু একসাথে এটি brute-force আক্রমণ।",
+          "Real-time alerting: rule/threshold মিললে SIEM সাথে সাথে alert তৈরি করে ও অগ্রাধিকার (severity) দেয়, যাতে দল আক্রমণ চলাকালীনই জানতে পারে — পরে post-mortem নয়।",
+          "SOC-এর ভূমিका: ২৪/৭ analyst দল alert triage করে (সত্যি না false positive), তদন্ত করে, দরকারে account lock/IP block করে এবং ঘটনা escalate করে — SIEM যন্ত্র, SOC মানুষ; দুটো মিলে কাজ করে।",
+          "কেন central > per-device: এক যন্ত্রে বসে থাকলে অন্য যন্ত্রের ঘটনা দেখা যায় না, তাই বহু-যন্ত্রে ছড়ানো আক্রমণ (lateral movement) ধরা পড়ে না। কেন্দ্রীয় log পুরো চিত্র দেয়, দ্রুত ধরা যায়, আর tamper-প্রতিরোধী — attacker এক server-এর log মুছলেও কেন্দ্রে copy থেকে যায়।",
+          "বাড়তি সুবিধা: কেন্দ্রীয় log audit ও compliance (কে কখন কী করল) প্রমাণে লাগে, আর forensic তদন্তে ঘটনার পুরো timeline পুনর্গঠন করা যায়।"
+        ],
+        "diagram": "         SOC + SIEM কেন্দ্রীয় নজরদারি\n\n  নানা উৎস থেকে log (দিনে লক্ষ লক্ষ লাইন)\n  🖥 Servers   🔥 Firewalls   🛡 IDS/IPS\n  💾 Database  📱 Apps\n      │      │      │      │      │\n      └──────┴───┬──┴──────┴──────┘\n                 ▼   (সব log একসাথে)\n        ┌────────────────────────┐\n        │         SIEM           │\n        │ ① Aggregate — জড়ো করা  │\n        │ ② Normalize — এক ফরম্যাট│\n        │ ③ Correlate — মিলিয়ে দেখা│\n        │   'একই IP → বহু server  │\n        │    failed login' = হামলা│\n        └───────────┬────────────┘\n                    ▼  rule মিললে\n              [ 🔔 ALERT ]  (severity সহ, real-time)\n                    ▼\n        ┌────────────────────────┐\n        │   SOC (২৪/৭ analyst)   │\n        │ triage → তদন্ত →       │\n        │ block/lock → escalate │\n        └────────────────────────┘\n\n── কেন per-device নয়, central হ্যাঁ ──\n  আলাদা যন্ত্র : এক জানালা দিয়ে দেখা → বড় ছবি অদৃশ্য\n  Central SIEM: সব জানালা একসাথে → হামলার নকশা স্পষ্ট\n\n──────────── এক নজরে ────────────\n  SIEM = যন্ত্র (aggregate + correlate + alert)\n  SOC  = মানুষ (২৪/৭ দেখে + ব্যবস্থা নেয়)\n  central log = পূর্ণ চিত্র + দ্রুত + tamper-proof + audit",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "প্রতি-যন্ত্র আলাদা দেখা",
+            "SOC + SIEM (কেন্দ্রীয়)"
+          ],
+          "rows": [
+            [
+              "Log-এর অবস্থান",
+              "প্রতিটি যন্ত্রে ছড়ানো",
+              "এক কেন্দ্রে জড়ো (aggregate)"
+            ],
+            [
+              "বহু-যন্ত্রে ছড়ানো হামলা",
+              "ধরা পড়ে না",
+              "correlation-এ ধরা পড়ে"
+            ],
+            [
+              "সময়",
+              "পরে, ম্যানুয়ালি",
+              "real-time alert"
+            ],
+            [
+              "জনবল",
+              "অসম্ভব (লক্ষ লক্ষ log)",
+              "যন্ত্র ছাঁকে, মানুষ যাচাই করে"
+            ],
+            [
+              "Log মুছে ফেলা (tamper)",
+              "attacker সহজে মোছে",
+              "কেন্দ্রে copy থাকে, নিরাপদ"
+            ],
+            [
+              "Audit / forensic",
+              "কঠিন, খণ্ডিত",
+              "পূর্ণ timeline, সহজ প্রমাণ"
+            ]
+          ]
+        },
+        "mnemonic": "সব log এক ছাদের নিচে (SIEM জড়ো+মেলায়), মানুষ ২৪/৭ পাহারায় (SOC) — বিচ্ছিন্ন দেখলে হামলা লুকায়, একসাথে দেখলে ধরা পড়ে।"
+      }
+    }
+  ]
+}

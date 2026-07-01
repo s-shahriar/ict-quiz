@@ -1,0 +1,483 @@
+{
+  "category": "server",
+  "questions": [
+    {
+      "id": "srv_ex_001",
+      "q": "A bank's internet-banking website runs on a single web server. At peak hours (salary day, EMI dates) response time crawls and the CPU maxes out, while at night the same box sits idle. The IT team cannot keep buying bigger servers forever. Explain how a load balancer with horizontal scaling solves this, and describe the common distribution algorithms (round-robin, least-connection).",
+      "tags": [
+        "load-balancer",
+        "horizontal-scaling",
+        "round-robin",
+        "least-connection"
+      ],
+      "answer": {
+        "summary": [
+          "Load balancer হলো clients আর server-দের মাঝে বসা traffic-cop, যে একটাই virtual IP-তে আসা সব request কে পেছনের একাধিক server-এ ভাগ করে দেয়।",
+          "একটা বড় server কেনার (vertical scaling) বদলে অনেকগুলো সাধারণ server পাশাপাশি যোগ করা (horizontal scaling) — এটাই peak load সামলানোর সস্তা ও unlimited উপায়।"
+        ],
+        "points": [
+          "সমস্যার মূল: এক server-এর CPU/RAM একটা সীমা পর্যন্তই বাড়ানো যায় (vertical scaling), তারপর দাম আকাশছোঁয়া আর একটা box fail করলেই পুরো সাইট down — single point of failure।",
+          "সমাধান horizontal scaling: একই application-এর ৩-৪টা copy আলাদা server-এ চালাও; load balancer সামনে বসে request-গুলো এদের মধ্যে ছড়িয়ে দেয়, তাই কোনো একটা server অতিরিক্ত চাপে পড়ে না।",
+          "Round-robin: request-গুলো পালা করে server1 → server2 → server3 → server1 এভাবে ঘুরিয়ে দেয় — সহজ, সব server সমান ক্ষমতার হলে ভালো কাজ করে।",
+          "Least-connection: যে server-এ এই মুহূর্তে সবচেয়ে কম active connection আছে সেখানে নতুন request পাঠায় — লম্বা session বা অসম load-এ এটা বেশি ন্যায্য।",
+          "Health check: load balancer প্রতিটি server-কে নিয়মিত ping করে; একটা মরে গেলে সেটাকে pool থেকে বাদ দেয়, তাই ব্যবহারকারী error পায় না — availability বাড়ে।",
+          "Elasticity: peak hour-এ নতুন server pool-এ যোগ করা যায়, রাতে বন্ধ করে দেওয়া যায় — খরচ ও ক্ষমতা দুটোই চাহিদামতো নিয়ন্ত্রণ হয়।",
+          "সংক্ষেপে: load balancer + horizontal scaling = একটাই দরজা, পেছনে যত খুশি কর্মী — চাপ বাড়লে কর্মী বাড়াও, box বদলাও না।"
+        ],
+        "diagram": "         Clients (peak-hour requests)\n        ┌───┐  ┌───┐  ┌───┐  ┌───┐\n        │ 📱│  │ 💻│  │ 🏧│  │ 💻│\n        └─┬─┘  └─┬─┘  └─┬─┘  └─┬─┘\n          └──────┴───┬──┴──────┘\n                     ▼\n            ╔══════════════════╗\n            ║  LOAD BALANCER   ║ ← এক Virtual IP\n            ║  (VIP: bank.com) ║   round-robin /\n            ╚══════╤═══╤═══╤═══╝   least-conn দিয়ে\n         ┌─────────┘   │   └─────────┐  ভাগ করে\n         ▼             ▼             ▼\n   ┌──────────┐  ┌──────────┐  ┌──────────┐\n   │ Server 1 │  │ Server 2 │  │ Server 3 │ ← একই app-এর\n   │  ● up    │  │  ● up    │  │  ● up    │   copy (horizontal\n   │ 33% load │  │ 33% load │  │ 33% load │   scaling)\n   └──────────┘  └──────────┘  └──────────┘\n        ▲\n        └─ health-check fail হলে এই box বাদ, ব্যবহারকারী টেরই পায় না\n\n  At-a-glance ▸ Vertical scaling: box বড় করো (সীমিত, দামি)\n              ▸ Horizontal scaling: box সংখ্যা বাড়াও (unlimited, সস্তা)",
+        "table": {
+          "headers": [
+            "Algorithm",
+            "কীভাবে বণ্টন",
+            "কখন সেরা"
+          ],
+          "rows": [
+            [
+              "Round-robin",
+              "পালা করে server1→2→3",
+              "সব server সমান ক্ষমতার, ছোট request"
+            ],
+            [
+              "Least-connection",
+              "সবচেয়ে কম active connection যেখানে",
+              "লম্বা session, অসম load"
+            ],
+            [
+              "Weighted",
+              "শক্তিশালী server-কে বেশি ভাগ",
+              "server-দের ক্ষমতা ভিন্ন ভিন্ন"
+            ]
+          ]
+        },
+        "mnemonic": "এক দরজা, বহু কর্মী — চাপ বাড়লে কর্মী বাড়াও, দরজা বদলাও না।"
+      }
+    },
+    {
+      "id": "srv_ex_002",
+      "q": "A bank's core database server stores live transaction data. Management demands that a single hard-disk failure must NOT cause any downtime or data loss, but they also want to use disk space efficiently rather than mirroring everything. Which RAID level fits, and why? Explain how it protects data and compare it with RAID 1 and RAID 10.",
+      "tags": [
+        "raid",
+        "raid-5",
+        "raid-10",
+        "parity",
+        "fault-tolerance"
+      ],
+      "answer": {
+        "summary": [
+          "RAID = অনেকগুলো disk-কে একসাথে জুড়ে একটা logical drive বানানো, যাতে speed বা fault-tolerance বা দুটোই পাওয়া যায়।",
+          "এই দাবির (এক disk fail-এও downtime/data-loss নেই + space সাশ্রয়) জন্য RAID 5 আদর্শ — এটা data-কে stripe করে আর সাথে distributed parity রাখে।"
+        ],
+        "points": [
+          "RAID 5-এর মূল কৌশল: data ভাগ ভাগ করে (striping) সব disk-এ লেখা হয়, সাথে প্রতি stripe-এর জন্য একটা parity block হিসাব করে আলাদা disk-এ রাখা হয় — parity সব disk-এ ছড়িয়ে থাকে।",
+          "কেন fault-tolerant: কোনো একটা disk মরলে, বাকি disk-এর data + parity দিয়ে গণিতভাবে (XOR) হারানো block পুনর্গঠন করা যায় — তাই server চালু থাকতেই hot-swap দিয়ে disk বদলে rebuild করা যায়।",
+          "কেন space-efficient: n-টা disk-এর মধ্যে মাত্র ১টা disk-এর সমান জায়গা parity-তে যায় (usable = n−1), অথচ RAID 1 বা 10-এ অর্ধেক জায়গা mirror-এ নষ্ট হয়।",
+          "RAID 1 (mirroring): প্রতিটি disk-এর হুবহু copy — খুব নিরাপদ ও পড়া দ্রুত, কিন্তু ৫০% জায়গা নষ্ট, তাই বড় database-এ ব্যয়বহুল।",
+          "RAID 10 (1+0): mirror আর stripe দুটোই — সবচেয়ে দ্রুত write ও দ্রুততম rebuild, তাই high-transaction banking DB-তে আদর্শ, কিন্তু ৫০% জায়গা লাগে।",
+          "সাবধানতা: RAID কোনো backup নয় — এটা শুধু disk fail সামলায়; ভুল delete, ransomware বা দুই disk একসাথে মরলে backup-ই বাঁচায়।",
+          "সংক্ষেপে: space + safety-র ভারসাম্য চাইলে RAID 5; সর্বোচ্চ speed ও নিরাপত্তা চাইলে (খরচ যাই হোক) RAID 10।"
+        ],
+        "diagram": "        RAID 5 — Striped data + Distributed parity\n        (3-disk উদাহরণ; কোনো ১টা disk মরলেও চলবে)\n\n        Disk 1        Disk 2        Disk 3\n      ┌────────┐    ┌────────┐    ┌────────┐\n row1 │ ▤ A1   │    │ ▤ A2   │    │ ◍ Ap   │ ← parity(A)\n      ├────────┤    ├────────┤    ├────────┤\n row2 │ ▤ B1   │    │ ◍ Bp   │ ←parity│ ▤ B2   │\n      ├────────┤    ├────────┤    ├────────┤\n row3 │ ◍ Cp   │←par │ ▤ C1   │    │ ▤ C2   │\n      └────────┘    └────────┘    └────────┘\n         ▤ = data block   ◍ = parity block\n\n   ✗ Disk 2 হঠাৎ মরল?\n     A2 = A1 XOR Ap  (Disk1+Disk3 থেকে পুনর্গঠন)\n     C1 = C2 XOR Cp  → কোনো data হারায় না, server চালু থাকে\n     নতুন disk লাগিয়ে (hot-swap) background-এ rebuild\n\n  At-a-glance ▸ Usable space: RAID1/10 = 50%  |  RAID5 = (n−1)/n বেশি\n              ▸ Min disk: RAID1=2, RAID5=3, RAID10=4",
+        "table": {
+          "headers": [
+            "RAID",
+            "কৌশল",
+            "সহ্য করে",
+            "Usable জায়গা",
+            "কখন"
+          ],
+          "rows": [
+            [
+              "RAID 1",
+              "Mirroring (হুবহু copy)",
+              "১ disk fail",
+              "৫০%",
+              "OS/boot, ছোট নিরাপদ ডেটা"
+            ],
+            [
+              "RAID 5",
+              "Stripe + distributed parity",
+              "১ disk fail",
+              "(n−1)/n বেশি",
+              "space+safety ভারসাম্য, read-ভারী DB"
+            ],
+            [
+              "RAID 10",
+              "Mirror + stripe",
+              "প্রতি mirror জোড়ায় ১টি",
+              "৫০%",
+              "high-write banking DB, সর্বোচ্চ speed"
+            ]
+          ]
+        },
+        "mnemonic": "RAID 5 = ছড়ানো data, ছড়ানো parity — এক disk গেলেও অঙ্ক কষে ফেরত।"
+      }
+    },
+    {
+      "id": "srv_ex_003",
+      "q": "A bank's IT team has 20 separate small applications (report tool, internal portal, test copies of the core app) but only a few powerful physical servers. They want each app isolated so one crash cannot affect others, while wasting as little hardware as possible. Explain virtualization (VM) versus containers, and advise which to use.",
+      "tags": [
+        "virtualization",
+        "vm",
+        "container",
+        "hypervisor",
+        "docker"
+      ],
+      "answer": {
+        "summary": [
+          "একটাই শক্তিশালী physical machine-এ অনেক isolated app চালানোর দুই পথ: virtual machine (VM) আর container।",
+          "VM প্রতিটি app-কে আলাদা পূর্ণ Guest OS দেয় (ভারী, কিন্তু সবচেয়ে শক্ত isolation); container শুধু host-এর একই kernel share করে app-কে মুড়ে দেয় (হালকা, দ্রুত, ঘন)।"
+        ],
+        "points": [
+          "Virtualization মানে: hypervisor নামের একটা layer physical hardware-কে ভাগ করে অনেকগুলো virtual computer বানায়, প্রতিটির নিজস্ব Guest OS, নিজস্ব kernel — একটা VM crash/hack হলে অন্যরা সম্পূর্ণ অক্ষত।",
+          "কেন VM ভারী: প্রতিটি VM-এ পুরো OS চলে (GBs disk, boot করতে মিনিট, RAM খরচ বেশি) — তাই এক box-এ সীমিত সংখ্যক VM ধরে।",
+          "Container মানে: OS একটাই (host kernel), তার উপর container engine (যেমন Docker) প্রতিটি app-কে তার library সহ আলাদা 'namespace'-এ isolate করে — কোনো Guest OS নেই।",
+          "কেন container হালকা ও দ্রুত: OS নকল করতে হয় না, তাই আকার MBs, চালু হতে সেকেন্ড, এক box-এ VM-এর চেয়ে অনেক বেশি ধরে — hardware সবচেয়ে কম নষ্ট।",
+          "Isolation-এর তফাত: container-রা একই kernel share করে, তাই kernel-level নিরাপত্তা VM-এর মতো শক্ত নয় — কড়া isolation/compliance দরকার হলে VM এগিয়ে।",
+          "পরামর্শ: কম নষ্ট আর দ্রুত deploy চাইলে stateless app-গুলো (portal, report tool, test copy) container-এ; আলাদা OS বা কড়া নিরাপত্তা-সীমানা লাগলে (core DB, third-party) VM-এ — বাস্তবে VM-এর ভেতরে container চালানো খুব প্রচলিত।",
+          "সংক্ষেপে: VM = আলাদা বাড়ি (নিজের সব কিছু); container = এক বাড়ির আলাদা ঘর (দেয়াল ভাগাভাগি, কিন্তু নিজের জিনিস আলাদা)।"
+        ],
+        "diagram": "     VIRTUAL MACHINE (VM)          CONTAINER\n     ─ ভারী, কড়া isolation ─       ─ হালকা, ঘন, দ্রুত ─\n\n   ┌────┐┌────┐┌────┐            ┌────┐┌────┐┌────┐\n   │App │││App │││App │          │App │││App │││App │\n   ├────┤│├────┤│├────┤          ├────┤│├────┤│├────┤\n   │Bins│││Bins│││Bins│          │Bins│││Bins│││Bins│\n   │/Lib│││/Lib│││/Lib│          │/Lib│││/Lib│││/Lib│\n   ├────┤│├────┤│├────┤          └──┬─┘└──┬─┘└──┬─┘\n   │Guest││Guest││Guest│ ← প্রতিটি   └─────┼─────┘\n   │ OS  ││ OS  ││ OS  │   আলাদা         ▼\n   └──┬─┘└──┬─┘└──┬─┘   পূর্ণ OS   ╔═════════════╗\n      └─────┼─────┘  (ভারী!)      ║ Container   ║\n            ▼                     ║ Engine(Docker)║\n     ╔═════════════╗              ╚══════╤══════╝\n     ║  HYPERVISOR ║ ← hardware   ┌──────┴──────┐\n     ╚══════╤══════╝   ভাগ করে    │  Host OS    │ ← একটাই\n     ┌──────┴──────┐              │  (shared    │   kernel\n     │  Host OS    │              │   KERNEL)   │   সবাই share\n     ├─────────────┤              ├─────────────┤\n     │  Hardware   │              │  Hardware   │\n     └─────────────┘              └─────────────┘\n\n  At-a-glance ▸ আকার: VM=GBs, Container=MBs\n              ▸ চালু: VM=মিনিট, Container=সেকেন্ড\n              ▸ Isolation: VM > Container",
+        "table": {
+          "headers": [
+            "দিক",
+            "Virtual Machine (VM)",
+            "Container"
+          ],
+          "rows": [
+            [
+              "OS",
+              "প্রতিটির নিজস্ব পূর্ণ Guest OS",
+              "Host OS-এর kernel share করে"
+            ],
+            [
+              "আকার / boot",
+              "GBs, মিনিটে boot",
+              "MBs, সেকেন্ডে start"
+            ],
+            [
+              "Isolation",
+              "সবচেয়ে শক্ত (আলাদা kernel)",
+              "কম শক্ত (একই kernel)"
+            ],
+            [
+              "ঘনত্ব / খরচ",
+              "এক box-এ কম, hardware বেশি নষ্ট",
+              "এক box-এ অনেক বেশি, সাশ্রয়ী"
+            ],
+            [
+              "উপযুক্ত",
+              "কড়া নিরাপত্তা, আলাদা OS দরকার",
+              "দ্রুত deploy, stateless microservice"
+            ]
+          ]
+        },
+        "mnemonic": "VM = আলাদা বাড়ি; Container = এক বাড়ির আলাদা ঘর।"
+      }
+    },
+    {
+      "id": "srv_ex_004",
+      "q": "A core banking service (fund-transfer API) must stay online 24/7. Management asks: if the primary server suddenly dies at 2 AM, what guarantees the service keeps running with almost no interruption? Explain high availability, active-passive failover, heartbeat, and the virtual IP.",
+      "tags": [
+        "high-availability",
+        "failover",
+        "active-passive",
+        "heartbeat",
+        "vip"
+      ],
+      "answer": {
+        "summary": [
+          "High Availability (HA) মানে এমনভাবে সাজানো যাতে একটা component মরলেও সেবা প্রায় বিরতিহীন চলতে থাকে — লক্ষ্য কম downtime (99.99%+ uptime)।",
+          "সাধারণ কৌশল active-passive failover: একটা active server সেবা দেয়, একটা standby তৈরি হয়ে অপেক্ষা করে; active মরলে standby তৎক্ষণাৎ দায়িত্ব নেয়।"
+        ],
+        "points": [
+          "Single point of failure দূর করা: একটাই server থাকলে সেটা মরলেই সেবা বন্ধ; HA-তে অন্তত দুটো server জোড়ায় রাখা হয় যাতে একটার fail মানে সেবার fail না হয়।",
+          "Active-passive: active node সব request handle করে; passive/standby node একই config নিয়ে idle বসে থাকে, শুধু active-এর অবস্থা পাহারা দেয়।",
+          "Heartbeat: দুই node-এর মধ্যে একটা নিয়মিত 'আমি বেঁচে আছি' signal চলে; standby যদি পরপর কয়েকটা heartbeat না পায়, ধরে নেয় active মরেছে — এটাই failover-এর trigger।",
+          "Virtual IP (VIP): client কখনো আসল server-এর IP জানে না, তারা একটা floating VIP-তে কথা বলে; failover হলে VIP standby-তে সরে যায়, তাই client-এর দিক থেকে কিছু বদলায় না।",
+          "Shared/replicated data: standby-র কাছে একই data থাকতে হয় (shared storage বা replication) নইলে দায়িত্ব নিলেও লেনদেন হারাবে — HA-তে data sync অপরিহার্য।",
+          "Split-brain সাবধানতা: heartbeat link ছিঁড়ে গেলে দুই node-ই নিজেকে active ভেবে data নষ্ট করতে পারে; তাই fencing/quorum দিয়ে একসাথে একজনই VIP ধরে তা নিশ্চিত করা হয়।",
+          "সংক্ষেপে: heartbeat পাহারা দেয়, VIP ঠিকানা ধরে রাখে, standby দায়িত্ব নেয় — ব্যবহারকারী টেরই পায় না server বদলেছে।"
+        ],
+        "diagram": "        Clients → এক ঠিকানাতেই কথা বলে (VIP)\n                     │\n                Virtual IP (VIP)\n                10.0.0.100  ◄── failover-এ এই IP\n                     │           standby-তে সরে যায়\n           ┌─────────┴─────────┐\n           ▼                   ▼\n   ┌───────────────┐   ┌───────────────┐\n   │  ACTIVE node  │   │ PASSIVE node  │\n   │  (primary)    │   │  (standby)    │\n   │  ● সেবা দিচ্ছে │   │  ○ প্রস্তুত,   │\n   │  VIP ধরে আছে  │   │    অপেক্ষমাণ   │\n   └───────┬───────┘   └───────┬───────┘\n           │  ♥ heartbeat ♥    │\n           └──────◄──────►─────┘ ← 'আমি বেঁচে আছি'\n              (নিয়মিত signal)     প্রতি সেকেন্ডে\n           ┌───────────────────────┐\n           │  Shared / Replicated  │ ← দুজনেরই একই data,\n           │       Storage         │   নইলে failover-এ ক্ষতি\n           └───────────────────────┘\n\n   ✗ ২টা AM-এ ACTIVE মরল?\n     standby heartbeat পায় না → VIP নিজে ধরে নেয়\n     → সেকেন্ডেই সেবা চালু, client টেরই পায় না\n\n  At-a-glance ▸ heartbeat=পাহারা  VIP=ভাসমান ঠিকানা  standby=উত্তরসূরি",
+        "table": {
+          "headers": [
+            "উপাদান",
+            "কাজ",
+            "না থাকলে বিপদ"
+          ],
+          "rows": [
+            [
+              "Heartbeat",
+              "active বেঁচে আছে কিনা পাহারা",
+              "মৃত্যু টের পাওয়া যায় না"
+            ],
+            [
+              "Virtual IP (VIP)",
+              "client-এর জন্য একটাই স্থির ঠিকানা",
+              "failover-এ client reconnect লাগে"
+            ],
+            [
+              "Standby node",
+              "active মরলে দায়িত্ব নেয়",
+              "single point of failure থেকে যায়"
+            ],
+            [
+              "Replicated storage",
+              "দুই node-এ একই data",
+              "failover-এ লেনদেন হারায়"
+            ]
+          ]
+        },
+        "mnemonic": "Heartbeat পাহারা দেয়, VIP ঠিকানা ধরে, standby গদিতে বসে।"
+      }
+    },
+    {
+      "id": "srv_ex_005",
+      "q": "A bank is setting up a new branch office and the network engineer must provision core infrastructure services: hosting the branch intranet page, resolving domain names, sending/receiving official email, and central document sharing. Explain the roles of the web server, DNS server, mail server, and file server in this setup.",
+      "tags": [
+        "web-server",
+        "dns-server",
+        "mail-server",
+        "file-server",
+        "server-roles"
+      ],
+      "answer": {
+        "summary": [
+          "একেকটা server type একেকটা নির্দিষ্ট কাজের বিশেষজ্ঞ — সব কাজ এক box-এ না চাপিয়ে ভূমিকা অনুযায়ী আলাদা করাই ভালো নকশা।",
+          "শাখার চার মূল সেবা: web server (পেজ পরিবেশন), DNS server (নাম→IP অনুবাদ), mail server (ইমেইল আদান-প্রদান), file server (কেন্দ্রীয় ফাইল ভাগাভাগি)।"
+        ],
+        "points": [
+          "Web server: HTTP/HTTPS request পেলে intranet page বা internet-banking UI ফেরত দেয় (যেমন Apache, Nginx, IIS) — ব্যবহারকারীর browser আর application-এর মাঝের দরজা।",
+          "DNS server: মানুষ নাম মনে রাখে, মেশিন IP বোঝে; DNS 'branch.bank.com'-কে IP-তে অনুবাদ করে — এটা না থাকলে কেউ নাম দিয়ে কোনো সেবা খুঁজে পাবে না।",
+          "Mail server: SMTP দিয়ে মেইল পাঠায়, POP3/IMAP দিয়ে গ্রহণ করে ও mailbox জমা রাখে — শাখার official যোগাযোগ, spam/virus filter ও archive এখানেই।",
+          "File server: কেন্দ্রীয়ভাবে document/share রাখে, permission ও version নিয়ন্ত্রণ করে (SMB/NFS) — সবাই এক জায়গা থেকে ফাইল পায়, backup সহজ হয়।",
+          "কেন আলাদা রাখা: এক server crash/hack হলে বাকি সেবা চলতে থাকে, প্রতিটির load ও নিরাপত্তা আলাদা tune করা যায়, স্কেল করাও সহজ।",
+          "নির্ভরতা: এদের অনেকেই DNS-এর উপর নির্ভর করে (mail-এর MX record, web-এর A record) — তাই DNS শাখার নীরব কিন্তু সবচেয়ে গুরুত্বপূর্ণ ভিত্তি।",
+          "সংক্ষেপে: web দেখায়, DNS পথ দেখায়, mail বার্তা বয়, file ভাঁড়ার রাখে — চারজন মিলে শাখার infrastructure।"
+        ],
+        "diagram": "                Branch User (browser / mail client)\n                              │\n                              ▼\n                    ┌───────────────────┐\n                    │   DNS SERVER      │ ← 'নাম → IP' অনুবাদক\n                    │  branch.bank.com  │   সবার আগে এখানে জিজ্ঞাসা\n                    │      → 10.0.0.x    │   (A / MX record)\n                    └─────────┬─────────┘\n         ┌───────────────┬────┴──────┬───────────────┐\n         ▼               ▼           ▼               ▼\n  ┌────────────┐  ┌────────────┐ ┌────────────┐ ┌────────────┐\n  │ WEB SERVER │  │ MAIL SERVER│ │FILE SERVER │ │  (আরও...)  │\n  │ Apache/    │  │ SMTP পাঠায় │ │ SMB / NFS  │ │            │\n  │ Nginx/IIS  │  │ IMAP/POP3  │ │ কেন্দ্রীয়   │ │            │\n  │ page দেয়   │  │ গ্রহণ করে   │ │ ফাইল+       │ │            │\n  │ (HTTP/S)   │  │ mailbox    │ │ permission │ │            │\n  └────────────┘  └────────────┘ └────────────┘ └────────────┘\n\n  At-a-glance strip ▸\n    WEB  = পেজ পরিবেশন (HTTP/HTTPS)\n    DNS  = নাম → IP অনুবাদ (সবার ভিত্তি)\n    MAIL = ইমেইল পাঠানো/গ্রহণ (SMTP/IMAP/POP3)\n    FILE = কেন্দ্রীয় document ভাগাভাগি (SMB/NFS)",
+        "table": {
+          "headers": [
+            "Server",
+            "মূল কাজ",
+            "Protocol",
+            "উদাহরণ"
+          ],
+          "rows": [
+            [
+              "Web",
+              "পেজ/UI পরিবেশন",
+              "HTTP, HTTPS",
+              "Apache, Nginx, IIS"
+            ],
+            [
+              "DNS",
+              "নাম → IP অনুবাদ",
+              "DNS (UDP/TCP 53)",
+              "BIND, Windows DNS"
+            ],
+            [
+              "Mail",
+              "ইমেইল আদান-প্রদান",
+              "SMTP, IMAP, POP3",
+              "Postfix, Exchange"
+            ],
+            [
+              "File",
+              "কেন্দ্রীয় ফাইল share",
+              "SMB, NFS, FTP",
+              "Samba, Windows File Server"
+            ]
+          ]
+        },
+        "mnemonic": "Web দেখায়, DNS পথ দেখায়, Mail বার্তা বয়, File ভাঁড়ার রাখে।"
+      }
+    },
+    {
+      "id": "srv_ex_006",
+      "q": "Bangladesh Bank runs its core banking system (CBS) from a primary data centre in Dhaka. A fire or flood could destroy that building. Management wants the bank to be able to resume core banking operations from a second site with minimal data loss. Explain what a Disaster Recovery (DR) site is, how data replication works (synchronous vs asynchronous), and what RPO and RTO mean in this plan.",
+      "tags": [
+        "disaster-recovery",
+        "dr-site",
+        "replication",
+        "rpo-rto",
+        "core-banking"
+      ],
+      "answer": {
+        "summary": [
+          "DR site হলো primary data centre ধ্বংস হলে ব্যবসা চালু রাখার জন্য দূরে বসানো দ্বিতীয় data centre, যেখানে data আগে থেকেই replicate করা থাকে।",
+          "RPO = কতটুকু data হারানো সহনীয় (সময়ে মাপা), RTO = কত দ্রুত সেবা আবার চালু করতে হবে — এই দুটোই DR নকশার মূল লক্ষ্য।"
+        ],
+        "points": [
+          "DR site কী: primary DC থেকে ভৌগোলিকভাবে দূরে (আলাদা flood zone/grid) আরেকটি সাইট, যেখানে server, storage ও CBS-এর copy প্রস্তুত থাকে — একই দুর্যোগ যেন দুটোকে একসাথে না ডোবায়।",
+          "Replication কেন: primary-তে লেখা প্রতিটি transaction যেন DR-তেও পৌঁছায়, তাই ধারাবাহিকভাবে data নকল (replicate) করা হয়; না হলে switch করার সময় account ব্যালেন্স পুরনো থাকবে।",
+          "Synchronous replication: transaction primary ও DR — দুই জায়গায় লেখা নিশ্চিত হলে তবেই commit; ফলে RPO প্রায় শূন্য (data loss নেই), কিন্তু দূরত্ব বাড়লে latency-তে CBS ধীর হয়।",
+          "Asynchronous replication: primary-তে commit হয়ে যায়, DR-তে data একটু পরে যায়; CBS দ্রুত থাকে ও দূরত্ব চলে, কিন্তু হঠাৎ ধ্বংসে শেষ কয়েক সেকেন্ড/মিনিটের transaction হারাতে পারে (RPO > 0)।",
+          "RPO (Recovery Point Objective): সর্বোচ্চ কতটুকু সময়ের data হারানো মেনে নেওয়া যাবে — bank-এ প্রায় শূন্য চাওয়া হয়, তাই সাধারণত sync বা কাছাকাছি সাইটে async।",
+          "RTO (Recovery Time Objective): দুর্যোগের পর কত সময়ের মধ্যে DR থেকে সেবা আবার online করতে হবে — এই সীমা ঠিক করে DR hot/warm/cold হবে কিনা।",
+          "সংক্ষেপে: RPO ঠিক করে কেমন replication দরকার, RTO ঠিক করে DR কতটা তৈরি থাকবে — নিয়মিত DR drill না করলে খাতায় থাকা plan বাস্তবে fail করে।"
+        ],
+        "diagram": "        DHAKA — PRIMARY DATA CENTRE            দূর শহর — DR DATA CENTRE\n        (live CBS, সব লেনদেন এখানে)              (standby copy, দুর্যোগে চালু)\n     ┌───────────────────────────┐          ┌───────────────────────────┐\n     │  ┌─────────┐  ┌─────────┐  │          │  ┌─────────┐  ┌─────────┐  │\n     │  │ CBS APP │  │  CBS DB │  │          │  │ CBS APP │  │  CBS DB │  │\n     │  │ servers │  │ storage │  │          │  │ (standby│  │ (replica│  │\n     │  └─────────┘  └────┬────┘  │          │  └─────────┘  └────▲────┘  │\n     └────────────────────┼───────┘          └───────────────────┼───────┘\n                          │        REPLICATION LINK               │\n                          │  ═══════════════════════════════▶     │\n                          └───────── (dedicated fibre / MPLS) ─────┘\n                             ↑ প্রতিটি transaction DR-তে নকল হয়\n\n   আগুন/বন্যায় Primary গেলে ▸  DNS/VIP DR-এ ঘুরিয়ে দেওয়া হয়, শাখা DR থেকে সেবা পায়\n\n   At-a-glance strip ▸\n     DR SITE = দূরের ২য় DC, আগে থেকেই data copy রাখা\n     SYNC    = দুই সাইটে লেখা নিশ্চিত → RPO≈0, কিন্তু ধীর/কম দূরত্ব\n     ASYNC   = primary commit আগে → দ্রুত/বেশি দূরত্ব, কিছু data loss ঝুঁকি\n     RPO     = কতটুকু data হারানো সহনীয় (সময়)\n     RTO     = কত দ্রুত সেবা ফিরবে (সময়)",
+        "table": {
+          "headers": [
+            "দিক",
+            "Synchronous replication",
+            "Asynchronous replication"
+          ],
+          "rows": [
+            [
+              "Commit নিয়ম",
+              "primary+DR দুই জায়গায় লেখা হলে তবেই",
+              "primary-তে লেখা হলেই, DR পরে"
+            ],
+            [
+              "Data loss (RPO)",
+              "প্রায় শূন্য",
+              "শেষ কয়েক sec/min হারাতে পারে"
+            ],
+            [
+              "দূরত্ব",
+              "কম (latency সীমিত রাখে)",
+              "বেশি দূরত্ব সম্ভব"
+            ],
+            [
+              "CBS গতি",
+              "latency-তে ধীর হতে পারে",
+              "দ্রুত, primary অপেক্ষা করে না"
+            ],
+            [
+              "উপযোগ",
+              "শূন্য-loss critical DB",
+              "দূরের DR, কিছুটা loss গ্রহণযোগ্য"
+            ]
+          ]
+        },
+        "mnemonic": "RPO বলে কত data হারাবে, RTO বলে কত দ্রুত ফিরবে; Sync loss শূন্য কিন্তু কাছে, Async দূরে কিন্তু একটু হারায়।"
+      }
+    },
+    {
+      "id": "srv_ex_007",
+      "q": "Ransomware infects Bangladesh Bank's production database server and encrypts the live data. The bank must restore clean, uninfected data quickly. As the infrastructure officer, explain the 3-2-1 backup rule, the difference between full and incremental backups, and why an offsite plus offline (air-gapped) copy is critical against ransomware.",
+      "tags": [
+        "backup",
+        "3-2-1-rule",
+        "ransomware",
+        "full-incremental",
+        "offsite-offline"
+      ],
+      "answer": {
+        "summary": [
+          "3-2-1 rule: অন্তত ৩ কপি data, ২ ধরনের media-তে, ১ কপি offsite — এক জায়গার বিপর্যয়ে সব যেন না যায়।",
+          "Ransomware online সব কপিকে encrypt করতে পারে, তাই একটি offline/air-gapped (immutable) কপিই আসল রক্ষাকবচ — সেখান থেকেই পরিষ্কার data restore হয়।"
+        ],
+        "points": [
+          "3 copies: মূল production data + অন্তত ২টি backup — একটিমাত্র কপি মানে single point of failure, corrupt হলে আর ফেরানোর উপায় নেই।",
+          "2 media: দুই ভিন্ন ধরনের storage-এ রাখা (যেমন disk + tape, বা local disk + cloud) — এক প্রকার media একসাথে নষ্ট/আক্রান্ত হলেও অন্যটি বাঁচে।",
+          "1 offsite: অন্তত এক কপি ভিন্ন ভৌগোলিক সাইটে (DR/cloud) — আগুন, বন্যা বা চুরিতে পুরো ভবন গেলেও দূরের কপি অক্ষত থাকে।",
+          "Full backup: প্রতিবার পুরো data-এর সম্পূর্ণ copy — restore দ্রুত ও সহজ (একটাই set লাগে), কিন্তু জায়গা ও সময় বেশি নেয়।",
+          "Incremental backup: শেষ backup-এর পর যা বদলেছে শুধু তাই নেয় — দ্রুত ও ছোট, কিন্তু restore করতে শেষ full + মাঝের সব incremental পরপর লাগে।",
+          "Ransomware দৃষ্টিকোণ: virus network-এ ছড়িয়ে online backup-ও encrypt করে দিতে পারে; তাই একটি offline/air-gapped বা immutable (write-once) কপি চাই যাতে malware হাত না দিতে পারে।",
+          "Restore অনুশীলন: শুধু backup নেওয়া যথেষ্ট নয় — নিয়মিত restore test ও backup-এর integrity যাচাই না করলে দরকারের সময় কপিও নষ্ট বেরোতে পারে।"
+        ],
+        "diagram": "        PRODUCTION DATA (live CBS DB — ransomware এখানে আঘাত হানে)\n                              │  প্রতিদিন backup\n                              ▼\n        ┌───────────────  3 - 2 - 1  RULE  ───────────────┐\n        │                                                 │\n   3 COPIES ▸  ● Copy-1 (production)                      │\n               ● Copy-2 (backup)                          │\n               ● Copy-3 (backup)                          │\n                                                          │\n   2 MEDIA  ▸  ┌──────────────┐      ┌──────────────┐     │\n               │ DISK / NAS   │      │ TAPE / CLOUD │     │\n               │ (দ্রুত restore)│      │ (ভিন্ন media) │     │\n               └──────────────┘      └──────────────┘     │\n                                                          │\n   1 OFFSITE▸  ┌───────────────────────────────────┐      │\n     +OFFLINE  │  দূরের সাইট / vault                 │      │\n               │  ▤ OFFLINE / AIR-GAP / IMMUTABLE   │ ◄─ ransomware\n               │  (network থেকে বিচ্ছিন্ন copy)      │     ছুঁতে পারে না\n               └───────────────────────────────────┘      │\n        └─────────────────────────────────────────────────┘\n              ↑ আক্রান্ত হলে এই পরিষ্কার copy থেকেই restore\n\n   At-a-glance strip ▸\n     3 = অন্তত তিন কপি data\n     2 = দুই ভিন্ন media\n     1 = এক কপি offsite (+ একটি offline/immutable)\n     FULL = পুরো copy, restore সহজ, জায়গা বেশি\n     INCREMENTAL = শুধু পরিবর্তন, ছোট/দ্রুত, restore-এ chain লাগে",
+        "table": {
+          "headers": [
+            "দিক",
+            "Full backup",
+            "Incremental backup"
+          ],
+          "rows": [
+            [
+              "কী নেয়",
+              "প্রতিবার পুরো data",
+              "শেষ backup-এর পর বদলানো অংশ"
+            ],
+            [
+              "Backup সময়/জায়গা",
+              "বেশি",
+              "কম (ছোট, দ্রুত)"
+            ],
+            [
+              "Restore জটিলতা",
+              "সহজ — একটি set",
+              "full + সব incremental chain লাগে"
+            ],
+            [
+              "Restore গতি",
+              "দ্রুত",
+              "ধীর (ধাপে ধাপে জোড়া)"
+            ],
+            [
+              "সাধারণ কৌশল",
+              "সপ্তাহে ১ বার full",
+              "প্রতিদিন incremental"
+            ]
+          ]
+        },
+        "mnemonic": "তিন কপি, দুই media, এক offsite — আর একটা offline copy রাখো, ransomware তাকে ছুঁতে পারে না।"
+      }
+    },
+    {
+      "id": "srv_ex_008",
+      "q": "Bangladesh Bank's Core Banking System (CBS) must keep serving transactions 24x7 even if one server node crashes, with NO manual switchover by an operator. The architecture team proposes server clustering. Explain what a server cluster is, the difference between active-active and active-passive nodes, and the roles of shared storage, heartbeat, and a virtual IP (VIP) in delivering high availability.",
+      "tags": [
+        "clustering",
+        "high-availability",
+        "active-active",
+        "heartbeat",
+        "virtual-ip"
+      ],
+      "answer": {
+        "summary": [
+          "Cluster হলো একাধিক server node-কে একসাথে জোড়া দিয়ে একটি logical সেবা বানানো, যেখানে এক node পড়ে গেলেও বাকিরা সেবা ধরে রাখে।",
+          "VIP-এর মাধ্যমে client একটাই ঠিকানা দেখে, heartbeat দিয়ে node-রা একে অপরকে পাহারা দেয়, আর shared storage-এ সবাই একই data দেখে — তাই switchover স্বয়ংক্রিয় ও মানুষবিহীন।"
+        ],
+        "points": [
+          "Cluster কী: দুই বা ততোধিক server node একই সেবা (CBS) চালায় ও cluster software দিয়ে সমন্বিত থাকে; বাইরে থেকে মনে হয় একটাই server, ভিতরে একাধিক — এতে single point of failure দূর হয়।",
+          "Active-Passive: এক node live, অন্যটি standby অপেক্ষায়; active পড়লে passive দায়িত্ব নেয় (failover)। সরল ও নিরাপদ, কিন্তু standby-এর সম্পদ স্বাভাবিক সময়ে অলস পড়ে থাকে।",
+          "Active-Active: সব node একসাথে কাজ করে ও load ভাগ করে; একটি পড়লে বাকিরা তার অংশ টেনে নেয়। সম্পদের পূর্ণ ব্যবহার ও বেশি throughput, কিন্তু data সমন্বয় ও locking জটিল।",
+          "Shared storage: সব node একই disk/SAN-এ CBS database দেখে, তাই যে node-ই সেবা দিক client একই সর্বশেষ data পায় — আলাদা copy হলে failover-এর পর ব্যালেন্স ভুল হতো।",
+          "Heartbeat: node-রা নিয়মিত ছোট 'আমি বেঁচে আছি' সংকেত পাঠায়; heartbeat বন্ধ হলে cluster ধরে নেয় node মৃত এবং স্বয়ংক্রিয়ভাবে failover চালায় — অপারেটরের হাত লাগে না।",
+          "Virtual IP (VIP): client একটি ভাসমান IP-তে সংযোগ করে, প্রকৃত node নয়; node বদলালেও VIP জীবিত node-এ সরে যায়, তাই ব্যবহারকারী টেরই পায় না কোন node সেবা দিচ্ছে।",
+          "Split-brain সতর্কতা: heartbeat link কাটলে দুই node একসাথে নিজেকে active ভেবে data নষ্ট করতে পারে; তাই quorum/fencing দিয়ে নিশ্চিত করা হয় একসাথে একজনই মালিক।"
+        ],
+        "diagram": "                 শাখা / ATM / Internet-banking client\n                              │  সবাই একটাই ঠিকানা চেনে\n                              ▼\n                    ╔═══════════════════╗\n                    ║  VIRTUAL IP (VIP) ║ ← ভাসমান IP, জীবিত node-এ সরে\n                    ╚═════════╤═════════╝\n              ┌───────────────┴───────────────┐\n              ▼                               ▼\n     ┌──────────────────┐   heartbeat  ┌──────────────────┐\n     │   CBS NODE-1      │◄════════════►│   CBS NODE-2     │\n     │  ● ACTIVE        │  'বেঁচে আছি?' │  ◍ ACTIVE/standby │\n     │  transaction চালায়│  সংকেত        │  load নেয়/অপেক্ষা  │\n     └────────┬─────────┘              └─────────┬────────┘\n              │        দুই node একই data দেখে       │\n              └───────────────┬───────────────────┘\n                              ▼\n                    ┌───────────────────┐\n                    │  SHARED STORAGE   │ ← এক SAN/disk, একই CBS DB\n                    │  (SAN / disk)     │   failover-এও data অভিন্ন\n                    └───────────────────┘\n\n   NODE-1 crash ▸ heartbeat থামে → VIP NODE-2-তে সরে → সেবা চলতেই থাকে (auto, মানুষ ছাড়া)\n\n   At-a-glance strip ▸\n     CLUSTER  = অনেক node = এক logical সেবা\n     VIP      = client-এর একটাই ভাসমান ঠিকানা\n     HEARTBEAT= node পাহারা, মৃত হলে auto-failover\n     SHARED STORAGE = সবাই একই data দেখে\n     ACTIVE-ACTIVE = সবাই কাজ+load ভাগ | ACTIVE-PASSIVE = একটি live, একটি standby",
+        "table": {
+          "headers": [
+            "দিক",
+            "Active-Active",
+            "Active-Passive"
+          ],
+          "rows": [
+            [
+              "Node ভূমিকা",
+              "সব node একসাথে সেবা দেয়",
+              "একটি live, অন্যটি standby"
+            ],
+            [
+              "সম্পদ ব্যবহার",
+              "পূর্ণ (কেউ অলস নয়)",
+              "standby অলস পড়ে থাকে"
+            ],
+            [
+              "Throughput",
+              "বেশি (load ভাগ)",
+              "একটি node-এর সমান"
+            ],
+            [
+              "Failover প্রভাব",
+              "বাকিরা load টেনে নেয়",
+              "passive live হয়"
+            ],
+            [
+              "জটিলতা",
+              "বেশি (data sync/lock)",
+              "কম, সরল"
+            ]
+          ]
+        },
+        "mnemonic": "VIP-এ এক ঠিকানা, heartbeat-এ পাহারা, shared storage-এ এক data — node পড়লে cluster নিজেই সেবা ধরে রাখে।"
+      }
+    }
+  ]
+}

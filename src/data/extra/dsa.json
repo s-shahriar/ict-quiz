@@ -1,0 +1,200 @@
+{
+  "category": "dsa",
+  "questions": [
+    {
+      "id": "dsa_ex_001",
+      "q": "You are building a text editor. Users type, then press Ctrl+Z to UNDO the last change, and Ctrl+Y to REDO it. Which data structure powers this undo/redo history, and why does its ordering behavior fit the feature perfectly?",
+      "tags": [
+        "stack",
+        "undo",
+        "LIFO"
+      ],
+      "answer": {
+        "summary": [
+          "STACK ব্যবহার হয় — কারণ undo মানে সবার শেষে করা কাজটাই সবার আগে বাতিল হবে (LIFO)।",
+          "প্রতি action push হয়, Ctrl+Z সবার উপরের (top) action-টা pop করে redo stack-এ পাঠায়।"
+        ],
+        "points": [
+          "Stack হলো LIFO (Last In First Out) — যে জিনিস সবশেষে ঢুকেছে সেটাই সবার আগে বের হয়; undo-র চাহিদা ঠিক এটাই।",
+          "নতুন প্রতিটি edit undo stack-এর top-এ push হয়; তাই top সবসময় 'সর্বশেষ কাজ'-কে ধরে রাখে।",
+          "Ctrl+Z চাপলে top থেকে pop হয় — মাঝখান থেকে খোঁজার দরকার নেই, তাই push/pop দুটোই O(1), অর্থাৎ ঝটপট।",
+          "Pop করা action-টা redo stack-এ push হয়; Ctrl+Y চাপলে সেখান থেকে pop হয়ে আবার ফিরে আসে।",
+          "নতুন কোনো edit করলেই redo stack clear করা হয় — কারণ ইতিহাস শাখা বদলে গেছে, পুরনো redo আর অর্থবহ নয়।",
+          "top pointer ছাড়া কিছুই track করতে হয় না, তাই memory ও logic দুটোই সরল।"
+        ],
+        "diagram": "UNDO STACK  (LIFO — উপরেরটা = সর্বশেষ কাজ)\n\n  type \"A\" → type \"B\" → type \"C\"  (push, push, push)\n\n        ┌──────────┐\n  top → │  \"C\"     │ ← সর্বশেষ কাজ (আগে বাতিল হবে)\n        ├──────────┤\n        │  \"B\"     │\n        ├──────────┤\n        │  \"A\"     │ ← প্রথম কাজ (সবশেষে বাতিল)\n        └──────────┘\n           base\n\n  Ctrl+Z (UNDO): top থেকে POP\n        ┌──────────┐            ┌──────────┐\n  pop ← │  \"C\" ────┼──────────► │  \"C\"     │ ← REDO stack-এ\n        ├──────────┤   push     └──────────┘\n  top → │  \"B\"     │            redo top\n        ├──────────┤\n        │  \"A\"     │\n        └──────────┘\n\n  Ctrl+Y (REDO): redo top থেকে POP → আবার undo stack-এ push\n\n  push/pop = O(1)  │ কেবল top ছোঁয়া লাগে",
+        "mnemonic": "Undo মানে উল্টো — শেষে যা রাখলে, আগে তা তোলো (LIFO = stack)।"
+      }
+    },
+    {
+      "id": "dsa_ex_002",
+      "q": "A bank branch uses a token/print system: each customer takes a numbered token on arrival and is served strictly in the order they came. Which data structure models this waiting line, and how do its two ends handle arrival and service?",
+      "tags": [
+        "queue",
+        "FIFO",
+        "scheduling"
+      ],
+      "answer": {
+        "summary": [
+          "QUEUE ব্যবহার হয় — কারণ যে আগে এসেছে সে আগে সেবা পাবে (FIFO), ঠিক ন্যায্য লাইনের মতো।",
+          "নতুন customer rear-এ enqueue হয়, আর front থেকে dequeue করে সেবা দেওয়া হয়।"
+        ],
+        "points": [
+          "Queue হলো FIFO (First In First Out) — প্রথমে ঢোকা টোকেনই প্রথমে বের হয়, তাই আসার ক্রম হুবহু রক্ষা হয়।",
+          "দুটি প্রান্ত: rear (পিছন) দিয়ে নতুন token ঢোকে, front (সামনে) দিয়ে সেবা নিয়ে বের হয়।",
+          "enqueue শুধু rear ছোঁয়, dequeue শুধু front ছোঁয় — দুটোই O(1), তাই ব্যস্ত ব্রাঞ্চেও দ্রুত।",
+          "কেউ লাইন ভাঙতে বা মাঝখান থেকে ঢুকতে পারে না, তাই ব্যবস্থা ন্যায্য (fairness) থাকে।",
+          "Stack-এর উল্টো: stack একই প্রান্ত ব্যবহার করে (LIFO), queue দুই প্রান্ত ব্যবহার করে (FIFO)।",
+          "বাস্তবে circular queue বা ring buffer ব্যবহার করে ফাঁকা জায়গা পুনর্ব্যবহার করা হয়, memory অপচয় কমে।"
+        ],
+        "diagram": "QUEUE  (FIFO — সামনেরটা আগে সেবা পায়)\n\n  Enqueue এখানে →                    ← Dequeue এখানে\n  (rear/পিছন)                          (front/সামনে)\n\n        rear                               front\n         │                                   │\n         ▼                                   ▼\n     ┌──────┬──────┬──────┬──────┬──────┬──────┐\n ... │ T-08 │ T-07 │ T-06 │ T-05 │ T-04 │ T-03 │ →  served\n     └──────┴──────┴──────┴──────┴──────┴──────┘\n        নতুন                              সবচেয়ে\n       এসেছে                              পুরনো\n\n  ধাপ ১  ENQUEUE T-09 :  rear ডানে সরে, T-09 বসে\n  ধাপ ২  DEQUEUE      :  front থেকে T-03 বের হয়ে counter-এ যায়\n         ┌──────┐\n         │ T-03 │ → \"Token 03, Counter 2\"\n         └──────┘\n\n  enqueue/dequeue = O(1)  │ front ও rear আলাদা প্রান্ত",
+        "mnemonic": "লাইনে দাঁড়ানো — আগে এলে আগে পাবে (FIFO = queue), পিছনে ঢোকো সামনে বের হও।"
+      }
+    },
+    {
+      "id": "dsa_ex_003",
+      "q": "A core banking app must look up a single account by its account number among millions of records, and it has to feel instant on every keystroke. Which data structure gives near-constant-time lookup, how does it map a key to a slot, and what happens when two keys land on the same slot?",
+      "tags": [
+        "hash-table",
+        "hashing",
+        "collision"
+      ],
+      "answer": {
+        "summary": [
+          "HASH TABLE ব্যবহার হয় — account number-কে hash function দিয়ে সরাসরি একটা bucket index-এ রূপান্তর করা হয়।",
+          "গড়ে O(1) lookup: index হিসাব করে সোজা সেই bucket-এ যাওয়া যায়, লক্ষ record ঘাঁটতে হয় না।"
+        ],
+        "points": [
+          "Hash function key-কে (যেমন account number) একটা সংখ্যায় নেয়, তারপর table size দিয়ে mod করে bucket index পায়।",
+          "Index জানা মাত্রই সরাসরি সেই ঘরে যাওয়া যায় — এজন্য গড় lookup O(1), millions record-এও তাৎক্ষণিক লাগে।",
+          "দুটি ভিন্ন key একই index পেলে তাকে collision বলে; এটা অনিবার্য কারণ key অসীম কিন্তু bucket সীমিত।",
+          "Chaining: প্রতি bucket-এ একটা ছোট linked list রাখা হয়, একই index-এর সব key সেখানে ঝোলে।",
+          "Open addressing: collision হলে পরের ফাঁকা slot খোঁজা হয় (linear/quadratic probing)।",
+          "load factor (n/buckets) বেড়ে গেলে collision বাড়ে ও গতি O(n)-এর দিকে নামে; তাই table বড় করে (rehash) load কম রাখা হয়।",
+          "ভালো hash function key-গুলোকে সমানভাবে ছড়ায়, তাই কোনো এক bucket-এ ভিড় জমে না।"
+        ],
+        "diagram": "HASH TABLE  (key → hash → bucket)\n\n  key: acc# 100237\n        │\n        ▼   hash(key) = 100237 mod 8 = 5\n   ┌─────────┐\n   │ hash fn │  ← সংখ্যায় নেয়, mod size করে index দেয়\n   └────┬────┘\n        │ index = 5\n        ▼\n  buckets[0..7]\n   0 │ ─\n   1 │ ─\n   2 │ ● acc#100010\n   3 │ ─\n   4 │ ─\n   5 │ ● acc#100237  ────────► পাওয়া গেল (সরাসরি)\n   6 │ ─\n   7 │ ●─┐  COLLISION → chaining\n     │   ▼\n     │ ┌───────────┐   ┌───────────┐\n     │ │acc#100047 │──►│acc#100119 │  (একই bucket-এ list)\n     │ └───────────┘   └───────────┘\n\n  গড়: O(1)   │  খারাপ ক্ষেত্রে (সব collide): O(n)",
+        "mnemonic": "Key-কে hash করো, সোজা bucket-এ বসো — একই ঘরে দুজন হলে chain-এ ঝোলো।"
+      }
+    },
+    {
+      "id": "dsa_ex_004",
+      "q": "A reporting screen searches a ledger of transactions that is already sorted by transaction ID. One developer loops through every row until a match; another jumps to the middle and discards half each time. Which approach is right for a SORTED list, and how much faster is it?",
+      "tags": [
+        "binary-search",
+        "linear-search",
+        "complexity"
+      ],
+      "answer": {
+        "summary": [
+          "Sorted ledger-এ BINARY SEARCH সঠিক — প্রতি ধাপে অর্ধেক বাদ দিয়ে O(log n)-এ পৌঁছায়।",
+          "Linear search প্রতিটা row দেখে O(n), তাই বড় ledger-এ অনেক ধীর ও অপচয়।"
+        ],
+        "points": [
+          "Linear search শুরু থেকে এক এক করে মেলায়; sorted কিনা তাতে কিছু যায় আসে না, worst case-এ পুরো n বার ঘোরে।",
+          "Binary search প্রথমে মাঝের element দেখে target-এর সাথে তুলনা করে; ছোট হলে বাম অর্ধেক, বড় হলে ডান অর্ধেক নেয়।",
+          "প্রতি তুলনায় বাকি অর্ধেক একবারে বাদ পড়ে, তাই n থেকে n/2 → n/4 → 1; মোট ধাপ ≈ log₂ n।",
+          "১০ লক্ষ row-তে linear সর্বোচ্চ ১০,০০,০০০ তুলনা; binary মাত্র ≈ ২০ তুলনা — এটাই বিশাল পার্থক্য।",
+          "শর্ত: binary search-এর জন্য data অবশ্যই sorted হতে হবে; unsorted হলে আগে sort লাগে (O(n log n))।",
+          "ledger যদি এলোমেলো ও ছোট হয়, বা একবারই খুঁজবেন, তখন sort করার খরচ পোষায় না — তখন linear-ই যথেষ্ট।"
+        ],
+        "diagram": "BINARY SEARCH  (sorted ledger, target = 42)\n\n  index:  0   1   2   3   4   5   6\n  value: 11  19  27  35  42  58  73\n          │           │           │\n         low         mid         high\n\n  ধাপ ১: mid=35  → 42 > 35  → বাম অর্ধেক বাদ, ডানে যাও\n                          ┌──────────────┐\n  value: .. .. .. .. │ 42  58  73 │\n                     low  mid high\n  ধাপ ২: mid=58  → 42 < 58  → ডান বাদ, বামে যাও\n                     ┌────┐\n  value:            │ 42 │  ← low=mid=high → পাওয়া গেল\n                     └────┘\n\n  প্রতি ধাপে অর্ধেক বাদ:  n → n/2 → n/4 → ... → 1\n\n  LINEAR:  ● → ● → ● → ● → ● (এক এক করে, সবটা)",
+        "table": {
+          "headers": [
+            "দিক",
+            "Linear Search",
+            "Binary Search"
+          ],
+          "rows": [
+            [
+              "Data শর্ত",
+              "sorted/unsorted যেকোনো",
+              "অবশ্যই sorted"
+            ],
+            [
+              "কৌশল",
+              "শুরু থেকে এক এক করে",
+              "মাঝ থেকে অর্ধেক বাদ"
+            ],
+            [
+              "Best case",
+              "O(1)",
+              "O(1)"
+            ],
+            [
+              "Worst/Average",
+              "O(n)",
+              "O(log n)"
+            ],
+            [
+              "১০ লক্ষ row-তে",
+              "≈ ১০,০০,০০০ তুলনা",
+              "≈ ২০ তুলনা"
+            ]
+          ]
+        },
+        "mnemonic": "Sorted হলে মাঝ ধরো, অর্ধেক ফেলো (binary O(log n)); নয়তো এক এক করে খোঁজো (linear O(n))।"
+      }
+    },
+    {
+      "id": "dsa_ex_005",
+      "q": "The bank's software must (a) model the organization hierarchy — Head Office over regional offices over branches — and (b) find the shortest route to move data or cash between two branches connected by many links. Which structure fits the hierarchy, which fits the routing, and how do you traverse each?",
+      "tags": [
+        "tree",
+        "graph",
+        "traversal"
+      ],
+      "answer": {
+        "summary": [
+          "Hierarchy-র জন্য TREE — এক parent, স্পষ্ট উপর-নিচ, কোনো cycle নেই।",
+          "Branch-এর মধ্যে shortest path-এর জন্য GRAPH — অনেক-থেকে-অনেক সংযোগ, cycle থাকতে পারে; BFS/Dijkstra দিয়ে পথ খোঁজা হয়।"
+        ],
+        "points": [
+          "Tree হলো graph-এরই বিশেষ রূপ: connected, cycle নেই, n node হলে ঠিক n-1 edge, আর প্রতিটি node-এর একটাই parent।",
+          "Org hierarchy tree-তে মানায় — Head Office root, নিচে region, তারও নিচে branch; সম্পর্ক একমুখী ও স্তরভিত্তিক।",
+          "Graph-এ node (branch) গুলো যেকোনোভাবে edge দিয়ে যুক্ত হতে পারে, একাধিক পথ ও cycle সম্ভব — তাই routing-এর জন্য উপযুক্ত।",
+          "Edge-এ weight (দূরত্ব/খরচ/latency) থাকলে shortest path বের হয় Dijkstra দিয়ে; weight না থাকলে (কম hop) BFS দিয়ে।",
+          "Tree traversal: BFS (level ধরে) অথবা DFS (এক শাখা গভীরে গিয়ে ফেরা) — org chart level-by-level দেখা BFS-এর কাজ।",
+          "Graph traversal-এ visited set রাখতে হয়, নইলে cycle-এ পড়ে অসীম লুপ হবে; tree-তে cycle নেই বলে এ ঝামেলা কম।",
+          "মূল কথা: শ্রেণিবিন্যাস (একটাই parent) = tree; জাল/নেটওয়ার্ক (বহু সংযোগ, পথ খোঁজা) = graph।"
+        ],
+        "diagram": "TREE — Org Hierarchy  (এক parent, cycle নেই)\n\n              ┌───────────────┐\n              │  Head Office  │ ← root\n              └───────┬───────┘\n              ┌───────┴────────┐\n         ┌────┴────┐      ┌────┴────┐\n         │ Dhaka   │      │ Ctg     │ ← region\n         │ Region  │      │ Region  │\n         └────┬────┘      └────┬────┘\n         ┌────┴───┐        ┌───┴────┐\n      ┌──┴──┐  ┌──┴──┐  ┌──┴──┐ ┌──┴──┐\n      │Br-A │  │Br-B │  │Br-C │ │Br-D │ ← leaf/branch\n      └─────┘  └─────┘  └─────┘ └─────┘\n   n node → n-1 edge │ traversal: BFS(level) / DFS(depth)\n\n────────────────────────────────────────\nGRAPH — Branch Network  (বহু পথ, cycle সম্ভব)\n\n        (A)─────4─────(B)\n         │  \\          │\n         2    5        3      ← edge weight = দূরত্ব/খরচ\n         │      \\      │\n        (C)─────1─────(D)\n\n  A→D shortest?  A-C-D = 2+1 = 3  ✓  (A-B-D = 7)\n  weight থাকলে Dijkstra │ hop গুনলে BFS │ visited set লাগে",
+        "table": {
+          "headers": [
+            "দিক",
+            "Tree",
+            "Graph"
+          ],
+          "rows": [
+            [
+              "সম্পর্ক",
+              "শ্রেণিবিন্যাস, এক parent",
+              "যেকোনো-থেকে-যেকোনো"
+            ],
+            [
+              "Cycle",
+              "নেই",
+              "থাকতে পারে"
+            ],
+            [
+              "Edge সংখ্যা",
+              "ঠিক n-1",
+              "যেকোনো (0 থেকে বেশি)"
+            ],
+            [
+              "উপযুক্ত কাজ",
+              "org chart, file system, DOM",
+              "map/route, social network"
+            ],
+            [
+              "Traversal",
+              "BFS / DFS (cycle-মুক্ত)",
+              "BFS / DFS / Dijkstra (visited লাগে)"
+            ]
+          ]
+        },
+        "mnemonic": "একটাই বস (parent) = tree; জালের মতো বহু সংযোগ ও পথ খোঁজা = graph।"
+      }
+    }
+  ]
+}

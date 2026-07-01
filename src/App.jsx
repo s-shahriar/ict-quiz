@@ -7,6 +7,7 @@ import { ImportantProvider } from './contexts/ImportantContext.jsx'
 import { MasteredProvider } from './contexts/MasteredContext.jsx'
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext.jsx'
 import { WrittenMasteredProvider } from './contexts/WrittenMasteredContext.jsx'
+import { ExtraMasteredProvider } from './contexts/ExtraMasteredContext.jsx'
 
 const ExamConfig = lazy(() => import('./components/ExamConfig.jsx'))
 const ExamMode = lazy(() => import('./components/ExamMode.jsx'))
@@ -21,6 +22,9 @@ const StudyMode = lazy(() => import('./components/StudyMode.jsx'))
 const WrittenImportantScreen = lazy(() => import('./components/WrittenImportantScreen.jsx'))
 const WrittenMode = lazy(() => import('./components/WrittenMode.jsx'))
 const WrittenNailedScreen = lazy(() => import('./components/WrittenNailedScreen.jsx'))
+const ExtraImportantScreen = lazy(() => import('./components/ExtraImportantScreen.jsx'))
+const ExtraMode = lazy(() => import('./components/ExtraMode.jsx'))
+const ExtraNailedScreen = lazy(() => import('./components/ExtraNailedScreen.jsx'))
 
 export default function App() {
   return (
@@ -28,7 +32,9 @@ export default function App() {
       <MasteredProvider>
         <ImportantProvider>
           <WrittenMasteredProvider>
-            <AppRoutes />
+            <ExtraMasteredProvider>
+              <AppRoutes />
+            </ExtraMasteredProvider>
           </WrittenMasteredProvider>
         </ImportantProvider>
       </MasteredProvider>
@@ -72,6 +78,9 @@ function AppRoutes() {
           <Route path="/written" element={<WrittenMode />} />
           <Route path="/written/nailed" element={<WrittenNailedScreen />} />
           <Route path="/written/important" element={<WrittenImportantScreen />} />
+          <Route path="/extra" element={<ExtraMode />} />
+          <Route path="/extra/nailed" element={<ExtraNailedScreen />} />
+          <Route path="/extra/important" element={<ExtraImportantScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

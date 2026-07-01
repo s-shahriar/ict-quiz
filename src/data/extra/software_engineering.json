@@ -1,0 +1,165 @@
+{
+  "category": "software_engineering",
+  "questions": [
+    {
+      "id": "se_ex_001",
+      "q": "A banking app sends a 6-digit OTP valid for 1 minute for transaction verification. (a) How would you test the OTP verification process? (b) What test cases would you write for valid, invalid, and expired OTPs? (c) How would you verify that it expires after 1 minute? (d) What security risks arise if OTP validation fails? (e) Why is OTP testing critical in online banking?",
+      "tags": ["testing", "otp", "security"],
+      "answer": {
+        "summary": [
+          "OTP verification হলো transaction-এর দ্বিতীয় স্তরের নিরাপত্তা, তাই এখানে valid / invalid / expired তিন অবস্থাই আলাদা করে test করতে হয়।",
+          "মূল ঝুঁকি: expiry ঠিকমতো কাজ না করা, brute-force আটকানো না থাকা — এতে টাকা চুরি হতে পারে।"
+        ],
+        "points": [
+          "OTP flow কে ভাগে ভাগে test করুন: generate → SMS-এ পৌঁছানো → user input → server-side validate → success/fail। প্রতিটি ধাপ আলাদা হওয়ায় বাগও আলাদা জায়গায় থাকে।",
+          "Valid case: সঠিক OTP, ১ মিনিটের ভেতর দিলে transaction পাস — এটাই happy path, বাকি সব এর ব্যতিক্রম।",
+          "Invalid case: ভুল OTP, খালি ঘর, ৫ সংখ্যা, অক্ষর/স্পেস — প্রতিটিতে reject হতে হবে এবং কতবার ভুল দেওয়া যায় (rate-limit/lockout) তা যাচাই করতে হবে, নইলে brute-force সম্ভব।",
+          "Expired case: ১ মিনিট পার হলে সঠিক OTP-ও reject হতে হবে। Server-এর ঘড়ি (server time) ধরে expiry মাপুন, client-এর ঘড়ি নয় — client time বদলে দিলে যেন ফাঁকি না দেওয়া যায়।",
+          "Expiry যাচাই: OTP নেওয়ার পর ৫৯ সেকেন্ডে দিন (পাস), ঠিক ৬০-৬১ সেকেন্ডে দিন (fail) — boundary-তেই বাগ ধরা পড়ে।",
+          "Validation fail-এর ঝুঁকি: একই OTP বারবার ব্যবহার (replay/OTP reuse), expiry উপেক্ষা, unlimited চেষ্টা (brute-force), OTP লগে/রেসপন্সে ফাঁস — যেকোনো একটিতেই account takeover হয়।",
+          "Online banking-এ OTP-ই শেষ প্রতিরক্ষা: password চুরি হলেও OTP আটকে দেয়, তাই এর একটি দুর্বলতা মানে সরাসরি টাকার ক্ষতি — এজন্য testing critical।"
+        ],
+        "diagram": "OTP জীবনচক্র ও validation (server-side)\n\n  [Server] ── generate ──> 6-digit OTP\n     │                     ● stored + timestamp T0\n     │  send SMS\n     ▼\n  ┌───────────────┐\n  │  📱 User phone │  ← OTP এখানে পৌঁছায়\n  └───────┬───────┘\n          │ user types OTP\n          ▼\n  ┌──────────────────────────────┐\n  │   Server-side validate        │\n  │  ┌──────────────────────────┐ │\n  │  │ match?  attempts<limit?  │ │  ← ভুল হলে attempt++ ও lockout\n  │  │ now - T0 <= 60s ?        │ │  ← expiry check (server clock)\n  │  └──────────────────────────┘ │\n  └───────┬──────────────┬────────┘\n       PASS            FAIL\n     transaction     reject + reason\n\n  Timeline:\n   T0 ───── 59s ───── 60s ───── 61s\n   ●        ✓VALID    ┃          ✗EXPIRED\n   জন্ম      পাস     সীমা         বাতিল\n\n  boundary: 59s=pass · 60s=সীমা · 61s=fail",
+        "table": {
+          "headers": ["Test case (input)", "শর্ত", "Expected result"],
+          "rows": [
+            ["সঠিক OTP, ৩০s-এ দেওয়া", "valid + সময়ের ভেতর", "Transaction success"],
+            ["সঠিক OTP, ৬১s-এ দেওয়া", "expired", "Reject — 'OTP expired'"],
+            ["ভুল OTP", "invalid", "Reject — attempt count বাড়বে"],
+            ["খালি / ৫ সংখ্যা / অক্ষর", "malformed input", "Reject — format error"],
+            ["একই OTP দ্বিতীয়বার", "reuse/replay", "Reject — one-time only"],
+            ["পরপর ৫ বার ভুল", "brute-force চেষ্টা", "Lockout / নতুন OTP লাগবে"]
+          ]
+        },
+        "mnemonic": "OTP-এর ৩ দশা: Valid নেবে, Invalid ঠেকাবে, Expired ফেলবে — আর সীমা মাপো ৬০ সেকেন্ডে।"
+      }
+    },
+    {
+      "id": "se_ex_002",
+      "q": "Your QA team must test a bank's login form. In one situation you have no access to the source code (only the running screen), in another you can read the code. Explain BLACK-BOX vs WHITE-BOX testing, when each is used, and give login-form examples of both.",
+      "tags": ["testing", "black-box", "white-box"],
+      "answer": {
+        "summary": [
+          "Black-box = ভেতরের কোড না দেখে শুধু input দিয়ে output যাচাই; White-box = কোডের ভেতরের প্রতিটি path/শর্ত ধরে যাচাই।",
+          "দুটো একে অপরের বিকল্প নয়, পরিপূরক — QA black-box করে, developer white-box করে।"
+        ],
+        "points": [
+          "Black-box: tester কোড জানে না, শুধু requirement অনুযায়ী input দিয়ে দেখে সঠিক output আসে কিনা — তাই এটি 'কী করছে' যাচাই করে, 'কীভাবে করছে' নয়।",
+          "White-box: tester কোড দেখে প্রতিটি branch, condition ও loop অন্তত একবার চালায় — লক্ষ্য code coverage, লুকানো path-এর বাগ ধরা।",
+          "Login form-এ black-box উদাহরণ: সঠিক user/pass → ঢুকবে; ভুল pass → error; খালি ঘর → validation message; ৫ বার ভুল → lockout। ভেতরে কোন if-else আছে জানার দরকার নেই।",
+          "Login form-এ white-box উদাহরণ: 'if(user==null)' শাখা চলল কিনা, password hashing ফাংশন call হলো কিনা, SQL query-তে parameterized binding হচ্ছে কিনা — কোড ধরে যাচাই।",
+          "Black-box দিয়ে ব্যবহারকারীর বাস্তব অভিজ্ঞতা ও requirement mismatch ধরা পড়ে; white-box দিয়ে dead code, ভুল শর্ত ও security hole (যেমন SQL injection path) ধরা পড়ে।",
+          "ব্যাংকে দুটোই দরকার: white-box ভেতরের নিরাপত্তা নিশ্চিত করে, black-box বাস্তব ব্যবহারে ঠিক আচরণ নিশ্চিত করে।"
+        ],
+        "diagram": "একই login form, দুই দৃষ্টিভঙ্গি\n\n  BLACK-BOX (বাইরে থেকে)          WHITE-BOX (ভেতর থেকে)\n  কোড দেখা যায় না                 কোড খোলা\n\n  ┌───────────────────┐          ┌───────────────────┐\n  │  Login            │          │ if(user==null)... │ ← branch\n  │  User: [_______]  │          │ if(!verify(pw))...│ ← condition\n  │  Pass: [_______]  │          │ for(try<5)...     │ ← loop\n  │       [ Login ]   │          │ hash(pw); bind(q) │ ← path\n  └─────────┬─────────┘          └─────────┬─────────┘\n     input →│                     tester    │ প্রতিটি\n            ▼ output              কোড ধরে →  ▼ path চালায়\n     ✓/✗ দেখে যাচাই              coverage মেপে যাচাই\n\n  QA/tester দেখে ⇧               developer দেখে ⇧\n  ─────────────────────────────────────────────\n  Black = কী করে · White = কীভাবে করে",
+        "table": {
+          "headers": ["দিক", "Black-box", "White-box"],
+          "rows": [
+            ["কোড দেখা", "লাগে না", "লাগে"],
+            ["ভিত্তি", "Requirement / input-output", "Internal logic / path"],
+            ["কে করে", "QA / tester", "Developer"],
+            ["ধরে", "Requirement mismatch, UX বাগ", "Dead code, ভুল শর্ত, security hole"],
+            ["পরিমাপ", "Pass/Fail", "Code coverage %"],
+            ["Login উদাহরণ", "ভুল pass → error দেখায় কিনা", "hash()/bind() call হয় কিনা"]
+          ]
+        },
+        "mnemonic": "Black বাক্স — বাইরে থেকে দেখি; White — ভেতরটা খোলা দেখি।"
+      }
+    },
+    {
+      "id": "se_ex_003",
+      "q": "A bank's project requirements keep changing throughout development — new rules from the regulator, features added mid-way. Which SDLC model fits better, Agile or Waterfall, and why? Compare both models.",
+      "tags": ["sdlc", "agile", "waterfall"],
+      "answer": {
+        "summary": [
+          "বারবার requirement বদলালে Agile উপযুক্ত — এটি ছোট iteration-এ কাজ করে, প্রতিবার পরিবর্তন গ্রহণ করতে পারে।",
+          "Waterfall আগে সব requirement fix ধরে নেয়, তাই মাঝপথে বদল এলে ব্যয়বহুল ও কঠিন হয়ে পড়ে।"
+        ],
+        "points": [
+          "Waterfall ধাপগুলো একমুখী ও ক্রমিক: requirement → design → build → test → deploy; আগের ধাপে ফিরতে হলে অনেক কাজ ভাঙে, তাই requirement স্থির হলে ভালো।",
+          "Agile কাজকে ছোট sprint-এ ভাঙে (২–৪ সপ্তাহ); প্রতি sprint শেষে চালু একটি অংশ পাওয়া যায় এবং পরের sprint-এ নতুন requirement নেওয়া যায়।",
+          "এই ব্যাংকে regulator নতুন নিয়ম দিচ্ছে, মাঝপথে feature যোগ হচ্ছে — Agile-এর feedback loop এই পরিবর্তন দ্রুত শোষণ করে, তাই এটিই উপযুক্ত।",
+          "Waterfall-এ পরীক্ষা শেষ ধাপে হয়, তাই বাগ দেরিতে ধরা পড়ে ও সংশোধন ব্যয়বহুল; Agile-এ প্রতি sprint-এ test হওয়ায় বাগ আগেই ধরা পড়ে।",
+          "Agile-এ stakeholder প্রতি sprint-এ চালু জিনিস দেখে মতামত দেয়, ফলে final product প্রকৃত চাহিদার কাছাকাছি থাকে — সরকার/regulator-নির্ভর প্রকল্পে গুরুত্বপূর্ণ।",
+          "তবে Agile-এ ভালো ডকুমেন্টেশন ও কড়া নিয়ন্ত্রণ লাগে; ব্যাংকিং-এ audit trail রাখতে হবে বলে Agile চললেও documentation শিথিল করা যাবে না।"
+        ],
+        "diagram": "Waterfall বনাম Agile\n\n  WATERFALL (একমুখী জলপ্রপাত)\n   ┌─────────────┐\n   │ Requirement │\n   └──┬──────────┘\n      ▼\n     ┌─────────┐\n     │ Design  │\n     └──┬──────┘\n        ▼\n       ┌────────┐\n       │ Build  │\n       └──┬─────┘\n          ▼\n         ┌───────┐\n         │ Test  │   ← বাগ এখানে দেরিতে ধরা পড়ে\n         └──┬────┘\n            ▼\n          ┌────────┐\n          │ Deploy │   requirement বদলালে ↑ ফিরতে ব্যয়বহুল\n          └────────┘\n\n  AGILE (ঘূর্ণায়মান sprint)\n        ┌────────────────────────────┐\n        ▼                            │\n   Plan → Build → Test → Review ─────┘\n     ▲ ২–৪ সপ্তাহ, প্রতিবার চালু অংশ\n     └── নতুন requirement এখানে ঢোকে\n\n  ─────────────────────────────────────\n  বদলপ্রবণ প্রকল্প: Agile ✓ · স্থির: Waterfall ✓",
+        "table": {
+          "headers": ["দিক", "Waterfall", "Agile"],
+          "rows": [
+            ["গঠন", "ক্রমিক, একমুখী", "Iterative, sprint-ভিত্তিক"],
+            ["Requirement বদল", "কঠিন ও ব্যয়বহুল", "সহজে গ্রহণ করে"],
+            ["ডেলিভারি", "একবারে শেষে", "প্রতি sprint-এ অংশ"],
+            ["Testing", "শেষ ধাপে", "প্রতি sprint-এ"],
+            ["Customer feedback", "শুরুতে ও শেষে", "নিয়মিত"],
+            ["উপযুক্ত যখন", "requirement স্থির", "requirement বদলপ্রবণ"]
+          ]
+        },
+        "mnemonic": "স্থির চাহিদা → Waterfall; বদলাতে থাকা চাহিদা → Agile।"
+      }
+    },
+    {
+      "id": "se_ex_004",
+      "q": "A bank customer states: 'the app must alert me within 3 seconds of a transaction and must never lose a transaction record.' Classify these into FUNCTIONAL vs NON-FUNCTIONAL requirements, and give more banking examples of each.",
+      "tags": ["requirements", "functional", "non-functional"],
+      "answer": {
+        "summary": [
+          "Functional requirement = system কী করবে (আচরণ/feature); Non-functional = সেটা কতটা ভালোভাবে করবে (গুণমান/সীমা)।",
+          "'transaction হলে alert পাঠানো' functional; 'within 3 seconds' ও 'never lose record' non-functional (performance ও reliability)।"
+        ],
+        "points": [
+          "Functional requirement নির্দিষ্ট আচরণ বলে: input দিলে system কী output দেবে। যেমন — transaction হলে notification পাঠানো, ব্যালেন্স দেখানো, fund transfer করা।",
+          "Non-functional requirement সেই আচরণের মান বা শর্ত বেঁধে দেয়: কত দ্রুত, কতটা নির্ভরযোগ্য, কতটা নিরাপদ। এটি feature নয়, feature-এর গুণ।",
+          "'within 3 seconds' একটি performance (speed) non-functional requirement — কাজটা হবেই, কিন্তু কত দ্রুত সেটা বলছে।",
+          "'never lose a transaction record' একটি reliability/durability non-functional requirement — data হারানো চলবে না; সাধারণত database durability ও backup দিয়ে নিশ্চিত হয়।",
+          "গুরুত্ব: functional ভুল হলে feature কাজ করে না; non-functional ভুল হলে feature কাজ করলেও ধীর/অনিরাপদ/অবিশ্বস্ত হয় — ব্যাংকে দুটোই সমান জরুরি।",
+          "Non-functional মাপা যায় এমন হতে হবে ('দ্রুত' নয়, '৩ সেকেন্ডে'), নইলে test করে পাস/ফেল বলা যায় না।"
+        ],
+        "diagram": "Requirement শ্রেণিবিন্যাস\n\n           ┌──────────────────────┐\n           │  Requirement          │\n           └──────────┬───────────┘\n           ┌──────────┴───────────┐\n           ▼                      ▼\n  ┌─────────────────┐    ┌─────────────────────┐\n  │ FUNCTIONAL      │    │ NON-FUNCTIONAL       │\n  │ 'কী করবে'       │    │ 'কতটা ভালোভাবে'      │\n  ├─────────────────┤    ├─────────────────────┤\n  │ transaction হলে │    │ ⏱ within 3 sec       │ ← performance\n  │  alert পাঠাও    │────│ 💾 never lose record │ ← reliability\n  │ fund transfer   │    │ 🔒 encrypted data    │ ← security\n  │ ব্যালেন্স দেখাও │    │ 📈 10k user একসাথে   │ ← scalability\n  └─────────────────┘    └─────────────────────┘\n     feature নিজে           feature-এর গুণমান\n  ─────────────────────────────────────────────\n  Functional=কাজ · Non-functional=কাজের মান",
+        "table": {
+          "headers": ["Requirement", "ধরন", "কারণ"],
+          "rows": [
+            ["transaction হলে notification পাঠানো", "Functional", "নির্দিষ্ট আচরণ/feature"],
+            ["within 3 seconds alert", "Non-functional (performance)", "কত দ্রুত — গতির সীমা"],
+            ["কোনো transaction হারাবে না", "Non-functional (reliability)", "data durability-র মান"],
+            ["fund transfer করা", "Functional", "system-এর কাজ"],
+            ["একসাথে ১০,০০০ user সামলানো", "Non-functional (scalability)", "লোড ধারণক্ষমতা"],
+            ["সব data encrypted থাকবে", "Non-functional (security)", "নিরাপত্তার মান"]
+          ]
+        },
+        "mnemonic": "Functional = কাজটা কী; Non-functional = কাজটা কেমন (দ্রুত, নিরাপদ, নির্ভরযোগ্য)।"
+      }
+    },
+    {
+      "id": "se_ex_005",
+      "q": "After your team patched a small bug in the bank app's fund-transfer module, the login screen and the statement download—both unrelated—suddenly broke in production. Explain REGRESSION testing, why you must re-run old passing tests after any change, and how to catch this earlier.",
+      "tags": ["testing", "regression", "ci"],
+      "answer": {
+        "summary": [
+          "Regression testing = নতুন পরিবর্তনের পর আগের কাজ-করা feature গুলো আবার test করা, যেন পরিবর্তন কোনো পুরনো জিনিস ভেঙে না ফেলে।",
+          "কোড পরস্পর নির্ভরশীল, তাই এক জায়গার fix অন্য জায়গায় ripple করে বাগ আনতে পারে — তাই পুরনো passing test আবার চালাতে হয়।"
+        ],
+        "points": [
+          "একটি বাগ fix করা মানে কোড বদলানো; shared function, database বা config-এর মাধ্যমে সেই বদল অন্য module-কে প্রভাবিত করতে পারে — এটাই regression।",
+          "এখানে fund-transfer-এর প্যাচ সম্ভবত কোনো common utility/auth/DB layer ছুঁয়েছে, যার ওপর login ও statement download-ও নির্ভরশীল ছিল।",
+          "আগে যেসব test পাস করত সেগুলো আবার চালানো জরুরি, কারণ সেগুলোই প্রমাণ করত পুরনো feature ঠিক আছে — না চালালে ভাঙা জিনিস চোখেই পড়বে না।",
+          "প্রতিবার পুরো suite হাতে চালানো ব্যয়বহুল, তাই regression test স্বয়ংক্রিয় করে CI pipeline-এ রাখা হয় — প্রতিটি commit-এ নিজে চলে যায়।",
+          "আগে ধরার উপায়: প্রতিটি bug fix-এর সাথে নতুন test যোগ করা, deploy-এর আগে automated regression suite চালানো, এবং high-risk shared code বদলালে বেশি test চালানো (impact analysis)।",
+          "ব্যাংকে এর গুরুত্ব বড়: একটি নীরব regression মানে login বন্ধ বা ভুল statement — সরাসরি গ্রাহক ও আর্থিক ঝুঁকি, তাই production-এ যাওয়ার আগেই ধরতে হবে।"
+        ],
+        "diagram": "Change → Ripple → Retest লুপ\n\n  ①  Bug fix (fund-transfer module)\n         │  shared code/DB ছোঁয়া\n         ▼\n  ②  Ripple (অদৃশ্য প্রভাব)\n         ├──────────────┐\n         ▼              ▼\n    ┌──────────┐   ┌──────────────┐\n    │ Login ✗  │   │ Statement ✗  │  ← unrelated ভাঙল\n    └──────────┘   └──────────────┘\n         │              │\n         ▼              ▼\n  ③  Regression suite (পুরনো passing test আবার চালাও)\n     [Login] [Transfer] [Statement] [Balance] ...\n         │ কোনোটা fail?\n     ┌───┴────┐\n     ▼        ▼\n   পাস      fail → ঠিক করে আবার ① থেকে\n   deploy ✓\n\n  CI: প্রতিটি commit → suite auto-run → তবেই merge\n  ─────────────────────────────────────────────\n  বদলাও → ঢেউ তোলে → পুরনোটাও যাচাই করো",
+        "table": {
+          "headers": ["প্রশ্ন", "উত্তর"],
+          "rows": [
+            ["Regression testing কী", "পরিবর্তনের পর পুরনো feature আবার যাচাই"],
+            ["কেন দরকার", "shared কোড/DB-র মাধ্যমে পরিবর্তন অন্য জায়গা ভাঙতে পারে"],
+            ["কোন test চালাব", "আগে পাস করা পুরনো test + নতুন fix-এর test"],
+            ["কীভাবে সহজ করব", "automation + CI pipeline-এ প্রতিটি commit-এ চালানো"],
+            ["আগে ধরার উপায়", "প্রতি fix-এ test যোগ, deploy-পূর্ব full suite, impact analysis"]
+          ]
+        },
+        "mnemonic": "একটা ঠিক করলে দশটা দেখো — বদল ঢেউ তোলে, পুরনো test-ই পাহারাদার।"
+      }
+    }
+  ]
+}

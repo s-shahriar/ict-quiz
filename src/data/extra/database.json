@@ -1,0 +1,302 @@
+{
+  "category": "database",
+  "questions": [
+    {
+      "id": "db_ex_001",
+      "q": "In a bank's core system, transferring 5,000 BDT from Account A to Account B must debit A and credit B — if either step fails (e.g. power cut after the debit), the whole thing must undo so money is never lost or created. Explain what a TRANSACTION is and the ACID properties using this fund-transfer, and show the atomic debit+credit block with COMMIT/ROLLBACK.",
+      "tags": [
+        "acid",
+        "transaction",
+        "commit",
+        "rollback"
+      ],
+      "answer": {
+        "summary": [
+          "TRANSACTION = একগুচ্ছ SQL statement যা একটি অবিভাজ্য unit — সব একসাথে সফল (COMMIT) নয়তো সব বাতিল (ROLLBACK)।",
+          "Fund transfer-এ debit ও credit দুটোই এক transaction; একটা fail করলে পুরোটা rollback, তাই টাকা কখনো হারায় বা তৈরি হয় না।",
+          "নিরাপত্তার গ্যারান্টি দেয় ACID: Atomicity, Consistency, Isolation, Durability।"
+        ],
+        "points": [
+          "Atomicity: debit আর credit — দুই step মিলে একটাই কাজ। মাঝপথে crash হলে DBMS আগের debit-টাও rollback করে দেয়, half-done অবস্থা থাকে না। এটাই এই scenario-এর মূল রক্ষাকবচ।",
+          "Consistency: transaction শুরুর আগে ও শেষে মোট টাকা (A+B) সমান থাকতে হবে; কোনো constraint (যেমন balance >= 0) ভাঙা চলবে না। WHY: ব্যাংকের হিসাব সবসময় valid থাকে।",
+          "Isolation: একই সময়ে অন্য transaction চললেও এই transfer যেন তাদের অসম্পূর্ণ (uncommitted) অবস্থা না দেখে। WHY: concurrent লেনদেনে ভুল balance পড়া ঠেকায়।",
+          "Durability: COMMIT হয়ে গেলে ফল স্থায়ী — এর পরে power cut/crash হলেও write-ahead log থেকে DBMS টাকা ফেরত আনে না। WHY: confirm হওয়া লেনদেন আর হারায় না।",
+          "COMMIT = সব step সফল, পরিবর্তন পাকা করে দাও। ROLLBACK = কোনো step fail, শুরুর অবস্থায় ফিরিয়ে দাও।",
+          "তাই debit-এর পরে credit fail করলে DBMS নিজেই ROLLBACK করে A-এর টাকা ফেরত দেয় — application-কে ম্যানুয়ালি ঠিক করতে হয় না।"
+        ],
+        "diagram": "TRANSACTION: Fund Transfer  A ──5,000──▶ B\n\n  BEGIN TRANSACTION            ← unit শুরু\n  ┌───────────────────────────────────────────┐\n  │ STEP 1  UPDATE acct SET bal = bal - 5000    │\n  │         WHERE id = 'A';   (A: 20,000→15,000)│ ← debit\n  │                                             │\n  │ STEP 2  UPDATE acct SET bal = bal + 5000    │\n  │         WHERE id = 'B';   (B: 8,000 →13,000)│ ← credit\n  └───────────────────────────────────────────┘\n        │                         │\n   সব সফল?                    কোনোটা fail?\n        │ হ্যাঁ                    │ (crash / bal<0)\n        ▼                         ▼\n   ┌──────────┐             ┌────────────┐\n   │  COMMIT  │             │  ROLLBACK  │\n   │ পাকা করো │             │ শুরুতে ফেরাও│\n   └──────────┘             └────────────┘\n   A=15,000 B=13,000         A=20,000 B=8,000\n   (Durable, স্থায়ী)         (যেন কিছুই হয়নি)\n\n  ┌── ATOMICITY: দুই step এক সাথে, অর্ধেক নয় ──┐\n  │ A এর মোট (before) = A+B (after) = অপরিবর্তিত │ ← Consistency\n  └────────────────────────────────────────────┘\n\n  TIMELINE:\n  begin ──▶ debit A ──▶ credit B ──▶ COMMIT ──▶ ✔ পাকা\n  begin ──▶ debit A ──▶ ✗ crash ──▶ ROLLBACK ─▶ ⟲ ফেরত",
+        "table": {
+          "headers": [
+            "ACID",
+            "মানে",
+            "এই transfer-এ ভূমিকা"
+          ],
+          "rows": [
+            [
+              "Atomicity",
+              "সব-নয়তো-কিছুই-না",
+              "debit+credit একসাথে; crash হলে debit-ও rollback"
+            ],
+            [
+              "Consistency",
+              "নিয়ম অটুট",
+              "মোট টাকা (A+B) একই; balance কখনো negative নয়"
+            ],
+            [
+              "Isolation",
+              "আলাদা থাকা",
+              "অন্য চলমান transaction অসম্পূর্ণ balance দেখে না"
+            ],
+            [
+              "Durability",
+              "স্থায়িত্ব",
+              "COMMIT-এর পরে crash হলেও ফল টিকে থাকে"
+            ]
+          ]
+        },
+        "mnemonic": "A-C-I-D: Atomic (সব/কিছুই না), Consistent (নিয়ম অটুট), Isolated (আলাদা), Durable (স্থায়ী) — 'একসাথে, সঠিক, একা, চিরস্থায়ী'।"
+      }
+    },
+    {
+      "id": "db_ex_002",
+      "q": "A bank's Customer table stores the branch name and full branch address inside every customer row. When a branch moves office, hundreds of rows must be updated and some get missed — causing an update anomaly. Explain NORMALIZATION (1NF → 2NF → 3NF) to fix this, showing the before (unnormalized) table vs the after (normalized) tables.",
+      "tags": [
+        "normalization",
+        "1nf",
+        "2nf",
+        "3nf",
+        "anomaly"
+      ],
+      "answer": {
+        "summary": [
+          "NORMALIZATION = redundancy (একই তথ্য বারবার) কমিয়ে data-কে ছোট related table-এ ভাঙা, যাতে update/insert/delete anomaly না হয়।",
+          "সমস্যা: branch address প্রতিটি customer row-তে copy আছে; branch সরলে সব row বদলাতে হয়, কিছু বাদ পড়ে inconsistent হয়।",
+          "সমাধান: Branch-কে আলাদা table-এ তুলে branch_id দিয়ে link (1NF→2NF→3NF)।"
+        ],
+        "points": [
+          "1NF (First Normal Form): প্রতিটি cell-এ একটিমাত্র atomic value; repeating group/list নয়। WHY: একটা ঘরে 'phone1, phone2' রাখলে query/update কঠিন হয়।",
+          "2NF: 1NF + কোনো non-key column যেন পুরো primary key-এর উপর নির্ভর করে, key-এর অংশের উপর নয় (partial dependency দূর)। WHY: composite key থাকলে অর্ধ-নির্ভর তথ্য আলাদা টেবিলে যায়।",
+          "3NF: 2NF + কোনো non-key column অন্য non-key column-এর উপর নির্ভর করবে না (transitive dependency দূর)। এখানে branch_name/address নির্ভর করে branch_id-এর উপর, customer_id-এর উপর নয় — এটাই আসল দোষ।",
+          "সমাধান: branch তথ্য একবারই Branch table-এ থাকবে; Customer শুধু branch_id (foreign key) রাখবে। branch সরলে মাত্র ১টি row বদলালেই সব customer-এর জন্য ঠিক।",
+          "লাভ: update anomaly শেষ (এক জায়গায় বদল), insert anomaly শেষ (customer ছাড়াই নতুন branch যোগ করা যায়), delete anomaly শেষ (শেষ customer মুছলেও branch তথ্য হারায় না)।",
+          "দাম: পড়ার সময় JOIN লাগে — কিন্তু সঠিকতা ও storage সাশ্রয়ের তুলনায় এটা সামান্য খরচ।"
+        ],
+        "diagram": "BEFORE (Unnormalized — branch তথ্য প্রতি row-তে repeat)\n┌──────┬────────┬──────────┬─────────────────────┐\n│cus_id│ name   │ branch   │ branch_address       │\n├──────┼────────┼──────────┼─────────────────────┤\n│ 101  │ Karim  │ Dhanmondi│ Rd-27, Dhaka         │◄┐ একই\n│ 102  │ Rahim  │ Dhanmondi│ Rd-27, Dhaka         │◄┤ address\n│ 103  │ Sumi   │ Dhanmondi│ Rd-27, Dhaka         │◄┘ ৩ বার!\n│ 104  │ Jony   │ Gulshan  │ Ave-3, Dhaka         │\n└──────┴────────┴──────────┴─────────────────────┘\n   ▲ branch সরলে ৩টি row বদলাতে হবে → একটা মিস = inconsistent\n   transitive: cus_id → branch_id → address  (3NF ভাঙে)\n\n        │  normalize (split + link)\n        ▼\nAFTER — 3NF: দুই table, branch_id দিয়ে জোড়া\n\n Customer                          Branch (branch একবারই)\n┌──────┬───────┬──────────┐       ┌──────────┬───────────┬──────────────┐\n│cus_id│ name  │branch_id⌉│       │branch_id │ b_name    │ b_address    │\n├──────┼───────┼──────────┤       ├──────────┼───────────┼──────────────┤\n│ 101  │ Karim │   B01 ───┼──────▶│  B01 (PK)│ Dhanmondi │ Rd-27, Dhaka │\n│ 102  │ Rahim │   B01 ───┼──────▶│  B02     │ Gulshan   │ Ave-3, Dhaka │\n│ 103  │ Sumi  │   B01 ───┘       └──────────┴───────────┴──────────────┘\n│ 104  │ Jony  │   B02 ──▶(B02)     ▲ branch সরলে মাত্র ১ row বদলাও\n└──────┴───────┴──────────┘\n   FK (branch_id) ──────────▶ PK (branch_id)\n\n  1NF: প্রতি cell এক value  →  2NF: partial-dep দূর  →  3NF: transitive-dep দূর",
+        "table": {
+          "headers": [
+            "সমস্যা (Before)",
+            "কারণ",
+            "Normalized-এ সমাধান"
+          ],
+          "rows": [
+            [
+              "Update anomaly",
+              "একই branch address বহু row-তে; একটাও মিস হলে inconsistent",
+              "Branch table-এ এক জায়গায় বদল"
+            ],
+            [
+              "Insert anomaly",
+              "customer না থাকলে নতুন branch যোগ করা যায় না",
+              "Branch table-এ আলাদা row যোগ"
+            ],
+            [
+              "Delete anomaly",
+              "শেষ customer মুছলে branch তথ্যও হারায়",
+              "Branch table-এ তথ্য টিকে থাকে"
+            ],
+            [
+              "Redundancy",
+              "একই address বারবার জমা → storage নষ্ট",
+              "branch_id (ছোট FK) দিয়ে reference"
+            ]
+          ]
+        },
+        "mnemonic": "1-2-3 NF: '১-এ এক ঘরে এক মান, ২-এ পুরো key-এর নির্ভরতা, ৩-এ key ছাড়া কারো উপর নির্ভরতা নয়'।"
+      }
+    },
+    {
+      "id": "db_ex_003",
+      "q": "A bank's Transactions table has 10 million rows. The report query 'find all transactions for account_no = 12345' takes several seconds because the database scans every row. Explain how an INDEX (B-tree) speeds up this lookup, and what its cost is on INSERT/UPDATE. Diagram the B-tree navigating down to a row-pointer.",
+      "tags": [
+        "index",
+        "b-tree",
+        "performance",
+        "full-scan"
+      ],
+      "answer": {
+        "summary": [
+          "INDEX = column-এর উপর আলাদা sorted lookup structure (সাধারণত B-tree), যা পুরো টেবিল না পড়ে সরাসরি target row-এ পৌঁছায়।",
+          "Index ছাড়া: full table scan — ১ কোটি row পড়া (O(n))। Index সহ: B-tree-তে কয়েক ধাপ নেমে row-pointer (O(log n))।",
+          "খরচ: read দ্রুত হয়, কিন্তু প্রতি INSERT/UPDATE/DELETE-এ index-ও update করতে হয় + extra storage লাগে।"
+        ],
+        "points": [
+          "Full scan কেন ধীর: index নেই মানে DBMS-কে ১ কোটি row একে একে মিলিয়ে দেখতে হয়; ম্যাচ পেয়েও থামে না (আরও থাকতে পারে)। তাই সময় row সংখ্যার সমানুপাতে বাড়ে।",
+          "B-tree কীভাবে দ্রুত: value গুলো sorted ও balanced tree-তে সাজানো; root থেকে প্রতি ধাপে অর্ধেক/বেশি সম্ভাবনা বাদ পড়ে। ১ কোটি row-এ মাত্র ৩-৪ ধাপে leaf-এ পৌঁছায়।",
+          "Leaf → row-pointer: leaf node-এ key-এর পাশে থাকে row-এর ঠিকানা (rowid/heap pointer); সেই pointer ধরে সরাসরি আসল row আনা হয়।",
+          "WHERE, JOIN, ORDER BY-এর column-এ index সবচেয়ে কাজে দেয়; range query (BETWEEN) B-tree-তে sorted বলে দ্রুত হয়।",
+          "Write cost: নতুন row বসালে বা key বদলালে B-tree-ও sorted রাখতে update হয় → INSERT/UPDATE একটু ধীর ও storage বাড়ে। তাই যত খুশি index নয়।",
+          "Selectivity: account_no-এর মতো বহু distinct value-তে index দারুণ; কিন্তু gender-এর মতো low-selectivity (M/F) column-এ index তেমন লাভ দেয় না।"
+        ],
+        "diagram": "QUERY: SELECT * FROM txn WHERE account_no = 12345\n\nA) INDEX ছাড়া — FULL TABLE SCAN (ধীর, O(n))\n  row1 ▸ row2 ▸ row3 ▸ ... ▸ row 10,000,000\n  └── ১ কোটি row একে একে মেলাও ──┘  ← কয়েক সেকেন্ড\n\nB) INDEX সহ — B-TREE লুকআপ (দ্রুত, O(log n))\n\n              ┌──────────────┐  root\n              │  [5000|20000]│         ← range guide\n              └──┬────┬────┬─┘\n     <5000 ◄──┘    │    └──▶ >20000\n                   ▼ 5000..20000\n            ┌─────────────┐  internal\n            │ [10000|15000]│\n            └──┬─────┬────┬┘\n               │ 12345 এখানে (10000..15000)\n               ▼\n        ┌────────────────────┐  leaf (sorted keys)\n        │ ..│12345 ● │12346..│\n        └────────┬───────────┘\n                 │ row-pointer (rowid)\n                 ▼\n        ┌───────────────────────────┐\n        │ TABLE row @0xA71F:         │ ← আসল row\n        │ 12345 | 5,000 | 2026-07-01 │   সরাসরি আনা\n        └───────────────────────────┘\n  মাত্র ৩-৪ hop = leaf, তারপর pointer → row\n\nWRITE COST:\n  INSERT/UPDATE ──▶ table বদল + B-tree-ও sorted রাখতে বদল\n  (read দ্রুত ⇄ write একটু ধীর + extra storage)",
+        "table": {
+          "headers": [
+            "দিক",
+            "Index ছাড়া (Full scan)",
+            "Index সহ (B-tree)"
+          ],
+          "rows": [
+            [
+              "লুকআপ খরচ",
+              "O(n) — ১ কোটি row পড়া",
+              "O(log n) — ৩-৪ ধাপ"
+            ],
+            [
+              "গতি (এই query)",
+              "কয়েক সেকেন্ড",
+              "মিলিসেকেন্ড"
+            ],
+            [
+              "Range/ORDER BY",
+              "প্রতিবার scan+sort",
+              "sorted বলে দ্রুত"
+            ],
+            [
+              "INSERT/UPDATE",
+              "দ্রুত (শুধু table)",
+              "একটু ধীর (index-ও update)"
+            ],
+            [
+              "Storage",
+              "শুধু table",
+              "table + index (বেশি)"
+            ]
+          ]
+        },
+        "mnemonic": "Index = বইয়ের পেছনের 'index': পুরো বই না পড়ে সরাসরি পৃষ্ঠায় যাও; কিন্তু নতুন লেখা এলে index-ও নতুন করে বানাতে হয়।"
+      }
+    },
+    {
+      "id": "db_ex_004",
+      "q": "A customer has 1,000 BDT. Two ATM withdrawals of 800 BDT each hit the same account at exactly the same time. Without control, both read balance=1000, both succeed, and the account goes to -600 (lost update). Explain CONCURRENCY control, LOCKING, and ISOLATION LEVELS (dirty read, non-repeatable read, phantom), with a table of isolation levels vs anomalies.",
+      "tags": [
+        "concurrency",
+        "locking",
+        "isolation",
+        "dirty-read",
+        "lost-update"
+      ],
+      "answer": {
+        "summary": [
+          "একই সময়ে একাধিক transaction একই data-তে হাত দিলে যে গোলমাল (lost update, dirty read) হয় তা ঠেকানোই CONCURRENCY control।",
+          "মূল হাতিয়ার LOCKING: একটি transaction row lock নিলে অন্যটি lock ছাড়া পর্যন্ত অপেক্ষা করে — তাই একসাথে দুটো withdrawal একই balance পড়ে overdraw করতে পারে না।",
+          "কতটা কড়া isolation চাই তা ISOLATION LEVEL দিয়ে ঠিক হয়; কড়া হলে নিরাপদ কিন্তু ধীর।"
+        ],
+        "points": [
+          "Lost update (এই scenario): দুই transaction একই balance=1000 পড়ে, দুজনেই 800 কাটে; দ্বিতীয়টি প্রথমটির কাটা 'হারিয়ে' দেয়। Lock/serialization এটা ঠেকায়।",
+          "Lock: transaction যখন row লেখে/পড়ে, তখন lock ধরে — Shared lock (S, একসাথে অনেকে পড়তে পারে) ও Exclusive lock (X, একা লেখে, বাকিরা অপেক্ষা)। একটি ATM X-lock নিলে অন্যটি অপেক্ষা করে ঠিক balance পড়ে।",
+          "Dirty read: transaction অন্য transaction-এর এখনো COMMIT-না-হওয়া (হয়তো rollback হবে) পরিবর্তন পড়ে ফেলে → ভুল সিদ্ধান্ত।",
+          "Non-repeatable read: একই query দুবার চালিয়ে ভিন্ন মান পাওয়া, কারণ মাঝে অন্য transaction commit করে বদলে দিয়েছে।",
+          "Phantom read: একই condition-এর query দ্বিতীয়বার চালালে নতুন row 'ভুতুড়ে' ভাবে দেখা যায়, কারণ মাঝে কেউ insert করেছে।",
+          "Isolation level যত উপরে (Read Uncommitted → Serializable) তত কম anomaly কিন্তু তত বেশি locking/অপেক্ষা → throughput কমে। ব্যাংকের balance-এ সাধারণত অন্তত Read Committed, critical কাজে Serializable।"
+        ],
+        "diagram": "SCENARIO: balance = 1000; দুটো ATM একসাথে 800 তোলে\n\nWITHOUT LOCK — LOST UPDATE (ভুল)\n  time │ T1 (ATM-1)          │ T2 (ATM-2)\n  ─────┼─────────────────────┼──────────────────────\n   t1  │ read bal = 1000     │\n   t2  │                     │ read bal = 1000  ◄ একই!\n   t3  │ write 1000-800=200  │\n   t4  │                     │ write 1000-800=200\n   t5  │ COMMIT (200)        │ COMMIT (200)  ◄ T1 হারালো\n  ফল: 200; আসলে -600 নেওয়া হলো → ব্যাংকের ক্ষতি\n\nWITH X-LOCK — SERIALIZED (সঠিক)\n  time │ T1 (ATM-1)              │ T2 (ATM-2)\n  ─────┼─────────────────────────┼──────────────────\n   t1  │ X-lock row ✔ read 1000  │\n   t2  │ write 200               │ X-lock চায় → ⏳ WAIT\n   t3  │ COMMIT + unlock         │  (blocked)\n   t4  │                         │ X-lock ✔ read 200\n   t5  │                         │ 200-800 = -600 → ✗ DECLINE\n  ফল: একটাই সফল; overdraw ঠেকলো\n\nISOLATION সিঁড়ি (নিচ→উপর: নিরাপদ↑, গতি↓)\n  Read Uncommitted ─ Read Committed ─ Repeatable Read ─ Serializable\n     (dirty ok)        (dirty ঠেকে)     (repeat ঠেকে)    (সব ঠেকে)",
+        "table": {
+          "headers": [
+            "Isolation Level",
+            "Dirty Read",
+            "Non-repeatable Read",
+            "Phantom Read"
+          ],
+          "rows": [
+            [
+              "Read Uncommitted",
+              "হতে পারে",
+              "হতে পারে",
+              "হতে পারে"
+            ],
+            [
+              "Read Committed",
+              "ঠেকে",
+              "হতে পারে",
+              "হতে পারে"
+            ],
+            [
+              "Repeatable Read",
+              "ঠেকে",
+              "ঠেকে",
+              "হতে পারে"
+            ],
+            [
+              "Serializable",
+              "ঠেকে",
+              "ঠেকে",
+              "ঠেকে"
+            ]
+          ]
+        },
+        "mnemonic": "সিঁড়ি উঠো: Uncommitted → Committed → Repeatable → Serializable — যত উপরে তত কম ভূত (anomaly), তত ধীর গতি।"
+      }
+    },
+    {
+      "id": "db_ex_005",
+      "q": "A bank's online login form builds its SQL by string concatenation: \"SELECT * FROM users WHERE user='\"+u+\"' AND pass='\"+p+\"'\". An attacker types ' OR '1'='1 as the username and logs in without a password. Explain SQL INJECTION, why it works, and how PREPARED STATEMENTS / parameterized queries prevent it. Diagram the injected query vs the parameterized query.",
+      "tags": [
+        "sql-injection",
+        "prepared-statement",
+        "security",
+        "parameterized"
+      ],
+      "answer": {
+        "summary": [
+          "SQL INJECTION = user input সরাসরি SQL string-এ জোড়া লাগানোয় attacker query-র গঠন বদলে দিতে পারে।",
+          "' OR '1'='1 ঢোকালে WHERE শর্ত সবসময় TRUE হয়ে যায় → password ছাড়াই সব row ম্যাচ, login বাইপাস।",
+          "সমাধান: PREPARED STATEMENT / parameterized query — input কে code নয়, শুধু data হিসেবে পাঠানো; তাই তা query-র গঠন ভাঙতে পারে না।"
+        ],
+        "points": [
+          "কেন ঘটে: concatenation-এ input আর SQL কোড মিশে যায়। DBMS বুঝতে পারে না কোনটা attacker-এর ডেটা আর কোনটা আসল কোড — পুরোটা এক text হিসেবে parse করে।",
+          "Exploit: username = ' OR '1'='1 দিলে query হয় ...WHERE user='' OR '1'='1' AND pass=''; '1'='1' সবসময় সত্য, তাই শর্ত সত্য হয়ে প্রথম (প্রায়ই admin) user return করে।",
+          "আরও ভয়ংকর: '; DROP TABLE users;-- দিয়ে টেবিল মুছে ফেলা, UNION SELECT দিয়ে অন্য টেবিলের data চুরি — পুরো ব্যাংক ডেটা ঝুঁকিতে।",
+          "Prepared statement: query-র কাঠামো (? placeholder সহ) আগে DBMS-এ compile হয়; পরে input শুধু value হিসেবে bind হয়। input-এর ভেতরের quote/OR আর কোড হিসেবে গণ্য হয় না — নিছক string।",
+          "ফল: ' OR '1'='1 তখন আক্ষরিক username হিসেবে খোঁজা হয়, ম্যাচ করে না, login fail — attack ব্যর্থ।",
+          "অতিরিক্ত রক্ষা: input validation/whitelist, least-privilege DB account, stored procedure, ORM; তবু মূল fix হলো parameterized query — সবচেয়ে কার্যকর ও standard।"
+        ],
+        "diagram": "INPUT: user = [ ' OR '1'='1 ]   pass = [ (blank) ]\n\nA) VULNERABLE — string concatenation (input = code)\n  \"SELECT * FROM users\n   WHERE user='\" + u + \"' AND pass='\" + p + \"'\"\n            │ u ঢোকানোর পর গঠনটাই বদলে যায়\n            ▼\n  SELECT * FROM users\n  WHERE user='' OR '1'='1' AND pass=''\n                └──────┬──────┘\n              '1'='1' সবসময় TRUE  ← শর্ত সত্য\n  ⇒ সব row ম্যাচ → password ছাড়াই login ✗ (breach)\n\n        ── vs ──\n\nB) SAFE — prepared / parameterized (input = শুধু data)\n  ধাপ 1  compile কাঠামো (placeholder সহ):\n    SELECT * FROM users WHERE user = ?  AND pass = ?\n                                    ▲          ▲\n                                bind-slot   bind-slot\n  ধাপ 2  bind values (আলাদা চ্যানেলে):\n    ? ◄── \"' OR '1'='1\"   (আক্ষরিক string, code নয়)\n    ? ◄── \"\"\n  ⇒ DBMS খোঁজে user নামের হুবহু = ' OR '1'='1\n     কোনো ম্যাচ নেই → login fail ✔ (attack ব্যর্থ)\n\n  মূল কথা: গঠন আগে fixed, input পরে data —\n  input আর query-র structure ভাঙতে পারে না।",
+        "table": {
+          "headers": [
+            "দিক",
+            "Concatenation (Vulnerable)",
+            "Prepared Statement (Safe)"
+          ],
+          "rows": [
+            [
+              "Input-এর মর্যাদা",
+              "code হিসেবে parse হয়",
+              "শুধু data/value হিসেবে bind"
+            ],
+            [
+              "Query গঠন",
+              "input দিয়ে বদলে যায়",
+              "আগেই fixed, অপরিবর্তনীয়"
+            ],
+            [
+              "' OR '1'='1",
+              "শর্ত TRUE → bypass",
+              "আক্ষরিক string → ম্যাচ নেই"
+            ],
+            [
+              "DROP/UNION ইনজেক্ট",
+              "সম্ভব",
+              "অকার্যকর"
+            ],
+            [
+              "সুপারিশ",
+              "কখনো নয়",
+              "standard, সবসময় ব্যবহার"
+            ]
+          ]
+        },
+        "mnemonic": "Input কে 'কোড' ভাবলে বিপদ, 'ডেটা' ভাবলে নিরাপদ — তাই সবসময় placeholder (?) দিয়ে bind করো, string জোড়া দিও না।"
+      }
+    }
+  ]
+}

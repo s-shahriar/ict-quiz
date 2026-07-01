@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
-import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck, Dumbbell } from 'lucide-react'
+import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck, Dumbbell, Sparkles } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { WRITTEN_TOPICS } from '../data/written/index.js'
+import { EXTRA_TOPICS } from '../data/extra/index.js'
 import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
+import { useExtraMasteredContext } from '../contexts/ExtraMasteredContext.jsx'
 import GroupSearch from './GroupSearch.jsx'
 import WrittenSearch from './WrittenSearch.jsx'
+import ExtraSearch from './ExtraSearch.jsx'
 
 export default function HomeScreen({ onBackup }) {
   const navigate = useNavigate()
@@ -16,6 +19,7 @@ export default function HomeScreen({ onBackup }) {
   const { value: mastered } = useMasteredContext()
   const { value: important } = useImportantContext()
   const { value: writtenMastered } = useWrittenMasteredContext()
+  const { value: extraMastered } = useExtraMasteredContext()
 
   const [searchParams] = useSearchParams()
   // Capture restore target once per mount (HomeScreen remounts on browser-back
@@ -25,13 +29,15 @@ export default function HomeScreen({ onBackup }) {
     search: searchParams.get('search') || '',
   }))
   const [module, setModule] = useState(
-    restored.module === 'written' || restored.module === 'practice' ? restored.module : 'mcq'
+    ['written', 'practice', 'extra'].includes(restored.module) ? restored.module : 'mcq'
   )
   const [mcqSearching, setMcqSearching] = useState(false)
   const [writtenSearching, setWrittenSearching] = useState(false)
+  const [extraSearching, setExtraSearching] = useState(false)
 
   const topics = TOPICS
   const writtenTopics = WRITTEN_TOPICS
+  const extraTopics = EXTRA_TOPICS
 
   const totalNailed = topics.reduce((s, t) =>
     s + t.questions.filter((q, i) => q.options && q.correct_answer && mastered.has(`${t.id}__${i}`)).length
@@ -46,6 +52,12 @@ export default function HomeScreen({ onBackup }) {
   , 0)
 
   const totalWrittenNailed = writtenMastered?.size ?? 0
+
+  const totalExtraImportant = (extraTopics || []).reduce((s, t) =>
+    s + [...important].filter(id => id.startsWith(`extra__${t.id}__`)).length
+  , 0)
+
+  const totalExtraNailed = extraMastered?.size ?? 0
 
   const totalPracticeImportant = [...important].filter(id => id.startsWith('practice__')).length
 
@@ -67,6 +79,9 @@ export default function HomeScreen({ onBackup }) {
           </button>
           <button className={`module-btn${module === 'practice' ? ' active' : ''}`} onClick={() => setModule('practice')}>
             <Dumbbell size={15} /> Practice
+          </button>
+          <button className={`module-btn${module === 'extra' ? ' active' : ''}`} onClick={() => setModule('extra')}>
+            <Sparkles size={15} /> Extra
           </button>
         </div>
       </header>
@@ -209,6 +224,53 @@ export default function HomeScreen({ onBackup }) {
           </main>
         </>
       )}
+
+      {module === 'extra' && (
+        <>
+          <ExtraSearch onActiveChange={setExtraSearching} initialQuery={restored.module === 'extra' ? restored.search : ''} />
+        </>
+      )}
+
+      {module === 'extra' && !extraSearching && (
+        <>
+          <div className="home-action-row">
+            <button className="action-card nailed-card" onClick={() => navigate('/extra/nailed')}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--nailed">
+                <Star size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Nailed It</div>
+                <div className="ac-sub">{totalExtraNailed} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--nailed">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+
+            <button className="action-card important-card" onClick={() => navigate('/extra/important')}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--important">
+                <Bookmark size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Important</div>
+                <div className="ac-sub">{totalExtraImportant} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--important">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+          </div>
+
+          <p className="section-label">Choose a Category</p>
+          <main className="topics-grid">
+            {extraTopics.map(t => (
+              <ExtraCategoryCard key={t.id} topic={t} onClick={() => navigate('/extra?topic=' + t.id)} />
+            ))}
+          </main>
+        </>
+      )}
     </div>
   )
 }
@@ -240,6 +302,23 @@ function WrittenCategoryCard({ topic, onClick }) {
       <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
         <PenLine size={11} />
         {topic.writtenCount}
+      </span>
+    </button>
+  )
+}
+
+function ExtraCategoryCard({ topic, onClick }) {
+  const Icon = topic.icon
+  return (
+    <button className="topic-card written-category-card" onClick={onClick} style={{ '--c': topic.color }}>
+      <div className="tc-icon"><Icon size={20} /></div>
+      <div className="tc-body">
+        <span className="tc-name">{topic.name}</span>
+        <span className="tc-count">{topic.extraCount} scenario answers</span>
+      </div>
+      <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
+        <Sparkles size={11} />
+        {topic.extraCount}
       </span>
     </button>
   )

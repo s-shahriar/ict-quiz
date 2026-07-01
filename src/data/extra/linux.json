@@ -1,0 +1,222 @@
+{
+  "category": "linux",
+  "questions": [
+    {
+      "id": "lx_ex_001",
+      "q": "A network engineer needs to remotely manage a Linux server in a branch office and runs: ssh admin@192.168.1.10. (a) Explain the purpose of this command, (b) why SSH is preferred over Telnet, (c) which security features SSH provides, (d) troubleshooting steps if the connection fails.",
+      "tags": [
+        "ssh",
+        "telnet",
+        "remote",
+        "port 22",
+        "encryption"
+      ],
+      "answer": {
+        "summary": [
+          "ssh admin@192.168.1.10 = admin user হিসেবে 192.168.1.10 সার্ভারে একটি encrypted remote shell খোলা — যেন branch office-এ না গিয়ে টার্মিনাল থেকেই সার্ভার চালানো যায়।",
+          "SSH পুরো session encrypt করে (default port 22); Telnet সব plaintext-এ পাঠায় বলে password পর্যন্ত ধরা পড়ে।"
+        ],
+        "points": [
+          "(a) উদ্দেশ্য: SSH (Secure Shell) client দিয়ে দূরের Linux server-এ login করে command line control নেওয়া। admin = remote username, @ এর পরে = server IP; সফল হলে remote shell prompt পাওয়া যায়।",
+          "(b) কেন Telnet নয়: Telnet সব ডেটা (username/password/command) clear text-এ পাঠায় → কেউ network sniff করলেই সব পড়ে ফেলবে। SSH পুরোটা encrypt করে, তাই WHY = গোপনীয়তা ও integrity রক্ষা হয়।",
+          "(c) Security features: (1) Encryption — session AES/ChaCha দিয়ে গোপন, (2) Authentication — password বা public/private key, (3) Integrity — MAC দিয়ে tamper ধরা পড়ে, (4) Host key — server-এর পরিচয় যাচাই করে man-in-the-middle ঠেকায়।",
+          "(d) Connection fail হলে ধাপে ধাপে: ping 192.168.1.10 দিয়ে network reachability দেখুন → server-এ sshd service চালু কিনা (systemctl status ssh) → port 22 firewall-এ খোলা কিনা → সঠিক username/IP ও ssh -v দিয়ে verbose log দেখে আসল error ধরুন।",
+          "মনে রাখা জরুরি: প্রথমবার connect করলে host key fingerprint দেখাবে — yes দিলে তা known_hosts-এ জমা হয়; পরে fingerprint বদলে গেলে warning আসে (সম্ভাব্য নিরাপত্তা ঝুঁকির ইঙ্গিত)।"
+        ],
+        "diagram": "SSH সংযোগ:  ssh admin@192.168.1.10\n\n  CLIENT (engineer)                    SERVER (branch, 192.168.1.10)\n  ┌────────────────┐                   ┌────────────────────────┐\n  │ $ ssh admin@.. │                   │  sshd daemon           │\n  │  ● username    │                   │   ● listens port 22    │ ← default SSH port\n  │  ● private key │                   │   ● host key (server ID)│\n  └───────┬────────┘                   └───────────┬────────────┘\n          │                                        │\n          │  ╔══════════════════════════════════╗  │\n          └─▶║  ENCRYPTED TUNNEL  (port 22)      ║◀─┘\n             ║  ▓▓▓ AES/ChaCha ▓▓▓  MAC-integrity║ ← কেউ sniff করলেও\n             ╚══════════════════════════════════╝   অপাঠ্য gibberish\n\n  Telnet তুলনায় (port 23):\n   client ─── admin / P@ss123 / commands ───▶ server\n            └── plaintext, কেউ পড়ে ফেলবে ──┘ ← ঝুঁকি\n\n  Fail হলে চেক:  ping IP → systemctl status ssh → port 22 open? → ssh -v",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "SSH",
+            "Telnet"
+          ],
+          "rows": [
+            [
+              "Port",
+              "22",
+              "23"
+            ],
+            [
+              "ডেটা",
+              "Encrypted (গোপন)",
+              "Plaintext (খোলা)"
+            ],
+            [
+              "Password",
+              "encrypted যায়",
+              "clear text-এ যায়"
+            ],
+            [
+              "Authentication",
+              "password + key + host key",
+              "শুধু password"
+            ],
+            [
+              "Integrity check",
+              "আছে (MAC)",
+              "নেই"
+            ],
+            [
+              "নিরাপত্তা",
+              "উচ্চ, আধুনিক standard",
+              "অনিরাপদ, বাতিলপ্রায়"
+            ],
+            [
+              "ব্যবহার",
+              "remote admin (আজকের norm)",
+              "শুধু legacy/lab"
+            ]
+          ]
+        },
+        "mnemonic": "SSH = Secure (২২ নম্বর দরজায় তালা), Telnet = Text খোলা (২৩ নম্বর দরজা হাট করে খোলা)।"
+      }
+    },
+    {
+      "id": "lx_ex_002",
+      "q": "On a Linux server a shared config file must be readable and writable by its owner, only readable by the group, and completely hidden from everyone else. The admin runs: chmod 640 config.conf. Explain the rwx/octal permission model and exactly what 640 grants.",
+      "tags": [
+        "chmod",
+        "permissions",
+        "octal",
+        "rwx",
+        "file security"
+      ],
+      "answer": {
+        "summary": [
+          "Linux-এ প্রতিটি file-এর permission ৩টি শ্রেণির জন্য: owner (user), group, others — প্রতিটির জন্য r(read)/w(write)/x(execute)।",
+          "chmod 640 = owner rw- (6), group r-- (4), others --- (0); অর্থাৎ মালিক পড়া+লেখা, group শুধু পড়া, বাকিরা কিছুই না।"
+        ],
+        "points": [
+          "তিনটি শ্রেণি: প্রতিটি file-এর একজন owner ও একটি group থাকে; বাকি সবাই others। permission এই তিন শ্রেণির জন্য আলাদা করে সেট হয়।",
+          "rwx-এর মান: r=read=4, w=write=2, x=execute=1। প্রতি শ্রেণির জন্য এই মানগুলো যোগ করে একটি octal digit বানানো হয় (0–7)।",
+          "640 কীভাবে: প্রথম digit owner, দ্বিতীয় group, তৃতীয় others। 6 = 4+2 = rw-; 4 = r--; 0 = ---। তাই symbolic রূপ rw-r-----।",
+          "কেন এটাই scenario-র সঠিক উত্তর: config file-এ password/setting থাকতে পারে — owner-কে edit করতে দিতে rw দরকার, group-কে শুধু দেখতে r, others-কে সম্পূর্ণ আটকাতে 0। WHY = least privilege, তথ্য ফাঁস রোধ।",
+          "সাধারণ octal মনে রাখা: 7=rwx (full), 6=rw-, 5=r-x, 4=r--, 0=---; 755 executable/directory-র জন্য, 644 সাধারণ read file-এর জন্য common।",
+          "যাচাই: ls -l config.conf দিলে বাঁয়ে -rw-r----- দেখাবে; প্রথম - মানে regular file (d হলে directory)।",
+          "config file-এ সাধারণত x লাগে না (এটা program নয়) — তাই execute bit বাদ রাখাই নিরাপদ ও সঠিক।"
+        ],
+        "diagram": "chmod 640 config.conf     →     ls -l:  -rw-r----- \n\n  permission string ভেঙে দেখা:\n\n    -   rw-      r--      ---\n    │   └─┬─┘    └─┬┘     └┬┘\n    │  OWNER    GROUP    OTHERS   ← ৩টি শ্রেণি\n    └ file type (- = file, d = dir)\n\n  প্রতি শ্রেণিতে ৩টি bit + octal মান:\n\n           r   w   x        যোগফল = octal digit\n  weight   4   2   1\n  ─────────────────────────────────────────────\n  OWNER    ●   ●   ·   →  4+2+0 = 6   (rw-)  পড়া+লেখা\n  GROUP    ●   ·   ·   →  4+0+0 = 4   (r--)  শুধু পড়া\n  OTHERS   ·   ·   ·   →  0+0+0 = 0   (---)  কিছুই না\n           └───────────────────┬──────────────┘\n                     ৬  ৪  ০  = 640\n\n  দ্রুত ম্যাপ:  7=rwx  6=rw-  5=r-x  4=r--  0=---",
+        "mnemonic": "৪-২-১ ভাগ করো (r-w-x); owner 6 লেখে-পড়ে, group 4 শুধু পড়ে, others 0 তাকিয়েও দেখে না।"
+      }
+    },
+    {
+      "id": "lx_ex_003",
+      "q": "A production Linux server has suddenly become very slow and users are complaining. You suspect one runaway process is eating the CPU. Explain how to identify the offending process (top/ps) and how to stop it safely (kill, kill -9, signals).",
+      "tags": [
+        "top",
+        "ps",
+        "kill",
+        "signals",
+        "cpu",
+        "process"
+      ],
+      "answer": {
+        "summary": [
+          "প্রথমে top (বা htop) চালিয়ে real-time দেখুন কোন process CPU% সবচেয়ে বেশি খাচ্ছে এবং তার PID নিন।",
+          "তারপর প্রথমে kill <PID> (SIGTERM, নম্র বন্ধ) দিন; না থামলে শেষ উপায় kill -9 <PID> (SIGKILL, জোরপূর্বক)।"
+        ],
+        "points": [
+          "top দিয়ে খোঁজা: top real-time-এ process list দেখায়, default-এ CPU% অনুযায়ী উপরে থাকে সবচেয়ে ভারী process। শিফট+P চাপলে CPU অনুসারে sort নিশ্চিত হয়; উপরে load average ও overall CPU/মেমরিও দেখা যায়।",
+          "ps দিয়ে snapshot: ps aux --sort=-%cpu | head দিলে এক ঝলকে top CPU process-গুলোর PID/USER/%CPU পাওয়া যায় — script/log-এ কাজে লাগে (top interactive, ps একবারের ছবি)।",
+          "PID = গুরুত্বপূর্ণ: প্রতিটি চলমান process-এর একটি unique Process ID থাকে; kill signal এই PID ধরেই পাঠাতে হয়।",
+          "kill <PID> (SIGTERM, 15): process-কে ভদ্রভাবে 'গুছিয়ে বন্ধ হও' বলা — এটি নিজের file/data save করে, temp পরিষ্কার করে বন্ধ হতে পারে। WHY = data corruption এড়াতে এটাই প্রথম পছন্দ।",
+          "kill -9 <PID> (SIGKILL, 9): kernel process-টিকে সাথে সাথে মেরে ফেলে, cleanup-এর সুযোগ দেয় না। শুধু তখনই, যখন SIGTERM-এ process আটকে থাকে/সাড়া দেয় না। ঝুঁকি = unsaved data হারানো/corruption।",
+          "আগে অন্ধভাবে -9 নয়: হুট করে kill -9 দিলে সার্ভিস অসম্পূর্ণ লেখা রেখে মরে data নষ্ট করতে পারে; তাই ক্রম = আগে TERM, পরে দরকারে KILL।",
+          "নাম জানলে: pkill <name> বা killall <name> দিয়ে নাম ধরেও পাঠানো যায়, তবে ভুল process না মারতে সাবধান।"
+        ],
+        "diagram": "ধাপ ১:  $ top   (Shift+P → CPU% অনুযায়ী sort)\n\n  ┌── system সারসংক্ষেপ ───────────────────────────────┐\n  │ load average: 6.20, 4.10, 2.05  ← বেশি = চাপ       │\n  │ %Cpu(s): 98.7 us   ← প্রায় পুরো CPU ব্যবহৃত        │\n  └───────────────────────────────────────────────────┘\n   PID   USER   %CPU  %MEM   TIME+    COMMAND\n  ─────────────────────────────────────────────────────\n   4821  www    98.3   4.1   5:12.7   php  ◀── অপরাধী!\n    932  mysql   3.1  22.0   1:40.2   mysqld     (PID মনে রাখুন)\n    210  root    0.7   0.5   0:03.1   sshd\n\n  ধাপ ২:  snapshot →  $ ps aux --sort=-%cpu | head\n\n  ধাপ ৩:  বন্ধ করা — signal পাঠানোর ক্রম:\n\n     $ kill 4821          $ kill -9 4821\n     ┌──────────────┐     ┌──────────────────┐\n     │ SIGTERM (15) │     │ SIGKILL (9)      │\n     │ 'গুছিয়ে বন্ধ'│ ──▶ │ 'এখনই মেরে ফেলো' │\n     │ save করে যায় │ না  │ cleanup নেই      │\n     │ ← আগে এটা    │থামলে│ ← শেষ উপায়       │\n     └──────────────┘     └──────────────────┘",
+        "mnemonic": "আগে top-এ অপরাধী ধরো (PID), তারপর নম্রভাবে TERM (15) — না শুনলে তবেই KILL (9)।"
+      }
+    },
+    {
+      "id": "lx_ex_004",
+      "q": "A production Linux server starts throwing 'No space left on device' errors and applications begin to crash. As the sysadmin, explain how you would diagnose which filesystem/directory is full (df -h, du) and how to safely reclaim disk space.",
+      "tags": [
+        "df",
+        "du",
+        "disk full",
+        "storage",
+        "logs"
+      ],
+      "answer": {
+        "summary": [
+          "প্রথমে df -h দিয়ে দেখুন কোন filesystem/mount point 100% ভরা (Use%)।",
+          "তারপর সেই path-এ du দিয়ে খুঁজে বের করুন কোন directory/file জায়গা খাচ্ছে, এবং নিরাপদে বড় log/temp/old file পরিষ্কার করুন।"
+        ],
+        "points": [
+          "df -h দিয়ে শুরু: df = disk free; -h = human-readable (GB/MB)। এটি প্রতিটি mounted filesystem-এর Size/Used/Avail/Use% দেখায় — Use% 100% বা /var, / যেটি ভরা সেটি চিহ্নিত হয়। WHY = আগে জানতে হবে কোন partition-এ সমস্যা।",
+          "du দিয়ে গভীরে: ভরা path-এ গিয়ে du -sh * | sort -rh | head দিলে ওই ফোল্ডারের ভেতর কোন sub-directory সবচেয়ে বড় তা উপরে আসে। du -h --max-depth=1 /var একইভাবে কাজ করে।",
+          "সাধারণ দোষী /var/log: বেড়ে যাওয়া application/system log প্রায়ই disk ভরায়। এগুলো truncate/rotate করা যায় (logrotate), সম্পূর্ণ ফাইল মুছে না ফেলাই ভালো যদি service সেটি open রাখে।",
+          "নিরাপদে reclaim: (1) পুরনো/compressed log, (2) /tmp-এর temp file, (3) apt/dnf cache (apt-get clean), (4) অপ্রয়োজনীয় old backup — এগুলো মুছুন। WHY = এগুলো মুছলে চলমান app সাধারণত ক্ষতিগ্রস্ত হয় না।",
+          "সাবধানতা — deleted-but-open file: কোনো process খোলা রেখেছে এমন বড় log rm করলে জায়গা ফেরত আসে না যতক্ষণ process চালু; দরকারে : > file.log দিয়ে truncate করুন বা service restart দিন। lsof | grep deleted দিয়ে ধরা যায়।",
+          "inode-ও ভরতে পারে: কখনো space থাকে কিন্তু অসংখ্য ছোট file-এ inode শেষ — df -i দিয়ে সেটাও চেক করা উচিত।",
+          "কখনো / বা system file অন্ধভাবে মুছবেন না — শুধু log/temp/cache/backup-এর মতো নিরাপদ জিনিস; সন্দেহ হলে আগে size দেখে নিশ্চিত হোন।"
+        ],
+        "diagram": "ধাপ ১:  $ df -h    (কোন filesystem ভরা?)\n\n  Filesystem      Size  Used  Avail  Use%  Mounted on\n  ──────────────────────────────────────────────────────\n  /dev/sda1        50G   48G    0G   100%  /var   ◀── ভরা!\n  /dev/sda2       100G   40G   55G    42%  /\n  tmpfs           3.9G    0G  3.9G     0%  /dev/shm\n                                    └┬─┘\n                            Use% = 100% → এখানেই সমস্যা\n\n  ধাপ ২:  ভেতরে কে বড়?  $ du -sh /var/* | sort -rh | head\n\n     4.0K  /var/mail\n     120M  /var/cache\n      44G  /var/log   ◀── অপরাধী directory\n       └─ du -sh /var/log/* | sort -rh   → বড় log ফাইল বের করুন\n\n  ধাপ ৩:  নিরাপদে জায়গা ফেরত:\n  ┌─────────────┬───────────────────────────────────────┐\n  │ log (বড়)   │ logrotate / : > app.log (truncate)     │\n  │ /tmp temp   │ পুরনো temp মুছুন                        │\n  │ pkg cache   │ apt-get clean / dnf clean all          │\n  │ old backup  │ অপ্রয়োজনীয় backup সরান                │\n  └─────────────┴───────────────────────────────────────┘\n  ⚠ open-থাকা deleted file → জায়গা ফেরত পেতে truncate/restart\n  ⚠ inode শেষ? →  $ df -i  দিয়েও দেখুন",
+        "mnemonic": "df দিয়ে কোন partition ভরা ধরো, du দিয়ে কোন ফোল্ডার খাচ্ছে খোঁজো — তারপর log/tmp/cache নিরাপদে ঝাড়ো।"
+      }
+    },
+    {
+      "id": "lx_ex_005",
+      "q": "A company needs an automated database backup to run every night at 2:00 AM on their Linux server without any human intervention. As the admin, explain how cron works and write/label a crontab line that runs /home/admin/backup.sh nightly at 2 AM.",
+      "tags": [
+        "cron",
+        "crontab",
+        "scheduling",
+        "backup",
+        "automation"
+      ],
+      "answer": {
+        "summary": [
+          "cron হলো Linux-এর built-in scheduler (cron daemon/crond) যা নির্দিষ্ট সময়ে স্বয়ংক্রিয়ভাবে command/script চালায় — কেউ বসে না থেকেও।",
+          "crontab line: 0 2 * * * /home/admin/backup.sh — প্রতিদিন রাত ২:০০-এ backup script চালাবে।"
+        ],
+        "points": [
+          "cron কী: crond নামের background service প্রতি মিনিটে চেক করে কোনো scheduled কাজ চালানোর সময় হলো কিনা; হলে সেটি চালায়। WHY = nightly backup-এর মতো পুনরাবৃত্ত কাজ মানুষের হাত ছাড়াই নির্ভরযোগ্যভাবে চালানো যায়।",
+          "crontab: প্রতিটি user-এর একটি crontab (cron table) থাকে; crontab -e দিয়ে edit, crontab -l দিয়ে দেখা যায়। প্রতিটি লাইন = একটি scheduled job।",
+          "৫টি time field: বাঁ থেকে ডানে — minute (0–59), hour (0–23), day-of-month (1–31), month (1–12), day-of-week (0–6, 0=রবি)। এরপর চালানোর command।",
+          "* মানে 'প্রতিটি': যে field-এ * থাকে সেটির সব মান ধরা হয়। তাই 0 2 * * * = minute 0, hour 2, প্রতিদিন/প্রতি মাস/প্রতি সপ্তাহবার → প্রতিদিন রাত ২:০০।",
+          "লাইনটি বসানো: crontab -e খুলে 0 2 * * * /home/admin/backup.sh লিখুন; backup.sh-এ execute permission দিন (chmod +x)। WHY = permission না থাকলে cron চালাতে পারবে না।",
+          "output/log ধরে রাখা: cron job silent — ভুল ধরতে output redirect করা ভালো, যেমন 0 2 * * * /home/admin/backup.sh >> /var/log/backup.log 2>&1; এতে error/success log-এ জমা থাকে।",
+          "সাধারণ ভুল: cron-এ PATH সীমিত থাকে, তাই script-এ absolute path ব্যবহার করুন; আর সময় server timezone অনুসারে চলে — timezone মিলিয়ে নিন।"
+        ],
+        "diagram": "crontab line:   0  2  *  *  *   /home/admin/backup.sh\n\n  ৫টি সময়-field ভেঙে দেখা:\n\n    ┌───────── minute        (0-59)      → 0  = ঘণ্টার শুরুতে\n    │ ┌─────── hour          (0-23)      → 2  = রাত ২টা\n    │ │ ┌───── day of month  (1-31)      → *  = প্রতিদিন\n    │ │ │ ┌─── month         (1-12)      → *  = প্রতি মাস\n    │ │ │ │ ┌─ day of week    (0-6,0=রবি) → *  = প্রতি বার\n    │ │ │ │ │\n    0 2 * * *   /home/admin/backup.sh   ← যে command চলবে\n    └────┬────┘ └──────────┬──────────┘\n      কখন চলবে          কী চলবে\n\n  অর্থ:  \"প্রতিদিন রাত ঠিক ০২:০০ AM-এ backup.sh চালাও\"\n\n  কীভাবে চলে:\n   crond (প্রতি মিনিটে চেক) ──▶ সময় মিলল? ──▶ script run\n                                              │\n     >> /var/log/backup.log 2>&1  ◀───────────┘ (log রাখো)\n\n  * = ওই field-এর 'সব মান'  │  chmod +x backup.sh জরুরি",
+        "table": {
+          "headers": [
+            "Field",
+            "মান পরিসর",
+            "উদাহরণে"
+          ],
+          "rows": [
+            [
+              "minute",
+              "0–59",
+              "0 (ঘণ্টার শুরু)"
+            ],
+            [
+              "hour",
+              "0–23",
+              "2 (রাত ২টা)"
+            ],
+            [
+              "day of month",
+              "1–31",
+              "* (প্রতিদিন)"
+            ],
+            [
+              "month",
+              "1–12",
+              "* (প্রতি মাস)"
+            ],
+            [
+              "day of week",
+              "0–6 (0=রবি)",
+              "* (প্রতি বার)"
+            ]
+          ]
+        },
+        "mnemonic": "মিনিট-ঘণ্টা-দিন-মাস-বার (৫ ঘর), তারপর command; * মানে 'সব' — 0 2 * * * = রোজ রাত ২টা।"
+      }
+    }
+  ]
+}

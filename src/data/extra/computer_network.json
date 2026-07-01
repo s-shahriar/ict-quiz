@@ -1,0 +1,459 @@
+{
+  "category": "computer_network",
+  "questions": [
+    {
+      "id": "cn_ex_001",
+      "q": "A bank's IT department deploys a proxy server to control internet traffic, harden security, and enforce organizational browsing policies. Explain the different types of proxy servers (forward, reverse, caching) and discuss the specific role each plays in the bank's network.",
+      "tags": [
+        "proxy",
+        "forward-proxy",
+        "reverse-proxy",
+        "caching",
+        "security"
+      ],
+      "answer": {
+        "summary": [
+          "Proxy = client আর server-এর মাঝখানে বসা middleman যে request/response relay করে।",
+          "Forward proxy ভেতরের user-কে বাইরের internet থেকে আড়াল করে; Reverse proxy বাইরের internet থেকে ভেতরের server-কে আড়াল করে।",
+          "Caching proxy আগের response জমা রেখে repeat request দ্রুত ও bandwidth-সাশ্রয়ী করে।"
+        ],
+        "points": [
+          "Forward proxy: bank-এর সব internal user এর হয়ে internet-এ request পাঠায় — তাই ISP শুধু proxy-কে দেখে, ভেতরের user identity লুকানো থাকে।",
+          "কেন দরকার: এখানেই URL filtering, content block, malware scan ও access policy (কোন site খোলা যাবে) enforce করা হয় — একটাই control point।",
+          "Reverse proxy: internet থেকে আসা user (যেমন internet-banking customer) আসলে proxy-র সাথে কথা বলে, পেছনের real application server তার কাছে অদৃশ্য থাকে।",
+          "কেন দরকার: reverse proxy load balancing, SSL/TLS termination আর DDoS/attack shielding দেয় — ভেতরের server-এর IP কখনো বাইরে যায় না।",
+          "Caching proxy: বারবার চাওয়া static content (image, update file) local-এ রেখে দেয়, ফলে internet bandwidth কমে ও response দ্রুত হয়।",
+          "নিরাপত্তা লাভ: proxy সব traffic log করে — audit, compliance ও anomaly detection সহজ হয়, যা bank-এর জন্য বাধ্যতামূলক।",
+          "সংক্ষেপে: forward = outbound user protection, reverse = inbound server protection, caching = performance ও bandwidth optimization।"
+        ],
+        "diagram": "FORWARD PROXY (outbound — user কে আড়াল করে)\n\n  ┌──────────┐   ┌───────────────┐   ┌──────────┐\n  │ Internal │──▶│ FORWARD PROXY │──▶│ INTERNET │\n  │  User    │   │ ▌filter ▌log  │   │ (website)│\n  └──────────┘   └───────────────┘   └──────────┘\n       ▲                ▲                  ▲\n   ভেতরের user     policy/filter এখানে   বাইরের ISP শুধু\n   (client side)   ও caching হয়        proxy-কে দেখে\n\n────────────────────────────────────────────────\nREVERSE PROXY (inbound — server কে আড়াল করে)\n\n  ┌──────────┐   ┌───────────────┐   ┌──────────┐\n  │ INTERNET │──▶│ REVERSE PROXY │──▶│ Internal │\n  │ customer │   │ ●SSL ●balance │   │ Servers  │\n  └──────────┘   └───────────────┘   │ ▤ ▤ ▤    │\n       ▲                ▲            └──────────┘\n   বাইরের user      load-balance +      real app server\n                    DDoS shield         IP লুকানো\n\n────────────────────────────────────────────────\n  Forward     Reverse     Caching   ← at-a-glance\n  কে আড়াল:  user       server      response\n  মূল কাজ:   filter     shield      speed/BW",
+        "table": {
+          "headers": [
+            "দিক",
+            "Forward Proxy",
+            "Reverse Proxy"
+          ],
+          "rows": [
+            [
+              "কাকে আড়াল করে",
+              "ভেতরের client/user",
+              "ভেতরের server"
+            ],
+            [
+              "কার হয়ে কাজ করে",
+              "client-এর হয়ে",
+              "server-এর হয়ে"
+            ],
+            [
+              "মূল উদ্দেশ্য",
+              "outbound filtering, policy, privacy",
+              "load balance, SSL, attack shield"
+            ],
+            [
+              "বসে কোথায়",
+              "user network-এর প্রান্তে",
+              "server network-এর প্রান্তে"
+            ],
+            [
+              "উদাহরণ",
+              "office internet gateway",
+              "internet-banking front-end"
+            ]
+          ]
+        },
+        "mnemonic": "Forward = আমাদের User এগিয়ে যায়, Reverse = বাইরের User ফিরে আমাদের Server-এ — কে লুকায় সেটাই পার্থক্য।"
+      }
+    },
+    {
+      "id": "cn_ex_002",
+      "q": "A corporate bank network uses the private range 10.0.0.0/24 for internal users but receives only ONE public IP from its ISP. Explain how NAT (and specifically PAT) let many internal users reach the Internet simultaneously through that single public IP, and show the translation table.",
+      "tags": [
+        "nat",
+        "pat",
+        "private-ip",
+        "public-ip",
+        "port"
+      ],
+      "answer": {
+        "summary": [
+          "NAT ভেতরের private IP-কে বের হওয়ার সময় public IP-তে অনুবাদ করে।",
+          "একটাই public IP-তে অনেক user চালাতে PAT (NAT overload) ব্যবহার হয় — পার্থক্য করা হয় port number দিয়ে।",
+          "Router একটি translation table রাখে যাতে ফেরত আসা reply সঠিক internal host-এ পৌঁছায়।"
+        ],
+        "points": [
+          "সমস্যা: 10.0.0.0/24 private range internet-এ routable নয়, আর হাতে public IP মাত্র একটা।",
+          "NAT সমাধান: router প্রতিটি outbound packet-এর source private IP বদলে public IP বসায়।",
+          "একাধিক user সমস্যা: সবাই একই public IP পেলে reply কার সেটা বোঝা যায় না — তাই PAT প্রতিটি session-কে আলাদা source port দেয়।",
+          "PAT (Port Address Translation): {private IP : private port} কে {public IP : unique public port} এ map করে — port-ই হচ্ছে user শনাক্তের চাবি।",
+          "Router translation table-এ প্রতিটি mapping রাখে; reply এলে destination port দেখে সঠিক internal host খুঁজে নেয় (reverse translation)।",
+          "ফলে হাজারো internal user মাত্র একটি public IP দিয়ে একসাথে internet ব্যবহার করতে পারে, আর ভেতরের IP structure বাইরে লুকানো থাকে (নিরাপত্তা bonus)।"
+        ],
+        "diagram": "একটাই Public IP: 203.0.113.5 — অনেক Internal User\n\n Internal (10.0.0.0/24)          Router (PAT)            Internet\n ┌──────────────┐                                    ┌─────────┐\n │10.0.0.11:5001│───┐                             ┌─▶│ web srv │\n │10.0.0.12:5001│──┐│   ┌────────────────────┐   │  │  :443   │\n │10.0.0.13:6200│─┐││   │ NAT/PAT TRANSLATION │   │  └─────────┘\n └──────────────┘ │││   └────────────────────┘   │\n                  │││                              │\n src বদলে হয়:     └┴┴──▶ 203.0.113.5 : <newport> ──┘\n\n TRANSLATION TABLE (router-এর মেমরিতে)\n ┌───────────────┬──────────────────┬────────────┐\n │ Inside (src)  │ Outside (public) │ Dest       │\n ├───────────────┼──────────────────┼────────────┤\n │10.0.0.11:5001 │ 203.0.113.5:40001│ web :443   │ ← user A\n │10.0.0.12:5001 │ 203.0.113.5:40002│ web :443   │ ← user B\n │10.0.0.13:6200 │ 203.0.113.5:40003│ web :443   │ ← user C\n └───────────────┴──────────────────┴────────────┘\n         ▲ একই public IP, আলাদা PORT = আলাদা user\n\n reply ফিরলে: dest port 40002 দেখে → 10.0.0.12 কে পাঠায়\n\n────────────────────────────────────\n  NAT: IP↔IP অনুবাদ\n  PAT: IP+PORT অনুবাদ (many→one, port দিয়ে ভাগ)",
+        "mnemonic": "একটাই দরজা (public IP), অনেক মানুষ — সবার হাতে আলাদা টোকেন নম্বর (port) দিয়ে PAT ভিড় সামলায়।"
+      }
+    },
+    {
+      "id": "cn_ex_003",
+      "q": "A bank HQ owns a single 192.168.1.0/24 network but must divide it among several branch offices, each needing its own isolated segment with room for around 50 hosts. Explain subnetting: what a subnet mask does, how many hosts a subnet supports, and why the bank should subnet instead of using one flat network.",
+      "tags": [
+        "subnetting",
+        "subnet-mask",
+        "cidr",
+        "hosts",
+        "broadcast"
+      ],
+      "answer": {
+        "summary": [
+          "Subnetting একটি বড় network-কে ছোট আলাদা অংশে ভাগ করে।",
+          "Subnet mask ঠিক করে IP-র কোন অংশ network আর কোন অংশ host।",
+          "প্রতি subnet-এ usable host = 2^(host bits) − 2 (network ও broadcast বাদ)।"
+        ],
+        "points": [
+          "কেন subnet: এক flat /24-এ সব branch একসাথে থাকলে broadcast সবখানে ছড়ায়, নিরাপত্তা ভাগ করা কঠিন, আর সমস্যা isolate করা যায় না।",
+          "Subnet mask: network bits-কে 1 আর host bits-কে 0 দিয়ে চিহ্নিত করে — যেমন /24 = 255.255.255.0, /26 = 255.255.255.192।",
+          "Host গণনা: host bits = 32 − prefix। /24-এ host bits = 8 → 2^8 − 2 = 254 host; /26-এ host bits = 6 → 2^6 − 2 = 62 host।",
+          "−2 কেন: প্রতি subnet-এ প্রথম address = network ID আর শেষ address = broadcast — এগুলো host-কে দেওয়া যায় না।",
+          "সমাধান: ~50 host দরকার হলে /26 (62 usable) মানানসই — একটি /24 কে চারটি /26 subnet-এ ভাগ করে ৪টি branch-কে আলাদা segment দেওয়া যায়।",
+          "লাভ: প্রতি branch আলাদা broadcast domain পায়, VLAN/firewall দিয়ে traffic নিয়ন্ত্রণ সহজ হয়, আর IP অপচয় কমে।"
+        ],
+        "diagram": "এক /24 কে ভাগ করা — 192.168.1.0/24\n\n MASK bits (৩২ ঘর): network=1, host=0\n /24 ▶ 11111111.11111111.11111111.00000000\n        └──── network (24) ────┘└host(8)┘  → 254 host\n /26 ▶ 11111111.11111111.11111111.11000000\n        └──── network (26) ──────┘└host6┘  → 62 host\n\n একটি /24 → চারটি /26 branch subnet:\n ┌───────────────────┬────────────┬───────────┐\n │ Subnet (/26)      │ Range      │ Branch    │\n ├───────────────────┼────────────┼───────────┤\n │192.168.1.0/26     │ .1  – .62  │ Branch-A  │\n │192.168.1.64/26    │ .65 – .126 │ Branch-B  │\n │192.168.1.128/26   │ .129– .190 │ Branch-C  │\n │192.168.1.192/26   │ .193– .254 │ Branch-D  │\n └───────────────────┴────────────┴───────────┘\n  ▲ .0/.64/.128/.192 = network ID  ▲ .63/.127.. = broadcast\n\n────────────────────────────────────\n  /24 : 1 net, 254 host  (big flat)\n  /26 : 4 net, 62 host each (branch-wise)\n  বেশি subnet ⇄ কম host — trade-off",
+        "table": {
+          "headers": [
+            "Prefix",
+            "Subnet Mask",
+            "Host bits",
+            "Usable host",
+            "Subnet সংখ্যা (/24 থেকে)"
+          ],
+          "rows": [
+            [
+              "/24",
+              "255.255.255.0",
+              "8",
+              "254",
+              "1"
+            ],
+            [
+              "/25",
+              "255.255.255.128",
+              "7",
+              "126",
+              "2"
+            ],
+            [
+              "/26",
+              "255.255.255.192",
+              "6",
+              "62",
+              "4"
+            ],
+            [
+              "/27",
+              "255.255.255.224",
+              "5",
+              "30",
+              "8"
+            ],
+            [
+              "/28",
+              "255.255.255.240",
+              "4",
+              "14",
+              "16"
+            ]
+          ]
+        },
+        "mnemonic": "প্রতি subnet-এ দুইজন সিট পায় না — প্রথমজন Network ID, শেষজন Broadcast; বাকিরাই usable host।"
+      }
+    },
+    {
+      "id": "cn_ex_004",
+      "q": "Bank employees complain they can open an internal web application by typing its IP address but NOT by its hostname (e.g. portal.bank.local). The site is up, but names won't resolve. Walk through the DNS resolution path step by step and outline the troubleshooting steps to isolate the fault.",
+      "tags": [
+        "dns",
+        "resolution",
+        "troubleshooting",
+        "nslookup",
+        "resolver"
+      ],
+      "answer": {
+        "summary": [
+          "IP দিয়ে কাজ করে কিন্তু নাম দিয়ে না — মানে network/server ঠিক, শুধু নাম→IP অনুবাদ (DNS) ভাঙা।",
+          "DNS একটি name-কে IP-তে অনুবাদ করে recursive resolver → root → TLD → authoritative ধাপে।",
+          "সমস্যা resolver setting, DNS server down, বা ভুল record — ধাপে ধাপে isolate করতে হবে।"
+        ],
+        "points": [
+          "মূল সূত্র: IP কাজ করা প্রমাণ করে routing ও server জীবিত — তাই দোষ শুধু name resolution (DNS) layer-এ।",
+          "Lookup path: client প্রথমে local cache/hosts file দেখে; না পেলে configured DNS resolver-এ query পাঠায়।",
+          "Resolver না জানলে root server → TLD server → authoritative name server-এ গিয়ে record খুঁজে IP ফেরত আনে (recursive query)।",
+          "IP পেয়ে client তখন সেই IP-তে connect করে — এই chain-এর যেকোনো ধাপ ভাঙলে নাম fail করবে।",
+          "Troubleshoot 1: ping/nslookup দিয়ে দেখুন নাম resolve হয় কিনা; 'ping IP works, ping name fails' নিশ্চিত করুন।",
+          "Troubleshoot 2: client-এর DNS server ঠিক আছে কিনা দেখুন (ipconfig /all বা resolv.conf); ভুল/খালি হলে সেটাই কারণ।",
+          "Troubleshoot 3: DNS cache flush (ipconfig /flushdns), অন্য DNS (8.8.8.8) দিয়ে test, আর authoritative server-এ A record আদৌ আছে কিনা যাচাই করুন।"
+        ],
+        "diagram": "সমস্যা: ping 10.0.5.20 ✔  |  ping portal.bank.local �’\n         (IP চলে)            (নাম চলে না) → DNS দোষী\n\n DNS RESOLUTION PATH (নাম → IP)\n\n ┌────────┐ 1.cache/hosts?  ┌──────────────┐\n │ Client │────────────────▶│ DNS Resolver │\n │ (PC)   │◀────────────────│ (recursive)  │\n └────────┘   8. IP ফেরত     └──────┬───────┘\n     ▲                        2│  ▲\n   9.connect                   ▼  │7. answer\n   to IP           ┌──────────────────────┐\n                   │  3 ● Root server      │\n                   │  4 ● TLD (.local/.com)│\n                   │  5 ● Authoritative NS │← A record এখানে\n                   │  6   portal → 10.0.5.20│\n                   └──────────────────────┘\n\n যেখানে ভাঙতে পারে (check করার ক্রম):\n ┌──┬───────────────────────┬───────────────────┐\n │# │ সন্দেহ                 │ command           │\n ├──┼───────────────────────┼───────────────────┤\n │1 │ ভুল/খালি DNS server    │ ipconfig /all     │\n │2 │ stale cache            │ ipconfig /flushdns│\n │3 │ resolver down          │ nslookup 8.8.8.8  │\n │4 │ record নেই / ভুল       │ nslookup name srv │\n └──┴───────────────────────┴───────────────────┘\n\n────────────────────────────────────\n  IP✔ + Name✘  ⇒  Layer 3 fine, DNS broken",
+        "mnemonic": "IP চলে নাম চলে না — মানে ফোনবুক নষ্ট, ফোন নয়; DNS হলো network-এর ফোনবুক।"
+      }
+    },
+    {
+      "id": "cn_ex_005",
+      "q": "A bank must design two services: (a) a real-time video-KYC call between a customer and an agent, and (b) an overnight batch transfer of large account-statement files between two data centers. For each, decide whether TCP or UDP is the better transport and justify the choice.",
+      "tags": [
+        "tcp",
+        "udp",
+        "transport-layer",
+        "reliability",
+        "streaming"
+      ],
+      "answer": {
+        "summary": [
+          "Video-KYC (real-time) → UDP: দ্রুত ও কম latency, কয়েকটা frame হারালেও চলে।",
+          "Batch statement file transfer → TCP: প্রতিটি byte নির্ভুল পৌঁছানো বাধ্যতামূলক।",
+          "মূল নীতি: gate real-time হলে speed, data-integrity জরুরি হলে reliability।"
+        ],
+        "points": [
+          "TCP: connection-oriented, handshake করে, প্রতিটি packet acknowledge ও retransmit করে, ক্রম ঠিক রাখে — তাই নির্ভরযোগ্য কিন্তু একটু ধীর ও overhead বেশি।",
+          "UDP: connectionless, ack/retransmit নেই, শুধু পাঠিয়ে দেয় — তাই দ্রুত ও কম latency কিন্তু packet হারালে ফেরত আসে না।",
+          "Video-KYC: এটি live — দেরিতে আসা frame অকেজো; একটা frame হারালে সমস্যা নেই, কিন্তু delay (buffering) সমস্যা। তাই UDP-ই উপযুক্ত (RTP সাধারণত UDP-র উপর চলে)।",
+          "কেন TCP নয় (video-তে): TCP হারানো packet retransmit করতে গিয়ে পুরো stream আটকে দেয় (head-of-line blocking) → live call-এ ঝুলে যায়।",
+          "Batch file transfer: statement-এ একটি byte ভুল হলে হিসাব ভুল — 100% নির্ভুলতা লাগে, কিন্তু overnight বলে speed গৌণ। তাই TCP।",
+          "কেন UDP নয় (file-এ): UDP হারানো অংশ পুনরায় আনে না → file corrupt/incomplete হবে, যা bank-এ অগ্রহণযোগ্য।",
+          "সিদ্ধান্তের সূত্র: 'একটু হারালেও দ্রুত চাই' → UDP; 'ধীর হলেও নিখুঁত চাই' → TCP।"
+        ],
+        "diagram": "দুই কাজ, দুই transport বাছাই\n\n (a) VIDEO-KYC  (live, real-time)      ▶ UDP\n   ┌─────────┐  frame frame frame frame\n   │Customer │≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈▶ │Agent│\n   └─────────┘   ✗ একটা frame drop → skip, চলতে থাকে\n                 কম latency = মসৃণ live call\n\n (b) STATEMENT FILE (overnight batch) ▶ TCP\n   ┌────────┐ SEND──▶ ┌────────┐\n   │ DC-A   │◀──ACK── │ DC-B   │  প্রতিটি byte confirm\n   └────────┘         └────────┘  হারালে retransmit → 100% নিখুঁত\n\n────────────────────────────────────\n   বিষয়        TCP           UDP\n   speed:     ধীর           দ্রুত\n   loss:      recover করে   ঠিক করে না\n   ভালো:      file/txn      video/voice",
+        "table": {
+          "headers": [
+            "দিক",
+            "TCP",
+            "UDP"
+          ],
+          "rows": [
+            [
+              "Connection",
+              "connection-oriented (handshake)",
+              "connectionless"
+            ],
+            [
+              "Reliability",
+              "ack + retransmit, নিশ্চিত পৌঁছায়",
+              "no ack, হারালে যায়"
+            ],
+            [
+              "Order",
+              "ক্রম ঠিক রাখে",
+              "ক্রম নিশ্চিত নয়"
+            ],
+            [
+              "Speed/overhead",
+              "ধীর, overhead বেশি",
+              "দ্রুত, overhead কম"
+            ],
+            [
+              "উপযুক্ত",
+              "batch file, DB txn, email",
+              "video-KYC, VoIP, live stream"
+            ]
+          ]
+        },
+        "mnemonic": "TCP = নিখুঁত ডাকপিয়ন (রিসিট নেয়), UDP = দ্রুত ঘোষক (একবার বলেই চলে) — file-এ পিয়ন, live-এ ঘোষক।"
+      }
+    },
+    {
+      "id": "cn_ex_006",
+      "q": "At a Bangladesh Bank branch, a single physical access switch connects the core-banking department, HR, and general staff. Management wants these three groups logically separated on that one switch so that core-banking traffic is isolated for security and broadcast storms stay contained. Explain VLANs, why segmentation is needed, and how traffic that must pass between VLANs is controlled.",
+      "tags": [
+        "vlan",
+        "segmentation",
+        "broadcast-domain",
+        "inter-vlan",
+        "layer3",
+        "security"
+      ],
+      "answer": {
+        "summary": [
+          "VLAN একটাই physical switch-কে অনেকগুলো আলাদা logical network-এ ভাগ করে।",
+          "প্রতিটি VLAN আলাদা broadcast domain — এক দলের traffic অন্য দলে যায় না।",
+          "VLAN-এর মধ্যে যেতে হলে অবশ্যই Layer-3 device (router/L3 switch) দিয়ে যেতে হয়, যেখানে ACL/firewall control বসে।"
+        ],
+        "points": [
+          "সমস্যা: এক flat switch-এ সব port একই broadcast domain-এ থাকে — core-banking, HR ও general staff একসাথে; একজনের broadcast সবাই পায় আর যে কেউ যেকারো traffic sniff করতে পারে।",
+          "VLAN কী: switch-এ port গুলোকে tag/group করে আলাদা virtual LAN বানানো হয় (যেমন VLAN 10 = core-banking, VLAN 20 = HR, VLAN 30 = staff) — physically এক switch হলেও logically আলাদা।",
+          "কেন segment করা দরকার: প্রতি VLAN নিজস্ব broadcast domain, তাই broadcast storm এক VLAN-এ আটকে থাকে; আবার security-তে core-banking data অন্য দলের নাগালের বাইরে থাকে (isolation)।",
+          "Traffic isolation: default-ভাবে VLAN 10 আর VLAN 20 একে অপরকে দেখতেই পায় না — Layer-2 এ এদের মধ্যে কোনো path নেই।",
+          "Inter-VLAN routing: এক VLAN থেকে আরেক VLAN-এ যেতে হলে packet-কে Layer-3 device (router বা L3 switch)-এ যেতে হয়, কারণ ভিন্ন VLAN = ভিন্ন subnet।",
+          "নিয়ন্ত্রণ কোথায়: সেই router/L3 interface-এ ACL বা firewall rule বসিয়ে ঠিক করা হয় কে কার সাথে কথা বলতে পারবে — যেমন HR কখনো core-banking VLAN-এ ঢুকতে পারবে না, শুধু অনুমোদিত traffic যাবে।",
+          "লাভ: একটাই switch-এ কম খরচে department-wise isolation, ছোট broadcast domain, আর এক central point-এ policy enforce — bank compliance-এর জন্য আদর্শ।"
+        ],
+        "diagram": "একটাই Physical Switch — তিনটি আলাদা VLAN\n\n ┌──────────────────────────────────────────┐\n │        ACCESS SWITCH (physically এক)       │\n │                                            │\n │  VLAN 10 ▌ VLAN 10   VLAN 20 ▌ VLAN 30     │\n │  ┌────┐  ┌────┐      ┌────┐    ┌────┐       │\n │  │Core│  │Core│      │ HR │    │Staff│      │\n │  │bank│  │bank│      │    │    │     │      │\n │  └────┘  └────┘      └────┘    └────┘       │\n │  └── 10.10.10.0/24 ┘ └20.0/24┘ └30.0/24┘    │\n └───────────────┬────────────────────────────┘\n                 │ trunk (সব VLAN tag সহ)\n                 ▼\n        ┌──────────────────────┐\n        │  ROUTER / L3 SWITCH  │ ← inter-VLAN এখানেই\n        │  ▌ACL / firewall rule│   HR ✗→ core-banking\n        └──────────────────────┘   শুধু অনুমোদিত traffic\n\n Layer-2 (switch): VLAN 10 ↮ VLAN 20 = আলাদা, দেখতে পায় না\n Layer-3 (router): control সহ এক VLAN → আরেক VLAN\n\n────────────────────────────────────\n  VLAN = আলাদা broadcast domain\n  ভিন্ন VLAN ⇒ ভিন্ন subnet ⇒ routing লাগে\n  control point = L3 interface-এর ACL",
+        "table": {
+          "headers": [
+            "দিক",
+            "VLAN ছাড়া (flat switch)",
+            "VLAN দিয়ে segment"
+          ],
+          "rows": [
+            [
+              "Broadcast domain",
+              "একটাই বড়, সবাই পায়",
+              "প্রতি VLAN আলাদা, ছোট"
+            ],
+            [
+              "Security/isolation",
+              "সবাই সবার traffic দেখে",
+              "department-wise আলাদা"
+            ],
+            [
+              "এক দল → অন্য দল",
+              "সরাসরি, নিয়ন্ত্রণহীন",
+              "শুধু router/L3 দিয়ে, ACL সহ"
+            ],
+            [
+              "Broadcast storm",
+              "পুরো network-এ ছড়ায়",
+              "এক VLAN-এ আটকে থাকে"
+            ],
+            [
+              "খরচ",
+              "আলাদা switch লাগত",
+              "একটাই switch, logical ভাগ"
+            ]
+          ]
+        },
+        "mnemonic": "এক বাড়ি, অনেক ঘর — VLAN দেয়াল তোলে; এক ঘর থেকে আরেক ঘরে যেতে দরজা (router) পার হতেই হয়।"
+      }
+    },
+    {
+      "id": "cn_ex_007",
+      "q": "A Bangladesh Bank branch office in a distant district must securely and continuously reach the HQ data centre core-banking servers. The network team is choosing between a dedicated leased line and a site-to-site IPSec VPN over the public internet. Explain both options, how the encrypted tunnel between the two site gateways works, and the trade-offs the bank should weigh.",
+      "tags": [
+        "leased-line",
+        "site-to-site-vpn",
+        "ipsec",
+        "tunnel",
+        "wan",
+        "connectivity"
+      ],
+      "answer": {
+        "summary": [
+          "Leased line = ISP-র দেওয়া নিজস্ব dedicated private circuit, শুধু bank-এর জন্য।",
+          "Site-to-site VPN = public internet-এর উপর দুই gateway-র মধ্যে IPSec encrypted tunnel।",
+          "মূল trade-off: leased line নিশ্চিত performance ও নিরাপত্তা কিন্তু ব্যয়বহুল; VPN সস্তা ও নমনীয় কিন্তু internet-নির্ভর।"
+        ],
+        "points": [
+          "Leased line: ISP branch আর HQ-র মধ্যে একটি dedicated point-to-point circuit দেয় — bandwidth শুধু bank-এর, কেউ ভাগ বসায় না, তাই latency স্থির ও নিরাপত্তা built-in (traffic public internet-এ যায়ই না)।",
+          "কেন ব্যয়বহুল: এই private circuit-এর জন্য মাসে মোটা ভাড়া দিতে হয়, আর দূরত্ব বাড়লে খরচ বাড়ে; নতুন branch যোগ করাও ধীর।",
+          "Site-to-site VPN: সাধারণ internet connection-এর উপর branch gateway ও HQ gateway-র মধ্যে একটি IPSec tunnel তৈরি হয় — দুই gateway আগে authenticate করে, তারপর encryption key বিনিময় করে (IKE)।",
+          "Tunnel যেভাবে কাজ করে: branch থেকে যাওয়া প্রতিটি packet কে gateway encrypt করে নতুন public header-এ মুড়ে (encapsulation) পাঠায়; মাঝপথে internet-এ কেউ ধরলেও ভেতরের data পড়তে পারে না; HQ gateway সেটি decrypt করে ভেতরের server-এ দেয়।",
+          "কেন সস্তা ও নমনীয়: শুধু দুই প্রান্তে internet থাকলেই চলে, আলাদা circuit ভাড়া লাগে না; নতুন branch দ্রুত যোগ করা যায়।",
+          "ঝুঁকি: VPN public internet-এর উপর নির্ভরশীল, তাই bandwidth ও latency ISP-র congestion-এ ওঠানামা করে এবং internet down হলে link down।",
+          "ব্যাংকের সিদ্ধান্ত: core-banking-এর মতো critical, স্থির-performance link-এ leased line (প্রায়ই VPN backup সহ); সাধারণ/খরচ-সংবেদনশীল branch-এ site-to-site VPN — অনেক bank দুটোই hybrid-এ রাখে।"
+        ],
+        "diagram": "Branch ↔ HQ Data Centre — দুই পথ\n\n(1) LEASED LINE (dedicated private circuit)\n ┌────────┐    নিজস্ব private circuit    ┌────────┐\n │ Branch │══════════════════════════════│  HQ DC │\n │ router │  (শুধু bank-এর, কেউ ভাগ নেই)  │ core   │\n └────────┘    স্থির bandwidth+latency    └────────┘\n            public internet ছোঁয় না = নিরাপদ কিন্তু দামি\n\n(2) SITE-TO-SITE VPN (IPSec tunnel over internet)\n ┌────────┐          ┌───────────────┐          ┌────────┐\n │ Branch │─encrypt─▶│   INTERNET    │─decrypt─▶│  HQ DC │\n │gateway │◀═════════╡ ▓▓ IPSec ▓▓  ╞═════════▶│gateway │\n └────────┘   ▲      └───────────────┘      ▲   └────────┘\n              │  tunnel: packet মুড়ে(encapsulate)+ encrypt\n              │  মাঝপথে ধরলেও ভেতর পড়া যায় না\n         plaintext                      plaintext\n         (LAN side)                     (LAN side)\n\n────────────────────────────────────\n  Leased line : dedicated, স্থির, দামি\n  Site VPN    : internet, নমনীয়, সস্তা, ISP-নির্ভর\n  অনেক bank   : leased primary + VPN backup (hybrid)",
+        "table": {
+          "headers": [
+            "দিক",
+            "Leased Line",
+            "Site-to-Site VPN"
+          ],
+          "rows": [
+            [
+              "মাধ্যম",
+              "dedicated private circuit",
+              "public internet"
+            ],
+            [
+              "নিরাপত্তা",
+              "physically isolated, built-in",
+              "IPSec encryption দিয়ে"
+            ],
+            [
+              "Performance",
+              "স্থির bandwidth ও latency",
+              "ISP congestion-এ ওঠানামা"
+            ],
+            [
+              "খরচ",
+              "বেশি (মাসিক ভাড়া, দূরত্বে বাড়ে)",
+              "কম (শুধু internet লাগে)"
+            ],
+            [
+              "Setup/নমনীয়তা",
+              "ধীর, নতুন branch যোগ কঠিন",
+              "দ্রুত, সহজে scale করা যায়"
+            ],
+            [
+              "নির্ভরতা",
+              "ISP circuit",
+              "internet up থাকা"
+            ]
+          ]
+        },
+        "mnemonic": "Leased line = নিজের private রাস্তা (দামি, ফাঁকা); VPN = পাবলিক হাইওয়েতে বর্মে-মোড়া গাড়ি (সস্তা, কিন্তু জ্যাম-নির্ভর)।"
+      }
+    },
+    {
+      "id": "cn_ex_008",
+      "q": "Bangladesh Bank's core services must stay up 24x7 — the network cannot afford an outage if a single internet link or a single edge router fails. Explain how link and router redundancy (dual ISP, automatic failover, load sharing) achieves high availability, describe the idea of a virtual gateway shared by two routers, and show how traffic reroutes automatically when the primary path dies.",
+      "tags": [
+        "redundancy",
+        "failover",
+        "high-availability",
+        "dual-isp",
+        "virtual-gateway",
+        "load-sharing"
+      ],
+      "answer": {
+        "summary": [
+          "Redundancy = একই কাজের জন্য দুটো path/device রাখা, যাতে একটা মরলে অন্যটা কাজ চালায়।",
+          "Dual ISP + দুই router = কোনো single point of failure থাকে না; failover স্বয়ংক্রিয়ভাবে backup-এ সরিয়ে দেয়।",
+          "Virtual gateway (VRRP/HSRP): দুই router একটাই virtual IP share করে, তাই user টেরও পায় না কে active।"
+        ],
+        "points": [
+          "মূল লক্ষ্য: single point of failure (SPOF) দূর করা — এক link বা এক router মরলেও service যেন না থামে (24x7 uptime)।",
+          "Link redundancy (dual ISP): branch/HQ দুই আলাদা ISP থেকে দুটি internet link নেয়; একটি down হলে traffic অন্যটিতে চলে যায় — একই ISP-র উপর নির্ভরতা কমে।",
+          "Router redundancy: edge-এ দুটি router (primary + backup) রাখা হয়; একটির hardware fail করলে অন্যটি দায়িত্ব নেয়।",
+          "Virtual gateway (VRRP/HSRP): দুই router মিলে একটাই virtual gateway IP প্রকাশ করে, যেটি সব internal host তাদের default gateway হিসেবে ব্যবহার করে; active router মরলে backup সেই virtual IP নিজে নিয়ে নেয় — host-এর কোনো setting বদলাতে হয় না।",
+          "Automatic failover: routers একে অপরকে hello/heartbeat পাঠায়; heartbeat বন্ধ হলে backup কয়েক সেকেন্ডে active হয়ে traffic নিজে টেনে নেয় — মানুষের হাত লাগে না।",
+          "Load sharing: শুধু বসিয়ে রাখা নয় — দুই link একসাথে চালিয়ে traffic ভাগ করা যায় (active-active), ফলে backup সময়েও bandwidth কাজে লাগে; সমস্যা হলে বাকি link পুরো load নেয়।",
+          "ব্যাংকের লাভ: hardware, link ও ISP তিন স্তরেই redundancy থাকায় যেকোনো একক failure-এ downtime প্রায় শূন্য — RTO সেকেন্ডে নেমে আসে, যা core-banking-এর SLA-র জন্য অপরিহার্য।"
+        ],
+        "diagram": "24x7 Uptime — দুই স্তরে Redundancy (কোনো SPOF নেই)\n\n           ┌─────────┐        ┌─────────┐\n           │  ISP-A  │        │  ISP-B  │  ← dual ISP\n           └────┬────┘        └────┬────┘   (link redundancy)\n         PRIMARY│                  │BACKUP\n           ┌────▼────┐  heartbeat  ┌────▼────┐\n           │ Router-1│◀═══════════▶│ Router-2│ ← dual router\n           │ ACTIVE  │  hello/hello│ STANDBY │\n           └────┬────┘             └────┬────┘\n                └────────┬──────────────┘\n                 Virtual Gateway IP: 10.0.0.1\n                 (দুই router share করে — VRRP/HSRP)\n                         │\n                 ┌───────▼────────┐\n                 │  Internal LAN  │ default gw = 10.0.0.1\n                 │  (core-banking)│ (host কিছু জানে না)\n                 └────────────────┘\n\n FAILOVER (Router-1 বা ISP-A মরলে):\n   Router-2 heartbeat মিস করে → নিজেই virtual IP 10.0.0.1 নেয়\n   → traffic ISP-B দিয়ে বইতে থাকে → user টের পায় না\n\n────────────────────────────────────\n  Link redundancy   : dual ISP\n  Device redundancy : dual router\n  Virtual gateway   : এক IP, দুই router (auto failover)\n  Load sharing      : active-active হলে দুটোই কাজে লাগে",
+        "table": {
+          "headers": [
+            "ধরন",
+            "কী দুটো রাখা হয়",
+            "একটি মরলে কী হয়"
+          ],
+          "rows": [
+            [
+              "Link redundancy",
+              "দুই ISP-র দুই link",
+              "traffic অন্য ISP-তে যায়"
+            ],
+            [
+              "Router redundancy",
+              "primary + backup router",
+              "backup দায়িত্ব নেয়"
+            ],
+            [
+              "Virtual gateway",
+              "এক virtual IP, দুই router",
+              "backup সেই IP নিয়ে নেয়"
+            ],
+            [
+              "Failover",
+              "heartbeat নজরদারি",
+              "সেকেন্ডে auto switch"
+            ],
+            [
+              "Load sharing",
+              "active-active দুই path",
+              "বাকি path পুরো load নেয়"
+            ]
+          ]
+        },
+        "mnemonic": "দুই দরজা, দুই পাহারাদার, এক নামফলক (virtual IP) — একজন পড়ে গেলে অন্যজন নামফলক তুলে নেয়, গ্রাহক টেরও পায় না।"
+      }
+    }
+  ]
+}
