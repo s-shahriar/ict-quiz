@@ -1,4 +1,4 @@
-import { Landmark } from 'lucide-react'
+import { Landmark, Server } from 'lucide-react'
 
 import { TOPICS } from '../index.js'
 import computerNetwork from './computer_network.json'
@@ -6,6 +6,7 @@ import database from './database.json'
 import machineLearning from './machine_learning.json'
 import informationSecurity from './information_security.json'
 import softwareEngineering from './software_engineering.json'
+import datacenter from './datacenter.json'
 import banking from './banking.json'
 
 // Viva Q&A datasets, keyed by topic id.
@@ -18,11 +19,20 @@ const VIVA_DATA = {
   machine_learning: machineLearning,
   information_security: informationSecurity,
   software_engineering: softwareEngineering,
+  datacenter: datacenter,
   banking: banking,
 }
 
 // Categories that exist only in the Viva module (no MCQ counterpart in TOPICS).
 const VIVA_ONLY_TOPICS = [
+  {
+    id: 'datacenter',
+    name: 'Data Center & DR',
+    shortName: 'Data Center',
+    icon: Server,
+    color: '#0ea5e9',
+    questions: [],
+  },
   {
     id: 'banking',
     name: 'Banking & Fintech',

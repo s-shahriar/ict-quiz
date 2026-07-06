@@ -1,0 +1,48 @@
+{
+  "category": "datacenter",
+  "questions": [
+    {
+      "id": "dc_viva_001",
+      "q": "RTO ও RPO কী? এদের পার্থক্য কী? (Disaster Recovery)",
+      "tags": ["rto", "rpo", "disaster-recovery", "dr-site", "backup", "banking"],
+      "answer": {
+        "summary": [
+          "RTO ও RPO হলো disaster recovery-র দুটি মূল মাপকাঠি: RTO বলে কত দ্রুত service ফিরিয়ে আনতে হবে (সময়), আর RPO বলে সর্বোচ্চ কতটুকু data loss মেনে নেওয়া যাবে।"
+        ],
+        "points": [
+          "RTO (Recovery Time Objective): মূল data center down হওয়ার পর সর্বোচ্চ কত সময়ের মধ্যে DR site থেকে service আবার live/চালু করতে হবে (ব্যাংকে RTO সাধারণত ১০-৩০ মিনিট)।",
+          "RPO (Recovery Point Objective): বিপর্যয়ের পর backup থেকে restore করার সময় সর্বোচ্চ কতটুকু data loss মেনে নেওয়া যাবে — এটি মূলত সময়ের ব্যবধানে মাপা হয়।",
+          "সহজ কথায়: RTO = কত দ্রুত ফিরব (downtime); RPO = কতটুকু হারাব (data loss)।",
+          "ব্যাংকের মতো critical service-এ RTO ও RPO দুটোই যত ছোট, তত ভালো — কম downtime, কম data loss।"
+        ],
+        "table": {
+          "headers": ["দিক", "RTO", "RPO"],
+          "rows": [
+            ["মাপে কী", "কত দ্রুত service ফিরবে", "কতটুকু data loss গ্রহণযোগ্য"],
+            ["ফোকাস", "Downtime (সময়)", "Data loss (সময়ের ব্যবধান)"],
+            ["প্রশ্ন", "কখন আবার চালু হবে?", "কোন পর্যন্ত data ফিরে পাব?"]
+          ]
+        },
+        "mnemonic": "RTO = Time to recover (কত দ্রুত); RPO = Point of data (কতটুকু হারানো যাবে)।"
+      }
+    },
+    {
+      "id": "dc_viva_002",
+      "q": "Data Center-এ cooling এবং security ও monitoring কীভাবে নিশ্চিত করা হয়?",
+      "tags": ["data-center", "cooling", "crac", "hvac", "fire-suppression", "dcim", "physical-security"],
+      "answer": {
+        "summary": [
+          "হাজার হাজার server একসাথে চলায় Data Center-এ প্রচুর তাপ ও নিরাপত্তা-ঝুঁকি তৈরি হয়; তাই লাগে শক্তিশালী cooling system এবং বহুস্তরের physical security ও real-time monitoring।"
+        ],
+        "points": [
+          "Cooling — CRAC (Computer Room Air Conditioner): server room-এর তাপমাত্রা ও আর্দ্রতা নিয়ন্ত্রণ করে।",
+          "Cooling — HVAC system: data center-এর তাপমাত্রা সাধারণত ১৮°C – ২৭°C-এর মধ্যে ধরে রাখে।",
+          "Physical security: বায়োমেট্রিক access, CCTV camera ও security guard দিয়ে অননুমোদিত প্রবেশ ঠেকানো হয়।",
+          "Fire suppression: আগুন লাগলে পানি ব্যবহার করা যায় না (electronics নষ্ট হবে), তাই বিশেষ গ্যাস (FM-200 বা Novec 1230) দিয়ে আগুন নেভানো হয়।",
+          "DCIM (Data Center Infrastructure Management): সব system ঠিকঠাক চলছে কিনা তা real-time monitor করার software।"
+        ],
+        "mnemonic": "ঠান্ডা রাখো (CRAC/HVAC, ১৮-২৭°C), পাহারা দাও (biometric/CCTV), আগুনে গ্যাস (FM-200/Novec), সব দেখো DCIM দিয়ে।"
+      }
+    }
+  ]
+}

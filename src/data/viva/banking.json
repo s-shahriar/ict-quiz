@@ -72,6 +72,7 @@
           "MD & CEO: Md. Shawkat Ali Khan।",
           "Authorised Capital: Taka 6000.00 Crore; Paid-up Capital: Taka 4530.00 Crore।",
           "শাখা: দেশে ১২৩৫টি, আর ভারতে দুটি international branch — Kolkata ও Siliguri।",
+          "Core Banking Solution (CBS): Sonali Intellect — এটি ব্যাংকের সব শাখাকে একটি কেন্দ্রীয় system-এ যুক্ত করে (any branch banking)।",
           "ই-সেবা: Sonali Corporate i-Banking, Sonali Bank Payment Gateway, Online Bill Payment System, Sonali Bank Mobile Apps, Sonali eSheba, Sonali eWallet ও Binimoy Service।"
         ],
         "table": {
@@ -82,7 +83,8 @@
             ["Authorised Capital", "Taka 6000.00 Crore"],
             ["Paid-up Capital", "Taka 4530.00 Crore"],
             ["শাখা", "1235 (দেশে)"],
-            ["আন্তর্জাতিক শাখা", "Kolkata ও Siliguri (India)"]
+            ["আন্তর্জাতিক শাখা", "Kolkata ও Siliguri (India)"],
+            ["CBS (Core Banking)", "Sonali Intellect"]
           ]
         },
         "mnemonic": "বৃহত্তম রাষ্ট্রীয় ব্যাংক — ১২৩৫ শাখা, মূলধন ৬০০০/৪৫৩০ কোটি, ভারতে ২ শাখা।"
