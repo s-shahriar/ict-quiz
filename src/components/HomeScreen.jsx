@@ -1,17 +1,20 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
-import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck, Dumbbell, Sparkles } from 'lucide-react'
+import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck, Dumbbell, Sparkles, Mic } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { WRITTEN_TOPICS } from '../data/written/index.js'
 import { EXTRA_TOPICS } from '../data/extra/index.js'
+import { VIVA_TOPICS } from '../data/viva/index.js'
 import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 import { useExtraMasteredContext } from '../contexts/ExtraMasteredContext.jsx'
+import { useVivaMasteredContext } from '../contexts/VivaMasteredContext.jsx'
 import GroupSearch from './GroupSearch.jsx'
 import WrittenSearch from './WrittenSearch.jsx'
 import ExtraSearch from './ExtraSearch.jsx'
+import VivaSearch from './VivaSearch.jsx'
 
 export default function HomeScreen({ onBackup }) {
   const navigate = useNavigate()
@@ -20,6 +23,7 @@ export default function HomeScreen({ onBackup }) {
   const { value: important } = useImportantContext()
   const { value: writtenMastered } = useWrittenMasteredContext()
   const { value: extraMastered } = useExtraMasteredContext()
+  const { value: vivaMastered } = useVivaMasteredContext()
 
   const [searchParams] = useSearchParams()
   // Capture restore target once per mount (HomeScreen remounts on browser-back
@@ -29,15 +33,17 @@ export default function HomeScreen({ onBackup }) {
     search: searchParams.get('search') || '',
   }))
   const [module, setModule] = useState(
-    ['written', 'practice', 'extra'].includes(restored.module) ? restored.module : 'mcq'
+    ['written', 'practice', 'extra', 'viva'].includes(restored.module) ? restored.module : 'mcq'
   )
   const [mcqSearching, setMcqSearching] = useState(false)
   const [writtenSearching, setWrittenSearching] = useState(false)
   const [extraSearching, setExtraSearching] = useState(false)
+  const [vivaSearching, setVivaSearching] = useState(false)
 
   const topics = TOPICS
   const writtenTopics = WRITTEN_TOPICS
   const extraTopics = EXTRA_TOPICS
+  const vivaTopics = VIVA_TOPICS
 
   const totalNailed = topics.reduce((s, t) =>
     s + t.questions.filter((q, i) => q.options && q.correct_answer && mastered.has(`${t.id}__${i}`)).length
@@ -58,6 +64,12 @@ export default function HomeScreen({ onBackup }) {
   , 0)
 
   const totalExtraNailed = extraMastered?.size ?? 0
+
+  const totalVivaImportant = (vivaTopics || []).reduce((s, t) =>
+    s + [...important].filter(id => id.startsWith(`viva__${t.id}__`)).length
+  , 0)
+
+  const totalVivaNailed = vivaMastered?.size ?? 0
 
   const totalPracticeImportant = [...important].filter(id => id.startsWith('practice__')).length
 
@@ -82,6 +94,9 @@ export default function HomeScreen({ onBackup }) {
           </button>
           <button className={`module-btn${module === 'extra' ? ' active' : ''}`} onClick={() => setModule('extra')}>
             <Sparkles size={15} /> Extra
+          </button>
+          <button className={`module-btn${module === 'viva' ? ' active' : ''}`} onClick={() => setModule('viva')}>
+            <Mic size={15} /> Viva
           </button>
         </div>
       </header>
@@ -271,6 +286,60 @@ export default function HomeScreen({ onBackup }) {
           </main>
         </>
       )}
+
+      {module === 'viva' && (
+        <>
+          <VivaSearch onActiveChange={setVivaSearching} initialQuery={restored.module === 'viva' ? restored.search : ''} />
+        </>
+      )}
+
+      {module === 'viva' && !vivaSearching && (
+        <>
+          <div className="home-action-row">
+            <button className="action-card nailed-card" onClick={() => navigate('/viva/nailed')}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--nailed">
+                <Star size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Nailed It</div>
+                <div className="ac-sub">{totalVivaNailed} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--nailed">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+
+            <button className="action-card important-card" onClick={() => navigate('/viva/important')}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--important">
+                <Bookmark size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Important</div>
+                <div className="ac-sub">{totalVivaImportant} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--important">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+          </div>
+
+          <p className="section-label">Choose a Category</p>
+          {vivaTopics.length === 0 ? (
+            <div className="written-empty">
+              <Mic size={40} style={{ opacity: 0.25, marginBottom: 12 }} />
+              <p>এখনো কোনো Viva প্রশ্ন যোগ করা হয়নি।</p>
+            </div>
+          ) : (
+            <main className="topics-grid">
+              {vivaTopics.map(t => (
+                <VivaCategoryCard key={t.id} topic={t} onClick={() => navigate('/viva?topic=' + t.id)} />
+              ))}
+            </main>
+          )}
+        </>
+      )}
     </div>
   )
 }
@@ -319,6 +388,23 @@ function ExtraCategoryCard({ topic, onClick }) {
       <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
         <Sparkles size={11} />
         {topic.extraCount}
+      </span>
+    </button>
+  )
+}
+
+function VivaCategoryCard({ topic, onClick }) {
+  const Icon = topic.icon
+  return (
+    <button className="topic-card written-category-card" onClick={onClick} style={{ '--c': topic.color }}>
+      <div className="tc-icon"><Icon size={20} /></div>
+      <div className="tc-body">
+        <span className="tc-name">{topic.name}</span>
+        <span className="tc-count">{topic.vivaCount} viva answers</span>
+      </div>
+      <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
+        <Mic size={11} />
+        {topic.vivaCount}
       </span>
     </button>
   )

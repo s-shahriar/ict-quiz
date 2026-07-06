@@ -1,0 +1,92 @@
+{
+  "category": "banking",
+  "questions": [
+    {
+      "id": "bank_viva_001",
+      "q": "বাংলা QR (Bangla QR) কীভাবে কাজ করে?",
+      "tags": ["bangla-qr", "payment", "interoperable", "emvco", "cashless"],
+      "answer": {
+        "summary": [
+          "বাংলা QR হলো Bangladesh Bank-এর চালু করা একটাই standard (interoperable) QR code — দোকানে একটা QR থাকলেই গ্রাহক যেকোনো ব্যাংক বা MFS (bKash, Nagad) app দিয়ে scan করে টাকা দিতে পারে।"
+        ],
+        "points": [
+          "যে সমস্যা সমাধান করে: আগে প্রতিটি ব্যাংক/MFS-এর আলাদা QR লাগত; বাংলা QR একটাই QR-এ সব app-কে কাজ করায় (interoperable)।",
+          "কীভাবে: দোকানদার একবার তার account-linked QR নেয়; গ্রাহক নিজের app দিয়ে scan → amount দেয় → confirm → টাকা সরাসরি দোকানির account-এ যায়।",
+          "Standard: এটি EMVCo আন্তর্জাতিক QR standard-এর ওপর তৈরি, তাই সব app একই format পড়তে পারে।",
+          "লাভ: দোকানির দামি POS/কার্ড মেশিন লাগে না, cashless ও দ্রুত, ছোট ব্যবসার জন্য সস্তা।"
+        ],
+        "mnemonic": "এক QR, সব app — Bangladesh Bank-এর interoperable মান।"
+      }
+    },
+    {
+      "id": "bank_viva_002",
+      "q": "Blockchain technology কী? কোথায় ব্যবহার হয় এবং ব্যাংকে কীভাবে ব্যবহার করা যায়?",
+      "tags": ["blockchain", "distributed-ledger", "immutable", "smart-contract", "banking"],
+      "answer": {
+        "summary": [
+          "Blockchain হলো একটা distributed ledger — data ব্লক আকারে chain হয়ে বহু computer-এ একই কপি থাকে; একবার লেখা রেকর্ড বদলানো প্রায় অসম্ভব (tamper-proof) এবং কোনো কেন্দ্রীয় কর্তৃপক্ষ লাগে না।"
+        ],
+        "points": [
+          "মূল বৈশিষ্ট্য: Decentralized (কোনো এক মালিক নেই), Immutable (রেকর্ড বদলানো যায় না), Transparent (সবাই verify করতে পারে)।",
+          "কীভাবে নিরাপদ: প্রতিটি block আগের block-এর cryptographic hash ধরে রাখে; একটা বদলালে পুরো chain ভেঙে পড়ে, তাই জালিয়াতি সঙ্গে সঙ্গে ধরা পড়ে।",
+          "সাধারণ ব্যবহার: cryptocurrency (Bitcoin), supply chain tracking, smart contract, digital identity।",
+          "ব্যাংকে: দ্রুত ও সস্তা cross-border remittance, LC/trade finance স্বয়ংক্রিয় করা (smart contract), KYC data শেয়ার এবং জালিয়াতি কমানো।"
+        ],
+        "mnemonic": "Blockchain = বদলানো যায় না এমন যৌথ খাতা।"
+      }
+    },
+    {
+      "id": "bank_viva_003",
+      "q": "Digital banking আর E-banking-এর পার্থক্য কী?",
+      "tags": ["digital-banking", "e-banking", "fintech", "comparison"],
+      "answer": {
+        "summary": [
+          "E-banking মানে প্রচলিত ব্যাংকিং সেবাগুলো internet/ATM/card দিয়ে করা (একটা চ্যানেল); Digital banking মানে পুরো ব্যাংকিং প্রক্রিয়াই ডিজিটাল — শাখায় না গিয়ে account খোলা থেকে loan পর্যন্ত সব online।"
+        ],
+        "points": [
+          "E-banking: বিদ্যমান ব্যাংকের একটা সেবা-চ্যানেল (internet banking, ATM, SMS) — পেছনে এখনও শাখা-নির্ভর কাজ চলে।",
+          "Digital banking: শেষ-থেকে-শেষ (end-to-end) ডিজিটাল; কাগজ ও শাখা প্রায় লাগে না, অনেক সময় শুধু app-ভিত্তিক ব্যাংক।",
+          "সম্পর্ক: E-banking হলো Digital banking-এর একটা অংশ; Digital banking বড় ও পূর্ণাঙ্গ ধারণা।"
+        ],
+        "table": {
+          "headers": ["দিক", "E-banking", "Digital banking"],
+          "rows": [
+            ["পরিধি", "কিছু সেবা online (channel)", "পুরো ব্যাংকিং online (end-to-end)"],
+            ["শাখা", "এখনও লাগে", "প্রায় লাগে না"],
+            ["উদাহরণ", "Internet/ATM/SMS banking", "App-only bank, online account+loan"]
+          ]
+        },
+        "mnemonic": "E-banking = সেবা online; Digital banking = ব্যাংকটাই online।"
+      }
+    },
+    {
+      "id": "bank_viva_004",
+      "q": "সোনালী ব্যাংক PLC সম্পর্কে সংক্ষেপে বলুন (নেতৃত্ব, মূলধন, শাখা ও ই-সেবা)।",
+      "tags": ["sonali-bank", "state-owned", "capital", "branches", "e-services"],
+      "answer": {
+        "summary": [
+          "সোনালী ব্যাংক PLC বাংলাদেশের বৃহত্তম রাষ্ট্রায়ত্ত বাণিজ্যিক ব্যাংক; দেশে ১২৩৫টি শাখা এবং ভারতে (কলকাতা ও শিলিগুড়ি) দুটি standalone আন্তর্জাতিক শাখা পরিচালনা করে।"
+        ],
+        "points": [
+          "Chairman: Muhammed Mahbubur Rahman।",
+          "MD & CEO: Md. Shawkat Ali Khan।",
+          "Authorised Capital: Taka 6000.00 Crore; Paid-up Capital: Taka 4530.00 Crore।",
+          "শাখা: দেশে ১২৩৫টি, আর ভারতে দুটি international branch — Kolkata ও Siliguri।",
+          "ই-সেবা: Sonali Corporate i-Banking, Sonali Bank Payment Gateway, Online Bill Payment System, Sonali Bank Mobile Apps, Sonali eSheba, Sonali eWallet ও Binimoy Service।"
+        ],
+        "table": {
+          "headers": ["বিষয়", "তথ্য"],
+          "rows": [
+            ["Chairman", "Muhammed Mahbubur Rahman"],
+            ["MD & CEO", "Md. Shawkat Ali Khan"],
+            ["Authorised Capital", "Taka 6000.00 Crore"],
+            ["Paid-up Capital", "Taka 4530.00 Crore"],
+            ["শাখা", "1235 (দেশে)"],
+            ["আন্তর্জাতিক শাখা", "Kolkata ও Siliguri (India)"]
+          ]
+        },
+        "mnemonic": "বৃহত্তম রাষ্ট্রীয় ব্যাংক — ১২৩৫ শাখা, মূলধন ৬০০০/৪৫৩০ কোটি, ভারতে ২ শাখা।"
+      }
+    }
+  ]
+}

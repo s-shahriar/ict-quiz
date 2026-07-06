@@ -1,0 +1,23 @@
+{
+  "category": "machine_learning",
+  "questions": [
+    {
+      "id": "ml_viva_001",
+      "q": "Big Data ও AI-এর সম্পর্ক কী? ব্যাংকিং সেক্টরে এর ব্যবহার।",
+      "tags": ["big-data", "ai", "machine-learning", "banking", "fraud-detection"],
+      "answer": {
+        "summary": [
+          "Big Data হলো বিপুল পরিমাণ কাঁচা data (জ্বালানি), আর AI হলো সেই data থেকে শিখে সিদ্ধান্ত নেওয়া ইঞ্জিন — data যত বেশি ও ভালো, AI তত smart।"
+        ],
+        "points": [
+          "সম্পর্ক: AI/ML model-কে শিখতে প্রচুর data লাগে, Big Data সেটা জোগায়। Data ছাড়া AI অন্ধ, আর AI ছাড়া Big Data শুধু স্তূপ।",
+          "Banking — Fraud detection: লক্ষ লেনদেনের pattern শিখে AI অস্বাভাবিক transaction তাৎক্ষণিক ধরে।",
+          "Credit scoring: গ্রাহকের history দেখে loan-এর risk হিসাব করে ঋণ অনুমোদন সহজ করে।",
+          "Personalization ও chatbot: গ্রাহকভেদে অফার এবং ২৪/৭ customer support।",
+          "সংক্ষেপে: Big Data = কাঁচামাল, AI = কারিগর; banking-এ নিরাপত্তা ও সিদ্ধান্ত দ্রুত করে।"
+        ],
+        "mnemonic": "Big Data জ্বালানি, AI ইঞ্জিন।"
+      }
+    }
+  ]
+}

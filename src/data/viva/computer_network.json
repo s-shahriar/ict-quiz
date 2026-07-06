@@ -1,0 +1,242 @@
+{
+  "category": "computer_network",
+  "questions": [
+    {
+      "id": "cn_viva_001",
+      "q": "Printer কাজ না করলে কী করতে হবে? (Printer, Scanner ও LAN connection সেটআপ)",
+      "tags": ["printer", "scanner", "lan", "troubleshooting", "network-printer"],
+      "answer": {
+        "summary": [
+          "Printer কাজ না করলে আগে সহজ hardware দিক (power, cable, কাগজ, toner) দেখো, তারপর software দিক (driver, print queue, offline status) ধাপে ধাপে যাচাই করো।",
+          "LAN/network printer হলে সবাই একটা shared printer ব্যবহার করে — printer-এর নিজস্ব IP থাকে, সেই IP দিয়ে প্রতিটি PC connect করে।"
+        ],
+        "points": [
+          "Hardware check: power on আছে কি, USB/LAN cable ঠিকমতো লাগানো, কাগজ ও toner আছে, কোনো paper jam নেই।",
+          "Status check: printer 'Offline' বা 'Paused' দেখাচ্ছে কিনা; print queue-তে আটকে থাকা job থাকলে cancel করে আবার দাও।",
+          "Driver: সঠিক driver install আছে কিনা এবং ঠিক printer টা default হিসেবে সিলেক্ট করা কিনা; সমস্যা হলে driver reinstall।",
+          "Network printer: printer আর PC একই network-এ আছে কিনা, printer-এর IP ping করে দেখা, তারপর 'Add printer by IP' দিয়ে connect।",
+          "Scanner: driver/TWAIN ঠিক থাকলে scan হয়; all-in-one device network-এ share করলে সবাই scan-ও করতে পারে।"
+        ],
+        "mnemonic": "আগে তার-বিদ্যুৎ-কাগজ, পরে driver-queue-IP।"
+      }
+    },
+    {
+      "id": "cn_viva_002",
+      "q": "প্রতি ফ্লোরে ২০টি করে, ৩ ফ্লোরের সব PC কীভাবে connect ও centrally যুক্ত করবে? (topology, hub/switch config)",
+      "tags": ["topology", "star", "switch", "hub", "lan-setup", "hierarchical"],
+      "answer": {
+        "summary": [
+          "প্রতিটি floor-এর ২০টা PC-কে একটা Switch-এর সাথে Star topology-তে যুক্ত করো (hub নয়, switch); তারপর তিন floor-এর switch তিনটাকে একটা central/core switch দিয়ে যুক্ত করলেই পুরো building এক network।"
+        ],
+        "points": [
+          "Topology — Star: প্রতিটি PC আলাদা cable-এ central device-এ যায়; একটা cable নষ্ট হলে শুধু সেই PC বন্ধ, বাকিরা চলে (Bus/Ring পুরনো — একটা fault-এ পুরো network down)।",
+          "Hub না Switch: Hub সব port-এ data broadcast করে (collision, ধীর, অনিরাপদ); Switch শুধু গন্তব্য port-এ পাঠায় (দ্রুত, নিরাপদ) — তাই switch ব্যবহার করবে।",
+          "প্রতি floor: ২০টা PC-র জন্য একটা ২৪-port switch যথেষ্ট (২০ PC + uplink port)।",
+          "Building-wide: তিন floor-এর ৩টা switch-কে একটা core switch-এ যুক্ত করো — এটাই star-of-stars (hierarchical) গঠন, সব floor centrally connected।",
+          "Core switch থেকেই router/internet, server ও shared printer আসে; চাইলে প্রতি dept-কে আলাদা VLAN করে ভাগ করা যায়।"
+        ],
+        "diagram": "                 ┌───────────────┐\n                 │  Core Switch  │──► Router / Internet\n                 └──┬────┬────┬──┘\n          ┌─────────┘    │    └─────────┐\n      ┌───┴───┐      ┌───┴───┐      ┌───┴───┐\n      │Floor-1│      │Floor-2│      │Floor-3│  ← প্রতি floor 1 switch\n      │Switch │      │Switch │      │Switch │\n      └───┬───┘      └───┬───┘      └───┬───┘\n    20 PCs (star)   20 PCs (star)   20 PCs (star)",
+        "mnemonic": "প্রতি floor = এক switch (star); সব floor = এক core switch (star-of-stars)।"
+      }
+    },
+    {
+      "id": "cn_viva_003",
+      "q": "ATM কী? (সাবধান — networking-এ এটা টাকা তোলার মেশিন নয়)",
+      "tags": ["atm", "asynchronous-transfer-mode", "cell", "wan", "trick"],
+      "answer": {
+        "summary": [
+          "Networking-এ ATM মানে Automated Teller Machine নয় — এটি Asynchronous Transfer Mode, একটি high-speed WAN switching technology যেখানে সব data ছোট ও নির্দিষ্ট মাপের ৫৩-byte cell-এ ভাগ করে পাঠানো হয়।"
+        ],
+        "points": [
+          "নাম বিভ্রান্তি: প্রশ্নে ATM = টাকা তোলার মেশিন নয়; networking-এ ATM = Asynchronous Transfer Mode — এটাই আসল উত্তর।",
+          "Cell-based: প্রতিটি data ৫৩ byte-এর fixed cell-এ (৪৮ byte payload + ৫ byte header) ভাঙা হয়; fixed size বলে switching দ্রুত ও predictable।",
+          "Connection-oriented: পাঠানোর আগে virtual circuit তৈরি হয়, তাই voice/video-র মতো real-time traffic-এ নির্দিষ্ট quality (QoS) দেওয়া যায়।",
+          "ব্যবহার: উচ্চগতির backbone ও telecom WAN; যদিও এখন অনেকটাই IP/Ethernet দিয়ে replaced।"
+        ],
+        "mnemonic": "ATM = Asynchronous Transfer Mode — ৫৩-byte fixed cell, connection-oriented।"
+      }
+    },
+    {
+      "id": "cn_viva_004",
+      "q": "Handshaking Protocol কী? কীভাবে কাজ করে?",
+      "tags": ["handshaking", "tcp", "three-way-handshake", "connection", "syn-ack"],
+      "answer": {
+        "summary": [
+          "Handshaking হলো data আদান-প্রদানের আগে দুই device-এর মধ্যে নিয়ম ঠিক করে নেওয়ার প্রক্রিয়া — কে, কত গতিতে ও কী format-এ কথা বলবে তা আগে থেকে সম্মত হয়ে connection স্থাপন করা।"
+        ],
+        "points": [
+          "উদ্দেশ্য: যোগাযোগ শুরুর আগে speed, format ও প্রস্তুতি মিলিয়ে নেওয়া, যাতে data হারিয়ে না যায়।",
+          "TCP 3-way handshake: SYN (client অনুরোধ) → SYN-ACK (server সাড়া) → ACK (client নিশ্চিত) — এরপর নির্ভরযোগ্য connection তৈরি।",
+          "অন্যান্য: TLS/SSL handshake নিরাপদ (encrypted) connection বানায়; hardware/modem handshake গতি ও flow control ঠিক করে।",
+          "সংক্ষেপে: হাত মেলানোর মতো — কথা শুরুর আগে দুই পক্ষ প্রস্তুত ও সম্মত হয়।"
+        ],
+        "diagram": "   Client                     Server\n     │  ──── SYN ──────────────►  │\n     │  ◄──────── SYN-ACK ───────  │\n     │  ──── ACK ──────────────►  │\n     │      connection ready       │",
+        "mnemonic": "SYN → SYN-ACK → ACK: কথা শুরুর আগে হাত মেলানো।"
+      }
+    },
+    {
+      "id": "cn_viva_005",
+      "q": "OSI মডেলের প্রতিটি layer-এর Data Unit (PDU) কী কী?",
+      "tags": ["osi", "pdu", "segment", "packet", "frame", "bit"],
+      "answer": {
+        "summary": [
+          "OSI-র উপরের তিন layer (Application, Presentation, Session)-এর PDU হলো Data; নিচের layer-গুলোয় নাম বদলায় — Transport: Segment, Network: Packet, Data Link: Frame, Physical: Bit।"
+        ],
+        "points": [
+          "উপরের ৩ layer (7 Application, 6 Presentation, 5 Session): PDU = Data।",
+          "Transport (4): Segment; UDP হলে Datagram।",
+          "Network (3): Packet; Data Link (2): Frame; Physical (1): Bit।"
+        ],
+        "table": {
+          "headers": ["Layer", "Data Unit (PDU)"],
+          "rows": [
+            ["7 — Application", "Data"],
+            ["6 — Presentation", "Data"],
+            ["5 — Session", "Data"],
+            ["4 — Transport", "Segment (UDP: Datagram)"],
+            ["3 — Network", "Packet"],
+            ["2 — Data Link", "Frame"],
+            ["1 — Physical", "Bit"]
+          ]
+        },
+        "mnemonic": "নিচ থেকে উপরে: Bit → Frame → Packet → Segment → তারপর সব Data।"
+      }
+    },
+    {
+      "id": "cn_viva_006",
+      "q": "10BaseT ও 100BaseT ইথারনেট কেবলে 10 বা 100 বলতে কী বোঝায়?",
+      "tags": ["ethernet", "10baset", "100baset", "mbps", "baseband", "twisted-pair"],
+      "answer": {
+        "summary": [
+          "10BaseT ও 100BaseT-এর 10 ও 100 হলো data transfer speed — যথাক্রমে 10 Mbps ও 100 Mbps। 'Base' মানে baseband signaling আর 'T' মানে Twisted pair cable।"
+        ],
+        "points": [
+          "সংখ্যা (10/100): সর্বোচ্চ গতি Mbps-এ — 10BaseT = 10 Mbps, 100BaseT (Fast Ethernet) = 100 Mbps।",
+          "Base: baseband — পুরো cable একটাই digital signal-এর জন্য ব্যবহৃত হয় (broadband নয়)।",
+          "T: Twisted pair cable (UTP, যেমন Cat5), সাধারণত RJ-45 connector দিয়ে।",
+          "একইভাবে 1000BaseT = Gigabit Ethernet (1000 Mbps বা 1 Gbps)।"
+        ],
+        "table": {
+          "headers": ["Type", "Speed", "Cable"],
+          "rows": [
+            ["10BaseT", "10 Mbps", "Twisted pair"],
+            ["100BaseT", "100 Mbps", "Twisted pair"],
+            ["1000BaseT", "1000 Mbps (1 Gbps)", "Twisted pair"]
+          ]
+        },
+        "mnemonic": "সংখ্যা = Mbps গতি, Base = baseband, T = Twisted pair।"
+      }
+    },
+    {
+      "id": "cn_viva_007",
+      "q": "ব্যাংক থেকে দূরের কোনো এলাকায় connection দিলে optical fiber-এর কোন type ব্যবহার করবে?",
+      "tags": ["optical-fiber", "single-mode", "multi-mode", "long-distance"],
+      "answer": {
+        "summary": [
+          "দূরের এলাকায় লম্বা দূরত্বের connection-এর জন্য Single-mode fiber (SMF) ব্যবহার করবে — সরু core আর laser light দিয়ে কম signal loss-এ কিলোমিটারের পর কিলোমিটার data পাঠাতে পারে।"
+        ],
+        "points": [
+          "Single-mode: core খুব সরু (~9 micron), একটাই light path — signal loss কম, তাই দীর্ঘ দূরত্বে (long-haul) উপযুক্ত।",
+          "Multi-mode: মোটা core, একাধিক light path — কম দূরত্বে (ভবন/campus-এর ভেতরে) সস্তা সমাধান, দূরে গেলে signal দুর্বল হয়।",
+          "এই ক্ষেত্রে দূরের এলাকা = long distance → তাই সঠিক পছন্দ Single-mode fiber।"
+        ],
+        "table": {
+          "headers": ["দিক", "Single-mode", "Multi-mode"],
+          "rows": [
+            ["Core", "সরু (~9 µm)", "মোটা (50/62.5 µm)"],
+            ["আলোর উৎস", "Laser", "LED"],
+            ["দূরত্ব", "অনেক দূর (long-haul)", "কম দূরত্ব"],
+            ["ব্যবহার", "দূরের এলাকা / backbone", "ভবন / campus-এর ভেতরে"]
+          ]
+        },
+        "mnemonic": "দূরে গেলে Single-mode (সরু core, laser); কাছে হলে Multi-mode।"
+      }
+    },
+    {
+      "id": "cn_viva_008",
+      "q": "একটি রুমে ৪ জন ৪ কর্ণারে ৪টা PC নিয়ে বসবে — কানেকশন কীভাবে দিবে?",
+      "tags": ["star-topology", "switch", "small-network", "utp", "rj45"],
+      "answer": {
+        "summary": [
+          "চারটা PC-কে একটা ছোট switch-এর সাথে Star topology-তে যুক্ত করবে — প্রতিটি PC আলাদা UTP (RJ-45) cable দিয়ে সেই central switch-এ যাবে।"
+        ],
+        "points": [
+          "Star topology: প্রতিটি PC নিজস্ব cable-এ central switch-এ যুক্ত; একটা cable নষ্ট হলে শুধু সেই PC বন্ধ, বাকিরা চলে।",
+          "Device: ৪টা PC-র জন্য একটা ৫ বা ৮-port switch যথেষ্ট (৪ PC + uplink)।",
+          "Cable: UTP Cat5e/Cat6, RJ-45 connector; দূরত্ব ১০০ মিটারের কম হলে কোনো সমস্যা নেই।",
+          "Internet বা shared resource লাগলে switch-কে router-এর সাথে যুক্ত করবে।",
+          "(শুধু সাধারণ ভাগাভাগি হলে একটা wireless router দিয়ে Wi-Fi-তেও ৪টা PC যুক্ত করা যায়।)"
+        ],
+        "mnemonic": "৪ কোণে ৪ PC → এক switch-এ Star; প্রতিটি RJ-45 cable-এ।"
+      }
+    },
+    {
+      "id": "cn_viva_009",
+      "q": "৪ জনের মধ্যে ২ জনের PC-তে same IP assign হলে সেটা identify কীভাবে করবে? PC দুটো কীভাবে আলাদা করবে?",
+      "tags": ["ip-conflict", "mac-address", "arp", "dhcp", "troubleshooting"],
+      "answer": {
+        "summary": [
+          "দুই PC-তে একই IP থাকলে IP conflict হয় — network বুঝতে পারে না কার কাছে data পাঠাবে। OS সাধারণত 'IP address conflict' warning দেখায়; আসল আলাদা করার উপায় হলো প্রতিটি device-এর unique MAC address।"
+        ],
+        "points": [
+          "কীভাবে ধরা পড়ে: OS 'IP address conflict detected' pop-up দেখায়; ping-এ অসংগত সাড়া আসে ও connection বারবার কেটে যায়।",
+          "কীভাবে চিহ্নিত করবে: 'arp -a' কমান্ডে IP-র সাথে MAC দেখা যায় — একই IP-র পেছনে দুটো ভিন্ন MAC থাকলেই conflict বোঝা যায়; MAC দিয়েই device দুটো আলাদা।",
+          "সমাধান: একটাকে নতুন unique IP দাও (manual), অথবা DHCP server ব্যবহার করো যাতে স্বয়ংক্রিয়ভাবে unique IP বণ্টন হয় — conflict আর হয় না।",
+          "মূল কথা: IP বদলানো যায়, কিন্তু প্রতিটি NIC-এর MAC address স্থায়ী ও অনন্য — তাই MAC-ই চূড়ান্ত পরিচয়।"
+        ],
+        "mnemonic": "একই IP = conflict; ধরো arp/MAC দিয়ে, ঠিক করো unique IP বা DHCP দিয়ে।"
+      }
+    },
+    {
+      "id": "cn_viva_010",
+      "q": "ব্রাঞ্চের সাথে হেড অফিস কীভাবে connect হবে? কোন protocol দিয়ে?",
+      "tags": ["wan", "vpn", "ipsec", "tcp-ip", "leased-line", "head-office-branch"],
+      "answer": {
+        "summary": [
+          "ব্রাঞ্চ ও হেড অফিস দূরত্বে থাকায় এদের WAN দিয়ে যুক্ত করা হয় — সবচেয়ে প্রচলিত হলো internet-এর ওপর IPsec Site-to-Site VPN দিয়ে encrypted tunnel; পুরো যোগাযোগ চলে TCP/IP protocol suite-এর ওপর।"
+        ],
+        "points": [
+          "যোগাযোগের মাধ্যম: leased line / MPLS, অথবা broadband internet + Site-to-Site VPN।",
+          "নিরাপত্তা protocol: IPsec (বা L2TP/IPsec) — data encrypt করে নিরাপদ tunnel তৈরি করে।",
+          "মূল protocol suite: TCP/IP — IP দিয়ে addressing ও routing, TCP দিয়ে নির্ভরযোগ্য data delivery।",
+          "একাধিক network route করতে router-এ routing protocol (OSPF/BGP) ব্যবহৃত হয়।"
+        ],
+        "mnemonic": "দূরত্ব = WAN; নিরাপদে যুক্ত = IPsec VPN over TCP/IP।"
+      }
+    },
+    {
+      "id": "cn_viva_011",
+      "q": "ব্রাঞ্চের data গুলো কি Data Link layer দিয়ে আসে নাকি Internet (Network) layer দিয়ে?",
+      "tags": ["osi", "data-link-layer", "network-layer", "routing", "mac", "ip"],
+      "answer": {
+        "summary": [
+          "ব্রাঞ্চের data ভিন্ন network থেকে আসে, তাই এক network থেকে আরেক network-এ পৌঁছাতে কাজ করে Network (Internet) layer — এখানেই IP address দেখে routing হয়। Data Link layer শুধু একটাই local link-এর ভেতরে frame আদান-প্রদান করে (hop-to-hop)।"
+        ],
+        "points": [
+          "Data Link layer (L2): MAC address দিয়ে একই local network-এর ভেতরে এক device থেকে পাশের device-এ frame পাঠায় — মাত্র এক hop।",
+          "Network/Internet layer (L3): IP address দিয়ে ভিন্ন ভিন্ন network পেরিয়ে গন্তব্যে data route করে — remote branch-এর data এখান দিয়েই আসে।",
+          "বাস্তবে data প্রতিটি layer পেরোয়; কিন্তু 'দূরের branch থেকে এসেছে' মানে সেটা router পেরিয়ে এসেছে, অর্থাৎ Network layer-এর কাজ।",
+          "সংক্ষেপে: same LAN হলে Data Link যথেষ্ট; ভিন্ন network (branch↔head office) হলে Network layer লাগে।"
+        ],
+        "mnemonic": "একই LAN = Data Link (MAC); ভিন্ন network = Internet layer (IP routing)।"
+      }
+    },
+    {
+      "id": "cn_viva_012",
+      "q": "একটা switch-এর সাথে ৪/৫টা computer connect করলাম — এরা কি data pass করতে পারবে? কীভাবে পারবে?",
+      "tags": ["switch", "mac-table", "lan", "subnet", "frame-forwarding"],
+      "answer": {
+        "summary": [
+          "হ্যাঁ, পারবে। Switch একই local network-এর device-দের যুক্ত করে এবং MAC address দেখে frame সঠিক port-এ পাঠায়; router/internet ছাড়াও একই subnet-এ থাকলে PC গুলো নিজেদের মধ্যে data pass করতে পারে।"
+        ],
+        "points": [
+          "শর্ত: PC গুলোর IP একই subnet-এ হতে হবে (যেমন 192.168.1.x), তবেই এরা একে অপরকে খুঁজে পাবে।",
+          "কীভাবে: switch প্রতিটি port-এর যুক্ত device-এর MAC শিখে একটা MAC address table বানায়; frame এলে সেই table দেখে শুধু গন্তব্য port-এ পাঠায় (সবাইকে নয়)।",
+          "প্রথমবার গন্তব্য MAC অজানা থাকলে switch সব port-এ পাঠায় (flooding), উত্তর পেলে table-এ শিখে নেয়।",
+          "Internet লাগে না — এটা local (LAN) communication; বাইরের network-এ যেতে হলে তখন router লাগবে।"
+        ],
+        "mnemonic": "Switch MAC শেখে → সঠিক port-এ পাঠায়; একই subnet হলে router ছাড়াই data চলে।"
+      }
+    }
+  ]
+}

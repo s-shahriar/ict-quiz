@@ -1,0 +1,22 @@
+{
+  "category": "software_engineering",
+  "questions": [
+    {
+      "id": "se_viva_001",
+      "q": "REST API সম্পর্কে কী জানো?",
+      "tags": ["rest", "api", "http", "json", "stateless", "web-service"],
+      "answer": {
+        "summary": [
+          "REST API হলো client ও server-এর মধ্যে HTTP দিয়ে যোগাযোগের একটি architecture/নিয়ম — প্রতিটি resource-কে একটা URL দিয়ে চেনানো হয় এবং GET/POST/PUT/DELETE method দিয়ে তার ওপর কাজ করা হয়।"
+        ],
+        "points": [
+          "REST = REpresentational State Transfer; data সাধারণত JSON ফরম্যাটে আদান-প্রদান হয়।",
+          "HTTP methods: GET (পড়া), POST (নতুন তৈরি), PUT (আপডেট), DELETE (মুছে ফেলা)।",
+          "Stateless: প্রতিটি request স্বয়ংসম্পূর্ণ — server আগের request মনে রাখে না, তাই scale করা সহজ।",
+          "ব্যবহার: mobile app/website-এর সাথে server-এর data যোগাযোগ এবং third-party integration (payment, SMS API ইত্যাদি)।"
+        ],
+        "mnemonic": "Resource = URL, কাজ = GET/POST/PUT/DELETE, format = JSON, আর stateless।"
+      }
+    }
+  ]
+}

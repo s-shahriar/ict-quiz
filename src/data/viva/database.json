@@ -1,0 +1,31 @@
+{
+  "category": "database",
+  "questions": [
+    {
+      "id": "db_viva_001",
+      "q": "Data Warehouse কী? Database-এর সাথে পার্থক্য কী? Banking transaction-এ কোনটা দরকার?",
+      "tags": ["data-warehouse", "database", "oltp", "olap", "banking"],
+      "answer": {
+        "summary": [
+          "Database (OLTP) হলো দৈনন্দিন live লেনদেন চালানোর system; Data Warehouse (OLAP) হলো বহু বছরের data একত্র করে বিশ্লেষণ ও report বের করার বড় ভান্ডার।"
+        ],
+        "points": [
+          "Database: real-time insert/update/delete, দ্রুত ছোট transaction (টাকা তোলা/জমা) — banking-এর live কাজ এখানেই হয়।",
+          "Data Warehouse: নানা source-এর historical data একসাথে জমিয়ে trend/analysis/report তৈরি — read-heavy, বড় query।",
+          "Banking-এ দুটোই লাগে: প্রতিটি লেনদেন আগে Database-এ হয়; পরে সেই data Warehouse-এ গিয়ে fraud detection, customer behavior ও monthly report তৈরি হয়।",
+          "সংক্ষেপে: লেনদেন চালাতে Database, সিদ্ধান্ত নিতে ও বিশ্লেষণে Data Warehouse।"
+        ],
+        "table": {
+          "headers": ["দিক", "Database (OLTP)", "Data Warehouse (OLAP)"],
+          "rows": [
+            ["উদ্দেশ্য", "দৈনন্দিন লেনদেন", "বিশ্লেষণ ও report"],
+            ["Data", "current, live", "historical, বহু বছরের"],
+            ["Operation", "read+write, দ্রুত ছোট", "মূলত read, বড় query"],
+            ["Banking উদাহরণ", "ATM withdrawal", "বছরের fraud trend report"]
+          ]
+        },
+        "mnemonic": "Database চালায় ব্যাংক, Warehouse বোঝায় ব্যাংক।"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "category": "information_security",
+  "questions": [
+    {
+      "id": "is_viva_001",
+      "q": "হেড অফিস থেকে ব্রাঞ্চের কানেকশনে কী কী ধরনের নেটওয়ার্ক সিকিউরিটি ব্যবহার করবে?",
+      "tags": ["network-security", "vpn", "firewall", "ips", "ids", "defense-in-depth", "head-office-branch"],
+      "answer": {
+        "summary": [
+          "হেড অফিস ও ব্রাঞ্চের মধ্যে নিরাপদ যোগাযোগের মূল ভিত্তি হলো Site-to-Site VPN (internet-এর ওপর encrypted tunnel); তার সাথে স্তরে স্তরে Firewall, IPS, IDS, Antivirus ও access control বসানো হয় — একে বলে defense-in-depth (একাধিক স্তরের প্রতিরক্ষা)।"
+        ],
+        "points": [
+          "Site-to-Site VPN (সবচেয়ে জরুরি): দুই অফিসের মধ্যে একটি encrypted tunnel তৈরি করে; data ইন্টারনেট দিয়ে গেলেও কেউ পড়তে পারে না — head office–branch link-এর প্রধান নিরাপত্তা।",
+          "Firewall (First layer): router-এর সাথে যুক্ত থেকে rule অনুযায়ী অবাঞ্ছিত traffic আটকায় — কে ঢুকবে, কে বেরোবে তা নিয়ন্ত্রণ করে।",
+          "IPS — Intrusion Prevention System (Second layer): সন্দেহজনক আক্রমণ শনাক্ত করে সঙ্গে সঙ্গে block করে — সক্রিয় প্রতিরোধ।",
+          "IDS — Intrusion Detection System (Third layer): switch-এর সাথে যুক্ত থেকে সন্দেহজনক কার্যকলাপ শনাক্ত করে সতর্ক (alert) করে — নজরদারি।",
+          "Endpoint security: প্রতিটি device-এ built-in firewall ও antivirus, যাতে ভেতর থেকেও সুরক্ষা থাকে।",
+          "Access control: শক্তিশালী authentication (password/OTP), user অনুযায়ী সীমিত অনুমতি (least privilege) ও গুরুত্বপূর্ণ data encryption।"
+        ],
+        "diagram": "  HEAD OFFICE                          BRANCH\n ┌──────────┐                        ┌──────────┐\n │  Switch  │                        │  Switch  │\n │  + IDS   │  (নজরদার / alert)      │  + IDS   │\n └────┬─────┘                        └────┬─────┘\n ┌────┴─────┐                        ┌────┴─────┐\n │   IPS    │  (প্রহরী / block)       │   IPS    │\n └────┬─────┘                        └────┬─────┘\n ┌────┴─────┐   Site-to-Site VPN     ┌────┴─────┐\n │ Firewall │◄══ encrypted tunnel ══►│ Firewall │\n │ + Router │     over Internet      │ + Router │\n └──────────┘                        └──────────┘",
+        "table": {
+          "headers": ["দিক", "IDS", "IPS"],
+          "rows": [
+            ["কাজ", "শনাক্ত করে সতর্ক করে", "শনাক্ত করে block করে"],
+            ["ভূমিকা", "নজরদার (passive)", "প্রহরী (active)"],
+            ["অবস্থান", "traffic-এর পাশে (copy দেখে)", "traffic-এর মাঝে (inline)"]
+          ]
+        },
+        "mnemonic": "VPN tunnel বানায়, Firewall দরজা পাহারা, IPS প্রহরী থামায়, IDS নজরদার সতর্ক করে, Antivirus ভেতরে পাহারা।"
+      }
+    }
+  ]
+}

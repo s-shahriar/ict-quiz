@@ -8,6 +8,7 @@ import { MasteredProvider } from './contexts/MasteredContext.jsx'
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext.jsx'
 import { WrittenMasteredProvider } from './contexts/WrittenMasteredContext.jsx'
 import { ExtraMasteredProvider } from './contexts/ExtraMasteredContext.jsx'
+import { VivaMasteredProvider } from './contexts/VivaMasteredContext.jsx'
 
 const ExamConfig = lazy(() => import('./components/ExamConfig.jsx'))
 const ExamMode = lazy(() => import('./components/ExamMode.jsx'))
@@ -25,6 +26,9 @@ const WrittenNailedScreen = lazy(() => import('./components/WrittenNailedScreen.
 const ExtraImportantScreen = lazy(() => import('./components/ExtraImportantScreen.jsx'))
 const ExtraMode = lazy(() => import('./components/ExtraMode.jsx'))
 const ExtraNailedScreen = lazy(() => import('./components/ExtraNailedScreen.jsx'))
+const VivaImportantScreen = lazy(() => import('./components/VivaImportantScreen.jsx'))
+const VivaMode = lazy(() => import('./components/VivaMode.jsx'))
+const VivaNailedScreen = lazy(() => import('./components/VivaNailedScreen.jsx'))
 
 export default function App() {
   return (
@@ -33,7 +37,9 @@ export default function App() {
         <ImportantProvider>
           <WrittenMasteredProvider>
             <ExtraMasteredProvider>
-              <AppRoutes />
+              <VivaMasteredProvider>
+                <AppRoutes />
+              </VivaMasteredProvider>
             </ExtraMasteredProvider>
           </WrittenMasteredProvider>
         </ImportantProvider>
@@ -81,6 +87,9 @@ function AppRoutes() {
           <Route path="/extra" element={<ExtraMode />} />
           <Route path="/extra/nailed" element={<ExtraNailedScreen />} />
           <Route path="/extra/important" element={<ExtraImportantScreen />} />
+          <Route path="/viva" element={<VivaMode />} />
+          <Route path="/viva/nailed" element={<VivaNailedScreen />} />
+          <Route path="/viva/important" element={<VivaImportantScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
