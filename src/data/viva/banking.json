@@ -73,6 +73,7 @@
           "Authorised Capital: Taka 6000.00 Crore; Paid-up Capital: Taka 4530.00 Crore।",
           "শাখা: দেশে ১২৩৫টি, আর ভারতে দুটি international branch — Kolkata ও Siliguri।",
           "Core Banking Solution (CBS): Sonali Intellect — এটি ব্যাংকের সব শাখাকে একটি কেন্দ্রীয় system-এ যুক্ত করে (any branch banking)।",
+          "মটো / স্লোগান: \"বিশ্বস্ত ও স্মার্ট\" (Credible and Smart)।",
           "ই-সেবা: Sonali Corporate i-Banking, Sonali Bank Payment Gateway, Online Bill Payment System, Sonali Bank Mobile Apps, Sonali eSheba, Sonali eWallet ও Binimoy Service।"
         ],
         "table": {
@@ -84,10 +85,28 @@
             ["Paid-up Capital", "Taka 4530.00 Crore"],
             ["শাখা", "1235 (দেশে)"],
             ["আন্তর্জাতিক শাখা", "Kolkata ও Siliguri (India)"],
-            ["CBS (Core Banking)", "Sonali Intellect"]
+            ["CBS (Core Banking)", "Sonali Intellect"],
+            ["মটো / স্লোগান", "বিশ্বস্ত ও স্মার্ট (Credible and Smart)"]
           ]
         },
-        "mnemonic": "বৃহত্তম রাষ্ট্রীয় ব্যাংক — ১২৩৫ শাখা, মূলধন ৬০০০/৪৫৩০ কোটি, ভারতে ২ শাখা।"
+        "extended": {
+          "title": "প্রসঙ্গক্রমে: বাংলাদেশের ব্যাংক খাতের শ্রেণিবিন্যাস",
+          "points": [
+            "সোনালী ব্যাংক হলো দেশের ৭টি রাষ্ট্রায়ত্ত বাণিজ্যিক ব্যাংকের একটি।",
+            "বিশেষায়িত ব্যাংক ৩টি: বাংলাদেশ কৃষি ব্যাংক, রাজশাহী কৃষি উন্নয়ন ব্যাংক (রাকাব) ও প্রবাসী কল্যাণ ব্যাংক।",
+            "অ-তফসিলি ব্যাংক ৫টি: আনসার-ভিডিপি উন্নয়ন ব্যাংক, কর্মসংস্থান ব্যাংক, গ্রামীণ ব্যাংক, জুবিলী ব্যাংক ও পল্লী সঞ্চয় ব্যাংক।"
+          ],
+          "tableHeaders": ["ব্যাংকের ধরন", "সংখ্যা"],
+          "table": [
+            ["রাষ্ট্রায়ত্ত বাণিজ্যিক ব্যাংক", "৭টি"],
+            ["তফসিলি ব্যাংক", "৬২টি"],
+            ["বেসরকারি বাণিজ্যিক ব্যাংক", "৪৩টি"],
+            ["বিশেষায়িত ব্যাংক", "৩টি"],
+            ["বিদেশি ব্যাংক", "৯টি"],
+            ["অ-তফসিলি ব্যাংক", "৫টি"]
+          ]
+        },
+        "mnemonic": "বৃহত্তম রাষ্ট্রীয় ব্যাংক — ১২৩৫ শাখা, মূলধন ৬০০০/৪৫৩০ কোটি, ভারতে ২ শাখা, মটো: বিশ্বস্ত ও স্মার্ট।"
       }
     }
   ]
