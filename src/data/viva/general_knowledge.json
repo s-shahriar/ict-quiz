@@ -1,0 +1,21 @@
+{
+  "category": "general_knowledge",
+  "questions": [
+    {
+      "id": "gk_viva_001",
+      "q": "KUET-এর Chancellor ও Vice-Chancellor (VC) কে?",
+      "tags": ["kuet", "chancellor", "vice-chancellor", "university", "gk"],
+      "answer": {
+        "summary": [
+          "KUET (Khulna University of Engineering & Technology)-এর Chancellor (আচার্য) হলেন মহামান্য রাষ্ট্রপতি, আর বর্তমান Vice-Chancellor (উপাচার্য) হলেন Prof. Dr. Md. Mashud।"
+        ],
+        "points": [
+          "Chancellor (আচার্য): মহামান্য রাষ্ট্রপতি মো. সাহাবুদ্দিন — বাংলাদেশের সব পাবলিক বিশ্ববিদ্যালয়ের Chancellor রাষ্ট্রপতি।",
+          "Vice-Chancellor (উপাচার্য / VC): Prof. Dr. Md. Mashud।",
+          "KUET-এর পূর্ণরূপ: Khulna University of Engineering & Technology, খুলনায় অবস্থিত একটি প্রকৌশল বিশ্ববিদ্যালয়।"
+        ],
+        "mnemonic": "Chancellor = রাষ্ট্রপতি (মো. সাহাবুদ্দিন); VC = Prof. Dr. Md. Mashud।"
+      }
+    }
+  ]
+}

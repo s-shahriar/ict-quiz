@@ -108,6 +108,39 @@
         },
         "mnemonic": "বৃহত্তম রাষ্ট্রীয় ব্যাংক — ১২৩৫ শাখা, মূলধন ৬০০০/৪৫৩০ কোটি, ভারতে ২ শাখা, মটো: বিশ্বস্ত ও স্মার্ট।"
       }
+    },
+    {
+      "id": "bank_viva_005",
+      "q": "সোনালী ব্যাংকের বর্তমান স্লোগান কী? Motto-তে 'Smart'-এর full form কী?",
+      "tags": ["sonali-bank", "slogan", "motto", "smart", "smart-bangladesh"],
+      "answer": {
+        "summary": [
+          "সোনালী ব্যাংকের বর্তমান স্লোগান 'বিশ্বস্ত ও স্মার্ট' (Credible and Smart)। এখানে 'Smart'-এর কোনো official acronym/full form নেই — এটি আধুনিক, প্রযুক্তি-নির্ভর smart bank তথা Smart Bangladesh Vision-এর সাথে সঙ্গতিপূর্ণ।"
+        ],
+        "points": [
+          "বর্তমান স্লোগান: 'বিশ্বস্ত ও স্মার্ট' (Credible and Smart)।",
+          "সোনালী ব্যাংকের official mission/vision-এ SMART-কে কোনো পূর্ণরূপে (S-M-A-R-T) ভাঙা হয়নি; তাই 'Smart' মানে technology-driven আধুনিক smart banking — Smart Bangladesh Vision 2041-এর অংশ।",
+          "কেউ generic full form চাইলে বলা যায়: SMART = Specific, Measurable, Achievable, Relevant, Time-bound (goal-setting-এর প্রচলিত acronym) — তবে এটি ব্যাংকের official expansion নয়।"
+        ],
+        "mnemonic": "স্লোগান: বিশ্বস্ত ও স্মার্ট; Smart = official acronym নয়, Smart Bangladesh-এর smart bank।"
+      }
+    },
+    {
+      "id": "bank_viva_006",
+      "q": "SWIFT কী? কী কাজে ব্যবহৃত হয়? SONALI SWIFT কী?",
+      "tags": ["swift", "bic-code", "interbank", "remittance", "sonali-bank", "bsonbddh"],
+      "answer": {
+        "summary": [
+          "SWIFT = Society for Worldwide Interbank Financial Telecommunication — বিশ্বজুড়ে ব্যাংকগুলোর মধ্যে নিরাপদে আন্তর্জাতিক লেনদেনের নির্দেশ (message) পাঠানোর একটি global network। প্রতিটি ব্যাংকের একটি unique SWIFT/BIC code থাকে।"
+        ],
+        "points": [
+          "কাজ: cross-border টাকা পাঠানো, remittance, LC/trade finance ও interbank যোগাযোগের জন্য নিরাপদ ও standardized message পাঠায়।",
+          "গুরুত্বপূর্ণ: SWIFT নিজে টাকা 'move' করে না — এটি ব্যাংকে-ব্যাংকে নিরাপদ payment instruction পাঠায়; আসল টাকা settle হয় ব্যাংকের account-এর মাধ্যমে।",
+          "SWIFT/BIC code: ৮ বা ১১ অক্ষরের — bank + country + city + branch চিহ্নিত করে।",
+          "SONALI SWIFT: সোনালী ব্যাংকের SWIFT network-এর সংযোগ; ব্যাংকের SWIFT/BIC code হলো BSONBDDH (৮ অক্ষর = head office)। এর মাধ্যমে সোনালী ব্যাংক বিদেশি remittance, LC ও আন্তর্জাতিক লেনদেন করে।"
+        ],
+        "mnemonic": "SWIFT = ব্যাংকে-ব্যাংকে নিরাপদ আন্তর্জাতিক message (টাকা নয়); Sonali-র code = BSONBDDH।"
+      }
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { Landmark, Server } from 'lucide-react'
+import { GraduationCap, Landmark, Server } from 'lucide-react'
 
 import { TOPICS } from '../index.js'
 import computerNetwork from './computer_network.json'
@@ -8,6 +8,7 @@ import informationSecurity from './information_security.json'
 import softwareEngineering from './software_engineering.json'
 import datacenter from './datacenter.json'
 import banking from './banking.json'
+import generalKnowledge from './general_knowledge.json'
 
 // Viva Q&A datasets, keyed by topic id.
 // To add a topic's viva questions: create ./<topic>.json, import it here,
@@ -21,6 +22,7 @@ const VIVA_DATA = {
   software_engineering: softwareEngineering,
   datacenter: datacenter,
   banking: banking,
+  general_knowledge: generalKnowledge,
 }
 
 // Categories that exist only in the Viva module (no MCQ counterpart in TOPICS).
@@ -39,6 +41,14 @@ const VIVA_ONLY_TOPICS = [
     shortName: 'Banking',
     icon: Landmark,
     color: '#f59e0b',
+    questions: [],
+  },
+  {
+    id: 'general_knowledge',
+    name: 'General Knowledge',
+    shortName: 'GK',
+    icon: GraduationCap,
+    color: '#22c55e',
     questions: [],
   },
 ]
