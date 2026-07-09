@@ -238,6 +238,8 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* ── Module Toggle ─── */
 .module-toggle {
   display: inline-flex; align-items: center;
+  flex-wrap: wrap; justify-content: center;
+  max-width: 100%;
   gap: 4px;
   background: var(--elevated);
   border: 1px solid var(--border-md);
@@ -1206,6 +1208,26 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .module-toggle {
+    gap: 3px;
+    padding: 3px;
+    border-radius: 22px;
+  }
+  .module-btn {
+    padding: 8px 13px;
+    font-size: 0.76rem;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .module-btn {
+    padding: 7px 11px;
+    font-size: 0.72rem;
+  }
 }
 
 @media (max-width: 480px) {
