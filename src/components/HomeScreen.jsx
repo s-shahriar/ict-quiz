@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { Zap, Brain, PenLine, Star, Bookmark, Dumbbell, Sparkles, Mic } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
-import { WRITTEN_TOPICS, getWrittenData } from '../data/written/index.js'
-import { EXTRA_TOPICS, getExtraData } from '../data/extra/index.js'
-import { VIVA_TOPICS, getVivaData } from '../data/viva/index.js'
+import { WRITTEN_TOPICS } from '../data/written/index.js'
+import { EXTRA_TOPICS } from '../data/extra/index.js'
+import { VIVA_TOPICS } from '../data/viva/index.js'
 import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
-import { useAllContentReady } from '../data/contentLoader.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import GroupSearch from './GroupSearch.jsx'
@@ -40,26 +40,28 @@ export default function HomeScreen() {
   const extraTopics = EXTRA_TOPICS
   const vivaTopics = VIVA_TOPICS
 
-  // Load every module so the per-module counts below are accurate. Counts are
-  // scoped per module (by iterating that module's own items and matching q._uid)
-  // — a flag in one module must never inflate another module's card.
-  useAllContentReady()
+  // Load ONLY the active tab's module (for its search) — never all modules.
+  const contentModule = ['mcq', 'written', 'extra', 'viva'].includes(module) ? module : null
+  useModuleReady(contentModule)
 
-  const countTopics = (list, set) =>
-    (list || []).reduce((s, t) => s + t.questions.filter(q => q._uid && set.has(q._uid)).length, 0)
-  const countData = (list, getData, set) =>
-    (list || []).reduce((s, t) => s + (getData(t.id)?.questions || []).filter(q => q._uid && set.has(q._uid)).length, 0)
-
-  const totalNailed        = countTopics(topics, mastered)
-  const totalImportant     = countTopics(topics, important)
-  const totalWrittenNailed    = countData(writtenTopics, getWrittenData, mastered)
-  const totalWrittenImportant = countData(writtenTopics, getWrittenData, important)
-  const totalExtraNailed      = countData(extraTopics, getExtraData, mastered)
-  const totalExtraImportant   = countData(extraTopics, getExtraData, important)
-  const totalVivaNailed       = countData(vivaTopics, getVivaData, mastered)
-  const totalVivaImportant    = countData(vivaTopics, getVivaData, important)
+  // Counts come straight from the progress sets by uid prefix — uids are
+  // module-scoped (mcq:/written:/extra:/viva:), so no content needs loading and
+  // one module's flags can't inflate another's card.
+  const countPrefix = (set, prefix) => {
+    let n = 0
+    for (const u of set) if (typeof u === 'string' && u.startsWith(prefix)) n++
+    return n
+  }
+  const totalNailed           = countPrefix(mastered, 'mcq:')
+  const totalImportant        = countPrefix(important, 'mcq:')
+  const totalWrittenNailed    = countPrefix(mastered, 'written:')
+  const totalWrittenImportant = countPrefix(important, 'written:')
+  const totalExtraNailed      = countPrefix(mastered, 'extra:')
+  const totalExtraImportant   = countPrefix(important, 'extra:')
+  const totalVivaNailed       = countPrefix(mastered, 'viva:')
+  const totalVivaImportant    = countPrefix(important, 'viva:')
   // Practice content is bundled; its important flags are keyed by command id.
-  const totalPracticeImportant = [...important].filter(id => typeof id === 'string' && id.startsWith('practice')).length
+  const totalPracticeImportant = countPrefix(important, 'practice')
 
   return (
     <div className="home anim-fade">
