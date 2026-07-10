@@ -3,3 +3,8 @@ dist
 .DS_Store
 *.local
 .vercel
+
+# Env — never commit real keys
+.env
+.env.*
+!.env.example

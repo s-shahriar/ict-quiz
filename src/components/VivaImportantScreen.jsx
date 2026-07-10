@@ -2,18 +2,20 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bookmark, X, Home } from 'lucide-react'
 import { getVivaData, VIVA_TOPICS } from '../data/viva/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 
 export default function VivaImportantScreen() {
   const navigate = useNavigate()
+  useModuleReady('viva')
   const { value: important, remove: onUnmark } = useImportantContext()
   const [activeId, setActiveId] = useState(null)
 
   const importantByTopic = VIVA_TOPICS.map(t => {
     const data = getVivaData(t.id)
     const items = (data.questions || [])
-      .map(q => ({ q, qid: `viva__${t.id}__${q.id}` }))
+      .map(q => ({ q, qid: q._uid }))
       .filter(({ qid }) => important.has(qid))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)

@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useVivaMasteredContext } from '../contexts/VivaMasteredContext.jsx'
 import { VIVA_TOPICS, getVivaData } from '../data/viva/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
@@ -16,6 +17,7 @@ export default function VivaMode() {
   const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
   const { value: vivaMastered, add: onNailViva, remove: onUnnailViva } = useVivaMasteredContext()
 
+  const ready = useModuleReady('viva')
   const topicId = searchParams.get('topic') || VIVA_TOPICS[0]?.id
   const topic = VIVA_TOPICS.find(t => t.id === topicId) || VIVA_TOPICS[0]
   const vivaData = topic ? getVivaData(topic.id) : { questions: [] }
@@ -25,7 +27,7 @@ export default function VivaMode() {
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const qid = (q) => `viva__${topic.id}__${q.id}`
+  const qid = (q) => q._uid
   const toggleImportant = (q) => {
     const id = qid(q)
     important.has(id) ? onUnmarkImportant(id) : onMarkImportant(id)
@@ -52,6 +54,7 @@ export default function VivaMode() {
   }, [focusQ, topicId])
 
   if (!topic) return null
+  if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
 
   return (
     <div className="written-page anim-fade">

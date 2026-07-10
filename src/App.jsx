@@ -1,14 +1,12 @@
 import { Moon, Sun } from 'lucide-react'
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import BackupModal from './components/BackupModal.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
-import { ImportantProvider } from './contexts/ImportantContext.jsx'
-import { MasteredProvider } from './contexts/MasteredContext.jsx'
+import AccountButton from './components/auth/AccountButton.jsx'
+import SyncOverlay from './components/SyncOverlay.jsx'
+import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
+import { ProgressProvider, useProgressSyncing } from './contexts/ProgressContext.jsx'
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext.jsx'
-import { WrittenMasteredProvider } from './contexts/WrittenMasteredContext.jsx'
-import { ExtraMasteredProvider } from './contexts/ExtraMasteredContext.jsx'
-import { VivaMasteredProvider } from './contexts/VivaMasteredContext.jsx'
 
 const ExamConfig = lazy(() => import('./components/ExamConfig.jsx'))
 const ExamMode = lazy(() => import('./components/ExamMode.jsx'))
@@ -32,26 +30,21 @@ const VivaNailedScreen = lazy(() => import('./components/VivaNailedScreen.jsx'))
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <MasteredProvider>
-        <ImportantProvider>
-          <WrittenMasteredProvider>
-            <ExtraMasteredProvider>
-              <VivaMasteredProvider>
-                <AppRoutes />
-              </VivaMasteredProvider>
-            </ExtraMasteredProvider>
-          </WrittenMasteredProvider>
-        </ImportantProvider>
-      </MasteredProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <ProgressProvider>
+          <AppRoutes />
+        </ProgressProvider>
+      </ThemeProvider>
+    </AuthProvider>
   )
 }
 
 function AppRoutes() {
   const { theme, toggleTheme } = useThemeContext()
+  const { loading: authLoading } = useAuth()
+  const syncing = useProgressSyncing()
   const location = useLocation()
-  const [showBackup, setShowBackup] = useState(false)
 
   const isHome = location.pathname === '/'
 
@@ -63,14 +56,17 @@ function AppRoutes() {
       </div>
 
       {isHome && (
-        <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
-          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-        </button>
+        <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 50, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <AccountButton />
+          <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme" style={{ position: 'static' }}>
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+          </button>
+        </div>
       )}
 
       <Suspense fallback={null}>
         <Routes>
-          <Route path="/" element={<HomeScreen onBackup={() => setShowBackup(true)} />} />
+          <Route path="/" element={<HomeScreen />} />
           <Route path="/mcq/:topicId" element={<ModeSelect />} />
           <Route path="/mcq/:topicId/quiz" element={<QuizMode />} />
           <Route path="/mcq/:topicId/study" element={<StudyMode />} />
@@ -94,7 +90,7 @@ function AppRoutes() {
         </Routes>
       </Suspense>
 
-      {showBackup && <BackupModal onClose={() => setShowBackup(false)} />}
+      {(authLoading || syncing) && <SyncOverlay />}
     </div>
   )
 }

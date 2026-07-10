@@ -91,7 +91,7 @@ export default function GroupSearch({ topics, onActiveChange, initialQuery = '' 
                       // Back (via state) and the browser Back land on it.
                       const home = '/?module=mcq&search=' + encodeURIComponent(query)
                       navigate(home, { replace: true })
-                      navigate('/mcq/' + topic.id + '/study?q=' + index, { state: { backTo: home } })
+                      navigate('/mcq/' + topic.id + '/study?q=' + q._uid, { state: { backTo: home } })
                     }}
                   />
                 ))}

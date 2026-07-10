@@ -2,17 +2,19 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
 import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 
 export default function WrittenNailedScreen() {
   const navigate = useNavigate()
+  useModuleReady('written')
   const { value: writtenMastered, remove: onUnnail } = useWrittenMasteredContext()
 
   const nailedByTopic = WRITTEN_TOPICS.map(t => {
     const data = getWrittenData(t.id)
     const items = (data.questions || [])
-      .map(q => ({ q, qid: `written__${t.id}__${q.id}` }))
+      .map(q => ({ q, qid: q._uid }))
       .filter(({ qid }) => writtenMastered.has(qid))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)

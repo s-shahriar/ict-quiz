@@ -4,7 +4,7 @@ import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb,
 import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
-import { duplicateQidsOf } from '../lib/questionIndex.js'
+import { useModuleReady } from '../data/contentLoader.js'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -19,18 +19,15 @@ export default function QuizMode() {
   const { topicId } = useParams()
   const navigate = useNavigate()
   const topic = TOPICS.find(t => t.id === topicId)
+  const ready = useModuleReady('mcq')
   const { value: mastered, add: nail, remove: unnail } = useMasteredContext()
-  const { value: important, add: markImportant, removeMany: unmarkImportant } = useImportantContext()
+  const { value: important, add: markImportant, remove: unmarkImportant } = useImportantContext()
 
   const questions = useMemo(
     () => topic
-      ? shuffle(
-          topic.questions
-            .map((q, i) => ({ ...q, _origIndex: i }))
-            .filter(q => q.options && q.correct_answer)
-        )
+      ? shuffle(topic.questions.filter(q => q.options && q.correct_answer))
       : [],
-    [topic]
+    [topic, ready] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const [idx, setIdx] = useState(0)
@@ -40,13 +37,13 @@ export default function QuizMode() {
   const [done, setDone] = useState(false)
 
   if (!topic) return <Navigate to="/" replace />
+  if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
 
   const q = questions[idx]
   const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
-  const qid = q ? `${topic.id}__${q._origIndex}` : null
-  const dupeQids = qid ? duplicateQidsOf(qid) : []
+  const qid = q ? q._uid : null
   const isNailed = qid ? mastered?.has(qid) : false
-  const isImportant = qid ? dupeQids.some(id => important?.has(id)) : false
+  const isImportant = qid ? important?.has(qid) : false
 
   const pick = (key) => {
     if (revealed) return
@@ -151,7 +148,7 @@ export default function QuizMode() {
               </button>
               <button
                 className={`quiz-important-btn${isImportant ? ' marked' : ''}`}
-                onClick={() => isImportant ? unmarkImportant(dupeQids) : markImportant(qid)}
+                onClick={() => isImportant ? unmarkImportant(qid) : markImportant(qid)}
                 title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
               >
                 <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />

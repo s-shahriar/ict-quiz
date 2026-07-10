@@ -2,21 +2,20 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bookmark, X, Home, Lightbulb } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
-import { duplicateQidsOf } from '../lib/questionIndex.js'
 
 export default function ImportantScreen() {
   const navigate = useNavigate()
-  const { value: important, removeMany } = useImportantContext()
-  // Remove every duplicate copy of the question so it fully clears.
-  const onUnmark = (qid) => removeMany(duplicateQidsOf(qid))
+  useModuleReady('mcq')
+  const { value: important, remove: onUnmark } = useImportantContext()
   const [activeId, setActiveId] = useState(null)
 
   const topics = TOPICS
 
   const importantByTopic = topics.map(t => {
     const items = t.questions
-      .map((q, i) => ({ q, qid: `${t.id}__${i}` }))
+      .map((q) => ({ q, qid: q._uid }))
       .filter(({ q }) => q.options && q.correct_answer)
       .filter(({ qid }) => important.has(qid))
     return { topic: t, items }

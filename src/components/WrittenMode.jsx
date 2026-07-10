@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 import { WRITTEN_TOPICS, getWrittenData } from '../data/written/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
@@ -16,6 +17,7 @@ export default function WrittenMode() {
   const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
   const { value: writtenMastered, add: onNailWritten, remove: onUnnailWritten } = useWrittenMasteredContext()
 
+  const ready = useModuleReady('written')
   const topicId = searchParams.get('topic') || WRITTEN_TOPICS[0]?.id
   const topic = WRITTEN_TOPICS.find(t => t.id === topicId) || WRITTEN_TOPICS[0]
   const writtenData = topic ? getWrittenData(topic.id) : { questions: [] }
@@ -25,7 +27,7 @@ export default function WrittenMode() {
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const qid = (q) => `written__${topic.id}__${q.id}`
+  const qid = (q) => q._uid
   const toggleImportant = (q) => {
     const id = qid(q)
     important.has(id) ? onUnmarkImportant(id) : onMarkImportant(id)
@@ -52,6 +54,7 @@ export default function WrittenMode() {
   }, [focusQ, topicId])
 
   if (!topic) return null
+  if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
 
   return (
     <div className="written-page anim-fade">

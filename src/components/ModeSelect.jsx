@@ -1,11 +1,13 @@
 import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import { ChevronLeft, Brain, BookOpen } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 
 export default function ModeSelect() {
   const { topicId } = useParams()
   const navigate = useNavigate()
   const topic = TOPICS.find(t => t.id === topicId)
+  const ready = useModuleReady('mcq')
 
   if (!topic) return <Navigate to="/" replace />
 
@@ -30,7 +32,7 @@ export default function ModeSelect() {
         <div className="mode-topic-name" style={{ color: topic.color }}>
           {topic.name}
         </div>
-        <div className="mode-topic-meta">{topic.questions.length} questions available</div>
+        <div className="mode-topic-meta">{ready ? `${topic.questions.length} questions available` : 'Loading…'}</div>
       </div>
 
       <div className="mode-cards">

@@ -2,18 +2,20 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bookmark, X, Home } from 'lucide-react'
 import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 
 export default function WrittenImportantScreen() {
   const navigate = useNavigate()
+  useModuleReady('written')
   const { value: important, remove: onUnmark } = useImportantContext()
   const [activeId, setActiveId] = useState(null)
 
   const importantByTopic = WRITTEN_TOPICS.map(t => {
     const data = getWrittenData(t.id)
     const items = (data.questions || [])
-      .map(q => ({ q, qid: `written__${t.id}__${q.id}` }))
+      .map(q => ({ q, qid: q._uid }))
       .filter(({ qid }) => important.has(qid))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)

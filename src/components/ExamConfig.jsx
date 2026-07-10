@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Zap, Minus, Plus } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 
 function shuffle(arr) {
@@ -15,6 +16,7 @@ function shuffle(arr) {
 
 export default function ExamConfig() {
   const navigate = useNavigate()
+  const ready = useModuleReady('mcq')
   const { value: important } = useImportantContext()
   const topics = TOPICS
 
@@ -25,9 +27,9 @@ export default function ExamConfig() {
 
   const importantCount = useMemo(() =>
     topics.reduce((s, t) =>
-      s + t.questions.filter((q, i) => validQ(q) && important.has(`${t.id}__${i}`)).length
+      s + t.questions.filter(q => validQ(q) && important.has(q._uid)).length
     , 0)
-  , [important, topics])
+  , [important, topics, ready]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const maxCount = useMemo(() => {
     if (topicId === 'important')
@@ -35,7 +37,7 @@ export default function ExamConfig() {
     if (topicId === 'all')
       return topics.reduce((s, t) => s + t.questions.filter(validQ).length, 0)
     return topics.find(t => t.id === topicId)?.questions.filter(validQ).length ?? 0
-  }, [topicId, topics, importantCount])
+  }, [topicId, topics, importantCount, ready]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const safeCount = Math.max(1, Math.min(count, maxCount))
 
@@ -51,8 +53,8 @@ export default function ExamConfig() {
     if (topicId === 'important') {
       pool = topics.flatMap(t =>
         t.questions
-          .map((q, i) => ({ ...q, _color: t.color, _label: t.shortName, _topicId: t.id, _origIndex: i }))
-          .filter(q => validQ(q) && important.has(`${q._topicId}__${q._origIndex}`))
+          .map(q => ({ ...q, _color: t.color, _label: t.shortName }))
+          .filter(q => validQ(q) && important.has(q._uid))
       )
     } else if (topicId === 'all') {
       pool = topics.flatMap(t =>
@@ -126,9 +128,9 @@ export default function ExamConfig() {
           </div>
         </div>
 
-        <button className="exam-start-btn" onClick={handleStart} disabled={maxCount === 0}>
+        <button className="exam-start-btn" onClick={handleStart} disabled={maxCount === 0 || !ready}>
           <Zap size={16} />
-          Start Exam — {safeCount} Questions
+          {ready ? `Start Exam — ${safeCount} Questions` : 'Loading…'}
         </button>
       </div>
     </div>

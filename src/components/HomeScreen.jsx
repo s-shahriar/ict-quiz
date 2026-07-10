@@ -1,29 +1,24 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
-import { Zap, Brain, PenLine, Star, Bookmark, ShieldCheck, Dumbbell, Sparkles, Mic } from 'lucide-react'
+import { Zap, Brain, PenLine, Star, Bookmark, Dumbbell, Sparkles, Mic } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
-import { WRITTEN_TOPICS } from '../data/written/index.js'
-import { EXTRA_TOPICS } from '../data/extra/index.js'
-import { VIVA_TOPICS } from '../data/viva/index.js'
+import { WRITTEN_TOPICS, getWrittenData } from '../data/written/index.js'
+import { EXTRA_TOPICS, getExtraData } from '../data/extra/index.js'
+import { VIVA_TOPICS, getVivaData } from '../data/viva/index.js'
 import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
+import { useAllContentReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
-import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
-import { useExtraMasteredContext } from '../contexts/ExtraMasteredContext.jsx'
-import { useVivaMasteredContext } from '../contexts/VivaMasteredContext.jsx'
 import GroupSearch from './GroupSearch.jsx'
 import WrittenSearch from './WrittenSearch.jsx'
 import ExtraSearch from './ExtraSearch.jsx'
 import VivaSearch from './VivaSearch.jsx'
 
-export default function HomeScreen({ onBackup }) {
+export default function HomeScreen() {
   const navigate = useNavigate()
   const location = useLocation()
   const { value: mastered } = useMasteredContext()
   const { value: important } = useImportantContext()
-  const { value: writtenMastered } = useWrittenMasteredContext()
-  const { value: extraMastered } = useExtraMasteredContext()
-  const { value: vivaMastered } = useVivaMasteredContext()
 
   const [searchParams] = useSearchParams()
   // Capture restore target once per mount (HomeScreen remounts on browser-back
@@ -45,33 +40,26 @@ export default function HomeScreen({ onBackup }) {
   const extraTopics = EXTRA_TOPICS
   const vivaTopics = VIVA_TOPICS
 
-  const totalNailed = topics.reduce((s, t) =>
-    s + t.questions.filter((q, i) => q.options && q.correct_answer && mastered.has(`${t.id}__${i}`)).length
-  , 0)
+  // Load every module so the per-module counts below are accurate. Counts are
+  // scoped per module (by iterating that module's own items and matching q._uid)
+  // — a flag in one module must never inflate another module's card.
+  useAllContentReady()
 
-  const totalImportant = topics.reduce((s, t) =>
-    s + t.questions.filter((q, i) => q.options && q.correct_answer && important.has(`${t.id}__${i}`)).length
-  , 0)
+  const countTopics = (list, set) =>
+    (list || []).reduce((s, t) => s + t.questions.filter(q => q._uid && set.has(q._uid)).length, 0)
+  const countData = (list, getData, set) =>
+    (list || []).reduce((s, t) => s + (getData(t.id)?.questions || []).filter(q => q._uid && set.has(q._uid)).length, 0)
 
-  const totalWrittenImportant = (writtenTopics || []).reduce((s, t) =>
-    s + [...important].filter(id => id.startsWith(`written__${t.id}__`)).length
-  , 0)
-
-  const totalWrittenNailed = writtenMastered?.size ?? 0
-
-  const totalExtraImportant = (extraTopics || []).reduce((s, t) =>
-    s + [...important].filter(id => id.startsWith(`extra__${t.id}__`)).length
-  , 0)
-
-  const totalExtraNailed = extraMastered?.size ?? 0
-
-  const totalVivaImportant = (vivaTopics || []).reduce((s, t) =>
-    s + [...important].filter(id => id.startsWith(`viva__${t.id}__`)).length
-  , 0)
-
-  const totalVivaNailed = vivaMastered?.size ?? 0
-
-  const totalPracticeImportant = [...important].filter(id => id.startsWith('practice__')).length
+  const totalNailed        = countTopics(topics, mastered)
+  const totalImportant     = countTopics(topics, important)
+  const totalWrittenNailed    = countData(writtenTopics, getWrittenData, mastered)
+  const totalWrittenImportant = countData(writtenTopics, getWrittenData, important)
+  const totalExtraNailed      = countData(extraTopics, getExtraData, mastered)
+  const totalExtraImportant   = countData(extraTopics, getExtraData, important)
+  const totalVivaNailed       = countData(vivaTopics, getVivaData, mastered)
+  const totalVivaImportant    = countData(vivaTopics, getVivaData, important)
+  // Practice content is bundled; its important flags are keyed by command id.
+  const totalPracticeImportant = [...important].filter(id => typeof id === 'string' && id.startsWith('practice')).length
 
   return (
     <div className="home anim-fade">
@@ -150,12 +138,6 @@ export default function HomeScreen({ onBackup }) {
               <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>
               </div>
-            </button>
-          </div>
-
-          <div className="backup-trigger-row">
-            <button className="backup-trigger-btn" onClick={onBackup}>
-              <ShieldCheck size={13} /> Backup & Restore
             </button>
           </div>
 

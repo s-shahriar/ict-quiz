@@ -2,17 +2,19 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
 import { getVivaData, VIVA_TOPICS } from '../data/viva/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useVivaMasteredContext } from '../contexts/VivaMasteredContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 
 export default function VivaNailedScreen() {
   const navigate = useNavigate()
+  useModuleReady('viva')
   const { value: vivaMastered, remove: onUnnail } = useVivaMasteredContext()
 
   const nailedByTopic = VIVA_TOPICS.map(t => {
     const data = getVivaData(t.id)
     const items = (data.questions || [])
-      .map(q => ({ q, qid: `viva__${t.id}__${q.id}` }))
+      .map(q => ({ q, qid: q._uid }))
       .filter(({ qid }) => vivaMastered.has(qid))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)

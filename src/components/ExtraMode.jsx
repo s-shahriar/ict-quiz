@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useExtraMasteredContext } from '../contexts/ExtraMasteredContext.jsx'
 import { EXTRA_TOPICS, getExtraData } from '../data/extra/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
@@ -16,6 +17,7 @@ export default function ExtraMode() {
   const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
   const { value: extraMastered, add: onNailExtra, remove: onUnnailExtra } = useExtraMasteredContext()
 
+  const ready = useModuleReady('extra')
   const topicId = searchParams.get('topic') || EXTRA_TOPICS[0]?.id
   const topic = EXTRA_TOPICS.find(t => t.id === topicId) || EXTRA_TOPICS[0]
   const extraData = topic ? getExtraData(topic.id) : { questions: [] }
@@ -25,7 +27,7 @@ export default function ExtraMode() {
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const qid = (q) => `extra__${topic.id}__${q.id}`
+  const qid = (q) => q._uid
   const toggleImportant = (q) => {
     const id = qid(q)
     important.has(id) ? onUnmarkImportant(id) : onMarkImportant(id)
@@ -52,6 +54,7 @@ export default function ExtraMode() {
   }, [focusQ, topicId])
 
   if (!topic) return null
+  if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
 
   return (
     <div className="written-page anim-fade">

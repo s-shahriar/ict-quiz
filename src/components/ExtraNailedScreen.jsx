@@ -2,17 +2,19 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
 import { getExtraData, EXTRA_TOPICS } from '../data/extra/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useExtraMasteredContext } from '../contexts/ExtraMasteredContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 
 export default function ExtraNailedScreen() {
   const navigate = useNavigate()
+  useModuleReady('extra')
   const { value: extraMastered, remove: onUnnail } = useExtraMasteredContext()
 
   const nailedByTopic = EXTRA_TOPICS.map(t => {
     const data = getExtraData(t.id)
     const items = (data.questions || [])
-      .map(q => ({ q, qid: `extra__${t.id}__${q.id}` }))
+      .map(q => ({ q, qid: q._uid }))
       .filter(({ qid }) => extraMastered.has(qid))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)

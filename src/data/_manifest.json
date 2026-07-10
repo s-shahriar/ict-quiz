@@ -1,0 +1,54 @@
+{
+  "mcq": {
+    "c_programming": 36,
+    "computer_fundamental": 52,
+    "computer_network": 83,
+    "database": 86,
+    "digital_logic": 37,
+    "dsa": 80,
+    "information_security": 27,
+    "linux": 31,
+    "machine_learning": 85,
+    "microprocessor": 18,
+    "oop": 44,
+    "operating_system": 33,
+    "software_engineering": 33,
+    "theory_of_computation": 2
+  },
+  "written": {
+    "c_programming": 2,
+    "computer_fundamental": 4,
+    "computer_network": 25,
+    "database": 5,
+    "dsa": 7,
+    "information_security": 6,
+    "linux": 1,
+    "microprocessor": 1,
+    "oop": 3,
+    "operating_system": 9,
+    "server": 34,
+    "software_engineering": 5
+  },
+  "extra": {
+    "computer_fundamental": 5,
+    "computer_network": 8,
+    "database": 5,
+    "dsa": 5,
+    "information_security": 9,
+    "linux": 5,
+    "oop": 5,
+    "operating_system": 5,
+    "server": 8,
+    "software_engineering": 5
+  },
+  "viva": {
+    "banking": 6,
+    "computer_network": 12,
+    "database": 1,
+    "datacenter": 2,
+    "general_knowledge": 1,
+    "information_security": 1,
+    "machine_learning": 1,
+    "software_engineering": 1
+  }
+}

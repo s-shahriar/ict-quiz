@@ -4,7 +4,7 @@ import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Fil
 import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
-import { duplicateQidsOf } from '../lib/questionIndex.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 
@@ -14,25 +14,26 @@ export default function StudyMode() {
   const location = useLocation()
   const backTo = location.state?.backTo  // set when arriving from search — return there
   const topic = TOPICS.find(t => t.id === topicId)
+  const ready = useModuleReady('mcq')
   const { value: mastered, add: onNail } = useMasteredContext()
-  const { value: important, add: onMarkImportant, removeMany: onUnmarkImportant } = useImportantContext()
+  const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
 
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // Deep-link: ?q=<index> scrolls to and pulses a specific question.
+  // Deep-link: ?q=<uid> scrolls to and pulses a specific question.
   const [searchParams] = useSearchParams()
-  const focusIdx = searchParams.get('q')
-  const focusTopicId = topic?.id
+  const focusUid = searchParams.get('q')
   useEffect(() => {
-    if (focusIdx == null || !focusTopicId) return
-    return focusScroll(() => document.getElementById('study-q-' + focusTopicId + '__' + focusIdx))
-  }, [focusIdx, focusTopicId])
+    if (!focusUid) return
+    return focusScroll(() => document.getElementById('study-q-' + focusUid))
+  }, [focusUid])
 
   if (!topic) return <Navigate to="/" replace />
+  if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
 
   const allQ = topic.questions
-    .map((q, i) => ({ q, qid: `${topic.id}__${i}` }))
+    .map((q) => ({ q, qid: q._uid }))
     .filter(({ q }) => q.options && q.correct_answer)
 
   const nonNailed = allQ.filter(({ qid }) => !mastered.has(qid))
@@ -113,10 +114,10 @@ export default function StudyMode() {
               index={i}
               color={topic.color}
               nailed={mastered.has(qid)}
-              isImportant={duplicateQidsOf(qid).some(id => important?.has(id))}
+              isImportant={important?.has(qid)}
               onNail={() => onNail(qid)}
               onMarkImportant={() => onMarkImportant(qid)}
-              onUnmarkImportant={() => onUnmarkImportant(duplicateQidsOf(qid))}
+              onUnmarkImportant={() => onUnmarkImportant(qid)}
             />
           ))}
         </div>

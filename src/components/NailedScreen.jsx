@@ -2,17 +2,19 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home, Lightbulb } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
+import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 
 export default function NailedScreen() {
   const navigate = useNavigate()
+  useModuleReady('mcq')
   const { value: mastered, remove: onUnnail } = useMasteredContext()
 
   const topics = TOPICS
 
   const nailedByTopic = topics.map(t => {
     const items = t.questions
-      .map((q, i) => ({ q, qid: `${t.id}__${i}` }))
+      .map((q) => ({ q, qid: q._uid }))
       .filter(({ q }) => q.options && q.correct_answer)
       .filter(({ qid }) => mastered.has(qid))
     return { topic: t, items }
