@@ -34,21 +34,25 @@ export function loadModule(moduleId) {
   const p = (async () => {
     const bySlug = new Map()
     const pageSize = 1000
+    // Paginate on the UNIQUE id — ordering by non-unique sort_order would
+    // skip/duplicate rows across page boundaries once a module exceeds 1000
+    // rows. Per-category newest-first order is applied in JS after grouping.
     for (let from = 0; ; from += pageSize) {
       const { data, error } = await supabase
         .from('questions')
-        .select('category_slug, uid, payload, sort_order')
+        .select('id, category_slug, uid, payload, sort_order')
         .eq('module', moduleId)
-        .order('sort_order', { ascending: false })
+        .order('id')
         .range(from, from + pageSize - 1)
       if (error) throw error
       for (const r of data) {
         if (!bySlug.has(r.category_slug)) bySlug.set(r.category_slug, [])
-        bySlug.get(r.category_slug).push({ ...r.payload, _uid: r.uid })
+        bySlug.get(r.category_slug).push({ ...r.payload, _uid: r.uid, _sort: r.sort_order })
       }
       if (data.length < pageSize) break
     }
     for (const [slug, items] of bySlug) {
+      items.sort((a, b) => b._sort - a._sort)  // newest first
       const store = getStore(slug)
       if (store) store.questions = items
     }

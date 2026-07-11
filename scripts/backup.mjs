@@ -47,7 +47,7 @@ async function main() {
   if (!existsSync(dir)) mkdirSync(dir)
 
   // ── ALL content (MCQ / Written / Extra / Viva; payload holds each item whole) ──
-  const questions = await fetchAll('questions', '*', 'sort_order')
+  const questions = await fetchAll('questions', '*', 'id')
   const byModule = questions.reduce((m, q) => { m[q.module] = (m[q.module] || 0) + 1; return m }, {})
   writeFileSync(join(dir, 'content.json'), JSON.stringify({
     counts: { questions: questions.length, byModule },
