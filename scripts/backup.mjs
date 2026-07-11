@@ -49,6 +49,14 @@ async function main() {
   // ── ALL content (MCQ / Written / Extra / Viva; payload holds each item whole) ──
   const questions = await fetchAll('questions', '*', 'id')
   const byModule = questions.reduce((m, q) => { m[q.module] = (m[q.module] || 0) + 1; return m }, {})
+
+  // Integrity guard: snapshot must be COMPLETE and DUPLICATE-FREE, else fail loudly.
+  const distinctQ = new Set(questions.map(q => q.id)).size
+  const { count: dbQ } = await db.from('questions').select('*', { count: 'exact', head: true })
+  if (distinctQ !== questions.length || questions.length !== dbQ) {
+    throw new Error(`integrity check failed — ${questions.length} rows (${distinctQ} distinct) vs DB ${dbQ}`)
+  }
+
   writeFileSync(join(dir, 'content.json'), JSON.stringify({
     counts: { questions: questions.length, byModule },
     questions,
