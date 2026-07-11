@@ -50,7 +50,6 @@ async function main() {
   const questions = await fetchAll('questions', '*', 'sort_order')
   const byModule = questions.reduce((m, q) => { m[q.module] = (m[q.module] || 0) + 1; return m }, {})
   writeFileSync(join(dir, 'content.json'), JSON.stringify({
-    exported_at: new Date().toISOString(),
     counts: { questions: questions.length, byModule },
     questions,
   }, null, 2))
@@ -67,7 +66,6 @@ async function main() {
     progress = data
   }
   writeFileSync(join(dir, 'progress.json'), JSON.stringify({
-    exported_at: new Date().toISOString(),
     owner: OWNER_EMAIL,
     count: progress.length,
     nailed: progress.filter(p => p.nailed).length,
