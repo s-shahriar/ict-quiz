@@ -637,25 +637,25 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .quiz-card {
   background: var(--surface-glass);
   border: 1px solid var(--border);
-  border-radius: 20px; padding: 24px 20px;
+  border-radius: 18px; padding: 18px 16px;
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
 .quiz-question {
-  font-size: 1.08rem; line-height: 1.78;
-  margin-bottom: 28px; font-weight: 500;
+  font-size: 1.06rem; line-height: 1.6;
+  margin-bottom: 16px; font-weight: 500;
   font-family: 'Inter', sans-serif; color: var(--text);
 }
 
-.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
 
 .opt-btn {
-  display: flex; align-items: center; gap: 14px;
+  display: flex; align-items: center; gap: 13px;
   background: var(--elevated);
   border: 1.5px solid var(--border);
-  border-radius: 12px; padding: 14px 18px;
+  border-radius: 11px; padding: 11px 15px;
   text-align: left; font-size: 0.91rem;
   font-family: 'Inter', sans-serif; font-weight: 500;
   transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease; width: 100%;
@@ -697,7 +697,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 
 /* ── Next Button ─── */
 .quiz-revealed-actions {
-  display: flex; flex-direction: column; gap: 10px; margin-top: 20px;
+  display: flex; flex-direction: column; gap: 8px; margin-top: 14px;
   animation: slideUp 0.25s ease;
 }
 .quiz-revealed-actions .quiz-next-btn { width: 100%; margin-top: 0; animation: none; }
@@ -705,13 +705,13 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .quiz-nail-btn {
   display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px;
   flex: 1; min-width: 0;
-  padding: 10px 14px;
-  border-radius: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
   border: 1.5px solid rgba(245,158,11,0.35);
   background: rgba(245,158,11,0.07);
   color: #b45309;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.03em;
+  font-size: 0.82rem; font-weight: 700; letter-spacing: 0.01em;
   cursor: pointer;
   transition: all 0.2s ease;
 }
