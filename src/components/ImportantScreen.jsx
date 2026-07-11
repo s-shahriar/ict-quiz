@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bookmark, X, Home, Lightbulb } from 'lucide-react'
+import CategoryChipBar from './CategoryChipBar.jsx'
 import { TOPICS } from '../data/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -55,24 +56,7 @@ export default function ImportantScreen() {
             These questions still appear in Exam Mode. Tap <X size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> to remove.
           </div>
 
-          <div className="nailed-cat-bar">
-            {importantByTopic.map(({ topic: t, items }) => {
-              const Icon = t.icon
-              const on = activeGroup?.topic.id === t.id
-              return (
-                <button
-                  key={t.id}
-                  className={`nailed-cat-chip${on ? ' active' : ''}`}
-                  style={{ '--c': t.color }}
-                  onClick={() => setActiveId(t.id)}
-                >
-                  {Icon && <span className="nailed-cat-chip-ic"><Icon size={16} /></span>}
-                  <span className="nailed-cat-chip-name">{t.name}</span>
-                  <span className="nailed-cat-chip-count">{items.length}</span>
-                </button>
-              )
-            })}
-          </div>
+          <CategoryChipBar groups={importantByTopic} activeId={activeGroup?.topic.id} onSelect={setActiveId} />
 
           {activeGroup && (
             <div className="nailed-screen-list anim-fade" style={{ '--c': activeGroup.topic.color }}>

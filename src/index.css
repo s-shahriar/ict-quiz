@@ -2426,14 +2426,23 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* Important category tab bar — pick a category, see only its items (no scrolling
    past every other category). Sticky so it stays reachable while reading items. */
 .nailed-cat-bar {
-  display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden;
-  padding: 10px 0 12px; margin: 2px 0 10px;
-  position: sticky; top: 0; z-index: 20;
-  background: var(--bg);
-  scrollbar-width: thin;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 4px 0 8px; margin: 2px 0 6px;
 }
-.nailed-cat-bar::-webkit-scrollbar { height: 5px; }
-.nailed-cat-bar::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 999px; }
+.nailed-cat-bar.collapsed {
+  max-height: 100px;              /* ~2 rows, rest hidden behind the fade */
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 74%, transparent);
+  mask-image: linear-gradient(to bottom, #000 74%, transparent);
+}
+.nailed-cat-toggle {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin: 0 0 12px; padding: 5px 13px; border-radius: 999px;
+  border: 1px solid var(--border-md); background: var(--surface-glass);
+  color: var(--text-3); font-size: 0.74rem; font-weight: 600; cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.nailed-cat-toggle:hover { color: var(--text); border-color: var(--border-bright); }
 .nailed-cat-chip {
   display: inline-flex; align-items: center; gap: 9px; flex-shrink: 0;
   padding: 8px 13px 8px 9px; border-radius: 13px; cursor: pointer;
