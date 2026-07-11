@@ -3106,3 +3106,13 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   15%  { box-shadow: 0 0 0 4px color-mix(in srgb, var(--c, var(--accent)) 45%, transparent); }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
+
+/* Folded explanation toggle in the saved (Important/Nailed) rows */
+.nailed-exp-toggle {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 7px; padding: 4px 10px; border-radius: 8px;
+  border: 1px solid var(--border-md); background: transparent;
+  color: var(--text-3); font-size: 0.72rem; font-weight: 600; cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.nailed-exp-toggle:hover { color: var(--text-2); border-color: var(--border-bright); }

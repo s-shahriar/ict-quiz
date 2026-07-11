@@ -77,36 +77,42 @@ export default function ImportantScreen() {
           {activeGroup && (
             <div className="nailed-screen-list anim-fade" style={{ '--c': activeGroup.topic.color }}>
               {activeGroup.items.map(({ q, qid }) => (
-                <div key={qid} className="nailed-row">
-                  <Bookmark size={11} fill="currentColor" style={{ color: '#ef4444', flexShrink: 0, marginTop: 3 }} />
-                  <div className="nailed-row-body">
-                    <span className="nailed-row-text">{q.question}</span>
-                    {q.correct_answer && q.options?.[q.correct_answer] && (
-                      <div className="nailed-row-answer">
-                        <span className="nailed-ans-key">{q.correct_answer.toUpperCase()}</span>
-                        <span className="nailed-ans-text">{q.options[q.correct_answer]}</span>
-                      </div>
-                    )}
-                    {q.explanation && (
-                      <div className="nailed-row-explanation">
-                        <Lightbulb size={11} style={{ color: '#ef4444', flexShrink: 0, marginTop: 1 }} />
-                        <span>{q.explanation}</span>
-                      </div>
-                    )}
-                  </div>
-                  <button
-                    className="nailed-unnail-btn"
-                    onClick={() => onUnmark(qid)}
-                    title="Remove from Important"
-                  >
-                    <X size={13} />
-                  </button>
-                </div>
+                <ImportantRow key={qid} q={q} qid={qid} onUnmark={onUnmark} />
               ))}
             </div>
           )}
         </>
       )}
+    </div>
+  )
+}
+
+function ImportantRow({ q, qid, onUnmark }) {
+  const [open, setOpen] = useState(false)   // explanation folded by default
+  return (
+    <div className="nailed-row">
+      <Bookmark size={11} fill="currentColor" style={{ color: '#ef4444', flexShrink: 0, marginTop: 3 }} />
+      <div className="nailed-row-body">
+        <span className="nailed-row-text">{q.question}</span>
+        {q.correct_answer && q.options?.[q.correct_answer] && (
+          <div className="nailed-row-answer">
+            <span className="nailed-ans-key">{q.correct_answer.toUpperCase()}</span>
+            <span className="nailed-ans-text">{q.options[q.correct_answer]}</span>
+          </div>
+        )}
+        {q.explanation && (
+          <>
+            <button className="nailed-exp-toggle" onClick={() => setOpen(v => !v)}>
+              <Lightbulb size={11} />
+              {open ? 'Hide explanation' : 'Show explanation'}
+            </button>
+            {open && <div className="nailed-row-explanation"><span>{q.explanation}</span></div>}
+          </>
+        )}
+      </div>
+      <button className="nailed-unnail-btn" onClick={() => onUnmark(qid)} title="Remove from Important">
+        <X size={13} />
+      </button>
     </div>
   )
 }
