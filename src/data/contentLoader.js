@@ -39,7 +39,7 @@ export function loadModule(moduleId) {
         .from('questions')
         .select('category_slug, uid, payload, sort_order')
         .eq('module', moduleId)
-        .order('sort_order')
+        .order('sort_order', { ascending: false })
         .range(from, from + pageSize - 1)
       if (error) throw error
       for (const r of data) {
