@@ -697,10 +697,17 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 
 /* ── Next Button ─── */
 .quiz-revealed-actions {
-  display: flex; flex-direction: column; gap: 8px; margin-top: 14px;
+  display: flex; align-items: stretch; gap: 8px; margin-top: 14px;
   animation: slideUp 0.25s ease;
 }
-.quiz-revealed-actions .quiz-next-btn { width: 100%; margin-top: 0; animation: none; }
+.quiz-revealed-actions .quiz-next-btn { flex: 1; margin-top: 0; animation: none; }
+.qmark-label { white-space: nowrap; }
+/* Mobile: compact icon-only Nail/Important, Next fills the row */
+@media (max-width: 540px) {
+  .quiz-mark-btns .quiz-nail-btn,
+  .quiz-mark-btns .quiz-important-btn { padding: 10px; }
+  .quiz-revealed-actions .qmark-label { display: none; }
+}
 
 .quiz-nail-btn {
   display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px;
@@ -730,10 +737,10 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 
 /* ── Mark buttons row (Nail It + Important side by side) ── */
 .quiz-mark-btns {
-  display: flex; gap: 8px;
+  display: flex; gap: 8px; flex: 0 0 auto;
 }
 .quiz-mark-btns .quiz-nail-btn,
-.quiz-mark-btns .quiz-important-btn { flex: 1; justify-content: center; }
+.quiz-mark-btns .quiz-important-btn { flex: 0 0 auto; justify-content: center; }
 
 /* ── Important button in quiz/exam ── */
 .quiz-important-btn {

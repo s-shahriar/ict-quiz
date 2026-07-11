@@ -126,7 +126,7 @@ export default function ExamMode() {
                   title={isNailed ? 'Nailed — click to un-nail' : 'Mark as Nailed It'}
                 >
                   <Star size={16} fill={isNailed ? 'currentColor' : 'none'} strokeWidth={1.8} />
-                  {isNailed ? 'Nailed!' : 'Nail It'}
+                  <span className="qmark-label">{isNailed ? 'Nailed!' : 'Nail It'}</span>
                 </button>
                 <button
                   className={`quiz-important-btn${isImportant ? ' marked' : ''}`}
@@ -134,7 +134,7 @@ export default function ExamMode() {
                   title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
                 >
                   <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />
-                  {isImportant ? 'Saved!' : 'Important'}
+                  <span className="qmark-label">{isImportant ? 'Saved!' : 'Important'}</span>
                 </button>
               </div>
             )}
