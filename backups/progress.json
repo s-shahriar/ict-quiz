@@ -1,0 +1,30 @@
+{
+  "exported_at": "2026-07-11T09:17:54.554Z",
+  "owner": "ksnkkc@gmail.com",
+  "count": 3,
+  "nailed": 0,
+  "important": 2,
+  "progress": [
+    {
+      "user_id": "7520f9c5-5faa-4e9f-8e06-4f0194f422cf",
+      "uid": "viva:1l5lmre6nv0",
+      "nailed": false,
+      "important": false,
+      "updated_at": "2026-07-11T03:21:28.085848+00:00"
+    },
+    {
+      "user_id": "7520f9c5-5faa-4e9f-8e06-4f0194f422cf",
+      "uid": "mcq:1989gf4wpy8",
+      "nailed": false,
+      "important": true,
+      "updated_at": "2026-07-11T08:28:00.774708+00:00"
+    },
+    {
+      "user_id": "7520f9c5-5faa-4e9f-8e06-4f0194f422cf",
+      "uid": "mcq:1gg336mgvcu",
+      "nailed": false,
+      "important": true,
+      "updated_at": "2026-07-11T08:28:09.236472+00:00"
+    }
+  ]
+}
