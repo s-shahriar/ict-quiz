@@ -1,0 +1,23 @@
+name: Supabase keep-alive
+
+# Free Supabase projects pause after 7 days of inactivity. This pings the REST
+# API every ~3 days so the database stays awake. The key below is the public
+# publishable/anon key (safe to commit — it's already in the shipped app bundle
+# and RLS protects the data).
+
+on:
+  schedule:
+    - cron: '37 7 */3 * *'   # ~every 3 days at 07:37 UTC (well under the 7-day window)
+  workflow_dispatch: {}       # allow a manual run from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          URL="https://skqarcuggnbjbhpxytmd.supabase.co/rest/v1/questions?select=uid&limit=1"
+          KEY="sb_publishable_BRYlReke53VzpDqMHVwpvw_gUSwqYi2"
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$URL" -H "apikey: $KEY")
+          echo "ict-quiz Supabase → HTTP $code"
+          test "$code" = "200"
