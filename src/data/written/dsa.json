@@ -374,6 +374,68 @@
         "diagram": "SAME PROBLEM — 3 APPROACHES:\nFibonacci(5)\n\nD&C (pure recursion — recomputes):\n fib(5) → fib(4) + fib(3)\n fib(4) → fib(3) + fib(2)   ← fib(3) calculated twice! ❌\n\nDP (memoization — store results):\n fib(5) → fib(4) → fib(3) → fib(2) → fib(1)\n          (each stored, never recomputed) ✅\n\nGreedy (coin change — not always optimal):\n Change 6 using {4, 3, 1}:\n Greedy picks 4 first → then 1+1 = 3 coins\n Optimal:  3+3 = 2 coins ← Greedy failed here ❌",
         "mnemonic": "D&C = ভাগ করো, জয় করো। DP = মনে রাখো, সময় বাঁচাও। Greedy = এখনই সেরাটা নাও (কিন্তু সবসময় সেরা ফল নাও না)।"
       }
+    },
+    {
+      "id": "dsa_008",
+      "q": "Explain the time complexity of merge sort. Best, Average, Worst.",
+      "tags": [
+        "merge sort",
+        "time complexity",
+        "divide and conquer",
+        "O(n log n)",
+        "sorting"
+      ],
+      "answer": {
+        "summary": [
+          "Merge Sort এর তিন case-ই O(n log n) — Best, Average, Worst সব সমান।",
+          "কারণ input যেমনই হোক, array সবসময় ঠিক অর্ধেক করে ভাঙে (log n level) আর প্রতি level এ merge করতে O(n) লাগে।",
+          "দাম: merge এর জন্য O(n) extra memory লাগে — এটাই এর মূল দুর্বলতা।"
+        ],
+        "points": [
+          "Divide: array কে বারবার মাঝখান থেকে দুই ভাগ করা হয় — element এর মান দেখে না, তাই split সবসময় সমান অর্ধেক।",
+          "log₂n বার ভাঙলে single-element এ পৌঁছায় → recursion tree এর উচ্চতা = log n level।",
+          "Merge: প্রতি level এ মোট n element compare করে জোড়া লাগে → প্রতি level এ O(n) কাজ।",
+          "মোট কাজ = (level সংখ্যা) × (প্রতি level এর কাজ) = log n × n = O(n log n)।",
+          "Recurrence: T(n) = 2·T(n/2) + O(n) → Master theorem → O(n log n)।",
+          "কেন তিন case-ই সমান: Quicksort এর মতো pivot নেই যে input দেখে unbalanced হয়ে যাবে — split সবসময় অর্ধেক, তাই Best = Average = Worst।"
+        ],
+        "diagram": "Array: [38, 27, 43, 3, 9, 82, 10, 1]   (n = 8)\n\nDIVIDE — সবসময় ঠিক মাঝখান থেকে (input যেমনই হোক):\nlevel 0:            [ 8 elements ]                ← merge, মোট n কাজ\n                   /              \\\nlevel 1:      [ 4 ]              [ 4 ]            ← merge, মোট n কাজ\n              /    \\             /    \\\nlevel 2:   [2]     [2]        [2]     [2]         ← merge, মোট n কাজ\n           / \\     / \\        / \\     / \\\nlevel 3:  [1][1] [1][1]     [1][1]  [1][1]        ← base case (single)\n\nউচ্চতা = log₂n level ;  প্রতি level এ merge = O(n)\nমোট = log n × n  =  O(n log n)\n\n────────────────────────────────────────────────\n সব case সমান — unbalanced হওয়ার পথ নেই:\n   Best  (already sorted)  : O(n log n)\n   Avg   (random)          : O(n log n)\n   Worst (reverse sorted)  : O(n log n)\n   Space                   : O(n)  extra (in-place নয়)",
+        "table": {
+          "headers": [
+            "Case",
+            "Time",
+            "কারণ"
+          ],
+          "rows": [
+            [
+              "Best (already sorted)",
+              "O(n log n)",
+              "split input-independent, তবু পুরো merge করতে হয়"
+            ],
+            [
+              "Average (random)",
+              "O(n log n)",
+              "একই divide + merge কাঠামো"
+            ],
+            [
+              "Worst (reverse sorted)",
+              "O(n log n)",
+              "unbalanced হওয়ার কোনো সুযোগ নেই"
+            ],
+            [
+              "Space",
+              "O(n)",
+              "merge এর জন্য extra array"
+            ],
+            [
+              "Stable?",
+              "✅ হ্যাঁ",
+              "সমান element এর আপেক্ষিক order রক্ষা করে"
+            ]
+          ]
+        },
+        "mnemonic": "Merge Sort = ভরসার বন্ধু — input যতই এলোমেলো হোক, সবসময় O(n log n)। কারণ ও pivot এর জুয়া খেলে না, সবসময় ঠিক মাঝ থেকে ভাঙে। দাম শুধু O(n) extra memory।"
+      }
     }
   ]
 }

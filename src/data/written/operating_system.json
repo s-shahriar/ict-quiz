@@ -487,6 +487,128 @@
         },
         "mnemonic": "Process = আলাদা বাড়ি — ভেতরের সব কিছু নিজের (Code/Data/Heap/Stack)। Thread = একই বাড়িতে আলাদা বিছানা — ঘর (Data/Heap) share, শুধু নিজের বিছানা (Stack) আলাদা। তাই thread রা সহজে কথা বলে (shared memory), আর process দের চিঠি পাঠাতে হয় (IPC)।"
       }
+    },
+    {
+      "id": "os_010",
+      "q": "Two separate threads are initialized with the exact same instance of CounterSubsystem and run concurrently to completion. State definitively whether the final value of transactionCounter is guaranteed to be exactly 2000. Name the specific multithreading hazard that occurs here and explain the low-level mechanical steps that cause this behavior.",
+      "tags": [
+        "race condition",
+        "multithreading",
+        "critical section",
+        "atomicity",
+        "lost update",
+        "synchronization"
+      ],
+      "answer": {
+        "summary": [
+          "না — 2000 কখনোই guaranteed নয়। ফল 1000 থেকে 2000 এর মধ্যে যেকোনো কিছু হতে পারে।",
+          "Hazard = Race Condition (নির্দিষ্টভাবে \"lost update\")।",
+          "কারণ counter++ atomic নয় — এটা তিনটি আলাদা machine step (Load → Increment → Store), যা দুই thread এর মাঝে interleave হয়ে যায়।"
+        ],
+        "points": [
+          "ধরে নিচ্ছি প্রতি thread transactionCounter কে 1000 বার বাড়ায় → দুজন মিলে ideal 2000।",
+          "কিন্তু counter++ একটি মাত্র operation মনে হলেও CPU তে তিন ধাপ:",
+          {
+            "sub": "(১) LOAD: memory থেকে counter এর মান register এ আনে।"
+          },
+          {
+            "sub": "(২) INCREMENT: register এ 1 যোগ করে।"
+          },
+          {
+            "sub": "(৩) STORE: নতুন মান আবার memory তে লেখে।"
+          },
+          "দুই thread একই shared instance এর একই counter এ কাজ করছে, তাই এই তিন ধাপ interleave হতে পারে।",
+          "Lost update যেভাবে ঘটে: T1 LOAD করে 500, এখনো STORE করেনি; মাঝে T2-ও LOAD করে সেই 500; দুজনই 501 বানায়; দুজনই 501 STORE করে → দুটি increment মিলে মাত্র একটি হলো, একটি update হারিয়ে গেল।",
+          "এই hazard কে race condition বলে — ফলাফল নির্ভর করে কোন thread কখন schedule হলো তার উপর, যা অনিশ্চিত।",
+          "সমাধান: critical section কে atomic করা — synchronized/lock/mutex, বা AtomicInteger এর মতো atomic operation। তখনই 2000 guaranteed।"
+        ],
+        "diagram": "counter++ আসলে atomic নয় — তিন ধাপ:\n    LOAD  counter → reg      (memory → register)\n    INC   reg                (reg = reg + 1)\n    STORE reg → counter      (register → memory)\n\nLOST UPDATE — খারাপ interleaving (counter শুরুতে 500):\n\n সময়  Thread-1            Thread-2          memory(counter)\n ──────────────────────────────────────────────────────────\n  t1  LOAD  → reg=500                            500\n  t2                      LOAD  → reg=500        500\n  t3  INC   → reg=501                            500\n  t4                      INC   → reg=501        500\n  t5  STORE 501                                  501\n  t6                      STORE 501              501  ← 502 হওয়ার কথা!\n ──────────────────────────────────────────────────────────\n দুটি ++ চলল, কিন্তু counter বাড়ল মাত্র 1 → একটি update হারালো\n\n ভালো (synchronized/lock) হলে:\n   T1: LOAD-INC-STORE → 501,  তারপর T2: LOAD-INC-STORE → 502 ✅\n\n ফলাফল:  1000 ≤ transactionCounter ≤ 2000  (2000 guaranteed নয়)",
+        "table": {
+          "headers": [
+            "প্রশ্ন",
+            "উত্তর"
+          ],
+          "rows": [
+            [
+              "2000 কি guaranteed?",
+              "❌ না"
+            ],
+            [
+              "সম্ভাব্য range",
+              "1000 – 2000"
+            ],
+            [
+              "Hazard এর নাম",
+              "Race Condition (lost update)"
+            ],
+            [
+              "মূল কারণ",
+              "counter++ non-atomic (Load-Inc-Store interleave)"
+            ],
+            [
+              "সমাধান",
+              "synchronized / lock / mutex / AtomicInteger"
+            ]
+          ]
+        },
+        "mnemonic": "LIS মনে রাখো — Load, Increment, Store। এই তিন ধাপ interleave হলেই Race Condition ও \"lost update\"। lock দিয়ে LIS কে atomic করলে তবেই 2000।"
+      }
+    },
+    {
+      "id": "os_011",
+      "q": "A system utilizes a 32-bit logical address space and a page size of 2^20 bytes. If each entry (block) in the Translation Lookaside Buffer (TLB) requires 6 bytes, calculate the total memory required for the TLB to map the entire logical address space.",
+      "tags": [
+        "TLB",
+        "paging",
+        "virtual memory",
+        "address translation",
+        "page table"
+      ],
+      "answer": {
+        "summary": [
+          "উত্তর: 24,576 bytes = 24 KB।",
+          "মোট page = 2³² / 2²⁰ = 2¹² = 4096।",
+          "পুরো address space map করতে 4096 entry দরকার × 6 byte = 24,576 byte।"
+        ],
+        "points": [
+          "Logical address space = 2³² byte (32-bit ঠিকানা)।",
+          "Page size = 2²⁰ byte।",
+          "Page সংখ্যা = address space ÷ page size = 2³² / 2²⁰ = 2⁽³²⁻²⁰⁾ = 2¹² = 4096 page।",
+          "পুরো space map করতে প্রতিটি page এর জন্য একটি TLB entry দরকার → 4096 entry।",
+          "প্রতি entry = 6 byte → মোট = 4096 × 6 = 24,576 byte = 24 KB।",
+          "বাস্তবতা টীকা: সত্যিকারের TLB এত entry রাখে না (ছোট দ্রুত cache, কয়েকশো entry) — এই হিসাব তাত্ত্বিকভাবে \"পুরো space map করতে কত লাগত\" তা দেখায়।"
+        ],
+        "diagram": "32-bit logical address:\n ┌───────────────────────────┬──────────────────────────┐\n │  Page number (p)          │   Offset (d)             │\n │  32 − 20 = 12 bit         │   log₂(2²⁰) = 20 bit     │\n └───────────────────────────┴──────────────────────────┘\n        │                              │\n  12 bit → 2¹² = 4096 page       20 bit → page এর ভেতর byte\n\nধাপে ধাপে হিসাব:\n  address space = 2³² byte\n  page size     = 2²⁰ byte\n  #pages        = 2³² / 2²⁰ = 2¹² = 4096\n  TLB entries   = 4096        (পুরো space map করতে)\n  entry size    = 6 byte\n  ─────────────────────────────────────────\n  TLB memory    = 4096 × 6 = 24,576 byte = 24 KB ✅",
+        "table": {
+          "headers": [
+            "রাশি",
+            "মান"
+          ],
+          "rows": [
+            [
+              "Logical address space",
+              "2³² byte"
+            ],
+            [
+              "Page size",
+              "2²⁰ byte"
+            ],
+            [
+              "Page সংখ্যা",
+              "2¹² = 4096"
+            ],
+            [
+              "TLB entry size",
+              "6 byte"
+            ],
+            [
+              "মোট TLB memory",
+              "4096 × 6 = 24,576 B = 24 KB"
+            ]
+          ]
+        },
+        "mnemonic": "ঘাত বিয়োগ করো: 32 − 20 = 12 → 2¹² = 4096 page। তারপর × 6 byte = 24 KB। মূল চাবি: page গুনতে হলে ঘাত বিয়োগ।"
+      }
     }
   ]
 }

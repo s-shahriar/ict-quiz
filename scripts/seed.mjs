@@ -45,7 +45,7 @@ const MODULES = [
   { module: 'extra', dir: 'src/data/extra', type: 'written' },
   { module: 'viva', dir: 'src/data/viva', type: 'written' },
 ]
-const EXPECTED = { mcq: 647, written: 102, extra: 60, viva: 25 }
+const EXPECTED = { mcq: 647, written: 109, extra: 60, viva: 25 }
 
 function jsonFiles(dir) {
   return readdirSync(join(ROOT, dir))

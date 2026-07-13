@@ -294,6 +294,146 @@
         },
         "mnemonic": "দুই দিকেই 'many' হলে Many-to-Many (M:N)। M:N কখনো দুই table-এ বসে না — মাঝে একটি junction/bridge table লাগে, যার composite key = দুই পাশের PK একসাথে। Relationship-এর নিজস্ব attribute (hours, date) সেই junction table-এই বসে।"
       }
+    },
+    {
+      "id": "db_006",
+      "q": "In a B+ tree, each node can have a maximum of 4 child pointers (order m = 4). From height 0 to height 2 (where height 0 is the root), what is the maximum number of keys that can be stored across all nodes in the tree?",
+      "tags": [
+        "B+ tree",
+        "indexing",
+        "order",
+        "tree height",
+        "database index"
+      ],
+      "answer": {
+        "summary": [
+          "উত্তর: সর্বোচ্চ 63 keys।",
+          "order m = 4 → প্রতি node এ সর্বোচ্চ 4 child pointer, তাই সর্বোচ্চ m−1 = 3 key।",
+          "height 0→2 এ মোট node = 1 + 4 + 16 = 21; প্রতিটিতে 3 key → 21 × 3 = 63।"
+        ],
+        "points": [
+          "নিয়ম: order m মানে প্রতি node এ সর্বোচ্চ m child pointer এবং সর্বোচ্চ (m−1) key। এখানে m = 4 → max 3 key প্রতি node।",
+          "প্রতি level এ সর্বোচ্চ node সংখ্যা (পূর্ণ গাছ ধরে, প্রতি node এর 4 child):",
+          {
+            "sub": "height 0 (root): 4⁰ = 1 node"
+          },
+          {
+            "sub": "height 1: 4¹ = 4 node"
+          },
+          {
+            "sub": "height 2: 4² = 16 node"
+          },
+          "মোট node = 1 + 4 + 16 = 21।",
+          "সর্বোচ্চ key = মোট node × প্রতি node এর max key = 21 × 3 = 63।",
+          "কেন \"maximum\": প্রতিটি node পুরো ভরা (3 key) আর প্রতিটি internal node এর পুরো 4 child ধরে নিলে তবেই এই সর্বোচ্চ সংখ্যা পাওয়া যায়।"
+        ],
+        "diagram": "order m = 4  →  max 4 child pointer,  max m−1 = 3 key প্রতি node\n\nheight 0:            [ k k k ]                 1 node  × 3 =  3 key\n                   /   |   |   \\\nheight 1:   [kkk] [kkk] [kkk] [kkk]            4 node  × 3 = 12 key\n            /||\\  প্রতিটির 4 child ...\nheight 2:  [kkk][kkk] ...... (মোট 16টি node)   16 node × 3 = 48 key\n           ───────────────────────────────────────────────────\n           মোট node = 1 + 4 + 16 = 21\n           মোট key  = 3 + 12 + 48 = 63  ✅\n\nসূত্র:  level i তে node = 4ⁱ ;  key/node = m−1 = 3\n        Σ node (i=0..2) = (4³ − 1)/(4 − 1) = 63/3 = 21\n        max key = 21 × 3 = 63",
+        "table": {
+          "headers": [
+            "Height",
+            "Max nodes (4ⁱ)",
+            "Max keys (× 3)"
+          ],
+          "rows": [
+            [
+              "0 (root)",
+              "1",
+              "3"
+            ],
+            [
+              "1",
+              "4",
+              "12"
+            ],
+            [
+              "2",
+              "16",
+              "48"
+            ],
+            [
+              "মোট",
+              "21",
+              "63"
+            ]
+          ]
+        },
+        "mnemonic": "আগে \"child m, key m−1\" (=3), তারপর node গোনো 1+4+16 = 21, শেষে গুণ → 63। এই নিয়ম ভুললেই উত্তর ভুল।"
+      }
+    },
+    {
+      "id": "db_007",
+      "q": "Consider a concurrent transaction schedule involving two data items, X and Y: T1: Read(X), Write(X), Read(Y), Write(Y) T2: Read(Y), Write(Y), Read(X), Write(X). Describe how the standard 2PL protocol treats these transactions. Contrast with Strict 2PL.",
+      "tags": [
+        "2PL",
+        "strict 2PL",
+        "locking",
+        "concurrency control",
+        "deadlock",
+        "serializability"
+      ],
+      "answer": {
+        "summary": [
+          "2PL = দুই phase: Growing (শুধু lock নেয়) → Shrinking (শুধু lock ছাড়ে)। এটা conflict-serializability নিশ্চিত করে।",
+          "এই schedule এ T1 X ধরে Y চায়, T2 Y ধরে X চায় → deadlock; DBMS একটিকে abort করে।",
+          "Strict 2PL: সব exclusive (write) lock commit পর্যন্ত ধরে রাখে → dirty read/cascading rollback হয় না, schedule recoverable।"
+        ],
+        "points": [
+          "Standard 2PL এর নিয়ম: প্রতি transaction এর দুটি phase —",
+          {
+            "sub": "Growing phase: lock নিতে পারে, কোনো lock ছাড়তে পারে না।"
+          },
+          {
+            "sub": "Shrinking phase: একবার lock ছাড়া শুরু করলে আর নতুন lock নিতে পারে না।"
+          },
+          "এই নিয়ম conflict-serializable schedule নিশ্চিত করে, কিন্তু deadlock ঠেকায় না।",
+          "এই schedule এ যা ঘটে: T1 X-এ write-lock নেয়, T2 Y-তে write-lock নেয়। এরপর T1 এর Y দরকার (T2 ধরে আছে), T2 এর X দরকার (T1 ধরে আছে) → দুজনই অপেক্ষায় → deadlock।",
+          "সমাধান: deadlock detection (wait-for graph) করে একটি transaction কে victim হিসেবে abort ও rollback করা হয়, পরে আবার চালানো হয়।",
+          "Standard 2PL এর দুর্বলতা: shrinking phase এ commit এর আগেই lock ছেড়ে দিতে পারে → অন্য txn সেই uncommitted মান পড়তে পারে (dirty read) → ওই txn abort করলে cascading rollback।",
+          "Strict 2PL এর পার্থক্য: সব exclusive/write-lock transaction commit বা abort পর্যন্ত ধরে রাখে (আগে ছাড়ে না) → dirty read নেই, cascading rollback নেই, schedule recoverable ও strict।",
+          "মিল: দুটোই conflict-serializability দেয়, এবং এই schedule দুটোতেই একইভাবে deadlock হয় — Strict 2PL deadlock ঠেকায় না, শুধু recoverability উন্নত করে।"
+        ],
+        "diagram": "T1: R(X) W(X) R(Y) W(Y)      T2: R(Y) W(Y) R(X) W(X)\n\nLOCK চাওয়ার ক্রম:\n  T1 → X-lock পেল ✅ ... এখন Y-lock চায়\n  T2 → Y-lock পেল ✅ ... এখন X-lock চায়\n\n     ┌──────────┐   Y চায় (T2 ধরে) →   ┌──────────┐\n     │   T1     │ ─────────────────────►│   T2     │\n     │ holds X  │◄───────────────────── │ holds Y  │\n     └──────────┘   ← X চায় (T1 ধরে)   └──────────┘\n              ↺  DEADLOCK — দুজনই অপেক্ষায়\n     DBMS একটিকে abort + rollback করে (victim)\n\n2PL  vs  STRICT 2PL  (write-lock কখন ছাড়ে):\n  Standard 2PL │ Growing↑ lock নেয় │ Shrinking↓ — commit এর আগেই ছাড়তে পারে\n               │                   │    → dirty read / cascading rollback সম্ভব\n  Strict 2PL   │ Growing↑ lock নেয় │ write-lock গুলো COMMIT পর্যন্ত ধরে রাখে\n               │                   │    → recoverable, cascadeless",
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Standard 2PL",
+            "Strict 2PL"
+          ],
+          "rows": [
+            [
+              "Phase",
+              "Growing + Shrinking",
+              "Growing + Shrinking"
+            ],
+            [
+              "Conflict-serializable?",
+              "✅ হ্যাঁ",
+              "✅ হ্যাঁ"
+            ],
+            [
+              "Write-lock কখন ছাড়ে",
+              "shrinking phase এ, commit এর আগেই সম্ভব",
+              "commit/abort পর্যন্ত ধরে রাখে"
+            ],
+            [
+              "Dirty read / cascading rollback",
+              "❌ হতে পারে",
+              "✅ হয় না"
+            ],
+            [
+              "Recoverable?",
+              "সবসময় নয়",
+              "✅ হ্যাঁ"
+            ],
+            [
+              "এই schedule এ",
+              "deadlock",
+              "deadlock (একই)"
+            ]
+          ]
+        },
+        "mnemonic": "2PL = \"আগে সব lock জমাও, তারপর ছাড়ো\" (দুই phase)। Strict = \"write-lock গুলো commit পর্যন্ত মুঠোয় রাখো\"। এখানে X↔Y উল্টো ক্রমে চাওয়ায় দুটোতেই deadlock — Strict শুধু dirty read ঠেকায়, deadlock নয়।"
+      }
     }
   ]
 }

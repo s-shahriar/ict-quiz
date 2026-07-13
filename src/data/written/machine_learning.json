@@ -1,0 +1,88 @@
+{
+  "category": "machine_learning",
+  "questions": [
+    {
+      "id": "ml_001",
+      "q": "Suppose your dataset has missing values and noise. How would you preprocess it?",
+      "tags": [
+        "data preprocessing",
+        "missing values",
+        "noise",
+        "imputation",
+        "binning",
+        "outliers",
+        "data cleaning"
+      ],
+      "answer": {
+        "summary": [
+          "দুই আলাদা সমস্যা: missing value (ঘর খালি) আর noise (ভুল/random error মান)। আলাদা কৌশলে সামলাতে হয়।",
+          "Missing → বাদ দাও (deletion) নয়তো ভরাট করো (imputation: mean/median/mode/KNN)।",
+          "Noise → binning, regression smoothing, বা outlier detection (IQR/Z-score) দিয়ে মসৃণ করো।",
+          "শেষে scaling/normalization + encoding করে data কে model-ready বানাও।"
+        ],
+        "points": [
+          "ধাপ ০ — বোঝা: কোন column এ কত missing, কোথায় outlier, তা আগে দেখে নাও (describe/visualize)।",
+          "ধাপ ১ — Missing value handle:",
+          {
+            "sub": "Deletion: missing খুব কম হলে ওই row বাদ; পুরো column এ বেশি missing হলে column বাদ।"
+          },
+          {
+            "sub": "Imputation: numeric হলে mean (symmetric data), median (outlier থাকলে নিরাপদ); categorical হলে mode।"
+          },
+          {
+            "sub": "Advanced: KNN / regression imputation — কাছের মিল দেখে মান অনুমান; time-series এ forward/backward fill।"
+          },
+          "ধাপ ২ — Noise handle (ভুল/random মান মসৃণ করা):",
+          {
+            "sub": "Binning: sort করে সমান bin এ ভাগ করে প্রতিটিকে bin এর mean/median/boundary দিয়ে replace করো।"
+          },
+          {
+            "sub": "Regression: data তে function fit করে সেই মসৃণ মান নাও।"
+          },
+          {
+            "sub": "Outlier detection: IQR (Q1−1.5·IQR এর বাইরে) বা Z-score (>3) দিয়ে চরম মান ধরে সরাও বা cap করো।"
+          },
+          "ধাপ ৩ — Consistency: duplicate row সরাও, ভুল type/format ঠিক করো, একই জিনিসের ভিন্ন বানান একীভূত করো।",
+          "ধাপ ৪ — Transform: numeric feature scaling (Min-Max normalization বা Z-score standardization); categorical → encoding (One-Hot/Label)।",
+          "কেন এই ক্রম: আগে ঘর ভরাট/পরিষ্কার না করলে পরের scaling ও model দূষিত data থেকে ভুল শেখে — garbage in, garbage out।"
+        ],
+        "diagram": "RAW DATA (নোংরা)\n ┌────┬─────┬────────┬─────────────────────────────┐\n │ id │ age │ income │ city                        │\n ├────┼─────┼────────┼─────────────────────────────┤\n │ 1  │ 25  │  30k   │ Dhaka                       │\n │ 2  │ ??  │  32k   │ dhaka   ← missing + বানান ভিন্ন│\n │ 3  │ 27  │ 9999k  │ Khulna  ← noise / outlier    │\n └────┴─────┴────────┴─────────────────────────────┘\n        │\n        ▼  ধাপ ১: MISSING ভরাট\n   age ?? → median(25,27) = 26  বসিয়ে দিলাম\n        │\n        ▼  ধাপ ২: NOISE মসৃণ\n   income 9999k → IQR এর বাইরে (outlier) → cap/remove\n        │\n        ▼  ধাপ ৩: CONSISTENCY\n   \"dhaka\" = \"Dhaka\" (একীভূত), duplicate সরাও\n        │\n        ▼  ধাপ ৪: TRANSFORM\n   age, income → Min-Max scale [0,1];  city → One-Hot\n        │\n        ▼\n CLEAN, MODEL-READY DATA ✅\n\n────────────────────────────────────────────\n Missing ≠ Noise:\n   Missing = ঘর খালি     → ভরাও (impute) বা বাদ (delete)\n   Noise   = ঘরে ভুল মান  → মসৃণ (bin/regression) বা outlier সরাও",
+        "table": {
+          "headers": [
+            "সমস্যা",
+            "কৌশল",
+            "কখন"
+          ],
+          "rows": [
+            [
+              "Missing (কম)",
+              "ওই row delete",
+              "missing খুব সামান্য হলে"
+            ],
+            [
+              "Missing (মাঝারি)",
+              "mean / median / mode impute",
+              "distribution অনুযায়ী"
+            ],
+            [
+              "Missing (pattern আছে)",
+              "KNN / regression impute",
+              "অন্য feature থেকে অনুমান করা যায়"
+            ],
+            [
+              "Noise",
+              "Binning / regression smoothing",
+              "random error মসৃণ করতে"
+            ],
+            [
+              "Outlier",
+              "IQR / Z-score → remove বা cap",
+              "চরম ভুল মান"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো DINCT: Detect → Impute (missing) → Noise smooth → Consistency → Transform। আর মূল পার্থক্য: Missing = ঘর খালি (ভরাও), Noise = ঘর ভুল (মসৃণ করো)।"
+      }
+    }
+  ]
+}

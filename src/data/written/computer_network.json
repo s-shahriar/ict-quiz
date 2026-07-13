@@ -1510,6 +1510,78 @@
         },
         "mnemonic": "Stop-and-Wait = একটা চিঠি পাঠিয়ে উত্তরের জন্য বসে থাকা — দূরত্ব বেশি (satellite) হলে বেশিরভাগ সময় শুধু অপেক্ষা (1.57%)। সমাধান: উত্তর আসার আগেই একগাদা চিঠি পাঠাও (sliding window)। কতগুলো? W = 1 + 2a; এখানে a = Tp/Tt = 31.25 → W = 64। সূত্র মনে রাখো: 'এক frame + পুরো RTT ভরাও' = 1 + 2a।"
       }
+    },
+    {
+      "id": "cn_026",
+      "q": "Compare between TCP and UDP: their connection, reliability, speed. One real life use case of UDP.",
+      "tags": [
+        "TCP",
+        "UDP",
+        "transport layer",
+        "reliability",
+        "connection-oriented",
+        "connectionless"
+      ],
+      "answer": {
+        "summary": [
+          "TCP = connection-oriented, নির্ভরযোগ্য কিন্তু ধীর; UDP = connectionless, দ্রুত কিন্তু অনির্ভরযোগ্য।",
+          "TCP handshake + ACK + retransmission দেয়; UDP কিছুই দেয় না, শুধু পাঠিয়ে দেয়।",
+          "UDP এর বাস্তব ব্যবহার: live video/voice call, streaming, online gaming, DNS — যেখানে গতি বেশি জরুরি।"
+        ],
+        "points": [
+          "Connection: TCP আগে 3-way handshake (SYN → SYN-ACK → ACK) করে সংযোগ গড়ে; UDP কোনো সংযোগ গড়ে না — fire-and-forget।",
+          "Reliability: TCP প্রতি segment এর ACK নেয়, হারালে retransmit করে, sequence number দিয়ে সঠিক ক্রমে সাজায় → data হারায় না। UDP তে ACK/retransmission নেই → packet হারাতে, উল্টাতে বা duplicate হতে পারে।",
+          "Speed: TCP এর handshake, ACK, flow ও congestion control এর overhead থাকায় ধীর; UDP এর overhead প্রায় শূন্য, header ছোট (8 byte vs TCP 20 byte) → দ্রুত, কম latency।",
+          "কেন এই trade-off: নির্ভরযোগ্যতা (ACK/retransmit) সময় খরচ করে; UDP সেই নিশ্চয়তা ছেড়ে দিয়ে গতি কেনে।",
+          "UDP এর বাস্তব use case: live video call / streaming (যেমন Zoom, YouTube Live) — এক-দুটো frame হারালেও সমস্যা নেই, কিন্তু দেরি হলে কথা আটকে যায়; তাই retransmission এর চেয়ে গতি জরুরি। (আরও: online gaming, VoIP, DNS query)।"
+        ],
+        "diagram": "TCP — আগে হাত মেলাও, তারপর নির্ভরযোগ্য কথা:\n  Client                         Server\n    │ ── SYN ───────────────────► │\n    │ ◄────────── SYN-ACK ─────── │   3-way handshake\n    │ ── ACK ───────────────────► │\n    │ ═══ DATA seq=1 ═══════════► │\n    │ ◄───────────── ACK 1 ────── │   প্রতি data-র ACK\n    │ ═══ DATA seq=2  ✗ হারালো    │\n    │ ═══ DATA seq=2 (আবার) ════► │   retransmit → কিছুই হারায় না\n\nUDP — হাত না মিলিয়ে ছুঁড়ে দাও:\n  Client ── DATA ─►  DATA ─►  DATA ─►  Server\n         (handshake নেই, ACK নেই, হারালে হারালো)\n         পথে একটা packet হারালে ✗ — কেউ খোঁজ নেয় না\n\n──────────── at-a-glance ────────────\n  নির্ভরযোগ্যতা :  TCP  >  UDP\n  গতি / কম latency:  UDP  >  TCP\n  ব্যবহার :  TCP = নির্ভুলতা জরুরি (web, email, file)\n            UDP = গতি জরুরি (live call, stream, game, DNS)",
+        "table": {
+          "headers": [
+            "দিক",
+            "TCP",
+            "UDP"
+          ],
+          "rows": [
+            [
+              "Connection",
+              "Connection-oriented (3-way handshake)",
+              "Connectionless (handshake নেই)"
+            ],
+            [
+              "Reliability",
+              "নির্ভরযোগ্য — ACK + retransmit + ordering",
+              "অনির্ভরযোগ্য — হারাতে/উল্টাতে পারে"
+            ],
+            [
+              "Ordering",
+              "ঠিক ক্রমে delivery",
+              "ক্রমের নিশ্চয়তা নেই"
+            ],
+            [
+              "Speed",
+              "ধীর (overhead বেশি)",
+              "দ্রুত (overhead কম)"
+            ],
+            [
+              "Header size",
+              "20 byte",
+              "8 byte"
+            ],
+            [
+              "Flow/Congestion control",
+              "✅ আছে",
+              "❌ নেই"
+            ],
+            [
+              "Use case",
+              "Web (HTTP), email, file transfer",
+              "Streaming, VoIP, gaming, DNS"
+            ]
+          ]
+        },
+        "mnemonic": "TCP = ফোন কল (আগে \"হ্যালো\" বলে সংযোগ, শুনতে না পেলে \"আবার বলো\")। UDP = মাইকে ঘোষণা (কে শুনল খোঁজ নেই, কিন্তু দ্রুত)। তাই live stream/gaming এ UDP।"
+      }
     }
   ]
 }
