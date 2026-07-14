@@ -25,6 +25,10 @@ const inflight = new Map()
 
 export function isModuleLoaded(moduleId) { return loaded.has(moduleId) }
 
+// Drop a module's cache so it re-fetches next time (e.g. after restoring a
+// question from the recycle bin, so it reappears in that module).
+export function invalidateModule(moduleId) { loaded.delete(moduleId) }
+
 export function loadModule(moduleId) {
   if (!moduleId || loaded.has(moduleId)) return Promise.resolve()
   if (inflight.has(moduleId)) return inflight.get(moduleId)
@@ -42,12 +46,13 @@ export function loadModule(moduleId) {
         .from('questions')
         .select('id, category_slug, uid, payload, sort_order')
         .eq('module', moduleId)
+        .is('deleted_at', null)
         .order('id')
         .range(from, from + pageSize - 1)
       if (error) throw error
       for (const r of data) {
         if (!bySlug.has(r.category_slug)) bySlug.set(r.category_slug, [])
-        bySlug.get(r.category_slug).push({ ...r.payload, _uid: r.uid, _sort: r.sort_order })
+        bySlug.get(r.category_slug).push({ ...r.payload, _uid: r.uid, _id: r.id, _sort: r.sort_order })
       }
       if (data.length < pageSize) break
     }

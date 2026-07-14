@@ -4,11 +4,14 @@ import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home, Lightbulb } from 'l
 import { TOPICS } from '../data/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
+import DeleteButton from './shared/DeleteButton.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 
 export default function NailedScreen() {
   const navigate = useNavigate()
   useModuleReady('mcq')
   const { value: mastered, remove: onUnnail } = useMasteredContext()
+  const { trashedIds } = useTrash()
 
   const topics = TOPICS
 
@@ -16,7 +19,7 @@ export default function NailedScreen() {
     const items = t.questions
       .map((q) => ({ q, qid: q._uid }))
       .filter(({ q }) => q.options && q.correct_answer)
-      .filter(({ qid }) => mastered.has(qid))
+      .filter(({ q, qid }) => mastered.has(qid) && !trashedIds.has(q._id))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
 
@@ -106,6 +109,7 @@ function NailedTopicGroup({ topic: t, items, onUnnail }) {
               >
                 <X size={13} />
               </button>
+              <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
             </div>
           ))}
         </div>

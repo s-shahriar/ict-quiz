@@ -5,11 +5,14 @@ import CategoryChipBar from './CategoryChipBar.jsx'
 import { TOPICS } from '../data/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import DeleteButton from './shared/DeleteButton.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 
 export default function ImportantScreen() {
   const navigate = useNavigate()
   useModuleReady('mcq')
   const { value: important, remove: onUnmark } = useImportantContext()
+  const { trashedIds } = useTrash()
   const [activeId, setActiveId] = useState(null)
 
   const topics = TOPICS
@@ -18,7 +21,7 @@ export default function ImportantScreen() {
     const items = t.questions
       .map((q) => ({ q, qid: q._uid }))
       .filter(({ q }) => q.options && q.correct_answer)
-      .filter(({ qid }) => important.has(qid))
+      .filter(({ q, qid }) => important.has(qid) && !trashedIds.has(q._id))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
 
@@ -97,6 +100,7 @@ function ImportantRow({ q, qid, onUnmark }) {
       <button className="nailed-unnail-btn" onClick={() => onUnmark(qid)} title="Remove from Important">
         <X size={13} />
       </button>
+      <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
     </div>
   )
 }

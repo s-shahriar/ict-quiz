@@ -5,17 +5,20 @@ import { getExtraData, EXTRA_TOPICS } from '../data/extra/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useExtraMasteredContext } from '../contexts/ExtraMasteredContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
+import DeleteButton from './shared/DeleteButton.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 
 export default function ExtraNailedScreen() {
   const navigate = useNavigate()
   useModuleReady('extra')
   const { value: extraMastered, remove: onUnnail } = useExtraMasteredContext()
+  const { trashedIds } = useTrash()
 
   const nailedByTopic = EXTRA_TOPICS.map(t => {
     const data = getExtraData(t.id)
     const items = (data.questions || [])
       .map(q => ({ q, qid: q._uid }))
-      .filter(({ qid }) => extraMastered.has(qid))
+      .filter(({ q, qid }) => extraMastered.has(qid) && !trashedIds.has(q._id))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
 
@@ -104,6 +107,7 @@ function ExtraNailedCard({ q, qid, topicColor, onUnnail }) {
         >
           <X size={13} />
         </button>
+        <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
       </div>
       <WrittenCardBody a={q.answer} topicColor={topicColor} />
     </div>

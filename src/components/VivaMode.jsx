@@ -8,6 +8,8 @@ import { useModuleReady } from '../data/contentLoader.js'
 import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
+import DeleteButton from './shared/DeleteButton.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 
 export default function VivaMode() {
   const navigate = useNavigate()
@@ -16,6 +18,7 @@ export default function VivaMode() {
   const backTo = location.state?.backTo  // set when arriving from search — return there
   const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
   const { value: vivaMastered, add: onNailViva, remove: onUnnailViva } = useVivaMasteredContext()
+  const { trashedIds } = useTrash()
 
   const ready = useModuleReady('viva')
   const topicId = searchParams.get('topic') || VIVA_TOPICS[0]?.id
@@ -39,7 +42,7 @@ export default function VivaMode() {
 
   const toggleCard = (id) => setOpenIds(prev => ({ ...prev, [id]: !prev[id] }))
 
-  const nonNailed       = questions.filter(q => !vivaMastered?.has(qid(q)))
+  const nonNailed       = questions.filter(q => !vivaMastered?.has(qid(q)) && !trashedIds.has(q._id))
   const importantCount  = nonNailed.filter(q => important?.has(qid(q))).length
   const visibleQuestions = filterImportant
     ? nonNailed.filter(q => important?.has(qid(q)))
@@ -167,6 +170,7 @@ function VivaCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, on
         >
           <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
         </button>
+        <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
       </div>
 
       {isOpen && (

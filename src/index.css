@@ -3175,3 +3175,71 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   .sync-chip { animation: none; }
   .sync-spin { animation: none; }
 }
+
+/* ══════════ Delete / Recycle Bin ══════════ */
+.qdelete-btn { color: var(--text-3) !important; border-color: var(--border) !important; background: transparent !important; }
+.qdelete-btn:hover { color: #ef4444 !important; border-color: rgba(239,68,68,0.55) !important; background: rgba(239,68,68,0.09) !important; transform: translateY(-2px); }
+.qdelete-btn svg { transition: transform .2s ease; }
+.qdelete-btn:hover svg { transform: scale(1.15) rotate(-6deg); }
+@media (max-width: 540px) { .quiz-mark-btns .qdelete-btn { padding: 10px; } }
+.nailed-row-btns { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+.trash-modal-backdrop {
+  position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); animation: sync-chip-in .2s ease;
+}
+.trash-modal {
+  width: 100%; max-width: 400px; padding: 22px; border-radius: 18px;
+  background: var(--surface); border: 1px solid var(--border); box-shadow: 0 24px 60px rgba(0,0,0,0.3); text-align: center;
+}
+.trash-modal-icon {
+  width: 46px; height: 46px; margin: 0 auto 12px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: #ef4444; background: rgba(239,68,68,0.12);
+}
+.trash-modal-title { margin: 0 0 6px; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.trash-modal-sub { margin: 0 0 14px; font-size: 0.82rem; color: var(--text-3); line-height: 1.5; }
+.trash-modal-preview {
+  text-align: left; font-size: 0.85rem; color: var(--text-2); line-height: 1.55; max-height: 140px; overflow: auto;
+  padding: 11px 13px; border-radius: 10px; background: var(--elevated); border: 1px solid var(--border); margin-bottom: 16px;
+}
+.trash-modal-actions { display: flex; gap: 10px; }
+.trash-btn-cancel, .trash-btn-confirm {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 14px; border-radius: 11px; font-size: 0.86rem; font-weight: 700; cursor: pointer; transition: all .18s ease;
+}
+.trash-btn-cancel { border: 1px solid var(--border); background: transparent; color: var(--text-2); }
+.trash-btn-cancel:hover { border-color: var(--border-bright); color: var(--text); }
+.trash-btn-confirm { border: 1px solid transparent; background: #ef4444; color: #fff; }
+.trash-btn-confirm:hover { background: #dc2626; }
+.trash-btn-confirm:disabled, .trash-btn-cancel:disabled { opacity: .6; cursor: default; }
+
+.trash-toast {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 2001;
+  display: inline-flex; align-items: center; gap: 7px; max-width: 86vw;
+  padding: 9px 15px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+  animation: sync-chip-in .28s cubic-bezier(.2,.8,.2,1);
+}
+.trash-toast svg { color: #22c55e; flex-shrink: 0; }
+
+.recycle-screen { max-width: 760px; margin: 0 auto; padding: 0 14px 40px; }
+.recycle-count { font-size: 0.8rem; font-weight: 600; color: var(--text-3); margin: 6px 2px 12px; }
+.recycle-error { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #ef4444; margin: 0 2px 10px; }
+.recycle-list { display: flex; flex-direction: column; gap: 10px; }
+.recycle-row { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 13px; background: var(--surface); border: 1px solid var(--border); }
+.recycle-row-body { flex: 1; min-width: 0; }
+.recycle-tag { display: inline-block; margin-bottom: 6px; padding: 2px 8px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; color: var(--text-3); background: var(--elevated); border: 1px solid var(--border); }
+.recycle-row-text { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+.recycle-row-actions { display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; }
+.recycle-restore-btn, .recycle-purge-btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; padding: 8px 12px; border-radius: 9px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all .18s ease; }
+.recycle-restore-btn { border: 1px solid rgba(34,197,94,0.4); background: rgba(34,197,94,0.08); color: #16a34a; }
+.recycle-restore-btn:hover { border-color: #22c55e; background: rgba(34,197,94,0.15); }
+.recycle-purge-btn { border: 1px solid var(--border); background: transparent; color: var(--text-3); }
+.recycle-purge-btn:hover { border-color: rgba(239,68,68,0.5); color: #ef4444; background: rgba(239,68,68,0.07); }
+.recycle-purge-btn.confirming { border-color: #ef4444; background: #ef4444; color: #fff; }
+.recycle-restore-btn:disabled, .recycle-purge-btn:disabled { opacity: .6; cursor: default; }
+[data-theme="dark"] .recycle-restore-btn { color: #4ade80; }
+.recycle-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; padding: 60px 20px; color: var(--text-3); }
+.recycle-empty p { margin: 4px 0 0; font-size: 0.95rem; font-weight: 600; color: var(--text-2); }
+.recycle-empty span { font-size: 0.8rem; color: var(--text-3); max-width: 320px; }
+@media (max-width: 560px) { .recycle-row { flex-direction: column; } .recycle-row-actions { flex-direction: row; align-self: stretch; } .recycle-restore-btn, .recycle-purge-btn { flex: 1; } }

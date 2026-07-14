@@ -5,6 +5,7 @@ import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useModuleReady } from '../data/contentLoader.js'
+import DeleteButton from './shared/DeleteButton.jsx'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -141,6 +142,7 @@ export default function QuizMode() {
                 <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />
                 <span className="qmark-label">{isImportant ? 'Saved!' : 'Important'}</span>
               </button>
+              <DeleteButton question={q} className="quiz-nail-btn" size={16} onDeleted={next} />
             </div>
             <button className="quiz-next-btn" onClick={next}>
               {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}

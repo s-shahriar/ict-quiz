@@ -6,18 +6,21 @@ import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
+import DeleteButton from './shared/DeleteButton.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 
 export default function WrittenImportantScreen() {
   const navigate = useNavigate()
   useModuleReady('written')
   const { value: important, remove: onUnmark } = useImportantContext()
+  const { trashedIds } = useTrash()
   const [activeId, setActiveId] = useState(null)
 
   const importantByTopic = WRITTEN_TOPICS.map(t => {
     const data = getWrittenData(t.id)
     const items = (data.questions || [])
       .map(q => ({ q, qid: q._uid }))
-      .filter(({ qid }) => important.has(qid))
+      .filter(({ q, qid }) => important.has(qid) && !trashedIds.has(q._id))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
 
@@ -81,6 +84,7 @@ function WrittenImportantCard({ q, qid, topicColor, onUnmark }) {
         >
           <X size={13} />
         </button>
+        <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
       </div>
       <WrittenCardBody a={q.answer} topicColor={topicColor} />
     </div>

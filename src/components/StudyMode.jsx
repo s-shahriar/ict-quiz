@@ -7,6 +7,8 @@ import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useModuleReady } from '../data/contentLoader.js'
 import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
+import DeleteButton from './shared/DeleteButton.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 
 export default function StudyMode() {
   const { topicId } = useParams()
@@ -17,6 +19,7 @@ export default function StudyMode() {
   const ready = useModuleReady('mcq')
   const { value: mastered, add: onNail } = useMasteredContext()
   const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
+  const { trashedIds } = useTrash()
 
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -34,7 +37,7 @@ export default function StudyMode() {
 
   const allQ = topic.questions
     .map((q) => ({ q, qid: q._uid }))
-    .filter(({ q }) => q.options && q.correct_answer)
+    .filter(({ q }) => q.options && q.correct_answer && !trashedIds.has(q._id))
 
   const nonNailed = allQ.filter(({ qid }) => !mastered.has(qid))
   const nailedCt  = allQ.length - nonNailed.length
@@ -160,6 +163,7 @@ function StudyCard({ domId, question: q, index, color, nailed, isImportant, onNa
             <Bookmark size={12} fill={isImportant ? 'currentColor' : 'none'} />
             {isImportant ? 'Important ✓' : 'Important'}
           </button>
+          <DeleteButton question={q} className="nail-btn" size={12} />
           {shown && (
             <button
               className="study-toggle"

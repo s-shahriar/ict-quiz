@@ -7,6 +7,7 @@ import SyncOverlay from './components/SyncOverlay.jsx'
 import SyncStatus from './components/SyncStatus.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ProgressProvider, useProgressSyncing } from './contexts/ProgressContext.jsx'
+import { TrashProvider } from './contexts/TrashContext.jsx'
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext.jsx'
 
 const ExamConfig = lazy(() => import('./components/ExamConfig.jsx'))
@@ -28,13 +29,16 @@ const ExtraNailedScreen = lazy(() => import('./components/ExtraNailedScreen.jsx'
 const VivaImportantScreen = lazy(() => import('./components/VivaImportantScreen.jsx'))
 const VivaMode = lazy(() => import('./components/VivaMode.jsx'))
 const VivaNailedScreen = lazy(() => import('./components/VivaNailedScreen.jsx'))
+const RecycleBinScreen = lazy(() => import('./components/RecycleBinScreen.jsx'))
 
 export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
         <ProgressProvider>
-          <AppRoutes />
+          <TrashProvider>
+            <AppRoutes />
+          </TrashProvider>
         </ProgressProvider>
       </ThemeProvider>
     </AuthProvider>
@@ -87,6 +91,7 @@ function AppRoutes() {
           <Route path="/viva" element={<VivaMode />} />
           <Route path="/viva/nailed" element={<VivaNailedScreen />} />
           <Route path="/viva/important" element={<VivaImportantScreen />} />
+          <Route path="/recycle-bin" element={<RecycleBinScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

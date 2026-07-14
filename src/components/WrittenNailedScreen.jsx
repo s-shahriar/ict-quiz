@@ -5,17 +5,20 @@ import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useWrittenMasteredContext } from '../contexts/WrittenMasteredContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
+import DeleteButton from './shared/DeleteButton.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 
 export default function WrittenNailedScreen() {
   const navigate = useNavigate()
   useModuleReady('written')
   const { value: writtenMastered, remove: onUnnail } = useWrittenMasteredContext()
+  const { trashedIds } = useTrash()
 
   const nailedByTopic = WRITTEN_TOPICS.map(t => {
     const data = getWrittenData(t.id)
     const items = (data.questions || [])
       .map(q => ({ q, qid: q._uid }))
-      .filter(({ qid }) => writtenMastered.has(qid))
+      .filter(({ q, qid }) => writtenMastered.has(qid) && !trashedIds.has(q._id))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
 
@@ -104,6 +107,7 @@ function WrittenNailedCard({ q, qid, topicColor, onUnnail }) {
         >
           <X size={13} />
         </button>
+        <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
       </div>
       <WrittenCardBody a={q.answer} topicColor={topicColor} />
     </div>

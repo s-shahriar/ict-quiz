@@ -6,18 +6,21 @@ import { getVivaData, VIVA_TOPICS } from '../data/viva/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
+import DeleteButton from './shared/DeleteButton.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 
 export default function VivaImportantScreen() {
   const navigate = useNavigate()
   useModuleReady('viva')
   const { value: important, remove: onUnmark } = useImportantContext()
+  const { trashedIds } = useTrash()
   const [activeId, setActiveId] = useState(null)
 
   const importantByTopic = VIVA_TOPICS.map(t => {
     const data = getVivaData(t.id)
     const items = (data.questions || [])
       .map(q => ({ q, qid: q._uid }))
-      .filter(({ qid }) => important.has(qid))
+      .filter(({ q, qid }) => important.has(qid) && !trashedIds.has(q._id))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
 
@@ -81,6 +84,7 @@ function VivaImportantCard({ q, qid, topicColor, onUnmark }) {
         >
           <X size={13} />
         </button>
+        <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
       </div>
       <WrittenCardBody a={q.answer} topicColor={topicColor} />
     </div>
