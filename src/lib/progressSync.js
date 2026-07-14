@@ -20,11 +20,28 @@ export async function fetchProgress() {
   return { nailed, important, lastUpdated }
 }
 
-// Upsert a single flag change. `patch` is { nailed?, important? }; only the
-// provided column is written, the other is left untouched on existing rows.
-export async function upsertFlag(userId, uid, patch) {
-  const { error } = await supabase
-    .from('user_progress')
-    .upsert({ user_id: userId, uid, ...patch }, { onConflict: 'user_id,uid' })
-  if (error) console.error('[progress] upsert failed:', error.message)
+// Bulk-upsert a coalesced batch of flag changes in as few requests as possible.
+// `batch` = [{ uid, patch: { nailed?, important? } }] where each patch holds only
+// the columns that actually changed (so an untouched column is never clobbered).
+//
+// PostgREST bulk upsert derives its column list from the rows, so rows with
+// different key-sets can't share one request — we group by key signature
+// (nailed-only / important-only / both) and send one upsert per group.
+// Throws on the first error so the caller (offlineQueue) can keep the batch
+// queued and back off.
+export async function bulkUpsert(userId, batch) {
+  const groups = new Map()
+  for (const { uid, patch } of batch) {
+    if (!uid || !patch) continue
+    const sig = Object.keys(patch).sort().join(',')   // '', 'important', 'nailed', 'important,nailed'
+    if (!sig) continue
+    if (!groups.has(sig)) groups.set(sig, [])
+    groups.get(sig).push({ user_id: userId, uid, ...patch })
+  }
+  for (const rows of groups.values()) {
+    const { error } = await supabase
+      .from('user_progress')
+      .upsert(rows, { onConflict: 'user_id,uid' })
+    if (error) throw new Error(error.message)
+  }
 }

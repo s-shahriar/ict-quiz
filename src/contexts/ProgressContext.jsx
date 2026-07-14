@@ -1,13 +1,16 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuth } from './AuthContext.jsx'
-import { fetchProgress, upsertFlag } from '../lib/progressSync.js'
+import { fetchProgress } from '../lib/progressSync.js'
+import { setQueueUser, enqueue, subscribeQueue } from '../lib/offlineQueue.js'
 import LoginPrompt from '../components/auth/LoginPrompt.jsx'
 
 // Progress = two Sets of stable question uids: `nailed` and `important`.
-// Cloud-only: you must be signed in to save. There is NO offline / localStorage
-// store — when logged out the sets are empty and any nail/important tap opens a
-// sign-in prompt instead of saving. When logged in, the DB is the single source
-// of truth (pulled on open) and every change is mirrored to Supabase.
+// Cloud-only: you must be signed in to save. When logged out the sets are empty
+// and any nail/important tap opens a sign-in prompt instead of saving. When
+// logged in, the DB is the source of truth (pulled on open) and every change is
+// optimistic in the UI, then written to Supabase through the offline queue
+// (src/lib/offlineQueue.js) — so a dropped connection queues the change locally
+// and flushes it as a bulk update once the server is reachable again.
 
 const ProgressContext = createContext(null)
 const EMPTY = new Set()
@@ -21,10 +24,20 @@ export function ProgressProvider({ children }) {
   const [lastSaved, setLastSaved] = useState(null)
   const [promptLogin, setPromptLogin] = useState(false)
 
+  // Point the write queue at the current user (loads any persisted backlog and
+  // flushes it), and mirror queue flushes into `lastSaved`. Runs on login/logout.
+  const userId = user?.id
+  useEffect(() => {
+    setQueueUser(userId || null)
+    const unsub = subscribeQueue((_snap, signal) => {
+      if (signal?.saved) setLastSaved(new Date())
+    })
+    return unsub
+  }, [userId])
+
   // Cloud is the source of truth. On login/open, pull the user's progress and
   // replace state. When logged out we simply expose empty sets (below) — no need
   // to touch state, and the next login's fetch overwrites any stale in-memory set.
-  const userId = user?.id
   useEffect(() => {
     if (!userId) return
     let active = true
@@ -51,10 +64,9 @@ export function ProgressProvider({ children }) {
     setPromptLogin(true)
     return false
   }
-  const write = (uid, column, value) => {
-    upsertFlag(user.id, uid, { [column]: value })
-    setLastSaved(new Date())
-  }
+  // Queue the change (optimistic UI already applied by the caller). `lastSaved`
+  // updates when the queue actually lands the write, not here.
+  const write = (uid, column, value) => enqueue(uid, { [column]: value })
 
   const nailApi = {
     value: user ? nailed : EMPTY,
