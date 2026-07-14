@@ -152,7 +152,7 @@ function StudyCard({ domId, question: q, index, color, nailed, isImportant, onNa
             style={nailed ? { color, borderColor: `${color}60`, background: `${color}15` } : {}}
           >
             <Star size={12} fill={nailed ? 'currentColor' : 'none'} />
-            {nailed ? 'Nailed ✓' : 'Nail It'}
+            <span className="qmark-label">{nailed ? 'Nailed ✓' : 'Nail It'}</span>
           </button>
           <button
             className={`nail-btn important-study-btn${isImportant ? ' nailed' : ''}`}
@@ -161,7 +161,7 @@ function StudyCard({ domId, question: q, index, color, nailed, isImportant, onNa
             style={isImportant ? { color: '#ef4444', borderColor: 'rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.1)' } : {}}
           >
             <Bookmark size={12} fill={isImportant ? 'currentColor' : 'none'} />
-            {isImportant ? 'Important ✓' : 'Important'}
+            <span className="qmark-label">{isImportant ? 'Important ✓' : 'Important'}</span>
           </button>
           <DeleteButton question={q} className="nail-btn" size={12} />
           {shown && (

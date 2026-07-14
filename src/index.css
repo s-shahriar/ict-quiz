@@ -3243,3 +3243,9 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .recycle-empty p { margin: 4px 0 0; font-size: 0.95rem; font-weight: 600; color: var(--text-2); }
 .recycle-empty span { font-size: 0.8rem; color: var(--text-3); max-width: 320px; }
 @media (max-width: 560px) { .recycle-row { flex-direction: column; } .recycle-row-actions { flex-direction: row; align-self: stretch; } .recycle-restore-btn, .recycle-purge-btn { flex: 1; } }
+
+/* Mobile: collapse Nail It / Important / Delete action buttons to icons only. */
+@media (max-width: 540px) {
+  .qmark-label { display: none; }
+  .quiz-nail-btn, .quiz-important-btn, .nail-btn { padding-left: 10px; padding-right: 10px; }
+}
