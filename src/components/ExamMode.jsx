@@ -29,7 +29,7 @@ export default function ExamMode() {
   }
 
   const q    = questions[idx]
-  const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
+  const opts = q ? ['a','b','c','d','e'].filter(k => q.options?.[k]) : []
   const qid  = q?._uid ?? null
   const isNailed = qid ? mastered?.has(qid) : false
   const isImportant = qid ? important?.has(qid) : false

@@ -40,7 +40,7 @@ export default function QuizMode() {
   if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
 
   const q = questions[idx]
-  const opts = q ? ['a','b','c','d'].filter(k => q.options?.[k]) : []
+  const opts = q ? ['a','b','c','d','e'].filter(k => q.options?.[k]) : []
   const qid = q ? q._uid : null
   const isNailed = qid ? mastered?.has(qid) : false
   const isImportant = qid ? important?.has(qid) : false
