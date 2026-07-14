@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Bookmark, X, Home, Lightbulb } from 'lucide-react'
 import CategoryChipBar from './CategoryChipBar.jsx'
@@ -6,7 +6,10 @@ import { TOPICS } from '../data/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
+import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
+
+const PAGE_SIZE = 20
 
 export default function ImportantScreen() {
   const navigate = useNavigate()
@@ -27,6 +30,13 @@ export default function ImportantScreen() {
 
   const total = importantByTopic.reduce((s, g) => s + g.items.length, 0)
   const activeGroup = importantByTopic.find(g => g.topic.id === activeId) || importantByTopic[0]
+
+  const [page, setPage] = useState(1)
+  const activeItems = activeGroup?.items ?? []
+  const totalPages = Math.max(1, Math.ceil(activeItems.length / PAGE_SIZE))
+  const curPage = Math.min(page, totalPages)
+  const pageItems = activeItems.slice((curPage - 1) * PAGE_SIZE, curPage * PAGE_SIZE)
+  useEffect(() => { setPage(1) }, [activeGroup?.topic.id])
 
   return (
     <div className="nailed-screen anim-fade">
@@ -63,9 +73,10 @@ export default function ImportantScreen() {
 
           {activeGroup && (
             <div className="nailed-screen-list anim-fade" style={{ '--c': activeGroup.topic.color }}>
-              {activeGroup.items.map(({ q, qid }) => (
+              {pageItems.map(({ q, qid }) => (
                 <ImportantRow key={qid} q={q} qid={qid} onUnmark={onUnmark} />
               ))}
+              {totalPages > 1 && <Pagination page={curPage} totalPages={totalPages} onPageChange={setPage} />}
             </div>
           )}
         </>

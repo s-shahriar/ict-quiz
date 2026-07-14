@@ -3189,11 +3189,11 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   padding: 20px; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); animation: sync-chip-in .2s ease;
 }
 .trash-modal {
-  width: 100%; max-width: 400px; padding: 22px; border-radius: 18px;
+  width: 100%; max-width: 360px; padding: 20px; border-radius: 16px;
   background: var(--surface); border: 1px solid var(--border); box-shadow: 0 24px 60px rgba(0,0,0,0.3); text-align: center;
 }
 .trash-modal-icon {
-  width: 46px; height: 46px; margin: 0 auto 12px; border-radius: 50%;
+  width: 40px; height: 40px; margin: 0 auto 10px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center; color: #ef4444; background: rgba(239,68,68,0.12);
 }
 .trash-modal-title { margin: 0 0 6px; font-size: 1.05rem; font-weight: 700; color: var(--text); }
@@ -3205,7 +3205,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .trash-modal-actions { display: flex; gap: 10px; }
 .trash-btn-cancel, .trash-btn-confirm {
   flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 11px 14px; border-radius: 11px; font-size: 0.86rem; font-weight: 700; cursor: pointer; transition: all .18s ease;
+  padding: 8px 12px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all .18s ease;
 }
 .trash-btn-cancel { border: 1px solid var(--border); background: transparent; color: var(--text-2); }
 .trash-btn-cancel:hover { border-color: var(--border-bright); color: var(--text); }

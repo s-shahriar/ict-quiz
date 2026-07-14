@@ -5,7 +5,10 @@ import { TOPICS } from '../data/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
+import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
+
+const PAGE_SIZE = 20
 
 export default function NailedScreen() {
   const navigate = useNavigate()
@@ -68,6 +71,11 @@ export default function NailedScreen() {
 
 function NailedTopicGroup({ topic: t, items, onUnnail }) {
   const [open, setOpen] = useState(true)
+  const [page, setPage] = useState(1)
+
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
+  const curPage = Math.min(page, totalPages)
+  const pageItems = items.slice((curPage - 1) * PAGE_SIZE, curPage * PAGE_SIZE)
 
   return (
     <div className="nailed-group" style={{ '--c': t.color }}>
@@ -84,7 +92,7 @@ function NailedTopicGroup({ topic: t, items, onUnnail }) {
 
       {open && (
         <div className="nailed-group-body anim-slide">
-          {items.map(({ q, qid }) => (
+          {pageItems.map(({ q, qid }) => (
             <div key={qid} className="nailed-row">
               <Star size={11} fill="currentColor" style={{ color: '#f59e0b', flexShrink: 0, marginTop: 3 }} />
               <div className="nailed-row-body">
@@ -112,6 +120,7 @@ function NailedTopicGroup({ topic: t, items, onUnnail }) {
               <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
             </div>
           ))}
+          {totalPages > 1 && <Pagination page={curPage} totalPages={totalPages} onPageChange={setPage} />}
         </div>
       )}
     </div>

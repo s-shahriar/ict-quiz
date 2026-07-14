@@ -6,7 +6,10 @@ import { useModuleReady } from '../data/contentLoader.js'
 import { useExtraMasteredContext } from '../contexts/ExtraMasteredContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
+import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
+
+const PAGE_SIZE = 20
 
 export default function ExtraNailedScreen() {
   const navigate = useNavigate()
@@ -67,6 +70,11 @@ export default function ExtraNailedScreen() {
 
 function ExtraNailedGroup({ topic: t, items, onUnnail }) {
   const [open, setOpen] = useState(true)
+  const [page, setPage] = useState(1)
+
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
+  const curPage = Math.min(page, totalPages)
+  const pageItems = items.slice((curPage - 1) * PAGE_SIZE, curPage * PAGE_SIZE)
 
   return (
     <div className="nailed-group" style={{ '--c': t.color }}>
@@ -83,9 +91,10 @@ function ExtraNailedGroup({ topic: t, items, onUnnail }) {
 
       {open && (
         <div className="nailed-group-body anim-slide" style={{ padding: '8px 6px 10px', gap: 10 }}>
-          {items.map(({ q, qid }) => (
+          {pageItems.map(({ q, qid }) => (
             <ExtraNailedCard key={qid} q={q} qid={qid} topicColor={t.color} onUnnail={onUnnail} />
           ))}
+          {totalPages > 1 && <Pagination page={curPage} totalPages={totalPages} onPageChange={setPage} />}
         </div>
       )}
     </div>

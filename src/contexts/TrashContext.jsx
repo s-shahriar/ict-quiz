@@ -71,7 +71,7 @@ export function TrashProvider({ children }) {
             <div className="trash-modal-actions">
               <button className="trash-btn-cancel" onClick={() => setPending(null)} disabled={busy}>Cancel</button>
               <button className="trash-btn-confirm" onClick={confirmDelete} disabled={busy}>
-                <Trash2 size={15} /> {busy ? 'Deleting…' : 'Move to Recycle Bin'}
+                <Trash2 size={14} /> {busy ? 'Deleting…' : 'Delete'}
               </button>
             </div>
           </div>
