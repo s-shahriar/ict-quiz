@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Trash2, X, RotateCcw } from 'lucide-react'
+import { getToastRail } from '../lib/toastRail.js'
 import { useAuth } from './AuthContext.jsx'
 import { trashQuestion, restoreQuestion, purgeQuestion } from '../lib/trashSync.js'
 import { invalidateModule } from '../data/contentLoader.js'
@@ -78,11 +80,12 @@ export function TrashProvider({ children }) {
         </div>
       )}
 
-      {toast && (
-        <div className="trash-toast">
+      {toast && createPortal(
+        <div className="trash-toast" aria-live="polite">
           {toast.startsWith('Delete failed') ? <X size={14} /> : <RotateCcw size={14} />}
           <span>{toast}</span>
-        </div>
+        </div>,
+        getToastRail()
       )}
 
       {promptLogin && <LoginPrompt onGoogle={signInWithGoogle} onClose={() => setPromptLogin(false)} />}

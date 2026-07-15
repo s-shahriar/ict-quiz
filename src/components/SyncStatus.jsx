@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { CloudOff, RefreshCw, Check } from 'lucide-react'
 import { subscribeQueue } from '../lib/offlineQueue.js'
+import { getToastRail } from '../lib/toastRail.js'
 
-// Subtle, bottom-right sync indicator driven by the offline write queue.
+// Subtle, top-right sync indicator driven by the offline write queue.
 //   • Persistent ticker while flag changes are stuck in the queue (offline or the
 //     server is unreachable) — "Offline · N changes queued".
 //   • One transient toast when a queued backlog is recovered — "N changes saved".
@@ -35,7 +37,7 @@ export default function SyncStatus() {
   const showTicker = snap.status === 'queued' && snap.pendingCount > 0
   if (!showTicker && toasts.length === 0) return null
 
-  return (
+  return createPortal(
     <div className="sync-status" aria-live="polite">
       {toasts.map((t) => (
         <div key={t.id} className="sync-chip sync-chip-ok">
@@ -51,6 +53,7 @@ export default function SyncStatus() {
           </span>
         </div>
       )}
-    </div>
+    </div>,
+    getToastRail()
   )
 }
