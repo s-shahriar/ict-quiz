@@ -1,8 +1,9 @@
-import { Bookmark, ChevronLeft, Dumbbell, Home, Terminal, X } from 'lucide-react'
+import { Bookmark, ChevronLeft, Dumbbell, Terminal, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
+import HandToggle from './shared/HandToggle.jsx'
 
 export default function PracticeImportantScreen() {
   const navigate = useNavigate()
@@ -48,9 +49,9 @@ export default function PracticeImportantScreen() {
           <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
           Important — Practice
         </div>
-        <button className="study-home-btn" onClick={() => navigate('/', { state: { module: 'practice' } })} title="Home">
-          <Home size={16} />
-        </button>
+        <div className="topbar-right-actions">
+          <HandToggle />
+        </div>
       </div>
 
       {total === 0 ? (

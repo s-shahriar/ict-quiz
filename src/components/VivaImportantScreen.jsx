@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Bookmark, X, Home } from 'lucide-react'
+import { ChevronLeft, Bookmark, X } from 'lucide-react'
 import CategoryChipBar from './CategoryChipBar.jsx'
 import { getVivaData, VIVA_TOPICS } from '../data/viva/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
@@ -9,6 +9,7 @@ import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
+import HandToggle from './shared/HandToggle.jsx'
 
 const PAGE_SIZE = 20
 
@@ -47,9 +48,9 @@ export default function VivaImportantScreen() {
           <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
           Important — Viva
         </div>
-        <button className="study-home-btn" onClick={() => navigate('/', { state: { module: 'viva' } })} title="Home">
-          <Home size={16} />
-        </button>
+        <div className="topbar-right-actions">
+          <HandToggle />
+        </div>
       </div>
 
       {total === 0 ? (

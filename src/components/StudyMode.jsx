@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Navigate, useSearchParams, useLocation } from 'react-router-dom'
-import { ChevronLeft, Home, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Filter, LayoutGrid } from 'lucide-react'
+import { ChevronLeft, CheckCircle, XCircle, Lightbulb, Star, Bookmark, Filter, LayoutGrid } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -9,6 +9,7 @@ import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
+import HandToggle from './shared/HandToggle.jsx'
 
 export default function StudyMode() {
   const { topicId } = useParams()
@@ -56,11 +57,9 @@ export default function StudyMode() {
         </button>
         <span className="study-title" style={{ color: topic.color }}>{topic.name}</span>
         <div className="topbar-right-actions">
+          <HandToggle />
           <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
             <LayoutGrid size={16} />
-          </button>
-          <button className="study-home-btn" onClick={() => navigate('/')} title="Home">
-            <Home size={16} />
           </button>
         </div>
       </div>

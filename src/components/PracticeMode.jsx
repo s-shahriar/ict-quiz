@@ -1,9 +1,10 @@
-import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Home, Lightbulb, Moon, Sun, Table2, Terminal, XCircle } from 'lucide-react'
+import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Lightbulb, Moon, Sun, Table2, Terminal, XCircle } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useThemeContext } from '../contexts/ThemeContext.jsx'
 import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId } from '../data/practice/index.js'
+import HandToggle from './shared/HandToggle.jsx'
 
 const TABS = [
   { id: 'info', label: 'Info', icon: BookOpen },
@@ -67,11 +68,9 @@ export default function PracticeMode() {
           {data.name} Practice
         </div>
         <div className="topbar-right-actions">
+          <HandToggle />
           <button className="study-home-btn" onClick={toggleTheme} title="Toggle theme">
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-          <button className="study-home-btn" onClick={() => navigate('/')} title="Home">
-            <Home size={16} />
           </button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { Trash2, RotateCcw, ChevronLeft, AlertTriangle } from 'lucide-react'
 import { fetchDeletedQuestions } from '../lib/trashSync.js'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import HandToggle from './shared/HandToggle.jsx'
 
 const MODULE_LABEL = { mcq: 'MCQ', written: 'Written', extra: 'Extra', viva: 'Viva', practice: 'Practice' }
 
@@ -50,7 +51,9 @@ export default function RecycleBinScreen() {
         <div className="nailed-screen-title">
           <Trash2 size={16} /> <span>Recycle Bin</span>
         </div>
-        <div style={{ width: 60 }} />
+        <div className="topbar-right-actions" style={{ width: 60, justifyContent: 'flex-end' }}>
+          <HandToggle />
+        </div>
       </div>
 
       {!user ? (

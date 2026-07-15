@@ -1,8 +1,9 @@
-import { Bookmark, ChevronLeft, Home } from 'lucide-react'
+import { Bookmark, ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
 import { CommandPractice } from './PracticeMode.jsx'
+import HandToggle from './shared/HandToggle.jsx'
 
 // Runs a single drill session over every important practice item across all
 // categories/topics. Each drill carries its own category/topic so importance
@@ -47,9 +48,7 @@ export default function PracticeImportantRun() {
           <Bookmark size={13} fill="currentColor" /> Important Practice
         </div>
         <div className="topbar-right-actions">
-          <button className="study-home-btn" onClick={() => navigate('/', { state: { module: 'practice' } })} title="Home">
-            <Home size={16} />
-          </button>
+          <HandToggle />
         </div>
       </div>
 

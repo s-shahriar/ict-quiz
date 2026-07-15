@@ -1,4 +1,4 @@
-import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronUp, Home, LayoutGrid, Sparkles, Star } from 'lucide-react'
+import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronUp, LayoutGrid, Sparkles, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -10,6 +10,7 @@ import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
+import HandToggle from './shared/HandToggle.jsx'
 
 export default function ExtraMode() {
   const navigate = useNavigate()
@@ -70,11 +71,9 @@ export default function ExtraMode() {
           {topic.shortName} — Extra Q&A
         </div>
         <div className="topbar-right-actions">
+          <HandToggle />
           <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
             <LayoutGrid size={16} />
-          </button>
-          <button className="study-home-btn" onClick={() => navigate('/')} title="Home">
-            <Home size={16} />
           </button>
         </div>
       </div>

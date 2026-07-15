@@ -4,6 +4,7 @@ import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX, St
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
+import HandToggle from './shared/HandToggle.jsx'
 
 export default function ExamMode() {
   const location = useLocation()
@@ -68,7 +69,8 @@ export default function ExamMode() {
           <span style={{ color: accent }}>Exam</span>
           <span className="exam-topic-tag">{q._label ?? label}</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="topbar-right-actions" style={{ gap: 8 }}>
+          <HandToggle />
           <span className="quiz-score-pill">{score} / {idx + (revealed ? 1 : 0)}</span>
           <button
             className={`exam-stop-btn${stopConfirm ? ' confirm' : ''}`}

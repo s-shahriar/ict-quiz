@@ -1,14 +1,16 @@
-import { Moon, Sun, Trash2 } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 import { lazy, Suspense } from 'react'
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import HomeScreen from './components/HomeScreen.jsx'
 import AccountButton from './components/auth/AccountButton.jsx'
+import HandToggle from './components/shared/HandToggle.jsx'
 import SyncOverlay from './components/SyncOverlay.jsx'
 import SyncStatus from './components/SyncStatus.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ProgressProvider, useProgressSyncing } from './contexts/ProgressContext.jsx'
 import { TrashProvider } from './contexts/TrashContext.jsx'
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext.jsx'
+import { HandProvider } from './contexts/HandContext.jsx'
 
 const ExamConfig = lazy(() => import('./components/ExamConfig.jsx'))
 const ExamMode = lazy(() => import('./components/ExamMode.jsx'))
@@ -35,18 +37,19 @@ export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <ProgressProvider>
-          <TrashProvider>
-            <AppRoutes />
-          </TrashProvider>
-        </ProgressProvider>
+        <HandProvider>
+          <ProgressProvider>
+            <TrashProvider>
+              <AppRoutes />
+            </TrashProvider>
+          </ProgressProvider>
+        </HandProvider>
       </ThemeProvider>
     </AuthProvider>
   )
 }
 
 function AppRoutes() {
-  const navigate = useNavigate()
   const { theme, toggleTheme } = useThemeContext()
   const { loading: authLoading } = useAuth()
   const syncing = useProgressSyncing()
@@ -62,11 +65,9 @@ function AppRoutes() {
       </div>
 
       {isHome && (
-        <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 50, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button className="theme-toggle" onClick={() => navigate('/recycle-bin')} title="Recycle Bin" style={{ position: 'static' }}>
-            <Trash2 size={17} />
-          </button>
+        <div className="home-float-actions">
           <AccountButton />
+          <HandToggle className="theme-toggle" size={17} />
           <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme" style={{ position: 'static' }}>
             {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           </button>

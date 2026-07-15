@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Home } from 'lucide-react'
+import { ChevronLeft, Star, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { getExtraData, EXTRA_TOPICS } from '../data/extra/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useExtraMasteredContext } from '../contexts/ExtraMasteredContext.jsx'
@@ -8,6 +8,7 @@ import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
+import HandToggle from './shared/HandToggle.jsx'
 
 const PAGE_SIZE = 20
 
@@ -37,9 +38,9 @@ export default function ExtraNailedScreen() {
           <Star size={16} fill="currentColor" style={{ color: '#f59e0b' }} />
           Nailed It — Extra
         </div>
-        <button className="study-home-btn" onClick={() => navigate('/', { state: { module: 'extra' } })} title="Home">
-          <Home size={16} />
-        </button>
+        <div className="topbar-right-actions">
+          <HandToggle />
+        </div>
       </div>
 
       {total === 0 ? (

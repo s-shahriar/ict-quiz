@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useLayoutEffect } from 'react'
 import { LogIn, LogOut, User, Check, CloudOff, Star, Bookmark, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext.jsx'
@@ -35,6 +35,32 @@ export default function AccountButton() {
   const { configured, user, signInWithGoogle, signOut } = useAuth()
   const { nailedCount, importantCount, lastSaved } = useProgressMeta()
   const [open, setOpen] = useState(false)
+  const btnRef = useRef(null)
+  const [panel, setPanel] = useState(null)
+
+  // Anchor the panel to the avatar, then clamp it inside the viewport. CSS alone
+  // can't do this: `right: 0` pins the panel to the button, so on a narrow phone
+  // (or in left-hand mode, where the avatar sits near the left edge) a 256px
+  // panel would hang off the screen and widen the document.
+  useLayoutEffect(() => {
+    if (!open) return
+    const place = () => {
+      const el = btnRef.current
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      const M = 12
+      const w = Math.min(256, window.innerWidth - M * 2)
+      const left = Math.min(Math.max(M, r.right - w), window.innerWidth - w - M)
+      setPanel({ top: r.bottom + 10, left, width: w })
+    }
+    place()
+    window.addEventListener('resize', place)
+    window.addEventListener('scroll', place, true)
+    return () => {
+      window.removeEventListener('resize', place)
+      window.removeEventListener('scroll', place, true)
+    }
+  }, [open])
 
   if (!configured) {
     return (
@@ -50,6 +76,7 @@ export default function AccountButton() {
   return (
     <div style={{ position: 'relative' }}>
       <button
+        ref={btnRef}
         className="theme-toggle-nav"
         onClick={() => setOpen(o => !o)}
         title={user ? user.email : 'Sign in to sync progress'}
@@ -63,7 +90,7 @@ export default function AccountButton() {
       {open && (
         <>
           <div onClick={() => setOpen(false)} style={backdrop} />
-          <div style={dropdown} role="menu">
+          <div className="account-dropdown" role="menu" style={panel ?? { visibility: 'hidden' }}>
             {user ? (
               <>
                 <div style={idRow}>
@@ -111,7 +138,6 @@ export default function AccountButton() {
 }
 
 const backdrop = { position: 'fixed', inset: 0, zIndex: 1000 }
-const dropdown = { position: 'absolute', top: 'calc(100% + 10px)', right: 0, zIndex: 1001, width: 256, padding: 14, borderRadius: 14, background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 16px 44px rgba(0,0,0,0.22)' }
 const idRow = { display: 'flex', alignItems: 'center', gap: 11, marginBottom: 12 }
 const fallbackAvatar = { width: 38, height: 38, borderRadius: '50%', background: 'rgba(99,102,241,0.15)', color: '#818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }
 const nameText = { fontSize: '0.9rem', fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
