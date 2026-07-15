@@ -3213,13 +3213,20 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .trash-btn-confirm:hover { background: #dc2626; }
 .trash-btn-confirm:disabled, .trash-btn-cancel:disabled { opacity: .6; cursor: default; }
 
+/* Top-right, clearing the sticky topbar — keeps it away from the bottom-right sync chip. */
 .trash-toast {
-  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 2001;
-  display: inline-flex; align-items: center; gap: 7px; max-width: 86vw;
+  position: fixed; top: 56px; right: 14px; z-index: 2001;
+  display: inline-flex; align-items: center; gap: 7px; max-width: min(86vw, 320px);
   padding: 9px 15px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; color: var(--text);
   background: var(--surface); border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.22);
-  animation: sync-chip-in .28s cubic-bezier(.2,.8,.2,1);
+  animation: trash-toast-in .28s cubic-bezier(.2,.8,.2,1);
 }
+.trash-toast span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@keyframes trash-toast-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) { .trash-toast { animation: none; } }
 .trash-toast svg { color: #22c55e; flex-shrink: 0; }
 
 .recycle-screen { max-width: 760px; margin: 0 auto; padding: 0 14px 40px; }
