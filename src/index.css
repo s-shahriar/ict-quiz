@@ -3260,6 +3260,24 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   .quiz-nail-btn, .quiz-important-btn, .nail-btn { padding-left: 10px; padding-right: 10px; }
 }
 
+/* Written/Viva/Extra card headers on phones.
+   The header packs Q-number + question + chevron + three 30px buttons on one
+   row. On a 360px screen that leaves the text ~90px, so it wraps to its longest
+   word and the card becomes a tall ribbon. Let the header wrap: the question
+   takes a full-width first row, the buttons drop to a second row.
+   `justify-content: flex-end` reads correctly for both hands — under
+   [data-hand="left"] the header is row-reverse, so flex-end lands on the left. */
+@media (max-width: 540px) {
+  .written-card-header {
+    flex-wrap: wrap;
+    row-gap: 2px;
+    justify-content: flex-end;
+    padding: 14px 14px 8px 16px;
+  }
+  .written-card-toggle { flex: 1 1 100%; gap: 10px; }
+  .written-imp-btn { width: 34px; height: 34px; margin-top: 0; }
+}
+
 /* ── Left-hand layout ──────────────────────────────────────────────
    [data-hand="left"] on <html> mirrors every bar that holds actions,
    so the controls land under a left thumb. Set by useHand(). */
