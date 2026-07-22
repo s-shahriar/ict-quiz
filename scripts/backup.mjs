@@ -10,6 +10,7 @@ import { createClient } from '@supabase/supabase-js'
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
+import { execSync } from 'node:child_process'
 
 const OWNER_EMAIL = 'ksnkkc@gmail.com'   // only this account's progress is backed up
 
@@ -29,6 +30,26 @@ const URL = process.env.VITE_SUPABASE_URL
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 if (!URL || !KEY) { console.error('✖ Need VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY'); process.exit(1) }
 const db = createClient(URL, KEY, { auth: { persistSession: false } })
+
+// Read the counts of the CURRENT published snapshot (the single commit on the
+// `backups` branch), so we never overwrite a good backup with a smaller one. A
+// silent partial delete / truncated read would otherwise still pass the
+// complete+duplicate-free integrity check and clobber the only copy. Best-effort:
+// returns null on the first run, a missing branch, or no git/remote (then the
+// guard is skipped — nothing to compare against).
+function previousCounts() {
+  try {
+    execSync('git fetch origin backups --depth=1', { cwd: ROOT, stdio: 'ignore' })
+    // content.json is several MB — raise maxBuffer well past execSync's 1MB default
+    // (ENOBUFS otherwise). We only need the small `counts` object at its head.
+    const prev = execSync('git show FETCH_HEAD:backups/content.json',
+      { cwd: ROOT, encoding: 'utf8', maxBuffer: 512 * 1024 * 1024 })
+    const j = JSON.parse(prev)
+    return (j && j.counts) || null
+  } catch {
+    return null
+  }
+}
 
 async function fetchAll(table, columns, order = 'id') {
   const rows = []
@@ -55,6 +76,22 @@ async function main() {
   const { count: dbQ } = await db.from('questions').select('*', { count: 'exact', head: true })
   if (distinctQ !== questions.length || questions.length !== dbQ) {
     throw new Error(`integrity check failed — ${questions.length} rows (${distinctQ} distinct) vs DB ${dbQ}`)
+  }
+
+  // Shrink guard: refuse to replace the single snapshot with a SMALLER dataset,
+  // so an accidental mass-delete can't silently wipe the only backup. Growth and
+  // equality are fine. Set ALLOW_SHRINK=1 to override when a deletion is intended.
+  const prev = previousCounts()
+  if (prev && process.env.ALLOW_SHRINK !== '1') {
+    if (questions.length < prev.questions) {
+      throw new Error(
+        `shrink guard: current (${questions.length} questions) is smaller than ` +
+        `the last snapshot (${prev.questions} questions). Refusing to overwrite the ` +
+        `backup. If this deletion is intentional, re-run with ALLOW_SHRINK=1.`)
+    }
+    console.log(`shrink guard OK — ${questions.length} ≥ ${prev.questions} questions`)
+  } else if (!prev) {
+    console.log('shrink guard skipped — no previous snapshot to compare against')
   }
 
   writeFileSync(join(dir, 'content.json'), JSON.stringify({

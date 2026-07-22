@@ -11,7 +11,12 @@ name: Backup Supabase
 on:
   schedule:
     - cron: '30 3 */3 * *'   # every ~3 days at 03:30 UTC
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      allow_shrink:
+        description: 'Allow overwriting the backup with a SMALLER dataset (use after an intentional bulk delete)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -29,6 +34,8 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: node scripts/backup.mjs
+        env:
+          ALLOW_SHRINK: ${{ inputs.allow_shrink && '1' || '0' }}
       - name: Publish single-commit snapshot to the backups branch
         run: |
           git config user.name  "github-actions[bot]"
