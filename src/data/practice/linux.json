@@ -35,10 +35,10 @@
         { "cmd": "cat /etc/os-release", "desc": "একটি config file-এর ভেতর দেখা" },
         { "cmd": "ls -l | grep \"^d\"", "desc": "শুধু directory গুলো দেখা (pipe)" },
         { "cmd": "ls /etc | wc -l", "desc": "একটি directory-তে কতগুলো file/entry আছে গণনা (pipe)" },
-        { "cmd": "find /etc -name \"*.conf\" | wc -l", "desc": ".conf file গণনা (pipe)" },
+        { "cmd": "find /etc -type f -name \"*.conf\" | wc -l", "desc": ".conf file গণনা (-type f + pipe)" },
         { "cmd": "find . -type f -name \"*.pdf\" | wc -l", "desc": "current + sub directory-তে কতগুলো .pdf file আছে গণনা (-type f)" },
         { "cmd": "find . -type d -name \"Android\" | wc -l", "desc": "Android নামের কতগুলো directory আছে গণনা (-type d)" },
-        { "cmd": "find / -name \"myFile.txt\"", "desc": "পুরো system-এ (root / থেকে) ঐ নামের সব কিছু খোঁজা" }
+        { "cmd": "find / -type f -name \"myFile.txt\"", "desc": "পুরো system-এ (root / থেকে) ঐ নামের file খোঁজা (-type f)" }
       ],
       "practice": [
         { "prompt": "/etc directory-তে navigate করো", "accept": ["cd /etc", "cd /etc/"], "explain": "cd = change directory" },
@@ -47,7 +47,7 @@
         { "prompt": "নিজের home directory-তে ফিরে যাও", "accept": ["cd ~", "cd", "cd $HOME"], "explain": "cd একা বা cd ~ → home-এ নিয়ে যায়" },
         { "prompt": "/etc/os-release file-টির ভেতরের লেখা দেখাও", "accept": ["cat /etc/os-release"], "explain": "cat = file-এর content প্রিন্ট করে" },
         { "prompt": "ls আর grep pipe করে current directory-র শুধু directory গুলো দেখাও (যে লাইন d দিয়ে শুরু)", "accept": ["ls -l | grep \"^d\"", "ls -l | grep '^d'", "ls -la | grep \"^d\"", "ls -la | grep '^d'"], "explain": "pipe (|) এক command-এর output পরের command-এ পাঠায়" },
-        { "prompt": "/etc-এর ভেতর কতগুলো .conf file আছে গুনে দেখাও (find + wc)", "accept": ["find /etc -name \"*.conf\" | wc -l", "find /etc -name '*.conf' | wc -l"], "explain": "কোথায়? /etc  |  কী ধরনের? দেওয়া নেই (file+dir দুটোই)  |  কী নাম? -name \"*.conf\"  →  তারপর | wc -l = লাইন গণনা (= কতগুলো)" },
+        { "prompt": "/etc-এর ভেতর কতগুলো .conf file আছে গুনে দেখাও (find + wc)", "accept": ["find /etc -type f -name \"*.conf\" | wc -l", "find /etc -type f -name '*.conf' | wc -l", "find /etc -name \"*.conf\" -type f | wc -l", "find /etc -name \"*.conf\" | wc -l", "find /etc -name '*.conf' | wc -l"], "answers": ["find /etc -type f -name \"*.conf\" | wc -l", "find /etc -name \"*.conf\" | wc -l"], "explain": "কোথায়? /etc  |  কী ধরনের? -type f (শুধু file)  |  কী নাম? -name \"*.conf\"  →  তারপর | wc -l = গণনা। প্রশ্নে file চাওয়া বলে -type f নিখুঁত।" },
         { "prompt": "/etc directory-তে কতগুলো file/entry আছে গুনে দেখাও (ls + wc)", "accept": ["ls /etc | wc -l", "ls -1 /etc | wc -l"], "explain": "ls-এর output প্রতি লাইনে একটি নাম; wc -l লাইন গণনা করে = entry সংখ্যা" },
         { "prompt": "current ও তার sub directory মিলিয়ে কতগুলো .pdf file আছে গুনে দেখাও (find -type f + wc)", "accept": ["find . -type f -name \"*.pdf\" | wc -l", "find . -type f -name '*.pdf' | wc -l", "find . -name \"*.pdf\" -type f | wc -l", "find . -name \"*.pdf\" | wc -l", "find . -name '*.pdf' | wc -l"], "answers": ["find . -type f -name \"*.pdf\" | wc -l", "find . -name \"*.pdf\" | wc -l"], "explain": "কোথায়? . (current+sub)  |  কী ধরনের? -type f (শুধু file)  |  কী নাম? -name \"*.pdf\"  →  তারপর | wc -l = গণনা। -type f না দিলে .pdf নামের directory-ও গুনত, বাস্তবে নেই বলে count একই।" },
         { "prompt": "current directory থেকে Android নামের কতগুলো directory আছে গুনে দেখাও (find -type d + wc)", "accept": ["find . -type d -name \"Android\" | wc -l", "find . -type d -name 'Android' | wc -l", "find . -name \"Android\" -type d | wc -l"], "explain": "কোথায়? . (current+sub)  |  কী ধরনের? -type d (শুধু directory)  |  কী নাম? -name \"Android\"  →  তারপর | wc -l = গণনা" },
@@ -83,8 +83,8 @@
         { "cmd": "rm -r dir/", "desc": "directory ও ভেতরের সব মুছে ফেলা" },
         { "cmd": "mkdir -p a/b/c", "desc": "nested directory একসাথে তৈরি" },
         { "cmd": "touch file.txt", "desc": "খালি file তৈরি" },
-        { "cmd": "find . -name \"*.log\"", "desc": ".log file খোঁজা" },
-        { "cmd": "find / -size +100M", "desc": "100MB-এর বড় file খোঁজা" },
+        { "cmd": "find . -type f -name \"*.log\"", "desc": ".log file খোঁজা (-type f)" },
+        { "cmd": "find / -type f -size +100M", "desc": "100MB-এর বড় file খোঁজা (-type f)" },
         { "cmd": "find /var/log -type f -name \"*.log\" -delete", "desc": "খুঁজে পাওয়া সব .log file মুছে ফেলা (-delete)" },
         { "cmd": "tar -czf backup.tar.gz /data", "desc": "directory compress (archive)" },
         { "cmd": "tar -xzf backup.tar.gz", "desc": "archive extract" }
