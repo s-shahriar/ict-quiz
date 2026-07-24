@@ -72,6 +72,7 @@ export function ProgressProvider({ children }) {
     value: user ? nailed : EMPTY,
     add: (uid) => { if (!uid || !ensureAuthed()) return; setNailed(p => new Set(p).add(uid)); write(uid, 'nailed', true) },
     remove: (uid) => { if (!ensureAuthed()) return; setNailed(p => { const n = new Set(p); n.delete(uid); return n }); write(uid, 'nailed', false) },
+    removeMany: (uids) => { if (!ensureAuthed()) return; setNailed(p => { const n = new Set(p); uids.forEach(u => n.delete(u)); return n }); uids.forEach(u => write(u, 'nailed', false)) },
   }
   const importantApi = {
     value: user ? important : EMPTY,

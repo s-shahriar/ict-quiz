@@ -15,9 +15,10 @@ const PAGE_SIZE = 20
 export default function ImportantScreen() {
   const navigate = useNavigate()
   useModuleReady('mcq')
-  const { value: important, remove: onUnmark } = useImportantContext()
+  const { value: important, remove: onUnmark, removeMany: onUnmarkMany } = useImportantContext()
   const { trashedIds } = useTrash()
   const [activeId, setActiveId] = useState(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   const topics = TOPICS
 
@@ -38,6 +39,14 @@ export default function ImportantScreen() {
   const curPage = Math.min(page, totalPages)
   const pageItems = activeItems.slice((curPage - 1) * PAGE_SIZE, curPage * PAGE_SIZE)
   useEffect(() => { setPage(1) }, [activeGroup?.topic.id])
+
+  // Remove every important question in the *active* category (confirm-guarded).
+  const activeCount = activeGroup?.items.length ?? 0
+  const doRemoveActive = () => {
+    const ids = (activeGroup?.items ?? []).map(({ qid }) => qid)
+    if (ids.length) onUnmarkMany(ids)
+    setConfirmOpen(false)
+  }
 
   return (
     <div className="nailed-screen anim-fade">
@@ -74,6 +83,16 @@ export default function ImportantScreen() {
 
           {activeGroup && (
             <div className="nailed-screen-list anim-fade" style={{ '--c': activeGroup.topic.color }}>
+              <div className="nailed-cat-actions">
+                <span className="nailed-cat-actions-label" style={{ color: activeGroup.topic.color }}>
+                  {activeGroup.topic.name} · {activeItems.length}
+                </span>
+                {activeCount > 0 && (
+                  <button className="nailed-clear-all-btn" onClick={() => setConfirmOpen(true)}>
+                    <X size={12} /> Remove all
+                  </button>
+                )}
+              </div>
               {pageItems.map(({ q, qid }) => (
                 <ImportantRow key={qid} q={q} qid={qid} onUnmark={onUnmark} />
               ))}
@@ -81,6 +100,26 @@ export default function ImportantScreen() {
             </div>
           )}
         </>
+      )}
+
+      {confirmOpen && activeGroup && (
+        <div className="trash-modal-backdrop" onClick={() => setConfirmOpen(false)}>
+          <div className="trash-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+            <div className="trash-modal-icon" style={{ color: '#ef4444', background: 'rgba(239,68,68,0.12)' }}>
+              <Bookmark size={22} />
+            </div>
+            <h3 className="trash-modal-title">Remove all — {activeGroup.topic.name}?</h3>
+            <p className="trash-modal-sub">
+              {activeCount} question{activeCount !== 1 ? 's' : ''} will be removed from Important. You can add them back anytime.
+            </p>
+            <div className="trash-modal-actions">
+              <button className="trash-btn-cancel" onClick={() => setConfirmOpen(false)}>Cancel</button>
+              <button className="trash-btn-confirm" onClick={doRemoveActive}>
+                <X size={14} /> Remove all
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
