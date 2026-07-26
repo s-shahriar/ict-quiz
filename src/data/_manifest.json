@@ -16,19 +16,20 @@
     "theory_of_computation": 2
   },
   "written": {
-    "c_programming": 2,
+    "c_programming": 3,
     "computer_fundamental": 4,
     "computer_network": 26,
     "database": 7,
-    "dsa": 8,
-    "information_security": 6,
+    "dsa": 9,
+    "information_security": 7,
     "linux": 1,
     "machine_learning": 1,
     "microprocessor": 1,
     "oop": 3,
-    "operating_system": 11,
-    "server": 34,
-    "software_engineering": 5
+    "operating_system": 12,
+    "server": 35,
+    "software_engineering": 5,
+    "theory_of_computation": 1
   },
   "extra": {
     "computer_fundamental": 5,

@@ -609,6 +609,89 @@
         },
         "mnemonic": "ঘাত বিয়োগ করো: 32 − 20 = 12 → 2¹² = 4096 page। তারপর × 6 byte = 24 KB। মূল চাবি: page গুনতে হলে ঘাত বিয়োগ।"
       }
+    },
+    {
+      "id": "os_012",
+      "q": "Explain the difference between a \"Compulsory Miss\" (Cold Miss) and a \"Capacity Miss\" in cache memory.",
+      "tags": [
+        "cache",
+        "compulsory miss",
+        "cold miss",
+        "capacity miss",
+        "memory hierarchy"
+      ],
+      "answer": {
+        "summary": [
+          "Compulsory Miss: data একদম প্রথমবার access করা হচ্ছে, cache এ এখনো আসেনি — তাই miss। আরেক নাম Cold Start Miss।",
+          "Capacity Miss: cache এত ছোট যে প্রয়োজনীয় সব data ধরে না — আগের data replace হয়ে যায়, পরে চাইলে miss।",
+          "মূল ফারাক: Compulsory cache size যাই হোক ঘটবেই; Capacity ঘটে শুধু cache ছোট বলে, তাই cache বড় করলে কমে।"
+        ],
+        "points": [
+          "Compulsory Miss (Cold Miss / Cold Start Miss)",
+          {
+            "sub": "কোনো data প্রথমবার access করা হচ্ছে এবং সেটা তখনো cache এ নেই — এই অবস্থায় miss হয়।"
+          },
+          {
+            "sub": "Cache size যত বড়ই হোক, এটা ঘটবেই (happens regardless of cache size)।"
+          },
+          {
+            "sub": "নতুন data এর প্রথম access এ এড়ানো যায় না (cannot be avoided)।"
+          },
+          {
+            "sub": "কমানোর উপায় শুধু: block size বাড়ানো বা prefetching — অর্থাৎ আগেভাগে এনে রাখা।"
+          },
+          "Capacity Miss",
+          {
+            "sub": "cache এত ছোট যে program এর প্রয়োজনীয় সব data একসাথে ধরে না — এই অবস্থায় miss হয়।"
+          },
+          {
+            "sub": "কারণ cache এর capacity যথেষ্ট নয় (cache capacity is insufficient)।"
+          },
+          {
+            "sub": "Cache size বাড়ালে এই miss কমানো যায় (can be reduced)।"
+          },
+          {
+            "sub": "ঘটে এভাবে: জায়গার অভাবে আগে cache এ থাকা data replace হয়ে যায়, পরে সেই data আবার চাইলে miss হয়।"
+          },
+          "চেনার সহজ উপায়: data টি কি আগে কখনো cache এ এসেছিল? না → Compulsory। হ্যাঁ, কিন্তু জায়গার অভাবে সরে গেছে → Capacity।"
+        ],
+        "diagram": "উদাহরণ: cache এ ৪টি block ধরে, কিন্তু program বারবার ব্যবহার করে ৫টি — A B C D E\n\n\n[১] COMPULSORY MISS — A এর প্রথম access\n\n   CPU: \"A দাও\"\n         │\n         ▼\n   ┌────┬────┬────┬────┐\n   │ -- │ -- │ -- │ -- │  ← cache খালি, A কখনো আসেইনি\n   └────┴────┴────┴────┘\n         │ MISS\n         ▼\n   Main Memory ──A──▶ cache এ লোড হলো\n   ┌────┬────┬────┬────┐\n   │ A  │ -- │ -- │ -- │\n   └────┴────┴────┴────┘\n\n   প্রথমবার বলেই miss — cache যত বড়ই হোক, এড়ানো যেত না\n\n\n[২] CAPACITY MISS — A এর দ্বিতীয় access\n\n   access:   A      B      C      D      E        A\n             ▼      ▼      ▼      ▼      ▼        ▼\n   cache:  ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐  ┌────┐\n           │A...│ │AB..│ │ABC.│ │ABCD│ │BCDE│  │ ?  │\n           └────┘ └────┘ └────┘ └────┘ └────┘  └────┘\n            MISS   MISS   MISS   MISS   MISS     MISS\n           (cold) (cold) (cold) (cold)   │        │\n                                         │        └─ A নেই → CAPACITY MISS\n                                         └─ cache ভর্তি! A কে replace\n                                            করে E ঢোকানো হলো\n\n   ৫টি data, ৪টির জায়গা → capacity যথেষ্ট নয়\n   cache ৫ block হলে A সরত না, এই miss হতোই না\n\n\n[৩] এক নজরে\n\n   Cache size বাড়ালে →  Compulsory: কমে না  |  Capacity: কমে\n   প্রথম access এ     →  Compulsory: হবেই    |  Capacity: প্রশ্নই ওঠে না",
+        "mistakes": [
+          [
+            "Cache বড় করলে Compulsory miss কমে যাবে",
+            "না — প্রথম access এ data cache এ থাকার কোনো উপায়ই নেই। এটা কমাতে হয় বড় block size বা prefetching দিয়ে।"
+          ],
+          [
+            "দুটোই একই জিনিস",
+            "না — Compulsory এ data এর কোনো আগের ইতিহাস নেই; Capacity এ data আগে cache এ ছিল, জায়গার অভাবে replace হয়েছে।"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "Compulsory Miss (Cold Miss)",
+            "Capacity Miss"
+          ],
+          "rows": [
+            [
+              "প্রথমবার data access করা হচ্ছে এবং তা এখনো cache এ নেই — তখন ঘটে।",
+              "Cache এত ছোট যে প্রয়োজনীয় সব data ধরে না — তখন ঘটে।"
+            ],
+            [
+              "Cache size যাই হোক, ঘটবেই।",
+              "ঘটে কারণ cache এর capacity যথেষ্ট নয়।"
+            ],
+            [
+              "নতুন data এর প্রথম access এ এড়ানো যায় না।",
+              "Cache size বাড়ালে কমানো যায়।"
+            ],
+            [
+              "আরেক নাম: Cold Start Miss।",
+              "জায়গার অভাবে আগের cached data replace হয়ে যাওয়ায় ঘটে।"
+            ]
+          ]
+        },
+        "mnemonic": "Compulsory = নতুন মেহমান, ঘর যত বড়ই হোক প্রথমবার দরজা খুলতেই হবে। Capacity = ঘর ছোট বলে পুরোনো মেহমানকে বের করে দিতে হলো, সে ফিরে এসে দেখে জায়গা নেই।"
+      }
     }
   ]
 }

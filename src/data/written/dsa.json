@@ -436,6 +436,114 @@
         },
         "mnemonic": "Merge Sort = ভরসার বন্ধু — input যতই এলোমেলো হোক, সবসময় O(n log n)। কারণ ও pivot এর জুয়া খেলে না, সবসময় ঠিক মাঝ থেকে ভাঙে। দাম শুধু O(n) extra memory।"
       }
+    },
+    {
+      "id": "dsa_009",
+      "q": "Why is a Circular Queue preferred over a Linear Queue in many operating systems? Explain with one example.",
+      "tags": [
+        "circular queue",
+        "linear queue",
+        "false overflow",
+        "queue",
+        "buffer",
+        "wrap around"
+      ],
+      "answer": {
+        "summary": [
+          "Circular Queue memory অনেক বেশি কার্যকরভাবে ব্যবহার করে — এটাই মূল কারণ।",
+          "Linear Queue এ rear শেষ ঘরে পৌঁছে গেলে সামনে delete করা খালি ঘর থাকা সত্ত্বেও আর insert করা যায় না — একে false overflow বলে।",
+          "Circular Queue এ rear শেষ ঘরের পর ঘুরে (wrap around) শুরুতে ফিরে আসে, তাই খালি ঘরগুলো আবার ব্যবহার হয় এবং false overflow হয় না।"
+        ],
+        "points": [
+          "Linear Queue এর সমস্যা",
+          {
+            "sub": "delete করলে front সামনে এগোয়, কিন্তু পেছনে ফেলে আসা ঘরগুলো আর ব্যবহার হয় না — memory নষ্ট হয় (wastes memory after deletions)।"
+          },
+          {
+            "sub": "rear একবার শেষ index এ পৌঁছালে queue কে ভর্তি ধরা হয়, যদিও সামনে খালি ঘর আছে — একে false overflow বলে।"
+          },
+          {
+            "sub": "ঠিক করতে হলে প্রতিবার সব element সামনে সরিয়ে আনতে হয়, যা O(n) — প্রতি operation এ করা অবাস্তব।"
+          },
+          "Circular Queue এর সমাধান",
+          {
+            "sub": "শেষ index এর পরের ঘর হিসেবে ০ index ধরা হয়, অর্থাৎ array কে একটি বৃত্ত হিসেবে দেখা হয়।"
+          },
+          {
+            "sub": "সূত্র: rear = (rear + 1) % SIZE এবং front = (front + 1) % SIZE — এই modulo-ই wrap around ঘটায়।"
+          },
+          {
+            "sub": "delete করে খালি হওয়া ঘরগুলো আবার ব্যবহার হয় (reuses empty spaces), তাই false overflow হয় না।"
+          },
+          {
+            "sub": "সত্যিকারের full অবস্থা: (rear + 1) % SIZE == front। Insert/delete দুটোই O(1) থাকে।"
+          },
+          "Operating System এ কেন এটাই লাগে: OS এর buffer গুলো নির্দিষ্ট আকারের memory তে অনির্দিষ্টকাল ধরে চলতে থাকে — তাই জায়গা পুনরায় ব্যবহার করতেই হয়।",
+          {
+            "sub": "উদাহরণ: Round Robin scheduling এর ready queue (process ঘুরেফিরে বারবার আসে), keyboard buffer, printer spool queue, producer-consumer ring buffer, network packet buffer।"
+          }
+        ],
+        "diagram": "উদাহরণ: SIZE = ৫ এর একটি queue\n\n\n[১] দুটিতেই: A B C D E ঢোকানো হলো, তারপর A ও B delete\n\n   index:   0     1     2     3     4\n          ┌─────┬─────┬─────┬─────┬─────┐\n          │  -  │  -  │  C  │  D  │  E  │\n          └─────┴─────┴─────┴─────┴─────┘\n             ↑           ↑           ↑\n          খালি        front        rear\n          (২টি ঘর খালি পড়ে আছে)\n\n\n[২] LINEAR QUEUE — এখন F ঢোকাতে চাইলে\n\n          ┌─────┬─────┬─────┬─────┬─────┐\n          │  -  │  -  │  C  │  D  │  E  │  ← rear = 4 (শেষ index)\n          └─────┴─────┴─────┴─────┴─────┘\n             ▲     ▲                 │\n             └──┬──┘                 │\n            খালি, কিন্তু           rear আর\n            পৌঁছানো যায় না         এগোতে পারে না\n\n          F → ✗ OVERFLOW  ← কিন্তু ২টি ঘর তো খালি!\n                            এটাই FALSE OVERFLOW\n\n\n[৩] CIRCULAR QUEUE — একই অবস্থায় F ঢোকাতে চাইলে\n\n          rear = (4 + 1) % 5 = 0  ← ঘুরে শুরুতে ফিরল\n\n                    ┌─────┐\n                ┌──▶│  F  │ 0 ◀── নতুন rear (আগের খালি ঘরেই বসল)\n                │   ├─────┤\n                │   │  -  │ 1\n                │   ├─────┤\n         wrap   │   │  C  │ 2 ◀── front\n         around │   ├─────┤\n                │   │  D  │ 3\n                │   ├─────┤\n                └───│  E  │ 4\n                    └─────┘\n\n          F → ✓ সফলভাবে ঢুকল, কোনো memory নষ্ট হলো না\n\n\n[৪] এক নজরে\n\n   Linear   : rear শেষে পৌঁছালেই শেষ  →  খালি ঘর অব্যবহৃত, false overflow\n   Circular : rear ঘুরে শুরুতে ফেরে   →  খালি ঘর পুনর্ব্যবহার, false overflow নেই",
+        "mistakes": [
+          [
+            "Circular Queue এ বেশি element ধরে",
+            "না — ধারণক্ষমতা একই (SIZE)। পার্থক্য হলো খালি হওয়া ঘরগুলো Circular এ আবার ব্যবহার করা যায়, Linear এ যায় না।"
+          ],
+          [
+            "Linear Queue এ overflow মানে queue সত্যিই ভর্তি",
+            "না — rear শেষ index এ থাকলেই overflow দেখায়, সামনে খালি ঘর থাকলেও। এটাই false overflow।"
+          ],
+          [
+            "Circular Queue এ full আর empty দুটোই front == rear",
+            "এই কারণেই আলাদা করা যায় না — তাই একটি ঘর ফাঁকা রাখা হয় ((rear+1)%SIZE == front মানে full) অথবা আলাদা count রাখা হয়।"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "",
+            "Linear Queue",
+            "Circular Queue"
+          ],
+          "rows": [
+            [
+              "Memory ব্যবহার",
+              "delete এর পর ঘর নষ্ট হয়",
+              "খালি ঘর পুনরায় ব্যবহার হয়"
+            ],
+            [
+              "rear শেষ index এ গেলে",
+              "আর insert করা যায় না",
+              "wrap করে ০ তে ফিরে আসে"
+            ],
+            [
+              "False overflow",
+              "❌ হয়",
+              "✅ হয় না"
+            ],
+            [
+              "সূত্র",
+              "rear = rear + 1",
+              "rear = (rear + 1) % SIZE"
+            ],
+            [
+              "Full শর্ত",
+              "rear == SIZE − 1",
+              "(rear + 1) % SIZE == front"
+            ],
+            [
+              "জায়গা ফেরাতে খরচ",
+              "সব element সরাতে O(n)",
+              "দরকারই নেই, O(1)"
+            ],
+            [
+              "OS এ ব্যবহার",
+              "কম",
+              "Round Robin ready queue, buffer, spool"
+            ]
+          ]
+        },
+        "mnemonic": "Linear = একমুখী রাস্তা, শেষ মাথায় গেলে থামতে হয় (পেছনের ফাঁকা জায়গা আর কাজে আসে না)। Circular = গোল রাস্তা, শেষ মাথা থেকেই আবার শুরুতে — % SIZE ই সেই মোড়।"
+      }
     }
   ]
 }

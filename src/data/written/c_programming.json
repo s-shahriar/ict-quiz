@@ -90,6 +90,112 @@
         "diagram": "// Separate definition (recommended)\nstruct Date {\n    int day, month, year;\n};\n\nstruct Student {\n    char name[50];\n    int  roll;\n    struct Date dob;   // nested struct\n};\n\nint main() {\n    struct Student s;\n    s.roll        = 101;\n    s.dob.day     = 15;   // nested access\n    s.dob.month   = 8;\n    s.dob.year    = 2000;\n\n    printf(\"%d/%d/%d\\n\",\n           s.dob.day, s.dob.month, s.dob.year);\n    // Output: 15/8/2000\n    return 0;\n}\n\nMemory layout:\n  Student s:\n  [name(50B)][roll(4B)][dob.day(4B)][dob.month(4B)][dob.year(4B)]",
         "mnemonic": "Nested struct = ঠিকানার মতো — বাড়ি এর ভেতরে ঘর, ঘরের ভেতরে জিনিস। s.dob.year = Student এর জন্মতারিখের বছর — ধাপে ধাপে access।"
       }
+    },
+    {
+      "id": "c_003",
+      "q": "Consider the following Java program and determine the integer value printed by the execution of the main() method. class Test { static int x = 5; public static int fun(int n) { if (n <= 1) { return 1; } x = x + 2; return fun(n - 1) + x; } public static void main(String[] args) { System.out.println(fun(3)); } }",
+      "tags": [
+        "recursion",
+        "static variable",
+        "call stack",
+        "evaluation order",
+        "dry run",
+        "output"
+      ],
+      "answer": {
+        "summary": [
+          "Output: 19",
+          "মূল কথা: x static — সব call এর জন্য একটাই ঘর, তাই এক call এ পাল্টালে বাকি সবাই সেই পাল্টানো মানই দেখে।",
+          "আসল ফাঁদ: `return fun(n-1) + x;` এ আগে fun(n-1) চলে (যা x কে আরও বাড়িয়ে দেয়), x পড়া হয় তার পরে — তাই x = 9, 7 নয়।"
+        ],
+        "points": [
+          "যে ৩টি concept বুঝলেই উত্তরটা বেরিয়ে আসে",
+          {
+            "sub": "১) static variable: x প্রতিটি call এ নতুন করে তৈরি হয় না — পুরো program এ একটাই x থাকে, সব call সেটিই ভাগ করে নেয়। তাই fun(3) এ x বাড়ালে fun(2)-ও সেই বাড়ানো মান পায়, আর ফেরার সময় আগের মান ফিরে আসে না।"
+          },
+          {
+            "sub": "২) Recursion এর ক্রম: fun(3) মাঝপথে থেমে fun(2) কে ডাকে, fun(2) থেমে fun(1) কে ডাকে। ভেতরের call পুরোপুরি শেষ হওয়ার পরেই বাইরের call এর বাকি কাজ চলে।"
+          },
+          {
+            "sub": "৩) Evaluation order: `fun(n-1) + x` এ Java বাম operand আগে হিসাব করে। মানে recursive call টা আগে সম্পূর্ণ চলে, তারপর x এর মান পড়া হয় — অর্থাৎ recursion থেকে ফেরার পরের x।"
+          },
+          "এই তিনটি একসাথে করলে: নিচে নামার সময় x বাড়তে বাড়তে ৯ হয়ে যায়, আর উপরে ফেরার সময় প্রতিটি call সেই ৯-ই পড়ে।",
+          "ধাপে ধাপে হিসাব",
+          {
+            "sub": "fun(3): n=3>1, তাই x = 5+2 = 7। এখন fun(2) কে ডাকল, x এখনো পড়েনি।"
+          },
+          {
+            "sub": "fun(2): n=2>1, তাই x = 7+2 = 9। এখন fun(1) কে ডাকল, x এখনো পড়েনি।"
+          },
+          {
+            "sub": "fun(1): n ≤ 1, তাই সরাসরি 1 ফেরত। x এখানে পাল্টায় না, x = 9 ই থাকে।"
+          },
+          {
+            "sub": "fun(2) এখন x পড়ল = 9 → ফেরত 1 + 9 = 10।"
+          },
+          {
+            "sub": "fun(3) এখন x পড়ল = 9 (এখনো 9, কেউ আর পাল্টায়নি) → ফেরত 10 + 9 = 19।"
+          },
+          "সবচেয়ে বেশি ভুল যেখানে হয়: fun(3) এ x কে 7 করা হয়েছিল বলে অনেকে শেষে 10 + 7 = 17 লেখে। কিন্তু ভেতরের fun(2) ইতিমধ্যে x কে 9 বানিয়ে ফেলেছে, আর x static বলে সেটা ফেরার সময় 7 এ ফিরে যায় না।",
+          "C তে একটি সতর্কতা: C ভাষায় `+` এর দুই পাশ কোন ক্রমে হিসাব হবে তা নির্দিষ্ট করা নেই (unspecified), তাই একই code C তে 17-ও দিতে পারে। Java তে ক্রমটি নিশ্চিতভাবে বাম থেকে ডান, তাই উত্তর সবসময় 19।"
+        ],
+        "diagram": "class Test {\n    static int x = 5;                 // সবার জন্য একটাই ঘর\n\n    public static int fun(int n) {\n        if (n <= 1) return 1;         // base case\n        x = x + 2;                    // ঢোকার সময় বাড়ায়\n        return fun(n - 1) + x;        // আগে বাম দিক, পরে x পড়া\n    }\n    public static void main(String[] a) { System.out.println(fun(3)); }\n}\n\n\n[১] static মানে কী — একটাই ঘর, সবাই ভাগ করে\n\n                 ┌──────────┐\n                 │ static x │  ← কারো নিজস্ব x নেই\n                 └──────────┘\n                  ▲    ▲    ▲\n                  │    │    │\n              fun(3) fun(2) fun(1)\n\n\n[২] নিচে নামা — x বাড়ছে, কিন্তু কোথাও x পড়া হচ্ছে না\n\n  fun(3)   n=3>1  →  x = 5 + 2 = 7\n           return fun(2) + x   ← x এখনো পড়েনি, আগে fun(2)\n              │\n              ▼\n  fun(2)   n=2>1  →  x = 7 + 2 = 9\n           return fun(1) + x   ← x এখনো পড়েনি, আগে fun(1)\n              │\n              ▼\n  fun(1)   n=1 ≤ 1  →  return 1     (x পাল্টায় না, x = 9)\n\n\n[৩] উপরে ফেরা — এখন x পড়া হচ্ছে, আর x এখন ৯\n\n  fun(1) = 1\n              │\n              ▼\n  fun(2) = 1  + x = 1  + 9 = 10      ← 7 নয়, 9\n              │\n              ▼\n  fun(3) = 10 + x = 10 + 9 = 19      ← 7 নয়, 9\n\n                Output: 19\n\n\n[৪] কেন 17 নয়\n\n  fun(3) নিজে x কে 7 করেছিল ঠিকই,\n  কিন্তু x পড়ার আগেই fun(2) সেটাকে 9 বানিয়ে দিয়েছে।\n  x static, তাই ফেরার সময় 7 এ ফিরে যায় না।\n\n\n[৫] x যদি static না হয়ে local হতো (তুলনা)\n\n  প্রতিটি call এর নিজের x = 5 থাকত, x = 5+2 = 7\n  fun(1) = 1\n  fun(2) = 1 + 7 = 8\n  fun(3) = 8 + 7 = 15        ← 19 নয়, কারণ ভাগাভাগি নেই",
+        "mistakes": [
+          [
+            "শেষে 10 + 7 = 17 লেখা",
+            "fun(3) x কে 7 করেছিল, কিন্তু x পড়ার আগেই ভেতরের fun(2) সেটাকে 9 করে ফেলেছে। x static বলে মান ফেরত আসে না।"
+          ],
+          [
+            "প্রতিটি call এর নিজের x আছে ভাবা",
+            "static variable প্রতি call এ তৈরি হয় না — পুরো program এ একটাই। নিজস্ব copy হতো যদি x local variable বা parameter হতো (তখন উত্তর হতো 15)।"
+          ],
+          [
+            "x আগে পড়ে তারপর recursive call চলে ভাবা",
+            "Java তে `fun(n-1) + x` এর বাম দিক আগে সম্পূর্ণ হয়। তাই x এর যে মান শেষে পড়া হয়, সেটা recursion শেষ হওয়ার পরের মান।"
+          ],
+          [
+            "base case এও x বাড়ে ভাবা",
+            "n ≤ 1 হলে `return 1` এ সাথে সাথে বেরিয়ে যায়, `x = x + 2` লাইনটা চলেই না। তাই x সর্বোচ্চ 9 পর্যন্তই যায়।"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "Call",
+            "ঢোকার সময় x",
+            "x = x + 2 এর পর",
+            "ভেতরের call দিল",
+            "পড়ার সময় x",
+            "ফেরত মান"
+          ],
+          "rows": [
+            [
+              "fun(3)",
+              "5",
+              "7",
+              "fun(2) = 10",
+              "9",
+              "10 + 9 = 19"
+            ],
+            [
+              "fun(2)",
+              "7",
+              "9",
+              "fun(1) = 1",
+              "9",
+              "1 + 9 = 10"
+            ],
+            [
+              "fun(1)",
+              "9",
+              "— (base case)",
+              "—",
+              "—",
+              "1"
+            ]
+          ]
+        },
+        "mnemonic": "নামার সময় x বাড়ে, ওঠার সময় x পড়া হয় — আর static বলে ঘর একটাই, তাই সবাই শেষ মান ৯-ই পায়। 5 → 7 → 9, তারপর 1 → 10 → 19।"
+      }
     }
   ]
 }

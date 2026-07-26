@@ -2578,6 +2578,121 @@
         "diagram": "HIGH AVAILABILITY CLUSTER — node মরলেও service চলে\n\n          [ Clients ]\n               │ Virtual IP (VIP) — সবসময় active node-এ\n               ▼\n   ┌──────────────┐   heartbeat    ┌──────────────┐\n   │   Node A     │◄──────────────►│   Node B     │\n   │  (Active)    │  \"বেঁচে আছো?\"   │  (Passive /  │\n   │ service চালু  │                │   standby)   │\n   └──────┬───────┘                └──────┬───────┘\n          └───────────┬───────────────────┘\n                      ▼\n            [ Shared Storage (SAN/LUN) ]\n            দুই node একই data দেখে\n\n  Node A 💥 মরলে → heartbeat বন্ধ → Node B\n  VIP + service নিয়ে নেয় (failover)\n\n────────────────────────────────────────\n  Active-Passive = একটা চলে, অন্যটা standby\n  Active-Active  = দুটোই চলে, load ভাগ করে\n\nনোট: \"Split-brain\" = heartbeat link ছিঁড়লে দুই node-ই\nনিজেকে active ভাবে → quorum/fencing দিয়ে ঠেকানো হয়।",
         "mnemonic": "Heartbeat থামলে standby node VIP+service নেয় (failover); shared storage-এ data এক, VIP-এ client এক।"
       }
+    },
+    {
+      "id": "server_035",
+      "q": "A startup company wants to launch a new web application. They do not want to manage any underlying hardware, operating systems, or even the runtime environment; they only want to focus on writing and deploying their code. Based on your understanding of Cloud Service Models, which model (IaaS, PaaS, or SaaS) is most appropriate for them? Provide two real-world examples of platforms that provide this specific type of service.",
+      "tags": [
+        "cloud",
+        "PaaS",
+        "IaaS",
+        "SaaS",
+        "cloud service models",
+        "shared responsibility"
+      ],
+      "answer": {
+        "summary": [
+          "উত্তর: PaaS (Platform as a Service)।",
+          "PaaS এ provider hardware, networking, storage, OS, middleware ও runtime — সবই manage করে; startup শুধু নিজের application code ও data নিয়ে থাকে।",
+          "Real-world উদাহরণ: Google App Engine এবং Heroku (এছাড়া AWS Elastic Beanstalk, Azure App Service)।"
+        ],
+        "points": [
+          "প্রশ্নের শর্তগুলো মিলিয়ে দেখা: hardware manage করবে না, OS manage করবে না, runtime environment-ও manage করবে না, শুধু code লিখে deploy করবে — ঠিক এই তিনটি ছেড়ে দেওয়াই PaaS এর সংজ্ঞা।",
+          "PaaS কী করে দেয়",
+          {
+            "sub": "Provider এর দায়িত্ব: physical hardware, networking, storage, virtualization, operating system, middleware, runtime (যেমন Node.js/Java/Python এর নির্দিষ্ট version), patching ও auto-scaling।"
+          },
+          {
+            "sub": "Startup এর দায়িত্ব: শুধু application code এবং data — `git push` করলেই platform build করে চালিয়ে দেয়।"
+          },
+          {
+            "sub": "উদাহরণ: Google App Engine, Heroku, AWS Elastic Beanstalk, Azure App Service, Render, Vercel।"
+          },
+          "কেন IaaS নয়",
+          {
+            "sub": "IaaS এ provider শুধু virtualized hardware দেয় — VM, storage, network। তার উপরের সবকিছু গ্রাহকের।"
+          },
+          {
+            "sub": "তাহলে startup কে নিজেই OS install ও patch করতে হতো, runtime (Node/Java/Python) setup করতে হতো, web server configure ও scaling সামলাতে হতো।"
+          },
+          {
+            "sub": "কিন্তু প্রশ্নে স্পষ্ট বলা আছে তারা OS বা runtime environment কোনোটাই manage করতে চায় না — তাই IaaS বাদ। উদাহরণ: AWS EC2, Azure Virtual Machines, Google Compute Engine।"
+          },
+          "কেন SaaS নয়",
+          {
+            "sub": "SaaS হলো provider এর তৈরি করা সম্পূর্ণ, চলমান একটি software — গ্রাহক শুধু browser দিয়ে সেটি ব্যবহার করে।"
+          },
+          {
+            "sub": "SaaS এ নিজের লেখা code deploy করার কোনো সুযোগই নেই — platform টি তৈরি করার জন্য নয়, ব্যবহারের জন্য।"
+          },
+          {
+            "sub": "কিন্তু startup নিজেদের একটি নতুন web application বানাচ্ছে, তৈরি software ব্যবহার করছে না — তাই SaaS বাদ। উদাহরণ: Gmail, Salesforce, Google Workspace, Dropbox।"
+          },
+          "মনে রাখার সূত্র: IaaS = কাঁচা অবকাঠামো ভাড়া, PaaS = তৈরি চালানোর পরিবেশ, SaaS = তৈরি software। যত উপরে ওঠা যায়, নিয়ন্ত্রণ কমে কিন্তু ঝামেলাও কমে।"
+        ],
+        "diagram": "কে কোন স্তর manage করে (▓ = আপনি, ░ = Cloud Provider)\n\n                On-Premise     IaaS          PaaS          SaaS\n              ┌────────────┬────────────┬────────────┬────────────┐\n Application  │    ▓▓▓▓    │    ▓▓▓▓    │    ▓▓▓▓    │    ░░░░    │\n Data         │    ▓▓▓▓    │    ▓▓▓▓    │    ▓▓▓▓    │    ░░░░    │\n              ├────────────┼────────────┼────────────┼────────────┤\n Runtime      │    ▓▓▓▓    │    ▓▓▓▓    │    ░░░░    │    ░░░░    │\n Middleware   │    ▓▓▓▓    │    ▓▓▓▓    │    ░░░░    │    ░░░░    │\n OS           │    ▓▓▓▓    │    ▓▓▓▓    │    ░░░░    │    ░░░░    │\n              ├────────────┼────────────┼────────────┼────────────┤\n Virtualiz.   │    ▓▓▓▓    │    ░░░░    │    ░░░░    │    ░░░░    │\n Servers      │    ▓▓▓▓    │    ░░░░    │    ░░░░    │    ░░░░    │\n Storage      │    ▓▓▓▓    │    ░░░░    │    ░░░░    │    ░░░░    │\n Networking   │    ▓▓▓▓    │    ░░░░    │    ░░░░    │    ░░░░    │\n              └────────────┴────────────┴────────────┴────────────┘\n                                             ▲\n                                             │\n                              startup এর চাহিদা এখানেই মেলে:\n                              Runtime, OS, hardware — কিছুই তাদের নয়,\n                              শুধু Application ও Data তাদের\n\n\nকেন বাকি দুটি নয়\n\n   IaaS ─▶ VM তো পেলেন, কিন্তু OS install/patch, runtime setup,\n           web server config, scaling — সব আপনাকেই করতে হবে\n           ✗ তারা OS ও runtime manage করতে চায় না\n\n   SaaS ─▶ তৈরি software, শুধু login করে ব্যবহার\n           নিজের code দেওয়ার কোনো জায়গাই নেই\n           ✗ তারা নিজেরাই নতুন application বানাচ্ছে\n\n   PaaS ─▶ code push করুন, বাকিটা platform বুঝে নেবে  ✓\n\n\nপিৎজার তুলনায় মনে রাখুন\n\n   IaaS = রান্নাঘর ভাড়া নিলেন (চুলা আছে, রান্না আপনার)\n   PaaS = কাঁচা পিৎজা বেস দেওয়া হলো (টপিং দিয়ে বেক করতে দিন)\n   SaaS = গরম পিৎজা টেবিলে (শুধু খান)",
+        "mistakes": [
+          [
+            "PaaS আর IaaS প্রায় একই",
+            "না — সীমারেখা হলো OS ও runtime। IaaS এ ওগুলো গ্রাহকের দায়িত্ব, PaaS এ provider এর। প্রশ্নে এই দুটি ছাড়ার কথা বলা আছে বলেই উত্তর PaaS।"
+          ],
+          [
+            "নিজের application বানানো মানেই SaaS",
+            "উল্টো — যিনি বানাচ্ছেন তিনি PaaS/IaaS এর গ্রাহক। তার তৈরি application টি শেষ ব্যবহারকারীর কাছে SaaS হিসেবে পৌঁছায়।"
+          ],
+          [
+            "PaaS এ কোনো নিয়ন্ত্রণ থাকে না",
+            "Application ও data পুরোপুরি আপনার। শুধু OS-level নিয়ন্ত্রণ থাকে না — বিশেষ কোনো OS tuning দরকার হলে তখন IaaS লাগে।"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "",
+            "IaaS",
+            "PaaS",
+            "SaaS"
+          ],
+          "rows": [
+            [
+              "আপনি যা পান",
+              "কাঁচা অবকাঠামো (VM, storage, network)",
+              "তৈরি চালানোর পরিবেশ (OS + runtime সহ)",
+              "তৈরি সম্পূর্ণ software"
+            ],
+            [
+              "আপনি manage করেন",
+              "OS, runtime, middleware, app, data",
+              "শুধু app ও data",
+              "কিছুই না, শুধু ব্যবহার"
+            ],
+            [
+              "Provider manage করে",
+              "hardware, network, virtualization",
+              "উপরের সব + OS, runtime, scaling",
+              "সবকিছু"
+            ],
+            [
+              "ব্যবহারকারী",
+              "Sysadmin / DevOps",
+              "Developer",
+              "শেষ ব্যবহারকারী"
+            ],
+            [
+              "উদাহরণ",
+              "AWS EC2, Azure VM, GCE",
+              "Google App Engine, Heroku",
+              "Gmail, Salesforce, Dropbox"
+            ],
+            [
+              "এই প্রশ্নে",
+              "❌ OS/runtime নিজে সামলাতে হতো",
+              "✅ ঠিক মিলে যায়",
+              "❌ নিজের code deploy করার সুযোগ নেই"
+            ]
+          ]
+        },
+        "mnemonic": "নিচ থেকে উপরে — IaaS জমি, PaaS ভিত্তি ও কাঠামো তোলা বাড়ি, SaaS সাজানো-গোছানো ফ্ল্যাট। \"শুধু code লিখব\" শুনলেই উত্তর PaaS।"
+      }
     }
   ]
 }

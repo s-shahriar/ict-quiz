@@ -400,6 +400,127 @@
         },
         "mnemonic": "Reflected = আয়না: তুমি যা পাঠাও server তাই ফেরত দেখায় (link এ click লাগে, এক victim, জমা থাকে না)। Stored = ফাঁদ পেতে রাখা: attacker একবার DB তে script রেখে দেয়, এরপর যে-ই পেজ খুলবে সে-ই ফাঁদে পড়বে (click লাগে না, সবাই আক্রান্ত, persistent)।"
       }
+    },
+    {
+      "id": "sec_007",
+      "q": "Explain the operational difference between Hashing and Encryption.",
+      "tags": [
+        "hashing",
+        "encryption",
+        "one-way",
+        "two-way",
+        "SHA-256",
+        "AES",
+        "password storage",
+        "integrity"
+      ],
+      "answer": {
+        "summary": [
+          "Encryption দুই-মুখী (reversible): key দিয়ে plaintext → ciphertext, আবার key দিয়ে হুবহু ফেরত আনা যায়।",
+          "Hashing এক-মুখী (irreversible): input → নির্দিষ্ট দৈর্ঘ্যের digest, ফেরার কোনো operation নেই।",
+          "তাই উদ্দেশ্যও আলাদা — Encryption গোপন রাখে (confidentiality), Hashing অবিকৃত কিনা যাচাই করে (integrity/verification)।"
+        ],
+        "points": [
+          "মূল operational পার্থক্য: Encryption এ একটি বিপরীত operation (decrypt) সংজ্ঞায়িত আছে; Hashing এ সেটাই নেই — digest থেকে input বের করার কোনো পথ নেই, শুধু অনুমান করে re-hash করে মেলানো যায়।",
+          "Encryption — কীভাবে চলে",
+          {
+            "sub": "Key লাগে। Symmetric (AES): encrypt ও decrypt একই key দিয়ে। Asymmetric (RSA): public key encrypt করে, জোড়া private key decrypt করে।"
+          },
+          {
+            "sub": "Output এর দৈর্ঘ্য input এর সাথে বাড়ে — ১ MB file encrypt করলে ciphertext-ও প্রায় ১ MB।"
+          },
+          {
+            "sub": "একই plaintext দুবার encrypt করলে সাধারণত ভিন্ন ciphertext হয়, কারণ প্রতিবার আলাদা IV/nonce মেশানো হয়।"
+          },
+          {
+            "sub": "ব্যবহার: যেখানে data পরে আবার পড়তে হবে — HTTPS/TLS traffic, disk encryption, সংরক্ষিত card বা account তথ্য।"
+          },
+          "Hashing — কীভাবে চলে",
+          {
+            "sub": "Key লাগে না। Password এর ক্ষেত্রে salt (প্রতি ব্যবহারকারীর আলাদা random মান, digest এর পাশে জমা থাকে) যোগ করা হয়; sender যাচাই করতে হলে HMAC এ key ব্যবহার হয়।"
+          },
+          {
+            "sub": "Output এর দৈর্ঘ্য নির্দিষ্ট — SHA-256 এ input যাই হোক (২ অক্ষর বা ১ GB video), digest সবসময় 256 bit।"
+          },
+          {
+            "sub": "একই input সবসময় একই digest দেয় (deterministic)। এই কারণেই আগে থেকে বানানো rainbow table কাজ করে, আর সেটা ঠেকাতেই salt দরকার।"
+          },
+          {
+            "sub": "ব্যবহার: password সংরক্ষণ, file/download এর integrity checksum, digital signature (আগে hash, পরে sign), blockchain, git commit id।"
+          },
+          "Password যাচাইয়ের ব্যবহারিক ফল: server কখনো আসল password জানে না — signup এ digest জমা রাখে, login এ যা লেখা হলো তা আবার hash করে দুই digest মেলায়। তাই DB চুরি হলেও password সরাসরি পাওয়া যায় না।",
+          "Password এর জন্য SHA-256 নয়, bcrypt / argon2 / PBKDF2 ব্যবহার করতে হয় — এগুলো ইচ্ছাকৃতভাবে ধীর, ফলে অনুমান করে করে মেলানোর (brute force) খরচ অনেক বেড়ে যায়।"
+        ],
+        "diagram": "[১] ENCRYPTION — দুই-মুখী (reversible)\n\n   \"Bank@123\"                                    \"Bank@123\"\n        │                                              ▲\n        ▼                                              │\n   ┌─────────┐   ciphertext                      ┌─────────┐\n   │ ENCRYPT │──▶ \"9f2Ka+Lm...\" ──── network ───▶│ DECRYPT │\n   │  (AES)  │                                   │  (AES)  │\n   └────▲────┘                                   └────▲────┘\n        │                                             │\n     [ KEY ]                                       [ KEY ]\n        └──────── একই key ফিরিয়ে আনতে পারে ──────────┘\n\n   উদ্দেশ্য: CONFIDENTIALITY — data পরে আবার পড়তে হবে\n\n\n[২] HASHING — এক-মুখী (irreversible)\n\n   \"Bank@123\"\n        │\n        ▼\n   ┌──────────┐\n   │ SHA-256  │──▶ 6f4b2c...e91   (সবসময় ৬৪ hex char)\n   └──────────┘         │\n        ▲               │\n        │               ▼\n        └────  ╳╳╳  ────┘  ← ফেরার কোনো operation নেই\n              (no decrypt)\n\n   উদ্দেশ্য: INTEGRITY / VERIFICATION — আসলটা আর ফেরত লাগবে না\n\n\n[৩] Password যাচাই — hashing কেন যথেষ্ট\n\n   Signup:  \"Bank@123\" ──SHA-256──▶ 6f4b2c...e91 ──▶ DB\n                                                     (আসল password কোথাও নেই)\n\n   Login:   ব্যবহারকারী লিখল \"Bank@123\"\n                     │\n                     ├──SHA-256──▶ 6f4b2c...e91\n                     │                   │\n                     │              compare (মিলিয়ে দেখা)\n                     │                   ▼\n                     └──────────▶  DB: 6f4b2c...e91  → মিলেছে, login ok\n\n   DB চুরি হলেও শুধু digest পাওয়া যায়, password নয়\n\n\n[৪] Output length\n\n   Encryption:  ৫ byte input   →  ~১৬ byte ciphertext\n                ১ MB file      →  ~১ MB ciphertext      (input বাড়লে output বাড়ে)\n\n   Hashing:     \"hi\"           →  ৬৪ hex char (256 bit)\n                ১ GB video     →  ৬৪ hex char (256 bit)  (input যাই হোক, একই দৈর্ঘ্য)\n\n\n[৫] এক নজরে\n\n   Encryption = তালা          → চাবি আছে, তাই আবার খোলা যায়\n   Hashing    = আঙুলের ছাপ   → ছাপ থেকে মানুষ বানানো যায় না, শুধু মেলানো যায়",
+        "mistakes": [
+          [
+            "Hashing হলো এক ধরনের encryption",
+            "না — encryption এর সংজ্ঞাতেই decrypt operation থাকতে হয়। Hashing এ সেটা নেই, তাই এটা encryption নয়।"
+          ],
+          [
+            "Hash কে decrypt করে password বের করা যায়",
+            "কোনো decrypt operation নেই। আক্রমণকারী শুধু অনুমান করে করে hash মিলিয়ে দেখে (rainbow table / brute force) — এজন্যই salt এবং ধীর algorithm দরকার।"
+          ],
+          [
+            "Password রাখতে MD5 বা SHA-256 যথেষ্ট",
+            "এগুলো খুব দ্রুত, তাই সেকেন্ডে কোটি বার অনুমান করা যায় (MD5 এর collision-ও ভাঙা)। Password এ bcrypt / argon2 / PBKDF2 ব্যবহার করতে হয়।"
+          ],
+          [
+            "Password DB তে encrypt করে রাখাই ভালো",
+            "না — encrypt করলে key হারালে বা চুরি হলে সব password উদ্ধার হয়ে যায়। Password কখনো ফেরত পড়ার দরকার নেই, শুধু মেলানোর দরকার — তাই hashing-ই সঠিক।"
+          ]
+        ],
+        "table": {
+          "headers": [
+            "",
+            "Encryption",
+            "Hashing"
+          ],
+          "rows": [
+            [
+              "দিক",
+              "দুই-মুখী (reversible)",
+              "এক-মুখী (irreversible)"
+            ],
+            [
+              "Key",
+              "লাগে (symmetric / asymmetric)",
+              "লাগে না (salt বা HMAC key ঐচ্ছিক)"
+            ],
+            [
+              "Output length",
+              "input এর সাথে বাড়ে",
+              "নির্দিষ্ট (SHA-256 → সবসময় 256 bit)"
+            ],
+            [
+              "উল্টো করা",
+              "Decrypt দিয়ে হুবহু ফেরত",
+              "কোনো decrypt নেই — শুধু guess করে compare"
+            ],
+            [
+              "উদ্দেশ্য",
+              "Confidentiality (গোপন রাখা)",
+              "Integrity / verification (অবিকৃত কিনা দেখা)"
+            ],
+            [
+              "একই input → একই output?",
+              "না (IV/nonce এর কারণে ভিন্ন)",
+              "হ্যাঁ (তাই salt লাগে)"
+            ],
+            [
+              "Algorithm",
+              "AES, RSA, ChaCha20",
+              "SHA-256, SHA-3, bcrypt, argon2"
+            ],
+            [
+              "ব্যবহার",
+              "HTTPS/TLS, disk encryption, card data",
+              "Password সংরক্ষণ, file checksum, digital signature"
+            ]
+          ]
+        },
+        "mnemonic": "Encryption = তালা — চাবি থাকলে আবার খোলা যায়। Hashing = আঙুলের ছাপ — ছাপ দেখে মানুষ বানানো যায় না, শুধু মিলিয়ে দেখা যায়।"
+      }
     }
   ]
 }
