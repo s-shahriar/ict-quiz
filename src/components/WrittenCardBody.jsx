@@ -7,6 +7,15 @@ export function WrittenCardBody({ a, topicColor }) {
   return (
     <div className="written-card-body">
 
+      {/* Code snippet the question refers to (if provided) — kept out of the
+          question text itself so the collapsed header stays readable. */}
+      {a.code && (
+        <div className="written-code-wrap">
+          <span className="written-block-label">{a.codeLang || 'Code'}</span>
+          <pre className="written-code-pre"><code>{a.code}</code></pre>
+        </div>
+      )}
+
       {/* Question image (if provided) */}
       {a.image && (
         <div className="written-question-img-wrap">

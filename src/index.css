@@ -1767,6 +1767,25 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   box-shadow: inset 0 1px 4px rgba(0,0,0,0.06);
 }
 
+/* Code snippet (question source listing) — same shell as the diagram, but
+   tinted and rule-marked so code reads as code, not as an ASCII drawing. */
+.written-code-wrap { display: flex; flex-direction: column; }
+.written-code-pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; line-height: 1.65;
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent, #22d3ee) 5%, var(--elevated));
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--c, var(--accent, #22d3ee));
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 4;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.06);
+}
+.written-code-pre code { font: inherit; color: inherit; background: none; padding: 0; }
+
 /* Tables */
 .written-mistakes-wrap { display: flex; flex-direction: column; }
 .written-table-scroll { overflow-x: auto; border-radius: 10px; }
@@ -1851,6 +1870,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   .written-page { padding: 28px 24px 90px; }
   .practice-page { padding: 28px 24px 90px; }
   .written-diagram-pre { font-size: 0.82rem; }
+  .written-code-pre { font-size: 0.84rem; }
   .written-table { font-size: 0.89rem; }
   .mode-cards { grid-template-columns: 1fr 1fr; }
   .mode-card-written { grid-column: 1 / -1; }
