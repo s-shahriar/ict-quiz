@@ -53,5 +53,12 @@
     "information_security": 1,
     "machine_learning": 1,
     "software_engineering": 1
+  },
+  "code": {
+    "array": 6,
+    "matrix": 2,
+    "number": 5,
+    "sorting_searching": 2,
+    "string": 5
   }
 }

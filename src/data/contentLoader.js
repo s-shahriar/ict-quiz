@@ -4,6 +4,7 @@ import { TOPICS } from './index.js'
 import { WRITTEN_DATA } from './written/index.js'
 import { EXTRA_DATA } from './extra/index.js'
 import { VIVA_DATA } from './viva/index.js'
+import { CODE_DATA } from './code/index.js'
 
 // On-demand content: Q&A items live in Supabase and are fetched per module the
 // first time that route needs them, then cached for the session and written
@@ -17,6 +18,7 @@ const STORE = {
   written: (slug) => WRITTEN_DATA[slug],
   extra: (slug) => EXTRA_DATA[slug],
   viva: (slug) => VIVA_DATA[slug],
+  code: (slug) => CODE_DATA[slug],
 }
 export const CONTENT_MODULES = Object.keys(STORE)
 

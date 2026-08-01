@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
-import { Zap, Brain, PenLine, Star, Bookmark, Dumbbell, Sparkles, Mic } from 'lucide-react'
+import { Zap, Brain, PenLine, Star, Bookmark, Dumbbell, Sparkles, Mic, Code2 } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { WRITTEN_TOPICS } from '../data/written/index.js'
 import { EXTRA_TOPICS } from '../data/extra/index.js'
 import { VIVA_TOPICS } from '../data/viva/index.js'
+import { CODE_TOPICS } from '../data/code/index.js'
 import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
@@ -13,6 +14,7 @@ import GroupSearch from './GroupSearch.jsx'
 import WrittenSearch from './WrittenSearch.jsx'
 import ExtraSearch from './ExtraSearch.jsx'
 import VivaSearch from './VivaSearch.jsx'
+import CodeSearch from './CodeSearch.jsx'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
@@ -28,24 +30,26 @@ export default function HomeScreen() {
     search: searchParams.get('search') || '',
   }))
   const [module, setModule] = useState(
-    ['written', 'practice', 'extra', 'viva'].includes(restored.module) ? restored.module : 'mcq'
+    ['written', 'practice', 'extra', 'viva', 'code'].includes(restored.module) ? restored.module : 'mcq'
   )
   const [mcqSearching, setMcqSearching] = useState(false)
   const [writtenSearching, setWrittenSearching] = useState(false)
   const [extraSearching, setExtraSearching] = useState(false)
   const [vivaSearching, setVivaSearching] = useState(false)
+  const [codeSearching, setCodeSearching] = useState(false)
 
   const topics = TOPICS
   const writtenTopics = WRITTEN_TOPICS
   const extraTopics = EXTRA_TOPICS
   const vivaTopics = VIVA_TOPICS
+  const codeTopics = CODE_TOPICS
 
   // Load ONLY the active tab's module (for its search) — never all modules.
-  const contentModule = ['mcq', 'written', 'extra', 'viva'].includes(module) ? module : null
+  const contentModule = ['mcq', 'written', 'extra', 'viva', 'code'].includes(module) ? module : null
   useModuleReady(contentModule)
 
   // Counts come straight from the progress sets by uid prefix — uids are
-  // module-scoped (mcq:/written:/extra:/viva:), so no content needs loading and
+  // module-scoped (mcq:/written:/extra:/viva:/code:), so no content needs loading and
   // one module's flags can't inflate another's card.
   const countPrefix = (set, prefix) => {
     let n = 0
@@ -60,6 +64,8 @@ export default function HomeScreen() {
   const totalExtraImportant   = countPrefix(important, 'extra:')
   const totalVivaNailed       = countPrefix(mastered, 'viva:')
   const totalVivaImportant    = countPrefix(important, 'viva:')
+  const totalCodeNailed       = countPrefix(mastered, 'code:')
+  const totalCodeImportant    = countPrefix(important, 'code:')
   // Practice content is bundled; its important flags are keyed by command id.
   const totalPracticeImportant = countPrefix(important, 'practice')
 
@@ -87,6 +93,9 @@ export default function HomeScreen() {
           </button>
           <button className={`module-btn${module === 'viva' ? ' active' : ''}`} onClick={() => setModule('viva')}>
             <Mic size={15} /> Viva
+          </button>
+          <button className={`module-btn${module === 'code' ? ' active' : ''}`} onClick={() => setModule('code')}>
+            <Code2 size={15} /> Code
           </button>
         </div>
       </header>
@@ -271,6 +280,53 @@ export default function HomeScreen() {
         </>
       )}
 
+      {module === 'code' && (
+        <>
+          <CodeSearch onActiveChange={setCodeSearching} initialQuery={restored.module === 'code' ? restored.search : ''} />
+        </>
+      )}
+
+      {module === 'code' && !codeSearching && (
+        <>
+          <div className="home-action-row">
+            <button className="action-card nailed-card" onClick={() => navigate('/code/nailed')}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--nailed">
+                <Star size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Nailed It</div>
+                <div className="ac-sub">{totalCodeNailed} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--nailed">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+
+            <button className="action-card important-card" onClick={() => navigate('/code/important')}>
+              <div className="ac-shine" aria-hidden="true" />
+              <div className="ac-icon-wrap ac-icon-wrap--important">
+                <Bookmark size={20} fill="currentColor" className="ac-icon" />
+              </div>
+              <div className="ac-body">
+                <div className="ac-label">Important</div>
+                <div className="ac-sub">{totalCodeImportant} saved</div>
+              </div>
+              <div className="ac-footer ac-footer--important">
+                View <span className="ac-arrow">→</span>
+              </div>
+            </button>
+          </div>
+
+          <p className="section-label">Choose a Category</p>
+          <main className="topics-grid">
+            {codeTopics.map(t => (
+              <CodeCategoryCard key={t.id} topic={t} onClick={() => navigate('/code?topic=' + t.id)} />
+            ))}
+          </main>
+        </>
+      )}
+
       {module === 'viva' && (
         <>
           <VivaSearch onActiveChange={setVivaSearching} initialQuery={restored.module === 'viva' ? restored.search : ''} />
@@ -372,6 +428,23 @@ function ExtraCategoryCard({ topic, onClick }) {
       <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
         <Sparkles size={11} />
         {topic.extraCount}
+      </span>
+    </button>
+  )
+}
+
+function CodeCategoryCard({ topic, onClick }) {
+  const Icon = topic.icon
+  return (
+    <button className="topic-card written-category-card" onClick={onClick} style={{ '--c': topic.color }}>
+      <div className="tc-icon"><Icon size={20} /></div>
+      <div className="tc-body">
+        <span className="tc-name">{topic.name}</span>
+        <span className="tc-count">{topic.codeCount} Java program{topic.codeCount !== 1 ? 's' : ''}</span>
+      </div>
+      <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
+        <Code2 size={11} />
+        {topic.codeCount}
       </span>
     </button>
   )

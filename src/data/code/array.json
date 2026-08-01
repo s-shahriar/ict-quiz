@@ -1,0 +1,181 @@
+{
+  "category": "array",
+  "questions": [
+    {
+      "id": "code_arr_001",
+      "q": "Write a Java program to find the common elements between two arrays (each common value should be printed only once).",
+      "tags": [
+        "array",
+        "common elements",
+        "intersection",
+        "nested loop",
+        "flag"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class CommonElements {\n\n    public static void main(String[] args) {\n\n        int[] a = {4, 9, 5, 1, 7};\n        int[] b = {9, 4, 9, 8, 4};\n\n        System.out.print(\"Common: \");\n\n        for (int i = 0; i < a.length; i++) {\n\n            // এই মানটি কি আগেই ছাপানো হয়ে গেছে?\n            boolean printed = false;\n            for (int k = 0; k < i; k++) {\n                if (a[k] == a[i]) {\n                    printed = true;\n                }\n            }\n            if (printed) {\n                continue;\n            }\n\n            // b-এর ভেতরে a[i] আছে কি না\n            boolean found = false;\n            for (int j = 0; j < b.length; j++) {\n                if (a[i] == b[j]) {\n                    found = true;\n                }\n            }\n\n            if (found) {\n                System.out.print(a[i] + \" \");\n            }\n        }\n    }\n}\n\n/*  Output:\n    Common: 4 9                                    */",
+        "summary": [
+          "a-এর প্রতিটি মান নিয়ে b-এর পুরো array ঘুরে দেখা হয় — মিলে গেলে সেটি common।",
+          "একই মান দুবার যেন না ছাপে, তাই প্রতিবার আগে দেখে নেওয়া হয় ওই মানটি a-এর আগের কোনো ঘরে ছিল কি না।",
+          "দুটি nested loop — বাইরের loop a-এর উপর, ভেতরের loop b-এর উপর। এটাই এই module-এর সবচেয়ে বেশি ব্যবহৃত গঠন।"
+        ],
+        "points": [
+          "বাইরের loop (i): a-এর প্রতিটি ঘরে একবার করে যায়।",
+          "প্রথম ভেতরের loop (k): a[i] মানটি a-এর 0 থেকে i−1 পর্যন্ত আগের কোনো ঘরে ছিল কি না দেখে। থাকলে printed = true হয় এবং continue দিয়ে এই ঘরটি বাদ দেওয়া হয় — এতেই duplicate ছাপা বন্ধ হয়।",
+          "দ্বিতীয় ভেতরের loop (j): b-এর প্রতিটি ঘরের সাথে a[i] মেলায়। একবার মিললেই found = true।",
+          "loop শেষ হওয়ার পর found দেখে সিদ্ধান্ত — এই \"আগে পুরোটা খুঁজি, তারপর সিদ্ধান্ত নিই\" ধরনটাই flag pattern।",
+          "break না দিয়ে পুরো loop চলতে দেওয়া হয়েছে ইচ্ছে করেই — কম line, মনে রাখা সহজ। গতি এখানে বিবেচ্য নয়।",
+          "একই গঠন যেখানে ফিরে আসবে: found flag → P4 (Missing Number), P12 (Prime); printed গার্ড → P3 (Remove Duplicates), P9 (Character Frequency)।"
+        ],
+        "diagram": "a = [4, 9, 5, 1, 7]      b = [9, 4, 9, 8, 4]\n\ni=0  a[0]=4  আগে ছিল? না\n             b-তে খুঁজি → b[1]=4 ✓   found → ছাপাও  4\ni=1  a[1]=9  আগে ছিল? না\n             b-তে খুঁজি → b[0]=9 ✓   found → ছাপাও  9\ni=2  a[2]=5  আগে ছিল? না\n             b-তে খুঁজি → নেই        ✗ বাদ\ni=3  a[3]=1  আগে ছিল? না\n             b-তে খুঁজি → নেই        ✗ বাদ\ni=4  a[4]=7  আগে ছিল? না\n             b-তে খুঁজি → নেই        ✗ বাদ\n\nOutput ▸ Common: 4 9\n\nb-তে 9 ও 4 দুবার করে আছে, তবু একবারই ছেপেছে —\nকারণ আমরা a-এর দিক থেকে ঘুরছি, b-এর দিক থেকে নয়।",
+        "mnemonic": "দুই array = দুই loop। বাইরের হাতে মান, ভেতরের চোখে খোঁজা — \"পেলাম কি?\" (found)। আর ছাপার আগে একবার পেছনে তাকাও: \"এটা কি আগেই ছেপেছি?\" (printed)।"
+      }
+    },
+    {
+      "id": "code_arr_002",
+      "q": "Write a Java program to find the largest and the second largest element in an array without sorting it.",
+      "tags": [
+        "array",
+        "second largest",
+        "scan",
+        "maximum"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class SecondLargest {\n\n    public static void main(String[] args) {\n\n        int[] arr = {12, 35, 1, 10, 35, 2};\n\n        // ধাপ ১ — সবচেয়ে বড়টি বের করি\n        int largest = arr[0];\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] > largest) {\n                largest = arr[i];\n            }\n        }\n\n        // ধাপ ২ — largest বাদ দিয়ে আবার সবচেয়ে বড়টি\n        int second = -1;\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] > second && arr[i] != largest) {\n                second = arr[i];\n            }\n        }\n\n        System.out.println(\"Largest : \" + largest);\n        System.out.println(\"Second  : \" + second);\n    }\n}\n\n/*  Output:\n    Largest : 35\n    Second  : 12                                   */",
+        "summary": [
+          "একবারে দুটো ধরার চেষ্টা না করে দুইবার scan করা হয় — প্রথমবার largest, দ্বিতীয়বার largest ছাড়া বাকিদের মধ্যে largest।",
+          "এতে duplicate (এখানে 35 দুবার) নিজে থেকেই সামলে যায়, কারণ দ্বিতীয় loop-এ arr[i] != largest শর্ত দেওয়া আছে।",
+          "দুই-loop পদ্ধতি ধীর হলেও logic এত সোজা যে পরীক্ষার হলে ভুল হয় না।"
+        ],
+        "points": [
+          "শুরুতে largest = arr[0] ধরা হয় — খালি হাতে শুরু না করে প্রথম ঘরটিকেই ধরে নেওয়া নিরাপদ (arr[0] সবসময় আছে)।",
+          "প্রথম loop: কেউ largest-এর চেয়ে বড় হলেই largest বদলে যায় — এটিই \"সেরা রাখা\" (best-so-far) pattern।",
+          "দ্বিতীয় loop: second শুরু হয় −1 দিয়ে, অর্থাৎ \"এখনো কিছু পাইনি\"। শর্ত দুটি — arr[i] অবশ্যই second-এর চেয়ে বড় হতে হবে, এবং largest হওয়া চলবে না।",
+          "arr[i] != largest শর্তটাই আসল চাল: 35 আবার এলেও সে বাদ পড়ে যায়, তাই duplicate থাকলেও উত্তর ঠিক থাকে।",
+          "সব মান সমান হলে (যেমন {5, 5, 5}) second থেকে যায় −1 — মানে \"second largest নেই\", যা যুক্তিসঙ্গত উত্তর।",
+          "একই \"সেরা রাখা\" pattern ফিরে আসবে P16 (GCD) তে — সেখানে সবচেয়ে বড় common ভাজক রাখা হয়।"
+        ],
+        "diagram": "arr = [12, 35, 1, 10, 35, 2]\n\nধাপ ১ — largest খোঁজা\n  শুরু  largest = 12\n  12 > 12? না        largest = 12\n  35 > 12? হ্যাঁ     largest = 35\n   1 > 35? না        largest = 35\n  10 > 35? না        largest = 35\n  35 > 35? না        largest = 35\n   2 > 35? না        largest = 35  ✓\n\nধাপ ২ — second খোঁজা (35 বাদ)\n  শুরু  second = -1\n  12 > -1 এবং 12 ≠ 35 ✓   second = 12\n  35 ≠ 35 ✗ বাদ            second = 12\n   1 > 12? না              second = 12\n  10 > 12? না              second = 12\n  35 ✗ বাদ                 second = 12\n   2 > 12? না              second = 12 ✓\n\nOutput ▸ Largest : 35   Second : 12",
+        "mnemonic": "দুইবার দৌড়াও — প্রথম দৌড়ে চ্যাম্পিয়ন, দ্বিতীয় দৌড়ে চ্যাম্পিয়নকে মাঠের বাইরে রেখে আবার চ্যাম্পিয়ন। \"!= largest\" শর্তটাই তাকে মাঠের বাইরে রাখে।"
+      }
+    },
+    {
+      "id": "code_arr_003",
+      "q": "Write a Java program to remove duplicate elements from an array and print only the unique values.",
+      "tags": [
+        "array",
+        "duplicate",
+        "unique",
+        "nested loop",
+        "flag"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class RemoveDuplicates {\n\n    public static void main(String[] args) {\n\n        int[] arr = {5, 3, 5, 8, 3, 9, 8};\n\n        System.out.print(\"Unique: \");\n\n        for (int i = 0; i < arr.length; i++) {\n\n            // এই মানটি কি আগেই ছাপানো হয়ে গেছে?\n            boolean printed = false;\n            for (int k = 0; k < i; k++) {\n                if (arr[k] == arr[i]) {\n                    printed = true;\n                }\n            }\n\n            if (!printed) {\n                System.out.print(arr[i] + \" \");\n            }\n        }\n    }\n}\n\n/*  Output:\n    Unique: 5 3 8 9                                */",
+        "summary": [
+          "প্রতিটি ঘরে দাঁড়িয়ে শুধু পেছনের দিকে (0 থেকে i−1) তাকানো হয় — একই মান আগে থাকলে এটি duplicate, তাই বাদ।",
+          "এভাবে প্রতিটি আলাদা মানের প্রথম উপস্থিতিটিই ছাপা হয়, বাকিগুলো চুপচাপ বাদ পড়ে।",
+          "নতুন array বা extra memory লাগে না — শুধু একটি boolean আর দুটি loop।"
+        ],
+        "points": [
+          "বাইরের loop (i): প্রতিটি ঘরে একবার করে দাঁড়ায়।",
+          "ভেতরের loop (k): k চলে শুধু 0 থেকে i−1 পর্যন্ত, অর্থাৎ কেবল পেছনের ঘরগুলো। সামনের দিকে তাকানো হয় না — এটাই মূল চাল।",
+          "কেন পেছনে তাকাই: একটি মান একাধিকবার থাকলে তার প্রথমবার সামনে কেউ ছিল না, তাই সে ছাপবে; পরেরবার তার পেছনে সে নিজেই আছে, তাই সে বাদ যাবে।",
+          "printed = true হলে ছাপা হয় না — এখানে continue দরকার হয়নি কারণ ছাপার কাজটিই if (!printed)-এর ভেতরে।",
+          "ক্রম ঠিক থাকে: যে মান আগে এসেছে সে আগেই ছাপে, তাই output-এ মূল array-এর ক্রম বজায় থাকে।",
+          "এই printed গার্ড হুবহু P1 (Common Elements)-এর প্রথম অংশ, এবং P9 (Character Frequency) তেও একই ভাবে ব্যবহার হবে — শুধু int-এর জায়গায় char।"
+        ],
+        "diagram": "arr = [5, 3, 5, 8, 3, 9, 8]\n                ↑ পেছনে তাকাও, সামনে নয়\n\ni=0  5 : পেছনে কিছু নেই        → ছাপাও  5\ni=1  3 : পেছনে [5]             → নেই → ছাপাও  3\ni=2  5 : পেছনে [5, 3]          → 5 আছে ✗ বাদ\ni=3  8 : পেছনে [5, 3, 5]       → নেই → ছাপাও  8\ni=4  3 : পেছনে [5, 3, 5, 8]    → 3 আছে ✗ বাদ\ni=5  9 : পেছনে [5,3,5,8,3]     → নেই → ছাপাও  9\ni=6  8 : পেছনে [5,3,5,8,3,9]   → 8 আছে ✗ বাদ\n\nOutput ▸ Unique: 5 3 8 9",
+        "mnemonic": "ছাপার আগে শুধু পেছনে তাকাও। পেছনে নিজেকে দেখলে চুপ করে যাও — প্রথমজনই কথা বলে, বাকিরা নয়।"
+      }
+    },
+    {
+      "id": "code_arr_004",
+      "q": "An array contains numbers from 1 to n with exactly one number missing. Write a Java program to find the missing number.",
+      "tags": [
+        "array",
+        "missing number",
+        "search",
+        "flag"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class MissingNumber {\n\n    public static void main(String[] args) {\n\n        // 1 থেকে 8 এর মধ্যে একটি সংখ্যা নেই\n        int[] arr = {1, 2, 4, 5, 6, 7, 8};\n        int n = arr.length + 1;\n\n        for (int num = 1; num <= n; num++) {\n\n            // num কি array-তে আছে?\n            boolean found = false;\n            for (int i = 0; i < arr.length; i++) {\n                if (arr[i] == num) {\n                    found = true;\n                }\n            }\n\n            if (!found) {\n                System.out.println(\"Missing: \" + num);\n            }\n        }\n    }\n}\n\n/*  Output:\n    Missing: 3                                     */",
+        "summary": [
+          "array-এর দিক থেকে না ভেবে সংখ্যার দিক থেকে ভাবা হয়েছে — 1 থেকে n পর্যন্ত প্রতিটি সংখ্যা নিয়ে array-তে খুঁজে দেখা হয়।",
+          "যে সংখ্যাটি খুঁজে পাওয়া যায় না, সেটিই missing।",
+          "একটি সংখ্যা নেই মানে array-তে আছে n−1টি ঘর, তাই n = arr.length + 1।"
+        ],
+        "points": [
+          "n বের করা: প্রশ্নে বলা আছে ঠিক একটি সংখ্যা নেই, তাই মোট সংখ্যা ছিল arr.length + 1টি — এটাই n।",
+          "বাইরের loop এখানে array-এর উপর নয়, সংখ্যার উপর (num = 1 থেকে n) — এই উল্টো চিন্তাটাই সমস্যাটিকে সহজ করে দেয়।",
+          "ভেতরের loop: চেনা found flag — num কে array-এর প্রতিটি ঘরের সাথে মিলিয়ে দেখে।",
+          "found মিথ্যা থেকে গেলে বুঝতে হবে সংখ্যাটি array-তে নেই → সেটিই উত্তর।",
+          "একাধিক সংখ্যা অনুপস্থিত থাকলেও এই code সবগুলো ছেপে দেবে — শুধু n-এর হিসাবটা বদলাতে হবে। যোগফলের সূত্র (n(n+1)/2 − sum) দিয়ে করলে একটির বেশি হলে কাজ করত না।",
+          "ভেতরের found ব্লকটি P1 (Common Elements)-এর দ্বিতীয় অংশের হুবহু নকল — শুধু b array-এর জায়গায় arr।"
+        ],
+        "diagram": "arr = [1, 2, 4, 5, 6, 7, 8]     n = 7 + 1 = 8\n\nnum=1 → array-তে খুঁজি → পেলাম ✓\nnum=2 → পেলাম ✓\nnum=3 → পুরো array ঘুরলাম → পেলাম না ✗  ← MISSING\nnum=4 → পেলাম ✓\nnum=5 → পেলাম ✓\nnum=6 → পেলাম ✓\nnum=7 → পেলাম ✓\nnum=8 → পেলাম ✓\n\n     1  2  ?  4  5  6  7  8\n           ↑\n        এখানে ফাঁকা\n\nOutput ▸ Missing: 3",
+        "mnemonic": "array-কে জিজ্ঞেস কোরো না \"তোমার কী নেই\"। বরং 1 থেকে n প্রতিটি সংখ্যাকে ডাকো — যে সাড়া দেয় না, সেই অনুপস্থিত।"
+      }
+    },
+    {
+      "id": "code_arr_005",
+      "q": "Write a Java program to left rotate an array by k positions.",
+      "tags": [
+        "array",
+        "left rotate",
+        "modulus",
+        "index"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class LeftRotate {\n\n    public static void main(String[] args) {\n\n        int[] arr = {1, 2, 3, 4, 5, 6};\n        int k = 2;                  // কত ঘর বাঁয়ে সরবে\n\n        int n = arr.length;\n        int[] out = new int[n];\n\n        for (int i = 0; i < n; i++) {\n            out[i] = arr[(i + k) % n];\n        }\n\n        System.out.print(\"Rotated: \");\n        for (int i = 0; i < n; i++) {\n            System.out.print(out[i] + \" \");\n        }\n    }\n}\n\n/*  Output:\n    Rotated: 3 4 5 6 1 2                           */",
+        "summary": [
+          "বাঁয়ে k ঘর ঘোরানো মানে — নতুন array-এর i নম্বর ঘরে বসবে পুরোনো array-এর (i + k) নম্বর ঘরের মান।",
+          "index n ছাড়িয়ে গেলে % n আবার শুরুতে ফিরিয়ে আনে, তাই আলাদা কোনো শর্ত লাগে না।",
+          "পুরো কাজটি একটিমাত্র line-এ: out[i] = arr[(i + k) % n]।"
+        ],
+        "points": [
+          "বাঁয়ে ঘোরানো মানে সামনের k টি উপাদান শেষে চলে যায় এবং বাকিরা k ঘর এগিয়ে আসে।",
+          "তাই নতুন ঘর i-এর জন্য উৎস হলো পুরোনো ঘর i + k — \"যে ঘরে বসবে, তার মান আসবে k ঘর ডান থেকে\"।",
+          "% n কেন লাগে: i + k যখন n বা তার বেশি হয়ে যায়, তখন array-এর বাইরে চলে যেত। % n সেটিকে ঘুরিয়ে 0-এর দিকে ফিরিয়ে আনে — array-কে একটি বৃত্ত হিসেবে দেখা হয়।",
+          "k > n হলেও ভাঙে না: k = 8, n = 6 হলে % n নিজেই সেটিকে 2-এর সমান করে ফেলে।",
+          "একটি আলাদা out array নেওয়া হয়েছে যাতে মূল array মাঝপথে নষ্ট না হয় — এটিই সবচেয়ে ঝামেলাহীন পথ।",
+          "ডানে ঘোরাতে হলে শুধু চিহ্ন বদল: out[(i + k) % n] = arr[i]।"
+        ],
+        "diagram": "arr = [1, 2, 3, 4, 5, 6]     k = 2,  n = 6\n\nout[i] = arr[(i + k) % n]\n\n  i=0 → arr[(0+2)%6] = arr[2] = 3\n  i=1 → arr[(1+2)%6] = arr[3] = 4\n  i=2 → arr[(2+2)%6] = arr[4] = 5\n  i=3 → arr[(3+2)%6] = arr[5] = 6\n  i=4 → arr[(4+2)%6] = arr[0] = 1   ← % n ঘুরিয়ে দিল\n  i=5 → arr[(5+2)%6] = arr[1] = 2\n\n  আগে :  1  2 │ 3  4  5  6\n         └─ k=2 ─┘   এই দুটো শেষে যাবে\n  পরে :  3  4  5  6 │ 1  2\n\nOutput ▸ Rotated: 3 4 5 6 1 2",
+        "mnemonic": "বাঁয়ে ঘোরা = ডান থেকে টেনে আনা: out[i] = arr[(i + k) % n]। শেষ মাথায় গেলে % n মোড় ঘুরিয়ে আবার শুরুতে নিয়ে আসে।"
+      }
+    },
+    {
+      "id": "code_arr_006",
+      "q": "Write a Java program to find all pairs of elements in an array whose sum is equal to a given number.",
+      "tags": [
+        "array",
+        "pair sum",
+        "nested loop",
+        "target"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class PairWithSum {\n\n    public static void main(String[] args) {\n\n        int[] arr = {2, 7, 11, 15, 4, 6};\n        int target = 13;\n\n        System.out.println(\"Target = \" + target);\n\n        for (int i = 0; i < arr.length; i++) {\n            for (int j = i + 1; j < arr.length; j++) {\n\n                if (arr[i] + arr[j] == target) {\n                    System.out.println(arr[i] + \" + \" + arr[j]);\n                }\n            }\n        }\n    }\n}\n\n/*  Output:\n    Target = 13\n    2 + 11\n    7 + 6                                          */",
+        "summary": [
+          "সম্ভাব্য প্রতিটি জোড়া একবার করে দেখা হয় — যোগফল target হলেই ছাপা হয়।",
+          "ভেতরের loop শুরু হয় j = i + 1 থেকে, তাই কোনো জোড়া দুবার আসে না এবং কোনো উপাদান নিজের সাথে জোড়া লাগে না।",
+          "এটাই সব \"জোড়া নিয়ে কাজ\" সমস্যার আদর্শ গঠন।"
+        ],
+        "points": [
+          "বাইরের loop (i) জোড়ার প্রথম সদস্য ধরে, ভেতরের loop (j) দ্বিতীয় সদস্য ধরে।",
+          "j = i + 1 কেন, j = 0 নয়: j = 0 দিলে (2, 11) ও (11, 2) দুটোই আলাদা জোড়া হিসেবে ছাপত, আর i == j হলে একই উপাদান নিজের সাথে যোগ হয়ে যেত।",
+          "ভেতরের loop-এর শুরু i-এর সাথে বাড়তে থাকে, তাই প্রতিটি জোড়া ঠিক একবারই পরীক্ষা হয়।",
+          "একাধিক জোড়া থাকলে সবগুলোই ছাপে — একটি পেলেই থামাতে চাইলে break দিতে হবে।",
+          "array sorted হওয়ার দরকার নেই, তাই যেকোনো array-তে সরাসরি চলে।",
+          "এই j = i + 1 গঠনটাই P19 (Bubble Sort)-এ পাশাপাশি ঘর তুলনা করতে ফিরে আসবে।"
+        ],
+        "diagram": "arr = [2, 7, 11, 15, 4, 6]      target = 13\n\n  i=0 (2)  → j: 7  11 ✓  15  4  6      2 + 11 = 13 ✓\n  i=1 (7)  → j: 11  15  4  6 ✓         7 + 6  = 13 ✓\n  i=2 (11) → j: 15  4  6               কিছু নেই\n  i=3 (15) → j: 4  6                   কিছু নেই\n  i=4 (4)  → j: 6                      কিছু নেই\n  i=5 (6)  → j: (কেউ বাকি নেই)\n\n  জোড়ার ছক (j সবসময় i-এর ডানে):\n        2   7   11  15   4   6\n    2   ·   →   →   →   →   →\n    7       ·   →   →   →   →\n   11           ·   →   →   →\n        উপরের ত্রিভুজটুকুই দেখা হয় — নিচেরটা\n        একই জোড়ার পুনরাবৃত্তি, তাই বাদ\n\nOutput ▸ 2 + 11 , 7 + 6",
+        "mnemonic": "জোড়া মানেই দুই loop, আর দ্বিতীয়জন সবসময় প্রথমজনের ডানে — j = i + 1। এতে একই জোড়া দুবার গোনা হয় না।"
+      }
+    }
+  ]
+}

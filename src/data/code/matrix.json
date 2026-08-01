@@ -1,0 +1,64 @@
+{
+  "category": "matrix",
+  "questions": [
+    {
+      "id": "code_mat_001",
+      "q": "Write a Java program to find the transpose of a matrix.",
+      "tags": [
+        "matrix",
+        "transpose",
+        "2D array",
+        "nested loop"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class Transpose {\n\n    public static void main(String[] args) {\n\n        int[][] m = {\n            {1, 2, 3},\n            {4, 5, 6}\n        };\n\n        int rows = m.length;        // 2\n        int cols = m[0].length;     // 3\n\n        int[][] t = new int[cols][rows];\n\n        for (int i = 0; i < rows; i++) {\n            for (int j = 0; j < cols; j++) {\n                t[j][i] = m[i][j];  // সারি ↔ কলাম বদল\n            }\n        }\n\n        for (int i = 0; i < cols; i++) {\n            for (int j = 0; j < rows; j++) {\n                System.out.print(t[i][j] + \" \");\n            }\n            System.out.println();\n        }\n    }\n}\n\n/*  Output:\n    1 4\n    2 5\n    3 6                                            */",
+        "summary": [
+          "Transpose মানে সারি ও কলাম অদল-বদল — মূল matrix-এর i নম্বর সারির j নম্বর ঘরটি নতুন matrix-এর j নম্বর সারির i নম্বর ঘরে বসে।",
+          "পুরো কাজ একটি line-এ: t[j][i] = m[i][j] — শুধু index দুটি উল্টে দেওয়া।",
+          "আকারও উল্টে যায়: 2×3 matrix-এর transpose হয় 3×2, তাই নতুন array হয় new int[cols][rows]।"
+        ],
+        "points": [
+          "m.length দেয় সারির সংখ্যা, আর m[0].length দেয় কলামের সংখ্যা (প্রথম সারিতে কয়টি ঘর আছে)।",
+          "new int[cols][rows] লেখা জরুরি — উল্টে new int[rows][cols] লিখলে 2×3-এর জায়গায় ভুল আকার হয়ে ArrayIndexOutOfBoundsException আসতে পারে।",
+          "ভেতরের কাজ মাত্র একটি line: t[j][i] = m[i][j]। index দুটি অদল-বদল হওয়াই transpose-এর পুরো সংজ্ঞা।",
+          "দুটি nested loop-এ i চলে সারিতে আর j চলে কলামে — 2D array-এর সব প্রোগ্রামেই এই দুই-loop গঠন এক।",
+          "ছাপার loop-এ সীমা উল্টে গেছে (বাইরে cols, ভেতরে rows), কারণ t-এর আকার এখন cols × rows।",
+          "ভেতরের loop শেষে println() দিলে প্রতিটি সারি আলাদা line-এ যায় — এটি না দিলে সব সংখ্যা এক লাইনে মিশে যেত।",
+          "বর্গ matrix হলে (rows == cols) আলাদা t array ছাড়াই in-place করা যায়, কিন্তু তখন j শুরু করতে হয় i + 1 থেকে — নইলে দুবার swap হয়ে আবার আগের জায়গায় ফিরে যায়।"
+        ],
+        "diagram": "মূল matrix m (2 সারি × 3 কলাম):\n\n         কলাম→   0    1    2\n   সারি 0     [  1    2    3  ]\n   সারি 1     [  4    5    6  ]\n\n  t[j][i] = m[i][j]  — index উল্টে দাও\n\n   m[0][0]=1 → t[0][0]      m[0][1]=2 → t[1][0]\n   m[0][2]=3 → t[2][0]      m[1][0]=4 → t[0][1]\n   m[1][1]=5 → t[1][1]      m[1][2]=6 → t[2][1]\n\nTranspose t (3 সারি × 2 কলাম):\n\n         কলাম→   0    1\n   সারি 0     [  1    4  ]\n   সারি 1     [  2    5  ]\n   সারি 2     [  3    6  ]\n\n        ┌ 1 2 3 ┐            ┌ 1 4 ┐\n        └ 4 5 6 ┘    ──▶     │ 2 5 │\n          2 × 3               └ 3 6 ┘\n                               3 × 2\n        কর্ণ বরাবর আয়না ধরলে যা দেখায়, সেটাই transpose\n\nOutput ▸ 1 4 / 2 5 / 3 6",
+        "mnemonic": "Transpose = index উল্টে দাও: t[j][i] = m[i][j]। আর আকারও উল্টে যায় — 2×3 হয়ে যায় 3×2, তাই new int[cols][rows]।"
+      }
+    },
+    {
+      "id": "code_mat_002",
+      "q": "Write a Java program to find the sum of the main diagonal and the anti-diagonal of a square matrix.",
+      "tags": [
+        "matrix",
+        "diagonal",
+        "square matrix",
+        "index"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class DiagonalSum {\n\n    public static void main(String[] args) {\n\n        int[][] m = {\n            {1, 2, 3},\n            {4, 5, 6},\n            {7, 8, 9}\n        };\n\n        int n = m.length;\n\n        int mainSum = 0;\n        int antiSum = 0;\n\n        for (int i = 0; i < n; i++) {\n            mainSum = mainSum + m[i][i];\n            antiSum = antiSum + m[i][n - 1 - i];\n        }\n\n        System.out.println(\"Main diagonal : \" + mainSum);\n        System.out.println(\"Anti diagonal : \" + antiSum);\n    }\n}\n\n/*  Output:\n    Main diagonal : 15\n    Anti diagonal : 15                             */",
+        "summary": [
+          "কর্ণের ঘরগুলোতে সারি ও কলামের index-এর মধ্যে নির্দিষ্ট সম্পর্ক থাকে, তাই দুটি loop লাগে না — একটিই যথেষ্ট।",
+          "Main diagonal-এ সারি ও কলাম সমান: m[i][i]। Anti diagonal-এ যোগফল সবসময় n − 1: m[i][n − 1 − i]।",
+          "একটিমাত্র loop-এ দুটি যোগফলই একসাথে বের হয়ে আসে।"
+        ],
+        "points": [
+          "Main diagonal (উপরের বাঁ থেকে নিচের ডান): ঘরগুলো m[0][0], m[1][1], m[2][2] — সারি আর কলাম সবসময় সমান, তাই m[i][i]।",
+          "Anti diagonal (উপরের ডান থেকে নিচের বাঁ): ঘরগুলো m[0][2], m[1][1], m[2][0] — লক্ষ করো প্রতিটিতে i + j = 2, অর্থাৎ i + j = n − 1। তাই j = n − 1 − i।",
+          "শুধু একটি loop কেন যথেষ্ট: i ঠিক করলেই j নিজে থেকেই নির্ধারিত হয়ে যায়, তাই কলামের জন্য আলাদা loop অপ্রয়োজনীয়।",
+          "এটি শুধু বর্গ matrix-এ কাজ করে — সারি ও কলাম সমান না হলে কর্ণেরই কোনো অর্থ থাকে না, তাই n = m.length একবারই নেওয়া হয়েছে।",
+          "বিজোড় আকারের matrix-এ (3×3, 5×5) মাঝের ঘরটি দুই কর্ণেই পড়ে — এখানে 5 দুবারই যোগ হয়েছে। প্রশ্নে \"মোট যোগফল\" চাইলে সেটি একবার বাদ দিতে হয়।",
+          "n − 1 − i সূত্রটি array-এর দুই প্রান্ত মেলানোর সাধারণ কৌশল — string বা array উল্টানোর তুলনাতেও একই সূত্র কাজে লাগে।"
+        ],
+        "diagram": "m (3 × 3),  n = 3\n\n         j=0   j=1   j=2\n  i=0  [  1     2     3  ]\n  i=1  [  4     5     6  ]\n  i=2  [  7     8     9  ]\n\n  MAIN diagonal — m[i][i]      (i = j)\n         ╲\n      [ (1)   2    3  ]\n      [  4   (5)   6  ]        1 + 5 + 9 = 15\n      [  7    8   (9) ]\n                    ╲\n\n  ANTI diagonal — m[i][n-1-i]  (i + j = n-1 = 2)\n                  ╱\n      [  1    2   (3) ]        i=0 → j=2\n      [  4   (5)   6  ]        i=1 → j=1     3 + 5 + 7 = 15\n      [ (7)   8    9  ]        i=2 → j=0\n       ╱\n\n  মাঝের ঘর 5 দুই কর্ণেই আছে (বিজোড় আকার বলে)\n\nOutput ▸ Main : 15    Anti : 15",
+        "mnemonic": "Main কর্ণে সারি = কলাম → m[i][i]। Anti কর্ণে সারি + কলাম = n − 1 → m[i][n−1−i]। index-এর সম্পর্ক জানা থাকলে একটিমাত্র loop-ই যথেষ্ট।"
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "category": "sorting_searching",
+  "questions": [
+    {
+      "id": "code_srt_001",
+      "q": "Write a Java program to sort an array in ascending order using Bubble Sort (without using any built-in sort method).",
+      "tags": [
+        "sorting",
+        "bubble sort",
+        "swap",
+        "nested loop",
+        "ascending"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class BubbleSort {\n\n    public static void main(String[] args) {\n\n        int[] arr = {45, 12, 78, 23, 6};\n\n        int n = arr.length;\n\n        for (int i = 0; i < n - 1; i++) {\n            for (int j = 0; j < n - 1 - i; j++) {\n\n                if (arr[j] > arr[j + 1]) {\n                    int temp = arr[j];\n                    arr[j] = arr[j + 1];\n                    arr[j + 1] = temp;\n                }\n            }\n        }\n\n        System.out.print(\"Sorted: \");\n        for (int i = 0; i < n; i++) {\n            System.out.print(arr[i] + \" \");\n        }\n    }\n}\n\n/*  Output:\n    Sorted: 6 12 23 45 78                          */",
+        "summary": [
+          "পাশাপাশি দুটি ঘর তুলনা করে বাঁয়েরটি বড় হলে অদল-বদল (swap) করা হয় — এভাবে প্রতি pass-এ সবচেয়ে বড় সংখ্যাটি ডান প্রান্তে গিয়ে বসে।",
+          "বড় সংখ্যা বুদবুদের মতো ভেসে শেষে চলে যায় বলেই নাম Bubble Sort।",
+          "swap হয় তিন line-এ একটি temp ব্যবহার করে — এই তিন line সব ভাষাতেই এক।"
+        ],
+        "points": [
+          "ভেতরের loop (j) পাশাপাশি জোড়া মেলায়: arr[j] ও arr[j + 1]। তাই j যাবে শেষ ঘরের ঠিক আগে পর্যন্ত, নইলে arr[j + 1] array-এর বাইরে চলে যেত।",
+          "swap-এর তিন ধাপ: temp-এ প্রথমটি রাখো, প্রথমে দ্বিতীয়টি বসাও, দ্বিতীয়তে temp বসাও। temp ছাড়া করতে গেলে একটি মান চাপা পড়ে হারিয়ে যায়।",
+          "বাইরের loop চলে n − 1 বার, কারণ n−1টি সংখ্যা ঠিক জায়গায় বসে গেলে শেষটি নিজে থেকেই ঠিক জায়গায় থাকে।",
+          "ভেতরের সীমা n − 1 − i কেন: প্রতিটি pass শেষে ডান দিকের i টি ঘর ইতিমধ্যেই সাজানো, সেগুলো আবার দেখার দরকার নেই। − i না দিলেও উত্তর ঠিক আসত, শুধু বাড়তি তুলনা হত।",
+          "অবরোহী (descending) ক্রম চাইলে শুধু শর্তটি উল্টে দাও: arr[j] < arr[j + 1]।",
+          "পাশাপাশি জোড়া নিয়ে কাজ করার এই গঠনটাই P6 (Pair with Sum)-এর j = i + 1 ধারণার কাছাকাছি — দুটোতেই ভেতরের loop প্রতিবার ছোট হয়ে আসে।"
+        ],
+        "diagram": "arr = [45, 12, 78, 23, 6]     n = 5\n\nPass 1 (i=0) — সবচেয়ে বড়টি শেষে যাবে\n  45 12 78 23 6   45>12 ✓ swap → 12 45 78 23 6\n  12 45 78 23 6   45>78 ✗      → একই\n  12 45 78 23 6   78>23 ✓ swap → 12 45 23 78 6\n  12 45 23 78 6   78>6  ✓ swap → 12 45 23 6 [78]\n\nPass 2 (i=1)\n  12 45 23 6 │78   45>23 ✓ → 12 23 45 6\n                   45>6  ✓ → 12 23 6 [45] 78\n\nPass 3 (i=2)\n  12 23 6 │45 78   23>6  ✓ → 12 6 [23] 45 78\n\nPass 4 (i=3)\n  12 6 │23 45 78   12>6  ✓ → [6] 12 23 45 78\n\n  ডান দিকের [ ] অংশ প্রতি pass-এ একঘর করে\n  বাড়ে — তাই ভেতরের সীমা n - 1 - i\n\n  swap-এর তিন ধাপ:\n     temp = arr[j]        ┌ 45 ┐  temp\n     arr[j] = arr[j+1]    │ ↓  │\n     arr[j+1] = temp      └ 12 ┘\n\nOutput ▸ Sorted: 6 12 23 45 78",
+        "mnemonic": "পাশের জনের সাথে তুলনা, বড় হলে জায়গা বদল — বড়রা বুদবুদের মতো ভেসে ডানে যায়। ভেতরের সীমা n−1−i, কারণ ডান দিক ধীরে ধীরে সাজানো হয়ে যায়।"
+      }
+    },
+    {
+      "id": "code_srt_002",
+      "q": "Write a Java program to search an element in a sorted array using Binary Search and print its index.",
+      "tags": [
+        "searching",
+        "binary search",
+        "sorted array",
+        "mid",
+        "while loop"
+      ],
+      "answer": {
+        "codeLang": "Java",
+        "code": "public class BinarySearch {\n\n    public static void main(String[] args) {\n\n        // Binary Search-এর জন্য array অবশ্যই sorted\n        int[] arr = {6, 12, 23, 45, 78, 91};\n        int target = 45;\n\n        int low = 0;\n        int high = arr.length - 1;\n        int position = -1;          // না পেলে -1\n\n        while (low <= high) {\n\n            int mid = (low + high) / 2;\n\n            if (arr[mid] == target) {\n                position = mid;\n                break;\n            } else if (arr[mid] < target) {\n                low = mid + 1;      // ডান অর্ধেকে খোঁজো\n            } else {\n                high = mid - 1;     // বাম অর্ধেকে খোঁজো\n            }\n        }\n\n        System.out.println(\"Index: \" + position);\n    }\n}\n\n/*  Output:\n    Index: 3                                       */",
+        "summary": [
+          "প্রতিবার মাঝের ঘরটি দেখে অর্ধেক অংশ পুরোপুরি বাদ দেওয়া হয় — তাই খোঁজার জায়গা দ্রুত ছোট হয়ে আসে।",
+          "target মাঝেরটির চেয়ে বড় হলে ডান অর্ধেকে যাও (low বাড়াও), ছোট হলে বাম অর্ধেকে যাও (high কমাও)।",
+          "array আগে থেকে sorted না হলে এই সিদ্ধান্তই ভুল হয়ে যায় — তাই sorted থাকা বাধ্যতামূলক।"
+        ],
+        "points": [
+          "low ও high দিয়ে খোঁজার সীমানা ধরা হয়; শুরুতে সীমানা পুরো array — 0 থেকে length − 1।",
+          "mid = (low + high) / 2 — int ভাগ বলে দশমিক আপনিই বাদ যায়, তাই আলাদা করে কিছু করতে হয় না।",
+          "তিনটি সম্ভাবনা: মাঝেরটিই target (পেয়ে গেছি), মাঝেরটি ছোট (উত্তর ডানে আছে), মাঝেরটি বড় (উত্তর বামে আছে)।",
+          "low = mid + 1 এবং high = mid − 1 তে mid বাদ দেওয়া হয়, কারণ ওই ঘরটি এইমাত্র দেখা হয়ে গেছে। mid বাদ না দিলে সীমানা ছোট হত না এবং loop অসীম হয়ে যেত।",
+          "while (low <= high): সীমানা উল্টে গেলে (low > high) বোঝা যায় খোঁজার জায়গা ফুরিয়ে গেছে, অর্থাৎ উপাদানটি নেই — তখন position থেকে যায় −1।",
+          "position = −1 দিয়ে শুরু করা একটি প্রচলিত রীতি — \"পাওয়া যায়নি\" বোঝাতে index হিসেবে অসম্ভব একটি মান ব্যবহার করা হয়।",
+          "Linear search-এর সাথে তুলনা: linear একটি একটি করে দেখে (P4-এর মতো), binary প্রতিবার অর্ধেক ফেলে দেয় — কিন্তু তার শর্ত হলো sorted array।"
+        ],
+        "diagram": "arr = [6, 12, 23, 45, 78, 91]      target = 45\nindex    0   1   2   3   4   5\n\nধাপ ১:  low=0  high=5   mid=(0+5)/2=2\n        arr[2]=23  <  45  → ডানে যাও, low = 3\n        [6  12  23] 45  78  91\n         ✗ পুরো বাম অংশ বাদ\n\nধাপ ২:  low=3  high=5   mid=(3+5)/2=4\n        arr[4]=78  >  45  → বামে যাও, high = 3\n                    45  78  91\n                        ✗ ডান অংশ বাদ\n\nধাপ ৩:  low=3  high=3   mid=(3+3)/2=3\n        arr[3]=45  ==  45  ✓ পেয়ে গেছি\n        position = 3, break\n\n  খোঁজার জায়গা কমে আসছে:\n     6 উপাদান → 3 → 1 → পাওয়া গেল\n     মাত্র 3 ধাপে (linear হলে লাগত 4 ধাপ)\n\nOutput ▸ Index: 3",
+        "mnemonic": "মাঝে তাকাও, তারপর অর্ধেক ফেলে দাও — ছোট হলে low = mid+1, বড় হলে high = mid−1। low > high হলে বুঝবে জিনিসটা নেই। আর array অবশ্যই sorted!"
+      }
+    }
+  ]
+}
