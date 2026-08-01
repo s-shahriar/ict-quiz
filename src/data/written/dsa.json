@@ -21,7 +21,14 @@
           "Recurrence: T(n) = T(0) + T(n−1) + O(n) → সমাধান: T(n) = O(n²)",
           "মোট comparisons = (n−1)+(n−2)+...+1 = n(n−1)/2 = O(n²)",
           "Recursion tree সম্পূর্ণ skewed (একদিকে হেলে) → n level গভীর",
-          "এটি Quicksort এর worst case — average case O(n log n) থেকে অনেক খারাপ"
+          "এটি Quicksort এর worst case — average case O(n log n) থেকে অনেক খারাপ",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "বাস্তবে যা করা হয়: pivot হিসেবে random element বা median-of-three নেওয়া হয়, ফলে sorted input এও গড়ে O(n log n) থাকে।"
+          },
+          {
+            "sub": "Library তে: C এর qsort ও Java এর primitive sort (dual-pivot quicksort) এভাবেই লেখা; C++ এর introsort recursion গভীর হলে heapsort এ সরে গিয়ে O(n²) পুরোপুরি ঠেকায়।"
+          }
         ],
         "diagram": " Sorted: [1, 2, 3, 4, 5],  pivot = first element\n\n Step 1:  pivot=1  │ left=[]  right=[2,3,4,5]  │ 4 comparisons\n Step 2:  pivot=2  │ left=[]  right=[3,4,5]    │ 3 comparisons\n Step 3:  pivot=3  │ left=[]  right=[4,5]      │ 2 comparisons\n Step 4:  pivot=4  │ left=[]  right=[5]        │ 1 comparison\n                                         Total = 4+3+2+1 = 10 = O(n²)\n\n Recursion tree (সম্পূর্ণ skewed):\n        [1,2,3,4,5]                   ← depth 1\n       /             \\\n     []           [2,3,4,5]           ← depth 2\n                 /           \\\n               []          [3,4,5]    ← depth 3\n                           /      \\\n                         []      [4,5]← depth 4\n                                /    \\\n                              []     [5] ← depth 5\n n level গভীর → O(n²)",
         "mistakes": [
@@ -91,7 +98,14 @@
           "এক pass এ সবচেয়ে বড় element array এর শেষে settle করে (বুদবুদের মতো ভেসে ওঠে)",
           "n element এর জন্য সর্বোচ্চ n−1 pass লাগে",
           "Worst case: O(n²) — reverse sorted array। Best case: O(n) — already sorted",
-          "In-place sorting → extra memory লাগে না: O(1) space"
+          "In-place sorting → extra memory লাগে না: O(1) space",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "কোথায় কোনটি: Bubble sort বাস্তব software এ ব্যবহার হয় না — শুধু শেখার জন্য বা খুব ছোট, প্রায়-সাজানো তালিকায়।"
+          },
+          {
+            "sub": "Merge sort দুই জায়গায় অপরিহার্য: RAM এ ধরে না এমন বিশাল file sort করা (external merge sort — database ও log processing এ), এবং stable sort দরকার হলে (Java এর Collections.sort/Timsort এর ভিত্তিই merge sort)।"
+          }
         ],
         "diagram": " Initial: [5, 3, 8, 1]\n\n Pass 1:\n  [5, 3, 8, 1] → 5>3 swap  → [3, 5, 8, 1]\n  [3, 5, 8, 1] → 5<8 no    → [3, 5, 8, 1]\n  [3, 5, 8, 1] → 8>1 swap  → [3, 5, 1, 8]  ✓ 8 settled\n\n Pass 2:\n  [3, 5, 1, 8] → 3<5 no    → [3, 5, 1, 8]\n  [3, 5, 1, 8] → 5>1 swap  → [3, 1, 5, 8]  ✓ 5 settled\n\n Pass 3:\n  [3, 1, 5, 8] → 3>1 swap  → [1, 3, 5, 8]  ✓ 3 settled\n\n Result: [1, 3, 5, 8] ✅",
         "mistakes": [
@@ -163,7 +177,14 @@
           "Sorted sequence মেলাও: [2,2,3,3,3,3] ≠ [2,2,2,3,3,3] ❌ — এখানেই বাদ!",
           "Graph-3 এ degree-3 vertex = 4টি (u1,u2,u3,u6), degree-2 vertex = 2টি (u4,u5)",
           "Graph-4 এ degree-3 vertex = 3টি (v2,v3,v6), degree-2 vertex = 3টি (v1,v4,v5)",
-          "∴ Degree sequence ভিন্ন → isomorphic bijection কখনো সম্ভব নয় → NOT ISOMORPHIC ✅"
+          "∴ Degree sequence ভিন্ন → isomorphic bijection কখনো সম্ভব নয় → NOT ISOMORPHIC ✅",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "রসায়নে দুটি যৌগের গঠন এক কিনা মেলানো (molecular structure matching), electronic circuit বা network topology একই নকশার কিনা যাচাই, এবং pattern/fingerprint মেলানো।"
+          },
+          {
+            "sub": "Degree sequence আগে মেলানো হয় কারণ এটি সস্তা — না মিললেই সাথে সাথে \"not isomorphic\" বলা যায়, ব্যয়বহুল bijection খোঁজার দরকারই পড়ে না।"
+          }
         ],
         "diagram": "Degree Sequence তুলনা:\n──────────────────────────────────────────────\n         Graph-3 (u)      Graph-4 (v)\n──────────────────────────────────────────────\nu1 → deg 3    v1 → deg 2\nu2 → deg 3    v2 → deg 3\nu3 → deg 2    v3 → deg 3\nu4 → deg 2    v4 → deg 2\nu5 → deg 3    v5 → deg 2\nu6 → deg 3    v6 → deg 3\n──────────────────────────────────────────────\nSorted:  [2,2,3,3,3,3]   [2,2,2,3,3,3]\n                    ❌ DIFFERENT!\n\nGraph-3: degree-3 আছে ৪টি\nGraph-4: degree-3 আছে ৩টি\n\n∴ NOT ISOMORPHIC\n\nমনে রাখো — Isomorphism চেক ধাপ:\n V count → E count → Degree Seq → Bijection\n যেকোনো ধাপে ❌ = NOT isomorphic, থামো!",
         "mistakes": [
@@ -212,7 +233,14 @@
             "sub": "arr[mid] > target → high = mid − 1 (বামে যাও)"
           },
           "লুপ শেষে target না পেলে return −1 ❌",
-          "Unsorted এ fail কেন: mid দেখে বাম/ডান decide করা হয় — unsorted এ সেই assumption ভুল, তাই element miss হয়।"
+          "Unsorted এ fail কেন: mid দেখে বাম/ডান decide করা হয় — unsorted এ সেই assumption ভুল, তাই element miss হয়।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "database index এর ভেতরে key খোঁজা, sorted log file এ timestamp ধরে খোঁজা, dictionary ও phonebook lookup।"
+          },
+          {
+            "sub": "একটু ভিন্ন রূপে: git bisect দিয়ে কোন commit এ bug ঢুকেছে বের করা — commit গুলোকে sorted ধরে প্রতিবার অর্ধেক বাদ দেওয়াই binary search।"
+          }
         ],
         "diagram": "Array: [2, 5, 8, 12, 16, 23, 38, 42]  Target = 23\nIndex:  0  1  2   3   4   5   6   7\n\nRound 1: low=0, high=7 → mid=3 → arr[3]=12 < 23 → low=4\n         [_, _, _, _, 16, 23, 38, 42]\n\nRound 2: low=4, high=7 → mid=5 → arr[5]=23 == 23 ✅ FOUND!\n         [_, _, _, _, _, 23, _, _]\n\nমাত্র 2 step এ পাওয়া গেল (Linear Search এ 6 step লাগত)\n\nUnsorted এ fail:\nArray: [5, 23, 2, 38, 12]  Target = 12\nmid=2 → arr[2]=2 < 12 → low=3 (ডানে যাও)\nকিন্তু 12 আছে index 4 এ, 38 এর পরে → miss! ❌",
         "mnemonic": "Binary Search = ফোনবুকে নাম খোঁজা — মাঝখানে খোলো, আগে না পরে সেটা দেখে বাদ দাও অর্ধেক। Unsorted ফোনবুক এ এই কৌশল কাজ করে না।"
@@ -295,7 +323,14 @@
             "sub": "বাম-উপর-নিচ explore করতেই হয়নি — এটাই A* এর গতির কারণ।"
           },
           "Admissible heuristic: estimate যদি সবসময় actual cost ≤ হয়, A* optimal path দেয়।",
-          "Trade-off: BFS = সবসময় optimal কিন্তু slow। A* = heuristic ভালো হলে optimal ও দ্রুত।"
+          "Trade-off: BFS = সবসময় optimal কিন্তু slow। A* = heuristic ভালো হলে optimal ও দ্রুত।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Google Maps ও GPS এ রাস্তা বের করা (heuristic = গন্তব্যের সরলরৈখিক দূরত্ব), গেমে চরিত্রের pathfinding, robot ও drone এর navigation।"
+          },
+          {
+            "sub": "কেন heuristic লাগে: শহরের লক্ষ লক্ষ node এ BFS চালালে সব দিকে ছড়িয়ে সময় ও মেমরি দুটোই শেষ হয়; A* গন্তব্যের দিকে ঝুঁকে থাকায় অল্প node দেখেই উত্তরে পৌঁছায়।"
+          }
         ],
         "diagram": "Grid map: S থেকে G যেতে হবে (G ডানদিকে)\nS . . . . . . . G\n. . . . . . . . .\n. . . . . . . . .\n\nBFS — সব দিকে বৃত্তাকারে expand:\n. . . . . . . . G  ← G এখনো দেখেনি\n. . . 3 3 3 . . .\n. . 3 2 2 2 3 . .\n. 3 2 1 S 1 2 3 .  ← সব দিকে সমানভাবে\n. . 3 2 2 2 3 . .\n. . . 3 3 3 . . .\nG ডানদিকে থাকলেও বাম-উপর-নিচ সব explore\n\nA* — Goal এর দিকে ঝুঁকে যায়:\nStep 1: S থেকে সব neighbor check:\n  ডানের node:  cost=1, est=7 → total=8  ← সবচেয়ে কম!\n  বামের node:  cost=1, est=9 → total=10\n  নিচের node:  cost=1, est=8 → total=9\n  → ডানে যায়\nStep 2: আবার ডানের neighbor সবচেয়ে ভালো → ডানে\nStep 3: আবার ডানে... → G পৌঁছে গেলো!\nS → → → → → → → G  (বাম-উপর-নিচ explore করতেই হয়নি)",
         "mnemonic": "BFS = অন্ধকারে সব দিকে মশাল জ্বালানো। A* = GPS — সামনে কতদূর দেখতে পাচ্ছি তার উপর ভিত্তি করে সরাসরি এগিয়ে যাওয়া।"
@@ -323,7 +358,17 @@
           "Dynamic Programming (DP): Overlapping subproblem — same subproblem বারবার আসে। একবার solve করে table/memo তে store করে — পরে সেখান থেকে নেয়। Always optimal। Bottom-up (Tabulation) বা Top-down (Memoization)। Examples: 0/1 Knapsack, Fibonacci, Floyd-Warshall",
           "Greedy Method: প্রতিটি step এ locally optimal (সেই মুহূর্তে সবচেয়ে ভালো) choice নেয়। Future consequence দেখে না। Optimal guarantee নেই — শুধু Greedy Choice Property থাকলে optimal। সবচেয়ে fast। Examples: Dijkstra, Kruskal, Activity Selection",
           "Key property differences: D&C = subproblem independent। DP = subproblem overlapping + optimal substructure। Greedy = optimal substructure + greedy choice property",
-          "Guaranteed optimality: D&C ✅ always। DP ✅ always। Greedy ❌ not always — depends on problem"
+          "Guaranteed optimality: D&C ✅ always। DP ✅ always। Greedy ❌ not always — depends on problem",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "DP: git/diff ও spell checker এর edit distance, DNA sequence alignment, বাজেট বা resource allocation (knapsack)।"
+          },
+          {
+            "sub": "Greedy: ZIP ও JPEG এর Huffman coding, Maps এর Dijkstra, এবং Kruskal দিয়ে সবচেয়ে কম খরচে cable/network layout (minimum spanning tree)।"
+          },
+          {
+            "sub": "Divide & Conquer: বিশাল file এর external merge sort, signal ও image processing এ FFT, বড় matrix গুণে Strassen।"
+          }
         ],
         "table": {
           "headers": [

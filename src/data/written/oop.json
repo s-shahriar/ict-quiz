@@ -62,7 +62,14 @@
           "Exception: program এর logical সমস্যা — developer এর কোডে। try-catch দিয়ে handle করা যায়। দুই ধরন: Checked ও Unchecked।",
           "Checked Exception: compile time এ ধরা পড়ে — handle বা declare করতেই হবে। উদাহরণ: IOException, SQLException, FileNotFoundException।",
           "Unchecked Exception (RuntimeException): runtime এ ঘটে — handle optional। উদাহরণ: NullPointerException, ArrayIndexOutOfBoundsException, ArithmeticException।",
-          "Error: JVM বা system level সমস্যা — program দিয়ে recover করা সম্ভব নয়। উদাহরণ: OutOfMemoryError, StackOverflowError, VirtualMachineError।"
+          "Error: JVM বা system level সমস্যা — program দিয়ে recover করা সম্ভব নয়। উদাহরণ: OutOfMemoryError, StackOverflowError, VirtualMachineError।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "application এ Exception ধরাই আসল কাজ — SQLException এ transaction rollback করে বোধগম্য বার্তা দেখানো, IOException এ ফাইল বা network ব্যর্থতা সামলে retry করা।"
+          },
+          {
+            "sub": "Error ধরে লাভ নেই, কারণ ঠিক করতে হয়: OutOfMemoryError হলে heap বাড়ানো বা memory leak খোঁজা, StackOverflowError হলে recursion এর base case ঠিক করা।"
+          }
         ],
         "diagram": "Throwable\n├── Exception  (handle করা যায় ✅)\n│   ├── Checked Exception\n│   │   ├── IOException\n│   │   ├── SQLException\n│   │   └── FileNotFoundException\n│   └── Unchecked (RuntimeException)\n│       ├── NullPointerException\n│       ├── ArrayIndexOutOfBoundsException\n│       └── ArithmeticException (÷0)\n└── Error  (handle করা যায় না ❌)\n    ├── OutOfMemoryError\n    ├── StackOverflowError\n    └── VirtualMachineError",
         "table": {
@@ -125,10 +132,111 @@
           "catch block: exception ধরে handle করো — message দেখাও বা recovery করো। Multiple catch হতে পারে।",
           "finally block: exception হোক বা না হোক সবসময় execute হয় — resource close করার জন্য।",
           "throw: manually exception তৈরি করে ছুঁড়ে দেওয়া। throw new ArithmeticException(\"message\");",
-          "throws: method signature এ declare করা যে এই method exception throw করতে পারে। Caller handle করবে।"
+          "throws: method signature এ declare করা যে এই method exception throw করতে পারে। Caller handle করবে।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "finally বা try-with-resources দিয়ে database connection, file ও socket বন্ধ করা — নইলে connection leak হয়ে server এর connection pool ফুরিয়ে যায়।"
+          },
+          {
+            "sub": "API call ও file operation এর চারপাশে catch দিয়ে ব্যবহারকারীকে বোধগম্য বার্তা দেখানো ও log রাখা হয়, যাতে পুরো application crash না করে।"
+          }
         ],
         "diagram": "Basic structure:\n  try {\n      // risky code\n      int result = 10 / 0;  // ArithmeticException!\n  } catch (ArithmeticException e) {\n      System.out.println(\"Error: \" + e.getMessage());\n  } finally {\n      System.out.println(\"Always runs\");\n  }\n  // Output:\n  // Error: / by zero\n  // Always runs\n\nMultiple catch:\n  try {\n      int[] arr = new int[3];\n      arr[5] = 10;  // ArrayIndexOutOfBoundsException\n  } catch (ArrayIndexOutOfBoundsException e) {\n      System.out.println(\"Index error: \" + e.getMessage());\n  } catch (Exception e) {\n      System.out.println(\"General error\");\n  } finally {\n      System.out.println(\"Done\");\n  }\n\nthrow example:\n  void checkAge(int age) {\n      if (age < 18)\n          throw new IllegalArgumentException(\"Age < 18!\");\n  }",
         "mnemonic": "Try = চেষ্টা করো, Catch = সমস্যা ধরো, Finally = যাই হোক শেষ কাজ করো। Throw = নিজে ছুঁড়ে দাও, Throws = সাবধান করে দাও। T-C-F-T-T।"
+      }
+    },
+    {
+      "id": "oop_004",
+      "q": "Explain the concepts of Inheritance and Polymorphism in Java. Write a Java program to demonstrate method overriding.",
+      "tags": [
+        "inheritance",
+        "polymorphism",
+        "method overriding",
+        "dynamic method dispatch",
+        "Java",
+        "extends"
+      ],
+      "answer": {
+        "code": "class Shape {                       // parent / superclass\n    void draw() {\n        System.out.println(\"Drawing a shape\");\n    }\n}\n\nclass Circle extends Shape {         // child / subclass\n    @Override\n    void draw() {                    // parent এর draw() কে override করল\n        System.out.println(\"Drawing a circle\");\n    }\n}\n\nclass Rectangle extends Shape {\n    @Override\n    void draw() {\n        System.out.println(\"Drawing a rectangle\");\n    }\n}\n\npublic class OverrideDemo {\n    public static void main(String[] args) {\n\n        Shape s;                     // parent type এর একটিমাত্র reference\n\n        s = new Shape();\n        s.draw();                    // Drawing a shape\n\n        s = new Circle();            // upcasting\n        s.draw();                    // Drawing a circle    ← runtime এ ঠিক হয়\n\n        s = new Rectangle();\n        s.draw();                    // Drawing a rectangle ← runtime এ ঠিক হয়\n    }\n}\n\n/*  Output:\n    Drawing a shape\n    Drawing a circle\n    Drawing a rectangle                                     */",
+        "codeLang": "Java",
+        "summary": [
+          "Inheritance = একটি class (subclass) অন্য একটি class (superclass) এর field ও method উত্তরাধিকারসূত্রে পেয়ে যায়, Java তে extends keyword দিয়ে। এতে কোড পুনর্ব্যবহার হয় এবং একটি IS-A সম্পর্ক তৈরি হয় (Circle IS-A Shape)।",
+          "Polymorphism = একই নামের কাজ ভিন্ন ভিন্ন রূপে ঘটা। Compile-time polymorphism হয় method overloading দিয়ে (একই নাম, ভিন্ন parameter) আর runtime polymorphism হয় method overriding দিয়ে।",
+          "Method overriding এ subclass তার parent এর method কে হুবহু একই signature এ নতুন করে লেখে; parent-type reference এ child object রাখলে JVM চলার সময় ঠিক করে কোন version চলবে — একে dynamic method dispatch বলে।"
+        ],
+        "points": [
+          "Inheritance এর মূল কথা: subclass পায় parent এর public ও protected সদস্যগুলো, private সদস্য নয়। super keyword দিয়ে parent এর constructor বা overridden method কে ডাকা যায়।",
+          "Java তে সমর্থিত ধরন:",
+          {
+            "sub": "Single (A → B), Multilevel (A → B → C), Hierarchical (এক parent, একাধিক child — উপরের program টিই এর উদাহরণ)।"
+          },
+          {
+            "sub": "একাধিক class থেকে সরাসরি multiple inheritance Java তে নেই (ambiguity বা diamond problem এড়াতে); দরকার হলে interface দিয়ে করা হয়।"
+          },
+          "Polymorphism এর দুই রূপ:",
+          {
+            "sub": "Compile-time (static binding) — method overloading: একই নামে একাধিক method, কিন্তু parameter এর সংখ্যা বা ধরন আলাদা। কোনটি চলবে তা compiler ই ঠিক করে ফেলে।"
+          },
+          {
+            "sub": "Runtime (dynamic binding) — method overriding: parent ও child এ একই signature এর method। reference এর type নয়, object এর প্রকৃত type দেখে JVM চলার সময় সিদ্ধান্ত নেয়। এটাই আসল polymorphism এর শক্তি।"
+          },
+          "Method overriding এর নিয়ম:",
+          {
+            "sub": "Method এর নাম ও parameter list হুবহু এক হতে হবে; return type এক অথবা covariant (subclass type) হতে হবে।"
+          },
+          {
+            "sub": "IS-A সম্পর্ক থাকতেই হবে (inheritance ছাড়া overriding হয় না)।"
+          },
+          {
+            "sub": "private, static ও final method override করা যায় না; access modifier আরও সংকীর্ণ করা যায় না (public কে protected বানানো নিষেধ)।"
+          },
+          {
+            "sub": "@Override annotation বাধ্যতামূলক নয়, কিন্তু signature ভুল হলে compiler ধরিয়ে দেয় বলে লেখা ভালো অভ্যাস।"
+          },
+          "উপরের program টি যা দেখায়: s একটিমাত্র Shape-type reference, কিন্তু তাতে পরপর Shape, Circle ও Rectangle object রাখা হয়েছে। প্রতিবার s.draw() লাইনটি একই, তবু output ভিন্ন — কারণ কোন draw() চলবে তা reference এর type (Shape) নয়, ওই মুহূর্তে ধরে রাখা object এর type দেখে ঠিক হয়।",
+          "ব্যবহারিক লাভ: নতুন একটি Triangle class যোগ করলে main() এর কোড এক লাইনও বদলাতে হয় না — এভাবেই polymorphism কোডকে extensible ও maintainable রাখে।"
+        ],
+        "diagram": "CLASS HIERARCHY (Hierarchical Inheritance)\n\n                 ┌──────────────────┐\n                 │      Shape       │  ← superclass / parent\n                 │  draw()          │\n                 └────────┬─────────┘\n                          │ extends\n              ┌───────────┴───────────┐\n              ▼                       ▼\n     ┌────────────────┐      ┌──────────────────┐\n     │    Circle      │      │    Rectangle     │  ← subclass / child\n     │  draw()        │      │  draw()          │\n     │  (overridden)  │      │  (overridden)    │\n     └────────────────┘      └──────────────────┘\n\n\nDYNAMIC METHOD DISPATCH — একই লাইন, ভিন্ন ফল\n\n   Shape s;                       ┌────────────────┐\n                                  │  s.draw();     │  ← কোড একটাই\n   s = new Shape();     ─────┐    └───────┬────────┘\n   s = new Circle();    ─────┤            │ JVM চলার সময় দেখে\n   s = new Rectangle(); ─────┘            │ reference এ আসলে\n        ▲                                 │ কোন object আছে\n        │ reference type সবসময় Shape     ▼\n        │ object type প্রতিবার বদলায়   ┌─────────────────────┐\n        └──────────────────────────────►│ Shape     → \"shape\" │\n                                        │ Circle    → \"circle\"│\n                                        │ Rectangle → \"rect.\" │\n                                        └─────────────────────┘\n\nOVERLOADING vs OVERRIDING (কখন সিদ্ধান্ত হয়)\n\n   Overloading │ একই class এ │ parameter আলাদা │ COMPILE time এ ঠিক\n   Overriding  │ parent→child│ signature হুবহু │ RUN time এ ঠিক",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Method Overloading",
+            "Method Overriding"
+          ],
+          "rows": [
+            [
+              "কোথায় ঘটে",
+              "একই class এর ভেতরে",
+              "Parent ও child class জুড়ে (inheritance লাগে)"
+            ],
+            [
+              "Parameter",
+              "অবশ্যই আলাদা হতে হবে",
+              "হুবহু একই হতে হবে"
+            ],
+            [
+              "Return type",
+              "যেকোনো হতে পারে",
+              "একই বা covariant"
+            ],
+            [
+              "Binding",
+              "Static / compile-time",
+              "Dynamic / runtime"
+            ],
+            [
+              "Polymorphism এর ধরন",
+              "Compile-time polymorphism",
+              "Runtime polymorphism"
+            ],
+            [
+              "উদ্দেশ্য",
+              "একই কাজের ভিন্ন input সংস্করণ দেওয়া",
+              "উত্তরাধিকারসূত্রে পাওয়া আচরণ নতুন করে লেখা"
+            ]
+          ]
+        },
+        "mnemonic": "Inheritance = \"IS-A\" (Circle IS-A Shape) — বাবার সম্পত্তি ছেলে পায়। Polymorphism = \"এক নাম, বহু রূপ\"। Overload = একই ঘরে ভিন্ন হাতের কাজ, compiler ঠিক করে; Override = ছেলে বাবার কাজ নিজের মতো করে করে, JVM চলার সময় ঠিক করে।"
       }
     }
   ]

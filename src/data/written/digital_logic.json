@@ -1,0 +1,198 @@
+{
+  "category": "digital_logic",
+  "questions": [
+    {
+      "id": "dl_001",
+      "q": "Explain the working principle of a PN junction diode. Draw its symbol and describe the difference between forward bias and reverse bias.",
+      "tags": [
+        "PN junction",
+        "diode",
+        "depletion region",
+        "forward bias",
+        "reverse bias",
+        "semiconductor"
+      ],
+      "answer": {
+        "summary": [
+          "P-type (majority carrier = hole) ও N-type (majority carrier = free electron) semiconductor জোড়া লাগালে জোড়ের তলে PN junction তৈরি হয়।",
+          "Junction এ carrier diffusion ও recombination হয়ে একটি depletion region জন্মায়, যেখানে শুধু অচল ion থাকে; এর ফলে একটি built-in potential barrier দাঁড়ায় (Si ≈ 0.7 V, Ge ≈ 0.3 V) যা আরও diffusion থামিয়ে দেয়।",
+          "Forward bias এ বাইরের voltage এই barrier কে কমিয়ে দেয় বলে current চলে; reverse bias এ barrier আরও বাড়ে বলে current প্রায় বন্ধ — এই কারণেই diode একমুখী (unidirectional)।"
+        ],
+        "points": [
+          "গঠন: P-side এ trivalent doping করায় hole বেশি, N-side এ pentavalent doping করায় free electron বেশি। দুই অংশের জোড়ের তলটিই PN junction। P-side এর প্রান্ত = Anode, N-side এর প্রান্ত = Cathode।",
+          "Junction তৈরির সাথে সাথে যা ঘটে (working principle):",
+          {
+            "sub": "ঘনত্বের পার্থক্যের কারণে N-side এর electron গুলো P-side এ এবং P-side এর hole গুলো N-side এ ছড়িয়ে পড়ে (diffusion) ও পরস্পরকে recombine করে ফেলে।"
+          },
+          {
+            "sub": "ফলে junction এর দুই পাশে চলনক্ষম carrier শূন্য হয়ে যায়; পড়ে থাকে অচল (immobile) ion — N-side এ ধনাত্মক donor ion, P-side এ ঋণাত্মক acceptor ion।"
+          },
+          {
+            "sub": "এই carrier-শূন্য অঞ্চলই depletion region। এর ion গুলোর কারণে N থেকে P দিকে একটি বৈদ্যুতিক ক্ষেত্র ও potential barrier V₀ তৈরি হয়, যা পরের carrier গুলোকে পার হতে বাধা দেয় — এখানেই equilibrium এসে diffusion থেমে যায়।"
+          },
+          "Forward bias: battery এর ধনাত্মক প্রান্ত P-side এ, ঋণাত্মক প্রান্ত N-side এ দেওয়া হয়।",
+          {
+            "sub": "বাইরের ক্ষেত্র built-in ক্ষেত্রের বিপরীত দিকে কাজ করে → depletion region সরু হয়, barrier ছোট হয়ে আসে।"
+          },
+          {
+            "sub": "প্রয়োগ করা voltage cut-in (knee) voltage ছাড়িয়ে গেলেই (Si ≈ 0.7 V, Ge ≈ 0.3 V) majority carrier junction পার হতে থাকে → বড় current (mA মাপের) চলে, diode এর resistance খুব কম — আচরণ closed switch এর মতো।"
+          },
+          "Reverse bias: ধনাত্মক প্রান্ত N-side এ, ঋণাত্মক প্রান্ত P-side এ দেওয়া হয়।",
+          {
+            "sub": "বাইরের ক্ষেত্র built-in ক্ষেত্রের সাথে যোগ হয় → depletion region চওড়া হয়, barrier আরও বড় হয়।"
+          },
+          {
+            "sub": "Majority carrier আর পার হতে পারে না; শুধু minority carrier এর কারণে খুব সামান্য reverse saturation current (µA/nA মাপের) চলে — resistance বিশাল, আচরণ open switch এর মতো।"
+          },
+          {
+            "sub": "Reverse voltage breakdown voltage ছাড়িয়ে গেলে avalanche বা Zener breakdown হয়ে হঠাৎ বড় current চলে; সাধারণ diode এতে নষ্ট হয়ে যায়, কিন্তু Zener diode ইচ্ছাকৃতভাবে এই অঞ্চলেই voltage regulator হিসেবে কাজ করে।"
+          },
+          "ব্যবহার: একমুখী পরিবাহিতার জন্যই diode কে rectifier (AC → DC), clipper, clamper ও protection circuit এ ব্যবহার করা হয়।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "rectifier: মোবাইল charger, UPS ও যেকোনো power supply তে half-wave/full-wave bridge rectifier দিয়ে AC কে DC করা হয়; এটিই diode এর সবচেয়ে বড় ব্যবহার।"
+          },
+          {
+            "sub": "আরও: LED (আলো দেওয়া forward-biased diode), photodiode ও solar cell (আলো থেকে current), Zener diode দিয়ে voltage regulation, এবং motor বা relay এর পাশে freewheeling diode বসিয়ে circuit কে voltage spike থেকে বাঁচানো।"
+          }
+        ],
+        "diagram": "SYMBOL — তীরের মুখ যেদিকে, conventional current সেদিকেই যায়\n\n        Anode (P)                Cathode (N)\n          ──────────▶│──────────\n                   ▲   ▲\n      তীর = P-side ─┘   └─ বার = N-side\n      (বাস্তব diode এর গায়ে cathode পাশে রুপালি দাগ থাকে)\n\n1) NO BIAS — depletion region ও barrier নিজে থেকেই জন্মায়\n   ┌───────────────┬─────┬───────────────┐\n   │    P-TYPE     │ ▓▓▓ │    N-TYPE     │\n   │  ○ ○ ○ ○ ○ ○  │ −│+ │  ● ● ● ● ● ●  │   ○ = hole\n   │  ○ ○ ○ ○ ○ ○  │ −│+ │  ● ● ● ● ● ●  │   ● = electron\n   └───────────────┴──┬──┴───────────────┘   −/+ = অচল ion\n                      │\n              depletion region — carrier নেই,\n              barrier V₀ ≈ 0.7 V (Si) / 0.3 V (Ge)\n\n2) FORWARD BIAS — barrier কমে, current চলে\n              ┌──────────┬─┬──────────┐\n      + ──────┤    P     │▓│    N     ├────── −\n              └──────────┴─┴──────────┘\n                          ↑ depletion সরু হয়ে গেছে\n      V > 0.7 V হলেই majority carrier ঝাঁকে ঝাঁকে পার হয়\n      → I বড় (mA), R খুব কম → diode ON (closed switch)\n\n3) REVERSE BIAS — barrier বাড়ে, current প্রায় বন্ধ\n              ┌────────┬───────┬───────┐\n      − ──────┤   P    │ ▓▓▓▓▓ │   N   ├────── +\n              └────────┴───────┴───────┘\n                         ↑ depletion চওড়া হয়ে গেছে\n      শুধু minority carrier → I খুবই ছোট (µA), R বিশাল\n      → diode OFF (open switch); V > V_breakdown হলে breakdown\n\nV–I CHARACTERISTIC CURVE:\n                        I ▲\n                          │        ╱  forward: 0.7 V এর পর\n                          │       ╱   হঠাৎ খাড়া উঠে যায়\n                          │      ╱\n    ──────────────────────┼─────╱────────────▶ V\n      V_breakdown │       │   0.7 V\n                  ┃      ─┼─  ← reverse: প্রায় সমতল\n                  ┃───────┘      (µA leakage মাত্র)\n                  ▼ হঠাৎ বড় reverse current\n\n────────────────────────────────────────────\n   Forward : depletion সরু  │ R ছোট │ I বড় (mA) │ ON\n   Reverse : depletion চওড়া │ R বড়  │ I ≈ 0 (µA)│ OFF",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Forward Bias",
+            "Reverse Bias"
+          ],
+          "rows": [
+            [
+              "Battery সংযোগ",
+              "+ প্রান্ত P-side (anode) এ, − প্রান্ত N-side এ",
+              "+ প্রান্ত N-side (cathode) এ, − প্রান্ত P-side এ"
+            ],
+            [
+              "Depletion region",
+              "সরু হয়",
+              "চওড়া হয়"
+            ],
+            [
+              "Potential barrier",
+              "কমে যায়",
+              "বেড়ে যায়"
+            ],
+            [
+              "যে carrier চলে",
+              "Majority carrier",
+              "শুধু minority carrier"
+            ],
+            [
+              "Current",
+              "বড়, mA মাপের",
+              "খুব সামান্য reverse saturation current (µA/nA)"
+            ],
+            [
+              "Resistance",
+              "খুব কম (কয়েক ohm)",
+              "খুব বেশি (MΩ মাপের)"
+            ],
+            [
+              "Switch হিসেবে",
+              "ON — closed switch",
+              "OFF — open switch"
+            ],
+            [
+              "সীমা",
+              "Cut-in voltage: Si 0.7 V, Ge 0.3 V",
+              "Breakdown voltage ছাড়ালে avalanche/Zener breakdown"
+            ]
+          ]
+        },
+        "mnemonic": "P-এ + দিলে দরজা খোলে (forward), P-এ − দিলে দরজা বন্ধ (reverse)। Symbol এ তীর যেদিকে current সেদিকেই যায় — উল্টো দিকে diode একটা দেয়াল। আর দেয়ালটার উচ্চতা: Si = 0.7, Ge = 0.3।"
+      }
+    },
+    {
+      "id": "dl_002",
+      "q": "What is the difference between a Multiplexer and a Demultiplexer? Explain one practical application of each in digital systems.",
+      "tags": [
+        "multiplexer",
+        "demultiplexer",
+        "MUX",
+        "DEMUX",
+        "combinational circuit",
+        "TDM"
+      ],
+      "answer": {
+        "summary": [
+          "Multiplexer (MUX) = many-to-one data selector: 2ⁿ টি input line এর মধ্য থেকে n টি select line দিয়ে বেছে নেওয়া যেকোনো একটিকে একটিমাত্র output line এ পাঠায়।",
+          "Demultiplexer (DEMUX) = one-to-many data distributor: একটিমাত্র input কে select line এর মান অনুযায়ী 2ⁿ টি output line এর যেকোনো একটিতে পাঠায়, বাকিগুলো নিষ্ক্রিয় থাকে।",
+          "অর্থাৎ MUX অনেক লাইনকে একটি পথে তোলে, DEMUX সেই এক পথ থেকে আবার সঠিক গন্তব্যে বিলি করে — এরা একে অপরের বিপরীত এবং প্রায়ই জোড়ায় ব্যবহৃত হয়।"
+        ],
+        "points": [
+          "MUX এর গঠন: 2ⁿ টি input, n টি select line, 1টি output। যেমন 4:1 MUX — input I0–I3, select S1S0, output Y।",
+          {
+            "sub": "কাজের সূত্র: Y = S̄1S̄0·I0 + S̄1S0·I1 + S1S̄0·I2 + S1S0·I3 — select এর binary মান যেই input এর সূচক, সেই input টিই output এ আসে।"
+          },
+          "DEMUX এর গঠন: 1টি input, n টি select line, 2ⁿ টি output। যেমন 1:4 DEMUX — input D, select S1S0, output Y0–Y3; S1S0 = 10 হলে শুধু Y2 = D, বাকি output গুলো 0।",
+          "মূল পার্থক্য এক বাক্যে: MUX তথ্যের পথ কমায় (many → one), DEMUX তথ্যের পথ বাড়ায় (one → many); দুটোতেই select line ঠিকানা হিসেবে কাজ করে।",
+          "MUX এর ব্যবহারিক প্রয়োগ — Time Division Multiplexing (একাধিক উৎস, একটিমাত্র transmission channel):",
+          {
+            "sub": "Telephone exchange বা industrial data acquisition system এ বহু গ্রাহক/sensor এর line থাকে, কিন্তু দূরপাল্লার transmission channel দামি ও সংখ্যায় কম। MUX select line ঘুরিয়ে পালাক্রমে প্রতিটি লাইনকে অল্প সময়ের জন্য channel এ তুলে দেয়, ফলে একটিমাত্র তারেই বহু signal যায় — তারের সংখ্যা ও খরচ নাটকীয়ভাবে কমে।"
+          },
+          "DEMUX এর ব্যবহারিক প্রয়োগ — receiver প্রান্তে data distribution ও device/memory selection:",
+          {
+            "sub": "উপরের channel এর অপর প্রান্তে DEMUX একই select ক্রম মেনে মিশ্রিত stream টিকে ভেঙে প্রতিটি টুকরোকে তার নিজের গন্তব্য line এ ফেরত পাঠায় — MUX–DEMUX জোড়া ছাড়া TDM সম্পূর্ণ হয় না।"
+          },
+          {
+            "sub": "কম্পিউটারের ভেতরে address decoder হিসেবেও: CPU এর address bit গুলোকে select হিসেবে দিলে DEMUX একবারে ঠিক একটি memory chip বা peripheral এর enable/chip-select line সক্রিয় করে, ফলে একই data bus এ থাকা বাকি device গুলো চুপ থাকে।"
+          },
+          "অন্যান্য ব্যবহার: MUX দিয়ে যেকোনো boolean function বাস্তবায়ন (function realization) ও parallel-to-serial রূপান্তর; DEMUX দিয়ে serial-to-parallel রূপান্তর এবং decoder এর কাজ করানো যায়।"
+        ],
+        "diagram": "4 : 1  MULTIPLEXER   (many → one, selector)\n\n   I0 ──┐╲\n   I1 ──┤ ╲\n   I2 ──┤  ├─────── Y     ← একবারে ঠিক একটিই বেরোয়\n   I3 ──┤ ╱\n        └╱\n         ▲  ▲\n        S1  S0   ← select line: কোন input যাবে তা ঠিক করে\n\n        S1 S0 │  Y\n        ──────┼──────\n         0  0 │  I0\n         0  1 │  I1\n         1  0 │  I2\n         1  1 │  I3\n\n1 : 4  DEMULTIPLEXER   (one → many, distributor)\n\n              ╲───────── Y0\n             ╱ ╲───────── Y1\n   D ───────┤   ╲──────── Y2   ← select যেটিকে বেছেছে\n             ╲   ╲─────── Y3     শুধু সেটিতেই D যায়,\n              ╲                  বাকিগুলো 0 থাকে\n         ▲  ▲\n        S1  S0\n\n        S1 S0 │ সক্রিয় output\n        ──────┼────────────────\n         0  0 │  Y0 = D\n         0  1 │  Y1 = D\n         1  0 │  Y2 = D\n         1  1 │  Y3 = D\n\nজোড়ায় ব্যবহার — একটিমাত্র channel এ বহু signal (TDM):\n\n  sensor 1 ──┐                                      ┌── device 1\n  sensor 2 ──┤  ╲                              ╱    ├── device 2\n  sensor 3 ──┤ MUX ═══ একটিমাত্র channel ═══ DEMUX  ├── device 3\n  sensor 4 ──┤  ╱                              ╲    ├── device 4\n             └──▲                              ▲───┘\n                └───── select একই ক্রমে ঘোরে ──┘\n    ৪ জোড়া লম্বা তারের বদলে ১ জোড়া — খরচ ও জটিলতা কমে\n\n────────────────────────────────────────────────\n   MUX   : 2ⁿ in → 1 out │ selector    │ parallel → serial\n   DEMUX : 1 in → 2ⁿ out │ distributor │ serial → parallel",
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Multiplexer (MUX)",
+            "Demultiplexer (DEMUX)"
+          ],
+          "rows": [
+            [
+              "কাজ",
+              "অনেক input থেকে একটি বেছে নেয় (data selector)",
+              "এক input কে অনেক output এ বিলি করে (data distributor)"
+            ],
+            [
+              "Input / Output",
+              "2ⁿ input, 1 output",
+              "1 input, 2ⁿ output"
+            ],
+            [
+              "Select line",
+              "n টি — কোন input পড়া হবে ঠিক করে",
+              "n টি — কোন output এ যাবে ঠিক করে"
+            ],
+            [
+              "দিক",
+              "Many to One",
+              "One to Many"
+            ],
+            [
+              "রূপান্তর",
+              "Parallel → Serial",
+              "Serial → Parallel"
+            ],
+            [
+              "অবস্থান",
+              "Transmitter/উৎস প্রান্তে",
+              "Receiver/গন্তব্য প্রান্তে"
+            ],
+            [
+              "প্রয়োগ",
+              "TDM, function realization, CPU তে register বাছাই",
+              "Data distribution, address decoder, chip select"
+            ]
+          ]
+        },
+        "mnemonic": "ভাবো ডাকঘর: MUX হলো বহু চিঠি এক ব্যাগে তোলা (many → one), DEMUX হলো ব্যাগ খুলে যার যার ঠিকানায় বিলি করা (one → many); select line টাই ঠিকানা। M = Merge, D = Distribute।"
+      }
+    }
+  ]
+}

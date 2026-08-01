@@ -21,7 +21,14 @@
           "Receiver: নিজে received data এর checksum হিসাব করে → sender এর checksum এর সাথে compare করে",
           "Match → ✅ Data intact। Mismatch → ❌ Data corrupted, re-transmission request করা হয়",
           "Checksum error detect করে, কিন্তু error correct করে না",
-          "TCP: error detect হলে re-transmit করে। UDP: detect করে কিন্তু re-transmit করে না"
+          "TCP: error detect হলে re-transmit করে। UDP: detect করে কিন্তু re-transmit করে না",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "প্রতিটি IP, TCP ও UDP header এ checksum field থাকে — receiver এটি দিয়ে transit এ নষ্ট হওয়া packet শনাক্ত করে ফেলে দেয়।"
+          },
+          {
+            "sub": "File download ও software distribution এ MD5/SHA-256 checksum প্রকাশ করা হয়, যাতে download সম্পূর্ণ ও অবিকৃত কিনা মিলিয়ে নেওয়া যায়; ZIP/RAR এ CRC-32 একই কাজ করে।"
+          }
         ],
         "diagram": "SENDER\n──────────────────────────────────────────────────\nData (decimal → 8-bit binary):\n  10  →  00001010\n  20  →  00010100\n         ────────\n  Sum →  00011110  (= 30)\n  Checksum (1's complement) = 11100001  (= ~30)\n\nNetwork এ পাঠানো হয় এই binary bits:\n  [00001010] [00010100] [11100001]\n   (data1)    (data2)   (checksum)\n\n\nRECEIVER\n──────────────────────────────────────────────────\nReceived bits:\n  [00001010] [00010100] [11100001]\n\nসব যোগ করো (data + checksum):\n  00001010\n  00010100\n+ 11100001\n──────────\n  11111111  → 1's complement = 00000000 ✅\n  Result = 0 → Data সঠিক!\n\n\nCORRUPTED SCENARIO (bit flip during transfer)\n──────────────────────────────────────────────────\nSent:     00010100  (= 20)\nReceived: 00010000  (= 16)  ← 1 bit flip!\n\nReceiver যোগ করে:\n  00001010  (10)\n  00010000  (16 ← corrupted)\n+ 11100001  (checksum)\n──────────\n  11111011  → 1's complement = 00000100 ≠ 0 ❌\n  Result ≠ 0 → DATA CORRUPTED! Re-transmission চাও।",
         "mistakes": [
@@ -247,6 +254,10 @@
           "BGP → Path Vector: একটি AS (Autonomous System) থেকে আরেকটি AS এ routing করে — এটাই পুরো Internet এর backbone। ISP রা BGP দিয়ে একে অপরের সাথে route advertise করে।",
           {
             "sub": "AS কী: একটি organization বা ISP এর নিয়ন্ত্রণে থাকা router গুলোর group। যেমন Grameenphone = একটি AS, BTCL = আরেকটি AS। BGP এদের মধ্যে কাজ করে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "কোথায় কোনটি: RIP এখন প্রায় অচল — শুধু খুব ছোট বা lab network এ; OSPF ব্যাংক, এন্টারপ্রাইজ ও ডাটা সেন্টারের ভেতরের routing এ (একই প্রতিষ্ঠানের সীমানায়); BGP ISP দের মধ্যে এবং প্রতিষ্ঠানের multi-homing এ — দুটি ISP নিলে BGP দিয়েই route advertise ও failover হয়।"
           }
         ],
         "diagram": "RIP — Distance Vector (neighbor এর কথা বিশ্বাস করে)\n─────────────────────────────────────────────────\nA → B → C → D  (প্রতিটি = 1 hop)\nA থেকে D = 3 hops → RIP এটাই নেবে\nকিন্তু B→C link 1 Mbps, A→D direct link 100 Mbps হলেও\nRIP hop count দেখে, bandwidth দেখে না ❌\n\nCount-to-Infinity Problem:\nA — B — C,  A-B link হঠাৎ down\nB ভাবে: C এর মাধ্যমে A পাওয়া যাবে (hop=2)\nC ভাবে: B এর মাধ্যমে A পাওয়া যাবে (hop=3)\nB ভাবে: তাহলে hop=4 ... এভাবে 16 পর্যন্ত চলে → Slow!\n\n\nOSPF — Link State + Dijkstra\n─────────────────────────────────────────────────\nপ্রতিটি router পুরো network এর map জানে (LSDB):\n\n        cost=1         cost=10\n   A ─────────── B ─────────── C\n    \\  cost=3           cost=3 /\n     ──────────── D ───────────\n\nDijkstra চালায়:\n  A→B→C = 1+10 = 11\n  A→D→C = 3+3  = 6  ← best path ✅\nCount-to-Infinity নেই, কারণ নিজেই map দেখে calculate করে\n\n\nBGP — Path Vector (AS থেকে AS)\n─────────────────────────────────────────────────\n  [AS 100]  ──BGP──  [AS 200]  ──BGP──  [AS 300]\n  (GP ISP)            (BD ISP)           (BTCL)\n\nBGP advertise করে: 'AS 300 পৌঁছাতে AS 200 → AS 300 path নাও'\nPath = [100, 200, 300] — loop detect করা যায় নিজের AS দেখে\nRIP/OSPF = একটি AS এর ভেতরে (IGP)\nBGP      = আলাদা AS এর মধ্যে (EGP) ← এটাই পার্থক্য",
@@ -393,7 +404,11 @@
           "Supernetting: কতটি network একত্রিত করতে হবে? 4 = 2² → 2 bit বাদ দাও prefix থেকে",
           "নতুন prefix = /24 − 2 = /22",
           "Supernet address = smallest address = 10.1.0.0/22",
-          "3rd octet binary: 00, 01, 10, 11 → প্রথম 22 bits common → /22 confirmed"
+          "3rd octet binary: 00, 01, 10, 11 → প্রথম 22 bits common → /22 confirmed",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Supernetting এর আসল ব্যবহার: ISP ও backbone router এ route aggregation — বহু ছোট prefix কে কয়েকটি বড় prefix এ মিলিয়ে routing table ছোট রাখা হয়, নইলে internet এর routing table router এর মেমরিতেই ধরত না।"
+          }
         ],
         "diagram": "OSI Layer → Device → PDU:\n  Layer 3  Network   │ PACKET  ← Router\n  Layer 2  Data Link │ Frame   ← Switch\n  Layer 1  Physical  │ Bits    ← Hub\n\nCIDR Supernetting:\n  10.1. 00000000 .0  → 10.1.0.0/24\n  10.1. 00000001 .0  → 10.1.1.0/24\n  10.1. 00000010 .0  → 10.1.2.0/24\n  10.1. 00000011 .0  → 10.1.3.0/24\n              ^^  (শেষ 2 bits ভিন্ন)\n  Common = 22 bits → /22\n\n  4 networks = 2² → subtract 2 from prefix\n  /24 − 2 = /22\n  Supernet: 10.1.0.0/22\n  Hosts: 10.1.0.1 → 10.1.3.254 (1022 usable)",
         "mistakes": [
@@ -506,7 +521,14 @@
           "FDM (Frequency Division Multiplexing): channel এর total bandwidth কে ছোট ছোট frequency band এ ভাগ করা হয়। প্রতিটি device একটি নির্দিষ্ট frequency band পায়। Analog signal এ ব্যবহৃত (Radio, Cable TV)।",
           "WDM (Wavelength Division Multiplexing): Fiber Optic cable এ আলোর বিভিন্ন wavelength (রঙ) ব্যবহার করে একসাথে অনেক signal পাঠানো হয়। Terabit/s পর্যন্ত capacity।",
           "TDM কীভাবে কাজ করে: Channel কে N টি time slot এ ভাগ করা হয়। Device 1 → Slot 1, Device 2 → Slot 2, ... এভাবে round-robin পদ্ধতিতে চলে। Slot empty থাকলেও অন্য device সেটা নিতে পারে না (Synchronous TDM)।",
-          "Statistical TDM: Slot শুধু তখনই দেওয়া হয় যখন device এর data আছে → bandwidth efficient।"
+          "Statistical TDM: Slot শুধু তখনই দেওয়া হয় যখন device এর data আছে → bandwidth efficient।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "কোথায় কোনটি: TDM টেলিফোন backbone ও E1/T1 line এ (digital voice channel পালা করে যায়); FDM রেডিও, cable TV ও পুরোনো analog telephony তে; WDM/DWDM দূরপাল্লার ও সাবমেরিন fiber এ।"
+          },
+          {
+            "sub": "WDM কেন গুরুত্বপূর্ণ: নতুন fiber না বসিয়েই একই তন্তুতে ভিন্ন wavelength যোগ করে ক্ষমতা Tbps পর্যন্ত বাড়ানো যায় — তাই আন্তর্জাতিক bandwidth সস্তা হয়েছে।"
+          }
         ],
         "diagram": "FDM — Frequency ভাগ:\n  f1 ████████████████████████████  → Device A\n  f2 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  → Device B\n  f3 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  → Device C\n     ──────────── time ──────────▶\n\nTDM — Time ভাগ:\n  [A][B][C][A][B][C][A][B][C]...  → একটি channel\n   ↑   ↑   ↑\n   slot1 slot2 slot3 (round-robin)\n\nWDM — Wavelength ভাগ (Fiber Optic):\n  λ1 (লাল)  ──────────────────────▶\n  λ2 (সবুজ) ──────────────────────▶  একই fiber\n  λ3 (নীল)  ──────────────────────▶\n\nTDM Working Detail:\n  Frame = [Slot-A | Slot-B | Slot-C]\n  Cycle 1: A পাঠায় → B পাঠায় → C পাঠায়\n  Cycle 2: A পাঠায় → B পাঠায় → C পাঠায়\n  Synchronous: slot খালি থাকলেও wait করতে হয়",
         "table": {
@@ -679,7 +701,14 @@
         "points": [
           "SOAP (Simple Object Access Protocol): একটি standard communication protocol। XML format এ message আদান-প্রদান করে। Strict rules ও standards follow করে (WS-Security, WSDL)। High security ও ACID transaction এর জন্য উপযুক্ত",
           "RESTful API (Representational State Transfer): একটি architectural style, protocol নয়। HTTP methods (GET, POST, PUT, DELETE) ব্যবহার করে। JSON, XML, HTML ইত্যাদি যেকোনো format সাপোর্ট করে। হালকা, দ্রুত, এবং web ও mobile app এ সবচেয়ে জনপ্রিয়",
-          "Data Exchange পার্থক্য: SOAP → শুধু XML envelope এ data পাঠায়। REST → JSON (সবচেয়ে সাধারণ), XML বা অন্য যেকোনো format ব্যবহার করতে পারে"
+          "Data Exchange পার্থক্য: SOAP → শুধু XML envelope এ data পাঠায়। REST → JSON (সবচেয়ে সাধারণ), XML বা অন্য যেকোনো format ব্যবহার করতে পারে",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "কোথায় কোনটি: SOAP এখনো ব্যাংক, পেমেন্ট গেটওয়ে ও টেলিকমের legacy integration এ — কারণ WS-Security, formal contract (WSDL) ও transaction guarantee দরকার হয়।"
+          },
+          {
+            "sub": "REST ব্যবহৃত হয় mobile app, public API ও microservice এ — হালকা JSON, HTTP এর নিজস্ব method ও caching সুবিধা থাকায় দ্রুত ও সহজ।"
+          }
         ],
         "table": {
           "headers": [
@@ -784,7 +813,14 @@
           "Net-Specific Advantage: Scalable, less memory, standard, easy management",
           "Net-Specific Disadvantage: No per-host control, no per-host security/optimization",
           "Host-Specific Advantage: Granular control, redundant path for critical servers, per-host security policy",
-          "Host-Specific Disadvantage: Huge routing table, high overhead, static configuration, not scalable"
+          "Host-Specific Disadvantage: Huge routing table, high overhead, static configuration, not scalable",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Host-specific route বাস্তবে কোথায়: একটি নির্দিষ্ট critical server কে আলাদা বা redundant path দিয়ে পাঠাতে, কোনো একটি IP এর traffic blackhole (null route) করে আক্রমণ ঠেকাতে, বা troubleshooting এ সাময়িকভাবে এক host এর path বদলাতে।"
+          },
+          {
+            "sub": "বাকি প্রায় সব ক্ষেত্রে net-specific route ই ব্যবহৃত হয় — routing table ছোট ও দ্রুত রাখতে internet ও এন্টারপ্রাইজ দুই জায়গাতেই এটিই আদর্শ।"
+          }
         ],
         "table": {
           "headers": [
@@ -1461,7 +1497,11 @@
           "Step 2 — RTT: ACK ফিরে আসতে যাওয়া-আসা দুই দিকের delay = 2 × Tp = 2 × 250 = 500 ms।",
           "Step 3 — Stop-and-Wait efficiency: U = Tt ÷ (Tt + RTT) = 8 ÷ (8 + 500) = 8 ÷ 508 ≈ 0.01575 ≈ 1.57%। অর্থাৎ link এর মাত্র ~1.57% সময় কাজে লাগে, বাকিটা ACK এর অপেক্ষায় নষ্ট।",
           "Step 4 — a (অনুপাত): a = Tp ÷ Tt = 250 ÷ 8 = 31.25।",
-          "Step 5 — ন্যূনতম window: sliding window এ 100% utilization এর শর্ত W ≥ 1 + 2a = 1 + 2(31.25) = 63.5। Window পূর্ণ frame সংখ্যা হতে হয়, তাই উপরে round → W = 64 frame।"
+          "Step 5 — ন্যূনতম window: sliding window এ 100% utilization এর শর্ত W ≥ 1 + 2a = 1 + 2(31.25) = 63.5। Window পূর্ণ frame সংখ্যা হতে হয়, তাই উপরে round → W = 64 frame।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "satellite, দূরপাল্লার সাবমেরিন লিংক ও উচ্চগতির long-fat network এ delay বেশি বলে stop-and-wait অচল; তাই TCP sliding window ব্যবহার করে, আর বড় bandwidth-delay product এর জন্য TCP Window Scaling দিয়ে window আরও বড় করা হয়।"
+          }
         ],
         "diagram": "STOP-AND-WAIT — একটা frame পাঠাও, পুরো RTT অপেক্ষা করো\n\n Sender │█│←8ms                                  │█│\n        │  ╲ frame                          ACK ╱  │\n        │   ╲                                  ╱   │\n Receiver│    ╲___________________________╱       │\n        │◀──────── RTT = 500 ms ─────────▶│\n  এক cycle = 8 ms পাঠানো + 500 ms অপেক্ষা = 508 ms\n  কাজে লাগল মাত্র 8 ms\n\n  U = Tt/(Tt+RTT) = 8/508 ≈ 1.57%   🔴 (link প্রায় খালি বসে থাকে)\n\n\nSLIDING WINDOW — ACK ফেরার আগেই link ভরে দাও\n\n Sender │█│█│█│ … │█│  ← একসাথে W টা frame পাঠানো হয়\n        │ ╲ ╲ ╲     ╲                              │\n Receiver│  ╲_╲_╲_____╲ … প্রথম ACK ফেরার মধ্যেই link ভরা\n        │◀──── 1 frame + RTT = (1+2a)·Tt ────▶│\n\n  a = Tp/Tt = 250/8 = 31.25\n  W ≥ 1 + 2a = 1 + 62.5 = 63.5  →  W = 64 frame\n\n  ┌──────────────────────────────────────────┐\n  │ Stop-and-Wait efficiency ≈ 1.57%          │\n  │ 100% এর জন্য ন্যূনতম window = 64 frame     │\n  └──────────────────────────────────────────┘",
         "mistakes": [
@@ -1581,6 +1621,97 @@
           ]
         },
         "mnemonic": "TCP = ফোন কল (আগে \"হ্যালো\" বলে সংযোগ, শুনতে না পেলে \"আবার বলো\")। UDP = মাইকে ঘোষণা (কে শুনল খোঁজ নেই, কিন্তু দ্রুত)। তাই live stream/gaming এ UDP।"
+      }
+    },
+    {
+      "id": "cn_027",
+      "q": "An organization has been assigned the IPv4 network address 192.168.1.0/24. Divide the address space into four equal-sized subnets. Determine the Network Address, Subnet Mask (both CIDR and dotted-decimal notation), usable host range and broadcast address for each subnet.",
+      "tags": [
+        "subnetting",
+        "IPv4",
+        "CIDR",
+        "subnet mask",
+        "VLSM",
+        "broadcast address"
+      ],
+      "answer": {
+        "summary": [
+          "৪টি সমান subnet দরকার → subnet সংখ্যা = 2ⁿ, তাই host অংশ থেকে 2 bit ধার করতে হবে → নতুন prefix /24 + 2 = /26।",
+          "Subnet Mask: CIDR এ /26, dotted-decimal এ 255.255.255.192 (শেষ octet এর bit: 11000000)।",
+          "Block size = 256 − 192 = 64, তাই network address গুলো 192.168.1.0, .64, .128, .192 — প্রতিটিতে 64টি address, usable host 62টি।"
+        ],
+        "points": [
+          "কেন ঠিক 2 bit ধার: subnet সংখ্যা = 2ⁿ যেখানে n = host অংশ থেকে ধার করা bit। 4টি subnet চাইলে 2ⁿ ≥ 4 → n = 2।",
+          "নতুন prefix: মূল network অংশ ছিল 24 bit, তার সাথে ধার করা 2 bit যোগ হয়ে network অংশ হয় 26 bit → CIDR notation /26।",
+          "Subnet mask বের করা — 26টি 1 এর পরে 6টি 0 বসাও:",
+          {
+            "sub": "11111111.11111111.11111111.11000000 → 255.255.255.192 (dotted-decimal)।"
+          },
+          "Block size বা increment = 256 − 192 = 64। অর্থাৎ প্রতিটি subnet এর network address আগেরটির চেয়ে 64 করে বাড়ে — এটাই subnet গুলো বের করার দ্রুততম নিয়ম।",
+          "প্রতি subnet এ মোট address = 2⁶ = 64; এর মধ্যে প্রথমটি network address ও শেষটি broadcast address, তাই usable host = 64 − 2 = 62।",
+          "চারটি subnet (সবার mask একই — /26 = 255.255.255.192):",
+          {
+            "sub": "Subnet 1 — Network 192.168.1.0/26, host range 192.168.1.1 – 192.168.1.62, broadcast 192.168.1.63"
+          },
+          {
+            "sub": "Subnet 2 — Network 192.168.1.64/26, host range 192.168.1.65 – 192.168.1.126, broadcast 192.168.1.127"
+          },
+          {
+            "sub": "Subnet 3 — Network 192.168.1.128/26, host range 192.168.1.129 – 192.168.1.190, broadcast 192.168.1.191"
+          },
+          {
+            "sub": "Subnet 4 — Network 192.168.1.192/26, host range 192.168.1.193 – 192.168.1.254, broadcast 192.168.1.255"
+          },
+          "চেনার নিয়ম: যে address এ host bit গুলো সব 0 সেটি network address, সব 1 হলে broadcast address; মাঝেরগুলোই host কে দেওয়া যায়।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "এক প্রতিষ্ঠানে বিভাগভিত্তিক ভাগ (HR, Accounts, IT আলাদা subnet) — broadcast domain ছোট হয়ে network দ্রুত থাকে এবং firewall/ACL দিয়ে subnet ভিত্তিক access control দেওয়া যায়।"
+          },
+          {
+            "sub": "IP অপচয় রোধ: ছোট শাখায় /24 না দিয়ে /26, আর router-to-router link এ /30 দিলে address pool অনেক দিন চলে — VLSM ঠিক এই কাজেই ব্যবহৃত হয়।"
+          }
+        ],
+        "diagram": "মূল block: 192.168.1.0/24  →  256টি address (.0 – .255)\n\nশেষ octet এর bit ভাগাভাগি (/26):\n  ┌──────── network 26 bit ─────────┬── host 6 bit ──┐\n  │ 11111111.11111111.11111111. 1 1 │     0 0 0 0 0 0│\n  └─────────────────────────────┬───┴────────────────┘\n       255  .  255  .  255  .   │     1 9 2\n                                └── ধার করা 2 bit (subnet bit)\n\nsubnet bit এর মান → কোন block:\n   00 → .0      01 → .64      10 → .128      11 → .192\n\n/24 space কে 64 করে চার ভাগ:\n .0               .64              .128             .192            .255\n  ├────────────────┼────────────────┼────────────────┼───────────────┤\n  │   SUBNET 1     │   SUBNET 2     │   SUBNET 3     │   SUBNET 4    │\n  │ .0   network   │ .64  network   │ .128 network   │ .192 network  │\n  │ .1–.62  host   │ .65–.126 host  │ .129–.190 host │ .193–.254 host│\n  │ .63  broadcast │ .127 broadcast │ .191 broadcast │ .255 broadcast│\n  └────────────────┴────────────────┴────────────────┴───────────────┘\n    64 address        64 address       64 address       64 address\n    62 usable         62 usable        62 usable        62 usable\n\n────────────────────────────────────────────\n  Mask  : /26  =  255.255.255.192\n  Block : 256 − 192 = 64   ← লাফের মাপ\n  Host  : 2⁶ − 2 = 62 প্রতি subnet\n  মোট   : 4 × 62 = 248টি host address কাজে লাগে",
+        "table": {
+          "headers": [
+            "Subnet",
+            "Network Address (CIDR)",
+            "Subnet Mask",
+            "Usable Host Range",
+            "Broadcast"
+          ],
+          "rows": [
+            [
+              "1",
+              "192.168.1.0/26",
+              "255.255.255.192",
+              "192.168.1.1 – 192.168.1.62",
+              "192.168.1.63"
+            ],
+            [
+              "2",
+              "192.168.1.64/26",
+              "255.255.255.192",
+              "192.168.1.65 – 192.168.1.126",
+              "192.168.1.127"
+            ],
+            [
+              "3",
+              "192.168.1.128/26",
+              "255.255.255.192",
+              "192.168.1.129 – 192.168.1.190",
+              "192.168.1.191"
+            ],
+            [
+              "4",
+              "192.168.1.192/26",
+              "255.255.255.192",
+              "192.168.1.193 – 192.168.1.254",
+              "192.168.1.255"
+            ]
+          ]
+        },
+        "mnemonic": "চার ভাগ = দুই bit ধার → /26। Mask এর শেষ ঘর 192, আর 256 − 192 = 64 — তাই .0, .64, .128, .192 লাফিয়ে যাও। প্রতি ঘরে 64টা address, দুটো বাদ দিলে হাতে থাকে 62।"
       }
     }
   ]

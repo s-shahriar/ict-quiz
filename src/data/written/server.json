@@ -2693,6 +2693,77 @@
         },
         "mnemonic": "নিচ থেকে উপরে — IaaS জমি, PaaS ভিত্তি ও কাঠামো তোলা বাড়ি, SaaS সাজানো-গোছানো ফ্ল্যাট। \"শুধু code লিখব\" শুনলেই উত্তর PaaS।"
       }
+    },
+    {
+      "id": "server_036",
+      "q": "A physical server has 32 CPU cores, 96 GB RAM, and 4 TB storage. Each virtual machine (VM) requires 4 CPU cores, 16 GB RAM, and 500 GB storage. Calculate the maximum number of VMs that can be hosted on the server without overcommitting resources. Identify which hardware resource limits the number of VMs.",
+      "tags": [
+        "virtualization",
+        "VM",
+        "capacity planning",
+        "overcommit",
+        "bottleneck",
+        "hypervisor"
+      ],
+      "answer": {
+        "summary": [
+          "প্রতিটি resource আলাদাভাবে ভাগ করলে: CPU 32 ÷ 4 = 8 VM, RAM 96 ÷ 16 = 6 VM, Storage 4000 ÷ 500 = 8 VM।",
+          "Overcommit না করার শর্তে তিনটি সীমার মধ্যে সবচেয়ে ছোটটিই প্রযোজ্য → সর্বোচ্চ 6টি VM চালানো যাবে।",
+          "সীমাবদ্ধকারী (bottleneck) hardware resource হলো RAM — 6টি VM এই RAM পুরোপুরি শেষ হয়ে যায়, অথচ CPU ও storage তখনো বাকি থাকে।"
+        ],
+        "points": [
+          "Server capacity: CPU 32 core, RAM 96 GB, Storage 4 TB = 4000 GB (1 TB = 1000 GB ধরে)।",
+          "প্রতি VM এর চাহিদা: 4 CPU core, 16 GB RAM, 500 GB storage।",
+          "প্রতিটি resource আলাদা করে হিসাব (কে কয়টা VM চালাতে পারত):",
+          {
+            "sub": "CPU দিয়ে সম্ভব: 32 ÷ 4 = 8টি VM"
+          },
+          {
+            "sub": "RAM দিয়ে সম্ভব: 96 ÷ 16 = 6টি VM"
+          },
+          {
+            "sub": "Storage দিয়ে সম্ভব: 4000 ÷ 500 = 8টি VM"
+          },
+          "Overcommitting মানে physical এ যতটুকু আছে তার চেয়ে বেশি resource VM গুলোকে বরাদ্দ দেওয়া। Hypervisor এটা করতে পারে কারণ সব VM একসাথে তার পুরো বরাদ্দ ব্যবহার করে না, কিন্তু প্রশ্নে তা নিষেধ — তাই কোনো resource এর হিসাবই ছাড়ানো যাবে না।",
+          "অতএব সর্বোচ্চ VM সংখ্যা = min(8, 6, 8) = 6। সপ্তম VM বসাতে গেলে RAM লাগত 7 × 16 = 112 GB, যা 96 GB এর চেয়ে বেশি — অর্থাৎ overcommit হয়ে যেত।",
+          "6টি VM চালালে host এর অবস্থা: CPU 24/32 ব্যবহৃত (8 core খালি পড়ে থাকে), RAM 96/96 ব্যবহৃত (কিছুই বাকি নেই), Storage 3000/4000 ব্যবহৃত (1000 GB খালি) — এখান থেকেই স্পষ্ট যে RAM ই প্রথমে ফুরায়।",
+          "ব্যবহারিক সিদ্ধান্ত: এই server এ CPU বা disk বাড়িয়ে কোনো লাভ নেই; RAM 96 GB থেকে 128 GB এ উন্নীত করলেই VM সংখ্যা 8 এ পৌঁছাবে (তখন CPU ও storage একসাথে সীমা হবে)। বাস্তবে hypervisor নিজেও কিছু CPU ও RAM খরচ করে, তাই প্রকৃত সংখ্যা এর চেয়ে কম হতে পারে।"
+        ],
+        "diagram": "PHYSICAL HOST\n  ┌─────────────────────────────────────────────────────┐\n  │  CPU 32 cores  │  RAM 96 GB  │  STORAGE 4000 GB     │\n  └─────────────────────────────────────────────────────┘\n  প্রতি VM চায় :  4 core   +   16 GB   +   500 GB\n\n\nপ্রতিটি resource আলাদা করে কয়টা VM দিতে পারত:\n\n  CPU      ████████                 32 ÷ 4    = 8 VM\n  RAM      ██████                   96 ÷ 16   = 6 VM   ◄── সবচেয়ে ছোট\n  STORAGE  ████████                 4000 ÷ 500 = 8 VM\n\n  উত্তর = min(8, 6, 8) = 6 VM\n  (শিকল যত শক্তই হোক, ছেঁড়ে দুর্বলতম কড়িতে)\n\n\n6টি VM বসানোর পর host এর অবস্থা:\n\n  CPU     24 / 32    ▓▓▓▓▓▓▓▓▓▓▓▓░░░░    8 core খালি পড়ে আছে\n  RAM     96 / 96    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓    0 GB খালি  ← ফুরিয়ে গেছে\n  STORAGE 3000/4000  ▓▓▓▓▓▓▓▓▓▓▓▓░░░░    1000 GB খালি\n\n  ┌────┐┌────┐┌────┐┌────┐┌────┐┌────┐    ┌╌╌╌╌┐\n  │VM 1││VM 2││VM 3││VM 4││VM 5││VM 6│    ┊VM 7┊ ✗ বসানো যাবে না\n  └────┘└────┘└────┘└────┘└────┘└────┘    └╌╌╌╌┘   7 × 16 = 112 GB\n        ─────── HYPERVISOR ───────                  > 96 GB (overcommit)\n        ─────── PHYSICAL HOST ───────\n\n────────────────────────────────────────────\n  সর্বোচ্চ VM = 6\n  সীমাবদ্ধকারী (bottleneck) resource = RAM (Memory)",
+        "table": {
+          "headers": [
+            "Resource",
+            "Server এ আছে",
+            "প্রতি VM এ লাগে",
+            "সম্ভাব্য VM",
+            "6 VM এর পর অবশিষ্ট"
+          ],
+          "rows": [
+            [
+              "CPU",
+              "32 cores",
+              "4 cores",
+              "32 ÷ 4 = 8",
+              "8 cores খালি"
+            ],
+            [
+              "RAM",
+              "96 GB",
+              "16 GB",
+              "96 ÷ 16 = 6  ◄ সীমা",
+              "0 GB — শেষ"
+            ],
+            [
+              "Storage",
+              "4 TB = 4000 GB",
+              "500 GB",
+              "4000 ÷ 500 = 8",
+              "1000 GB খালি"
+            ]
+          ]
+        },
+        "mnemonic": "প্রতিটি resource আলাদা করে ভাগ করো, তারপর সবচেয়ে ছোট সংখ্যাটাই উত্তর — শিকল ছেঁড়ে দুর্বলতম কড়িতে। এখানে দুর্বলতম কড়ি RAM: 96 ÷ 16 = 6।"
+      }
     }
   ]
 }

@@ -21,7 +21,14 @@
           "Framing: Physical memory (RAM) কে fixed-size block এ ভাগ করা হয় → এগুলো Frame। Frame size = Page size সবসময়।",
           "Paging ↔ Framing: Page হলো logical side, Frame হলো physical side। OS একটি Page Table রাখে (page → frame mapping)।",
           "Segmentation: Process কে variable-size logical unit এ ভাগ করা হয় → Code, Data, Stack, Heap। External fragmentation হতে পারে, internal fragmentation নেই।",
-          "OS একটি Segment Table রাখে (segment → base address + limit)।"
+          "OS একটি Segment Table রাখে (segment → base address + limit)।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Linux ও Windows দুটোই paging ব্যবহার করে (সাধারণ page size 4 KB) — demand paging দিয়ে দরকারমতো page RAM এ আনে, RAM কম পড়লে কম ব্যবহৃত page swap/pagefile এ পাঠায়।"
+          },
+          {
+            "sub": "Segmentation এর ধারণা এখনো টিকে আছে program এর code/data/stack/heap ভাগে, তবে x86-64 এ hardware segmentation প্রায় ব্যবহৃত হয় না — বাস্তবে paging-ই মূল কৌশল।"
+          }
         ],
         "diagram": "PAGING:\n Logical (Process)        Physical (RAM)\n ┌──────────┐            ┌──────────┐ ← Frame 0\n │  Page 0  │──────────→ │  Page 1  │\n ├──────────┤            ├──────────┤ ← Frame 1\n │  Page 1  │──────┐     │  Page 0  │\n ├──────────┤      │     ├──────────┤ ← Frame 2\n │  Page 2  │───┐  └───→ │  Page 2  │\n └──────────┘   └──────→ └──────────┘\n Fixed size → ছড়িয়ে থাকলেও সমস্যা নেই\n\nSEGMENTATION:\n Logical (Process)        Physical (RAM)\n ┌────────────────┐      ┌──────────────────────┐\n │   Code Seg     │────→ │ Code  (var. size)     │\n ├────────┐       │      ├──────────────────────┤\n │ Data   │       │      │ [gap] ← external frag │\n ├────────┘       │      ├──────────────────────┤\n │   Stack Seg    │────→ │ Stack (var. size)     │\n └────────────────┘      └──────────────────────┘\n Variable size → gaps তৈরি হয়",
         "mistakes": [
@@ -164,7 +171,14 @@
           "Physical Address: RAM chip এর আসল location। MMU (Memory Management Unit) তৈরি করে। Hardware এ এটাই ব্যবহার হয়।",
           "MMU: Logical → Physical translate করার hardware। Base register যোগ করে বা Page Table ব্যবহার করে।",
           "একাধিক process এর logical address same হতে পারে — physical আলাদা থাকে → process isolation নিশ্চিত",
-          "Virtual memory সম্ভব — logical space RAM এর চেয়ে বড় হতে পারে"
+          "Virtual memory সম্ভব — logical space RAM এর চেয়ে বড় হতে পারে",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "একই program দুবার চালালে দুই process এর logical address এক হলেও physical আলাদা — এখান থেকেই process isolation ও নিরাপত্তা আসে, একটি process অন্যটির memory পড়তে পারে না।"
+          },
+          {
+            "sub": "এই আলাদা স্তর আছে বলেই virtual memory (RAM এর চেয়ে বড় address space), memory-mapped file ও ASLR এর মতো নিরাপত্তা কৌশল কাজ করতে পারে।"
+          }
         ],
         "diagram": " CPU                MMU                   RAM\n ┌────┐  Logical   ┌──────────────┐  Physical\n │    │──0x0050───▶│ Base = 0x3000│──0x3050──▶ [actual RAM]\n │    │            │ 0x3000+0x0050│\n └────┘            └──────────────┘\n\n Multiple processes — same logical, different physical:\n  Process A: logical 0x0050 → physical 0x3050\n  Process B: logical 0x0050 → physical 0x7050\n  → Process isolation নিশ্চিত হয়",
         "mistakes": [
@@ -235,7 +249,14 @@
           "Deadlock এর ৪টি Coffman শর্ত: Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait — চারটি একসাথে থাকলেই deadlock",
           "Single Instance Resource = resource এর মাত্র ১টি copy → cycle থাকলে কেউ কখনো সেটা পাবে না → Deadlock GUARANTEED ✅",
           "Multiple Instance Resource = resource এর ২+ copies → cycle থাকলেও হয়তো কোনো process কাজ শেষ করে resource ছেড়ে দেবে → বাকিরা এগোতে পারবে → Deadlock নাও হতে পারে ❌",
-          "তাই RAG cycle = deadlock এর necessary condition (লাগবেই), কিন্তু sufficient condition নয় — cycle আছে মানেই deadlock, এটা বলা যাবে না (multiple instance এর ক্ষেত্রে)"
+          "তাই RAG cycle = deadlock এর necessary condition (লাগবেই), কিন্তু sufficient condition নয় — cycle আছে মানেই deadlock, এটা বলা যাবে না (multiple instance এর ক্ষেত্রে)",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "database এ দুটি transaction উল্টো ক্রমে একই দুটি row lock করলে ঠিক এই circular wait হয় — DBMS wait-for graph দেখে একটিকে victim ধরে rollback করে।"
+          },
+          {
+            "sub": "প্রতিরোধের বাস্তব নিয়ম: সব code এ resource ও lock একই নির্দিষ্ট ক্রমে নেওয়া (এতে circular wait শর্তই ভেঙে যায়), lock timeout রাখা, এবং transaction ছোট রাখা।"
+          }
         ],
         "diagram": "SINGLE INSTANCE — Cycle = Deadlock নিশ্চিত ✅\n─────────────────────────────────────────────\nP1 : R1 ধরে আছে,  R2 চায়  →  R2 পাবে না (P2 ধরে)\nP2 : R2 ধরে আছে,  R1 চায়  →  R1 পাবে না (P1 ধরে)\n\nকেউ ছাড়বে না, কেউ পাবে না → DEADLOCK! 🔴\n\n\nMULTIPLE INSTANCE — Cycle ≠ Deadlock নিশ্চিত নয় ❌\n────────────────────────────────────────────────────\nR1 এর ২টি instance আছে: [●][●]\n\nP1 : R1[●] ধরে,  R2 চায়\nP2 : R2[●] ধরে,  R1 চায়\nP3 : R1[●] ধরে,  আর কিছু চায় না  ← এটাই পার্থক্য!\n\nStep 1 → P3 কাজ শেষ,  R1[●] মুক্ত করে\nStep 2 → P2 সেই R1[●] পায়,  কাজ শেষ,  R2[●] মুক্ত করে\nStep 3 → P1 সেই R2[●] পায়,  কাজ শেষ!\n\nCycle ছিল (P1↔P2), কিন্তু P3 রাস্তা খুলে দিল → NO DEADLOCK! 🟢",
         "mistakes": [
@@ -310,7 +331,14 @@
           "Thread: একটি Process এর ভেতরে একাধিক execution path। একই Process এর সব thread code, data, heap share করে — শুধু নিজের stack আলাদা।",
           "মূল পার্থক্য: Process = heavyweight (আলাদা memory), Thread = lightweight (shared memory)। Process তৈরি করতে বেশি resource লাগে, Thread কম।",
           "সুবিধা ১ — দ্রুত Communication: Thread রা একই memory space share করে তাই IPC (Inter-Process Communication) লাগে না। Data সরাসরি access করা যায় → অনেক দ্রুত।",
-          "সুবিধা ২ — কম Resource: Thread তৈরিতে নতুন memory allocate করতে হয় না। Context switching ও দ্রুত কারণ memory map switch করতে হয় না → CPU efficient।"
+          "সুবিধা ২ — কম Resource: Thread তৈরিতে নতুন memory allocate করতে হয় না। Context switching ও দ্রুত কারণ memory map switch করতে হয় না → CPU efficient।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Chrome প্রতিটি tab আলাদা process এ চালায় — এক tab crash বা compromise হলে বাকি ব্রাউজার নিরাপদ থাকে, কারণ এখানে isolation ই মুখ্য।"
+          },
+          {
+            "sub": "অন্যদিকে web server ও database প্রতি request বা query এর জন্য thread ব্যবহার করে — একই cache ও connection pool share করতে হয় বলে thread ই সস্তা ও দ্রুত।"
+          }
         ],
         "diagram": "PROCESS (Heavy)\n┌─────────────────────────────┐\n│  Process A                  │\n│  ┌────────┐  ┌──────────┐  │\n│  │ Code   │  │  Heap    │  │\n│  └────────┘  └──────────┘  │\n│  ┌────────────────────────┐ │\n│  │ Stack (Thread-1 only)  │ │\n│  └────────────────────────┘ │\n└─────────────────────────────┘\n         ❌ cannot access\n┌─────────────────────────────┐\n│  Process B (আলাদা memory)   │\n└─────────────────────────────┘\n\nTHREADS (Lightweight — একই Process এ)\n┌──────────────────────────────────────┐\n│  Process                             │\n│  ┌────────┐  ┌──────────┐           │\n│  │ Code   │  │  Heap    │ ← shared  │\n│  └────────┘  └──────────┘           │\n│  ┌────────┐ ┌────────┐ ┌────────┐   │\n│  │Stack T1│ │Stack T2│ │Stack T3│   │\n│  └────────┘ └────────┘ └────────┘   │\n└──────────────────────────────────────┘",
         "table": {
@@ -372,7 +400,14 @@
           "Synchronization Issue ১ — Race Condition: Producer ও Consumer একসাথে buffer access করলে data corrupt হতে পারে। Mutual Exclusion (Mutex) দিয়ে সমাধান।",
           "Synchronization Issue ২ — Buffer Full: Producer buffer full দেখলে wait করতে হবে। Consumer consume করলে Producer কে জানাতে হবে।",
           "Synchronization Issue ৩ — Buffer Empty: Consumer buffer empty দেখলে wait করতে হবে। Producer produce করলে Consumer কে জানাতে হবে।",
-          "Semaphore দিয়ে সমাধান: mutex=1 (critical section), empty=N (খালি slot), full=0 (ভরা slot)। Producer: empty↓, mutex lock, produce, mutex unlock, full↑। Consumer: full↓, mutex lock, consume, mutex unlock, empty↑।"
+          "Semaphore দিয়ে সমাধান: mutex=1 (critical section), empty=N (খালি slot), full=0 (ভরা slot)। Producer: empty↓, mutex lock, produce, mutex unlock, full↑। Consumer: full↓, mutex lock, consume, mutex unlock, empty↑।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "printer spooler (application লেখে, printer পড়ে), keyboard ও network card এর buffer, video streaming এর playback buffer, application এর log writer thread।"
+          },
+          {
+            "sub": "বড় পরিসরে একই নকশা: Kafka বা RabbitMQ এর মতো message queue — producer ও consumer service আলাদা গতিতে চললেও queue মাঝখানে বসে গতির পার্থক্য সামলায়।"
+          }
         ],
         "diagram": "Producer-Consumer:\n\n [Producer] ──produce──▶ [Buffer] ──consume──▶ [Consumer]\n                         [_ _ _ _]\n                          size = N\n\nProblem scenarios:\n  Buffer FULL  → Producer wait করে\n  Buffer EMPTY → Consumer wait করে\n  একসাথে access → Race condition → data corrupt\n\nSemaphore Solution:\n  mutex = 1    (0/1 — lock for critical section)\n  empty = N    (কতটি slot খালি)\n  full  = 0    (কতটি slot ভরা)\n\nProducer:                 Consumer:\n  wait(empty)              wait(full)\n  wait(mutex)              wait(mutex)\n  → buffer এ add           → buffer থেকে remove\n  signal(mutex)            signal(mutex)\n  signal(full)             signal(empty)",
         "mistakes": [
@@ -520,7 +555,14 @@
           "দুই thread একই shared instance এর একই counter এ কাজ করছে, তাই এই তিন ধাপ interleave হতে পারে।",
           "Lost update যেভাবে ঘটে: T1 LOAD করে 500, এখনো STORE করেনি; মাঝে T2-ও LOAD করে সেই 500; দুজনই 501 বানায়; দুজনই 501 STORE করে → দুটি increment মিলে মাত্র একটি হলো, একটি update হারিয়ে গেল।",
           "এই hazard কে race condition বলে — ফলাফল নির্ভর করে কোন thread কখন schedule হলো তার উপর, যা অনিশ্চিত।",
-          "সমাধান: critical section কে atomic করা — synchronized/lock/mutex, বা AtomicInteger এর মতো atomic operation। তখনই 2000 guaranteed।"
+          "সমাধান: critical section কে atomic করা — synchronized/lock/mutex, বা AtomicInteger এর মতো atomic operation। তখনই 2000 guaranteed।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "একই হিসাব থেকে দুই ATM এ একসাথে টাকা তোলা, শেষ টিকিটটি দুজনের কাছে বিক্রি হয়ে যাওয়া, বা stock শূন্য হওয়ার পরও order নেওয়া — সবই এই lost update।"
+          },
+          {
+            "sub": "তাই বাস্তব system এ balance বা counter কখনো সাধারণ ++ দিয়ে বাড়ানো হয় না; database এর row lock (SELECT ... FOR UPDATE) বা atomic operation ব্যবহার করা হয়।"
+          }
         ],
         "diagram": "counter++ আসলে atomic নয় — তিন ধাপ:\n    LOAD  counter → reg      (memory → register)\n    INC   reg                (reg = reg + 1)\n    STORE reg → counter      (register → memory)\n\nLOST UPDATE — খারাপ interleaving (counter শুরুতে 500):\n\n সময়  Thread-1            Thread-2          memory(counter)\n ──────────────────────────────────────────────────────────\n  t1  LOAD  → reg=500                            500\n  t2                      LOAD  → reg=500        500\n  t3  INC   → reg=501                            500\n  t4                      INC   → reg=501        500\n  t5  STORE 501                                  501\n  t6                      STORE 501              501  ← 502 হওয়ার কথা!\n ──────────────────────────────────────────────────────────\n দুটি ++ চলল, কিন্তু counter বাড়ল মাত্র 1 → একটি update হারালো\n\n ভালো (synchronized/lock) হলে:\n   T1: LOAD-INC-STORE → 501,  তারপর T2: LOAD-INC-STORE → 502 ✅\n\n ফলাফল:  1000 ≤ transactionCounter ≤ 2000  (2000 guaranteed নয়)",
         "table": {
@@ -653,7 +695,14 @@
           {
             "sub": "ঘটে এভাবে: জায়গার অভাবে আগে cache এ থাকা data replace হয়ে যায়, পরে সেই data আবার চাইলে miss হয়।"
           },
-          "চেনার সহজ উপায়: data টি কি আগে কখনো cache এ এসেছিল? না → Compulsory। হ্যাঁ, কিন্তু জায়গার অভাবে সরে গেছে → Capacity।"
+          "চেনার সহজ উপায়: data টি কি আগে কখনো cache এ এসেছিল? না → Compulsory। হ্যাঁ, কিন্তু জায়গার অভাবে সরে গেছে → Capacity।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "server restart বা নতুন deploy এর পর প্রথম কিছু request ধীর হয় (compulsory/cold miss) — এজন্য cache warming করা হয়; CDN এর প্রথম hit ও ঠিক এমনই।"
+          },
+          {
+            "sub": "Capacity miss কমাতে কোডের কৌশল: বড় matrix বা array row-major ক্রমে traverse করা এবং blocking/tiling করা, যাতে cache এ আনা block পুরোপুরি কাজে লাগে — একই algorithm এ কয়েকগুণ গতি পার্থক্য হয়।"
+          }
         ],
         "diagram": "উদাহরণ: cache এ ৪টি block ধরে, কিন্তু program বারবার ব্যবহার করে ৫টি — A B C D E\n\n\n[১] COMPULSORY MISS — A এর প্রথম access\n\n   CPU: \"A দাও\"\n         │\n         ▼\n   ┌────┬────┬────┬────┐\n   │ -- │ -- │ -- │ -- │  ← cache খালি, A কখনো আসেইনি\n   └────┴────┴────┴────┘\n         │ MISS\n         ▼\n   Main Memory ──A──▶ cache এ লোড হলো\n   ┌────┬────┬────┬────┐\n   │ A  │ -- │ -- │ -- │\n   └────┴────┴────┴────┘\n\n   প্রথমবার বলেই miss — cache যত বড়ই হোক, এড়ানো যেত না\n\n\n[২] CAPACITY MISS — A এর দ্বিতীয় access\n\n   access:   A      B      C      D      E        A\n             ▼      ▼      ▼      ▼      ▼        ▼\n   cache:  ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐  ┌────┐\n           │A...│ │AB..│ │ABC.│ │ABCD│ │BCDE│  │ ?  │\n           └────┘ └────┘ └────┘ └────┘ └────┘  └────┘\n            MISS   MISS   MISS   MISS   MISS     MISS\n           (cold) (cold) (cold) (cold)   │        │\n                                         │        └─ A নেই → CAPACITY MISS\n                                         └─ cache ভর্তি! A কে replace\n                                            করে E ঢোকানো হলো\n\n   ৫টি data, ৪টির জায়গা → capacity যথেষ্ট নয়\n   cache ৫ block হলে A সরত না, এই miss হতোই না\n\n\n[৩] এক নজরে\n\n   Cache size বাড়ালে →  Compulsory: কমে না  |  Capacity: কমে\n   প্রথম access এ     →  Compulsory: হবেই    |  Capacity: প্রশ্নই ওঠে না",
         "mistakes": [

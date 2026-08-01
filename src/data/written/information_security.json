@@ -201,7 +201,14 @@
         "points": [
           "Firewall কী? একটি network security device বা software যা trusted internal network ও untrusted external network (internet) এর মধ্যে barrier হিসেবে কাজ করে। Predefined security rules এর ভিত্তিতে traffic allow বা block করে",
           "Stateful Inspection Firewall: OSI Layer 4 (Transport) পর্যন্ত কাজ করে — শুধু packet header (IP address, Port number, protocol) ও connection state track করে। TCP connection এর state মনে রাখে (SYN, established, closed)। Application-level content দেখতে পারে না। কম resource প্রয়োজন, দ্রুত কিন্তু সীমিত। উদাহরণ: iptables, Cisco ASA (basic mode)",
-          "Next-Generation Firewall (NGFW): OSI Layer 7 (Application) পর্যন্ত কাজ করে। Deep Packet Inspection (DPI) — packet এর ভেতরের data পর্যন্ত দেখতে পারে। Application awareness — নির্দিষ্ট app (Facebook, Skype, Zoom) চেনে ও block করতে পারে। Integrated IPS (Intrusion Prevention System), Anti-virus, Sandboxing। User identity-based policy (কে access করছে সেটা দেখে)। খরচ বেশি। উদাহরণ: Palo Alto, FortiGate, Check Point NGFW, Sophos XG"
+          "Next-Generation Firewall (NGFW): OSI Layer 7 (Application) পর্যন্ত কাজ করে। Deep Packet Inspection (DPI) — packet এর ভেতরের data পর্যন্ত দেখতে পারে। Application awareness — নির্দিষ্ট app (Facebook, Skype, Zoom) চেনে ও block করতে পারে। Integrated IPS (Intrusion Prevention System), Anti-virus, Sandboxing। User identity-based policy (কে access করছে সেটা দেখে)। খরচ বেশি। উদাহরণ: Palo Alto, FortiGate, Check Point NGFW, Sophos XG",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "কোথায় কোনটি: stateful firewall ভেতরের segmentation ও শাখা অফিসের সাধারণ traffic নিয়ন্ত্রণে যথেষ্ট (iptables, ছোট router) — সস্তা ও দ্রুত।"
+          },
+          {
+            "sub": "NGFW বসে internet edge ও DMZ perimeter এ (ব্যাংক, ডাটা সেন্টার) — যেখানে কোন application কে অনুমতি দেওয়া হবে (Facebook, Zoom, টরেন্ট), কোন user করছে, এবং packet এর ভেতরে malware বা exploit আছে কিনা তা দেখা দরকার।"
+          }
         ],
         "table": {
           "headers": [
@@ -351,7 +358,11 @@
           "Reflected — কীভাবে victim আক্রান্ত হয়: attacker কে আগে victim কে একটা crafted malicious link এ click করাতে হয় (email/message এ পাঠিয়ে)। একটা ক্লিক = এক victim। তাই scope সাধারণত নির্দিষ্ট একজন।",
           "Stored XSS — payload delivery: script server এ স্থায়ীভাবে জমা থাকে (database, comment, profile field, review)। কেউ ক্লিক করার দরকার নেই — page টি যেই খুলবে, server নিজেই তাকে জমানো script সহ পেজ পাঠাবে, browser execute করবে। তাই persistent।",
           "Stored — কেন বেশি বিপজ্জনক: একবার জমা হলে যত user ওই পেজ দেখবে সবাই আক্রান্ত হয় — কোনো ফাঁদ/লিংক লাগে না। তাই attack scope অনেক বড় (সব visitor), Reflected এর চেয়ে গুরুতর।",
-          "প্রতিরোধ: input validation, output encoding (HTML escape), Content-Security-Policy (CSP) header, এবং cookie তে HttpOnly flag (script যেন cookie পড়তে না পারে)।"
+          "প্রতিরোধ: input validation, output encoding (HTML escape), Content-Security-Policy (CSP) header, এবং cookie তে HttpOnly flag (script যেন cookie পড়তে না পারে)।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "বাস্তবে কোথায় দেখা যায়: Reflected XSS সাধারণত search result বা error page এ — attacker crafted link পাঠিয়ে ক্লিক করায়; Stored XSS বসে comment, product review, profile bio বা support ticket এ, যেখানে ব্যবহারকারীর লেখা সংরক্ষিত হয়ে অন্যদের দেখানো হয়।"
+          }
         ],
         "diagram": "XSS: user input কে escape না করায় browser তা \"trusted script\" ভেবে চালায়\n\n REFLECTED XSS  (non-persistent — server bounce করে ফেরত দেয়)\n ─────────────────────────────────────────────────────────\n  Attacker                                  Victim\n     │  ① crafted malicious link পাঠায়         │\n     │  site.com/search?q=<script>…</script>   │\n     └─────────────────────────────────────────▶│ ② click করে\n                                                 │\n                              ┌──────────┐  ③ request\n                              │  SERVER  │◀─────┘\n                              │ (জমা রাখে │\n                              │   না!)    │──────┐ ④ input হুবহু\n                              └──────────┘      │   response এ reflect\n                                                 ▼\n                                         ⑤ Victim এর browser এ\n                                            script চলে 🔴 (একজন victim)\n\n\n STORED XSS  (persistent — server এ জমা, সবাইকে পরিবেশন)\n ─────────────────────────────────────────────────────────\n  Attacker                                 Victim 1 ┐\n     │ ① comment/profile এ                 Victim 2 ├─ যে-ই পেজ\n     │   <script>…</script> জমা দেয়         Victim 3 ┘   খুলবে\n     ▼                                          ▲\n ┌──────────────────────┐                       │ ③ page + জমানো\n │       SERVER         │                       │    script পাঠায়\n │  ┌────────────────┐  │  ② DB তে স্থায়ী জমা   │   (click লাগে না!)\n │  │  DATABASE      │  │───────────────────────┘\n │  │ <script>…</…>  │  │  ④ প্রত্যেক visitor এর\n │  └────────────────┘  │     browser এ script চলে 🔴🔴🔴\n └──────────────────────┘     (সব user আক্রান্ত)\n\n একনজরে:\n   Reflected:  payload request-এ আসে   → click লাগে → ১ জন → non-persistent\n   Stored   :  payload server-এ জমা থাকে → click লাগে না → সবাই → persistent",
         "mistakes": [
@@ -520,6 +531,102 @@
           ]
         },
         "mnemonic": "Encryption = তালা — চাবি থাকলে আবার খোলা যায়। Hashing = আঙুলের ছাপ — ছাপ দেখে মানুষ বানানো যায় না, শুধু মিলিয়ে দেখা যায়।"
+      }
+    },
+    {
+      "id": "sec_008",
+      "q": "Differentiate between a Computer Virus and a Computer Worm based on how they spread and replicate across host networks.",
+      "tags": [
+        "virus",
+        "worm",
+        "malware",
+        "replication",
+        "propagation"
+      ],
+      "answer": {
+        "summary": [
+          "Virus হলো পরজীবী কোড — নিজে একা চলতে পারে না, কোনো host file বা program এর ভেতরে নিজের কপি ঢুকিয়ে বসে থাকে; ওই file কেউ চালালে বা শেয়ার করলে তবেই ছড়ায়, অর্থাৎ ছড়াতে user action লাগে।",
+          "Worm হলো স্বয়ংসম্পূর্ণ (standalone) program — host file লাগে না, ক্লিকও লাগে না; নিজেই network scan করে দুর্বলতা (unpatched service, খোলা port, দুর্বল password) কাজে লাগিয়ে এক machine থেকে আরেক machine এ নিজের সম্পূর্ণ কপি পাঠায়।",
+          "ফলাফল: virus ছড়ায় মানুষের গতিতে এবং মূলত file/data নষ্ট করে; worm ছড়ায় network এর গতিতে (সংখ্যা দ্বিগুণ হারে বাড়ে) এবং bandwidth ও system resource শেষ করে পুরো network অচল করে দিতে পারে।"
+        ],
+        "points": [
+          "Replication — কীভাবে বংশবৃদ্ধি করে:",
+          {
+            "sub": "Virus: নিজের কোডের কপি অন্য executable, document macro বা boot sector এর ভেতরে জুড়ে দেয়। সংক্রমিত file টাই পরবর্তী বাহক — virus এর নিজের কোনো স্বাধীন অস্তিত্ব নেই।"
+          },
+          {
+            "sub": "Worm: নিজের পূর্ণাঙ্গ কপি আলাদা process/file হিসেবে তৈরি করে; কোনো host file কে সংক্রমিত করার দরকারই হয় না।"
+          },
+          "Spread — কীভাবে ছড়ায়:",
+          {
+            "sub": "Virus: সংক্রমিত file হাতবদল হলে — pen drive, email attachment, pirated software, শেয়ার করা file server। User ওই file টি execute করা মাত্র virus সক্রিয় হয়ে ওই machine এর অন্য file গুলোকে সংক্রমিত করে।"
+          },
+          {
+            "sub": "Worm: নিজে থেকেই IP range scan করে দুর্বল host খুঁজে বের করে, vulnerability exploit করে ভেতরে ঢুকে নিজেকে কপি করে চালিয়ে দেয়; email contact list এ নিজেকে পাঠিয়েও ছড়াতে পারে। প্রতিটি নতুন host সাথে সাথে পরবর্তী scanner হয়ে যায়।"
+          },
+          "User action: virus এর জন্য আবশ্যক (ক্লিক/execute/copy), worm এর জন্য একেবারেই দরকার নেই — ব্যবহারিক দিক থেকে এটিই সবচেয়ে বড় পার্থক্য।",
+          "গতি ও পরিসর: virus এর বিস্তার ধীর ও সীমিত (যতটুকু মানুষ file টা ছড়ায়); worm exponential হারে ছড়ায় — মিনিটের মধ্যে হাজার host সংক্রমিত হতে পারে।",
+          "ক্ষতির ধরন:",
+          {
+            "sub": "Virus: file মুছে ফেলা বা corrupt করা, data নষ্ট করা, program এর আচরণ বদলে দেওয়া, boot sector নষ্ট করে system অচল করা।"
+          },
+          {
+            "sub": "Worm: bandwidth, CPU ও memory খেয়ে network slow বা down করে দেওয়া; বেশিরভাগ আধুনিক worm ছড়ানোর পাশাপাশি backdoor বা ransomware payload বসিয়ে যায়।"
+          },
+          "উদাহরণ: Virus — Melissa (macro virus), CIH/Chernobyl। Worm — Morris Worm, Blaster, Conficker, WannaCry (worm-এর মতো ছড়ানো ransomware)।",
+          "প্রতিরোধ ভিন্ন: virus ঠেকাতে antivirus signature scanning ও অচেনা file/attachment না চালানো; worm ঠেকাতে সময়মতো security patch, firewall/segmentation এবং অপ্রয়োজনীয় port ও service বন্ধ রাখা — কারণ worm কে থামানোর জায়গা network, ব্যবহারকারী নয়।"
+        ],
+        "diagram": "VIRUS — host file এর গায়ে জুড়ে বসে, বাহক মানুষ\n\n   ┌──────────────── PC-1 ────────────────┐\n   │   game.exe ┌─────┐                   │\n   │            │ VIR │ ← virus কোড file  │\n   │            └─────┘   এর ভেতরে ঢুকেছে │\n   │        │                             │\n   │        └─ user double-click করলে     │\n   │           virus সক্রিয় → একই PC এর   │\n   │           report.doc, setup.exe ও    │\n   │           সংক্রমিত হয়                │\n   └────────────────┬─────────────────────┘\n                    │ user নিজে বয়ে নেয়\n                    │ (pen drive / email attachment)\n                    ▼\n   ┌──────────────── PC-2 ────────────────┐\n   │  file টা কেউ না চালালে কিছুই ঘটে না  │ ← মানুষ না নাড়লে\n   └──────────────────────────────────────┘    virus থেমে থাকে\n\n\nWORM — standalone, network দিয়ে নিজেই হেঁটে যায়\n\n                     ┌────────┐\n               ┌────►│ HOST B │────┐\n               │     │ (worm) │    │\n   ┌────────┐  │     └────────┘    ▼\n   │ HOST A │──┤   port scan +   ┌────────┐\n   │ (worm) │  │   vulnerability │ HOST D │\n   └────────┘  │      exploit    │ (worm) │\n               │     ┌────────┐  └────────┘\n               └────►│ HOST C │──────▲\n                     │ (worm) │──────┘\n                     └────────┘\n   কোনো host file নেই, কোনো click নেই — প্রতিটি নতুন host\n   নিজেই পরের scanner হয় → 1 → 2 → 4 → 8 … বিস্ফোরণ\n\n────────────────────────────────────────────────\n              VIRUS                WORM\n   বাহক   │ host file লাগে    │ কিছুই লাগে না (standalone)\n   ট্রিগার │ user এর click     │ সম্পূর্ণ স্বয়ংক্রিয়\n   গতি    │ ধীর, মানুষনির্ভর  │ দ্রুত, network-নির্ভর\n   ক্ষতি  │ file ও data নষ্ট  │ bandwidth শেষ, network ধস",
+        "table": {
+          "headers": [
+            "ভিত্তি",
+            "Computer Virus",
+            "Computer Worm"
+          ],
+          "rows": [
+            [
+              "স্বাধীনতা",
+              "পরজীবী — host file/program ছাড়া চলতে পারে না",
+              "স্বয়ংসম্পূর্ণ standalone program"
+            ],
+            [
+              "Replication",
+              "নিজের কপি অন্য file এর ভেতরে জুড়ে দেয়",
+              "নিজের পূর্ণ কপি আলাদা process হিসেবে বানায়"
+            ],
+            [
+              "Spread এর পথ",
+              "সংক্রমিত file হাতবদল — USB, attachment, শেয়ার করা folder",
+              "Network — vulnerability exploit, খোলা port, email স্বয়ংক্রিয়ভাবে"
+            ],
+            [
+              "User action",
+              "আবশ্যক (file চালাতে হবে)",
+              "দরকার নেই"
+            ],
+            [
+              "গতি",
+              "ধীর, মানুষের গতিতে সীমিত",
+              "দ্রুত ও exponential"
+            ],
+            [
+              "প্রধান ক্ষতি",
+              "File/data নষ্ট, program এর আচরণ বদল",
+              "Bandwidth ও resource শেষ, network অচল, প্রায়ই backdoor"
+            ],
+            [
+              "উদাহরণ",
+              "Melissa, CIH (Chernobyl)",
+              "Morris Worm, Blaster, Conficker, WannaCry"
+            ],
+            [
+              "প্রতিরোধ",
+              "Antivirus scanning, অচেনা file না চালানো",
+              "Patch/update, firewall, অপ্রয়োজনীয় port ও service বন্ধ"
+            ]
+          ]
+        },
+        "mnemonic": "Virus = পরজীবী, host ছাড়া বাঁচে না, মানুষ না ছুঁলে নড়ে না। Worm = পোকা, নিজের পায়ে হাঁটে, network এর ফাঁক পেলেই ঢুকে পড়ে। এক লাইনে — \"ভাইরাসকে বইতে হয়, কৃমি নিজেই চলে\"।"
       }
     }
   ]

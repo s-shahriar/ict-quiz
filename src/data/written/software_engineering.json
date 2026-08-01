@@ -184,7 +184,14 @@
           "Sprint Backlog: Product Backlog থেকে বেছে নেওয়া items যা current Sprint এ করা হবে। Team নিজে select করে।",
           "Increment: প্রতিটি Sprint শেষে produce করা working, tested software। আগের Increment এর সাথে যোগ হয়।",
           "Daily Scrum (Stand-up): প্রতিদিন 15 মিনিটের meeting। তিনটি প্রশ্ন: গতকাল কী করলাম? আজ কী করব? কোনো বাধা আছে কি?",
-          "Roles — Product Owner: requirements define করেন, backlog manage করেন। Scrum Master: process facilitate করেন, বাধা দূর করেন। Development Team: actual কাজ করে (3-9 জন)।"
+          "Roles — Product Owner: requirements define করেন, backlog manage করেন। Scrum Master: process facilitate করেন, বাধা দূর করেন। Development Team: actual কাজ করে (3-9 জন)।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "product ও startup team এ সাধারণত ২ সপ্তাহের sprint চালানো হয়; backlog ও sprint board থাকে Jira/Trello তে, sprint শেষে review ও retrospective হয়।"
+          },
+          {
+            "sub": "কোথায় কম উপযোগী: যেখানে scope, দাম ও সময় আগেই চুক্তিতে বাঁধা (সরকারি টেন্ডার বা regulatory প্রকল্প) — সেখানে পরিবর্তনশীল backlog মানানসই হয় না।"
+          }
         ],
         "diagram": "SCRUM Process Flow:\n\nProduct Backlog     Sprint Backlog        Sprint          Increment\n(সব requirements)  (selected items)    (1-4 weeks)    (working SW)\n┌──────────┐       ┌──────────┐       ┌──────────┐    ┌──────────┐\n│ • Req 1  │       │ • Req 2  │  ╔══▶ │          │══▶ │  v1.0    │\n│ • Req 2  │──────▶│ • Req 5  │  ║    │  Daily   │    │ Released │\n│ • Req 3  │       │ • Req 7  │  ╚════│  Scrum ↺ │    │          │\n│ • Req 4  │       └──────────┘       └──────────┘    └──────────┘\n│ ...      │                                ↑\n└──────────┘                         15 min/day\n\nKey Roles:\n  Product Owner  → What to build (backlog manage)\n  Scrum Master   → How to work (process, remove blockers)\n  Dev Team       → Build it (3-9 members, self-organizing)\n\nSprint Timeline:\n  Day 1: Sprint Planning\n  Day 2-N: Daily Scrum + Development\n  Last day: Sprint Review + Retrospective\n  → Next Sprint শুরু!",
         "table": {
@@ -392,6 +399,80 @@
           ]
         },
         "mnemonic": "Waterfall = পাহাড় থেকে নামার মতো — একমুখী। Agile = চাকার মতো — বারবার ঘুরে। Spiral = ঝড়ের চোখের মতো — risk center করে ঘুরে।"
+      }
+    },
+    {
+      "id": "se_006",
+      "q": "Identify the most suitable SDLC model for an Online Library Management System delivered in phases with user feedback, and state two advantages.",
+      "tags": [
+        "SDLC",
+        "incremental model",
+        "agile",
+        "waterfall",
+        "software process"
+      ],
+      "answer": {
+        "summary": [
+          "সবচেয়ে উপযুক্ত model — Incremental Model (agile-ধাঁচের iterative delivery)। কারণ প্রশ্নেই দুটি শর্ত দেওয়া আছে: system টি ধাপে ধাপে (in phases) হস্তান্তর হবে এবং প্রতি ধাপে ব্যবহারকারীর feedback নেওয়া হবে — ঠিক এই দুটি কাজই incremental model এর সংজ্ঞা।",
+          "এতে পুরো requirement একসাথে চূড়ান্ত না করে system কে কয়েকটি increment এ ভাগ করা হয়; প্রতিটি increment নিজে থেকেই চালু করার মতো কাজের সফটওয়্যার এবং প্রতিটির feedback পরের increment এর requirement হয়ে যায়।",
+          "সুবিধা দুটি: (১) খুব দ্রুত কাজের সফটওয়্যার হাতে আসে — প্রথম increment এই লাইব্রেরি বই খোঁজা ও issue/return চালু করতে পারে; (২) requirement বদল বা ব্যবহারকারীর feedback অল্প খরচে গ্রহণ করা যায়, পুরো প্রকল্প নতুন করে শুরু করতে হয় না।"
+        ],
+        "points": [
+          "Online Library Management System এর জন্য increment গুলো যেভাবে সাজানো যায়:",
+          {
+            "sub": "Increment 1 (core): book catalogue ও search, member registration, book issue ও return।"
+          },
+          {
+            "sub": "Increment 2: fine ও due date হিসাব, reservation, email/SMS notification।"
+          },
+          {
+            "sub": "Increment 3: রিপোর্ট ও analytics, librarian dashboard, online payment।"
+          },
+          {
+            "sub": "প্রতিটি increment শেষে librarian ও ছাত্রছাত্রীরা সেটি ব্যবহার করে মতামত দেয়, আর সেই মতামত পরের increment এর requirement হিসেবে যোগ হয়।"
+          },
+          "সুবিধা ১ — দ্রুত ও কার্যকর delivery: পুরো system তৈরি হওয়ার অপেক্ষা করতে হয় না; প্রথম increment থেকেই লাইব্রেরি প্রকৃত কাজে সফটওয়্যারটি ব্যবহার শুরু করতে পারে, ফলে বিনিয়োগের ফেরত (ROI) আগে আসে।",
+          "সুবিধা ২ — কম ঝুঁকি ও সহজ পরিবর্তন: প্রতিটি increment ছোট বলে তার test ও debug সহজ; ব্যবহারকারীর feedback আগেভাগে ধরা পড়ায় বড় ভুল শেষ মুহূর্তে ধরা পড়ার ঝুঁকি থাকে না, এবং requirement বদলালে শুধু পরের increment সমন্বয় করলেই চলে।",
+          "কেন Waterfall নয়: Waterfall এ requirement শুরুতেই সম্পূর্ণ ও অপরিবর্তনীয় ধরে নেওয়া হয় এবং ব্যবহারকারী কাজের সফটওয়্যার দেখে একেবারে শেষ ধাপে — তাই ধাপে ধাপে delivery ও চলমান feedback এর শর্ত এতে মেটেই না।",
+          "কেন Prototype বা Spiral নয়: Prototype model মূলত requirement স্পষ্ট করার জন্য, তার prototype টি সাধারণত ফেলে দেওয়া হয় — এখানে চাওয়া হচ্ছে প্রতি ধাপে ব্যবহারযোগ্য delivery। Spiral model ঝুঁকি-বিশ্লেষণকেন্দ্রিক ও ব্যয়বহুল, যা এই মাপের প্রকল্পের জন্য অতিরিক্ত।",
+          "সীমাবদ্ধতা (জানা থাকা ভালো): শুরুতে ভালো architecture ঠিক করতে হয়, নইলে পরের increment গুলো জোড়াতালি হয়ে যায়; এবং প্রতি increment এ integration ও regression testing এর খরচ থাকে।"
+        ],
+        "diagram": "INCREMENTAL MODEL — প্রতি increment এ একটি ছোট পূর্ণ SDLC\n\n  Increment 1        Increment 2        Increment 3\n  ┌───────────┐      ┌───────────┐      ┌───────────┐\n  │ Analysis  │      │ Analysis  │      │ Analysis  │\n  │ Design    │      │ Design    │      │ Design    │\n  │ Code      │      │ Code      │      │ Code      │\n  │ Test      │      │ Test      │      │ Test      │\n  └─────┬─────┘      └─────┬─────┘      └─────┬─────┘\n        │ ▼ DELIVER        │ ▼ DELIVER        │ ▼ DELIVER\n        │                  │                  │\n   ┌────▼──────┐      ┌────▼──────┐      ┌────▼──────┐\n   │ Catalogue │      │ + Fine ও  │      │ + Report, │\n   │ + Search  │ ───► │  Due date │ ───► │  Dashboard│\n   │ + Issue/  │      │ + Reserve │      │ + Payment │\n   │   Return  │      │ + Notify  │      │           │\n   └────┬──────┘      └────┬──────┘      └───────────┘\n        │                  │\n        └── user feedback ─┴── user feedback ──► পরের increment\n            (librarian ও ছাত্রছাত্রী ব্যবহার করে মতামত দেয়)\n\n   ব্যবহারযোগ্য সফটওয়্যার হাতে আসে এখানেই ↑ (শুরুতেই)\n\n\nWATERFALL এর সাথে তুলনা — সফটওয়্যার কখন হাতে আসে\n\n  WATERFALL   Req → Design → Code → Test → Deploy\n              ├──────────────────────────────┤\n              feedback নেওয়ার সুযোগ নেই      ▲\n                                    প্রথম ব্যবহারযোগ্য সফটওয়্যার\n                                    (একদম শেষে, ঝুঁকি সর্বোচ্চ)\n\n  INCREMENTAL ▓▓▓ ▓▓▓ ▓▓▓\n              ▲   ▲   ▲\n              │   │   └ delivery 3\n              │   └──── delivery 2   প্রতিবারই feedback ঢোকে\n              └──────── delivery 1 (অনেক আগেই কাজ শুরু)\n\n────────────────────────────────────────────\n  উপযুক্ত model : Incremental (iterative/agile delivery)\n  সুবিধা ১ : দ্রুত কার্যকর delivery, আগেই ব্যবহার শুরু\n  সুবিধা ২ : কম ঝুঁকি — feedback ও requirement পরিবর্তন সহজে গ্রহণ",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Waterfall",
+            "Incremental (নির্বাচিত)"
+          ],
+          "rows": [
+            [
+              "Requirement",
+              "শুরুতেই সম্পূর্ণ ও স্থির থাকতে হয়",
+              "ধাপে ধাপে স্পষ্ট হয়, বদলানো যায়"
+            ],
+            [
+              "Delivery",
+              "একবারে, একদম শেষে",
+              "প্রতিটি increment শেষে কাজের সফটওয়্যার"
+            ],
+            [
+              "User feedback",
+              "শেষ ধাপে, তখন বদলানো ব্যয়বহুল",
+              "প্রতি increment এ, পরেরটিতে যোগ হয়"
+            ],
+            [
+              "ঝুঁকি",
+              "বেশি — ভুল ধরা পড়ে শেষে",
+              "কম — ছোট ধাপে আগেই ধরা পড়ে"
+            ],
+            [
+              "এই প্রকল্পে উপযোগিতা",
+              "উপযুক্ত নয়",
+              "উপযুক্ত — প্রশ্নের দুই শর্তই মেটে"
+            ]
+          ]
+        },
+        "mnemonic": "প্রশ্নে \"delivered in phases\" + \"user feedback\" — এই দুটি শব্দ দেখলেই উত্তর Incremental। মনে রাখো: \"একবারে পুরো বাড়ি নয়, ঘর ধরে ধরে বুঝিয়ে দাও — বাসিন্দা থেকে মতামত নিয়ে পরের ঘর তোলো\"।"
       }
     }
   ]

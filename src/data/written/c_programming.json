@@ -25,7 +25,17 @@
           "malloc(size): নির্দিষ্ট byte এর uninitialized memory দেয়। Return type: void*। Fail হলে NULL।  উদাহরণ: int *p = (int*)malloc(5 * sizeof(int));",
           "calloc(n, size): n টি element এর initialized (0 দিয়ে) memory দেয়। উদাহরণ: int *p = (int*)calloc(5, sizeof(int));",
           "realloc(ptr, newSize): আগে নেওয়া memory কে বড় বা ছোট করে। উদাহরণ: p = (int*)realloc(p, 10 * sizeof(int));",
-          "free(ptr): কাজ শেষে heap memory ফেরত দেয়। না দিলে Memory Leak হয়।"
+          "free(ptr): কাজ শেষে heap memory ফেরত দেয়। না দিলে Memory Leak হয়।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "যেখানে আগে থেকে size জানা যায় না: file পড়ার buffer, ব্যবহারকারীর দেওয়া সংখ্যক record রাখা, বা dynamic array যা ভরে গেলে realloc দিয়ে দ্বিগুণ করা হয়।"
+          },
+          {
+            "sub": "Linked list, tree ও graph এর প্রতিটি node malloc দিয়েই তৈরি হয় — এজন্যই এরা runtime এ বাড়তে-কমতে পারে।"
+          },
+          {
+            "sub": "বাস্তব ঝুঁকি: free না করলে দীর্ঘক্ষণ চলা server বা daemon এ memory leak জমে RAM শেষ হয়ে যায়, তাই প্রতিটি malloc এর জোড়া free থাকতেই হবে।"
+          }
         ],
         "diagram": "Memory Layout:\n  ┌──────────────┐  ← High address\n  │    Stack     │  ← local variables, function calls (auto)\n  │      ↓       │\n  │              │\n  │      ↑       │\n  │    Heap      │  ← malloc/calloc/realloc (manual)\n  ├──────────────┤\n  │    Data      │  ← global, static variables\n  │    Code      │  ← program instructions\n  └──────────────┘  ← Low address\n\nExample:\n  int *arr = (int*)malloc(5 * sizeof(int));\n  if (arr == NULL) { /* handle failure */ }\n  arr[0]=1; arr[1]=2; // use it\n  free(arr);           // must free!\n  arr = NULL;          // good practice\n\nmalloc vs calloc:\n  malloc(20)      → [?][?][?][?][?]  (garbage)\n  calloc(5,4)     → [0][0][0][0][0]  (zero initialized)",
         "table": {
@@ -85,7 +95,14 @@
           "Nested Structure: একটি struct এর member হিসেবে আরেকটি struct রাখা — দুটো উপায়ে করা যায়।",
           "উপায় ১ — Separate definition: আলাদাভাবে struct define করে ভেতরে ব্যবহার করো (recommended)।",
           "উপায় ২ — Embedded definition: একটি struct এর ভেতরেই আরেকটি define করো।",
-          "Access: dot operator (.) দিয়ে। Nested member access: outer.inner.member।"
+          "Access: dot operator (.) দিয়ে। Nested member access: outer.inner.member।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Record রাখতে: Student এর ভেতরে Address ও Date of Birth, Employee এর ভেতরে Salary structure — বাস্তব entity যেভাবে সাজানো, কোডও সেভাবেই সাজে।"
+          },
+          {
+            "sub": "System programming এ network packet ও file header পড়ার সময় nested struct দিয়ে হুবহু byte layout map করা হয় (যেমন IP header এর ভেতরের address field গুলো)।"
+          }
         ],
         "diagram": "// Separate definition (recommended)\nstruct Date {\n    int day, month, year;\n};\n\nstruct Student {\n    char name[50];\n    int  roll;\n    struct Date dob;   // nested struct\n};\n\nint main() {\n    struct Student s;\n    s.roll        = 101;\n    s.dob.day     = 15;   // nested access\n    s.dob.month   = 8;\n    s.dob.year    = 2000;\n\n    printf(\"%d/%d/%d\\n\",\n           s.dob.day, s.dob.month, s.dob.year);\n    // Output: 15/8/2000\n    return 0;\n}\n\nMemory layout:\n  Student s:\n  [name(50B)][roll(4B)][dob.day(4B)][dob.month(4B)][dob.year(4B)]",
         "mnemonic": "Nested struct = ঠিকানার মতো — বাড়ি এর ভেতরে ঘর, ঘরের ভেতরে জিনিস। s.dob.year = Student এর জন্মতারিখের বছর — ধাপে ধাপে access।"

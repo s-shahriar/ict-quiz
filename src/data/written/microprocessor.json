@@ -16,7 +16,14 @@
           "Pipeline: instruction কে 5টি stage এ ভাগ — IF → ID → EX → MEM → WB। প্রতিটি stage এ আলাদা instruction থাকে",
           "Clock period = 1টি stage এর সময় (পুরো instruction এর নয়) → clock অনেক দ্রুত",
           "Throughput: steady state এ প্রতি cycle এ 1টি instruction complete হয় (n-stage pipeline এ n গুণ বেশি)",
-          "Resource utilization: Single cycle এ ALU বেশিরভাগ সময় idle, Pipeline এ প্রতিটি unit প্রতি cycle এ ব্যস্ত"
+          "Resource utilization: Single cycle এ ALU বেশিরভাগ সময় idle, Pipeline এ প্রতিটি unit প্রতি cycle এ ব্যস্ত",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "আজকের সব processor — মোবাইলের ARM Cortex থেকে সার্ভারের x86 পর্যন্ত — pipelined; আধুনিক CPU তে stage সংখ্যা 14–20+, যা ছোট clock period দিয়ে GHz গতি সম্ভব করে।"
+          },
+          {
+            "sub": "এর দাম: pipeline এ data ও control hazard তৈরি হয়, তাই forwarding, stall ও branch prediction লাগে; branch prediction ভুল হলে পুরো pipeline flush করতে হয় — এজন্যই কোডে অনিশ্চিত branch কমালে বাস্তবে গতি বাড়ে।"
+          }
         ],
         "diagram": "SINGLE CYCLE (clock = 20ns, 5 instructions):\n     0ns  20   40   60   80  100\nI1:  ████\nI2:       ████\nI3:            ████\nI4:                 ████\nI5:                      ████\nTotal = 5 × 20 = 100ns\n\nPIPELINE (5 stages, each 4ns):\n     IF   ID   EX  MEM   WB\nI1:  ████ ████ ████ ████ ████\nI2:       ████ ████ ████ ████ ████\nI3:            ████ ████ ████ ████ ████\nI4:                 ████ ████ ████ ████ ████\nI5:                      ████ ████ ████ ████ ████\n     4    8    12   16   20   24   28   32   36ns\nTotal = (5+4) × 4 = 36ns  ← 100ns থেকে 36ns!\n\nSingle Cycle inefficiency:\n  ADD (fast): 10ns  ← কিন্তু clock 20ns নেয় (LOAD এর জন্য)\n  LOAD (slow): 20ns ← এটার জন্য সবাইকে অপেক্ষা",
         "mistakes": [
