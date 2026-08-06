@@ -40,11 +40,12 @@
         "consonant",
         "digit",
         "charAt",
+        "toLowerCase",
         "counting"
       ],
       "answer": {
         "codeLang": "Java",
-        "code": "public class CountCharacters {\n\n    public static void main(String[] args) {\n\n        String text = \"Dhaka 1000 is a City\";\n\n        int vowels = 0;\n        int consonants = 0;\n        int digits = 0;\n        int spaces = 0;\n\n        for (int i = 0; i < text.length(); i++) {\n\n            char ch = text.charAt(i);\n\n            // বড় হাতের হলে ছোট হাতের বানিয়ে নিই\n            if (ch >= 'A' && ch <= 'Z') {\n                ch = (char) (ch + 32);\n            }\n\n            if (ch == 'a' || ch == 'e' || ch == 'i'\n                    || ch == 'o' || ch == 'u') {\n                vowels++;\n            } else if (ch >= 'a' && ch <= 'z') {\n                consonants++;\n            } else if (ch >= '0' && ch <= '9') {\n                digits++;\n            } else if (ch == ' ') {\n                spaces++;\n            }\n        }\n\n        System.out.println(\"Vowels     : \" + vowels);\n        System.out.println(\"Consonants : \" + consonants);\n        System.out.println(\"Digits     : \" + digits);\n        System.out.println(\"Spaces     : \" + spaces);\n    }\n}\n\n/*  Output:\n    Vowels     : 5\n    Consonants : 7\n    Digits     : 4\n    Spaces     : 4                                 */",
+        "code": "public class CountCharacters {\n\n    public static void main(String[] args) {\n\n        String text = \"Dhaka 1000 is a City\";\n\n        int vowels = 0;\n        int consonants = 0;\n        int digits = 0;\n        int spaces = 0;\n\n        for (int i = 0; i < text.length(); i++) {\n\n            char ch = text.charAt(i);\n\n            // বড় হাতের হলে ছোট হাতের বানিয়ে নিই\n            ch = Character.toLowerCase(ch);\n\n            if (ch == 'a' || ch == 'e' || ch == 'i'\n                    || ch == 'o' || ch == 'u') {\n                vowels++;\n            } else if (ch >= 'a' && ch <= 'z') {\n                consonants++;\n            } else if (ch >= '0' && ch <= '9') {\n                digits++;\n            } else if (ch == ' ') {\n                spaces++;\n            }\n        }\n\n        System.out.println(\"Vowels     : \" + vowels);\n        System.out.println(\"Consonants : \" + consonants);\n        System.out.println(\"Digits     : \" + digits);\n        System.out.println(\"Spaces     : \" + spaces);\n    }\n}\n\n/*  Output:\n    Vowels     : 5\n    Consonants : 7\n    Digits     : 4\n    Spaces     : 4                                 */",
         "summary": [
           "string-এর প্রতিটি অক্ষর একবার করে দেখা হয় এবং if-else সিঁড়ি দিয়ে চারটি দলের কোনো একটিতে ফেলা হয়।",
           "বড় হাতের অক্ষরকে আগেই ছোট হাতের বানিয়ে নেওয়া হয়, তাই A আর a-এর জন্য আলাদা শর্ত লিখতে হয় না।",
@@ -52,14 +53,17 @@
         ],
         "points": [
           "charAt(i) দিয়ে i নম্বর অক্ষরটি char হিসেবে পাওয়া যায়; loop চলে 0 থেকে length() − 1 পর্যন্ত।",
-          "ch + 32 কেন: ASCII-তে \"A\" = 65 আর \"a\" = 97, পার্থক্য ঠিক 32। তাই বড় হাতের সাথে 32 যোগ করলেই ছোট হাতের হয়ে যায়। (char) cast লাগে কারণ যোগ করলে ফল int হয়ে যায়।",
+          "Character.toLowerCase(ch) — বড় হাতের অক্ষর পেলে ছোট হাতের ফেরত দেয়, আর অঙ্ক বা space পেলে সেটিকে অপরিবর্তিত রেখে দেয়। তাই \"অক্ষরটি বর্ণ কি না\" আলাদা করে দেখার দরকার হয় না, শর্তহীন এক লাইনেই কাজ শেষ।",
+          "ভেতরে এই পদ্ধতিটি ASCII-এর সেই হিসাবটাই করে — 'A' = 65, 'a' = 97, পার্থক্য ঠিক 32। হাতে লিখলে if (ch >= 'A' && ch <= 'Z') ch = (char) (ch + 32); হতো, যেখানে (char) cast লাগত কারণ যোগ করলে ফল int হয়ে যায়। পদ্ধতিটি সেই খুঁটিনাটি নিজের ভেতরে রেখে দেয়।",
+          "Character ক্লাসটি java.lang-এ থাকে, তাই আলাদা কোনো import লাগে না। একই ভাবে Character.isDigit(ch) ও Character.isLetter(ch) দিয়ে অঙ্ক আর বর্ণ চেনা যায় — নিচের range-তুলনাগুলোও চাইলে ওভাবে লেখা যেত।",
           "if-else if সিঁড়ি ব্যবহার করা হয়েছে যাতে একটি অক্ষর একাধিক দলে গোনা না হয় — একটি শর্ত মিললেই বাকিগুলো আর দেখা হয় না।",
           "ক্রম গুরুত্বপূর্ণ: vowel পরীক্ষা আগে, তারপর consonant। উল্টো করলে a, e, i, o, u-ও consonant হিসেবে গোনা হয়ে যেত, কারণ তারাও a–z সীমার ভেতরে।",
           "অন্য কিছু (যেমন কমা বা বিন্দু) থাকলে সে কোনো দলেই পড়বে না — দরকার হলে একটি শেষ else দিয়ে \"others\" গোনা যায়।",
-          "এই range-তুলনার কৌশল দিয়েই ডিজিট, বর্ণ ও special character আলাদা করা হয় — একই লেখচিত্র সব string প্রশ্নে কাজে লাগে।"
+          "এই range-তুলনার কৌশল দিয়েই ডিজিট, বর্ণ ও special character আলাদা করা হয় — একই লেখচিত্র সব string প্রশ্নে কাজে লাগে।",
+          "পুরো string-টিকে একবারেই ছোট হাতের করে নেওয়া যেত — text = text.toLowerCase() — তাহলে loop-এর ভেতরে আর কিছু বদলাতে হতো না। প্রতিটি অক্ষরে আলাদা করে করা হয়েছে যাতে \"কোন অক্ষরটি বদলাল\" ধাপে ধাপে চোখে পড়ে।"
         ],
         "diagram": "text = \"Dhaka 1000 is a City\"\n\n অক্ষর ধরে ধরে:\n   D → বড় হাতের → d → বর্ণ, vowel নয়  → consonant\n   h → consonant          a → vowel\n   a → vowel              k → consonant\n   ' ' → space            1 0 0 0 → digit × 4\n   i → vowel              s → consonant\n   ' ' → space            a → vowel\n   ' ' → space            C → c → consonant\n   i → vowel              t → consonant\n   y → consonant          ' ' → space\n\n  ┌────────────┬───────┐\n  │ Vowels     │   5   │  a a i a i\n  │ Consonants │   7   │  d h k s c t y\n  │ Digits     │   4   │  1 0 0 0\n  │ Spaces     │   4   │\n  └────────────┴───────┘\n        মোট = 5 + 7 + 4 + 4 = 20 অক্ষর ✓\n\nOutput ▸ 5 / 7 / 4 / 4",
-        "mnemonic": "আগে ছোট হাতের বানাও (+32), তারপর সিঁড়ি বেয়ে নামো: vowel → বর্ণ → অঙ্ক → space। ক্রম উল্টালে vowel গুলোও consonant হয়ে যাবে।"
+        "mnemonic": "আগে ছোট হাতের বানাও — Character.toLowerCase(), তারপর সিঁড়ি বেয়ে নামো: vowel → বর্ণ → অঙ্ক → space। ক্রম উল্টালে vowel গুলোও consonant হয়ে যাবে।"
       }
     },
     {
@@ -69,27 +73,31 @@
         "string",
         "frequency",
         "character count",
-        "nested loop",
-        "duplicate"
+        "HashMap",
+        "LinkedHashMap",
+        "keySet"
       ],
       "answer": {
         "codeLang": "Java",
-        "code": "public class CharFrequency {\n\n    public static void main(String[] args) {\n\n        String text = \"programming\";\n\n        for (int i = 0; i < text.length(); i++) {\n\n            char ch = text.charAt(i);\n\n            // এই অক্ষর কি আগেই ছাপানো হয়ে গেছে?\n            boolean printed = false;\n            for (int k = 0; k < i; k++) {\n                if (text.charAt(k) == ch) {\n                    printed = true;\n                }\n            }\n            if (printed) {\n                continue;\n            }\n\n            // পুরো string-এ কতবার আছে\n            int count = 0;\n            for (int j = 0; j < text.length(); j++) {\n                if (text.charAt(j) == ch) {\n                    count++;\n                }\n            }\n\n            System.out.println(ch + \" -> \" + count);\n        }\n    }\n}\n\n/*  Output:\n    p -> 1\n    r -> 2\n    o -> 1\n    g -> 2\n    a -> 1\n    m -> 2\n    i -> 1\n    n -> 1                                         */",
+        "code": "import java.util.LinkedHashMap;\n\npublic class CharFrequency {\n\n    public static void main(String[] args) {\n\n        String text = \"programming\";\n\n        // অক্ষর → কতবার এসেছে\n        LinkedHashMap<Character, Integer> freq = new LinkedHashMap<>();\n\n        for (int i = 0; i < text.length(); i++) {\n\n            char ch = text.charAt(i);\n\n            // আগে না থাকলে 0 ধরে নিয়ে 1 যোগ\n            freq.put(ch, freq.getOrDefault(ch, 0) + 1);\n        }\n\n        // keySet() — map-এর প্রতিটি key একবার করে\n        for (char ch : freq.keySet()) {\n            System.out.println(ch + \" = \" + freq.get(ch));\n        }\n    }\n}\n\n/*  Output:\n    p = 1\n    r = 2\n    o = 1\n    g = 2\n    a = 1\n    m = 2\n    i = 1\n    n = 1                                          */",
         "summary": [
-          "প্রতিটি অক্ষরের জন্য দুটি কাজ — আগে দেখা হয় সে আগেই ছাপা হয়েছে কি না, না হলে পুরো string ঘুরে তার সংখ্যা গোনা হয়।",
-          "HashMap বা int[26] ছাড়া, শুধু দুটি loop দিয়ে — তাই ভুলে যাওয়ার সুযোগ কম।",
-          "গঠনটি P1 ও P3-এর সাথে হুবহু মেলে: একই printed গার্ড, তারপর একটি গণনা loop।"
+          "প্রতিটি অক্ষরকে key ধরে তার গণনা রাখা হয় — map-এ key দুবার থাকতে পারে না, তাই \"প্রতিটি অক্ষর একবারই রিপোর্ট হবে\" শর্তটি নিজে থেকেই মেনে যায়।",
+          "getOrDefault দিয়ে আগের গণনা এনে তাতে 1 যোগ করা হয়; অক্ষরটি নতুন হলে গণনা শুরু হয় 0 থেকে।",
+          "string একবার ঘোরাই যথেষ্ট — আগের printed গার্ড আর গণনার loop, দুটোই বাদ পড়ে।"
         ],
         "points": [
-          "printed গার্ড (k-loop): 0 থেকে i−1 পর্যন্ত পেছনে তাকিয়ে দেখে অক্ষরটি আগে এসেছে কি না। এসে থাকলে continue — কারণ তার হিসাব তখনই হয়ে গেছে।",
-          "গণনা loop (j-loop): এবার পুরো string-এর শুরু থেকে শেষ পর্যন্ত ঘুরে একই অক্ষর কতবার আছে count করে।",
-          "দুটি loop-এর সীমা আলাদা — এটাই মূল কথা: গার্ড শুধু পেছনে (k < i) তাকায়, কিন্তু গণনা পুরোটা (j < length) দেখে।",
-          "অক্ষরের তুলনা == দিয়েই হয়, কারণ charAt() একটি char ফেরত দেয় (String নয়)। String হলে equals() লাগত।",
-          "space-ও একটি অক্ষর হিসেবেই গোনা হবে; বাদ দিতে চাইলে if (ch == \" \") continue; বসাতে হবে (যেমন P11-এ করা হয়েছে)।",
-          "কেন এটাই সবচেয়ে সহজ: একই দুই-loop কাঠামো P1, P3, P10 ও P11-এ চলে — একবার শিখলে পাঁচটি প্রোগ্রাম হয়ে যায়।"
+          "আগে দুটি কাজ হাতে করতে হতো — অক্ষরটি আগে এসেছে কি না দেখা, আর পুরো string ঘুরে গোনা। HashMap দুটোই একসাথে সামলায়।",
+          "\"প্রতিটি অক্ষর একবারই রিপোর্ট হবে\" — প্রশ্নের এই শর্তটি মানতে আলাদা করে কিছু লিখতে হয় না, কারণ map-এ একই key দুবার থাকতেই পারে না। পাত্রের ধরনটাই শর্তটি নিশ্চিত করে দেয়।",
+          "freq.put(ch, freq.getOrDefault(ch, 0) + 1) — এক লাইনে তিনটি কাজ: আগের গণনা আনা (না থাকলে 0), তাতে 1 যোগ, আর ফলটা আবার বসানো।",
+          "LinkedHashMap কেন, সাধারণ HashMap নয়: এখানে শেষে map ঘুরিয়ে ছাপা হয়, আর HashMap ঢোকার ক্রম মনে রাখে না — তাই ছাপার ক্রম বদলে যেত।",
+          "পার্থক্যটা হাতে-কলমে: \"programming\"-এ LinkedHashMap দেয় p r o g a m i n, আর সাধারণ HashMap দেয় p a r g i m n o — সম্পূর্ণ আলাদা ক্রম।",
+          "keySet() ফেরত দেয় map-এর সব key-এর একটি Set, আর get(ch) দেয় ওই key-এর গণনা — দুটো মিলিয়ে প্রতিটি জোড়া ছাপা হয়। key দুবার থাকতেই পারে না, তাই এই loop প্রতিটি অক্ষরে ঠিক একবারই যায়। শুধু value লাগলে values() দিয়েও ঘোরা যায়, আর key-value একসাথে চাইলে entrySet()।",
+          "এখানে Set নয়, HashMap লাগে — কারণ শুধু \"আছে কি নেই\" নয়, প্রতিটি key-এর সাথে একটি সংখ্যাও রাখতে হয়। এটাই Set আর Map-এর মূল পার্থক্য।",
+          "একটিই import লাগবে: java.util.LinkedHashMap। Map.Entry ব্যবহার না করায় java.util.Map আর লাগে না।",
+          "একই গণনার গঠন ফিরে আসবে P10 (Anagram) ও P11 (First Non-repeating)-এ — এই তিনটি আসলে একই কৌশলের তিন রূপ।"
         ],
-        "diagram": "text = \"programming\"\n\n  index : 0 1 2 3 4 5 6 7 8 9 10\n  অক্ষর : p r o g r a m m i n  g\n\ni=0  p → পেছনে নেই → পুরোটা গুনি → 1  ▸ p -> 1\ni=1  r → পেছনে নেই → গুনি (1,4)  → 2  ▸ r -> 2\ni=2  o → পেছনে নেই → গুনি        → 1  ▸ o -> 1\ni=3  g → পেছনে নেই → গুনি (3,10) → 2  ▸ g -> 2\ni=4  r → পেছনে r আছে ✗ বাদ\ni=5  a → পেছনে নেই → গুনি        → 1  ▸ a -> 1\ni=6  m → পেছনে নেই → গুনি (6,7)  → 2  ▸ m -> 2\ni=7  m → পেছনে m আছে ✗ বাদ\ni=8  i → নতুন → 1                     ▸ i -> 1\ni=9  n → নতুন → 1                     ▸ n -> 1\ni=10 g → পেছনে g আছে ✗ বাদ\n\n  দুই loop-এর সীমা মনে রাখো:\n    গার্ড  k < i        (শুধু পেছনে)\n    গণনা   j < length   (পুরোটা)",
-        "mnemonic": "নতুন কি না দেখতে পেছনে তাকাও (k < i), কতবার আছে গুনতে পুরোটা ঘোরো (j < length)। দুই loop, দুই সীমা — এটাই পুরো প্রোগ্রাম।"
+        "diagram": "text = \"programming\"\n\n i   ch   old   new\n--------------------\n 0   p     0     1\n 1   r     0     1\n 2   o     0     1\n 3   g     0     1\n 4   r     1     2\n 5   a     0     1\n 6   m     0     1\n 7   m     1     2\n 8   i     0     1\n 9   n     0     1\n10   g     1     2\n\nold = getOrDefault(ch, 0)  — অক্ষরটি নতুন হলে 0\n\nশেষ অবস্থা, ঢোকার ক্রমে —\n    p=1  r=2  o=1  g=2  a=1  m=2  i=1  n=1\n\nLinkedHashMap সেই ক্রমটাই ধরে রাখে, তাই ছাপাও ওই ক্রমে।\nসাধারণ HashMap হলে আসত p a r g i m n o — এলোমেলো।\n\nOutput ▸\n    p = 1\n    r = 2\n    o = 1\n    g = 2\n    a = 1\n    m = 2\n    i = 1\n    n = 1",
+        "mnemonic": "key = অক্ষর, value = গণনা। getOrDefault শূন্য থেকে শুরু করিয়ে দেয়, আর map-এ key দুবার না থাকায় \"একবারই রিপোর্ট\" শর্তটা আপনিই মেনে যায়।"
       }
     },
     {
@@ -99,26 +107,30 @@
         "string",
         "anagram",
         "frequency",
-        "comparison"
+        "HashMap",
+        "equals"
       ],
       "answer": {
         "codeLang": "Java",
-        "code": "public class AnagramCheck {\n\n    public static void main(String[] args) {\n\n        String s1 = \"listen\";\n        String s2 = \"silent\";\n\n        boolean anagram = true;\n\n        if (s1.length() != s2.length()) {\n            anagram = false;\n        } else {\n\n            for (int i = 0; i < s1.length(); i++) {\n\n                char ch = s1.charAt(i);\n\n                int count1 = 0;\n                for (int j = 0; j < s1.length(); j++) {\n                    if (s1.charAt(j) == ch) {\n                        count1++;\n                    }\n                }\n\n                int count2 = 0;\n                for (int j = 0; j < s2.length(); j++) {\n                    if (s2.charAt(j) == ch) {\n                        count2++;\n                    }\n                }\n\n                if (count1 != count2) {\n                    anagram = false;\n                }\n            }\n        }\n\n        System.out.println(\"Anagram: \" + anagram);\n    }\n}\n\n/*  Output:\n    Anagram: true                                  */",
+        "code": "import java.util.HashMap;\n\npublic class AnagramCheck {\n\n    public static void main(String[] args) {\n\n        String s1 = \"listen\";\n        String s2 = \"silent\";\n\n        // দুটি হিসাব হুবহু মিললেই anagram\n        boolean anagram = count(s1).equals(count(s2));\n\n        System.out.println(\"Anagram: \" + anagram);\n    }\n\n    // একটি string-এর কোন অক্ষর কতবার আছে\n    static HashMap<Character, Integer> count(String s) {\n\n        HashMap<Character, Integer> map = new HashMap<>();\n\n        for (int i = 0; i < s.length(); i++) {\n            char ch = s.charAt(i);\n            map.put(ch, map.getOrDefault(ch, 0) + 1);\n        }\n        return map;\n    }\n}\n\n/*  Output:\n    Anagram: true                                  */",
         "summary": [
-          "দুটি string anagram তখনই, যখন একই অক্ষরগুলো একই সংখ্যায় দুটিতেই আছে — শুধু সাজানো আলাদা।",
-          "তাই s1-এর প্রতিটি অক্ষর নিয়ে দুই string-এ তার সংখ্যা গোনা হয়; একটিও না মিললে anagram নয়।",
-          "দৈর্ঘ্য আলাদা হলে গোনার দরকারই নেই — শুরুতেই বাদ।"
+          "দুটি string-এর অক্ষর-গণনা আলাদা করে বের করা হয়, তারপর দুটি হিসাব মিলিয়ে দেখা হয়।",
+          "HashMap-এর equals() ভেতরের সব key-value জোড়া মিলিয়ে দেখে, তাই পুরো তুলনাটা এক লাইনেই শেষ।",
+          "দৈর্ঘ্য আলাদা করে মেলানোর দরকার নেই — দৈর্ঘ্য আলাদা হলে গণনাও আলাদা হবে, equals() নিজেই false দেবে।"
         ],
         "points": [
-          "প্রথম শর্ত: length আলাদা হলে কখনোই anagram হতে পারে না, তাই সেখানেই anagram = false করে দেওয়া হয়। এটি সবচেয়ে সস্তা পরীক্ষা, তাই সবার আগে।",
-          "মূল অংশে s1-এর প্রতিটি অক্ষর ধরে দুটি গণনা করা হয় — count1 (s1-এ কতবার) ও count2 (s2-এ কতবার)।",
-          "দুটি গণনা loop হুবহু একই গঠনের, শুধু string আলাদা — P9-এর গণনা loop-ই এখানে দুবার ব্যবহার হয়েছে।",
-          "একটিও অক্ষরে count1 != count2 হলে anagram মিথ্যা হয়ে যায় এবং আর কখনো সত্য হয় না।",
-          "একই অক্ষর একাধিকবার এলে বারবার গোনা হয় — কাজ বাড়ে কিন্তু ফল ভুল হয় না, তাই এখানে duplicate গার্ড ইচ্ছে করেই বাদ দেওয়া হয়েছে (কম line, কম ভুল)।",
-          "বড়-ছোট হাতের ফারাক ধরতে না চাইলে শুরুতে s1 = s1.toLowerCase(); s2 = s2.toLowerCase(); বসিয়ে নিলেই হয়।"
+          "anagram মানে একই অক্ষর একই সংখ্যকবার, শুধু সাজানো আলাদা। তাই আসল প্রশ্নটা দাঁড়ায় — দুটির অক্ষর-গণনা এক কি না।",
+          "count() method একটি string নিয়ে তার অক্ষর-গণনার map ফেরত দেয়। একই loop দুবার লিখতে হয় না বলেই কাজটা আলাদা method-এ সরানো হয়েছে।",
+          "map1.equals(map2) — HashMap-এর equals ভেতরের সব key আর তাদের value মিলিয়ে দেখে, ক্রম দেখে না। তাই \"listen\" আর \"silent\"-এর map হুবহু এক, যদিও অক্ষরের সাজানো আলাদা।",
+          "ক্রম গুরুত্বপূর্ণ নয় বলেই এখানে সাধারণ HashMap-ই যথেষ্ট, LinkedHashMap লাগে না — এই map কখনো ঘুরিয়ে ছাপা হয় না।",
+          "আগের version-এ প্রথমেই দৈর্ঘ্য মেলাতে হতো। এখন তার দরকার নেই: দৈর্ঘ্য আলাদা হলে কোনো না কোনো অক্ষরের গণনা আলাদা হবেই। যেমন \"aab\" → {a=2, b=1} আর \"abb\" → {a=1, b=2} — equals() false দেয়।",
+          "বিকল্প ১ — একটিমাত্র map: s1-এর অক্ষরে +1, s2-এর অক্ষরে −1; শেষে সব value 0 হলে anagram।",
+          "বিকল্প ২ — int[26] গণনা array: কোনো import লাগে না, আরও দ্রুত। তবে সেটি ধরে নেয় অক্ষর কেবল a–z; HashMap যেকোনো অক্ষরে কাজ করে — সংখ্যা, চিহ্ন, যেকোনো ভাষার অক্ষর।",
+          "সতর্কতা: বড় ও ছোট হাতের অক্ষর এখানে আলাদা ধরা হয়, আর space-ও একটি অক্ষর হিসেবেই গোনা হয়। \"Listen\" আর \"silent\" মেলাতে চাইলে আগে দুটোকেই toLowerCase() করে নিতে হবে।",
+          "গণনার গঠনটি P9 (Character Frequency)-এর হুবহু একই — সেখানে গণনাটা ছাপা হয়, এখানে দুটি গণনা মেলানো হয়।"
         ],
-        "diagram": "s1 = \"listen\"      s2 = \"silent\"\n\n  length: 6 = 6 ✓ (নইলে এখানেই শেষ)\n\n  অক্ষর ধরে ধরে গণনা মেলানো:\n  ┌──────┬────────────┬────────────┬──────┐\n  │ ch   │ s1-এ কতবার │ s2-এ কতবার │ মিল? │\n  ├──────┼────────────┼────────────┼──────┤\n  │  l   │     1      │     1      │  ✓   │\n  │  i   │     1      │     1      │  ✓   │\n  │  s   │     1      │     1      │  ✓   │\n  │  t   │     1      │     1      │  ✓   │\n  │  e   │     1      │     1      │  ✓   │\n  │  n   │     1      │     1      │  ✓   │\n  └──────┴────────────┴────────────┴──────┘\n  একটিও ✗ হলে anagram = false হয়ে যেত\n\n  listen  →  l i s t e n\n  silent  →  s i l e n t     একই অক্ষর, ভিন্ন সাজ\n\nOutput ▸ Anagram: true",
-        "mnemonic": "Anagram = একই অক্ষর, একই সংখ্যায়, শুধু সাজ আলাদা। তাই আগে দৈর্ঘ্য মেলাও, তারপর প্রতিটি অক্ষরের গণনা দুই দিকে মিলিয়ে দেখো।"
+        "diagram": "s1 = \"listen\"          s2 = \"silent\"\n\ncount(s1) ▸  l=1  i=1  s=1  t=1  e=1  n=1\ncount(s2) ▸  s=1  i=1  l=1  e=1  n=1  t=1\n\nequals() key ধরে ধরে মেলায়, ক্রম দেখে না —\n\n    l : 1 = 1  ok        t : 1 = 1  ok\n    i : 1 = 1  ok        e : 1 = 1  ok\n    s : 1 = 1  ok        n : 1 = 1  ok\n\nসব key মিলে গেছে ▸ Anagram: true\n\n\nমিললো না হলে কেমন হতো —\n\n    \"aab\" ▸ {a=2, b=1}\n    \"abb\" ▸ {a=1, b=2}\n             a-এর ঘরেই অমিল ▸ false\n\nদৈর্ঘ্য আলাদা হলেও একইভাবে ধরা পড়ে, তাই\nআলাদা করে length মেলানোর দরকার নেই।\n\nOutput ▸ Anagram: true",
+        "mnemonic": "দুই দিকেই অক্ষর গুনে ফেলো, তারপর দুই map-কে equals() দিয়ে মেলাও। সাজানো আলাদা হলেও গণনা এক হলেই anagram।"
       }
     },
     {
@@ -128,27 +140,30 @@
         "string",
         "non-repeating",
         "unique character",
-        "frequency",
-        "break"
+        "LinkedHashMap",
+        "frequency"
       ],
       "answer": {
         "codeLang": "Java",
-        "code": "public class FirstUnique {\n\n    public static void main(String[] args) {\n\n        String text = \"swiss bank\";\n\n        char result = '-';          // না পাওয়া গেলে\n\n        for (int i = 0; i < text.length(); i++) {\n\n            char ch = text.charAt(i);\n\n            if (ch == ' ') {\n                continue;\n            }\n\n            int count = 0;\n            for (int j = 0; j < text.length(); j++) {\n                if (text.charAt(j) == ch) {\n                    count++;\n                }\n            }\n\n            if (count == 1) {\n                result = ch;\n                break;              // প্রথমটাই দরকার\n            }\n        }\n\n        System.out.println(\"First unique: \" + result);\n    }\n}\n\n/*  Output:\n    First unique: w                                */",
+        "code": "import java.util.LinkedHashMap;\nimport java.util.Map;\n\npublic class FirstUnique {\n\n    public static void main(String[] args) {\n\n        String text = \"swiss bank\";\n\n        // ধাপ ১ — প্রতিটি অক্ষর কতবার আছে\n        LinkedHashMap<Character, Integer> freq = new LinkedHashMap<>();\n\n        for (int i = 0; i < text.length(); i++) {\n\n            char ch = text.charAt(i);\n\n            if (ch == ' ') {\n                continue;\n            }\n\n            freq.put(ch, freq.getOrDefault(ch, 0) + 1);\n        }\n\n        // ধাপ ২ — ঢোকার ক্রমে প্রথম যেটির গণনা 1\n        char result = '-';\n\n        for (Map.Entry<Character, Integer> e : freq.entrySet()) {\n\n            if (e.getValue() == 1) {\n                result = e.getKey();\n                break;\n            }\n        }\n\n        System.out.println(\"First unique: \" + result);\n    }\n}\n\n/*  Output:\n    First unique: w                                */",
         "summary": [
-          "বাঁ দিক থেকে প্রতিটি অক্ষর ধরে পুরো string-এ তার সংখ্যা গোনা হয়; প্রথম যেটির সংখ্যা 1, সেটিই উত্তর।",
-          "break এখানে জরুরি — না দিলে শেষ unique অক্ষরটি এসে প্রথমটিকে চাপা দিয়ে দিত।",
-          "গণনার loop-টি P9 (Character Frequency)-এর হুবহু একই।"
+          "ধাপ ১ — পুরো string একবার ঘুরে প্রতিটি অক্ষরের গণনা তোলা হয়।",
+          "ধাপ ২ — map-টি ঘুরে প্রথম যে অক্ষরের গণনা 1, সেটিই উত্তর।",
+          "LinkedHashMap ঢোকার ক্রম ধরে রাখে, তাই map-এর \"প্রথম\" মানেই string-এর \"প্রথম\" — string আবার ঘুরতে হয় না।"
         ],
         "points": [
-          "বাইরের loop বাঁ দিক থেকে চলে বলেই প্রথম যেটি শর্ত মেলায় সেটিই \"first\" — আলাদা করে index তুলনা করার দরকার নেই।",
-          "ভেতরের loop: চেনা গণনা pattern — পুরো string ঘুরে ch কতবার আছে count করে।",
-          "count == 1 মানে অক্ষরটি আর কোথাও নেই, অর্থাৎ non-repeating।",
-          "break কেন লাগে: এটি ছাড়া loop চলতেই থাকত এবং result বারবার বদলে গিয়ে শেষে সর্বশেষ unique অক্ষর থেকে যেত — উত্তর ভুল হত।",
-          "result = '-' দিয়ে শুরু করা হয়েছে যাতে সব অক্ষরই repeating হলে (যেমন \"aabb\") একটি বোধগম্য উত্তর থাকে।",
-          "space বাদ দিতে continue ব্যবহার করা হয়েছে; বাক্যে space বারবার আসে বলে সে নিজেই কখনো unique হত না, তবু স্পষ্টতার জন্য বাদ দেওয়া ভালো।"
+          "কাজটা দুই ধাপের, এক ধাপে হয় না — কোনো অক্ষর একবার না একাধিকবার আছে, সেটা পুরো string না দেখে বলা যায় না। তাই আগে গোনা, পরে খোঁজা।",
+          "ধাপ ১-এর গঠনটি P9 (Character Frequency)-এর হুবহু একই — getOrDefault দিয়ে আগের গণনায় 1 যোগ।",
+          "ধাপ ২-তে entrySet() ঘোরা হয় এবং প্রথম যেটির value 1, সেখানেই break — \"প্রথম\"টাই দরকার, বাকিগুলো দেখার মানে নেই।",
+          "LinkedHashMap এখানে বাধ্যতামূলক, শখের ব্যাপার নয়। সাধারণ HashMap হলে map-এর ক্রম এলোমেলো হতো, আর \"প্রথম\" কথাটার কোনো মানেই থাকত না — ভুল অক্ষর বেরিয়ে আসতে পারত।",
+          "space বাদ দেওয়া হয়েছে গণনার সময়েই, continue দিয়ে — তাই space কখনো map-এ ঢোকেই না, উত্তর হিসেবেও আসতে পারে না।",
+          "result = '-' দিয়ে শুরু, যাতে সব অক্ষরই একাধিকবার থাকলে (যেমন \"aabb\") বোঝা যায় উত্তর নেই।",
+          "e.getValue() == 1 কাজ করে কারণ 1 একটি int literal, তাই Integer-টি নিজে থেকে খুলে (unboxing) মান মেলানো হয়। কিন্তু দুটি Integer-কে == দিয়ে মেলালে মান নয়, রেফারেন্স মেলে — বড় সংখ্যায় সেটি ভুল উত্তর দেয়। মান মেলাতে .equals() ব্যবহার করো বা int-এ নামিয়ে নাও।",
+          "দুটি import লাগবে: java.util.LinkedHashMap আর java.util.Map।",
+          "আগের পদ্ধতিতে প্রতিটি অক্ষরের জন্য পুরো string ঘুরতে হতো। এখন string একবার, map একবার — কাজ অনেক কমে যায়।"
         ],
-        "diagram": "text = \"swiss bank\"\n\n  index : 0 1 2 3 4 5 6 7 8 9\n  অক্ষর : s w i s s ' ' b a n k\n\ni=0  s → পুরো string-এ গুনি → 3  ✗ (repeating)\ni=1  w → গুনি → 1               ✓ পেয়ে গেছি!\n                                  result = 'w'\n                                  break — এখানেই থামা\n\n     (i=2 এর পর আর যাওয়াই হলো না)\n\n  break না দিলে কী হত:\n     i=2  i → 1 ✓ result = 'i'\n     i=6  b → 1 ✓ result = 'b'\n     i=9  k → 1 ✓ result = 'k'   ← ভুল উত্তর\n     অর্থাৎ শেষ unique টি থেকে যেত\n\nOutput ▸ First unique: w",
-        "mnemonic": "\"First\" মানেই বাঁ দিক থেকে চলো আর পেলেই break। break ভুলে গেলে উত্তর হয়ে যাবে last unique, first নয়।"
+        "diagram": "text = \"swiss bank\"        (space গোনা হয় না)\n\nধাপ ১ — গণনা, ঢোকার ক্রমে\n\n    s=3   w=1   i=1   b=1   a=1   n=1   k=1\n\nধাপ ২ — ক্রম ধরে প্রথম যেটির গণনা 1\n\n    s → 3   একাধিকবার এসেছে, বাদ\n    w → 1   পেয়ে গেছি ▸ break\n\n     s  w  i  s  s     b  a  n  k\n        ^\n        প্রথম যেটি একবারই এসেছে\n\ni-ও একবার আছে, কিন্তু w তার আগে এসেছে —\nLinkedHashMap ক্রম ধরে রাখে বলেই w-ই আগে ধরা পড়ে।\n\nOutput ▸ First unique: w",
+        "mnemonic": "আগে গোনো, পরে খোঁজো। LinkedHashMap ক্রম ধরে রাখে বলে map-এর প্রথম 1-ই string-এর প্রথম একক অক্ষর।"
       }
     }
   ]
