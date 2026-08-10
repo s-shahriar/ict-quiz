@@ -474,6 +474,114 @@
         },
         "mnemonic": "প্রশ্নে \"delivered in phases\" + \"user feedback\" — এই দুটি শব্দ দেখলেই উত্তর Incremental। মনে রাখো: \"একবারে পুরো বাড়ি নয়, ঘর ধরে ধরে বুঝিয়ে দাও — বাসিন্দা থেকে মতামত নিয়ে পরের ঘর তোলো\"।"
       }
+    },
+    {
+      "id": "se_007",
+      "q": "Write concepts of coupling and cohesion with example?",
+      "tags": [
+        "coupling",
+        "cohesion",
+        "modular design",
+        "software design",
+        "maintainability"
+      ],
+      "answer": {
+        "summary": [
+          "Coupling হলো দুটি ভিন্ন module একে অপরের উপর কতটা নির্ভরশীল তার মাপ, আর Cohesion হলো একটি module এর ভিতরের কাজগুলো একটিমাত্র উদ্দেশ্যের সাথে কতটা সম্পর্কিত তার মাপ। একটি বাইরের সম্পর্ক মাপে, অন্যটি ভিতরের বাঁধন।",
+          "কেন coupling কম রাখা দরকার — module A যদি B এর ভিতরের গঠন (টেবিল, variable, internal function) সরাসরি ব্যবহার করে, তাহলে B এর ভিতরে কিছু বদলালেই A ভেঙে পড়ে। এই ripple effect ই maintenance খরচ বাড়ায়। শুধু একটি নির্দিষ্ট interface দিয়ে কথা বললে B এর ভিতরটা স্বাধীনভাবে বদলানো যায়।",
+          "কেন cohesion বেশি দরকার — একটি module যদি একটাই কাজ করে, তবে সেই কাজ বদলালে কেবল ওই একটি module ছুঁতে হয়; খুঁজে বের করা, test করা ও পুনর্ব্যবহার করা সহজ। অসম্পর্কিত কাজ একসাথে থাকলে প্রতিটি পরিবর্তনের কারণেই module টি বারবার বদলাতে হয়।",
+          "তাই ভালো design এর নিয়ম — Low Coupling, High Cohesion।"
+        ],
+        "points": [
+          "Coupling — উদাহরণসহ:",
+          {
+            "sub": "High/tight coupling: Billing module সরাসরি Inventory module এর database table এ query চালায়। Inventory এর table structure বদলালেই Billing ভেঙে যায়, যদিও Billing এর নিজের কোডে কিছুই বদলায়নি।"
+          },
+          {
+            "sub": "Low/loose coupling: Billing শুধু Inventory এর public function getStockCount(itemId) ডাকে। Inventory ভিতরে table বদলাক, cache যোগ করুক বা অন্য database এ যাক — function এর signature ঠিক থাকলে Billing অক্ষত থাকে।"
+          },
+          {
+            "sub": "Coupling এর মাত্রা (খারাপ → ভালো): Content (একটি module অন্যটির ভিতরের কোড/data সরাসরি ছোঁয়) → Common (একই global variable ভাগ করে) → Control (flag পাঠিয়ে অন্য module কে কী করতে হবে তা নিয়ন্ত্রণ করে) → Stamp (দরকারের চেয়ে বড় গোটা structure পাঠায়) → Data (শুধু প্রয়োজনীয় parameter পাঠায় — সবচেয়ে ভালো)।"
+          },
+          "Cohesion — উদাহরণসহ:",
+          {
+            "sub": "High cohesion: InvoiceCalculator নামের module শুধু invoice এর total, tax ও discount হিসাব করে — সবগুলো কাজই একই উদ্দেশ্যের অংশ। Invoice এর নিয়ম বদলালে শুধু এই module ছুঁতে হয়।"
+          },
+          {
+            "sub": "Low cohesion: Utils নামের module একই সাথে invoice হিসাব করে, email পাঠায় আর date format করে — তিনটি সম্পূর্ণ অসম্পর্কিত কাজ। এটি তিনটি ভিন্ন কারণে বদলায়, তাই এতে ভুল ঢোকার ঝুঁকি বেশি এবং আলাদাভাবে পুনর্ব্যবহার করা যায় না।"
+          },
+          {
+            "sub": "Cohesion এর মাত্রা (খারাপ → ভালো): Coincidental (কোনো সম্পর্ক নেই, যেমন Utils) → Logical (একই জাতের কাজ, flag দিয়ে বাছাই হয়) → Temporal (একই সময়ে চলে, যেমন সব startup কাজ) → Procedural → Communicational (একই data নিয়ে কাজ করে) → Sequential (একটির output পরেরটির input) → Functional (একটিমাত্র সুনির্দিষ্ট কাজ — সবচেয়ে ভালো)।"
+          },
+          "দুটির সম্পর্ক: cohesion বাড়ালে সাধারণত coupling নিজে থেকেই কমে। কারণ প্রতিটি module যখন নিজের একটাই দায়িত্ব সামলায়, তখন অন্যের ভিতরে ঢোকার প্রয়োজনই পড়ে না — Single Responsibility Principle এর মূল কথাও এটাই।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Microservice architecture — প্রতিটি service এক domain এর দায়িত্ব নেয় (high cohesion) এবং অন্য service এর database এ হাত না দিয়ে শুধু REST/gRPC API দিয়ে কথা বলে (low coupling), ফলে একটি service আলাদাভাবে deploy ও scale করা যায়।"
+          },
+          {
+            "sub": "Layered application — Controller, Service ও Repository আলাদা রেখে interface (dependency injection) দিয়ে যুক্ত করা হয়, তাই database বদলালে শুধু Repository বদলায় এবং unit test এ নকল (mock) repository বসানো যায়।"
+          }
+        ],
+        "diagram": "COUPLING — দুই module এর মধ্যেকার বাঁধন\n\n  (ক) HIGH / TIGHT COUPLING — খারাপ\n\n   ┌─────────────────┐                 ┌─────────────────┐\n   │   BILLING       │                 │   INVENTORY     │\n   │                 │                 │  ┌───────────┐  │\n   │  calcBill() ────┼────────────────►│  │ stock_tbl │  │ ← ভিতরের table\n   │                 │  SELECT qty     │  │  item_id  │  │   সরাসরি পড়ছে\n   │                 │  FROM stock_tbl │  │  qty      │  │\n   │                 │                 │  └───────────┘  │\n   └─────────────────┘                 └─────────────────┘\n                         ▲\n                         └ table এর নাম/column বদলালেই Billing ভাঙে\n                           (ripple effect — এক জায়গার পরিবর্তন বহু জায়গায় ছড়ায়)\n\n  (খ) LOW / LOOSE COUPLING — ভালো\n\n   ┌─────────────────┐   ╭─ interface ─╮  ┌─────────────────┐\n   │   BILLING       │   │             │  │   INVENTORY     │\n   │                 │   │getStockCount│  │  ┌───────────┐  │\n   │  calcBill() ────┼──►│  (itemId)   ├─►│  │ যেকোনো    │  │\n   │                 │   │             │  │  │ ভিতরের    │  │\n   │                 │   ╰─────────────╯  │  │ গঠন       │  │\n   └─────────────────┘         ▲          │  └───────────┘  │\n                               │          └─────────────────┘\n                    শুধু এই চুক্তিটুকু জানে           ▲\n                    ভিতরটা কী তা জানে না             │\n                    ────────────────────────────────┘\n                    ভিতরে table/cache/DB বদলালেও Billing অক্ষত\n\n\nCOHESION — এক module এর ভিতরের কাজগুলোর মিল\n\n  (ক) HIGH COHESION — ভালো        (খ) LOW COHESION — খারাপ\n\n  ┌──────────────────────┐        ┌──────────────────────┐\n  │  InvoiceCalculator   │        │        Utils         │\n  ├──────────────────────┤        ├──────────────────────┤\n  │ ● calcTotal()        │        │ ● calcInvoice()      │\n  │ ● calcTax()          │        │ ● sendEmail()        │\n  │ ● applyDiscount()    │        │ ● formatDate()       │\n  └──────────────────────┘        └──────────────────────┘\n     সব কাজ একই উদ্দেশ্যে            তিনটি অসম্পর্কিত কাজ\n     (invoice এর হিসাব)              একসাথে জোড়া\n\n     বদলানোর কারণ : ১টি            বদলানোর কারণ : ৩টি\n     পুনর্ব্যবহার  : সহজ            পুনর্ব্যবহার  : কঠিন\n     Test          : সহজ            Test          : জটিল\n\n────────────────────────────────────────────\n  ভালো design এর লক্ষ্য :\n\n     Coupling  :  উচ্চ ─────────────► নিম্ন   (কমাও)\n                  Content  →  Data\n\n     Cohesion  :  নিম্ন ─────────────► উচ্চ   (বাড়াও)\n                  Coincidental → Functional\n\n     সূত্র :  LOW COUPLING  +  HIGH COHESION",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Coupling",
+            "Cohesion"
+          ],
+          "rows": [
+            [
+              "কী মাপে",
+              "দুটি ভিন্ন module এর পারস্পরিক নির্ভরতা",
+              "একটি module এর ভিতরের কাজগুলোর সম্পর্ক"
+            ],
+            [
+              "পরিসর",
+              "Inter-module (module এর বাইরে)",
+              "Intra-module (module এর ভিতরে)"
+            ],
+            [
+              "কাম্য মান",
+              "যত কম তত ভালো (low)",
+              "যত বেশি তত ভালো (high)"
+            ],
+            [
+              "ভালো উদাহরণ",
+              "Billing → getStockCount() API ডাকে",
+              "InvoiceCalculator শুধু হিসাব করে"
+            ],
+            [
+              "খারাপ উদাহরণ",
+              "Billing সরাসরি Inventory এর table পড়ে",
+              "Utils — হিসাব + email + date একসাথে"
+            ],
+            [
+              "না মানলে সমস্যা",
+              "একটি বদলালে অন্যটি ভাঙে, পুনর্ব্যবহার অসম্ভব",
+              "একই module বারবার বদলায়, ভুল ও test খরচ বাড়ে"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Coupling আর cohesion দুটোই কমাতে হয়",
+            "না — coupling কমাতে হয়, cohesion বাড়াতে হয়। একটি বাইরের নির্ভরতা, অন্যটি ভিতরের একাগ্রতা"
+          ],
+          [
+            "Coupling শূন্য করাই আদর্শ",
+            "সম্ভব নয় — module গুলোকে কাজ করতে হলে যোগাযোগ লাগবেই। লক্ষ্য হলো সেই যোগাযোগ যেন সবচেয়ে দুর্বল ধরনের (data coupling) হয়, শূন্য নয়"
+          ],
+          [
+            "সব কোড এক বড় module এ রাখলে coupling শূন্য, তাই ভালো",
+            "উল্টো — তখন cohesion তলানিতে নামে এবং ভিতরে সব কিছু সব কিছুর সাথে জড়িয়ে যায়, যা সবচেয়ে খারাপ অবস্থা"
+          ],
+          [
+            "Module সংখ্যা বাড়ালেই design ভালো হয়",
+            "না — কাজ ভাগ না বুঝে ভাঙলে module গুলো একে অন্যকে ডাকতেই থাকে, coupling বেড়ে যায়"
+          ]
+        ],
+        "mnemonic": "\"ভিতরে টান, বাইরে ঢিল\" — Cohesion (ভিতরের বাঁধন) High, Coupling (বাইরের বাঁধন) Low। মনে রাখো Co-hesion = Co এর ভিতরে একসাথে, Coupling = দুই বগির মাঝের কাপলিং — যত হালকা, আলাদা করা তত সহজ।"
+      }
     }
   ]
 }

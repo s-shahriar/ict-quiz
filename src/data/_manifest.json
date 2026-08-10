@@ -18,8 +18,8 @@
   "written": {
     "c_programming": 3,
     "computer_fundamental": 4,
-    "computer_network": 26,
-    "database": 9,
+    "computer_network": 27,
+    "database": 10,
     "digital_logic": 2,
     "dsa": 9,
     "information_security": 8,
@@ -29,7 +29,7 @@
     "oop": 4,
     "operating_system": 12,
     "server": 36,
-    "software_engineering": 6,
+    "software_engineering": 7,
     "theory_of_computation": 1
   },
   "extra": {

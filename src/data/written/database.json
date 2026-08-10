@@ -653,6 +653,138 @@
         },
         "mnemonic": "Data type বাছাইয়ের নিয়ম: \"যাতে হিসাব হয় তা সংখ্যা, যাতে হিসাব হয় না তা লেখা\" — তাই CGPA হলো DECIMAL কিন্তু phone হলো VARCHAR। আর Primary Key এর তিন শর্ত: Unique + Not Null + কখনো বদলায় না — এই তিনটিই একসাথে মেলে শুধু student_id তে।"
       }
+    },
+    {
+      "id": "db_010",
+      "q": "How indexing improve query performance?",
+      "tags": [
+        "index",
+        "B-Tree",
+        "query optimization",
+        "full table scan",
+        "database performance"
+      ],
+      "answer": {
+        "summary": [
+          "Index হলো টেবিলের এক বা একাধিক column এর উপর তৈরি একটি অতিরিক্ত data structure (সাধারণত B-Tree, কখনো hash), যেখানে ওই column এর মান sorted অবস্থায় থাকে এবং প্রতিটি মানের পাশে মূল row এর ঠিকানা (pointer/row-id) রাখা হয়।",
+          "কেন দ্রুত হয় — index না থাকলে DBMS কে full table scan করতে হয়, অর্থাৎ মিল খুঁজতে প্রতিটি row একে একে পড়তে হয়, খরচ O(n)। Index থাকলে মানগুলো sorted বলে প্রতি ধাপে অর্ধেক (B-Tree এ আরও বেশি) অংশ বাদ দেওয়া যায়, তাই মাত্র কয়েকটি ধাপে সরাসরি row এ পৌঁছানো যায় — খরচ O(log n)।",
+          "বইয়ের index এর মতো: পুরো বই পাতা উল্টে শব্দ খোঁজার বদলে পিছনের index এ শব্দটি দেখে সরাসরি পৃষ্ঠা নম্বরে যাওয়া। ১০ লক্ষ row এ full scan এ ১০ লক্ষ row পড়তে হয়, B-Tree index এ ৩–৪টি node পড়লেই হয়।",
+          "মূল্য দিতে হয় লেখায় — INSERT/UPDATE/DELETE এর সময় index টিও হালনাগাদ করতে হয়, এবং index নিজে আলাদা disk জায়গা নেয়। তাই index পড়াকে দ্রুত করে, লেখাকে সামান্য ধীর করে।"
+        ],
+        "points": [
+          "যেসব জায়গায় index কাজে লাগে:",
+          {
+            "sub": "WHERE — শর্তের column এ index থাকলে সরাসরি মিল খুঁজে পাওয়া যায় (equality ও range দুই ক্ষেত্রেই, যেমন WHERE roll = 105 বা WHERE date BETWEEN ...)।"
+          },
+          {
+            "sub": "JOIN — join এর key (সাধারণত foreign key) তে index থাকলে প্রতিটি row এর জন্য অন্য টেবিল স্ক্যান না করে index seek করা যায়; এতে nested-loop join এর খরচ n×m থেকে নেমে আসে।"
+          },
+          {
+            "sub": "ORDER BY ও GROUP BY — index এমনিতেই sorted, তাই DBMS আলাদা করে sort করার ধাপটিই বাদ দিতে পারে।"
+          },
+          {
+            "sub": "MIN/MAX ও UNIQUE যাচাই — sorted কাঠামোর প্রথম/শেষ entry দেখেই উত্তর মেলে, এবং duplicate আছে কিনা তা সঙ্গে সঙ্গে ধরা পড়ে।"
+          },
+          {
+            "sub": "Covering index — query তে যতগুলো column লাগে তার সবই যদি index এ থাকে, তবে মূল table এ যাওয়ারই দরকার হয় না; উত্তর index থেকেই মেলে (index-only scan)।"
+          },
+          "Index এর ধরন:",
+          {
+            "sub": "Clustered index — এই index এর ক্রমেই মূল row গুলো disk এ সাজানো থাকে, তাই একটি টেবিলে একটিই হতে পারে; range query তে সবচেয়ে দ্রুত (সাধারণত primary key)।"
+          },
+          {
+            "sub": "Non-clustered index — আলাদা কাঠামো, যেখানে key এর সাথে মূল row এর pointer থাকে; একটি টেবিলে একাধিক থাকতে পারে।"
+          },
+          {
+            "sub": "Composite index (a, b) — বাম দিক থেকে ক্রম মেনে কাজ করে (leftmost prefix rule): WHERE a=... বা WHERE a=... AND b=... এ কাজ করে, কিন্তু শুধু WHERE b=... এ কাজ করে না।"
+          },
+          {
+            "sub": "Hash index — কেবল সমান-সমান (=) খোঁজায় O(1), কিন্তু range বা ORDER BY তে অকেজো; তাই সাধারণ কাজে B-Tree ই প্রধান।"
+          },
+          "যেখানে index কাজে আসে না বা উল্টো ক্ষতি করে:",
+          {
+            "sub": "কম selectivity — যেমন gender বা status column, যেখানে অল্প কয়েকটি ভিন্ন মান আছে। বেশিরভাগ row মিলে যাবে বলে optimizer index বাদ দিয়ে full scan ই বেছে নেয়।"
+          },
+          {
+            "sub": "Column এর উপর function বা গণনা — WHERE YEAR(join_date) = 2024 লিখলে index অকেজো হয়ে যায়, কারণ index এ সংরক্ষিত আছে মূল মান, function এর ফল নয়। শর্তটি range আকারে লিখলে (join_date >= '2024-01-01' AND < '2025-01-01') index আবার কাজ করে।"
+          },
+          {
+            "sub": "LIKE '%abc' — শুরুতে wildcard থাকলে sorted ক্রম অনুসরণ করা যায় না; 'abc%' হলে কাজ করে।"
+          },
+          {
+            "sub": "খুব ছোট টেবিল — গোটা টেবিলই এক-দুই page, তাই index ঘোরার বাড়তি খরচই বেশি পড়ে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "ব্যাংক বা ই-কমার্স ব্যবস্থায় লক্ষ লক্ষ transaction এর মধ্যে account_no বা order_id দিয়ে খোঁজা — index না থাকলে প্রতিটি অনুসন্ধানে পুরো টেবিল পড়তে হতো।"
+          },
+          {
+            "sub": "Login যাচাই — users(email) তে unique index থাকায় লক্ষ user এর মধ্যে email মিলিয়ে দেখা মুহূর্তেই সম্ভব, পাশাপাশি একই email দুবার ঢোকা ঠেকানো যায়।"
+          },
+          {
+            "sub": "Query ধীর হলে EXPLAIN / EXPLAIN ANALYZE চালিয়ে দেখা হয় planner \"Seq Scan / full table scan\" করছে নাকি \"Index Scan\" — এই আউটপুট দেখেই ঠিক করা হয় কোথায় index দরকার।"
+          }
+        ],
+        "diagram": "১) INDEX ছাড়া — FULL TABLE SCAN\n\n   SELECT * FROM STUDENT WHERE roll = 105;\n\n   STUDENT table (১০,০০,০০০ row)\n   ┌────┬───────┬──────────┐\n   │ id │ roll  │  name    │\n   ├────┼───────┼──────────┤\n   │ 1  │  312  │ Karim    │ ← পড়া হলো, মিলল না\n   │ 2  │  087  │ Rahim    │ ← পড়া হলো, মিলল না\n   │ 3  │  945  │ Jamal    │ ← পড়া হলো, মিলল না\n   │ .. │  ...  │ ...      │ ← ... এভাবে চলতেই থাকে\n   │ 7  │  105  │ Sumi     │ ← ✔ অবশেষে মিলল\n   │ .. │  ...  │ ...      │\n   └────┴───────┴──────────┘\n            খরচ : O(n) — সব row পড়তে হয়\n\n\n২) INDEX সহ — B-TREE SEEK\n\n   CREATE INDEX idx_roll ON STUDENT(roll);\n\n            ┌─────────────┐\n            │  200 │ 600  │   ← root node\n            └──┬───┴───┬──┘\n     105<200 ✔ │       │\n        ┌──────▼──┐  ┌─▼───────┐\n        │ 90 │150 │  │300 │450 │  ← internal node\n        └─┬──┴──┬─┘  └─────────┘\n   90<105 │     │ 105<150 ✔\n          │  ┌──▼──────────────────┐\n          │  │ 095│ 101│ 105│ 149  │ ← leaf: sorted key + pointer\n          └─►└────┴────┴──┬─┴──────┘\n                          │ row-id → 7\n                          ▼\n                  ┌────┬───────┬──────┐\n                  │ 7  │  105  │ Sumi │ ← ✔ সরাসরি এই row\n                  └────┴───────┴──────┘\n\n         মাত্র ৩ ধাপ (root → internal → leaf)\n         খরচ : O(log n)\n\n\n৩) কত লাভ — ১০ লক্ষ row এ\n\n   Full scan  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ১০,০০,০০০ row পড়া\n   Index seek ▓                          ≈ ৩–৪ node পড়া\n              └ প্রায় বইয়ের index দেখে সোজা পৃষ্ঠায় যাওয়ার মতো\n\n\n৪) দাম — লেখায়\n\n   INSERT/UPDATE/DELETE ──► table বদলাও ──► প্রতিটি index ও\n                                            নতুন করে সাজাও\n   ┌──────────────────────────────────────────────┐\n   │  READ  (SELECT)     ▲ অনেক দ্রুত              │\n   │  WRITE (INSERT...)  ▼ সামান্য ধীর             │\n   │  DISK  (storage)    ▲ বাড়তি জায়গা লাগে       │\n   └──────────────────────────────────────────────┘\n     ⇒ যেসব column নিয়মিত WHERE/JOIN/ORDER BY তে আসে\n       শুধু সেগুলোতেই index দাও, সব column এ নয়",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Index ছাড়া",
+            "Index সহ"
+          ],
+          "rows": [
+            [
+              "খোঁজার পদ্ধতি",
+              "Full table scan — প্রতিটি row পড়া",
+              "B-Tree seek — ধাপে ধাপে অংশ বাদ দেওয়া"
+            ],
+            [
+              "সময় জটিলতা",
+              "O(n)",
+              "প্রায় O(log n)"
+            ],
+            [
+              "ORDER BY / GROUP BY",
+              "আলাদা sort করতে হয়",
+              "index এমনিতেই sorted, sort বাদ যায়"
+            ],
+            [
+              "JOIN",
+              "প্রতি row এর জন্য অন্য টেবিল স্ক্যান",
+              "key তে সরাসরি seek"
+            ],
+            [
+              "INSERT/UPDATE/DELETE",
+              "দ্রুত — শুধু table বদলায়",
+              "সামান্য ধীর — index ও হালনাগাদ হয়"
+            ],
+            [
+              "Disk",
+              "বাড়তি জায়গা লাগে না",
+              "index এর জন্য বাড়তি জায়গা লাগে"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "যত বেশি index তত দ্রুত database",
+            "না — প্রতিটি index প্রতিটি write এ হালনাগাদ হয়, তাই অপ্রয়োজনীয় index লেখাকে ধীর করে ও জায়গা খায়"
+          ],
+          [
+            "Index থাকলেই query তে সেটি ব্যবহার হবে",
+            "না — column এর উপর function দিলে, LIKE '%x' লিখলে বা মিলবে এমন row এর সংখ্যা খুব বেশি হলে optimizer index বাদ দিয়ে full scan বেছে নেয়"
+          ],
+          [
+            "Composite index (a, b) থাকলে শুধু b দিয়েও খোঁজা দ্রুত হবে",
+            "না — leftmost prefix নিয়ম অনুযায়ী বাম দিকের column থেকে শুরু করতে হয়; শুধু b এর জন্য আলাদা index লাগবে"
+          ],
+          [
+            "Index মূল data এর অনুলিপি, তাই তথ্য দুবার থাকে",
+            "index এ কেবল key এর মান আর row এর pointer থাকে (covering index ছাড়া), গোটা row নয়"
+          ]
+        ],
+        "mnemonic": "\"বইয়ের পিছনের index\" — পাতা উল্টে খোঁজা = full scan O(n); index দেখে সোজা পৃষ্ঠায় = index seek O(log n)। আর মনে রাখো দাম: READ দ্রুত, WRITE ধীর।"
+      }
     }
   ]
 }

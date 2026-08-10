@@ -1622,6 +1622,117 @@
         },
         "mnemonic": "TCP = ফোন কল (আগে \"হ্যালো\" বলে সংযোগ, শুনতে না পেলে \"আবার বলো\")। UDP = মাইকে ঘোষণা (কে শুনল খোঁজ নেই, কিন্তু দ্রুত)। তাই live stream/gaming এ UDP।"
       }
+    },
+    {
+      "id": "cn_027",
+      "q": "10Mbps bandwidth, average packet length 1500 bytes, what is maximum packet arrival rate supported without causing congestion?",
+      "tags": [
+        "bandwidth",
+        "packet rate",
+        "congestion",
+        "throughput",
+        "numerical"
+      ],
+      "answer": {
+        "summary": [
+          "Congestion তখনই শুরু হয় যখন packet আসার হার link এর packet পাঠানোর হারকে ছাড়িয়ে যায়। তাই সর্বোচ্চ নিরাপদ arrival rate = link প্রতি সেকেন্ডে যতগুলো packet বের করে দিতে পারে ঠিক ততগুলো।",
+          "প্রতি packet এ bit সংখ্যা = 1500 × 8 = 12,000 bit। Link প্রতি সেকেন্ডে দেয় 10 × 10⁶ bit। তাই সেকেন্ডে packet সংখ্যা = 10,000,000 ÷ 12,000 ≈ 833.33 packet/sec।",
+          "Bandwidth কেন উপরে বসে — একক মিলিয়ে দেখলেই স্পষ্ট: (bit/sec) ÷ (bit/packet) = packet/sec, অর্থাৎ যা চাওয়া হয়েছে ঠিক তাই। উল্টো করে বসালে (bit/packet) ÷ (bit/sec) = sec/packet পাওয়া যায়, সেটি হার নয় — সেটি একটি packet পাঠাতে কত সময় লাগে (transmission time)।",
+          "দুটি একে অপরের বিপরীত (reciprocal): এক packet এর transmission time = 12,000 ÷ 10⁷ = 1.2 ms; আর 1 ÷ 1.2 ms = 833.33 packet/sec — একই উত্তর।",
+          "উত্তর: প্রায় 833 packet/sec। এর চেয়ে দ্রুত packet এলে router এর buffer ভরতে থাকে, queuing delay বাড়ে এবং buffer উপচে গেলে packet drop অর্থাৎ congestion শুরু হয়।"
+        ],
+        "points": [
+          "সূত্র ও ধাপে ধাপে হিসাব:",
+          {
+            "sub": "Packet Rate (packet/sec) = Bandwidth (bps) ÷ [ Packet Length (byte) × 8 ]"
+          },
+          {
+            "sub": "ধাপ ১ — packet কে bit এ আনো: 1500 byte × 8 = 12,000 bit/packet।"
+          },
+          {
+            "sub": "ধাপ ২ — bandwidth কে bps এ আনো: 10 Mbps = 10 × 10⁶ = 10,000,000 bit/sec (নেটওয়ার্কে M মানে 10⁶, 2²⁰ নয়)।"
+          },
+          {
+            "sub": "ধাপ ৩ — ভাগ করো: 10,000,000 ÷ 12,000 = 833.33 packet/sec ≈ 833 packet/sec।"
+          },
+          "কেন এটিই congestion এর সীমা:",
+          {
+            "sub": "Router এর কাছে packet জমা হওয়ার হার λ (arrival rate) আর বের হওয়ার হার μ (service rate = 833 pkt/s)। λ < μ হলে queue খালি হতে থাকে, ব্যবস্থা স্থিতিশীল।"
+          },
+          {
+            "sub": "λ > μ হলে প্রতি সেকেন্ডে (λ − μ) টি packet জমতে থাকে — buffer ভরে, queuing delay বাড়ে, শেষে buffer overflow হয়ে packet drop হয়। এটিই congestion।"
+          },
+          {
+            "sub": "λ = μ হলে তাত্ত্বিকভাবে চলে, কিন্তু বাস্তবে traffic burst আকারে আসে বলে queue দ্রুত ফুলে ওঠে; তাই ব্যবহারিকভাবে link utilization ৭০–৮০% এ রাখা হয়, অর্থাৎ প্রায় ৫৮০–৬৭০ pkt/s।"
+          },
+          "সূক্ষ্ম দিক (উত্তরে লিখলে ভালো লাগে):",
+          {
+            "sub": "এই হিসাব ধরে নিচ্ছে link ১০০% সময় data পাঠাচ্ছে এবং কোনো overhead নেই। বাস্তব Ethernet এ প্রতি frame এর সাথে preamble (8 byte), inter-frame gap (12 byte) ইত্যাদি যোগ হয়, তাই প্রকৃত হার কিছুটা কম হয়।"
+          },
+          {
+            "sub": "1500 byte সংখ্যাটি Ethernet এর সাধারণ MTU — অর্থাৎ এটি সবচেয়ে বড় packet, তাই এই হিসাবটি সর্বনিম্ন packet-per-second এর হিসাব। packet ছোট হলে (যেমন 500 byte) একই bandwidth এ packet সংখ্যা তিন গুণ বেড়ে যায়, আর তখন router এর CPU/PPS সক্ষমতাই আগে সীমা হয়ে দাঁড়ায়।"
+          }
+        ],
+        "diagram": "প্রশ্ন : 10 Mbps link, packet = 1500 byte → সর্বোচ্চ কত packet/sec?\n\n  ধাপ ১ — packet কে bit এ আনা\n  ┌──────────────────────────┐\n  │  1 packet = 1500 byte    │  × 8\n  │           = 12,000 bit   │ ◄────── 1 byte = 8 bit\n  └──────────────────────────┘\n\n  ধাপ ২ — এক সেকেন্ডের পাইপে কতটুকু ধরে\n\n   ১ সেকেন্ড ────────────────────────────────────►\n   ┌───────────────────────────────────────────────┐\n   │        10,000,000 bit  (10 Mbps)              │\n   └───────────────────────────────────────────────┘\n   │12000│12000│12000│ ... │12000│  ← এক একটি packet\n     #1    #2    #3           #833\n\n        10,000,000 bit / sec\n        ────────────────────  =  833.33 packet/sec\n          12,000 bit / packet\n\n\nএকক মিলিয়ে দেখা — কোনটি উপরে বসবে\n\n   ✔ সঠিক        bit/sec  ÷  bit/packet  =  packet/sec   ← চাওয়া হয়েছে\n   ✘ উল্টো       bit/packet ÷ bit/sec    =  sec/packet   ← এটি সময়, হার নয়\n\n   দুটি একে অপরের বিপরীত :\n        1 packet এর সময় = 12,000 ÷ 10⁷      = 1.2 ms\n        হার              = 1 ÷ 1.2 ms        = 833.33 pkt/s\n\n\nCONGESTION কোথায় শুরু\n\n   arrival rate λ ──►┌───────────────┐──► service rate μ = 833 pkt/s\n                     │  ROUTER BUFFER│\n                     │  ▓▓░░░░░░░░░░ │\n                     └───────────────┘\n\n   λ = 600 pkt/s   ▓░░░░░░░░░  queue প্রায় খালি — স্বাভাবিক\n   λ = 833 pkt/s   ▓▓▓▓▓░░░░░  সীমারেখা — burst এলেই ফুলে ওঠে\n   λ = 1000 pkt/s  ▓▓▓▓▓▓▓▓▓▓  প্রতি সেকেন্ডে 167 packet জমে\n                   └─► delay বাড়ে → buffer overflow → PACKET DROP\n\n────────────────────────────────────────────\n  উত্তর :  10 × 10⁶ ÷ (1500 × 8)  ≈  833 packet/sec\n           (এক packet এর transmission time 1.2 ms)",
+        "table": {
+          "headers": [
+            "রাশি",
+            "মান",
+            "ব্যাখ্যা"
+          ],
+          "rows": [
+            [
+              "Bandwidth",
+              "10 Mbps = 10,000,000 bps",
+              "নেটওয়ার্কে M = 10⁶"
+            ],
+            [
+              "Packet length",
+              "1500 byte = 12,000 bit",
+              "×8 করে bit এ আনা হয়েছে"
+            ],
+            [
+              "Packet rate (μ)",
+              "10⁷ ÷ 12,000 ≈ 833.33 pkt/s",
+              "সর্বোচ্চ নিরাপদ arrival rate"
+            ],
+            [
+              "Transmission time",
+              "12,000 ÷ 10⁷ = 1.2 ms",
+              "একটি packet পাঠাতে যত সময়"
+            ],
+            [
+              "λ < 833 pkt/s",
+              "স্বাভাবিক",
+              "queue খালি হতে থাকে"
+            ],
+            [
+              "λ > 833 pkt/s",
+              "Congestion",
+              "buffer ভরে, delay ও packet drop"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Bandwidth কে নিচে (denominator) বসানো",
+            "তাহলে উত্তর আসে sec/packet (1.2 ms) — সেটি একটি packet এর transmission time, arrival rate নয়। হার চাইলে bandwidth উপরে বসাতে হবে; ঐ সময়ের বিপরীত (1/1.2 ms) নিলেও একই 833 pkt/s আসে"
+          ],
+          [
+            "1500 কে সরাসরি ভাগ করা (×8 ভুলে যাওয়া)",
+            "ভুল — bandwidth bit এ আর packet length byte এ; একই এককে না আনলে উত্তর ৮ গুণ বেশি (6666) হয়ে যায়"
+          ],
+          [
+            "10 Mbps = 10 × 1024 × 1024 ধরা",
+            "না — নেটওয়ার্কের গতিতে M মানে সব সময় 10⁶। 1024-ভিত্তিক হিসাব কেবল memory/storage এর ক্ষেত্রে"
+          ],
+          [
+            "উত্তর 833.33 কে উপরে গোল করে 834 লেখা",
+            "না — 834 packet পাঠাতে গেলে ক্ষমতার বেশি লাগে; সীমা অতিক্রম না করতে নিচে গোল করে 833 লিখতে হয়"
+          ]
+        ],
+        "mnemonic": "\"যা চাও তা উপরে\" — packet/sec চাইলে per-second রাশি (bandwidth) উপরে। হিসাব: byte কে ×8 করে bit, তারপর bandwidth ÷ packet-bit। 10M ÷ 12k ≈ 833।"
+      }
     }
   ]
 }
