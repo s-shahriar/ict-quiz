@@ -417,7 +417,7 @@
     },
     {
       "id": 32,
-      "question": "What will be the output of the following C code?\nint main() {\n    int i = 11, j = 3;\n    printf(\"%d\n\", i|j);\n    return 0;\n}",
+      "question": "What will be the output of the following C code?\nint main() {\n    int i = 11, j = 3;\n    printf(\"%d\\n\", i|j);\n    return 0;\n}",
       "options": {
         "a": "11",
         "b": "12",

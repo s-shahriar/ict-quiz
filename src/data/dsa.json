@@ -1060,6 +1060,448 @@
       "correct_answer": "c",
       "correct_answer_text": "Heap",
       "explanation": "Heap হলো Priority Queue implement করার সর্বোত্তম উপায়। Heap-এ insert ও delete উভয়ই O(log n) সময় নেয়। Array বা Linked List দিয়ে priority queue করলে insert বা delete O(n) হয়। তাই Heap সবচেয়ে efficient।"
+    },
+    {
+      "id": 81,
+      "question": "Which statement is TRUE about linked lists?",
+      "options": {
+        "a": "Elements must occupy contiguous memory",
+        "b": "Linked lists support direct indexing",
+        "c": "Nodes can be stored at different memory locations",
+        "d": "Linked lists always have fixed size"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Nodes can be stored at different memory locations",
+      "explanation": "লিংকড লিস্টের প্রতিটি নোড আলাদাভাবে allocate হয়, তাই নোডগুলো মেমোরির যেকোনো জায়গায় ছড়িয়ে থাকতে পারে — pointer দিয়ে একটার সাথে আরেকটা জোড়া লাগানো থাকে। এজন্যই contiguous memory লাগে না (ওটা array-এর বৈশিষ্ট্য), index দিয়ে সরাসরি পৌঁছানো যায় না (head থেকে হেঁটে যেতে হয়, O(n)), আর আকার রানটাইমে বাড়ানো-কমানো যায়।"
+    },
+    {
+      "id": 82,
+      "question": "Which data structure can be efficiently implemented using a linked list?",
+      "options": {
+        "a": "Stack",
+        "b": "Queue",
+        "c": "Both A and B",
+        "d": "Neither A nor B"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Both A and B",
+      "explanation": "Stack-এ শুধু এক প্রান্তে push/pop হয় — head-এ কাজ করলে দুটোই O(1)। Queue-তে এক প্রান্তে insert, অন্য প্রান্তে delete — head ও tail দুটো পয়েন্টার রাখলে সেখানেও দুটোই O(1)। array দিয়ে করলে resize বা shifting-এর ঝামেলা থাকে, লিংকড লিস্টে থাকে না। তাই দুটোই efficiently বানানো যায়।"
+    },
+    {
+      "id": 83,
+      "question": "Which problem can occur in a linear queue even when unused spaces exist at the beginning?",
+      "options": {
+        "a": "Stack overflow",
+        "b": "False overflow",
+        "c": "Underflow",
+        "d": "Recursion"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "False overflow",
+      "explanation": "লিনিয়ার কিউতে rear শুধু সামনে এগোয়, পেছনে ফেরে না। কয়েকবার dequeue করার পর front-এর আগের ঘরগুলো খালি পড়ে থাকে, কিন্তু rear শেষ প্রান্তে পৌঁছে গেলে কিউ নিজেকে \"full\" ভেবে নেয় — আসলে জায়গা আছে, ব্যবহার করা যাচ্ছে না। এটাই false overflow, আর এর সমাধানই circular queue।"
+    },
+    {
+      "id": 84,
+      "question": "What is the best-case time complexity of an optimized Bubble Sort when the array is already sorted?",
+      "options": {
+        "a": "O(1)",
+        "b": "O(n)",
+        "c": "O(n log n)",
+        "d": "O(n²)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(n)",
+      "explanation": "Optimized Bubble Sort-এ একটি swapped flag রাখা হয়। অ্যারে আগে থেকেই sorted থাকলে প্রথম pass-এ একটিও swap হয় না, flag false থেকে যায়, আর লুপ ওখানেই থেমে যায়। ওই একটি pass-এ n−1 টি comparison হয়, তাই best case O(n)। flag না রাখলে sorted অ্যারেতেও পুরো O(n²) সময় লাগত।"
+    },
+    {
+      "id": 85,
+      "question": "Which sorting algorithm is generally best for a nearly sorted array?",
+      "options": {
+        "a": "Selection Sort",
+        "b": "Insertion Sort",
+        "c": "Heap Sort",
+        "d": "Radix Sort"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Insertion Sort",
+      "explanation": "Insertion Sort প্রতিটি উপাদানকে বাঁ পাশের sorted অংশে বসায়। প্রায় sorted অ্যারেতে প্রতিটি উপাদান নিজের সঠিক জায়গার খুব কাছেই থাকে, তাই মাত্র এক-দুই ধাপ সরাতে হয় — মোট সময় প্রায় O(n)। Selection Sort ইনপুট যেমনই হোক সবসময় O(n²) চালায়, আর Heap ও Radix Sort ইনপুট কতটা sorted সেটা আমলেই নেয় না, তাই এই সুবিধাটা নিতে পারে না।"
+    },
+    {
+      "id": 86,
+      "question": "What is the additional space complexity of the typical array-based Merge Sort implementation?",
+      "options": {
+        "a": "O(1)",
+        "b": "O(log n)",
+        "c": "O(n)",
+        "d": "O(n²)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(n)",
+      "explanation": "array-ভিত্তিক Merge Sort-এ merge করার সময় দুই ভাগের উপাদান সাজিয়ে রাখার জন্য একটি temporary array লাগে, যার আকার সর্বোচ্চ n। রিকার্শনের stack O(log n) নিলেও প্রধান খরচ ওই অতিরিক্ত array, তাই মোট extra space O(n)। লিংকড লিস্টে merge sort করলে শুধু pointer বদলেই কাজ হয়, তখন O(1) লাগে।"
+    },
+    {
+      "id": 87,
+      "question": "Which of the following sorting algorithms is NOT comparison-based?",
+      "options": {
+        "a": "Quick Sort",
+        "b": "Merge Sort",
+        "c": "Heap Sort",
+        "d": "Radix Sort"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "Radix Sort",
+      "explanation": "Quick, Merge ও Heap Sort — তিনটিই দুটো উপাদান তুলনা করে (a < b?) সিদ্ধান্ত নেয়, তাই এদের নিচের সীমা Ω(n log n)। Radix Sort কোনো তুলনাই করে না; digit বা bit ধরে ধরে উপাদানগুলোকে bucket-এ ফেলে সাজায়। এজন্যই এটি non-comparison based এবং O(d·n) সময়ে চলতে পারে, অর্থাৎ n log n সীমা ভাঙতে পারে।"
+    },
+    {
+      "id": 88,
+      "question": "BFS explores a graph primarily in which manner?",
+      "options": {
+        "a": "Depth-wise",
+        "b": "Level-wise",
+        "c": "Randomly",
+        "d": "Reverse order"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Level-wise",
+      "explanation": "BFS একটি queue ব্যবহার করে — প্রথমে source-এর সব প্রতিবেশী (level 1), তারপর তাদের প্রতিবেশী (level 2), এভাবে স্তরে স্তরে ছড়ায়। এজন্যই unweighted graph-এ BFS দিয়ে সবচেয়ে কম edge-এর পথ পাওয়া যায়। গভীরে ঢুকে ঘুরে আসাটা DFS-এর কাজ।"
+    },
+    {
+      "id": 89,
+      "question": "A graph has 10 vertices and 15 edges. Using an adjacency list, the complexity of BFS is:",
+      "options": {
+        "a": "O(10)",
+        "b": "O(15)",
+        "c": "O(25)",
+        "d": "O(150)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(25)",
+      "explanation": "adjacency list-এ BFS-এর জটিলতা O(V + E) — প্রতিটি vertex একবার queue-তে ঢোকে-বের হয়, আর প্রতিটি edge একবার করে দেখা হয়। এখানে V = 10 ও E = 15, তাই O(10 + 15) = O(25)। adjacency matrix ব্যবহার করলে প্রতিটি vertex-এর জন্য পুরো সারি স্ক্যান করতে হতো, তখন হতো O(V²) = O(100)।"
+    },
+    {
+      "id": 90,
+      "question": "Huffman Coding is based on which algorithmic technique?",
+      "options": {
+        "a": "Divide and Conquer",
+        "b": "Dynamic Programming",
+        "c": "Greedy Method",
+        "d": "Backtracking"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Greedy Method",
+      "explanation": "Huffman Coding প্রতি ধাপে সবচেয়ে কম frequency-র দুটি নোড নিয়ে জোড়া লাগায় — অর্থাৎ প্রতি ধাপে স্থানীয়ভাবে সবচেয়ে ভালো পছন্দটি করে এবং আগের সিদ্ধান্ত আর কখনো বদলায় না। এটাই greedy পদ্ধতির সংজ্ঞা, আর এখানে এই greedy পছন্দটি প্রমাণিতভাবেই optimal prefix code তৈরি করে।"
+    },
+    {
+      "id": 91,
+      "question": "Which data structure is commonly used to efficiently construct a Huffman Tree?",
+      "options": {
+        "a": "Stack",
+        "b": "Queue",
+        "c": "Min-Heap / Priority Queue",
+        "d": "Hash Table"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Min-Heap / Priority Queue",
+      "explanation": "Huffman Tree বানাতে বারবার \"সবচেয়ে ছোট দুটি frequency\" বের করতে হয় এবং তাদের যোগফলকে আবার ফেরত ঢোকাতে হয়। Min-Heap-এ extract-min ও insert দুটোই O(log n), আর এই কাজ n−1 বার করতে হয় — মোট O(n log n)। সাধারণ array বা list থেকে প্রতিবার minimum খুঁজলে O(n) লাগত, মোট দাঁড়াত O(n²)।"
+    },
+    {
+      "id": 92,
+      "question": "A connected graph has 8 vertices. How many edges will its MST contain?",
+      "options": {
+        "a": "6",
+        "b": "7",
+        "c": "8",
+        "d": "9"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "7",
+      "explanation": "Spanning tree হলো এমন গাছ যা সব vertex ছুঁয়ে যায় অথচ কোনো cycle তৈরি করে না, আর যেকোনো গাছে edge সংখ্যা = vertex সংখ্যা − 1। তাই 8 vertex-এর MST-তে সবসময় 8 − 1 = 7টি edge থাকবে — মূল গ্রাফে মোট কতগুলো edge আছে তাতে কিছু যায় আসে না।"
+    },
+    {
+      "id": 93,
+      "question": "What is the typical time complexity of Kruskal's algorithm when edges are sorted using comparison sorting?",
+      "options": {
+        "a": "O(V)",
+        "b": "O(E log E)",
+        "c": "O(V²) always",
+        "d": "O(log V)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(E log E)",
+      "explanation": "Kruskal-এর মূল খরচ হলো সব edge ওজন অনুসারে sort করা, যা comparison sort-এ O(E log E)। এরপর প্রতিটি edge-এর জন্য Union-Find দিয়ে cycle আছে কিনা দেখা হয়, যা প্রায় ধ্রুবক সময় নেয়। তাই মোট জটিলতা sorting-ই নির্ধারণ করে দেয়: O(E log E)।"
+    },
+    {
+      "id": 94,
+      "question": "Which shortest-path algorithm can handle negative edge weights?",
+      "options": {
+        "a": "Dijkstra",
+        "b": "Bellman-Ford",
+        "c": "Prim",
+        "d": "BFS only"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Bellman-Ford",
+      "explanation": "Dijkstra ধরে নেয় কোনো নোড একবার চূড়ান্ত হয়ে গেলে তার দূরত্ব আর কমবে না — negative edge থাকলে এই ধারণা ভেঙে পড়ে। Bellman-Ford এমন কোনো ধারণা করে না; এটি বারবার সব edge relax করে, তাই negative weight সামলাতে পারে এবং negative cycle থাকলে সেটাও শনাক্ত করতে পারে।"
+    },
+    {
+      "id": 95,
+      "question": "In Bellman-Ford, how many times are all edges relaxed in the standard algorithm?",
+      "options": {
+        "a": "V times",
+        "b": "V − 1 times",
+        "c": "E times",
+        "d": "E − 1 times"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "V − 1 times",
+      "explanation": "যেকোনো shortest path-এ সর্বোচ্চ V−1 টি edge থাকতে পারে — তার বেশি হলে path-এ cycle চলে আসত। প্রতিটি pass-এ অন্তত একটি করে edge চূড়ান্ত হয়ে যায়, তাই V−1 বার সব edge relax করলেই সব shortest path বেরিয়ে আসে। এরপর আরেকটি pass চালিয়ে যদি কোনো দূরত্ব আরও কমে, বুঝতে হবে গ্রাফে negative cycle আছে।"
+    },
+    {
+      "id": 96,
+      "question": "What is the time complexity of Floyd-Warshall Algorithm?",
+      "options": {
+        "a": "O(V)",
+        "b": "O(V log V)",
+        "c": "O(V²)",
+        "d": "O(V³)"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "O(V³)",
+      "explanation": "Floyd-Warshall তিনটি nested loop চালায় — বাইরেরটি intermediate vertex k, ভেতরের দুটি উৎস i ও গন্তব্য j — এবং প্রতিবার দেখে i → k → j পথটি বর্তমান i → j পথের চেয়ে ছোট কিনা। তিনটি লুপই V বার চলে, তাই মোট V × V × V = O(V³)। edge সংখ্যার উপর এটি একদমই নির্ভর করে না।"
+    },
+    {
+      "id": 97,
+      "question": "Floyd-Warshall is primarily used to find:",
+      "options": {
+        "a": "Single-source shortest paths only",
+        "b": "All-pairs shortest paths",
+        "c": "Minimum spanning tree",
+        "d": "Maximum flow"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "All-pairs shortest paths",
+      "explanation": "Floyd-Warshall একবার চালালেই V × V আকারের একটি matrix পাওয়া যায়, যার প্রতিটি ঘরে (i, j) জোড়ার shortest distance বসে থাকে — অর্থাৎ সব জোড়ার (all-pairs) শর্টেস্ট পাথ একসাথে। Dijkstra বা Bellman-Ford একবার চালালে কেবল একটি source থেকে বাকি সবার দূরত্ব পাওয়া যায়।"
+    },
+    {
+      "id": 98,
+      "question": "A graph has 4 vertices. What is the maximum number of edge-relaxation operations in one complete Bellman-Ford pass if the graph has 6 edges?",
+      "options": {
+        "a": "4",
+        "b": "6",
+        "c": "10",
+        "d": "24"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "6",
+      "explanation": "Bellman-Ford-এর একটি pass মানেই গ্রাফের প্রতিটি edge ঠিক একবার করে relax করা। তাই এক pass-এ relaxation সংখ্যা = edge সংখ্যা = 6। vertex সংখ্যা (4) শুধু ঠিক করে দেয় মোট কতগুলো pass চালাতে হবে (V−1 = 3 বার), এক pass-এ কতটি relaxation হবে তা নয়।"
+    },
+    {
+      "id": 99,
+      "question": "For an unweighted graph, which algorithm can efficiently find the shortest path in terms of number of edges?",
+      "options": {
+        "a": "BFS",
+        "b": "DFS",
+        "c": "Prim",
+        "d": "Kruskal"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "BFS",
+      "explanation": "BFS স্তরে স্তরে ছড়ায়, তাই কোনো নোডে প্রথমবার যেভাবে পৌঁছানো যায় সেটিই সবচেয়ে কম edge-এর পথ — O(V + E) সময়ে shortest path পাওয়া যায়। DFS গভীরে ঢুকে যায় বলে প্রথম পাওয়া পথটি ছোট হওয়ার কোনো নিশ্চয়তা নেই, আর Prim ও Kruskal shortest path নয়, minimum spanning tree বের করে।"
+    },
+    {
+      "id": 100,
+      "question": "In quadratic probing, a common probe sequence is:",
+      "options": {
+        "a": "h(k), h(k)+1, h(k)+2, …",
+        "b": "h(k), h(k)+1², h(k)+2², …",
+        "c": "h(k), h(k)×2, h(k)×3, …",
+        "d": "h(k), h(k)−1, h(k)−2, …"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "h(k), h(k)+1², h(k)+2², …",
+      "explanation": "Quadratic probing-এ i-তম চেষ্টার ঠিকানা হয় (h(k) + i²) mod m — অর্থাৎ 1, 4, 9, 16 ঘর দূরে দূরে লাফিয়ে খালি জায়গা খোঁজা হয়। একটার পর একটা ঘর দেখা (option A) হলো linear probing, যাতে পাশাপাশি ঘরগুলো ভরে গিয়ে primary clustering হয়। বর্গাকারে লাফানোর ফলে quadratic probing সেই clustering অনেকটাই এড়ায়।"
+    },
+    {
+      "id": 101,
+      "question": "The 0/1 Knapsack problem differs from Fractional Knapsack because:",
+      "options": {
+        "a": "Items can be divided in 0/1 Knapsack",
+        "b": "Items cannot be divided in 0/1 Knapsack",
+        "c": "Fractional Knapsack uses no weights",
+        "d": "Both are identical"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Items cannot be divided in 0/1 Knapsack",
+      "explanation": "0/1 Knapsack-এ প্রতিটি জিনিস হয় পুরোটা নিতে হবে, নয়তো একদমই নয় — ভাঙা যায় না। এজন্য value/weight ratio ধরে greedy করলে সবসময় optimal আসে না, Dynamic Programming লাগে। Fractional Knapsack-এ জিনিস ভেঙে নেওয়া যায়, তাই সবচেয়ে বেশি ratio-র জিনিস আগে নিয়ে শেষেরটা আংশিক ভরলেই greedy-ই optimal দেয়।"
+    },
+    {
+      "id": 102,
+      "question": "What is the typical search complexity of a B-Tree containing n keys?",
+      "options": {
+        "a": "O(1)",
+        "b": "O(log n)",
+        "c": "O(n)",
+        "d": "O(n²)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(log n)",
+      "explanation": "B-Tree সবসময় ভারসাম্যপূর্ণ থাকে এবং প্রতিটি নোডে অনেকগুলো key ধরে বলে গাছের উচ্চতা হয় O(log n)। search করতে root থেকে leaf পর্যন্ত একটিমাত্র path ধরে নামতে হয়, প্রতিটি নোডের ভেতরে key-গুলোর মধ্যে খোঁজা হয়। তাই মোট জটিলতা O(log n) — এবং প্রতিটি নোড এক ডিস্ক ব্লক হওয়ায় ডিস্ক পড়ার সংখ্যাও কম হয়।"
+    },
+    {
+      "id": 103,
+      "question": "Which tree is commonly preferred for database indexing?",
+      "options": {
+        "a": "Binary Search Tree",
+        "b": "B+ Tree",
+        "c": "AVL Tree only",
+        "d": "Expression Tree"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "B+ Tree",
+      "explanation": "B+ Tree-তে আসল ডেটা থাকে কেবল leaf-এ, আর leaf-গুলো লিংকড লিস্টের মতো পরস্পর জোড়া থাকে — ফলে range query (BETWEEN, ORDER BY) খুব দ্রুত হয়, পাশের leaf-এ হেঁটে গেলেই চলে। ভেতরের নোডে শুধু key থাকায় এক ডিস্ক ব্লকে অনেক বেশি key ধরে, গাছ আরও খাটো হয় এবং ডিস্ক I/O কমে যায়। এজন্যই ডেটাবেজ ইনডেক্সে B+ Tree ব্যবহৃত হয়।"
+    },
+    {
+      "id": 104,
+      "question": "What is the worst-case time complexity of searching in an unbalanced BST?",
+      "options": {
+        "a": "O(1)",
+        "b": "O(log n)",
+        "c": "O(n)",
+        "d": "O(n log n)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(n)",
+      "explanation": "BST-তে search-এর খরচ গাছের উচ্চতার সমান। Balanced হলে উচ্চতা O(log n), কিন্তু unbalanced হলে — যেমন উপাদানগুলো sorted ক্রমে insert করলে — গাছটি এক দিকে হেলে গিয়ে লিংকড লিস্টের মতো হয়ে যায়, উচ্চতা দাঁড়ায় n। তাই worst case-এ search O(n)। AVL বা Red-Black Tree ঘোরানোর মাধ্যমে এই অবস্থা ঠেকায়।"
+    },
+    {
+      "id": 105,
+      "question": "What is the main disadvantage of a singly linked list compared with an array?",
+      "options": {
+        "a": "Dynamic size",
+        "b": "Sequential access",
+        "c": "Easy insertion",
+        "d": "No contiguous memory requirement"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Sequential access",
+      "explanation": "array-তে ঠিকানা হিসাব করে যেকোনো index-এ সরাসরি O(1)-তে পৌঁছানো যায়। singly linked list-এ নোডগুলো ছড়ানো থাকে, তাই k-তম নোডে যেতে head থেকে একটার পর একটা হেঁটে যেতে হয় — O(n)। বাকি তিনটি অপশন (dynamic size, সহজ insertion, contiguous memory না লাগা) তো লিংকড লিস্টের সুবিধা, অসুবিধা নয়।"
+    },
+    {
+      "id": 106,
+      "question": "Floyd's cycle detection algorithm uses:",
+      "options": {
+        "a": "Two stacks",
+        "b": "Two queues",
+        "c": "Slow and fast pointers",
+        "d": "Two arrays"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Slow and fast pointers",
+      "explanation": "Floyd-এর Tortoise and Hare পদ্ধতিতে একটি পয়েন্টার প্রতি ধাপে এক ঘর, অন্যটি দুই ঘর এগোয়। লুপ থাকলে দ্রুত পয়েন্টারটি ঘুরে এসে ধীর পয়েন্টারটিকে ধরে ফেলে এবং দুটি একই নোডে মিলে যায়; লুপ না থাকলে দ্রুত পয়েন্টারটি NULL-এ পৌঁছে যায়। এতে বাড়তি কোনো ডেটা স্ট্রাকচার লাগে না — সময় O(n), জায়গা O(1)।"
+    },
+    {
+      "id": 107,
+      "question": "What is the time complexity of reversing a linked list containing n nodes?",
+      "options": {
+        "a": "O(1)",
+        "b": "O(log n)",
+        "c": "O(n)",
+        "d": "O(n²)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(n)",
+      "explanation": "লিস্ট উল্টাতে prev, curr ও next — এই তিনটি পয়েন্টার নিয়ে মাথা থেকে শেষ পর্যন্ত একবার হেঁটে প্রতিটি নোডের next-কে আগের নোডের দিকে ঘুরিয়ে দিতে হয়। প্রতিটি নোডে কাজটি ধ্রুবক সময়ের, আর নোড আছে n টি — তাই সময় O(n) এবং অতিরিক্ত জায়গা O(1)।"
+    },
+    {
+      "id": 108,
+      "question": "How many operands are present in the postfix expression AB+CDE+*?",
+      "options": {
+        "a": "4",
+        "b": "5",
+        "c": "6",
+        "d": "7"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "5",
+      "explanation": "Postfix expression-এ যেগুলো variable বা constant সেগুলোই operand, আর +, −, *, / চিহ্নগুলো operator। AB+CDE+* -এ operand হলো A, B, C, D, E — মোট ৫টি, আর operator হলো +, +, * — ৩টি। মনে রাখার নিয়ম: সঠিক postfix-এ operator সবসময় operand-এর চেয়ে ঠিক একটি কম হয়।"
+    },
+    {
+      "id": 109,
+      "question": "How many operators are present in the postfix expression AB+C*DE/-?",
+      "options": {
+        "a": "3",
+        "b": "4",
+        "c": "5",
+        "d": "6"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "4",
+      "explanation": "এখানে operator হলো চিহ্নগুলো — +, *, / এবং − — মোট ৪টি; operand হলো A, B, C, D, E — ৫টি। যাচাই করা যায় এভাবে: AB+ → (A+B), তারপর C* → (A+B)*C, DE/ → (D/E), শেষে − → ((A+B)*C) − (D/E)। সঠিক postfix-এ operator = operand − 1, এখানেও 5 − 1 = 4 মিলে যাচ্ছে।"
+    },
+    {
+      "id": 110,
+      "question": "What is the asymptotic complexity of the following pseudocode?\ni = 1\nwhile i <= n:\n    j = i\n    while j <= n:\n        count++\n        j *= 2\n    i *= 2",
+      "options": {
+        "a": "O(log n)",
+        "b": "O(n)",
+        "c": "O(n log n)",
+        "d": "O((log n)²)"
+      },
+      "correct_answer": "d",
+      "correct_answer_text": "O((log n)²)",
+      "explanation": "বাইরের লুপে i প্রতিবার দ্বিগুণ হয় (1, 2, 4, …, n), তাই সেটি log n বার চলে। ভেতরের লুপেও j = i থেকে শুরু করে দ্বিগুণ হতে হতে n পর্যন্ত যায়, অর্থাৎ প্রায় log(n/i) বার চলে। সব i-এর জন্য যোগ করলে দাঁড়ায় log n + (log n − 1) + … + 2 + 1 ≈ (log n)²/2। ধ্রুবক বাদ দিলে মোট জটিলতা O((log n)²)।"
+    },
+    {
+      "id": 111,
+      "question": "What is the asymptotic complexity of the following pseudocode?\ni = 1\nwhile i <= n:\n    j = 1\n    while j <= n:\n        k = 1\n        while k <= j:\n            count++\n            k++\n        j *= 2\n    i++",
+      "options": {
+        "a": "O(n)",
+        "b": "O(n log n)",
+        "c": "O(n²)",
+        "d": "O(n² log n)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(n²)",
+      "explanation": "সবচেয়ে ভেতরের k লুপ ঠিক j বার চলে। মাঝের লুপে j নেয় 1, 2, 4, …, n — তাই একটি i-এর জন্য মোট কাজ 1 + 2 + 4 + … + n = 2n − 1, অর্থাৎ O(n)। বাইরের লুপে i এক এক করে বাড়ে বলে সেটি n বার চলে। তাই মোট = n × O(n) = O(n²)। খেয়াল রাখতে হবে, বাইরের লুপ যদি i *= 2 হতো তবেই উত্তর হতো O(n log n)।"
+    },
+    {
+      "id": 112,
+      "question": "What is the asymptotic complexity of the following pseudocode?\ni = 1\nwhile i <= n:\n    j = i\n    while j <= n:\n        count++\n        j += i\n    i *= 2",
+      "options": {
+        "a": "O(n)",
+        "b": "O(n log n)",
+        "c": "O(n²)",
+        "d": "O((log n)²)"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "O(n)",
+      "explanation": "ভেতরের লুপ j = i থেকে শুরু করে প্রতিবার i করে বাড়ে, তাই সেটি প্রায় n/i বার চলে। বাইরের লুপে i নেয় 1, 2, 4, 8, …, n। মোট কাজ = n/1 + n/2 + n/4 + … = n(1 + ½ + ¼ + …) < 2n — এটি geometric series, যার যোগফল সীমাবদ্ধ। তাই মোট জটিলতা O(n)। বাইরের লুপ i++ হলে এটি হতো n × harmonic series = O(n log n)।"
+    },
+    {
+      "id": 113,
+      "question": "What is the time complexity of the following code?\nfor (i = 1; i <= n; i++)\n    for (j = 1; j <= n; j += i)\n        for (k = 1; k <= j; k++)\n            count++;",
+      "options": {
+        "a": "O(n log n)",
+        "b": "O(n²)",
+        "c": "O(n² log n)",
+        "d": "O(n³)"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "O(n² log n)",
+      "explanation": "ভেতরের k লুপ j বার চলে। নির্দিষ্ট একটি i-এর জন্য j নেয় 1, 1+i, 1+2i, … — প্রায় n/i টি মান, যাদের গড় প্রায় n/2। তাই ওই i-এর মোট কাজ ≈ (n/i) × (n/2) = n²/(2i)। এবার i = 1 থেকে n পর্যন্ত যোগ করলে (n²/2)(1 + ½ + ⅓ + … + 1/n) = (n²/2) × O(log n) — harmonic series থেকেই log n আসে। মোট O(n² log n)।"
+    },
+    {
+      "id": 114,
+      "question": "What is the time complexity of the following code?\nfor (i = 1; i <= n; i *= 2)\n    for (j = 1; j <= n; j++)\n        for (k = 1; k <= j; k *= 2)\n            count++;",
+      "options": {
+        "a": "O(n log n)",
+        "b": "O(n log² n)",
+        "c": "O(n²)",
+        "d": "O(n² log n)"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "O(n log² n)",
+      "explanation": "বাইরের i লুপে i দ্বিগুণ হয়, তাই সেটি log n বার চলে। মাঝের j লুপ এক এক করে বাড়ে, তাই n বার চলে। ভেতরের k লুপে k দ্বিগুণ হতে হতে j পর্যন্ত যায়, তাই সেটি log j বার — সর্বোচ্চ log n বার — চলে। তিনটি গুণ করলে log n × n × log n = O(n log² n)।"
     }
   ]
 }
