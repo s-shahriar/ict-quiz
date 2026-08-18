@@ -3,9 +3,9 @@
     "c_programming": 36,
     "computer_fundamental": 52,
     "computer_network": 83,
-    "database": 86,
+    "database": 111,
     "digital_logic": 37,
-    "dsa": 80,
+    "dsa": 114,
     "information_security": 27,
     "linux": 31,
     "machine_learning": 85,
@@ -33,16 +33,16 @@
     "theory_of_computation": 1
   },
   "extra": {
-    "computer_fundamental": 5,
-    "computer_network": 8,
-    "database": 5,
-    "dsa": 5,
-    "information_security": 9,
-    "linux": 5,
-    "oop": 5,
-    "operating_system": 5,
-    "server": 8,
-    "software_engineering": 5
+    "computer_fundamental": 1,
+    "computer_network": 4,
+    "database": 4,
+    "dsa": 2,
+    "information_security": 3,
+    "linux": 2,
+    "oop": 3,
+    "operating_system": 4,
+    "server": 5,
+    "software_engineering": 2
   },
   "viva": {
     "banking": 6,

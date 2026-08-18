@@ -2,61 +2,6 @@
   "category": "oop",
   "questions": [
     {
-      "id": "oop_ex_001",
-      "q": "A banking system has a User class storing email, login password, and transaction limit. The password must be fully protected, the transaction limit must be accessible only within the class and its subclasses, and the email must be accessible to all classes. Which access modifier (private / protected / public) should be used for each field, and why?",
-      "tags": [
-        "access-modifiers",
-        "encapsulation",
-        "private",
-        "protected",
-        "public"
-      ],
-      "answer": {
-        "summary": [
-          "password → private, transactionLimit → protected, email → public।",
-          "নিয়ম: যত sensitive, তত বেশি বন্ধ — access ঠিক ততটুকুই খোলা রাখো যতটুকু সত্যিই দরকার (least privilege)।"
-        ],
-        "points": [
-          "password → private: এটি সবচেয়ে sensitive। private মানে শুধু User class-এর ভেতর থেকেই পাওয়া যায় — subclass বা বাইরের কেউ পড়তে/লিখতে পারবে না। ফলে password leak বা override এর ঝুঁকি বন্ধ।",
-          "transactionLimit → protected: এটি business rule — User এবং তার subclass (যেমন PremiumUser, CorporateUser) কে limit বাড়ানো-কমানোর দরকার হতে পারে, কিন্তু বাইরের random class কে নয়। protected ঠিক এই মাঝামাঝি access দেয়: class + subclass, বাইরের কেউ না।",
-          "email → public: এটি contact/identity তথ্য, গোপন কিছু নয় — receipt, display, খোঁজ সব জায়গায় লাগে। তাই সব class থেকে খোলা (public) রাখাই স্বাভাবিক।",
-          "মূল কারণ = Encapsulation: field সরাসরি না খুলে access নিয়ন্ত্রণ করলে ভুল/দূষিত পরিবর্তন ঠেকানো যায় এবং পরে ভেতরের logic বদলালেও বাইরের code ভাঙে না।",
-          "নিরাপত্তা দৃষ্টিতে: private = দেয়াল, protected = পরিবারের ভেতরের দরজা, public = খোলা লবি — যত ভেতরের ধন তত বেশি দেয়াল।",
-          "সাধারণত field private রেখে দরকারমতো controlled getter/setter (যেমন verifyPassword()) দিয়ে access দেওয়াই best practice।"
-        ],
-        "diagram": "        UML: class User  (access modifier চিহ্ন)\n  ┌──────────────────────────────────────────┐\n  │ User                                       │ ← class name\n  ├──────────────────────────────────────────┤\n  │ - password : String        (private)       │ ← '-' = private\n  │ # transactionLimit : double (protected)    │ ← '#' = protected\n  │ + email : String           (public)        │ ← '+' = public\n  ├──────────────────────────────────────────┤\n  │ + verifyPassword(p) : bool                 │ ← controlled\n  │ + getEmail() : String                      │   access পথ\n  └──────────────────────────────────────────┘\n           ▲ inherits\n           │\n  ┌──────────────────────────────────────────┐\n  │ PremiumUser (subclass)                     │\n  │  password ........ ✗ পায় না (private)      │\n  │  transactionLimit  ● পায় (protected)       │\n  │  email ........... ● পায় (public)          │\n  └──────────────────────────────────────────┘\n\n  বাইরের class (Report, Logger):\n     password ✗   transactionLimit ✗   email ●\n\n  ── Access scope table ──────────────────────\n     modifier   | same class | subclass | বাইরে\n     -----------+-----------+---------+-------\n     private    |    ●      |   ✗     |  ✗\n     protected  |    ●      |   ●     |  ✗\n     public     |    ●      |   ●     |  ●",
-        "table": {
-          "headers": [
-            "Field",
-            "Modifier",
-            "কে পায়",
-            "কারণ"
-          ],
-          "rows": [
-            [
-              "password",
-              "private",
-              "শুধু User class",
-              "সবচেয়ে sensitive — leak/override বন্ধ"
-            ],
-            [
-              "transactionLimit",
-              "protected",
-              "class + subclass",
-              "business rule, subclass-এ দরকার হয়"
-            ],
-            [
-              "email",
-              "public",
-              "সব class",
-              "গোপন নয়, সবখানে লাগে"
-            ]
-          ]
-        },
-        "mnemonic": "গোপন password = private, পরিবারের transactionLimit = protected, খোলা email = public — যত গোপন তত বেশি দেয়াল।"
-      }
-    },
-    {
       "id": "oop_ex_002",
       "q": "A bank offers Savings, Current, and FixedDeposit accounts. All of them share common behavior like deposit, withdraw, getBalance, and accountNumber, but each also has its own rules. How would you model this with INHERITANCE, and what belongs in the base Account class versus each subclass?",
       "tags": [
@@ -80,32 +25,6 @@
         ],
         "diagram": "            Inheritance tree (base → subclass)\n\n        ┌──────────────────────────────────────┐\n        │  Account   (base / parent class)       │\n        ├──────────────────────────────────────┤\n        │ # accountNumber                        │ ← common\n        │ # balance                              │   state\n        ├──────────────────────────────────────┤\n        │ + deposit(amt)                         │ ← common\n        │ + withdraw(amt)                        │   behavior\n        │ + getBalance()                         │   (একবার লেখা)\n        └──────────────────────────────────────┘\n                         ▲  'is-a'  (extends)\n          ┌──────────────┼───────────────┐\n          │              │               │\n  ┌───────────────┐ ┌───────────────┐ ┌────────────────┐\n  │ SavingsAccount│ │ CurrentAccount│ │ FixedDeposit   │\n  ├───────────────┤ ├───────────────┤ ├────────────────┤\n  │ + interestRate│ │ +overdraftLim │ │ + maturityDate │\n  │ (inherits সব  │ │ (inherits সব  │ │ +earlyPenalty()│\n  │  common)      │ │  common)      │ │ withdraw()↺override│\n  └───────────────┘ └───────────────┘ └────────────────┘\n\n  ● common code একবার Account-এ  → তিন subclass reuse করে (DRY)\n  ● প্রতিটি subclass শুধু নিজের extra rule যোগ/override করে",
         "mnemonic": "যা সবার এক → base Account-এ; যা যার নিজের → তার subclass-এ। 'is-a' হলেই inherit।"
-      }
-    },
-    {
-      "id": "oop_ex_003",
-      "q": "A payment module must accept money through Card, bKash, and Bank-transfer. The checkout code should just call one pay(amount) method and not care which channel it is. How does POLYMORPHISM (method overriding / dynamic dispatch) make this possible, and why is it better than an if-else chain?",
-      "tags": [
-        "polymorphism",
-        "method-overriding",
-        "dynamic-dispatch",
-        "interface"
-      ],
-      "answer": {
-        "summary": [
-          "একটি common type PaymentMethod-এ pay(amount) declare করো; Card, Bkash, BankTransfer প্রত্যেকে সেটি নিজের মতো override করে।",
-          "Checkout শুধু PaymentMethod.pay() ডাকে — runtime-এ object যেটা, তার version-ই চলে (dynamic dispatch)। কে pay করছে সেটা checkout জানার দরকার নেই।"
-        ],
-        "points": [
-          "Polymorphism = 'এক নাম, অনেক রূপ': একই call pay() তিন রকম object-এ তিন রকম কাজ করে (Card → gateway, bKash → mobile API, Bank → transfer)।",
-          "Dynamic dispatch: variable-এর type PaymentMethod হলেও, runtime-এ প্রকৃত object যেটা তার overridden pay()-ই চলে। সিদ্ধান্তটা compile-time নয়, run-time-এ হয়।",
-          "if-else chain হলে নতুন channel (যেমন Nagad) যোগ করতে গেলে মূল checkout code বারবার বদলাতে হয় — ভুল ঢোকার ঝুঁকি। Polymorphism-এ শুধু নতুন class যোগ করলেই হয়, checkout অটুট থাকে (Open/Closed principle)।",
-          "Decoupling: checkout শুধু interface-এর উপর নির্ভর করে, concrete class-এর উপর নয় — তাই module গুলো আলাদা করে test/replace করা সহজ।",
-          "প্রতিটি channel-এর logic তার নিজের class-এ থাকে (single responsibility) — বিশাল একটা if-else জঞ্জাল হয় না।",
-          "Overriding-এর শর্ত: subclass-এ method-এর নাম ও signature base-এর মতোই থাকতে হবে; তবেই call টা সঠিক version-এ পৌঁছায়।"
-        ],
-        "diagram": "     One interface, many implementations (overriding)\n\n              ┌──────────────────────────┐\n              │ «interface» PaymentMethod │\n              │ + pay(amount)             │ ← এক নাম\n              └──────────────────────────┘\n                        △ implements\n         ┌──────────────┼───────────────┐\n         │              │               │\n ┌──────────────┐┌──────────────┐┌────────────────┐\n │ CardPayment  ││ BkashPayment ││ BankTransfer   │\n │ pay(){       ││ pay(){       ││ pay(){         │\n │  →card gateway││  →bKash API  ││  →bank transfer│\n │ }            ││ }            ││ }              │\n └──────────────┘└──────────────┘└────────────────┘\n\n  Checkout code (কে জানে না, শুধু ডাকে):\n  ┌─────────────────────────────────────────────┐\n  │ PaymentMethod m = getSelected();  ← যেকোনোটা  │\n  │ m.pay(500);   ●───────┐                       │\n  └───────────────────────┼───────────────────────┘\n           runtime object কোনটা?  → তার pay() চলে\n     Card হলে→card gateway | Bkash হলে→bKash API\n     (dynamic dispatch — সিদ্ধান্ত run-time-এ)\n\n  নতুন NagadPayment? শুধু নতুন class add → checkout অপরিবর্তিত",
-        "mnemonic": "এক pay() call, object বুঝে আসল রূপ — 'এক নাম, অনেক রূপ' = polymorphism; সিদ্ধান্ত run-time-এ।"
       }
     },
     {

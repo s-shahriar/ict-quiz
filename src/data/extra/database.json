@@ -58,63 +58,6 @@
       }
     },
     {
-      "id": "db_ex_002",
-      "q": "A bank's Customer table stores the branch name and full branch address inside every customer row. When a branch moves office, hundreds of rows must be updated and some get missed — causing an update anomaly. Explain NORMALIZATION (1NF → 2NF → 3NF) to fix this, showing the before (unnormalized) table vs the after (normalized) tables.",
-      "tags": [
-        "normalization",
-        "1nf",
-        "2nf",
-        "3nf",
-        "anomaly"
-      ],
-      "answer": {
-        "summary": [
-          "NORMALIZATION = redundancy (একই তথ্য বারবার) কমিয়ে data-কে ছোট related table-এ ভাঙা, যাতে update/insert/delete anomaly না হয়।",
-          "সমস্যা: branch address প্রতিটি customer row-তে copy আছে; branch সরলে সব row বদলাতে হয়, কিছু বাদ পড়ে inconsistent হয়।",
-          "সমাধান: Branch-কে আলাদা table-এ তুলে branch_id দিয়ে link (1NF→2NF→3NF)।"
-        ],
-        "points": [
-          "1NF (First Normal Form): প্রতিটি cell-এ একটিমাত্র atomic value; repeating group/list নয়। WHY: একটা ঘরে 'phone1, phone2' রাখলে query/update কঠিন হয়।",
-          "2NF: 1NF + কোনো non-key column যেন পুরো primary key-এর উপর নির্ভর করে, key-এর অংশের উপর নয় (partial dependency দূর)। WHY: composite key থাকলে অর্ধ-নির্ভর তথ্য আলাদা টেবিলে যায়।",
-          "3NF: 2NF + কোনো non-key column অন্য non-key column-এর উপর নির্ভর করবে না (transitive dependency দূর)। এখানে branch_name/address নির্ভর করে branch_id-এর উপর, customer_id-এর উপর নয় — এটাই আসল দোষ।",
-          "সমাধান: branch তথ্য একবারই Branch table-এ থাকবে; Customer শুধু branch_id (foreign key) রাখবে। branch সরলে মাত্র ১টি row বদলালেই সব customer-এর জন্য ঠিক।",
-          "লাভ: update anomaly শেষ (এক জায়গায় বদল), insert anomaly শেষ (customer ছাড়াই নতুন branch যোগ করা যায়), delete anomaly শেষ (শেষ customer মুছলেও branch তথ্য হারায় না)।",
-          "দাম: পড়ার সময় JOIN লাগে — কিন্তু সঠিকতা ও storage সাশ্রয়ের তুলনায় এটা সামান্য খরচ।"
-        ],
-        "diagram": "BEFORE (Unnormalized — branch তথ্য প্রতি row-তে repeat)\n┌──────┬────────┬──────────┬─────────────────────┐\n│cus_id│ name   │ branch   │ branch_address       │\n├──────┼────────┼──────────┼─────────────────────┤\n│ 101  │ Karim  │ Dhanmondi│ Rd-27, Dhaka         │◄┐ একই\n│ 102  │ Rahim  │ Dhanmondi│ Rd-27, Dhaka         │◄┤ address\n│ 103  │ Sumi   │ Dhanmondi│ Rd-27, Dhaka         │◄┘ ৩ বার!\n│ 104  │ Jony   │ Gulshan  │ Ave-3, Dhaka         │\n└──────┴────────┴──────────┴─────────────────────┘\n   ▲ branch সরলে ৩টি row বদলাতে হবে → একটা মিস = inconsistent\n   transitive: cus_id → branch_id → address  (3NF ভাঙে)\n\n        │  normalize (split + link)\n        ▼\nAFTER — 3NF: দুই table, branch_id দিয়ে জোড়া\n\n Customer                          Branch (branch একবারই)\n┌──────┬───────┬──────────┐       ┌──────────┬───────────┬──────────────┐\n│cus_id│ name  │branch_id⌉│       │branch_id │ b_name    │ b_address    │\n├──────┼───────┼──────────┤       ├──────────┼───────────┼──────────────┤\n│ 101  │ Karim │   B01 ───┼──────▶│  B01 (PK)│ Dhanmondi │ Rd-27, Dhaka │\n│ 102  │ Rahim │   B01 ───┼──────▶│  B02     │ Gulshan   │ Ave-3, Dhaka │\n│ 103  │ Sumi  │   B01 ───┘       └──────────┴───────────┴──────────────┘\n│ 104  │ Jony  │   B02 ──▶(B02)     ▲ branch সরলে মাত্র ১ row বদলাও\n└──────┴───────┴──────────┘\n   FK (branch_id) ──────────▶ PK (branch_id)\n\n  1NF: প্রতি cell এক value  →  2NF: partial-dep দূর  →  3NF: transitive-dep দূর",
-        "table": {
-          "headers": [
-            "সমস্যা (Before)",
-            "কারণ",
-            "Normalized-এ সমাধান"
-          ],
-          "rows": [
-            [
-              "Update anomaly",
-              "একই branch address বহু row-তে; একটাও মিস হলে inconsistent",
-              "Branch table-এ এক জায়গায় বদল"
-            ],
-            [
-              "Insert anomaly",
-              "customer না থাকলে নতুন branch যোগ করা যায় না",
-              "Branch table-এ আলাদা row যোগ"
-            ],
-            [
-              "Delete anomaly",
-              "শেষ customer মুছলে branch তথ্যও হারায়",
-              "Branch table-এ তথ্য টিকে থাকে"
-            ],
-            [
-              "Redundancy",
-              "একই address বারবার জমা → storage নষ্ট",
-              "branch_id (ছোট FK) দিয়ে reference"
-            ]
-          ]
-        },
-        "mnemonic": "1-2-3 NF: '১-এ এক ঘরে এক মান, ২-এ পুরো key-এর নির্ভরতা, ৩-এ key ছাড়া কারো উপর নির্ভরতা নয়'।"
-      }
-    },
-    {
       "id": "db_ex_003",
       "q": "A bank's Transactions table has 10 million rows. The report query 'find all transactions for account_no = 12345' takes several seconds because the database scans every row. Explain how an INDEX (B-tree) speeds up this lookup, and what its cost is on INSERT/UPDATE. Diagram the B-tree navigating down to a row-pointer.",
       "tags": [

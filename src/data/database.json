@@ -1125,6 +1125,356 @@
       "correct_answer": "c",
       "correct_answer_text": "Min 2 and max 3",
       "explanation": "ER diagram-এ 2 entities ও 1 relationship-এর জন্য: Maximum 3টি table (many-to-many relationship-এ relationship-এর জন্য আলাদা table)। Minimum 2টি table (partial participation-এ উভয় entity-র জন্য, relationship merge করা যায়)।"
+    },
+    {
+      "id": 87,
+      "question": "Which of the following best defines a Surrogate Key?",
+      "options": {
+        "a": "A composite key derived from candidate keys",
+        "b": "A user-generated key used to replace the primary key",
+        "c": "A system-generated unique identifier used as a primary key",
+        "d": "A natural key used as a foreign key"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "A system-generated unique identifier used as a primary key",
+      "page": "Keys",
+      "explanation": "Surrogate key হলো system-generated একটি artificial unique identifier (যেমন auto-increment ID) যা primary key হিসেবে ব্যবহৃত হয়। এর কোনো business meaning থাকে না — শুধু row-কে unique ভাবে চেনানোই এর কাজ। তাই এটি user-generated নয়, DBMS নিজেই তৈরি করে।"
+    },
+    {
+      "id": 88,
+      "question": "Which of the following is not true about a Foreign Key?",
+      "options": {
+        "a": "It enforces referential integrity",
+        "b": "It can accept null values",
+        "c": "It must be unique",
+        "d": "It references a primary key in another table"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "It must be unique",
+      "page": "Keys",
+      "explanation": "Foreign key-এর unique হওয়া বাধ্যতামূলক নয় — একই parent value একাধিক child row-এ বারবার আসতে পারে (one-to-many সম্পর্ক)। বাকি তিনটি সত্য: এটি referential integrity রক্ষা করে, NULL নিতে পারে, এবং অন্য table-এর primary key-কে reference করে।"
+    },
+    {
+      "id": 89,
+      "question": "In an ER diagram, total participation is shown by:",
+      "options": {
+        "a": "Single line",
+        "b": "Double line",
+        "c": "Dashed line",
+        "d": "Thick line"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Double line",
+      "page": "ER Diagram",
+      "explanation": "ER diagram-এ total participation (অর্থাৎ entity set-এর প্রতিটি instance অবশ্যই relationship-এ অংশ নেবে) double line দিয়ে দেখানো হয়। Single line মানে partial participation — কিছু instance অংশ না নিলেও চলে।"
+    },
+    {
+      "id": 90,
+      "question": "In converting an ER diagram to relational tables, derived attributes are:",
+      "options": {
+        "a": "Always stored in the database",
+        "b": "Stored as multivalued fields",
+        "c": "Not stored, but computed when needed",
+        "d": "Treated as weak entities"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Not stored, but computed when needed",
+      "page": "ER Diagram",
+      "explanation": "Derived attribute (যেমন Date_of_Birth থেকে Age) অন্য attribute থেকে হিসাব করে বের করা যায়, তাই এটি table-এ store করা হয় না। প্রয়োজনের সময় query বা view-এর মাধ্যমে compute করা হয় — এতে redundancy ও update anomaly এড়ানো যায়।"
+    },
+    {
+      "id": 91,
+      "question": "A Use Case Diagram is mainly used to model:",
+      "options": {
+        "a": "System hardware components",
+        "b": "System functional requirements",
+        "c": "Database schema",
+        "d": "Class relationships"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "System functional requirements",
+      "page": "UML",
+      "explanation": "Use Case Diagram দেখায় system কী কী কাজ করবে এবং কোন actor সেগুলো ব্যবহার করবে — অর্থাৎ system-এর functional requirements। Hardware, database schema বা class সম্পর্ক দেখানোর জন্য আলাদা diagram (deployment, ER, class diagram) ব্যবহৃত হয়।"
+    },
+    {
+      "id": 92,
+      "question": "A Context Diagram is also known as:",
+      "options": {
+        "a": "Level-0 DFD",
+        "b": "Level-1 DFD",
+        "c": "Level-2 DFD",
+        "d": "Physical DFD"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Level-0 DFD",
+      "page": "DFD",
+      "explanation": "Context Diagram হলো DFD-এর সর্বোচ্চ level, যাকে Level-0 DFD বলা হয়। এখানে পুরো system-কে একটিমাত্র process হিসেবে দেখানো হয় এবং তার সাথে external entity-গুলোর data flow দেখানো হয়।"
+    },
+    {
+      "id": 93,
+      "question": "A Level-1 DFD is created by:",
+      "options": {
+        "a": "Combining multiple systems into one",
+        "b": "Decomposing the Context (Level-0) Diagram into major processes",
+        "c": "Removing all external entities",
+        "d": "Converting ER diagrams into tables"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Decomposing the Context (Level-0) Diagram into major processes",
+      "page": "DFD",
+      "explanation": "Level-1 DFD তৈরি হয় Context Diagram (Level-0)-এর একক process-টিকে ভেঙে প্রধান sub-process গুলোতে বিভক্ত করে। এই প্রক্রিয়াকে functional decomposition বলা হয়।"
+    },
+    {
+      "id": 94,
+      "question": "In UML, a solid line with a closed arrowhead represents:",
+      "options": {
+        "a": "Association",
+        "b": "Inheritance (Generalization)",
+        "c": "Aggregation",
+        "d": "Dependency"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Inheritance (Generalization)",
+      "page": "UML",
+      "explanation": "UML class diagram-এ solid line-এর সাথে closed (ফাঁপা ত্রিভুজ) arrowhead মানে inheritance বা generalization — অর্থাৎ \"is-a\" সম্পর্ক। Aggregation দেখানো হয় ফাঁপা হীরা দিয়ে, আর dependency দেখানো হয় dashed line + open arrow দিয়ে।"
+    },
+    {
+      "id": 95,
+      "question": "Which of the following correctly shows multiplicity in UML?",
+      "options": {
+        "a": "(1-1)",
+        "b": "1..*",
+        "c": "(many)",
+        "d": "{1:∞}"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "1..*",
+      "page": "UML",
+      "explanation": "UML-এ multiplicity লেখা হয় lower..upper format-এ, যেমন 1..* মানে \"এক বা তার বেশি\"। (1-1), (many) বা {1:∞} — এগুলো valid UML notation নয়।"
+    },
+    {
+      "id": 96,
+      "question": "In UML, an abstract class name is shown in:",
+      "options": {
+        "a": "Italics",
+        "b": "Bold",
+        "c": "Underlined",
+        "d": "All capital letters"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Italics",
+      "page": "UML",
+      "explanation": "UML-এ abstract class-এর নাম italics-এ লেখা হয় (অথবা নামের পাশে {abstract} লেখা হয়)। Underline ব্যবহৃত হয় static member বা object instance বোঝাতে।"
+    },
+    {
+      "id": 97,
+      "question": "What does the multiplicity 0..1 represent in UML?",
+      "options": {
+        "a": "Exactly one",
+        "b": "At least one",
+        "c": "Zero or one",
+        "d": "Zero or many"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Zero or one",
+      "page": "UML",
+      "explanation": "0..1 মানে lower bound 0 এবং upper bound 1 — অর্থাৎ শূন্য বা একটি (optional সম্পর্ক)। \"Exactly one\" হলো 1, \"at least one\" হলো 1..*, আর \"zero or many\" হলো 0..* বা *।"
+    },
+    {
+      "id": 98,
+      "question": "In a relation R(A, B, C, D), which FD represents a partial dependency?",
+      "options": {
+        "a": "A → B, where A is a candidate key",
+        "b": "AB → C, where AB is a candidate key",
+        "c": "A → C, where AB is a candidate key",
+        "d": "B → C, where B is a candidate key"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "A → C, where AB is a candidate key",
+      "page": "Functional Dependency",
+      "explanation": "Partial dependency মানে একটি non-prime attribute composite candidate key-এর অংশবিশেষের উপর নির্ভরশীল। এখানে candidate key AB, কিন্তু C নির্ভর করছে শুধু A-এর উপর (A → C) — অর্থাৎ key-এর একটি অংশের উপর। তাই এটি partial dependency এবং 2NF ভঙ্গ করে।"
+    },
+    {
+      "id": 99,
+      "question": "In R(A, B, C, D), which FD is partial if the Candidate Key is AB?",
+      "options": {
+        "a": "AB → C",
+        "b": "A → B",
+        "c": "B → C",
+        "d": "AB → D"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "B → C",
+      "page": "Functional Dependency",
+      "explanation": "Candidate key AB হলে B হলো key-এর একটি proper subset এবং C হলো non-prime attribute। তাই B → C মানে non-prime attribute key-এর অংশের উপর নির্ভরশীল — এটিই partial dependency। AB → C ও AB → D পূর্ণ key-এর উপর নির্ভরশীল (full dependency), আর A → B-তে B নিজেই prime attribute।"
+    },
+    {
+      "id": 100,
+      "question": "Which of the following Functional Dependencies violates Boyce-Codd Normal Form (BCNF)?",
+      "options": {
+        "a": "A → B, where A is a key",
+        "b": "A → B, where B is a prime attribute",
+        "c": "A → B, where A is not a Super Key",
+        "d": "B → A, where both are non-prime attributes"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "A → B, where A is not a Super Key",
+      "page": "Normalization",
+      "explanation": "BCNF-এর শর্ত: প্রতিটি non-trivial FD X → Y-এর ক্ষেত্রে X অবশ্যই super key হতে হবে। তাই A → B যেখানে A super key নয় — এটিই সরাসরি BCNF ভঙ্গ করে।"
+    },
+    {
+      "id": 101,
+      "question": "Consider R(A, B, C) with FDs: A → B and B → C. What is the highest normal form?",
+      "options": {
+        "a": "1NF",
+        "b": "2NF",
+        "c": "3NF",
+        "d": "BCNF"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "2NF",
+      "page": "Normalization",
+      "explanation": "এখানে candidate key হলো A (single attribute), তাই কোনো partial dependency সম্ভব নয় — relation টি 2NF মেনে চলে। কিন্তু A → B → C-এর মাধ্যমে C, A-এর উপর transitively নির্ভরশীল এবং B super key নয়। এই transitive dependency 3NF ভঙ্গ করে। তাই highest normal form হলো 2NF।"
+    },
+    {
+      "id": 102,
+      "question": "What is the main purpose of Fourth Normal Form (4NF)?",
+      "options": {
+        "a": "Remove transitive dependencies",
+        "b": "Remove multi-valued dependencies",
+        "c": "Remove partial dependencies",
+        "d": "Remove redundant keys"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Remove multi-valued dependencies",
+      "page": "Normalization",
+      "explanation": "4NF-এর মূল উদ্দেশ্য multi-valued dependency (MVD) দূর করা। Transitive dependency সরায় 3NF, partial dependency সরায় 2NF, আর join dependency সরায় 5NF।"
+    },
+    {
+      "id": 103,
+      "question": "In a table Students(StudentID, Name, Hobby, Skill), where each student can have multiple hobbies and multiple skills independently, which normal form is violated?",
+      "options": {
+        "a": "2NF",
+        "b": "3NF",
+        "c": "4NF",
+        "d": "5NF"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "4NF",
+      "page": "Normalization",
+      "explanation": "একজন student-এর Hobby ও Skill একে অপরের থেকে স্বাধীনভাবে একাধিক হতে পারে — এটি দুটি independent multi-valued dependency তৈরি করে, ফলে সব combination-এর জন্য অপ্রয়োজনীয় row জন্মায়। Multi-valued dependency 4NF ভঙ্গ করে; সমাধান হলো Hobby ও Skill-কে আলাদা table-এ ভাগ করা।"
+    },
+    {
+      "id": 104,
+      "question": "A Dirty Read occurs when:",
+      "options": {
+        "a": "A transaction reads committed data twice",
+        "b": "A transaction reads data modified but not yet committed by another transaction",
+        "c": "A transaction updates the same row twice",
+        "d": "A transaction deletes committed data"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "A transaction reads data modified but not yet committed by another transaction",
+      "page": "Transaction",
+      "explanation": "Dirty read (uncommitted dependency) ঘটে যখন একটি transaction অন্য transaction-এর এমন পরিবর্তিত data পড়ে যা এখনো commit হয়নি। ঐ transaction rollback করলে পড়া data ভুল হয়ে যায়। Read Committed isolation level এই সমস্যা প্রতিরোধ করে।"
+    },
+    {
+      "id": 105,
+      "question": "Phantom Read occurs when:",
+      "options": {
+        "a": "Newly inserted or deleted rows appear in repeated query results",
+        "b": "A row is updated twice",
+        "c": "A transaction is rolled back",
+        "d": "A table is locked"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Newly inserted or deleted rows appear in repeated query results",
+      "page": "Transaction",
+      "explanation": "Phantom read ঘটে যখন একই transaction-এর ভেতরে একই query দুইবার চালালে ভিন্ন সংখ্যক row পাওয়া যায় — কারণ মাঝখানে অন্য transaction নতুন row insert বা delete করে commit করেছে। Serializable isolation level (বা range lock) এটি প্রতিরোধ করে।"
+    },
+    {
+      "id": 106,
+      "question": "Which protocol guarantees conflict serializability?",
+      "options": {
+        "a": "Timestamp Ordering",
+        "b": "Two-Phase Locking (2PL)",
+        "c": "Checkpointing",
+        "d": "Logging"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Two-Phase Locking (2PL)",
+      "page": "Transaction",
+      "explanation": "Two-Phase Locking (2PL) protocol নিশ্চিত করে যে উৎপন্ন schedule conflict serializable হবে — কারণ প্রতিটি transaction lock নেওয়া সম্পূর্ণ শেষ করার পরেই lock ছাড়া শুরু করে। Checkpointing ও logging হলো recovery-র কৌশল, concurrency control নয়।"
+    },
+    {
+      "id": 107,
+      "question": "The Growing Phase in Two-Phase Locking (2PL) allows a transaction to:",
+      "options": {
+        "a": "Acquire locks only",
+        "b": "Release locks only",
+        "c": "Commit immediately",
+        "d": "Roll back automatically"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Acquire locks only",
+      "page": "Transaction",
+      "explanation": "2PL-এর Growing Phase-এ transaction শুধু নতুন lock নিতে পারে, কোনো lock ছাড়তে পারে না। প্রথম lock ছাড়ার মুহূর্ত থেকেই Shrinking Phase শুরু হয়ে যায়।"
+    },
+    {
+      "id": 108,
+      "question": "During the Shrinking Phase of 2PL, a transaction:",
+      "options": {
+        "a": "Can acquire new locks",
+        "b": "Can only release locks",
+        "c": "Cannot release locks",
+        "d": "Must commit immediately"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Can only release locks",
+      "page": "Transaction",
+      "explanation": "Shrinking Phase-এ transaction শুধু lock release করতে পারে — নতুন কোনো lock নেওয়ার অনুমতি নেই। এই নিয়মই 2PL-কে conflict serializability নিশ্চিত করতে সাহায্য করে।"
+    },
+    {
+      "id": 109,
+      "question": "Strict Two-Phase Locking (Strict 2PL) holds Exclusive Locks until:",
+      "options": {
+        "a": "The transaction starts",
+        "b": "The transaction commits or aborts",
+        "c": "The first UPDATE statement",
+        "d": "The first SELECT statement"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "The transaction commits or aborts",
+      "page": "Transaction",
+      "explanation": "Strict 2PL-এ সব exclusive (write) lock transaction commit বা abort হওয়া পর্যন্ত ধরে রাখা হয়। এতে cascading rollback এড়ানো যায়, কারণ অন্য কোনো transaction uncommitted data পড়তে পারে না।"
+    },
+    {
+      "id": 110,
+      "question": "Which index is automatically created for a Primary Key in most DBMSs?",
+      "options": {
+        "a": "Secondary Index",
+        "b": "Clustered Index",
+        "c": "Dense Index",
+        "d": "Bitmap Index"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Clustered Index",
+      "page": "Indexing",
+      "explanation": "বেশিরভাগ DBMS-এ primary key ঘোষণা করলে স্বয়ংক্রিয়ভাবে একটি clustered index তৈরি হয়, যা table-এর row গুলোকে key-এর ক্রমে physically সাজিয়ে রাখে। প্রতি table-এ clustered index একটির বেশি থাকতে পারে না।"
+    },
+    {
+      "id": 111,
+      "question": "Which index does not affect the physical order of records in the data file?",
+      "options": {
+        "a": "Clustered Index",
+        "b": "Primary Index",
+        "c": "Secondary (Non-Clustered) Index",
+        "d": "Sparse Index"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Secondary (Non-Clustered) Index",
+      "page": "Indexing",
+      "explanation": "Secondary বা non-clustered index আলাদা structure-এ key ও record-এর pointer রাখে, data file-এর physical ক্রম বদলায় না। তাই একটি table-এ একাধিক secondary index থাকতে পারে, কিন্তু clustered index মাত্র একটি।"
     }
   ]
 }

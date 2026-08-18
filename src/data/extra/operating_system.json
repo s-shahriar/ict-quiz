@@ -2,62 +2,6 @@
   "category": "operating_system",
   "questions": [
     {
-      "id": "os_ex_001",
-      "q": "In a core banking system, transaction T1 has locked Account-A's row and now needs Account-B's row, while transaction T2 has locked Account-B and now needs Account-A. Both transactions freeze forever. Explain what a DEADLOCK is, the four necessary (Coffman) conditions, and how to prevent it.",
-      "tags": [
-        "deadlock",
-        "coffman conditions",
-        "locking",
-        "concurrency"
-      ],
-      "answer": {
-        "summary": [
-          "Deadlock = দুই বা ততোধিক process/transaction এমনভাবে একে অন্যের ধরে রাখা resource (lock)-এর জন্য অপেক্ষা করে যে কেউই আর এগোতে পারে না — চিরস্থায়ী stuck।",
-          "এখানে T1 ধরে আছে A, চায় B; T2 ধরে আছে B, চায় A — একটা circular wait তৈরি হয়েছে।",
-          "চারটি Coffman condition একসাথে সত্য হলেই কেবল deadlock হয়; যেকোনো একটি ভাঙলে deadlock আটকানো যায়।"
-        ],
-        "points": [
-          "Mutual Exclusion: resource (row lock) এক সময়ে একজনই ধরতে পারে — share করা যায় না। এজন্যই T2-কে অপেক্ষা করতে হয় যতক্ষণ T1 A ছাড়ে না।",
-          "Hold and Wait: T1 একটা lock (A) ধরে রেখেই আরেকটার (B) জন্য অপেক্ষা করছে — হাতে রেখে আরও চায়, তাই dependency জমে।",
-          "No Preemption: OS/DB জোর করে T1-এর হাত থেকে A কেড়ে নিতে পারে না — transaction নিজে ছাড়ার আগ পর্যন্ত lock থাকে।",
-          "Circular Wait: T1 → (চায়) B → (ধরে) T2 → (চায়) A → (ধরে) T1 — একটা বৃত্ত সম্পূর্ণ হয়েছে; এটাই deadlock-এর ফাঁদ।",
-          "প্রতিরোধ (Prevention) — যেকোনো এক condition ভাঙো: সব lock একসাথে নাও (Hold&Wait ভাঙে), অথবা সব transaction সবসময় একই ক্রমে lock নিক (A আগে, তারপর B) — এতে circular wait কখনো হয় না।",
-          "প্রতিকার (আরও পথ): timeout দিয়ে অপেক্ষা কেটে দাও, অথবা DB-এর deadlock detector cycle পেলে একটি transaction-কে victim বানিয়ে rollback করে (No Preemption ভাঙে), তারপর retry।"
-        ],
-        "diagram": "DEADLOCK — Resource-Allocation Graph (cycle = আটকে গেছে)\n\n   held by            request\n  ┌────────┐          ┌────────┐\n  │  T1    │───────►  │  R2    │  ← Account-B lock\n  │ ট্রান্স১ │  চায় B   │ (রো B) │\n  └───▲────┘          └───┬────┘\n      │ ধরে আছে A          │ held by (T2 ধরে আছে)\n      │                   ▼\n  ┌───┴────┐          ┌────────┐\n  │  R1    │  ◄───────│  T2    │\n  │ (রো A) │   চায় A   │ ট্রান্স২ │\n  └────────┘  request └────────┘\n\n  বৃত্ত: T1 → R2 → T2 → R1 → T1   ← এই cycle-ই deadlock\n  ─────  কেউ ছাড়ে না, কেউ পায় না, দুজনেই freeze\n\n  ভাঙার উপায় (যেকোনো একটি):\n  ● সব lock একবারে নাও ............. Hold & Wait ✂\n  ● সবাই একই ক্রমে নাও (A→B) ....... Circular Wait ✂\n  ● timeout / detector → rollback .. No Preemption ✂",
-        "table": {
-          "headers": [
-            "Coffman শর্ত",
-            "মানে কী",
-            "কীভাবে ভাঙবে"
-          ],
-          "rows": [
-            [
-              "Mutual Exclusion",
-              "resource এক সময়ে একজনই ধরে",
-              "যেখানে সম্ভব shareable resource ব্যবহার"
-            ],
-            [
-              "Hold and Wait",
-              "ধরে রেখে আরও চায়",
-              "সব lock একবারেই নাও, নয়তো কিছুই না"
-            ],
-            [
-              "No Preemption",
-              "জোর করে কেড়ে নেওয়া যায় না",
-              "detector/timeout → victim rollback"
-            ],
-            [
-              "Circular Wait",
-              "wait-এর বৃত্ত তৈরি হয়",
-              "সব transaction একই global order-এ lock নিক"
-            ]
-          ]
-        },
-        "mnemonic": "MHNC — \"Mutual Hold, No Circle\": চারটি শর্ত একসাথে থাকলেই deadlock; একটাও ভাঙলে মুক্তি।"
-      }
-    },
-    {
       "id": "os_ex_002",
       "q": "A report-generation server at the bank must serve many concurrent users at once but hardware budget is tight. Should the developers spawn a new PROCESS per request or use multiple THREADS inside one process? Explain the difference and justify the choice.",
       "tags": [
