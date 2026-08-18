@@ -1,16 +1,16 @@
 {
   "mcq": {
     "c_programming": 36,
-    "computer_fundamental": 52,
+    "computer_fundamental": 50,
     "computer_network": 83,
-    "database": 111,
+    "database": 109,
     "digital_logic": 37,
-    "dsa": 114,
+    "dsa": 113,
     "information_security": 27,
     "linux": 31,
     "machine_learning": 85,
     "microprocessor": 18,
-    "oop": 44,
+    "oop": 43,
     "operating_system": 33,
     "software_engineering": 33,
     "theory_of_computation": 2

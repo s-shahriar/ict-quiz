@@ -984,19 +984,6 @@
       "explanation": "Deque (Double Ended Queue) উভয় প্রান্ত থেকে insertion ও deletion করতে পারে। তাই এটি Stack (LIFO) হিসেবেও ব্যবহার করা যায় এবং Queue (FIFO) হিসেবেও। এটি queue ও stack-এর combination।"
     },
     {
-      "id": 75,
-      "question": "Suppose you want to insert n elements into an empty linked list while maintaining the sorted order. What is the worst case time?",
-      "options": {
-        "a": "O(n)",
-        "b": "O(n logn)",
-        "c": "O(1)",
-        "d": "O(n²)"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "O(n²)",
-      "explanation": "Sorted linked list-এ n element insert করতে worst case O(n²)। প্রতিটি element insert করতে সঠিক position খুঁজতে O(n) traversal লাগে এবং n বার করতে হয়, তাই মোট O(n×n) = O(n²)।"
-    },
-    {
       "id": 76,
       "question": "The postorder traversal of a binary tree is 8,9,6,7,4,5,2,3,1. The inorder traversal of the same tree is 8,3,9,4,7,2,5,1,3. What is the height of the above binary tree?",
       "options": {

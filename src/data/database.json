@@ -1023,19 +1023,6 @@
       "explanation": "Database indexing-এ B+ tree ব্যবহার হয় কারণ এটি sorted data রাখে এবং O(log n) সময়ে search, insert ও delete করতে পারে। সব data leaf node-এ থাকে এবং leaf nodes linked থাকায় range query দ্রুত হয়।"
     },
     {
-      "id": 79,
-      "question": "Which one is not a unary operation in relational algebra?",
-      "options": {
-        "a": "Select",
-        "b": "Project",
-        "c": "Union",
-        "d": "Rename"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Union",
-      "explanation": "Relational algebra-তে তিনটি unary operation আছে: SELECT, PROJECT এবং RENAME — এগুলো একটি relation-এর উপর কাজ করে। Union একটি binary operation কারণ এটি দুটি relation-এর উপর কাজ করে।"
-    },
-    {
       "id": 80,
       "question": "Which one is an entity?",
       "options": {
@@ -1060,19 +1047,6 @@
       "correct_answer": "b",
       "correct_answer_text": "7.2",
       "explanation": "NUMERIC(precision, scale)-এ precision = মোট digit সংখ্যা, scale = দশমিকের পরে digit সংখ্যা। NUMERIC(2,1) মানে মোট 2 digit, দশমিকের পরে 1 digit। তাই সঠিক format: X.X যেমন 7.2। 65.2 তে 3 digit (precision=3), তাই বাদ।"
-    },
-    {
-      "id": 82,
-      "question": "What type of join is needed when you wish to include rows that do not have matching values?",
-      "options": {
-        "a": "Equal join",
-        "b": "Natural join",
-        "c": "Outer join",
-        "d": "Inner join"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Outer join",
-      "explanation": "Outer Join ব্যবহার করা হয় যখন non-matching rows-ও result-এ রাখতে হয়। Inner join শুধু matching records দেখায়। Outer join-এ দুই table-এর matching ও non-matching উভয় records-ই output-এ আসে।"
     },
     {
       "id": 83,

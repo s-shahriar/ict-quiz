@@ -21,13 +21,13 @@
       "options": {
         "a": "*Vehicle()",
         "b": "~Vehicle()",
-        "c": "-Vehicle(int value)",
+        "c": "~Vehicle(int value)",
         "d": "*Vehicle(int value)"
       },
       "correct_answer": "b",
       "correct_answer_text": "~Vehicle()",
       "page": "Constructor",
-      "explanation": "C++ এ destructor এর নামের আগে tilde (~) চিহ্ন ব্যবহার করা হয়। ~Vehicle() হলো Vehicle ক্লাসের destructor যা অবজেক্ট নষ্ট হওয়ার সময় স্বয়ংক্রিয়ভাবে মেমরি মুক্ত করে।"
+      "explanation": "Destructor-এর নাম class-এর নামের আগে ~ (tilde) চিহ্ন দিয়ে লেখা হয়। Destructor-এ কোনো parameter বা return type থাকে না। তাই Vehicle class-এর destructor হবে ~Vehicle()।"
     },
     {
       "id": 3,
@@ -513,19 +513,6 @@
       "correct_answer": "d",
       "correct_answer_text": "::",
       "explanation": ":: (scope resolution operator) C++-এ overload করা যায় না। এছাড়া . (member access), .* (pointer to member), ?: (ternary) এবং sizeof-ও overload করা যায় না। ++, (), ~ সহ বেশিরভাগ operator overload সম্ভব।"
-    },
-    {
-      "id": 39,
-      "question": "Which of the following is the destructor of class Vehicle?",
-      "options": {
-        "a": "*Vehicle()",
-        "b": "~Vehicle()",
-        "c": "~Vehicle(int value)",
-        "d": "*Vehicle(int value)"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "~Vehicle()",
-      "explanation": "Destructor-এর নাম class-এর নামের আগে ~ (tilde) চিহ্ন দিয়ে লেখা হয়। Destructor-এ কোনো parameter বা return type থাকে না। তাই Vehicle class-এর destructor হবে ~Vehicle()।"
     },
     {
       "id": 40,

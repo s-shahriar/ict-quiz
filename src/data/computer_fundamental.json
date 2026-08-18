@@ -83,7 +83,7 @@
       "correct_answer": "d",
       "correct_answer_text": "SRAM",
       "page": 14,
-      "explanation": "SRAM (Static RAM) প্রতিটি বিট সংরক্ষণের জন্য ফ্লিপ-ফ্লপ সার্কিট ব্যবহার করে, যা ক্রমাগত রিফ্রেশ ছাড়াই ডেটা ধরে রাখে। অপরদিকে DRAM ক্যাপাসিটর ব্যবহার করে এবং বারবার রিফ্রেশ প্রয়োজন হয়।"
+      "explanation": "SRAM (Static RAM) flip-flop circuit ব্যবহার করে memory cell তৈরি করে। প্রতিটি cell 4-6টি transistor দিয়ে তৈরি bistable circuit। এটি মান ধরে রাখে যতক্ষণ power থাকে। DRAM capacitor ব্যবহার করে, তাই বারবার refresh দরকার।"
     },
     {
       "id": 7,
@@ -526,19 +526,6 @@
       "explanation": "\"2M x 16\" RAM chip-এ 2M হলো address location-এর সংখ্যা এবং 16 হলো word size (প্রতিটি লোকেশনে কত bit)। তাই word size = 16 bits = 2 Bytes।"
     },
     {
-      "id": 40,
-      "question": "Which was the most popular first-generation computer?",
-      "options": {
-        "a": "IBM 1650",
-        "b": "IBM 360",
-        "c": "IBM 1130",
-        "d": "IBM 2700"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "IBM 1650",
-      "explanation": "IBM 1650 ছিল প্রথম প্রজন্মের সবচেয়ে জনপ্রিয় কম্পিউটার। এটি vacuum tube ব্যবহার করত এবং ১৯৫০-এর দশকে ব্যাপকভাবে ব্যবহৃত হয়।"
-    },
-    {
       "id": 41,
       "question": "The computer code of the interchange of information between terminals is —",
       "options": {
@@ -680,19 +667,6 @@
       "correct_answer": "b",
       "correct_answer_text": "42 nsec",
       "explanation": "Two-level memory average access time: T_avg = H×T1 + (1-H)×T2। H=0.98, T1=12ns (cache), T2=1500ns (main memory)। T_avg = 0.98×12 + (1-0.98)×1×1500 = 11.76 + 30 = 41.76 ≈ 42 ns।"
-    },
-    {
-      "id": 52,
-      "question": "Which of the following uses the flip-flop circuit in a memory cell?",
-      "options": {
-        "a": "DRAM",
-        "b": "EEPROM",
-        "c": "SDRAM",
-        "d": "SRAM"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "SRAM",
-      "explanation": "SRAM (Static RAM) flip-flop circuit ব্যবহার করে memory cell তৈরি করে। প্রতিটি cell 4-6টি transistor দিয়ে তৈরি bistable circuit। এটি মান ধরে রাখে যতক্ষণ power থাকে। DRAM capacitor ব্যবহার করে, তাই বারবার refresh দরকার।"
     }
   ]
 }
