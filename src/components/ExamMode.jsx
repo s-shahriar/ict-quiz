@@ -5,6 +5,7 @@ import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import HandToggle from './shared/HandToggle.jsx'
+import QuestionText from './shared/QuestionText.jsx'
 
 export default function ExamMode() {
   const location = useLocation()
@@ -94,7 +95,7 @@ export default function ExamMode() {
       </div>
 
       <div className="quiz-card anim-slide">
-        <p className="quiz-question">{q.question}</p>
+        <QuestionText text={q.question} className="quiz-question" />
 
         <div className="quiz-options">
           {opts.map(key => {

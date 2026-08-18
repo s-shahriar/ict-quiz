@@ -5,6 +5,7 @@ import { fetchDeletedQuestions } from '../lib/trashSync.js'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import HandToggle from './shared/HandToggle.jsx'
+import { splitQuestion } from './shared/QuestionText.jsx'
 
 const MODULE_LABEL = { mcq: 'MCQ', written: 'Written', extra: 'Extra', viva: 'Viva', code: 'Code', practice: 'Practice' }
 
@@ -79,7 +80,7 @@ export default function RecycleBinScreen() {
               <div key={q._id} className="recycle-row">
                 <div className="recycle-row-body">
                   <span className="recycle-tag">{MODULE_LABEL[q._module] || q._module}{q._slug ? ` · ${q._slug}` : ''}</span>
-                  <div className="recycle-row-text">{q.question}</div>
+                  <div className="recycle-row-text">{splitQuestion(q.question).prompt}</div>
                 </div>
                 <div className="recycle-row-actions">
                   <button className="recycle-restore-btn" disabled={busyId === q._id} onClick={() => onRestore(q)}>

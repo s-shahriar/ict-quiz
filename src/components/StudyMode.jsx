@@ -10,6 +10,7 @@ import CategorySidebar from './CategorySidebar.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import HandToggle from './shared/HandToggle.jsx'
+import QuestionText from './shared/QuestionText.jsx'
 
 export default function StudyMode() {
   const { topicId } = useParams()
@@ -175,7 +176,7 @@ function StudyCard({ domId, question: q, index, color, nailed, isImportant, onNa
         </div>
       </div>
 
-      <p className="study-question">{q.question}</p>
+      <QuestionText text={q.question} className="study-question" />
 
       <div className="study-options">
         {opts.map(key => {

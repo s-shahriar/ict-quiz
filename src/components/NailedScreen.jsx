@@ -8,6 +8,7 @@ import DeleteButton from './shared/DeleteButton.jsx'
 import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import HandToggle from './shared/HandToggle.jsx'
+import { splitQuestion } from './shared/QuestionText.jsx'
 
 const PAGE_SIZE = 20
 
@@ -110,7 +111,7 @@ function NailedTopicGroup({ topic: t, items, onUnnail, onUnnailMany }) {
             <div key={qid} className="nailed-row">
               <Star size={11} fill="currentColor" style={{ color: '#f59e0b', flexShrink: 0, marginTop: 3 }} />
               <div className="nailed-row-body">
-                <span className="nailed-row-text">{q.question}</span>
+                <span className="nailed-row-text">{splitQuestion(q.question).prompt}</span>
                 {q.correct_answer && q.options?.[q.correct_answer] && (
                   <div className="nailed-row-answer">
                     <span className="nailed-ans-key">{q.correct_answer.toUpperCase()}</span>

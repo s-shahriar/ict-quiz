@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import useDebounce from '../hooks/useDebounce.js'
 import { normalize, tokenize } from '../lib/normalize.js'
 import Pagination from './shared/Pagination'
+import QuestionText from './shared/QuestionText.jsx'
 
 const PAGE_SIZE = 8
 
@@ -121,7 +122,7 @@ function ResultCard({ q, topic, onOpen }) {
         <ArrowUpRight size={13} className="gs-card-open" />
       </button>
 
-      <p className="gs-card-q">{q.question}</p>
+      <QuestionText text={q.question} className="gs-card-q" />
 
       {q.correct_answer && q.options?.[q.correct_answer] && (
         <div className="gs-card-ans">

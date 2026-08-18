@@ -7,6 +7,7 @@ import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useModuleReady } from '../data/contentLoader.js'
 import DeleteButton from './shared/DeleteButton.jsx'
 import HandToggle from './shared/HandToggle.jsx'
+import QuestionText from './shared/QuestionText.jsx'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -97,7 +98,7 @@ export default function QuizMode() {
       </div>
 
       <div className="quiz-card anim-slide">
-        <p className="quiz-question">{q.question}</p>
+        <QuestionText text={q.question} className="quiz-question" />
 
         <div className="quiz-options">
           {opts.map(key => {
