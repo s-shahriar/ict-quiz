@@ -83,6 +83,240 @@
         },
         "mnemonic": "মনে রাখো DINCT: Detect → Impute (missing) → Noise smooth → Consistency → Transform। আর মূল পার্থক্য: Missing = ঘর খালি (ভরাও), Noise = ঘর ভুল (মসৃণ করো)।"
       }
+    },
+    {
+      "id": "ml_002",
+      "q": "What is a Decision Tree in Machine Learning? Describe its structure and explain pruning.",
+      "tags": [
+        "decision tree",
+        "root node",
+        "leaf node",
+        "pruning",
+        "overfitting",
+        "supervised learning",
+        "classification"
+      ],
+      "answer": {
+        "summary": [
+          "Decision Tree একটি supervised learning algorithm — classification আর regression দুটোতেই ব্যবহার হয়।",
+          "এটি পরপর প্রশ্ন করে এবং উত্তর অনুযায়ী branch ধরে নামতে নামতে চূড়ান্ত সিদ্ধান্তে পৌঁছায়।",
+          "গঠন: Root node (প্রথম প্রশ্ন) → Internal/Decision node (শর্ত) → Leaf node (চূড়ান্ত prediction)।",
+          "Pruning = অপ্রয়োজনীয় branch বা node কেটে গাছ সরল করা, যাতে overfitting কমে।"
+        ],
+        "points": [
+          "গঠন (Structure):",
+          {
+            "sub": "Root Node: শুরুর বিন্দু — পুরো dataset নিয়ে প্রথম প্রশ্নটি এখানে করা হয় (Weather?)।"
+          },
+          {
+            "sub": "Internal / Decision Node: একটি শর্ত বা প্রশ্ন (Humidity High না Normal?) — উত্তর অনুযায়ী data ভাগ হয়।"
+          },
+          {
+            "sub": "Branch: শর্তের একটি সম্ভাব্য উত্তর, যা পরের node এ নিয়ে যায়।"
+          },
+          {
+            "sub": "Leaf Node: আর ভাগ হয় না — এখানেই চূড়ান্ত উত্তর/class (Yes / No)।"
+          },
+          "কোন প্রশ্ন আগে আসবে: যে feature দিয়ে ভাগ করলে impurity সবচেয়ে বেশি কমে (Information Gain / Gini Index) সেটিকেই node বানানো হয় — তাই গুরুত্বপূর্ণ প্রশ্ন উপরে থাকে।",
+          "Pruning (ছাঁটাই):",
+          {
+            "sub": "সমস্যা: গাছ যত গভীর হয় training data তে তত নিখুঁত, কিন্তু তখন সে noise-ও মুখস্থ করে ফেলে — নতুন data তে ভুল করে (overfitting)।"
+          },
+          {
+            "sub": "সমাধান: যেসব branch accuracy তে কিছু যোগ করে না সেগুলো কেটে গাছ ছোট ও সরল করা — generalization বাড়ে, prediction দ্রুত হয়।"
+          },
+          {
+            "sub": "Pre-pruning (early stopping): বাড়ার সময়ই থামানো — max_depth, min_samples_leaf এর মতো শর্ত দিয়ে।"
+          },
+          {
+            "sub": "Post-pruning: পূর্ণ গাছ বানিয়ে পরে যেসব branch validation accuracy বাড়ায় না, সেগুলো কেটে দেওয়া।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Loan approval ও credit scoring — সিদ্ধান্তের কারণটা rule আকারে মানুষ পড়ে বুঝতে পারে।"
+          },
+          {
+            "sub": "Medical diagnosis ও customer churn prediction।"
+          }
+        ],
+        "diagram": "DECISION TREE — \"আজ ক্রিকেট খেলব কি?\"\n\n              ┌───────────────┐\n              │ Play Cricket? │ ← Root node\n              └───────┬───────┘\n                      ▼\n                ┌───────────┐\n                │  Weather? │ ← Decision node\n                └─┬───┬───┬─┘\n         Sunny ───┘   │   └─── Rainy\n                  Overcast\n            ▼         ▼          ▼\n      ┌───────────┐ ┌─────┐  ┌─────┐\n      │ Humidity? │ │ Yes │  │  No │ ← Leaf\n      └──┬─────┬──┘ └─────┘  └─────┘\n   High ─┘     └─ Normal\n        ▼           ▼\n     ┌─────┐     ┌─────┐\n     │  No │     │ Yes │  ← Leaf node = চূড়ান্ত prediction\n     └─────┘     └─────┘\n\n────────────── PRUNING ──────────────\n\n   আগে (overfitted)        পরে (pruned)\n         ●                      ●\n        / \\                    / \\\n       ●   ●                  ●   ●\n      / \\   \\                 ✂ কাটা\n     ●   ●   ●\n    / \\\n   ●   ●  ← শুধু noise মুখস্থ করা শাখা\n\n   গভীর গাছ : training এ প্রায় 100%, নতুন data তে খারাপ\n   Pruned    : সরল, ধীর নয়, নতুন data তেও ভালো",
+        "table": {
+          "headers": [
+            "অংশ",
+            "কাজ",
+            "উদাহরণ"
+          ],
+          "rows": [
+            [
+              "Root Node",
+              "শুরুর প্রশ্ন, পুরো dataset এখানে",
+              "Weather?"
+            ],
+            [
+              "Decision Node",
+              "শর্ত — data কে ভাগ করে",
+              "Humidity?"
+            ],
+            [
+              "Branch",
+              "শর্তের একটি উত্তর",
+              "Sunny / Rainy"
+            ],
+            [
+              "Leaf Node",
+              "চূড়ান্ত prediction, আর ভাগ হয় না",
+              "Yes / No"
+            ]
+          ]
+        },
+        "mnemonic": "Root এ প্রশ্ন শুরু, Leaf এ উত্তর শেষ। আর Pruning মানে — গাছ ছোট করলে বুদ্ধি বাড়ে (overfitting কমে)।"
+      }
+    },
+    {
+      "id": "ml_003",
+      "q": "What is a heuristic function? Explain its role in the A* search algorithm.",
+      "tags": [
+        "heuristic function",
+        "A* search",
+        "informed search",
+        "admissible heuristic",
+        "AI",
+        "pathfinding",
+        "50th BCS",
+        "45th BCS"
+      ],
+      "answer": {
+        "summary": [
+          "Heuristic function h(n) হলো একটি evaluation function যা বর্তমান state থেকে goal state পর্যন্ত cost বা দূরত্বের আন্দাজ (estimate) দেয়।",
+          "এটি search algorithm কে goal এর দিকে দিক নির্দেশ করে — সব path অন্ধভাবে না ঘেঁটে কম node expand করেই সমাধান মেলে।",
+          "A* search এ: f(n) = g(n) + h(n)।",
+          "Heuristic মান কখনও negative হয় না, কারণ cost negative হতে পারে না; goal এ পৌঁছালে h(n) = 0।"
+        ],
+        "points": [
+          "A* এর তিনটি পদ:",
+          {
+            "sub": "g(n): start node থেকে n পর্যন্ত প্রকৃত (ইতিমধ্যে খরচ হওয়া) cost — জানা মান।"
+          },
+          {
+            "sub": "h(n): n থেকে goal পর্যন্ত অনুমিত cost — এখানেই heuristic কাজ করে।"
+          },
+          {
+            "sub": "f(n): n হয়ে যাওয়া সবচেয়ে সস্তা সমাধানের মোট আনুমানিক cost। A* প্রতিবার সবচেয়ে ছোট f(n) ওয়ালা node আগে expand করে।"
+          },
+          "কেন কাজে দেয়: শুধু g(n) দেখলে algorithm অতীতমুখী (Dijkstra-এর মতো সব দিকে ছড়ায়); h(n) যোগ করলে সে ভবিষ্যতের দিকেও তাকায়, তাই goal এর দিকের শাখাগুলোই আগে খোলে।",
+          "ভালো heuristic এর শর্ত — admissible: h(n) কখনও প্রকৃত cost এর চেয়ে বেশি অনুমান করবে না (অতিরিক্ত অনুমান করলে সঠিক পথ বাদ পড়ে যেতে পারে)। Admissible হলেই A* optimal path দেয়।",
+          "উদাহরণ heuristic: map এ shortest route বের করতে h(n) = n থেকে গন্তব্যের straight-line দূরত্ব; 8-puzzle এ h(n) = ভুল জায়গায় থাকা tile এর সংখ্যা।",
+          "সুবিধা: heuristic ছাড়া Start → A → B → C → D → E → Goal (সব শাখা ঘাঁটা); heuristic সহ Start → A → C → Goal — কম node expansion, দ্রুত সমাধান।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "GPS / Google Maps এর route planning।"
+          },
+          {
+            "sub": "Game AI তে character এর pathfinding এবং puzzle solver।"
+          }
+        ],
+        "diagram": "A* এর মূল সূত্র\n\n        f(n)  =  g(n)  +  h(n)\n         │        │        │\n         │        │        └─ n → goal (অনুমান, heuristic)\n         │        └────────── start → n (প্রকৃত cost)\n         └─────────────────── n হয়ে মোট আনুমানিক cost\n\nকোন node আগে খুলবে?\n\n        ┌── A : g=2, h=6 → f=8\n  Start ┤\n        └── B : g=4, h=1 → f=5  ← f ছোট, তাই B আগে\n\n────────────────────────────────────────\nWITHOUT HEURISTIC (blind search)\n\n  Start → A → B → C → D → E → Goal\n  সব দিক অন্ধভাবে ঘাঁটা → বেশি node expansion\n\nWITH HEURISTIC (A*)\n\n  Start → A → C → Goal\n  goal এর দিকে দিক নির্দেশনা → কম expansion, দ্রুত\n\n────────────────────────────────────────\n h(n) ≥ 0  সবসময় (cost negative হয় না)\n goal এ  h(n) = 0",
+        "table": {
+          "headers": [
+            "পদ",
+            "অর্থ",
+            "উদাহরণ (মানচিত্র)"
+          ],
+          "rows": [
+            [
+              "g(n)",
+              "start থেকে n পর্যন্ত প্রকৃত cost",
+              "যতটুকু রাস্তা ইতিমধ্যে পেরিয়েছি"
+            ],
+            [
+              "h(n)",
+              "n থেকে goal পর্যন্ত অনুমিত cost",
+              "গন্তব্যের straight-line দূরত্ব"
+            ],
+            [
+              "f(n)",
+              "g(n) + h(n) — মোট আনুমানিক cost",
+              "এ পথে গেলে সম্ভাব্য মোট দূরত্ব"
+            ]
+          ]
+        },
+        "mnemonic": "g = যা খরচ হয়ে গেছে (past), h = যা লাগবে বলে মনে হয় (future), f = দুটোর যোগ। A* সবসময় সবচেয়ে ছোট f বেছে নেয়।"
+      }
+    },
+    {
+      "id": "ml_004",
+      "q": "What is a Bayesian Network in AI? Describe its two main components.",
+      "tags": [
+        "bayesian network",
+        "probabilistic graphical model",
+        "DAG",
+        "conditional probability table",
+        "uncertainty",
+        "inference",
+        "AI"
+      ],
+      "answer": {
+        "summary": [
+          "Bayesian Network হলো একটি probabilistic graphical model, যা AI তে অনিশ্চয়তা (uncertainty) প্রকাশ করতে ব্যবহৃত হয়।",
+          "দুটি প্রধান অংশ: (১) Directed Acyclic Graph (DAG) এবং (২) Conditional Probability Table (CPT)।",
+          "DAG এ node = random variable, edge = সরাসরি নির্ভরশীলতা বা causal সম্পর্ক; A → B মানে A হলো B এর parent।",
+          "CPT সেই সম্পর্ককে সংখ্যায় প্রকাশ করে — parent এর অবস্থা অনুযায়ী node এর probability।"
+        ],
+        "points": [
+          "১. Directed Acyclic Graph (DAG):",
+          {
+            "sub": "Node: প্রতিটি node একটি random variable, যার মান অনিশ্চিত (Rain, Sprinkler, Wet Grass)।"
+          },
+          {
+            "sub": "Edge: তীরচিহ্ন সরাসরি নির্ভরশীলতা/causal সম্পর্ক বোঝায়; edge না থাকলে ওই দুটি variable সরাসরি নির্ভরশীল নয়।"
+          },
+          {
+            "sub": "Acyclic কেন: চক্র থাকলে একটি variable ঘুরে নিজেরই কারণ হয়ে যেত, তখন probability হিসাব সম্ভব হতো না।"
+          },
+          "২. Conditional Probability Table (CPT):",
+          {
+            "sub": "প্রতিটি node এর জন্য একটি টেবিল — P(node | parents)। parent না থাকলে শুধু prior P(node)।"
+          },
+          {
+            "sub": "parent এর প্রতিটি সম্ভাব্য combination এর জন্য এক সারি থাকে।"
+          },
+          "কেন উপযোগী: পুরো joint probability টেবিল না রেখে ছোট ছোট CPT দিয়েই সব বের করা যায় — P(X₁…Xₙ) = ∏ P(Xᵢ | Parents(Xᵢ))। এতে জায়গা ও হিসাব দুটোই অনেক কমে।",
+          "কাজ (inference): কিছু evidence দেখে অজানা কারণের probability বের করা — ঘাস ভেজা দেখে জিজ্ঞেস করা \"বৃষ্টি হয়েছিল কি?\"",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Medical diagnosis — উপসর্গ দেখে রোগের সম্ভাবনা নির্ণয়।"
+          },
+          {
+            "sub": "Spam filter, fault diagnosis ও risk analysis।"
+          }
+        ],
+        "diagram": "BAYESIAN NETWORK = DAG  +  CPT\n\n১. DAG (গঠন)\n\n            ┌────────┐\n            │  Rain  │  ← Node = random variable\n            └─┬────┬─┘\n              │    │   Edge = সরাসরি নির্ভরশীলতা\n       ┌──────┘    └──────┐\n       ▼                  ▼\n ┌───────────┐      ┌───────────┐\n │ Sprinkler │─────▶│ Wet Grass │\n └───────────┘      └───────────┘\n\n  Rain → Sprinkler  মানে Rain হলো Sprinkler এর parent\n  Wet Grass এর parent দুটি: Rain ও Sprinkler\n\n২. CPT (সংখ্যা)\n\n  P(Rain) = 0.2              ← parent নেই → prior\n\n  P(Sprinkler | Rain)\n      Rain = T  →  0.01\n      Rain = F  →  0.40\n\n  P(WetGrass | Rain, Sprinkler)\n      T , T  →  0.99\n      T , F  →  0.90\n      F , T  →  0.90\n      F , F  →  0.00\n\n────────────────────────────────────────\n Joint:  P(R,S,W) = P(R)·P(S|R)·P(W|R,S)\n সব CPT মিলেই পুরো probability distribution",
+        "table": {
+          "headers": [
+            "অংশ",
+            "কী বোঝায়"
+          ],
+          "rows": [
+            [
+              "Node",
+              "একটি random variable (Rain, Wet Grass)"
+            ],
+            [
+              "Edge (A → B)",
+              "A সরাসরি B কে প্রভাবিত করে; A হলো B এর parent"
+            ],
+            [
+              "Acyclic",
+              "কোনো চক্র নেই — কারণ ঘুরে নিজের কারণ হতে পারে না"
+            ],
+            [
+              "CPT",
+              "P(node | parents) — সম্পর্কের সংখ্যাগত রূপ"
+            ]
+          ]
+        },
+        "mnemonic": "Bayesian Network = ছবি + সংখ্যা। ছবি (DAG) বলে কে কার উপর নির্ভরশীল, সংখ্যা (CPT) বলে কতটা নির্ভরশীল।"
+      }
     }
   ]
 }
