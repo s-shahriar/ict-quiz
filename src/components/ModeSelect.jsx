@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Navigate } from 'react-router-dom'
+import TopbarActions from './shared/TopbarActions.jsx'
 import { ChevronLeft, Brain, BookOpen } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
@@ -14,9 +15,12 @@ export default function ModeSelect() {
   const Icon = topic.icon
   return (
     <div className="mode-page anim-fade">
-      <button className="back-btn" onClick={() => navigate('/')}>
-        <ChevronLeft size={15} /> All Topics
-      </button>
+      <div className="study-topbar">
+        <button className="back-btn" onClick={() => navigate('/')}>
+          <ChevronLeft size={15} /> All Topics
+        </button>
+        <TopbarActions />
+      </div>
 
       <div className="mode-topic-hero">
         <div

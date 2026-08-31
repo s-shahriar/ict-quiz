@@ -7,7 +7,7 @@ import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
-import HandToggle from './shared/HandToggle.jsx'
+import TopbarActions from './shared/TopbarActions.jsx'
 import { splitQuestion } from './shared/QuestionText.jsx'
 
 const PAGE_SIZE = 20
@@ -40,9 +40,7 @@ export default function NailedScreen() {
           <Star size={16} fill="currentColor" style={{ color: '#f59e0b' }} />
           Nailed It
         </div>
-        <div className="topbar-right-actions">
-          <HandToggle />
-        </div>
+        <TopbarActions />
       </div>
 
       {total === 0 ? (

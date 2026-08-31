@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
-import HandToggle from './shared/HandToggle.jsx'
+import TopbarActions from './shared/TopbarActions.jsx'
 
 export default function PracticeImportantScreen() {
   const navigate = useNavigate()
@@ -49,9 +49,7 @@ export default function PracticeImportantScreen() {
           <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
           Important — Practice
         </div>
-        <div className="topbar-right-actions">
-          <HandToggle />
-        </div>
+        <TopbarActions />
       </div>
 
       {total === 0 ? (

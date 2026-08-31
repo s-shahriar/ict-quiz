@@ -8,7 +8,7 @@ import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
-import HandToggle from './shared/HandToggle.jsx'
+import TopbarActions from './shared/TopbarActions.jsx'
 
 const PAGE_SIZE = 20
 
@@ -38,9 +38,7 @@ export default function VivaNailedScreen() {
           <Star size={16} fill="currentColor" style={{ color: '#f59e0b' }} />
           Nailed It — Viva
         </div>
-        <div className="topbar-right-actions">
-          <HandToggle />
-        </div>
+        <TopbarActions />
       </div>
 
       {total === 0 ? (

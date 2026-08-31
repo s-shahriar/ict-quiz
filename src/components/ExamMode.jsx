@@ -4,7 +4,7 @@ import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX, St
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
-import HandToggle from './shared/HandToggle.jsx'
+import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
 
 export default function ExamMode() {
@@ -70,8 +70,7 @@ export default function ExamMode() {
           <span style={{ color: accent }}>Exam</span>
           <span className="exam-topic-tag">{q._label ?? label}</span>
         </div>
-        <div className="topbar-right-actions" style={{ gap: 8 }}>
-          <HandToggle />
+        <TopbarActions style={{ gap: 8 }}>
           <span className="quiz-score-pill">{score} / {idx + (revealed ? 1 : 0)}</span>
           <button
             className={`exam-stop-btn${stopConfirm ? ' confirm' : ''}`}
@@ -81,7 +80,7 @@ export default function ExamMode() {
             <OctagonX size={14} />
             {stopConfirm ? 'Sure?' : 'Stop'}
           </button>
-        </div>
+        </TopbarActions>
       </div>
 
       <div className="quiz-progress-wrap">

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
 import { CommandPractice } from './PracticeMode.jsx'
-import HandToggle from './shared/HandToggle.jsx'
+import TopbarActions from './shared/TopbarActions.jsx'
 
 // Runs a single drill session over every important practice item across all
 // categories/topics. Each drill carries its own category/topic so importance
@@ -47,9 +47,7 @@ export default function PracticeImportantRun() {
         <div className="written-topic-pill practice-pill">
           <Bookmark size={13} fill="currentColor" /> Important Practice
         </div>
-        <div className="topbar-right-actions">
-          <HandToggle />
-        </div>
+        <TopbarActions />
       </div>
 
       <div className="practice-content">

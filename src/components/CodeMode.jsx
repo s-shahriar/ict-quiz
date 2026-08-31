@@ -10,7 +10,7 @@ import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
-import HandToggle from './shared/HandToggle.jsx'
+import TopbarActions from './shared/TopbarActions.jsx'
 
 export default function CodeMode() {
   const navigate = useNavigate()
@@ -70,12 +70,11 @@ export default function CodeMode() {
           <Terminal size={13} />
           {topic.shortName} — Code
         </div>
-        <div className="topbar-right-actions">
-          <HandToggle />
+        <TopbarActions>
           <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
             <LayoutGrid size={16} />
           </button>
-        </div>
+        </TopbarActions>
       </div>
 
       <CategorySidebar

@@ -6,7 +6,7 @@ import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useModuleReady } from '../data/contentLoader.js'
 import DeleteButton from './shared/DeleteButton.jsx'
-import HandToggle from './shared/HandToggle.jsx'
+import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
 
 function shuffle(arr) {
@@ -81,10 +81,9 @@ export default function QuizMode() {
           <ChevronLeft size={15} /> Back
         </button>
         <span className="quiz-topic-pill" style={{ color: topic.color }}>{topic.shortName}</span>
-        <div className="topbar-right-actions">
+        <TopbarActions>
           <span className="quiz-score-pill">{score} pts</span>
-          <HandToggle />
-        </div>
+        </TopbarActions>
       </div>
 
       <div className="quiz-progress-wrap">

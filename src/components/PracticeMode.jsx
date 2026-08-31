@@ -1,10 +1,9 @@
-import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Lightbulb, Moon, Sun, Table2, Terminal, XCircle } from 'lucide-react'
+import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Lightbulb, Table2, Terminal, XCircle } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
-import { useThemeContext } from '../contexts/ThemeContext.jsx'
 import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId } from '../data/practice/index.js'
-import HandToggle from './shared/HandToggle.jsx'
+import TopbarActions from './shared/TopbarActions.jsx'
 
 const TABS = [
   { id: 'info', label: 'Info', icon: BookOpen },
@@ -14,7 +13,6 @@ const TABS = [
 
 export default function PracticeMode() {
   const navigate = useNavigate()
-  const { theme, toggleTheme } = useThemeContext()
   const { value: important, toggle: toggleImportant } = useImportantContext()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -67,12 +65,7 @@ export default function PracticeMode() {
           <Terminal size={13} />
           {data.name} Practice
         </div>
-        <div className="topbar-right-actions">
-          <HandToggle />
-          <button className="study-home-btn" onClick={toggleTheme} title="Toggle theme">
-            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-        </div>
+        <TopbarActions />
       </div>
 
       {/* Topic selector — dropdown on all screen sizes */}
