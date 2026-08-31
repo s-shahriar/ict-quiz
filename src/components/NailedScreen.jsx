@@ -1,21 +1,24 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Star, X, ChevronDown, ChevronUp, Lightbulb } from 'lucide-react'
+import { ChevronLeft, Star, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
-import DeleteButton from './shared/DeleteButton.jsx'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import Pagination from './shared/Pagination'
+import StudyCard from './shared/StudyCard.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
-import { splitQuestion } from './shared/QuestionText.jsx'
 
 const PAGE_SIZE = 20
 
+// Nailed questions, grouped by topic and read as study cards — the same ones
+// Study Mode uses: tap an option, get the answer and the explanation.
 export default function NailedScreen() {
   const navigate = useNavigate()
   useModuleReady('mcq')
   const { value: mastered, remove: onUnnail, removeMany: onUnnailMany } = useMasteredContext()
+  const importantApi = useImportantContext()
   const { trashedIds } = useTrash()
 
   const topics = TOPICS
@@ -56,11 +59,11 @@ export default function NailedScreen() {
             <span className="nailed-screen-total-label">question{total !== 1 ? 's' : ''} nailed across {nailedByTopic.length} topic{nailedByTopic.length !== 1 ? 's' : ''}</span>
           </div>
           <div className="nailed-screen-hint">
-            Tap <X size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> to un-nail and return a question to the active pool.
+            Tap an option to reveal the answer.
           </div>
           <div className="nailed-screen-list">
             {nailedByTopic.map(({ topic: t, items }) => (
-              <NailedTopicGroup key={t.id} topic={t} items={items} onUnnail={onUnnail} onUnnailMany={onUnnailMany} />
+              <NailedTopicGroup key={t.id} topic={t} items={items} onUnnail={onUnnail} onUnnailMany={onUnnailMany} importantApi={importantApi} />
             ))}
           </div>
         </>
@@ -69,7 +72,7 @@ export default function NailedScreen() {
   )
 }
 
-function NailedTopicGroup({ topic: t, items, onUnnail, onUnnailMany }) {
+function NailedTopicGroup({ topic: t, items, onUnnail, onUnnailMany, importantApi }) {
   const [open, setOpen] = useState(true)
   const [page, setPage] = useState(1)
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -104,34 +107,20 @@ function NailedTopicGroup({ topic: t, items, onUnnail, onUnnailMany }) {
       </div>
 
       {open && (
-        <div className="nailed-group-body anim-slide">
-          {pageItems.map(({ q, qid }) => (
-            <div key={qid} className="nailed-row">
-              <Star size={11} fill="currentColor" style={{ color: '#f59e0b', flexShrink: 0, marginTop: 3 }} />
-              <div className="nailed-row-body">
-                <span className="nailed-row-text">{splitQuestion(q.question).prompt}</span>
-                {q.correct_answer && q.options?.[q.correct_answer] && (
-                  <div className="nailed-row-answer">
-                    <span className="nailed-ans-key">{q.correct_answer.toUpperCase()}</span>
-                    <span className="nailed-ans-text">{q.options[q.correct_answer]}</span>
-                  </div>
-                )}
-                {q.explanation && (
-                  <div className="nailed-row-explanation">
-                    <Lightbulb size={11} style={{ color: '#f59e0b', flexShrink: 0, marginTop: 1 }} />
-                    <span>{q.explanation}</span>
-                  </div>
-                )}
-              </div>
-              <button
-                className="nailed-unnail-btn"
-                onClick={() => onUnnail(qid)}
-                title="Un-nail — return to active pool"
-              >
-                <X size={13} />
-              </button>
-              <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
-            </div>
+        <div className="nailed-group-body anim-slide study-list">
+          {pageItems.map(({ q, qid }, i) => (
+            <StudyCard
+              key={qid}
+              domId={'nailed-q-' + qid}
+              question={q}
+              index={(curPage - 1) * PAGE_SIZE + i}
+              color={t.color}
+              nailed
+              isImportant={importantApi.value.has(qid)}
+              onNail={() => onUnnail(qid)}
+              onMarkImportant={() => importantApi.add(qid)}
+              onUnmarkImportant={() => importantApi.remove(qid)}
+            />
           ))}
           {totalPages > 1 && <Pagination page={curPage} totalPages={totalPages} onPageChange={setPage} />}
         </div>
