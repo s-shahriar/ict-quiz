@@ -1733,6 +1733,342 @@
         ],
         "mnemonic": "\"যা চাও তা উপরে\" — packet/sec চাইলে per-second রাশি (bandwidth) উপরে। হিসাব: byte কে ×8 করে bit, তারপর bandwidth ÷ packet-bit। 10M ÷ 12k ≈ 833।"
       }
+    },
+    {
+      "id": "cn_028",
+      "q": "Differentiate between TCP 3-way handshake and 4-way handshake. Where is each of them used?",
+      "tags": [
+        "TCP",
+        "3-way handshake",
+        "4-way handshake",
+        "connection establishment",
+        "connection termination",
+        "SYN",
+        "FIN",
+        "transport layer"
+      ],
+      "answer": {
+        "summary": [
+          "3-way handshake হলো TCP সংযোগ খোলার প্রক্রিয়া: SYN → SYN+ACK → ACK।",
+          "4-way handshake হলো সেই সংযোগ বন্ধ করার প্রক্রিয়া: FIN → ACK → FIN → ACK।",
+          "খুলতে ৩ ধাপ লাগে কারণ server তার SYN আর ACK একসাথে পাঠাতে পারে; বন্ধ করতে ৪ ধাপ লাগে কারণ এক পক্ষ থামলেও অন্য পক্ষের data পাঠানো শেষ নাও হতে পারে — তাই তার FIN আলাদা করে পরে আসে।"
+        ],
+        "points": [
+          "3-way Handshake — সংযোগ স্থাপন (Connection Establishment):",
+          {
+            "sub": "Client → Server: SYN, seq=100 — client সংযোগ চায় এবং নিজের শুরুর sequence number জানায়।"
+          },
+          {
+            "sub": "Server → Client: SYN + ACK, seq=500, ack=101 — একই segment-এ দুই কাজ: server নিজের seq জানায় এবং client-এর SYN গ্রহণ করে।"
+          },
+          {
+            "sub": "Client → Server: ACK, ack=501 — client server-এর seq গ্রহণ করে। দুই দিকের sequence number মিলে গেল, সংযোগ ESTABLISHED।"
+          },
+          "4-way Handshake — সংযোগ বন্ধ (Connection Termination):",
+          {
+            "sub": "Client → Server: FIN, seq=1000 — \"আমার পাঠানো শেষ\"।"
+          },
+          {
+            "sub": "Server → Client: ACK, ack=1001 — \"FIN পেলাম\", কিন্তু server-এর নিজের data তখনো বাকি থাকতে পারে। এই অবস্থাকে half-close বলে — একদিক বন্ধ, অন্যদিক খোলা।"
+          },
+          {
+            "sub": "Server → Client: FIN, seq=5000 — server-এর পাঠানোও শেষ হলে সে আলাদা করে নিজের FIN পাঠায়।"
+          },
+          {
+            "sub": "Client → Server: ACK, ack=5001 — শেষ স্বীকৃতি; TIME_WAIT শেষ হলে সংযোগ পুরোপুরি CLOSED।"
+          },
+          "৩ ধাপ বনাম ৪ ধাপ — আসল কারণ:",
+          {
+            "sub": "TCP full-duplex — দুই দিকের সংযোগ আলাদা। তাই প্রতি দিক বন্ধ করতে একটি FIN + একটি ACK লাগে, মোট ৪টি।"
+          },
+          {
+            "sub": "খোলার সময় server-এর কিছু পাঠানোর বাকি থাকে না, তাই SYN আর ACK এক segment-এ মিলিয়ে দেওয়া যায় → ৪-এর বদলে ৩ ধাপ।"
+          },
+          {
+            "sub": "বন্ধের সময় ACK আর FIN মেলানো যায় না, কারণ FIN মানে \"আমার data শেষ\" — যা ACK পাঠানোর মুহূর্তে সত্যি নাও হতে পারে। তাই ACK আগে, FIN পরে।"
+          },
+          "কোথায় ব্যবহৃত হয়:",
+          {
+            "sub": "3-way handshake: TCP-র উপর চলা প্রতিটি সংযোগের শুরুতে — HTTP/HTTPS page load, SSH login, FTP/SMTP, database connection।"
+          },
+          {
+            "sub": "4-way handshake: সেই সংযোগ শেষ করার সময় — file transfer শেষে, SSH logout, keep-alive timeout শেষে browser-এর connection ছেড়ে দেওয়া, connection pool থেকে connection close।"
+          },
+          {
+            "sub": "নিরাপত্তা প্রসঙ্গ: 3-way handshake-এর দুর্বলতা কাজে লাগিয়ে SYN flood (DoS) attack হয় — attacker শুধু SYN পাঠায়, শেষ ACK দেয় না, ফলে server-এর half-open queue ভরে যায়। প্রতিকার: SYN cookies।"
+          }
+        ],
+        "diagram": "3-WAY HANDSHAKE — সংযোগ খোলা (OPEN)\n\n   Client                                    Server\n     │                                          │\n     │ ──── SYN, seq=100 ─────────────────────► │  ← \"কথা বলতে চাই\" + নিজের seq\n     │                                          │    (server: half-open queue তে entry)\n     │ ◄─── SYN + ACK, seq=500, ack=101 ─────── │  ← এক segment-এ দুই কাজ:\n     │                                          │    নিজের seq + client-এর SYN গ্রহণ\n     │ ──── ACK, ack=501 ─────────────────────► │  ← server-এর seq গ্রহণ\n     │                                          │\n     ╞══════════ ESTABLISHED → DATA ════════════╡\n\n\n4-WAY HANDSHAKE — সংযোগ বন্ধ (CLOSE)\n\n   Client                                    Server\n     │                                          │\n     │ ──── FIN, seq=1000 ────────────────────► │  ← \"আমার পাঠানো শেষ\"\n     │      (FIN_WAIT)                          │\n     │ ◄─── ACK, ack=1001 ───────────────────── │  ← \"পেলাম\" — কিন্তু আমার data বাকি\n     │                                          │\n     │ ◄═══ HALF-CLOSE: এই দিক এখনো খোলা ═══════ │  ← server চাইলে আরও data পাঠাতে পারে\n     │                                          │\n     │ ◄─── FIN, seq=5000 ───────────────────── │  ← \"এবার আমারও শেষ\"\n     │ ──── ACK, ack=5001 ────────────────────► │  ← শেষ স্বীকৃতি\n     │      (TIME_WAIT → CLOSED)                │\n\n\n──────────────── at-a-glance ────────────────\n  3-way :  খোলা   │ SYN → SYN+ACK → ACK\n  4-way :  বন্ধ   │ FIN → ACK → FIN → ACK\n  কেন ৩ :  server-এর SYN ও ACK একসাথে যায়\n  কেন ৪ :  ACK আগে, FIN পরে (data বাকি থাকতে পারে)\n  মূল সূত্র :  TCP full-duplex — প্রতি দিক আলাদাভাবে বন্ধ হয়",
+        "table": {
+          "headers": [
+            "দিক",
+            "3-way Handshake",
+            "4-way Handshake"
+          ],
+          "rows": [
+            [
+              "কাজ",
+              "সংযোগ স্থাপন (open)",
+              "সংযোগ সমাপ্তি (close)"
+            ],
+            [
+              "Segment ক্রম",
+              "SYN → SYN+ACK → ACK",
+              "FIN → ACK → FIN → ACK"
+            ],
+            [
+              "ধাপ সংখ্যা",
+              "৩",
+              "৪"
+            ],
+            [
+              "কেন এত ধাপ",
+              "SYN ও ACK এক segment-এ মেলানো যায়",
+              "ACK ও FIN মেলানো যায় না — data বাকি থাকতে পারে"
+            ],
+            [
+              "মাঝের অবস্থা",
+              "SYN_SENT / SYN_RECEIVED",
+              "FIN_WAIT / CLOSE_WAIT (half-close)"
+            ],
+            [
+              "শেষ অবস্থা",
+              "ESTABLISHED — data চলা শুরু",
+              "TIME_WAIT → CLOSED"
+            ],
+            [
+              "উদ্দেশ্য",
+              "দুই পক্ষের sequence number সমন্বয়",
+              "দুই দিকের data প্রবাহ আলাদাভাবে বন্ধ করা"
+            ],
+            [
+              "কোথায়",
+              "HTTP/HTTPS, SSH login, FTP, DB connect",
+              "Transfer শেষে, SSH logout, keep-alive timeout"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "4-way handshake মানেই WiFi-র WPA2 handshake",
+            "TCP প্রসঙ্গে 4-way handshake = connection close। WPA2-র 4-way handshake সম্পূর্ণ আলাদা জিনিস (encryption key exchange)।"
+          ],
+          [
+            "বন্ধ করতেও ৩ ধাপই যথেষ্ট",
+            "server-এর ACK আর FIN আলাদা, কারণ FIN পাঠানোর সময় তার data শেষ হয়েছে কি না তা তখনো নিশ্চিত নয়।"
+          ],
+          [
+            "শেষ ACK-এর পরেই সংযোগ সাথে সাথে মুছে যায়",
+            "client TIME_WAIT-এ কিছুক্ষণ (2×MSL) থাকে, যাতে হারানো শেষ ACK পুনরায় পাঠানো যায়।"
+          ]
+        ],
+        "mnemonic": "খুলতে ৩, বন্ধ করতে ৪। কারণ — ঢোকার সময় \"আসব?\" / \"এসো\" এক কথায় হয়ে যায়; বেরোনোর সময় \"আমি গেলাম\" শোনার পর অন্যজনের কথা শেষ হতে সময় লাগে, তাই তার বিদায় আলাদা করে পরে আসে।"
+      }
+    },
+    {
+      "id": "cn_029",
+      "q": "Differentiate among RIP, DVR (Distance Vector Routing), OSPF, EIGRP and BGP — working principle, applications, advantages and shortcomings.",
+      "tags": [
+        "RIP",
+        "distance vector routing",
+        "DVR",
+        "OSPF",
+        "EIGRP",
+        "BGP",
+        "routing protocol",
+        "Bellman-Ford",
+        "Dijkstra",
+        "DUAL",
+        "path vector",
+        "IGP",
+        "EGP",
+        "convergence"
+      ],
+      "answer": {
+        "summary": [
+          "DVR হলো একটি শ্রেণি (routing by rumour — প্রতিবেশীর কথা শুনে সিদ্ধান্ত), আর RIP হলো তার সবচেয়ে পরিচিত বাস্তবায়ন। তাই RIP আর DVR আলাদা প্রতিদ্বন্দ্বী protocol নয়।",
+          "OSPF (Link State) নিজে পুরো map বানিয়ে Dijkstra চালায়; EIGRP (Advanced Distance Vector) DUAL দিয়ে আগেই backup path রেখে দেয়।",
+          "RIP/OSPF/EIGRP তিনটিই IGP — এক প্রতিষ্ঠানের (AS) ভেতরে; BGP হলো EGP — আলাদা AS-এর মধ্যে, অর্থাৎ পুরো ইন্টারনেটের routing।"
+        ],
+        "points": [
+          "DVR (Distance Vector Routing) — শ্রেণিটির কাজের নীতি:",
+          {
+            "sub": "প্রতিটি router শুধু নিজের প্রতিবেশীকে নিজের পুরো routing table পাঠায়, এবং প্রতিবেশীর দাবি বিশ্বাস করে নিজের দূরত্ব হিসাব করে (Bellman-Ford)। কেউ পুরো নেটওয়ার্ক দেখে না — তাই একে \"routing by rumour\" বলা হয়।"
+          },
+          {
+            "sub": "সুবিধা: খুব সরল, কম CPU/RAM লাগে, ছোট নেটওয়ার্কে configure করা সহজ।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: ধীর convergence এবং Count-to-Infinity — link down হলে দুই router একে অপরের পুরনো তথ্য ফেরত দিয়ে loop তৈরি করে, metric বাড়তেই থাকে।"
+          },
+          {
+            "sub": "প্রতিকার: Split Horizon (যার কাছ থেকে route শিখেছি তাকে সেটি ফেরত পাঠাব না), Route Poisoning / Poison Reverse (metric = অসীম করে ঘোষণা), Hold-down timer ও Triggered update।"
+          },
+          "RIP — DVR-এর ক্লাসিক বাস্তবায়ন:",
+          {
+            "sub": "কাজের নীতি: প্রতি ৩০ সেকেন্ডে পুরো routing table প্রতিবেশীকে পাঠায় (UDP port 520)। Metric = hop count, সর্বোচ্চ ১৫ — ১৬ মানে unreachable।"
+          },
+          {
+            "sub": "সুবিধা: প্রায় সব vendor-এ চলে, শেখা ও বসানো সবচেয়ে সহজ, ছোট নেটওয়ার্কে যথেষ্ট।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: bandwidth দেখে না — ১ Mbps-এর ২ hop পথকে ১০০ Mbps-এর ৩ hop পথের চেয়ে ভালো মনে করে; ১৫ hop সীমা; পর্যায়ক্রমিক full update-এ bandwidth নষ্ট।"
+          },
+          {
+            "sub": "ব্যবহার: খুব ছোট বা শিক্ষামূলক lab নেটওয়ার্ক; বাস্তব enterprise-এ এখন প্রায় অচল।"
+          },
+          "OSPF — Link State:",
+          {
+            "sub": "কাজের নীতি: প্রতিটি router তার সংযোগগুলোর তথ্য (LSA) পুরো area-তে flood করে; সবাই মিলে একই LSDB (নেটওয়ার্কের মানচিত্র) বানায়, তারপর প্রত্যেকে নিজে Dijkstra (SPF) চালিয়ে shortest path বের করে। Metric = cost, যা bandwidth-ভিত্তিক।"
+          },
+          {
+            "sub": "সুবিধা: দ্রুত convergence, loop-free, VLSM/CIDR সমর্থন, Area দিয়ে বড় নেটওয়ার্ককে ভাগ করা যায় (সব area backbone Area 0-এর সাথে যুক্ত), এবং এটি open standard — যেকোনো vendor-এ চলে।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: CPU ও memory বেশি খায় (পুরো LSDB রাখতে হয়), design/configuration জটিল — area পরিকল্পনা, DR/BDR নির্বাচন ইত্যাদি বুঝতে হয়।"
+          },
+          {
+            "sub": "ব্যবহার: ব্যাংক, এন্টারপ্রাইজ ও ডাটা সেন্টারের ভেতরের routing — যেখানে বহু-vendor সরঞ্জাম এবং বড় topology।"
+          },
+          "EIGRP — Advanced Distance Vector (Hybrid):",
+          {
+            "sub": "কাজের নীতি: DVR-এর মতোই প্রতিবেশীর কাছ থেকে শেখে, কিন্তু DUAL অ্যালগরিদম চালায়। এটি তিনটি table রাখে — Neighbor, Topology, Routing। Topology table-এ best path (Successor) ছাড়াও যাচাই করা backup path (Feasible Successor) আগে থেকেই রাখা থাকে।"
+          },
+          {
+            "sub": "সুবিধা: link fail করলে Feasible Successor-এ প্রায় সঙ্গে সঙ্গে switch করে — পুনরায় হিসাব লাগে না, তাই convergence সবচেয়ে দ্রুত। Update পাঠায় শুধু পরিবর্তন হলে এবং শুধু প্রভাবিত router-কে (partial + bounded)। Metric = bandwidth + delay মিলিয়ে, তাই RIP-এর চেয়ে বাস্তবসম্মত। Unequal-cost load balancing (variance) করতে পারে — যা OSPF পারে না।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: মূলত Cisco-নির্ভর (২০১৩-তে RFC 7868 প্রকাশিত হলেও অন্য vendor-এ প্রায় নেই) — তাই vendor lock-in। Feasible Successor না থাকলে router route-টিকে Active করে প্রতিবেশীদের query পাঠায়; উত্তর না এলে SIA (Stuck-In-Active) সমস্যা হয়।"
+          },
+          {
+            "sub": "ব্যবহার: পুরোপুরি Cisco-ভিত্তিক enterprise ও WAN নেটওয়ার্ক, যেখানে দ্রুত failover দরকার।"
+          },
+          "BGP — Path Vector (আন্তঃ-AS):",
+          {
+            "sub": "কাজের নীতি: দূরত্ব নয়, গন্তব্যে পৌঁছাতে কোন কোন AS পার হতে হবে সেই পুরো AS_PATH বিজ্ঞাপন করে। নিজের AS নম্বর path-এ দেখলেই সেটি বাদ দেয় — এভাবেই loop ঠেকে। TCP port 179-এ session গড়ে শুধু পরিবর্তন (incremental update) পাঠায়।"
+          },
+          {
+            "sub": "সুবিধা: বিপুল আকারে scale করে (ইন্টারনেটের ~১০ লক্ষ route), এবং path নির্বাচন policy দিয়ে নিয়ন্ত্রণ করা যায় (Local Preference, AS_PATH length, MED) — অর্থাৎ ব্যবসায়িক চুক্তি অনুযায়ী route বাছা যায়, যা কোনো IGP পারে না।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: convergence খুব ধীর, configuration জটিল, বিশাল table-এ প্রচুর memory লাগে; এবং নকশাগতভাবে অনিরাপদ — ভুল বা উদ্দেশ্যমূলক ঘোষণায় route hijack হয় (প্রতিকার: RPKI, prefix filtering)।"
+          },
+          {
+            "sub": "ব্যবহার: ISP-দের মধ্যে ইন্টারনেট routing; প্রতিষ্ঠানের multi-homing — দুই ISP নিলে BGP দিয়েই route ঘোষণা ও failover হয়।"
+          },
+          "নির্বাচনের সূত্র (কোনটি কখন):",
+          {
+            "sub": "নেটওয়ার্ক ছোট ও সরল → RIP; বড়, বহু-vendor ও এক প্রতিষ্ঠানের ভেতরে → OSPF; পুরো Cisco এবং দ্রুততম failover চাই → EIGRP; অন্য প্রতিষ্ঠান/ISP-এর সাথে সংযোগ বা multi-homing → BGP।"
+          },
+          {
+            "sub": "একসাথেও চলে: বাস্তব নেটওয়ার্কে ভেতরে OSPF/EIGRP (IGP) আর প্রান্তে ISP-র দিকে BGP (EGP) — দুটি স্তরে দুই ধরনের protocol।"
+          }
+        ],
+        "diagram": "১. DVR / RIP — প্রতিবেশীর কথা শুনে (Bellman-Ford)\n──────────────────────────────────────────────────\n  [A]═══[B]═══[C]═══[D]\n         │\n         └─ B শুধু জানে: \"A বলল D = 2 hop\" → B লেখে D = 3 hop\n            B কখনো C-D link-এর গতি বা অবস্থা দেখে না ✗\n\n  প্রবাহ:  প্রতি 30s ─► পুরো table ─► শুধু direct neighbor\n\n  Count-to-Infinity (A-B link ছিঁড়ল):\n    B: \"A নেই... কিন্তু C বলছে A = 2 hop\"  → B: A = 3\n    C: \"তাহলে B হয়ে A = 4\"                → C: A = 4\n    B: 5 → C: 6 → ... 16 (= অসীম) না হওয়া পর্যন্ত চলে ✗\n    প্রতিকার: Split Horizon · Poison Reverse · Hold-down\n\n\n২. OSPF — Link State (সবাই একই মানচিত্র, নিজে হিসাব)\n──────────────────────────────────────────────────\n  ধাপ ১: Hello ─► প্রতিবেশী আবিষ্কার\n  ধাপ ২: LSA flood ─► সবার কাছে নিজের link-তথ্য\n  ধাপ ৩: সবাই একই LSDB (মানচিত্র) বানায়\n  ধাপ ৪: প্রত্যেকে নিজে Dijkstra (SPF) চালায়\n\n            cost=1          cost=10\n       A ───────────── B ───────────── C\n        \\ cost=3                cost=3 /\n         ───────────── D ─────────────\n\n     A→B→C = 11   |   A→D→C = 6  ← নির্বাচিত ✓\n     গুজব নেই — নিজের মানচিত্র দেখে সিদ্ধান্ত\n\n\n৩. EIGRP — DUAL (backup আগেই তৈরি)\n──────────────────────────────────────────────────\n  Topology Table (গন্তব্য X-এর জন্য):\n  ┌──────────────────────────────────────────────┐\n  │ পথ ১ : B হয়ে,  metric 20  ← SUCCESSOR (চালু) │\n  │ পথ ২ : C হয়ে,  metric 30  ← FEASIBLE SUCC.   │ ← যাচাই করা backup\n  │ পথ ৩ : D হয়ে,  metric 45  (শর্ত মানে না)      │\n  └──────────────────────────────────────────────┘\n\n  B-র link fail ─►  সঙ্গে সঙ্গে পথ ২ চালু (হিসাব লাগে না) ✓\n  Feasible Successor না থাকলে ─► route ACTIVE ─► প্রতিবেশীকে\n  Query ─► উত্তর না এলে SIA (Stuck-In-Active) ✗\n\n\n৪. BGP — Path Vector (AS থেকে AS)\n──────────────────────────────────────────────────\n   [AS 100]──eBGP──[AS 200]──eBGP──[AS 300]\n    আপনার ISP        মধ্যবর্তী        গন্তব্য\n\n   ঘোষণা: \"203.0.113.0/24 পেতে AS_PATH = 200 300\"\n   AS 100 নিজের নম্বর path-এ দেখলে ─► loop ─► বাতিল\n   নির্বাচন দূরত্ব নয়, policy-তে: Local Pref → AS_PATH দৈর্ঘ্য → MED\n\n\n─────────── at-a-glance ───────────\n  পরিধি   :  RIP · OSPF · EIGRP = AS-এর ভেতরে (IGP)\n            BGP = AS-এর মধ্যে (EGP)\n  দৃষ্টি   :  RIP/EIGRP = প্রতিবেশীর কথা | OSPF = নিজের মানচিত্র\n            BGP = পুরো AS-পথের তালিকা\n  গতি     :  EIGRP > OSPF > RIP > BGP  (convergence)\n  পরিসর   :  BGP > OSPF ≈ EIGRP > RIP  (scale)",
+        "table": {
+          "headers": [
+            "দিক",
+            "RIP",
+            "DVR (শ্রেণি)",
+            "OSPF",
+            "EIGRP",
+            "BGP"
+          ],
+          "rows": [
+            [
+              "ধরন",
+              "Distance Vector",
+              "শ্রেণি — RIP/IGRP এর ভিত্তি",
+              "Link State",
+              "Advanced DV (Hybrid)",
+              "Path Vector"
+            ],
+            [
+              "অ্যালগরিদম",
+              "Bellman-Ford",
+              "Bellman-Ford",
+              "Dijkstra (SPF)",
+              "DUAL",
+              "Best-path (policy)"
+            ],
+            [
+              "Metric",
+              "Hop count (সর্বোচ্চ ১৫)",
+              "Hop / cost",
+              "Cost = bandwidth ভিত্তিক",
+              "Bandwidth + Delay",
+              "AS_PATH + attributes"
+            ],
+            [
+              "কে কী দেখে",
+              "শুধু প্রতিবেশীর দাবি",
+              "শুধু প্রতিবেশীর দাবি",
+              "পুরো topology (LSDB)",
+              "প্রতিবেশী + topology table",
+              "পুরো AS-পথ"
+            ],
+            [
+              "Update",
+              "প্রতি 30s, পুরো table",
+              "পর্যায়ক্রমিক, পুরো table",
+              "পরিবর্তনে LSA flood",
+              "পরিবর্তনে partial + bounded",
+              "Incremental + keepalive"
+            ],
+            [
+              "Convergence",
+              "ধীর",
+              "ধীর",
+              "দ্রুত",
+              "সবচেয়ে দ্রুত (FS আগেই আছে)",
+              "খুব ধীর"
+            ],
+            [
+              "পরিধি",
+              "IGP — ছোট LAN",
+              "IGP",
+              "IGP — বড় enterprise",
+              "IGP — Cisco enterprise/WAN",
+              "EGP — পুরো ইন্টারনেট"
+            ],
+            [
+              "Transport / AD",
+              "UDP 520 · AD 120",
+              "—",
+              "IP proto 89 · AD 110",
+              "IP proto 88 · AD 90",
+              "TCP 179 · AD 20 (eBGP)"
+            ],
+            [
+              "মূল দুর্বলতা",
+              "১৫ hop সীমা, bandwidth অগ্রাহ্য",
+              "Count-to-Infinity, loop",
+              "CPU/RAM ভারী, নকশা জটিল",
+              "Cisco-নির্ভর, SIA সমস্যা",
+              "ধীর, জটিল, hijack ঝুঁকি"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "RIP আর DVR দুটি আলাদা প্রতিদ্বন্দ্বী protocol",
+            "DVR একটি শ্রেণি (কাজের পদ্ধতি), RIP সেই শ্রেণির একটি protocol। তুলনাটা RIP vs OSPF vs EIGRP vs BGP — DVR তাদের মধ্যে দুটির পদ্ধতির নাম।"
+          ],
+          [
+            "EIGRP পুরোপুরি Link State protocol",
+            "না — EIGRP প্রতিবেশীর কাছ থেকেই শেখে (Distance Vector), কিন্তু DUAL ও backup path যোগ করায় একে Advanced DV বা Hybrid বলা হয়। সে কখনো পুরো নেটওয়ার্কের মানচিত্র বানায় না।"
+          ],
+          [
+            "BGP সবচেয়ে ভালো, তাই সব জায়গায় ব্যবহার করা উচিত",
+            "BGP-র কাজ AS-এর মধ্যে policy-ভিত্তিক routing। ভেতরের নেটওয়ার্কে এটি অপ্রয়োজনীয় ও ধীর — সেখানে OSPF/EIGRP।"
+          ],
+          [
+            "OSPF-এর cost মানে hop সংখ্যা",
+            "না — cost bandwidth থেকে হিসাব হয়, তাই বেশি hop-এর দ্রুত পথ কম hop-এর ধীর পথের চেয়ে ভালো হতে পারে।"
+          ]
+        ],
+        "mnemonic": "RIP = কান-কথা (মোড় গোনে, রাস্তা দেখে না)। DVR = সেই কান-কথার নিয়মটাই। OSPF = GPS (পুরো মানচিত্র দেখে নিজে হিসাব করে)। EIGRP = সঙ্গে অতিরিক্ত চাকা নিয়ে চলা গাড়ি (backup পথ আগেই প্রস্তুত, তাই থামতে হয় না)। BGP = দেশে দেশে কূটনীতি (কোন কোন দেশ পার হব, চুক্তি অনুযায়ী ঠিক করি)।"
+      }
     }
   ]
 }
