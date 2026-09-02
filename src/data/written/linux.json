@@ -19,13 +19,72 @@
           "Limit hit করলে kernel নতুন socket দেয় না → EMFILE (\"Too many open files\") → DB নতুন connection নিতে পারে না → timeout।"
         ],
         "points": [
-          "মূল কথা: Linux এ socket আলাদা কোনো object নয় — প্রতিটি TCP connection একটি file descriptor (FD) হিসেবে kernel এ থাকে। তাই DB connection = socket = FD, একটাই জিনিস।",
-          "Per-process limit: প্রতিটি process কত FD খুলতে পারবে তার সীমা = ulimit -n (kernel এর RLIMIT_NOFILE)। default প্রায়ই 1024 — high-traffic এর জন্য কম।",
-          "System-wide limit: পুরো kernel মিলিয়ে সর্বোচ্চ FD = fs.file-max। এটাও ছাড়ানো যায় যদি সব process মিলে বহু socket খোলে।",
-          "যা ঘটে peak এ: হাজারো client request → বহু DB connection খোলে। Connection pooling ছোট হলে বা connection leak করলে (close() না হয়ে FD আটকে থাকে) open FD count দ্রুত বাড়ে।",
-          "Limit hit: open FD সংখ্যা ulimit -n ছুঁলে kernel এর socket()/accept() call ব্যর্থ হয়, errno = EMFILE → log এ \"Too many open files\"। নতুন socket তৈরি হয় না।",
-          "Socket-স্তরে আরও exhaustion: ephemeral port শেষ (net.ipv4.ip_local_port_range), বন্ধ connection TIME_WAIT অবস্থায় port ধরে রাখে, এবং accept queue (net.core.somaxconn) ভরে গেলে নতুন connection silently drop হয়।",
-          "ফল: DB server নতুন connection accept করতে পারে না → app এর connection request queue এ আটকে যায় বা drop হয় → web app DB connection পায় না → DATABASE CONNECTION TIMEOUT।"
+          "মূল কথা — Linux-এ socket মানেই একটা file descriptor:",
+          {
+            "sub": "Linux-এর দর্শন \"everything is a file\" — socket আলাদা কোনো object নয়।"
+          },
+          {
+            "sub": "প্রতিটি TCP connection kernel-এ একটি file descriptor (FD) হিসেবে থাকে।"
+          },
+          {
+            "sub": "তাই DB connection = socket = FD — একটাই জিনিস, আলাদা করে গোনার কিছু নেই।"
+          },
+          "FD-এর উপর দুই স্তরের limit আছে:",
+          {
+            "sub": "Per-process limit: একটি process সর্বোচ্চ কত FD খুলতে পারবে = ulimit -n (kernel-এর RLIMIT_NOFILE)।"
+          },
+          {
+            "sub": "এর default প্রায়ই মাত্র 1024 — high-traffic application-এর জন্য যথেষ্ট কম।"
+          },
+          {
+            "sub": "System-wide limit: পুরো kernel মিলিয়ে সর্বোচ্চ FD = fs.file-max।"
+          },
+          {
+            "sub": "সব process মিলে বহু socket খুললে এই system-wide সীমাও ছাড়ানো সম্ভব।"
+          },
+          "Peak load-এ যা ঘটে:",
+          {
+            "sub": "হাজারো client request আসে, ফলে বহু DB connection খোলা হয়।"
+          },
+          {
+            "sub": "Connection pool ছোট হলে চাহিদা মেটাতে বারবার নতুন connection খুলতে হয়।"
+          },
+          {
+            "sub": "Connection leak হলে (কাজ শেষে close() না হওয়ায়) ব্যবহার শেষ হলেও FD আটকে থাকে।"
+          },
+          {
+            "sub": "দুই কারণেই open FD count দ্রুত বাড়তে থাকে।"
+          },
+          "Limit ছোঁয়ার পর কী হয়:",
+          {
+            "sub": "open FD সংখ্যা ulimit -n ছুঁলে kernel-এর socket()/accept() call ব্যর্থ হয়।"
+          },
+          {
+            "sub": "errno = EMFILE সেট হয় — log-এ দেখা যায় \"Too many open files\"।"
+          },
+          {
+            "sub": "নতুন socket আর তৈরি হয় না।"
+          },
+          "Socket স্তরে আরও তিনটি resource একসাথে নিঃশেষ হয়:",
+          {
+            "sub": "Ephemeral port শেষ হয়ে যায় — net.ipv4.ip_local_port_range-এ সীমিত সংখ্যক port থাকে (~28k)।"
+          },
+          {
+            "sub": "বন্ধ হওয়া connection TIME_WAIT অবস্থায় কিছুক্ষণ port ধরে রাখে, তাই port সাথে সাথে ফেরত আসে না।"
+          },
+          {
+            "sub": "accept queue (net.core.somaxconn) ভরে গেলে নতুন connection silently drop হয়।"
+          },
+          "চূড়ান্ত ফল (cascade):",
+          {
+            "sub": "DB server নতুন connection accept করতে পারে না।"
+          },
+          {
+            "sub": "App-এর connection request queue-তে আটকে যায় বা drop হয়।"
+          },
+          {
+            "sub": "Web app DB connection পায় না — এটাই DATABASE CONNECTION TIMEOUT।"
+          }
         ],
         "diagram": "LINUX: \"everything is a file\" — socket-ও একটা File Descriptor\n\nProcess এর File Descriptor Table   (সীমা = ulimit -n)\n┌──────┬──────────────────────────────┐\n│ FD 0 │ stdin                        │\n│ FD 1 │ stdout                       │\n│ FD 2 │ stderr                       │\n│ FD 3 │ socket → DB conn #1          │ ← প্রতি DB connection = 1 FD\n│ FD 4 │ socket → DB conn #2          │\n│  ⋮   │  ⋮                           │\n│FD1023│ socket → DB conn #1020       │ ← table ভরে গেল!\n├──────┴──────────────────────────────┤\n│ socket()/accept()  →  errno=EMFILE  │ ← \"Too many open files\" 🔴\n└─────────────────────────────────────┘\n\nব্যর্থতার শৃঙ্খল (cascade):\n  Peak load → হাজারো connection\n    └─▶ pool ছোট / connection leak (close হয় না)\n        └─▶ open FD count বাড়তেই থাকে\n            └─▶ ulimit -n সীমা hit → EMFILE\n                └─▶ নতুন socket তৈরি হয় না\n                    └─▶ DB নতুন connection accept করে না\n                        └─▶ app এর request queue এ আটকে / drop\n                            └─▶ DATABASE CONNECTION TIMEOUT 🔴\n\nযেসব kernel resource একসাথে নিঃশেষ হয়:\n  • File descriptor   → ulimit -n  /  fs.file-max\n  • Ephemeral port    → ip_local_port_range  (~28k টি মাত্র)\n  • TIME_WAIT socket  → বন্ধ conn-ও কিছুক্ষণ port ধরে রাখে\n  • Accept queue      → net.core.somaxconn ভরলে নতুন conn drop",
         "mistakes": [
