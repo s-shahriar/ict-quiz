@@ -37,7 +37,11 @@
           ]
         ],
         "table": {
-          "headers": ["ACID", "মানে", "Bank উদাহরণ"],
+          "headers": [
+            "ACID",
+            "মানে",
+            "Bank উদাহরণ"
+          ],
           "rows": [
             [
               "Atomicity",
@@ -118,18 +122,56 @@
           "না থাকলে: parent delete করলে প্রথমে manually child row গুলো delete করতে হবে, নয়তো error আসবে — referential integrity violate হবে।"
         ],
         "points": [
-          "Foreign Key = child table এর একটি column যা parent table এর Primary Key কে refer করে",
-          "ON DELETE CASCADE ব্যবহার করলে: parent row মুছলে সেই parent কে refer করা সব child row অটোমেটিক মুছে যায়",
-          "ON DELETE CASCADE না থাকলে: parent row delete করতে গেলে SQL error আসবে — কারণ child table এ এখনও সেই parent কে refer করা row আছে (orphan হয়ে যাবে)",
-          "না থাকলে সমাধান: আগে child row গুলো manually DELETE করো, তারপর parent delete করো",
-          "বিকল্প options: ON DELETE SET NULL (child এ NULL বসে), ON DELETE SET DEFAULT (child এ default বসে), ON DELETE RESTRICT (delete আটকায় — default behavior)",
-          "CASCADE ব্যবহারে সতর্কতা: accidentally parent delete করলে সব child data চলে যাবে — backup ছাড়া বড় table এ সাবধানে ব্যবহার করো",
-          "ব্যবহারিক প্রয়োগ:",
+          "Foreign Key কী:",
           {
-            "sub": "CASCADE যেখানে মানানসই: parent মুছলে child এর আলাদা কোনো মূল্য নেই — Order মুছলে Order_Items, User মুছলে তার session ও cart, Post মুছলে তার comment।"
+            "sub": "child table-এর একটি column, যা parent table-এর Primary Key-কে refer করে।"
+          },
+          "ON DELETE CASCADE ব্যবহার করলে:",
+          {
+            "sub": "parent row মুছলে সেই parent-কে refer করা সব child row অটোমেটিক মুছে যায়।"
+          },
+          "ON DELETE CASCADE না থাকলে:",
+          {
+            "sub": "parent row delete করতে গেলে SQL error আসে।"
           },
           {
-            "sub": "CASCADE যেখানে বিপজ্জনক: ব্যাংকের Account ↔ Transaction বা audit log — গ্রাহক মুছলে লেনদেনের ইতিহাসও মুছে যাবে। এসব জায়গায় RESTRICT বা SET NULL দিয়ে soft delete করা হয়।"
+            "sub": "কারণ child table-এ তখনো সেই parent-কে refer করা row আছে — মুছে দিলে সেগুলো orphan হয়ে যেত।"
+          },
+          {
+            "sub": "সমাধান: আগে child row-গুলো manually DELETE করো, তারপর parent delete করো।"
+          },
+          "বিকল্প option:",
+          {
+            "sub": "ON DELETE SET NULL — child-এর foreign key column-এ NULL বসে।"
+          },
+          {
+            "sub": "ON DELETE SET DEFAULT — child-এ default মান বসে।"
+          },
+          {
+            "sub": "ON DELETE RESTRICT — delete আটকে দেয় (এটাই default behavior)।"
+          },
+          "CASCADE ব্যবহারে সতর্কতা:",
+          {
+            "sub": "ভুল করে parent delete করলে সব child data একসাথে চলে যাবে।"
+          },
+          {
+            "sub": "backup ছাড়া বড় table-এ খুব সাবধানে ব্যবহার করতে হয়।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "CASCADE যেখানে মানানসই — parent মুছলে child-এর আলাদা কোনো মূল্য থাকে না।"
+          },
+          {
+            "sub": "যেমন Order মুছলে Order_Items, User মুছলে তার session ও cart, Post মুছলে তার comment।"
+          },
+          {
+            "sub": "CASCADE যেখানে বিপজ্জনক — ব্যাংকের Account ↔ Transaction বা audit log।"
+          },
+          {
+            "sub": "সেখানে গ্রাহক মুছলে লেনদেনের ইতিহাসও মুছে যাবে।"
+          },
+          {
+            "sub": "এসব জায়গায় RESTRICT বা SET NULL দিয়ে soft delete করা হয়।"
           }
         ],
         "diagram": "উদাহরণ: Department (parent) ← Employees (child)\n\n┌──────────────────────┐     ┌────────────────────────────┐\n│   Department         │     │   Employees                │\n├──────────────────────┤     ├────────────────────────────┤\n│ dept_id  (PK) │ name │     │ emp_id │ name  │ dept_id(FK)│\n├───────────────┼──────┤     ├────────┼───────┼────────────┤\n│     1         │  IT  │     │  101   │ Rahim │     1      │\n│     2         │  HR  │     │  102   │ Karim │     1      │\n│     3         │  FIN │     │  103   │ Salam │     2      │\n└──────────────────────┘     └────────────────────────────┘\n\n── WITH ON DELETE CASCADE ──────────────────────\n  DELETE FROM Department WHERE dept_id = 1;\n  → IT department মুছে যায়\n  → emp_id 101 (Rahim) ও 102 (Karim) ও অটোমেটিক মুছে যায়\n  → কোনো error নেই, সব পরিষ্কার ✅\n\n── WITHOUT ON DELETE CASCADE (default) ─────────\n  DELETE FROM Department WHERE dept_id = 1;\n  → ❌ ERROR: foreign key constraint violated!\n  → কারণ Employees table এ এখনও dept_id=1 আছে\n  → আগে Employees থেকে মুছতে হবে, তারপর Department\n\nSQL Syntax:\n  CREATE TABLE Employees (\n      emp_id   INT PRIMARY KEY,\n      name     VARCHAR(100),\n      dept_id  INT,\n      FOREIGN KEY (dept_id)\n          REFERENCES Department(dept_id)\n          ON DELETE CASCADE   ← এই লাইনটা\n  );",
@@ -193,14 +235,56 @@
           "HAVING = GROUP BY ও aggregate হিসাবের পরে group filter করে (COUNT/AVG/SUM ব্যবহার করা যায়)।"
         ],
         "points": [
-          "Execution order: FROM → WHERE → GROUP BY → Aggregate (SUM/COUNT/AVG) → HAVING → SELECT → ORDER BY। এই ক্রমই WHERE ও HAVING এর পার্থক্যের মূল।",
-          "WHERE: প্রতিটি row আলাদা করে যাচাই করে — শর্ত না মিললে সেই row গ্রুপিং এ ঢোকেই না। তখনো কোনো group/aggregate তৈরি হয়নি, তাই WHERE এ AVG()/COUNT() ব্যবহার করা যায় না।",
-          "HAVING: GROUP BY দিয়ে group তৈরি ও aggregate হিসাব শেষ হওয়ার পরে চলে — পুরো group কে রাখা বা বাদ দেওয়ার সিদ্ধান্ত নেয়। তাই HAVING এ aggregate function (AVG, COUNT, SUM) ব্যবহার করা যায়।",
-          "উদাহরণ পার্থক্য: WHERE Salary > 45000 → আগে কম-salary row বাদ, তারপর group ও average হিসাব। HAVING AVG(Salary) > 45000 → আগে সব row নিয়ে group ও average, তারপর যেসব dept এর average > 45000 শুধু সেগুলো রাখা।",
-          "Performance টিপ: যেটা row-level এ filter করা যায় তা WHERE এ করো — তাহলে কম row group এ যায়, query দ্রুত হয়। শুধু aggregate-নির্ভর শর্ত HAVING এ রাখো।",
+          "Execution order — এখান থেকেই পুরো পার্থক্যটা আসে:",
+          {
+            "sub": "FROM → WHERE → GROUP BY → Aggregate (SUM/COUNT/AVG) → HAVING → SELECT → ORDER BY।"
+          },
+          "WHERE:",
+          {
+            "sub": "প্রতিটি row আলাদা করে যাচাই করে।"
+          },
+          {
+            "sub": "শর্ত না মিললে সেই row গ্রুপিং-এ ঢোকেই না।"
+          },
+          {
+            "sub": "এই পর্যায়ে তখনো কোনো group বা aggregate তৈরিই হয়নি।"
+          },
+          {
+            "sub": "তাই WHERE-এ AVG()/COUNT()-এর মতো aggregate function ব্যবহার করা যায় না।"
+          },
+          "HAVING:",
+          {
+            "sub": "GROUP BY দিয়ে group তৈরি ও aggregate হিসাব শেষ হওয়ার পরে চলে।"
+          },
+          {
+            "sub": "পুরো group-কে রাখা বা বাদ দেওয়ার সিদ্ধান্ত নেয়।"
+          },
+          {
+            "sub": "তাই HAVING-এ aggregate function (AVG, COUNT, SUM) ব্যবহার করা যায়।"
+          },
+          "উদাহরণে পার্থক্য:",
+          {
+            "sub": "WHERE Salary > 45000 → আগে কম-salary row বাদ পড়ে, তারপর group ও average হিসাব হয়।"
+          },
+          {
+            "sub": "HAVING AVG(Salary) > 45000 → আগে সব row নিয়ে group ও average হয়, তারপর যেসব dept-এর average > 45000 শুধু সেগুলো থাকে।"
+          },
+          "Performance টিপ:",
+          {
+            "sub": "যেটা row-level-এ filter করা যায় তা WHERE-এ করো — কম row group-এ যায়, query দ্রুত হয়।"
+          },
+          {
+            "sub": "শুধু aggregate-নির্ভর শর্তই HAVING-এ রাখো।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "প্রায় প্রতিটি report ও dashboard query তে — \"শুধু ২০২৪ সালের বিক্রি ধরে (WHERE), এমন অঞ্চল দেখাও যাদের গড় বিক্রি ৫০ হাজারের বেশি (HAVING)\"। কোন filter কোন পর্যায়ে বসবে তা না বুঝলে report এর সংখ্যাই ভুল আসে।"
+            "sub": "প্রায় প্রতিটি report ও dashboard query-তে এই জোড়া একসাথে লাগে।"
+          },
+          {
+            "sub": "যেমন — \"শুধু ২০২৪ সালের বিক্রি ধরে (WHERE), এমন অঞ্চল দেখাও যাদের গড় বিক্রি ৫০ হাজারের বেশি (HAVING)\"।"
+          },
+          {
+            "sub": "কোন filter কোন পর্যায়ে বসবে তা না বুঝলে report-এর সংখ্যাই ভুল আসে।"
           }
         ],
         "diagram": "SQL Execution Pipeline — filter দুই জায়গায়\n\n  FROM  (Employees টেবিল)\n    │\n    ▼\n  WHERE   ◀── row-level filter (group এর আগে)\n    │        Salary > 45000 → কম salary row বাদ\n    ▼\n  GROUP BY Dept   → groups:  IT { … },  HR { … }\n    │\n    ▼\n  Aggregate:  AVG(Salary), COUNT(*) …\n    │\n    ▼\n  HAVING  ◀── group-level filter (aggregate এর পরে)\n    │        AVG(Salary) > 50000 → পুরো group রাখো/বাদ\n    ▼\n  SELECT → ORDER BY → ফলাফল\n\nExample data:          WHERE Salary>45000, GROUP BY Dept:\n  Dept  Salary           বাদ: HR 40000, HR 45000\n  IT    50000            IT = avg(50000,60000) = 55000\n  IT    60000            HR = (কোনো row বাঁচেনি)\n  HR    40000\n  HR    45000          HAVING AVG(Salary)>45000 (WHERE ছাড়া):\n                         সব row → IT avg=55000 ✓ রাখে\n                                  HR avg=42500 ✗ বাদ",
@@ -265,18 +349,78 @@
           "Relational table-এ নামাতে M:N সরাসরি বসে না — একটি junction (bridge) table লাগে যার composite primary key (emp_id, project_id) এবং দুটোই foreign key।"
         ],
         "points": [
-          "Mapping cardinality = এক entity-র একটি instance অন্য entity-র কয়টি instance-এর সাথে যুক্ত হতে পারে তা বোঝায়। প্রকার: One-to-One (1:1), One-to-Many (1:N), Many-to-Many (M:N)।",
-          "এই সমস্যায়: একজন Employee অনেক Project-এ কাজ করতে পারে, আবার একটি Project-এ অনেক Employee থাকতে পারে — দুই দিকেই 'many', তাই cardinality = Many-to-Many (M:N)।",
-          "ER diagram: Employee ও Project দুটি entity (rectangle), মাঝে Works_On relationship (diamond); সংযোগ রেখায় Employee পাশে M এবং Project পাশে N লেখা হয়।",
-          "M:N relationship-এ প্রায়ই descriptive attribute থাকে (যেমন assigned_date, hours_worked) — এগুলো কোনো entity-র নয়, relationship-এর নিজস্ব attribute, junction table-এ বসে।",
-          "Relational schema-তে রূপান্তর: তিনটি table — Employee(emp_id PK, ...), Project(project_id PK, ...), এবং junction Works_On(emp_id, project_id, ...) যেখানে (emp_id, project_id) composite primary key এবং emp_id ও project_id দুটোই foreign key।",
-          "junction table কেন লাগে: relational table-এর একটি column একাধিক মান রাখতে পারে না; junction table ছাড়া M:N দেখাতে গেলে data redundancy ও repeating group তৈরি হতো।",
-          "ব্যবহারিক প্রয়োগ:",
+          "Mapping cardinality কী:",
           {
-            "sub": "বাস্তবে M:N সব জায়গায়: Student ↔ Course (enrollment), Order ↔ Product (order_items), Doctor ↔ Patient (appointment), User ↔ Role (user_roles)।"
+            "sub": "এক entity-র একটি instance অন্য entity-র কয়টি instance-এর সাথে যুক্ত হতে পারে, তা বোঝায়।"
           },
           {
-            "sub": "Junction table টাই পরে ব্যবসায়িক তথ্য রাখার জায়গা — enrollment এ grade ও semester, order_items এ quantity ও unit price বসে; তাই একে নিছক \"মাঝের table\" ভাবা ভুল।"
+            "sub": "প্রকার তিনটি: One-to-One (1:1), One-to-Many (1:N), Many-to-Many (M:N)।"
+          },
+          "এই সমস্যায় cardinality কত:",
+          {
+            "sub": "একজন Employee অনেক Project-এ কাজ করতে পারে।"
+          },
+          {
+            "sub": "আবার একটি Project-এ অনেক Employee থাকতে পারে।"
+          },
+          {
+            "sub": "দুই দিকেই 'many' — তাই cardinality = Many-to-Many (M:N)।"
+          },
+          "ER diagram-এ যেভাবে আঁকতে হবে:",
+          {
+            "sub": "Employee ও Project — দুটি entity, rectangle দিয়ে।"
+          },
+          {
+            "sub": "মাঝে Works_On relationship — diamond দিয়ে।"
+          },
+          {
+            "sub": "সংযোগ রেখায় Employee-র পাশে M এবং Project-এর পাশে N লেখা হয়।"
+          },
+          "Descriptive attribute:",
+          {
+            "sub": "M:N relationship-এ প্রায়ই বাড়তি attribute থাকে — যেমন assigned_date, hours_worked।"
+          },
+          {
+            "sub": "এগুলো কোনো entity-র নিজের attribute নয়, relationship-এর নিজস্ব attribute।"
+          },
+          {
+            "sub": "তাই এগুলো junction table-এ গিয়ে বসে।"
+          },
+          "Relational schema-তে রূপান্তর — তিনটি table:",
+          {
+            "sub": "Employee(emp_id PK, ...)"
+          },
+          {
+            "sub": "Project(project_id PK, ...)"
+          },
+          {
+            "sub": "junction Works_On(emp_id, project_id, ...) — এখানে (emp_id, project_id) মিলে composite primary key।"
+          },
+          {
+            "sub": "Works_On-এর emp_id ও project_id দুটোই foreign key।"
+          },
+          "junction table কেন লাগে:",
+          {
+            "sub": "relational table-এর একটি column একাধিক মান রাখতে পারে না।"
+          },
+          {
+            "sub": "junction table ছাড়া M:N দেখাতে গেলে data redundancy ও repeating group তৈরি হতো।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "বাস্তবে M:N সব জায়গায় — Student ↔ Course (enrollment), Order ↔ Product (order_items)।"
+          },
+          {
+            "sub": "আরও — Doctor ↔ Patient (appointment), User ↔ Role (user_roles)।"
+          },
+          {
+            "sub": "Junction table-ই পরে ব্যবসায়িক তথ্য রাখার আসল জায়গা হয়ে ওঠে।"
+          },
+          {
+            "sub": "যেমন enrollment-এ grade ও semester, order_items-এ quantity ও unit price বসে।"
+          },
+          {
+            "sub": "তাই একে নিছক \"মাঝের table\" ভাবা ভুল।"
           }
         ],
         "diagram": "Mapping Cardinality নির্ণয়:\n\n  Employee  ──<  works on  >──  Project\n  একজন employee  →  অনেক project\n  একটি project   →  অনেক employee\n  দুই দিকেই 'অনেক'   ⇒   Many-to-Many ( M : N )\n\nER Diagram:\n┌────────────┐      M       ╱╲       N      ┌────────────┐\n│  EMPLOYEE  │───────────<  Works_On  >───────────│  PROJECT   │\n│  (entity)  │              ╲╱               │  (entity)  │\n└────────────┘               │               └────────────┘\n  emp_id (PK)      assigned_date, hours_worked      project_id (PK)\n  name             (relationship-এর নিজস্ব attribute)  title\n\n  পড়ার নিয়ম: Employee পাশে M, Project পাশে N —\n  এক পাশের একটি instance অন্য পাশের অনেক instance-এর সাথে যুক্ত।\n\nRelational Schema-তে রূপান্তর  (M:N → junction table):\n┌───────────────┐   ┌────────────────────────────┐   ┌───────────────┐\n│   Employee    │   │    Works_On  (junction)    │   │    Project    │\n├───────────────┤   ├────────────────────────────┤   ├───────────────┤\n│ emp_id   (PK) │◀──│ emp_id      (PK, FK)       │   │ project_id(PK)│\n│ name          │   │ project_id  (PK, FK)      │──▶│ title         │\n│ dept          │   │ hours_worked              │   │ budget        │\n└───────────────┘   └────────────────────────────┘   └───────────────┘\n           composite primary key = ( emp_id , project_id )\n\nWorks_On sample rows:\n  emp_id │ project_id │ hours_worked\n  ───────┼────────────┼──────────────\n   101   │    P1      │     40        ← Rahim, P1-এ কাজ করে\n   101   │    P2      │     20        ← একই Rahim, আরেক project-এ\n   102   │    P1      │     35        ← একই P1, আরেক employee\n\n  একই emp_id একাধিক project-এ, একই project_id একাধিক employee-তে\n  → এটাই Many-to-Many।",
@@ -291,7 +435,11 @@
           ]
         ],
         "table": {
-          "headers": ["Mapping Cardinality", "মানে", "উদাহরণ"],
+          "headers": [
+            "Mapping Cardinality",
+            "মানে",
+            "উদাহরণ"
+          ],
           "rows": [
             [
               "One-to-One (1:1)",
@@ -403,25 +551,90 @@
           "Strict 2PL: সব exclusive (write) lock commit পর্যন্ত ধরে রাখে → dirty read/cascading rollback হয় না, schedule recoverable।"
         ],
         "points": [
-          "Standard 2PL এর নিয়ম: প্রতি transaction এর দুটি phase —",
+          "Standard 2PL-এর নিয়ম — প্রতি transaction-এর দুটি phase:",
           {
             "sub": "Growing phase: lock নিতে পারে, কোনো lock ছাড়তে পারে না।"
           },
           {
             "sub": "Shrinking phase: একবার lock ছাড়া শুরু করলে আর নতুন lock নিতে পারে না।"
           },
-          "এই নিয়ম conflict-serializable schedule নিশ্চিত করে, কিন্তু deadlock ঠেকায় না।",
-          "এই schedule এ যা ঘটে: T1 X-এ write-lock নেয়, T2 Y-তে write-lock নেয়। এরপর T1 এর Y দরকার (T2 ধরে আছে), T2 এর X দরকার (T1 ধরে আছে) → দুজনই অপেক্ষায় → deadlock।",
-          "সমাধান: deadlock detection (wait-for graph) করে একটি transaction কে victim হিসেবে abort ও rollback করা হয়, পরে আবার চালানো হয়।",
-          "Standard 2PL এর দুর্বলতা: shrinking phase এ commit এর আগেই lock ছেড়ে দিতে পারে → অন্য txn সেই uncommitted মান পড়তে পারে (dirty read) → ওই txn abort করলে cascading rollback।",
-          "Strict 2PL এর পার্থক্য: সব exclusive/write-lock transaction commit বা abort পর্যন্ত ধরে রাখে (আগে ছাড়ে না) → dirty read নেই, cascading rollback নেই, schedule recoverable ও strict।",
-          "মিল: দুটোই conflict-serializability দেয়, এবং এই schedule দুটোতেই একইভাবে deadlock হয় — Strict 2PL deadlock ঠেকায় না, শুধু recoverability উন্নত করে।",
-          "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "ব্যাংকের fund transfer, টিকিট ও সিট বুকিং, inventory কমানো — যেখানে একই row দুজন একসাথে বদলাতে চাইলে lock ছাড়া ভুল ফল আসে। MySQL InnoDB ও SQL Server এর default আচরণ কার্যত strict 2PL।"
+            "sub": "এই নিয়ম conflict-serializable schedule নিশ্চিত করে, কিন্তু deadlock ঠেকায় না।"
+          },
+          "এই schedule-এ যা ঘটে:",
+          {
+            "sub": "T1 X-এ write-lock নেয়।"
           },
           {
-            "sub": "Deadlock কমানোর বাস্তব নিয়ম: সব transaction যেন একই ক্রমে row/table lock করে (যেমন সবসময় ছোট account_id আগে), lock timeout রাখা এবং transaction যত ছোট রাখা যায়।"
+            "sub": "T2 Y-তে write-lock নেয়।"
+          },
+          {
+            "sub": "এরপর T1-এর Y দরকার, কিন্তু সেটি T2 ধরে আছে।"
+          },
+          {
+            "sub": "আবার T2-এর X দরকার, কিন্তু সেটি T1 ধরে আছে।"
+          },
+          {
+            "sub": "দুজনেই অপেক্ষায় বসে গেল — এটাই deadlock।"
+          },
+          "সমাধান:",
+          {
+            "sub": "deadlock detection (wait-for graph) দিয়ে চক্রটি ধরা হয়।"
+          },
+          {
+            "sub": "একটি transaction-কে victim ধরে abort ও rollback করা হয়।"
+          },
+          {
+            "sub": "পরে সেটিকে আবার চালানো হয়।"
+          },
+          "Standard 2PL-এর দুর্বলতা:",
+          {
+            "sub": "shrinking phase-এ commit-এর আগেই lock ছেড়ে দিতে পারে।"
+          },
+          {
+            "sub": "তখন অন্য transaction সেই uncommitted মান পড়ে ফেলতে পারে — dirty read।"
+          },
+          {
+            "sub": "ওই transaction পরে abort করলে cascading rollback হয়।"
+          },
+          "Strict 2PL-এর পার্থক্য:",
+          {
+            "sub": "সব exclusive/write-lock transaction commit বা abort পর্যন্ত ধরে রাখে, আগে ছাড়ে না।"
+          },
+          {
+            "sub": "ফলে dirty read নেই, cascading rollback-ও নেই।"
+          },
+          {
+            "sub": "schedule recoverable ও strict হয়।"
+          },
+          "দুটোর মিল:",
+          {
+            "sub": "দুটোই conflict-serializability দেয়।"
+          },
+          {
+            "sub": "এই schedule-এ দুটোতেই একইভাবে deadlock হয়।"
+          },
+          {
+            "sub": "Strict 2PL deadlock ঠেকায় না — শুধু recoverability উন্নত করে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "ব্যাংকের fund transfer, টিকিট ও সিট বুকিং, inventory কমানো — যেখানে একই row দুজন একসাথে বদলাতে চায়।"
+          },
+          {
+            "sub": "lock ছাড়া এসব জায়গায় ভুল ফল আসে।"
+          },
+          {
+            "sub": "MySQL InnoDB ও SQL Server-এর default আচরণ কার্যত strict 2PL।"
+          },
+          {
+            "sub": "Deadlock কমানোর নিয়ম ১: সব transaction যেন একই ক্রমে row/table lock করে (যেমন সবসময় ছোট account_id আগে)।"
+          },
+          {
+            "sub": "Deadlock কমানোর নিয়ম ২: lock timeout রাখা।"
+          },
+          {
+            "sub": "Deadlock কমানোর নিয়ম ৩: transaction যত সম্ভব ছোট রাখা।"
           }
         ],
         "diagram": "T1: R(X) W(X) R(Y) W(Y)      T2: R(Y) W(Y) R(X) W(X)\n\nLOCK চাওয়ার ক্রম:\n  T1 → X-lock পেল ✅ ... এখন Y-lock চায়\n  T2 → Y-lock পেল ✅ ... এখন X-lock চায়\n\n     ┌──────────┐   Y চায় (T2 ধরে) →   ┌──────────┐\n     │   T1     │ ─────────────────────►│   T2     │\n     │ holds X  │◄───────────────────── │ holds Y  │\n     └──────────┘   ← X চায় (T1 ধরে)   └──────────┘\n              ↺  DEADLOCK — দুজনই অপেক্ষায়\n     DBMS একটিকে abort + rollback করে (victim)\n\n2PL  vs  STRICT 2PL  (write-lock কখন ছাড়ে):\n  Standard 2PL │ Growing↑ lock নেয় │ Shrinking↓ — commit এর আগেই ছাড়তে পারে\n               │                   │    → dirty read / cascading rollback সম্ভব\n  Strict 2PL   │ Growing↑ lock নেয় │ write-lock গুলো COMMIT পর্যন্ত ধরে রাখে\n               │                   │    → recoverable, cascadeless",
@@ -487,33 +700,126 @@
           "এই স্তরটির কারণেই application এর কোড প্রায় অপরিবর্তিত রেখে MySQL থেকে Oracle বা PostgreSQL এ যাওয়া যায় — শুধু driver ও connection URL বদলাতে হয়।"
         ],
         "points": [
-          "MySQL এ connect করার ধাপগুলো:",
+          "ধাপ ১ — Driver যোগ করা:",
           {
-            "sub": "১. Driver যোগ করা: mysql-connector-j (Type-4, pure Java thin driver) jar টি classpath এ বা Maven/Gradle dependency হিসেবে রাখতে হবে। এটি ছাড়া কিছুই চলবে না।"
+            "sub": "mysql-connector-j (Type-4, pure Java thin driver) jar-টি classpath-এ রাখতে হবে।"
           },
           {
-            "sub": "২. Driver load/register করা: Class.forName(\"com.mysql.cj.jdbc.Driver\")। JDBC 4.0 থেকে driver classpath এ থাকলে এটি স্বয়ংক্রিয়ভাবে (ServiceLoader দিয়ে) নিবন্ধিত হয়, তাই লাইনটি এখন ঐচ্ছিক।"
+            "sub": "অথবা Maven/Gradle dependency হিসেবে যোগ করতে হবে।"
           },
           {
-            "sub": "৩. Connection তৈরি: DriverManager.getConnection(url, user, password) — url এর গঠন jdbc:mysql://host:port/database, যেমন jdbc:mysql://localhost:3306/schooldb।"
+            "sub": "এটি ছাড়া কিছুই চলবে না।"
+          },
+          "ধাপ ২ — Driver load/register করা:",
+          {
+            "sub": "Class.forName(\"com.mysql.cj.jdbc.Driver\") দিয়ে driver নিবন্ধন করা হতো।"
           },
           {
-            "sub": "৪. Statement তৈরি: con.createStatement() অথবা con.prepareStatement(sql)। PreparedStatement ই পছন্দনীয় — এতে মান আলাদা করে পাঠানো হয় বলে SQL injection বন্ধ হয় এবং একই query বারবার চালালে দ্রুত হয়।"
+            "sub": "JDBC 4.0 থেকে driver classpath-এ থাকলে ServiceLoader দিয়ে সেটি স্বয়ংক্রিয়ভাবে নিবন্ধিত হয়।"
           },
           {
-            "sub": "৫. Query চালানো: SELECT এর জন্য executeQuery() — ফেরত দেয় ResultSet; INSERT/UPDATE/DELETE এর জন্য executeUpdate() — ফেরত দেয় কতটি row বদলেছে।"
+            "sub": "তাই এখন এই লাইনটি ঐচ্ছিক।"
+          },
+          "ধাপ ৩ — Connection তৈরি:",
+          {
+            "sub": "DriverManager.getConnection(url, user, password) দিয়ে connection খোলা হয়।"
           },
           {
-            "sub": "৬. ফলাফল পড়া: ResultSet একটি cursor; rs.next() প্রতিবার পরবর্তী row তে নেয় এবং rs.getInt(\"id\"), rs.getString(\"name\") দিয়ে column পড়া হয়।"
+            "sub": "url-এর গঠন: jdbc:mysql://host:port/database।"
           },
           {
-            "sub": "৭. Resource বন্ধ করা: ResultSet, Statement ও Connection বন্ধ করতে হয় — নইলে connection leak হয়ে database এর connection pool ফুরিয়ে যায়। try-with-resources ব্যবহার করলে এটি স্বয়ংক্রিয় হয়।"
+            "sub": "যেমন jdbc:mysql://localhost:3306/schooldb।"
           },
-          "Driver এর ধরন: Type-1 (JDBC-ODBC bridge, অপ্রচলিত), Type-2 (native API), Type-3 (network protocol/middleware), Type-4 (pure Java thin driver)। MySQL, Oracle সহ আধুনিক সব database এ Type-4 ই ব্যবহৃত হয় — কারণ এটি সম্পূর্ণ Java তে লেখা, তাই platform-নিরপেক্ষ ও দ্রুততম।",
-          "গুরুত্বপূর্ণ interface গুলো: DriverManager (connection তৈরি করে), Connection (একটি session), Statement/PreparedStatement/CallableStatement (SQL পাঠায়, CallableStatement দিয়ে stored procedure), ResultSet (ফলাফলের row গুলো), SQLException (সব database error)।",
-          "বাস্তব প্রয়োগে: প্রতিবার নতুন connection খোলা ব্যয়বহুল, তাই production এ HikariCP এর মতো connection pool ব্যবহার করা হয়; আর একাধিক লেখালেখি একসাথে করতে con.setAutoCommit(false) দিয়ে transaction নিয়ন্ত্রণ করে শেষে commit()/rollback() করা হয়।"
+          "ধাপ ৪ — Statement তৈরি:",
+          {
+            "sub": "con.createStatement() অথবা con.prepareStatement(sql) দিয়ে statement বানানো হয়।"
+          },
+          {
+            "sub": "PreparedStatement-ই পছন্দনীয় — মান আলাদা করে পাঠানো হয় বলে SQL injection বন্ধ হয়।"
+          },
+          {
+            "sub": "একই query বারবার চালালে PreparedStatement দ্রুততরও হয়।"
+          },
+          "ধাপ ৫ — Query চালানো:",
+          {
+            "sub": "SELECT-এর জন্য executeQuery() — ফেরত দেয় ResultSet।"
+          },
+          {
+            "sub": "INSERT/UPDATE/DELETE-এর জন্য executeUpdate() — ফেরত দেয় কতটি row বদলেছে।"
+          },
+          "ধাপ ৬ — ফলাফল পড়া:",
+          {
+            "sub": "ResultSet আসলে একটি cursor।"
+          },
+          {
+            "sub": "rs.next() প্রতিবার পরবর্তী row-তে নিয়ে যায়।"
+          },
+          {
+            "sub": "rs.getInt(\"id\"), rs.getString(\"name\") দিয়ে column-এর মান পড়া হয়।"
+          },
+          "ধাপ ৭ — Resource বন্ধ করা:",
+          {
+            "sub": "ResultSet, Statement ও Connection — তিনটিই বন্ধ করতে হয়।"
+          },
+          {
+            "sub": "না করলে connection leak হয়ে database-এর connection pool ফুরিয়ে যায়।"
+          },
+          {
+            "sub": "try-with-resources ব্যবহার করলে এটি স্বয়ংক্রিয়ভাবে হয়ে যায়।"
+          },
+          "Driver-এর ধরন:",
+          {
+            "sub": "Type-1 — JDBC-ODBC bridge (এখন অপ্রচলিত)।"
+          },
+          {
+            "sub": "Type-2 — native API driver।"
+          },
+          {
+            "sub": "Type-3 — network protocol / middleware driver।"
+          },
+          {
+            "sub": "Type-4 — pure Java thin driver।"
+          },
+          {
+            "sub": "MySQL, Oracle সহ আধুনিক সব database-এ Type-4-ই ব্যবহৃত হয়।"
+          },
+          {
+            "sub": "কারণ এটি সম্পূর্ণ Java-তে লেখা, তাই platform-নিরপেক্ষ ও দ্রুততম।"
+          },
+          "গুরুত্বপূর্ণ interface গুলো:",
+          {
+            "sub": "DriverManager — connection তৈরি করে।"
+          },
+          {
+            "sub": "Connection — একটি database session।"
+          },
+          {
+            "sub": "Statement / PreparedStatement / CallableStatement — SQL পাঠায়।"
+          },
+          {
+            "sub": "CallableStatement দিয়ে stored procedure ডাকা হয়।"
+          },
+          {
+            "sub": "ResultSet — ফলাফলের row-গুলো ধরে রাখে।"
+          },
+          {
+            "sub": "SQLException — সব database error এখানে এসে পড়ে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "প্রতিবার নতুন connection খোলা ব্যয়বহুল।"
+          },
+          {
+            "sub": "তাই production-এ HikariCP-র মতো connection pool ব্যবহার করা হয়।"
+          },
+          {
+            "sub": "একাধিক লেখালেখি একসাথে করতে con.setAutoCommit(false) দিয়ে transaction নিয়ন্ত্রণ করা হয়।"
+          },
+          {
+            "sub": "কাজ শেষে commit() বা rollback() ডাকা হয়।"
+          }
         ],
-        "diagram": "JDBC এর স্তরবিন্যাস — কোড কেন database-নিরপেক্ষ থাকে\n\n   ┌──────────────────────────────────────┐\n   │        Java Application              │  ← আপনার কোড\n   └───────────────┬──────────────────────┘\n                   │ java.sql.* (Connection, Statement, ResultSet)\n   ┌───────────────▼──────────────────────┐\n   │        JDBC API  (interface মাত্র)   │  ← সব DB এর জন্য একই\n   └───────────────┬──────────────────────┘\n                   │\n   ┌───────────────▼──────────────────────┐\n   │          DriverManager               │  ← URL দেখে ঠিক driver বাছে\n   └───────┬───────────────┬──────────────┘\n           │               │\n   ┌───────▼──────┐ ┌──────▼───────┐\n   │ MySQL Driver │ │ Oracle Driver│  ← vendor এর দেওয়া অনুবাদক\n   │  (Type-4)    │ │  (Type-4)    │     jdbc call → DB protocol\n   └───────┬──────┘ └──────────────┘\n           │  TCP 3306\n   ┌───────▼──────────────────────────────┐\n   │        MySQL Server (schooldb)       │\n   └──────────────────────────────────────┘\n\n\nধাপে ধাপে প্রবাহ:\n\n  ১  Driver jar classpath এ  ─┐\n                              │  mysql-connector-j\n  ২  Class.forName(...)      ─┘  (JDBC 4.0+ এ ঐচ্ছিক)\n        │\n        ▼\n  ৩  Connection con = DriverManager.getConnection(\n             \"jdbc:mysql://localhost:3306/schooldb\", \"root\", \"secret\");\n        │                    └──host──┘ └port┘ └─database─┘\n        ▼\n  ৪  PreparedStatement ps = con.prepareStatement(\"SELECT ... WHERE dept = ?\");\n        │                                    ← ? = injection-নিরাপদ মান\n        ▼\n  ৫  SELECT  → ResultSet rs = ps.executeQuery();\n     INSERT  → int n        = ps.executeUpdate();   (কয়টি row বদলাল)\n        │\n        ▼\n  ৬  while (rs.next()) { rs.getString(\"name\"); }    ← cursor এক ধাপ করে এগোয়\n\n        ┌─────┬────────┬──────┐\n   rs → │ id  │ name   │ cgpa │  ← শুরুতে cursor প্রথম row এর আগে থাকে\n        ├─────┼────────┼──────┤\n        │ 101 │ Rahim  │ 3.75 │  ← next() ডাকলে এখানে আসে\n        │ 102 │ Karim  │ 3.40 │\n        └─────┴────────┴──────┘\n        │\n        ▼\n  ৭  rs.close(); ps.close(); con.close();   (try-with-resources এ স্বয়ংক্রিয়)\n\n────────────────────────────────────────────\n  মনে রাখার ক্রম: Driver → Connection → Statement → Execute → ResultSet → Close",
+        "diagram": "JDBC-র স্তরবিন্যাস — কোড কেন database-নিরপেক্ষ থাকে\n\n   ┌──────────────────────────────────────┐\n   │        Java Application              │  ← আপনার নিজের কোড\n   └───────────────┬──────────────────────┘\n                   │ java.sql.* (Connection, Statement, ResultSet)\n   ┌───────────────▼──────────────────────┐\n   │        JDBC API  (interface only)    │  ← সব database-এর জন্য একই\n   └───────────────┬──────────────────────┘\n                   │\n   ┌───────────────▼──────────────────────┐\n   │          DriverManager               │  ← URL দেখে ঠিক driver বাছে\n   └───────┬───────────────┬──────────────┘\n           │               │\n   ┌───────▼──────┐ ┌──────▼───────┐\n   │ MySQL Driver │ │ Oracle Driver│  ← vendor-এর দেওয়া অনুবাদক\n   │  (Type-4)    │ │  (Type-4)    │     jdbc call → DB protocol\n   └───────┬──────┘ └──────────────┘\n           │  TCP 3306\n   ┌───────▼──────────────────────────────┐\n   │        MySQL Server (schooldb)       │\n   └──────────────────────────────────────┘\n\n\nধাপে ধাপে প্রবাহ:\n\n  ১  Driver jar classpath-এ রাখা — mysql-connector-j\n  ২  Class.forName(\"com.mysql.cj.jdbc.Driver\")  — JDBC 4.0+ এ ঐচ্ছিক\n        │\n        ▼\n  ৩  Connection con = DriverManager.getConnection(\n             \"jdbc:mysql://localhost:3306/schooldb\", \"root\", \"secret\");\n                            └──host──┘ └port┘ └─database─┘\n        │\n        ▼\n  ৪  PreparedStatement ps = con.prepareStatement(\"SELECT ... WHERE dept = ?\");\n                                                                        ↑\n                                                    ? = injection-নিরাপদ মান\n        │\n        ▼\n  ৫  SELECT  → ResultSet rs = ps.executeQuery();\n     INSERT  → int n        = ps.executeUpdate();   — কয়টি row বদলাল\n        │\n        ▼\n  ৬  while (rs.next()) { rs.getString(\"name\"); }    — cursor এক ধাপ করে এগোয়\n\n        ┌─────┬────────┬──────┐\n   rs → │ id  │ name   │ cgpa │   ← শুরুতে cursor প্রথম row-এর আগে থাকে\n        ├─────┼────────┼──────┤\n        │ 101 │ Rahim  │ 3.75 │   ← next() ডাকলে এখানে আসে\n        │ 102 │ Karim  │ 3.40 │\n        └─────┴────────┴──────┘\n        │\n        ▼\n  ৭  rs.close(); ps.close(); con.close();   — try-with-resources-এ স্বয়ংক্রিয়\n\n────────────────────────────────────────────\n  মনে রাখার ক্রম: Driver → Connection → Statement → Execute → ResultSet → Close",
         "mnemonic": "ধাপের ক্রম মনে রাখো — \"ড্রাইভার এনে গাড়ি জোড়ো, প্রশ্ন লিখে উত্তর পড়ো, শেষে দরজা বন্ধ করো\": Driver → Connection → Statement → Execute → ResultSet → Close।"
       }
     },
@@ -539,46 +845,97 @@
         "points": [
           "Column অনুযায়ী type ও যুক্তি:",
           {
-            "sub": "student_id — INT AUTO_INCREMENT: সংখ্যা হিসেবে ছোট (4 byte), তুলনা ও index দ্রুত, এবং database নিজেই মান বসায় বলে কখনো duplicate হয় না।"
+            "sub": "student_id — INT AUTO_INCREMENT: সংখ্যা হিসেবে ছোট (4 byte), তুলনা ও index দ্রুত।"
           },
           {
-            "sub": "roll_no — VARCHAR(15): roll এ প্রায়ই অক্ষর, hyphen বা শুরুতে শূন্য থাকে (যেমন \"2021-CSE-007\"), তাই INT নয়। UNIQUE দেওয়া হয়েছে যাতে একই roll দুবার না বসে।"
+            "sub": "তাছাড়া database নিজেই মান বসায় বলে কখনো duplicate হয় না।"
           },
           {
-            "sub": "name — VARCHAR(100): নামের দৈর্ঘ্য একেক জনের একেক রকম; CHAR(100) দিলে প্রতিটি নামের জন্যই পুরো 100 byte নষ্ট হতো।"
+            "sub": "roll_no — VARCHAR(15): roll-এ প্রায়ই অক্ষর, hyphen বা শুরুতে শূন্য থাকে (যেমন \"2021-CSE-007\")।"
           },
           {
-            "sub": "date_of_birth ও admission_date — DATE: VARCHAR এ তারিখ রাখলে বয়স বের করা, দুই তারিখের ব্যবধান নেওয়া বা তারিখ অনুযায়ী sort করা যায় না; DATE type এই সব operation ও বৈধতা যাচাই দুটোই দেয়।"
+            "sub": "এই কারণেই roll_no-তে INT ব্যবহার করা যায় না।"
           },
           {
-            "sub": "gender — CHAR(1) + CHECK: মান নির্দিষ্ট ও এক অক্ষরের, তাই fixed-length CHAR সবচেয়ে সাশ্রয়ী; CHECK constraint ভুল মান ঢোকা আটকায়।"
+            "sub": "এতে UNIQUE দেওয়া হয়েছে, যাতে একই roll দুবার না বসে।"
           },
           {
-            "sub": "department — VARCHAR(50): পরিবর্তনশীল দৈর্ঘ্যের নাম। বড় সিস্টেমে এটিকে আলাদা DEPARTMENT table এ রেখে foreign key দেওয়াই স্বাভাবিক (normalization)।"
+            "sub": "name — VARCHAR(100): নামের দৈর্ঘ্য একেক জনের একেক রকম।"
+          },
+          {
+            "sub": "CHAR(100) দিলে প্রতিটি নামের জন্যই পুরো 100 byte নষ্ট হতো।"
+          },
+          {
+            "sub": "date_of_birth ও admission_date — DATE: VARCHAR-এ তারিখ রাখলে বয়স বের করা যায় না।"
+          },
+          {
+            "sub": "দুই তারিখের ব্যবধান নেওয়া বা তারিখ অনুযায়ী sort করাও যায় না।"
+          },
+          {
+            "sub": "DATE type এই সব operation ও তারিখের বৈধতা যাচাই — দুটোই দেয়।"
+          },
+          {
+            "sub": "gender — CHAR(1) + CHECK: মান নির্দিষ্ট ও এক অক্ষরের, তাই fixed-length CHAR সবচেয়ে সাশ্রয়ী।"
+          },
+          {
+            "sub": "CHECK constraint ভুল মান ঢোকা আটকায়।"
+          },
+          {
+            "sub": "department — VARCHAR(50): পরিবর্তনশীল দৈর্ঘ্যের নাম।"
+          },
+          {
+            "sub": "বড় সিস্টেমে এটিকে আলাদা DEPARTMENT table-এ রেখে foreign key দেওয়াই স্বাভাবিক (normalization)।"
           },
           {
             "sub": "email — VARCHAR(100) UNIQUE: প্রতি শিক্ষার্থীর email আলাদা হওয়া উচিত, তাই UNIQUE।"
           },
           {
-            "sub": "phone — VARCHAR(15): নম্বর দেখতে সংখ্যা হলেও এতে যোগ-বিয়োগ হয় না; INT দিলে শুরুর 0 এবং +880 এর মতো উপসর্গ হারিয়ে যায়।"
+            "sub": "phone — VARCHAR(15): নম্বর দেখতে সংখ্যা হলেও এতে যোগ-বিয়োগ হয় না।"
           },
           {
-            "sub": "cgpa — DECIMAL(3,2): মোট 3 অঙ্ক, দশমিকের পর 2 — অর্থাৎ 0.00 থেকে 9.99। FLOAT/DOUBLE approximate বলে 3.75 হুবহু নাও থাকতে পারে; result এর হিসাবে সেই ভুল অগ্রহণযোগ্য।"
+            "sub": "INT দিলে শুরুর 0 এবং +880-এর মতো উপসর্গ হারিয়ে যায়।"
           },
           {
-            "sub": "address — VARCHAR(255): লম্বা ও পরিবর্তনশীল লেখা, তবে TEXT এর মতো ভারী type লাগে না।"
+            "sub": "cgpa — DECIMAL(3,2): মোট 3 অঙ্ক, দশমিকের পর 2 — অর্থাৎ 0.00 থেকে 9.99।"
+          },
+          {
+            "sub": "FLOAT/DOUBLE approximate বলে 3.75 হুবহু নাও থাকতে পারে।"
+          },
+          {
+            "sub": "result-এর হিসাবে এমন ভুল অগ্রহণযোগ্য, তাই DECIMAL।"
+          },
+          {
+            "sub": "address — VARCHAR(255): লম্বা ও পরিবর্তনশীল লেখা, তবে TEXT-এর মতো ভারী type লাগে না।"
           },
           "Primary Key হিসেবে student_id কেন — তিনটি শর্তই পূরণ করে:",
           {
-            "sub": "Uniqueness: AUTO_INCREMENT হওয়ায় প্রতিটি row পায় সম্পূর্ণ নতুন মান।"
+            "sub": "Uniqueness: AUTO_INCREMENT হওয়ায় প্রতিটি row সম্পূর্ণ নতুন মান পায়।"
           },
           {
-            "sub": "Not null: primary key কখনো NULL হতে পারে না, আর এখানে মান database নিজেই দেয় বলে ফাঁকা থাকার সুযোগ নেই।"
+            "sub": "Not null: primary key কখনো NULL হতে পারে না।"
           },
           {
-            "sub": "Immutability: এটি কোনো বাস্তব তথ্য বহন করে না, তাই কখনো বদলাতে হয় না — ফলে অন্য table এর foreign key গুলো নিরাপদ থাকে।"
+            "sub": "এখানে মান database নিজেই দেয় বলে ফাঁকা থাকার সুযোগই নেই।"
           },
-          "অন্যগুলো কেন primary key নয়: name বা date_of_birth মিলে যেতে পারে; phone/email বদলায় এবং ফাঁকা থাকতে পারে; roll_no unique হলেও প্রতিষ্ঠান পুনর্বিন্যাস করলে বদলে যেতে পারে — তাই এটিকে candidate key হিসেবে UNIQUE রেখে primary key আলাদা করাই নিরাপদ নকশা।"
+          {
+            "sub": "Immutability: এটি কোনো বাস্তব তথ্য বহন করে না, তাই কখনো বদলাতে হয় না।"
+          },
+          {
+            "sub": "ফলে অন্য table-এর foreign key গুলোও নিরাপদ থাকে।"
+          },
+          "অন্যগুলো কেন primary key নয়:",
+          {
+            "sub": "name বা date_of_birth দুজনের মিলে যেতে পারে।"
+          },
+          {
+            "sub": "phone ও email বদলায়, আবার ফাঁকা থাকতে পারে।"
+          },
+          {
+            "sub": "roll_no unique হলেও প্রতিষ্ঠান পুনর্বিন্যাস করলে বদলে যেতে পারে।"
+          },
+          {
+            "sub": "তাই roll_no-কে candidate key হিসেবে UNIQUE রেখে primary key আলাদা করাই নিরাপদ নকশা।"
+          }
         ],
         "diagram": "STUDENT টেবিলের নকশা\n\n  ┌──────────────────┬──────────────────┬──────────────────────────────┐\n  │ Column           │ Data Type        │ কেন এই type                  │\n  ├──────────────────┼──────────────────┼──────────────────────────────┤\n  │ 🔑 student_id    │ INT AUTO_INCR.   │ ছোট, দ্রুত index, DB নিজে দেয়│\n  │ roll_no          │ VARCHAR(15)      │ অক্ষর/hyphen/শুরুর 0 থাকে    │\n  │ name             │ VARCHAR(100)     │ দৈর্ঘ্য পরিবর্তনশীল          │\n  │ date_of_birth    │ DATE             │ বয়স ও তারিখের হিসাব করা যায় │\n  │ gender           │ CHAR(1)          │ নির্দিষ্ট এক অক্ষর           │\n  │ department       │ VARCHAR(50)      │ পরিবর্তনশীল নাম              │\n  │ email            │ VARCHAR(100)     │ পরিবর্তনশীল, UNIQUE          │\n  │ phone            │ VARCHAR(15)      │ গণনা হয় না, 0/+880 বাঁচে     │\n  │ address          │ VARCHAR(255)     │ লম্বা পরিবর্তনশীল লেখা       │\n  │ cgpa             │ DECIMAL(3,2)     │ নির্ভুল দশমিক (0.00–9.99)    │\n  │ admission_date   │ DATE             │ তারিখ তুলনা ও sort           │\n  └──────────────────┴──────────────────┴──────────────────────────────┘\n        🔑 = PRIMARY KEY\n\n\nPRIMARY KEY বাছাইয়ের যুক্তি:\n\n   candidate                unique?   never null?   never changes?\n   ─────────────────────────────────────────────────────────────────\n   name                       ✗           ✓              ✗\n   date_of_birth              ✗           ✓              ✓\n   phone / email              ✓           ✗              ✗\n   roll_no                    ✓           ✓              ✗   ← UNIQUE রাখি\n   student_id (surrogate)     ✓           ✓              ✓   ← 🔑 PRIMARY KEY\n\n\nCHAR বনাম VARCHAR — জায়গা কোথায় যায়:\n\n   CHAR(10) এ \"Rahim\"  →  [R][a][h][i][m][ ][ ][ ][ ][ ]  সবসময় 10 byte\n   VARCHAR(10) এ \"Rahim\" → [5][R][a][h][i][m]             দৈর্ঘ্য + 5 byte\n   নিয়ম: দৈর্ঘ্য স্থির হলে CHAR, নইলে VARCHAR\n\nDECIMAL বনাম FLOAT — কেন CGPA তে DECIMAL:\n\n   FLOAT       : 3.75 → 3.7499998…   (approximate, তুলনায় ভুল হতে পারে)\n   DECIMAL(3,2): 3.75 → 3.75          (exact — ফলাফলে এটাই লাগে)",
         "table": {
@@ -674,55 +1031,109 @@
         "points": [
           "যেসব জায়গায় index কাজে লাগে:",
           {
-            "sub": "WHERE — শর্তের column এ index থাকলে সরাসরি মিল খুঁজে পাওয়া যায় (equality ও range দুই ক্ষেত্রেই, যেমন WHERE roll = 105 বা WHERE date BETWEEN ...)।"
+            "sub": "WHERE — শর্তের column-এ index থাকলে সরাসরি মিল খুঁজে পাওয়া যায়।"
           },
           {
-            "sub": "JOIN — join এর key (সাধারণত foreign key) তে index থাকলে প্রতিটি row এর জন্য অন্য টেবিল স্ক্যান না করে index seek করা যায়; এতে nested-loop join এর খরচ n×m থেকে নেমে আসে।"
+            "sub": "equality ও range দুই ক্ষেত্রেই কাজ করে — যেমন WHERE roll = 105 বা WHERE date BETWEEN ...।"
           },
           {
-            "sub": "ORDER BY ও GROUP BY — index এমনিতেই sorted, তাই DBMS আলাদা করে sort করার ধাপটিই বাদ দিতে পারে।"
+            "sub": "JOIN — join-এর key (সাধারণত foreign key)-তে index থাকলে প্রতিটি row-র জন্য অন্য টেবিল স্ক্যান করতে হয় না।"
           },
           {
-            "sub": "MIN/MAX ও UNIQUE যাচাই — sorted কাঠামোর প্রথম/শেষ entry দেখেই উত্তর মেলে, এবং duplicate আছে কিনা তা সঙ্গে সঙ্গে ধরা পড়ে।"
+            "sub": "তখন index seek করা যায়, ফলে nested-loop join-এর খরচ n×m থেকে নেমে আসে।"
           },
           {
-            "sub": "Covering index — query তে যতগুলো column লাগে তার সবই যদি index এ থাকে, তবে মূল table এ যাওয়ারই দরকার হয় না; উত্তর index থেকেই মেলে (index-only scan)।"
-          },
-          "Index এর ধরন:",
-          {
-            "sub": "Clustered index — এই index এর ক্রমেই মূল row গুলো disk এ সাজানো থাকে, তাই একটি টেবিলে একটিই হতে পারে; range query তে সবচেয়ে দ্রুত (সাধারণত primary key)।"
+            "sub": "ORDER BY ও GROUP BY — index এমনিতেই sorted থাকে।"
           },
           {
-            "sub": "Non-clustered index — আলাদা কাঠামো, যেখানে key এর সাথে মূল row এর pointer থাকে; একটি টেবিলে একাধিক থাকতে পারে।"
+            "sub": "তাই DBMS আলাদা করে sort করার ধাপটিই বাদ দিতে পারে।"
           },
           {
-            "sub": "Composite index (a, b) — বাম দিক থেকে ক্রম মেনে কাজ করে (leftmost prefix rule): WHERE a=... বা WHERE a=... AND b=... এ কাজ করে, কিন্তু শুধু WHERE b=... এ কাজ করে না।"
+            "sub": "MIN/MAX ও UNIQUE যাচাই — sorted কাঠামোর প্রথম/শেষ entry দেখেই উত্তর মেলে।"
           },
           {
-            "sub": "Hash index — কেবল সমান-সমান (=) খোঁজায় O(1), কিন্তু range বা ORDER BY তে অকেজো; তাই সাধারণ কাজে B-Tree ই প্রধান।"
+            "sub": "duplicate আছে কিনা তাও সঙ্গে সঙ্গে ধরা পড়ে।"
+          },
+          {
+            "sub": "Covering index — query-তে যতগুলো column লাগে তার সবই যদি index-এ থাকে।"
+          },
+          {
+            "sub": "তখন মূল table-এ যাওয়ারই দরকার হয় না, উত্তর index থেকেই মেলে (index-only scan)।"
+          },
+          "Index-এর ধরন:",
+          {
+            "sub": "Clustered index — এই index-এর ক্রমেই মূল row-গুলো disk-এ সাজানো থাকে।"
+          },
+          {
+            "sub": "তাই একটি টেবিলে clustered index একটিই হতে পারে (সাধারণত primary key)।"
+          },
+          {
+            "sub": "range query-তে এটি সবচেয়ে দ্রুত।"
+          },
+          {
+            "sub": "Non-clustered index — আলাদা কাঠামো, যেখানে key-এর সাথে মূল row-এর pointer থাকে।"
+          },
+          {
+            "sub": "একটি টেবিলে একাধিক non-clustered index থাকতে পারে।"
+          },
+          {
+            "sub": "Composite index (a, b) — বাম দিক থেকে ক্রম মেনে কাজ করে (leftmost prefix rule)।"
+          },
+          {
+            "sub": "WHERE a = ? দিলে, কিংবা WHERE a = ? AND b = ? দিলে কাজ করে।"
+          },
+          {
+            "sub": "কিন্তু শুধু WHERE b=... এ কাজ করে না।"
+          },
+          {
+            "sub": "Hash index — কেবল সমান-সমান (=) খোঁজায় O(1)।"
+          },
+          {
+            "sub": "range বা ORDER BY-তে এটি অকেজো, তাই সাধারণ কাজে B-Tree-ই প্রধান।"
           },
           "যেখানে index কাজে আসে না বা উল্টো ক্ষতি করে:",
           {
-            "sub": "কম selectivity — যেমন gender বা status column, যেখানে অল্প কয়েকটি ভিন্ন মান আছে। বেশিরভাগ row মিলে যাবে বলে optimizer index বাদ দিয়ে full scan ই বেছে নেয়।"
+            "sub": "কম selectivity — যেমন gender বা status column, যেখানে অল্প কয়েকটি ভিন্ন মান আছে।"
           },
           {
-            "sub": "Column এর উপর function বা গণনা — WHERE YEAR(join_date) = 2024 লিখলে index অকেজো হয়ে যায়, কারণ index এ সংরক্ষিত আছে মূল মান, function এর ফল নয়। শর্তটি range আকারে লিখলে (join_date >= '2024-01-01' AND < '2025-01-01') index আবার কাজ করে।"
+            "sub": "বেশিরভাগ row মিলে যাবে বলে optimizer index বাদ দিয়ে full scan-ই বেছে নেয়।"
           },
           {
-            "sub": "LIKE '%abc' — শুরুতে wildcard থাকলে sorted ক্রম অনুসরণ করা যায় না; 'abc%' হলে কাজ করে।"
+            "sub": "Column-এর উপর function বা গণনা — WHERE YEAR(join_date) = 2024 লিখলে index অকেজো হয়ে যায়।"
+          },
+          {
+            "sub": "কারণ index-এ সংরক্ষিত আছে মূল মান, function-এর ফল নয়।"
+          },
+          {
+            "sub": "শর্তটি range আকারে লিখলে index আবার কাজ করে: join_date >= '2024-01-01' AND join_date < '2025-01-01'।"
+          },
+          {
+            "sub": "LIKE '%abc' — শুরুতে wildcard থাকলে sorted ক্রম অনুসরণ করা যায় না।"
+          },
+          {
+            "sub": "তবে 'abc%' লিখলে index কাজ করে।"
           },
           {
             "sub": "খুব ছোট টেবিল — গোটা টেবিলই এক-দুই page, তাই index ঘোরার বাড়তি খরচই বেশি পড়ে।"
           },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "ব্যাংক বা ই-কমার্স ব্যবস্থায় লক্ষ লক্ষ transaction এর মধ্যে account_no বা order_id দিয়ে খোঁজা — index না থাকলে প্রতিটি অনুসন্ধানে পুরো টেবিল পড়তে হতো।"
+            "sub": "ব্যাংক বা ই-কমার্সে লক্ষ লক্ষ transaction-এর মধ্যে account_no বা order_id দিয়ে খোঁজা হয়।"
           },
           {
-            "sub": "Login যাচাই — users(email) তে unique index থাকায় লক্ষ user এর মধ্যে email মিলিয়ে দেখা মুহূর্তেই সম্ভব, পাশাপাশি একই email দুবার ঢোকা ঠেকানো যায়।"
+            "sub": "index না থাকলে প্রতিটি অনুসন্ধানে পুরো টেবিল পড়তে হতো।"
           },
           {
-            "sub": "Query ধীর হলে EXPLAIN / EXPLAIN ANALYZE চালিয়ে দেখা হয় planner \"Seq Scan / full table scan\" করছে নাকি \"Index Scan\" — এই আউটপুট দেখেই ঠিক করা হয় কোথায় index দরকার।"
+            "sub": "Login যাচাই — users(email)-এ unique index থাকায় লক্ষ user-এর মধ্যে email মেলানো মুহূর্তেই সম্ভব।"
+          },
+          {
+            "sub": "পাশাপাশি একই email দুবার ঢোকাও ঠেকানো যায়।"
+          },
+          {
+            "sub": "Query ধীর হলে EXPLAIN / EXPLAIN ANALYZE চালিয়ে দেখা হয়।"
+          },
+          {
+            "sub": "planner \"Seq Scan / full table scan\" করছে নাকি \"Index Scan\" — সেটি দেখেই ঠিক হয় কোথায় index দরকার।"
           }
         ],
         "diagram": "১) INDEX ছাড়া — FULL TABLE SCAN\n\n   SELECT * FROM STUDENT WHERE roll = 105;\n\n   STUDENT table (১০,০০,০০০ row)\n   ┌────┬───────┬──────────┐\n   │ id │ roll  │  name    │\n   ├────┼───────┼──────────┤\n   │ 1  │  312  │ Karim    │ ← পড়া হলো, মিলল না\n   │ 2  │  087  │ Rahim    │ ← পড়া হলো, মিলল না\n   │ 3  │  945  │ Jamal    │ ← পড়া হলো, মিলল না\n   │ .. │  ...  │ ...      │ ← ... এভাবে চলতেই থাকে\n   │ 7  │  105  │ Sumi     │ ← ✔ অবশেষে মিলল\n   │ .. │  ...  │ ...      │\n   └────┴───────┴──────────┘\n            খরচ : O(n) — সব row পড়তে হয়\n\n\n২) INDEX সহ — B-TREE SEEK\n\n   CREATE INDEX idx_roll ON STUDENT(roll);\n\n            ┌─────────────┐\n            │  200 │ 600  │   ← root node\n            └──┬───┴───┬──┘\n     105<200 ✔ │       │\n        ┌──────▼──┐  ┌─▼───────┐\n        │ 90 │150 │  │300 │450 │  ← internal node\n        └─┬──┴──┬─┘  └─────────┘\n   90<105 │     │ 105<150 ✔\n          │  ┌──▼──────────────────┐\n          │  │ 095│ 101│ 105│ 149  │ ← leaf: sorted key + pointer\n          └─►└────┴────┴──┬─┴──────┘\n                          │ row-id → 7\n                          ▼\n                  ┌────┬───────┬──────┐\n                  │ 7  │  105  │ Sumi │ ← ✔ সরাসরি এই row\n                  └────┴───────┴──────┘\n\n         মাত্র ৩ ধাপ (root → internal → leaf)\n         খরচ : O(log n)\n\n\n৩) কত লাভ — ১০ লক্ষ row এ\n\n   Full scan  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ১০,০০,০০০ row পড়া\n   Index seek ▓                          ≈ ৩–৪ node পড়া\n              └ প্রায় বইয়ের index দেখে সোজা পৃষ্ঠায় যাওয়ার মতো\n\n\n৪) দাম — লেখায়\n\n   INSERT/UPDATE/DELETE ──► table বদলাও ──► প্রতিটি index ও\n                                            নতুন করে সাজাও\n   ┌──────────────────────────────────────────────┐\n   │  READ  (SELECT)     ▲ অনেক দ্রুত              │\n   │  WRITE (INSERT...)  ▼ সামান্য ধীর             │\n   │  DISK  (storage)    ▲ বাড়তি জায়গা লাগে       │\n   └──────────────────────────────────────────────┘\n     ⇒ যেসব column নিয়মিত WHERE/JOIN/ORDER BY তে আসে\n       শুধু সেগুলোতেই index দাও, সব column এ নয়",

@@ -19,7 +19,7 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - `[x]` rewritten &nbsp;&nbsp; `[ ]` still has dense lines &nbsp;&nbsp; `[-]` was already clean, left alone
 - `dense` = lines cramming multiple ideas (the thing being fixed)
 
-## Status: **82 / 97 rewritten**, 15 remaining (48 were already clean and untouched)
+## Status: **88 / 97 rewritten**, 9 remaining (48 were already clean and untouched)
 
 ### c_programming — 7 questions — ✅ all 6 rewritten
 
@@ -158,7 +158,7 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [-] `os_011` — already clean — A system utilizes a 32-bit logical address space and a page 
 - [x] `os_012` — was 1 dense → now 21 clean points — Explain the difference between a "Compulsory Miss" (Cold Mis
 
-### server — 36 questions — 13 done, 10 left
+### server — 36 questions — 19 done, 4 left
 
 - [-] `server_001` — already clean — What are the differences between a Virtual Machine (VM) and 
 - [-] `server_002` — already clean — What are the Pros and Cons of Virtual Machines and Container
@@ -182,14 +182,14 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [x] `server_020` — was 1 dense → now 18 clean points — Explain the common Storage Protocols (iSCSI, Fibre Channel, 
 - [x] `server_021` — was 1 dense → now 21 clean points — Explain the CI/CD and DevOps pipeline (Code → Build → Test →
 - [x] `server_022` — was 2 dense → now 19 clean points — Explain Live Migration (basic idea) and High Availability in
-- [ ] `server_023` — 1 dense left (was 1) — What is a LUN (Logical Unit Number)? Why is it needed?
-- [ ] `server_024` — 3 dense left (was 3) — What are the types of Disaster Recovery sites (Hot, Warm, Co
-- [ ] `server_025` — 3 dense left (was 3) — Backup types — Full vs Incremental vs Differential.
-- [ ] `server_026` — 3 dense left (was 3) — OLTP vs OLAP — what is each, and how do they differ?
-- [ ] `server_027` — 1 dense left (was 1) — What is Active Directory and the Domain Controller concept?
-- [ ] `server_028` — 2 dense left (was 2) — What is the role of DNS in Active Directory?
+- [x] `server_023` — was 1 dense → now 17 clean points — What is a LUN (Logical Unit Number)? Why is it needed?
+- [ ] `server_024` — 1 dense left (was 3) — What are the types of Disaster Recovery sites (Hot, Warm, Co
+- [x] `server_025` — was 3 dense → now 19 clean points — Backup types — Full vs Incremental vs Differential.
+- [x] `server_026` — was 3 dense → now 22 clean points — OLTP vs OLAP — what is each, and how do they differ?
+- [x] `server_027` — was 1 dense → now 20 clean points — What is Active Directory and the Domain Controller concept?
+- [x] `server_028` — was 2 dense → now 20 clean points — What is the role of DNS in Active Directory?
 - [-] `server_029` — already clean — What is Group Policy (GPO)? Explain the basic idea.
-- [ ] `server_030` — 6 dense left (was 6) — What are the Data Center Tiers (Tier I, II, III, IV)? Explai
+- [x] `server_030` — was 6 dense → now 31 clean points — What are the Data Center Tiers (Tier I, II, III, IV)? Explai
 - [-] `server_031` — already clean — Draw and explain the DMZ (Demilitarized Zone) network archit
 - [-] `server_032` — already clean — Draw the placement of a Web server, WAF (Web Application Fir
 - [-] `server_033` — already clean — Draw the VPN architecture — Site-to-Site vs Remote Access.

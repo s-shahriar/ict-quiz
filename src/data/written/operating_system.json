@@ -17,17 +17,58 @@
           "তিনটিই memory management কৌশল কিন্তু উদ্দেশ্য আলাদা।"
         ],
         "points": [
-          "Paging: Process এর logical memory কে fixed-size block এ ভাগ করা হয় → এগুলো Page। External fragmentation নেই, internal fragmentation হতে পারে।",
-          "Framing: Physical memory (RAM) কে fixed-size block এ ভাগ করা হয় → এগুলো Frame। Frame size = Page size সবসময়।",
-          "Paging ↔ Framing: Page হলো logical side, Frame হলো physical side। OS একটি Page Table রাখে (page → frame mapping)।",
-          "Segmentation: Process কে variable-size logical unit এ ভাগ করা হয় → Code, Data, Stack, Heap। External fragmentation হতে পারে, internal fragmentation নেই।",
-          "OS একটি Segment Table রাখে (segment → base address + limit)।",
-          "ব্যবহারিক প্রয়োগ:",
+          "Paging — logical দিক:",
           {
-            "sub": "Linux ও Windows দুটোই paging ব্যবহার করে (সাধারণ page size 4 KB) — demand paging দিয়ে দরকারমতো page RAM এ আনে, RAM কম পড়লে কম ব্যবহৃত page swap/pagefile এ পাঠায়।"
+            "sub": "Process-এর logical memory-কে fixed-size block-এ ভাগ করা হয় — এগুলোই Page।"
           },
           {
-            "sub": "Segmentation এর ধারণা এখনো টিকে আছে program এর code/data/stack/heap ভাগে, তবে x86-64 এ hardware segmentation প্রায় ব্যবহৃত হয় না — বাস্তবে paging-ই মূল কৌশল।"
+            "sub": "সব block একই মাপের বলে External fragmentation নেই।"
+          },
+          {
+            "sub": "তবে শেষ page আংশিক ভরলে Internal fragmentation হতে পারে।"
+          },
+          "Framing — physical দিক:",
+          {
+            "sub": "Physical memory (RAM)-কে fixed-size block-এ ভাগ করা হয় — এগুলোই Frame।"
+          },
+          {
+            "sub": "Frame size সবসময় Page size-এর সমান।"
+          },
+          "Paging ↔ Framing সম্পর্ক:",
+          {
+            "sub": "Page হলো logical প্রান্ত, Frame হলো physical প্রান্ত — মাপ এক, দিক আলাদা।"
+          },
+          {
+            "sub": "OS একটি Page Table রাখে, যা page → frame mapping ধরে রাখে।"
+          },
+          "Segmentation:",
+          {
+            "sub": "Process-কে variable-size logical unit-এ ভাগ করা হয় — Code, Data, Stack, Heap।"
+          },
+          {
+            "sub": "মাপ আলাদা আলাদা বলে External fragmentation হতে পারে।"
+          },
+          {
+            "sub": "প্রতিটি segment ঠিক যতটুকু দরকার ততটুকুই নেয়, তাই Internal fragmentation নেই।"
+          },
+          {
+            "sub": "OS একটি Segment Table রাখে — প্রতিটি segment-এর base address ও limit।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Linux ও Windows দুটোই paging ব্যবহার করে, সাধারণ page size 4 KB।"
+          },
+          {
+            "sub": "Demand paging দিয়ে দরকারমতো page RAM-এ আনা হয়।"
+          },
+          {
+            "sub": "RAM কম পড়লে কম ব্যবহৃত page swap/pagefile-এ পাঠানো হয়।"
+          },
+          {
+            "sub": "Segmentation-এর ধারণা এখনো টিকে আছে program-এর code/data/stack/heap ভাগে।"
+          },
+          {
+            "sub": "তবে x86-64-এ hardware segmentation প্রায় ব্যবহৃত হয় না — বাস্তবে paging-ই মূল কৌশল।"
           }
         ],
         "diagram": "PAGING:\n Logical (Process)        Physical (RAM)\n ┌──────────┐            ┌──────────┐ ← Frame 0\n │  Page 0  │──────────→ │  Page 1  │\n ├──────────┤            ├──────────┤ ← Frame 1\n │  Page 1  │──────┐     │  Page 0  │\n ├──────────┤      │     ├──────────┤ ← Frame 2\n │  Page 2  │───┐  └───→ │  Page 2  │\n └──────────┘   └──────→ └──────────┘\n Fixed size → ছড়িয়ে থাকলেও সমস্যা নেই\n\nSEGMENTATION:\n Logical (Process)        Physical (RAM)\n ┌────────────────┐      ┌──────────────────────┐\n │   Code Seg     │────→ │ Code  (var. size)     │\n ├────────┐       │      ├──────────────────────┤\n │ Data   │       │      │ [gap] ← external frag │\n ├────────┘       │      ├──────────────────────┤\n │   Stack Seg    │────→ │ Stack (var. size)     │\n └────────────────┘      └──────────────────────┘\n Variable size → gaps তৈরি হয়",
@@ -96,13 +137,38 @@
           "৫০-৭০ জনের অফিসে এটি ছাড়া প্রতিটি computer আলাদাভাবে manage করা অসম্ভব কষ্টকর।"
         ],
         "points": [
-          "Domain Controller (DC): AD চালায় এমন Windows Server — সব authentication এখানে হয়",
-          "Single Sign-On (SSO): একটি username/password দিয়ে যেকোনো PC, printer, file server এ login",
-          "Group Policy (GPO): IT admin একবার rule set করলে সব PC তে automatically apply — password policy, screen lock, USB block সব",
-          "Organizational Unit (OU): AD এর ভেতরে department ভাগ — Finance OU, HR OU, IT OU আলাদা permission",
-          "Employee joins: AD তে 1 account তৈরি → সব PC তে কাজ করে (50-70 PC তে আলাদা করতে হয় না)",
-          "Employee leaves: AD তে 1 account disable → সঙ্গে সঙ্গে সব PC, server, printer এ access বন্ধ",
-          "Role-based access: Finance PC থেকে HR folder দেখা যাবে না — OU ও GPO দিয়ে enforce করা হয়"
+          "Active Directory-র মূল উপাদান:",
+          {
+            "sub": "Domain Controller (DC): AD চালায় এমন Windows Server — সব authentication এখানেই হয়।"
+          },
+          {
+            "sub": "Organizational Unit (OU): AD-এর ভেতরে department ভাগ — Finance OU, HR OU, IT OU।"
+          },
+          {
+            "sub": "প্রতিটি OU আলাদা permission পায়।"
+          },
+          {
+            "sub": "Group Policy (GPO): IT admin একবার rule সেট করলে সব PC-তে automatically apply হয়।"
+          },
+          {
+            "sub": "GPO দিয়ে যা নিয়ন্ত্রণ করা যায়: password policy, screen lock, USB block ইত্যাদি।"
+          },
+          "৫০-৭০ জনের অফিসে যেভাবে কাজ সহজ করে:",
+          {
+            "sub": "Single Sign-On (SSO): একটি username/password দিয়েই যেকোনো PC, printer, file server-এ login।"
+          },
+          {
+            "sub": "Employee joins: AD-তে ১টি account তৈরি করলেই সব PC-তে কাজ করে।"
+          },
+          {
+            "sub": "অর্থাৎ ৫০-৭০টি PC-তে আলাদা করে account খুলতে হয় না।"
+          },
+          {
+            "sub": "Employee leaves: AD-তে ১টি account disable করলেই সব PC, server, printer-এ access সঙ্গে সঙ্গে বন্ধ।"
+          },
+          {
+            "sub": "Role-based access: Finance PC থেকে HR folder দেখা যাবে না — OU ও GPO দিয়ে enforce করা হয়।"
+          }
         ],
         "diagram": "WITHOUT AD (50-70 PC):\n┌──────┐ ┌──────┐ ┌──────┐       ┌──────┐\n│ PC 1 │ │ PC 2 │ │ PC 3 │  ···  │ PC 70│\n│ Rahim│ │ Rahim│ │ Rahim│       │ Rahim│ ← 70 জায়গায় আলাদা account!\n└──────┘ └──────┘ └──────┘       └──────┘\nRahim leaves → 70 PC তে delete 😩\n\nWITH ACTIVE DIRECTORY:\n         ┌──────────────────────────┐\n         │     DOMAIN CONTROLLER   │\n         │  ┌──────────────────┐   │\n         │  │ ACTIVE DIRECTORY │   │\n         │  │ Users / Computers│   │\n         │  │ Printers / Policy│   │\n         │  └──────────────────┘   │\n         └────────────┬────────────┘\n                      │ authenticate\n        ┌─────────────┼─────────────┐\n        ▼             ▼             ▼\n   ┌─────────┐   ┌─────────┐   ┌─────────┐\n   │ Finance │   │   HR    │   │   IT    │\n   │   PC    │   │   PC    │   │   PC    │\n   └─────────┘   └─────────┘   └─────────┘\nRahim joins → 1 account → works on ALL PCs ✅\nRahim leaves → 1 disable → blocked everywhere ✅",
         "mistakes": [
@@ -167,17 +233,52 @@
           "MMU hardware দুটোর মধ্যে translate করে।"
         ],
         "points": [
-          "Logical Address: CPU প্রতিটি instruction execute করার সময় তৈরি করে। Process মনে করে সে 0 থেকে শুরু করে। User program শুধু এটাই দেখে।",
-          "Physical Address: RAM chip এর আসল location। MMU (Memory Management Unit) তৈরি করে। Hardware এ এটাই ব্যবহার হয়।",
-          "MMU: Logical → Physical translate করার hardware। Base register যোগ করে বা Page Table ব্যবহার করে।",
-          "একাধিক process এর logical address same হতে পারে — physical আলাদা থাকে → process isolation নিশ্চিত",
-          "Virtual memory সম্ভব — logical space RAM এর চেয়ে বড় হতে পারে",
-          "ব্যবহারিক প্রয়োগ:",
+          "Logical Address:",
           {
-            "sub": "একই program দুবার চালালে দুই process এর logical address এক হলেও physical আলাদা — এখান থেকেই process isolation ও নিরাপত্তা আসে, একটি process অন্যটির memory পড়তে পারে না।"
+            "sub": "CPU প্রতিটি instruction execute করার সময় এটি তৈরি করে।"
           },
           {
-            "sub": "এই আলাদা স্তর আছে বলেই virtual memory (RAM এর চেয়ে বড় address space), memory-mapped file ও ASLR এর মতো নিরাপত্তা কৌশল কাজ করতে পারে।"
+            "sub": "Process মনে করে সে 0 থেকে শুরু করেছে — এটাই তার নিজস্ব view।"
+          },
+          {
+            "sub": "User program শুধু এই address-ই দেখে।"
+          },
+          "Physical Address:",
+          {
+            "sub": "RAM chip-এর আসল location।"
+          },
+          {
+            "sub": "MMU (Memory Management Unit) এটি তৈরি করে।"
+          },
+          {
+            "sub": "Hardware স্তরে এই address-ই ব্যবহৃত হয়।"
+          },
+          "MMU — দুইয়ের মাঝের সেতু:",
+          {
+            "sub": "Logical → Physical translate করার hardware।"
+          },
+          {
+            "sub": "Base register যোগ করে, অথবা Page Table দেখে translate করে।"
+          },
+          "এই আলাদা স্তর থাকার লাভ:",
+          {
+            "sub": "একাধিক process-এর logical address এক হতে পারে, কিন্তু physical আলাদা থাকে।"
+          },
+          {
+            "sub": "এতেই process isolation নিশ্চিত হয়।"
+          },
+          {
+            "sub": "Virtual memory সম্ভব হয় — logical space RAM-এর চেয়ে বড় হতে পারে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "একই program দুবার চালালে দুই process-এর logical address এক, কিন্তু physical আলাদা।"
+          },
+          {
+            "sub": "এখান থেকেই নিরাপত্তা আসে — একটি process অন্যটির memory পড়তে পারে না।"
+          },
+          {
+            "sub": "এই স্তর আছে বলেই virtual memory, memory-mapped file ও ASLR-এর মতো কৌশল কাজ করতে পারে।"
           }
         ],
         "diagram": " CPU                MMU                   RAM\n ┌────┐  Logical   ┌──────────────┐  Physical\n │    │──0x0050───▶│ Base = 0x3000│──0x3050──▶ [actual RAM]\n │    │            │ 0x3000+0x0050│\n └────┘            └──────────────┘\n\n Multiple processes — same logical, different physical:\n  Process A: logical 0x0050 → physical 0x3050\n  Process B: logical 0x0050 → physical 0x7050\n  → Process isolation নিশ্চিত হয়",
@@ -245,17 +346,58 @@
           "Single instance → cycle = deadlock নিশ্চিত। Multiple instance → cycle থাকলেও deadlock নাও হতে পারে।"
         ],
         "points": [
-          "Circular Wait: P1 অপেক্ষা করছে P2 এর resource এর জন্য → P2 অপেক্ষা করছে P3 এর জন্য → P3 অপেক্ষা করছে P1 এর জন্য — একটা বৃত্ত, কেউ এগোতে পারছে না",
-          "Deadlock এর ৪টি Coffman শর্ত: Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait — চারটি একসাথে থাকলেই deadlock",
-          "Single Instance Resource = resource এর মাত্র ১টি copy → cycle থাকলে কেউ কখনো সেটা পাবে না → Deadlock GUARANTEED ✅",
-          "Multiple Instance Resource = resource এর ২+ copies → cycle থাকলেও হয়তো কোনো process কাজ শেষ করে resource ছেড়ে দেবে → বাকিরা এগোতে পারবে → Deadlock নাও হতে পারে ❌",
-          "তাই RAG cycle = deadlock এর necessary condition (লাগবেই), কিন্তু sufficient condition নয় — cycle আছে মানেই deadlock, এটা বলা যাবে না (multiple instance এর ক্ষেত্রে)",
-          "ব্যবহারিক প্রয়োগ:",
+          "Circular Wait কী:",
           {
-            "sub": "database এ দুটি transaction উল্টো ক্রমে একই দুটি row lock করলে ঠিক এই circular wait হয় — DBMS wait-for graph দেখে একটিকে victim ধরে rollback করে।"
+            "sub": "P1 অপেক্ষা করছে P2-এর দখলে থাকা resource-এর জন্য।"
           },
           {
-            "sub": "প্রতিরোধের বাস্তব নিয়ম: সব code এ resource ও lock একই নির্দিষ্ট ক্রমে নেওয়া (এতে circular wait শর্তই ভেঙে যায়), lock timeout রাখা, এবং transaction ছোট রাখা।"
+            "sub": "P2 অপেক্ষা করছে P3-এর resource-এর জন্য।"
+          },
+          {
+            "sub": "P3 আবার অপেক্ষা করছে P1-এর resource-এর জন্য।"
+          },
+          {
+            "sub": "এটি একটি বৃত্ত — কেউই এগোতে পারছে না।"
+          },
+          "Deadlock-এর ৪টি Coffman শর্ত:",
+          {
+            "sub": "Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait।"
+          },
+          {
+            "sub": "চারটি শর্ত একসাথে থাকলে তবেই deadlock হয়।"
+          },
+          "RAG-এ cycle থাকলেই কি deadlock? — resource instance-এর উপর নির্ভর করে:",
+          {
+            "sub": "Single Instance Resource (resource-এর মাত্র ১টি copy): cycle থাকলে কেউ কখনো সেটি পাবে না — Deadlock GUARANTEED।"
+          },
+          {
+            "sub": "Multiple Instance Resource (২+ copy): cycle থাকলেও কোনো process কাজ শেষ করে resource ছেড়ে দিতে পারে।"
+          },
+          {
+            "sub": "তখন বাকিরা এগোতে পারে — তাই deadlock না-ও হতে পারে।"
+          },
+          "সিদ্ধান্ত:",
+          {
+            "sub": "RAG-এ cycle হলো deadlock-এর necessary condition — deadlock হলে cycle থাকবেই।"
+          },
+          {
+            "sub": "কিন্তু এটি sufficient condition নয় — multiple instance-এ cycle থাকলেও deadlock না-ও হতে পারে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "database-এ দুটি transaction উল্টো ক্রমে একই দুটি row lock করলে ঠিক এই circular wait হয়।"
+          },
+          {
+            "sub": "DBMS wait-for graph দেখে একটিকে victim ধরে rollback করে দেয়।"
+          },
+          {
+            "sub": "প্রতিরোধ ১: সব code-এ resource ও lock একই নির্দিষ্ট ক্রমে নেওয়া — এতে circular wait শর্তটিই ভেঙে যায়।"
+          },
+          {
+            "sub": "প্রতিরোধ ২: lock timeout রাখা।"
+          },
+          {
+            "sub": "প্রতিরোধ ৩: transaction ছোট রাখা।"
           }
         ],
         "diagram": "SINGLE INSTANCE — Cycle = Deadlock নিশ্চিত ✅\n─────────────────────────────────────────────\nP1 : R1 ধরে আছে,  R2 চায়  →  R2 পাবে না (P2 ধরে)\nP2 : R2 ধরে আছে,  R1 চায়  →  R1 পাবে না (P1 ধরে)\n\nকেউ ছাড়বে না, কেউ পাবে না → DEADLOCK! 🔴\n\n\nMULTIPLE INSTANCE — Cycle ≠ Deadlock নিশ্চিত নয় ❌\n────────────────────────────────────────────────────\nR1 এর ২টি instance আছে: [●][●]\n\nP1 : R1[●] ধরে,  R2 চায়\nP2 : R2[●] ধরে,  R1 চায়\nP3 : R1[●] ধরে,  আর কিছু চায় না  ← এটাই পার্থক্য!\n\nStep 1 → P3 কাজ শেষ,  R1[●] মুক্ত করে\nStep 2 → P2 সেই R1[●] পায়,  কাজ শেষ,  R2[●] মুক্ত করে\nStep 3 → P1 সেই R2[●] পায়,  কাজ শেষ!\n\nCycle ছিল (P1↔P2), কিন্তু P3 রাস্তা খুলে দিল → NO DEADLOCK! 🟢",
@@ -327,17 +469,62 @@
           "Thread হালকা ও দ্রুত, Process ভারী ও আলাদা।"
         ],
         "points": [
-          "Process: OS যখন একটি program run করে তখন সেটা Process হয়। নিজস্ব আলাদা memory space (code, data, heap, stack) থাকে। Process দুটো একে অপরের memory access করতে পারে না।",
-          "Thread: একটি Process এর ভেতরে একাধিক execution path। একই Process এর সব thread code, data, heap share করে — শুধু নিজের stack আলাদা।",
-          "মূল পার্থক্য: Process = heavyweight (আলাদা memory), Thread = lightweight (shared memory)। Process তৈরি করতে বেশি resource লাগে, Thread কম।",
-          "সুবিধা ১ — দ্রুত Communication: Thread রা একই memory space share করে তাই IPC (Inter-Process Communication) লাগে না। Data সরাসরি access করা যায় → অনেক দ্রুত।",
-          "সুবিধা ২ — কম Resource: Thread তৈরিতে নতুন memory allocate করতে হয় না। Context switching ও দ্রুত কারণ memory map switch করতে হয় না → CPU efficient।",
-          "ব্যবহারিক প্রয়োগ:",
+          "Process:",
           {
-            "sub": "Chrome প্রতিটি tab আলাদা process এ চালায় — এক tab crash বা compromise হলে বাকি ব্রাউজার নিরাপদ থাকে, কারণ এখানে isolation ই মুখ্য।"
+            "sub": "OS যখন একটি program run করে, তখন সেটিই একটি Process।"
           },
           {
-            "sub": "অন্যদিকে web server ও database প্রতি request বা query এর জন্য thread ব্যবহার করে — একই cache ও connection pool share করতে হয় বলে thread ই সস্তা ও দ্রুত।"
+            "sub": "নিজস্ব আলাদা memory space থাকে — code, data, heap, stack।"
+          },
+          {
+            "sub": "দুটি Process একে অপরের memory access করতে পারে না।"
+          },
+          "Thread:",
+          {
+            "sub": "একটি Process-এর ভেতরে একাধিক execution path।"
+          },
+          {
+            "sub": "একই Process-এর সব thread code, data ও heap share করে।"
+          },
+          {
+            "sub": "শুধু নিজের stack আলাদা থাকে।"
+          },
+          "মূল পার্থক্য:",
+          {
+            "sub": "Process = heavyweight — আলাদা memory নিয়ে চলে।"
+          },
+          {
+            "sub": "Thread = lightweight — memory share করে চলে।"
+          },
+          {
+            "sub": "Process তৈরিতে বেশি resource লাগে, Thread তৈরিতে কম।"
+          },
+          "সুবিধা ১ — দ্রুত Communication:",
+          {
+            "sub": "Thread-রা একই memory space share করে, তাই IPC (Inter-Process Communication) লাগে না।"
+          },
+          {
+            "sub": "Data সরাসরি access করা যায় — অনেক দ্রুত।"
+          },
+          "সুবিধা ২ — কম Resource:",
+          {
+            "sub": "Thread তৈরিতে নতুন memory allocate করতে হয় না।"
+          },
+          {
+            "sub": "Context switching-ও দ্রুত, কারণ memory map switch করতে হয় না — CPU efficient।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Chrome প্রতিটি tab আলাদা process-এ চালায়।"
+          },
+          {
+            "sub": "এক tab crash বা compromise হলেও বাকি ব্রাউজার নিরাপদ থাকে — এখানে isolation-ই মুখ্য।"
+          },
+          {
+            "sub": "অন্যদিকে web server ও database প্রতি request বা query-র জন্য thread ব্যবহার করে।"
+          },
+          {
+            "sub": "একই cache ও connection pool share করতে হয় বলে thread-ই সস্তা ও দ্রুত।"
           }
         ],
         "diagram": "PROCESS (Heavy)\n┌─────────────────────────────┐\n│  Process A                  │\n│  ┌────────┐  ┌──────────┐  │\n│  │ Code   │  │  Heap    │  │\n│  └────────┘  └──────────┘  │\n│  ┌────────────────────────┐ │\n│  │ Stack (Thread-1 only)  │ │\n│  └────────────────────────┘ │\n└─────────────────────────────┘\n         ❌ cannot access\n┌─────────────────────────────┐\n│  Process B (আলাদা memory)   │\n└─────────────────────────────┘\n\nTHREADS (Lightweight — একই Process এ)\n┌──────────────────────────────────────┐\n│  Process                             │\n│  ┌────────┐  ┌──────────┐           │\n│  │ Code   │  │  Heap    │ ← shared  │\n│  └────────┘  └──────────┘           │\n│  ┌────────┐ ┌────────┐ ┌────────┐   │\n│  │Stack T1│ │Stack T2│ │Stack T3│   │\n│  └────────┘ └────────┘ └────────┘   │\n└──────────────────────────────────────┘",
@@ -396,17 +583,65 @@
           "Semaphore দিয়ে সমাধান: mutex (race condition), empty ও full semaphore (buffer control)।"
         ],
         "points": [
-          "Problem: Producer data তৈরি করে buffer এ রাখে। Consumer buffer থেকে নিয়ে process করে। Buffer এর size সীমিত (bounded buffer)।",
-          "Synchronization Issue ১ — Race Condition: Producer ও Consumer একসাথে buffer access করলে data corrupt হতে পারে। Mutual Exclusion (Mutex) দিয়ে সমাধান।",
-          "Synchronization Issue ২ — Buffer Full: Producer buffer full দেখলে wait করতে হবে। Consumer consume করলে Producer কে জানাতে হবে।",
-          "Synchronization Issue ৩ — Buffer Empty: Consumer buffer empty দেখলে wait করতে হবে। Producer produce করলে Consumer কে জানাতে হবে।",
-          "Semaphore দিয়ে সমাধান: mutex=1 (critical section), empty=N (খালি slot), full=0 (ভরা slot)। Producer: empty↓, mutex lock, produce, mutex unlock, full↑। Consumer: full↓, mutex lock, consume, mutex unlock, empty↑।",
-          "ব্যবহারিক প্রয়োগ:",
+          "Problem কী:",
           {
-            "sub": "printer spooler (application লেখে, printer পড়ে), keyboard ও network card এর buffer, video streaming এর playback buffer, application এর log writer thread।"
+            "sub": "Producer data তৈরি করে buffer-এ রাখে।"
           },
           {
-            "sub": "বড় পরিসরে একই নকশা: Kafka বা RabbitMQ এর মতো message queue — producer ও consumer service আলাদা গতিতে চললেও queue মাঝখানে বসে গতির পার্থক্য সামলায়।"
+            "sub": "Consumer সেই buffer থেকে নিয়ে process করে।"
+          },
+          {
+            "sub": "Buffer-এর size সীমিত — একে bounded buffer বলে।"
+          },
+          "Synchronization Issue ১ — Race Condition:",
+          {
+            "sub": "Producer ও Consumer একসাথে buffer access করলে data corrupt হতে পারে।"
+          },
+          {
+            "sub": "সমাধান: Mutual Exclusion (Mutex) দিয়ে একসাথে একজনকেই ঢুকতে দেওয়া।"
+          },
+          "Synchronization Issue ২ — Buffer Full:",
+          {
+            "sub": "Producer buffer full দেখলে তাকে wait করতে হবে।"
+          },
+          {
+            "sub": "Consumer একটি item consume করলে Producer-কে জানাতে হবে।"
+          },
+          "Synchronization Issue ৩ — Buffer Empty:",
+          {
+            "sub": "Consumer buffer empty দেখলে তাকে wait করতে হবে।"
+          },
+          {
+            "sub": "Producer একটি item produce করলে Consumer-কে জানাতে হবে।"
+          },
+          "Semaphore দিয়ে সমাধান:",
+          {
+            "sub": "তিনটি semaphore লাগে — mutex = 1 (critical section), empty = N (খালি slot), full = 0 (ভরা slot)।"
+          },
+          {
+            "sub": "Producer-এর ক্রম: empty↓, mutex lock, produce, mutex unlock, full↑।"
+          },
+          {
+            "sub": "Consumer-এর ক্রম: full↓, mutex lock, consume, mutex unlock, empty↑।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "printer spooler — application লেখে, printer পড়ে।"
+          },
+          {
+            "sub": "keyboard ও network card-এর buffer।"
+          },
+          {
+            "sub": "video streaming-এর playback buffer।"
+          },
+          {
+            "sub": "application-এর log writer thread।"
+          },
+          {
+            "sub": "বড় পরিসরে একই নকশা: Kafka বা RabbitMQ-র মতো message queue।"
+          },
+          {
+            "sub": "সেখানে producer ও consumer service আলাদা গতিতে চললেও queue মাঝখানে বসে গতির পার্থক্য সামলায়।"
           }
         ],
         "diagram": "Producer-Consumer:\n\n [Producer] ──produce──▶ [Buffer] ──consume──▶ [Consumer]\n                         [_ _ _ _]\n                          size = N\n\nProblem scenarios:\n  Buffer FULL  → Producer wait করে\n  Buffer EMPTY → Consumer wait করে\n  একসাথে access → Race condition → data corrupt\n\nSemaphore Solution:\n  mutex = 1    (0/1 — lock for critical section)\n  empty = N    (কতটি slot খালি)\n  full  = 0    (কতটি slot ভরা)\n\nProducer:                 Consumer:\n  wait(empty)              wait(full)\n  wait(mutex)              wait(mutex)\n  → buffer এ add           → buffer থেকে remove\n  signal(mutex)            signal(mutex)\n  signal(full)             signal(empty)",
@@ -440,12 +675,45 @@
           "Program দ্রুত হয় এবং user experience ভালো হয়।"
         ],
         "points": [
-          "Multithreading: একটি Process এর ভেতরে একাধিক thread তৈরি করে concurrently execute করানো। প্রতিটি thread আলাদা কাজ করতে পারে কিন্তু একই data access করতে পারে।",
-          "কারণ ১ — CPU Utilization: একটি thread I/O wait করলে (disk, network) অন্য thread CPU ব্যবহার করতে পারে → CPU idle থাকে না।",
-          "কারণ ২ — Responsiveness: UI thread আলাদা রাখলে background কাজ চললেও app responsive থাকে। যেমন: YouTube এ video load হওয়ার সময়ও scroll করা যায়।",
-          "কারণ ৩ — Parallel Processing: Multi-core CPU তে একাধিক thread সত্যিকারে parallel চলতে পারে → computation দ্রুত হয়।",
-          "কারণ ৪ — Resource Sharing: Thread রা একই memory share করায় data copy করতে হয় না → efficient।",
-          "চ্যালেঞ্জ: Race condition, Deadlock, Synchronization — Mutex ও Semaphore দিয়ে handle করতে হয়।"
+          "Multithreading কী:",
+          {
+            "sub": "একটি Process-এর ভেতরে একাধিক thread তৈরি করে concurrently execute করানো।"
+          },
+          {
+            "sub": "প্রতিটি thread আলাদা কাজ করতে পারে, কিন্তু একই data access করতে পারে।"
+          },
+          "কারণ ১ — CPU Utilization:",
+          {
+            "sub": "একটি thread I/O wait করলে (disk, network) অন্য thread CPU ব্যবহার করতে পারে।"
+          },
+          {
+            "sub": "ফলে CPU idle পড়ে থাকে না।"
+          },
+          "কারণ ২ — Responsiveness:",
+          {
+            "sub": "UI thread আলাদা রাখলে background কাজ চললেও app responsive থাকে।"
+          },
+          {
+            "sub": "যেমন YouTube-এ video load হওয়ার সময়ও scroll করা যায়।"
+          },
+          "কারণ ৩ — Parallel Processing:",
+          {
+            "sub": "Multi-core CPU-তে একাধিক thread সত্যিকারের parallel চলতে পারে।"
+          },
+          {
+            "sub": "ফলে computation দ্রুত শেষ হয়।"
+          },
+          "কারণ ৪ — Resource Sharing:",
+          {
+            "sub": "Thread-রা একই memory share করায় data copy করতে হয় না — efficient।"
+          },
+          "চ্যালেঞ্জ:",
+          {
+            "sub": "Race condition, Deadlock ও Synchronization সমস্যা তৈরি হয়।"
+          },
+          {
+            "sub": "Mutex ও Semaphore দিয়ে এগুলো handle করতে হয়।"
+          }
         ],
         "diagram": "Single-threaded (Sequential):\n  Thread-1: [Task A]──[Task B]──[Task C]──[Task D]\n  Time: ──────────────────────────────────────────▶\n  Total = A + B + C + D\n\nMulti-threaded (Concurrent):\n  Thread-1: [Task A]────────────[Task D]\n  Thread-2:    [Task B]──────────────────\n  Thread-3:       [Task C]────────────────\n  Time: ──────────────────────▶ (অনেক কম!)\n\nReal example — Web Server:\n  Client 1 request → Thread 1 handle করে\n  Client 2 request → Thread 2 handle করে  (একসাথে!)\n  Client 3 request → Thread 3 handle করে\n  Single thread এ: Client 2,3 কে wait করতে হতো",
         "mnemonic": "Multithreading = একজনের বদলে পুরো team কাজ করে। Single thread = একা সব করো (ধীর)। Multi-thread = কাজ ভাগ করো, একসাথে শেষ করো (দ্রুত)। কিন্তু team এ সমন্বয় না থাকলে (synchronization) ঝামেলা হয়।"
@@ -469,13 +737,55 @@
           "তাই Process = isolated ও ভারী, Thread = shared ও হালকা।"
         ],
         "points": [
-          "Process এর memory: OS প্রতিটি process কে নিজস্ব virtual address space দেয় — Code (text), Data/Globals, Heap ও Stack আলাদা। MMU (hardware) enforce করে যাতে এক process অন্য process এর memory সরাসরি ছুঁতে না পারে।",
-          "Thread এর memory: thread গুলো parent process এর Code, Data ও Heap share করে। শুধু প্রতিটি thread এর নিজের Stack ও CPU registers (PC, SP) আলাদা — কারণ প্রতিটি thread এর নিজস্ব আলাদা call sequence ও local variable থাকে।",
-          "Data sharing: Process আলাদা memory তে থাকায় data ভাগ করতে IPC লাগে (pipe, shared memory, message queue)। Thread একই Heap/Global দেখে, তাই variable সরাসরি share করে — IPC লাগে না।",
-          "Memory isolation: Process সম্পূর্ণ isolated — একটার memory corrupt হলে বা crash করলে অন্যটা অক্ষত থাকে। Thread isolated নয় — একটা thread heap নষ্ট করলে পুরো process ক্ষতিগ্রস্ত হয়।",
-          "Allocation overhead: নতুন Process তৈরিতে পুরো address space + page table আলাদা করে allocate করতে হয় → ভারী। নতুন Thread তৈরিতে শুধু একটা Stack ও register set লাগে → হালকা, এবং context switch ও দ্রুত (address space/page table বদলায় না, TLB flush লাগে না)।"
+          "Process-এর memory:",
+          {
+            "sub": "OS প্রতিটি process-কে নিজস্ব virtual address space দেয়।"
+          },
+          {
+            "sub": "তার ভেতরে Code (text), Data/Globals, Heap ও Stack — সবই আলাদা।"
+          },
+          {
+            "sub": "MMU (hardware) enforce করে, যাতে এক process অন্য process-এর memory সরাসরি ছুঁতে না পারে।"
+          },
+          "Thread-এর memory:",
+          {
+            "sub": "Thread-গুলো parent process-এর Code, Data ও Heap share করে।"
+          },
+          {
+            "sub": "শুধু প্রতিটি thread-এর নিজের Stack ও CPU registers (PC, SP) আলাদা।"
+          },
+          {
+            "sub": "আলাদা কেন — প্রতিটি thread-এর নিজস্ব call sequence ও local variable থাকে।"
+          },
+          "Data sharing:",
+          {
+            "sub": "Process আলাদা memory-তে থাকায় data ভাগ করতে IPC লাগে — pipe, shared memory, message queue।"
+          },
+          {
+            "sub": "Thread একই Heap/Global দেখে, তাই variable সরাসরি share করে — IPC লাগে না।"
+          },
+          "Memory isolation:",
+          {
+            "sub": "Process সম্পূর্ণ isolated — একটির memory corrupt হলে বা crash করলে অন্যটি অক্ষত থাকে।"
+          },
+          {
+            "sub": "Thread isolated নয় — একটি thread heap নষ্ট করলে পুরো process ক্ষতিগ্রস্ত হয়।"
+          },
+          "Allocation overhead:",
+          {
+            "sub": "নতুন Process তৈরিতে পুরো address space ও page table আলাদা করে allocate করতে হয় — ভারী কাজ।"
+          },
+          {
+            "sub": "নতুন Thread তৈরিতে শুধু একটি Stack ও register set লাগে — হালকা।"
+          },
+          {
+            "sub": "Thread-এর context switch-ও দ্রুত, কারণ address space বা page table বদলাতে হয় না।"
+          },
+          {
+            "sub": "ফলে TLB flush করারও দরকার পড়ে না।"
+          }
         ],
-        "diagram": "PROCESS — প্রতিটির নিজস্ব সম্পূর্ণ address space\n┌── Process A ───────┐      ┌── Process B ───────┐\n│ ┌────────────────┐ │      │ ┌────────────────┐ │\n│ │ Code (text)    │ │      │ │ Code (text)    │ │\n│ ├────────────────┤ │      │ ├────────────────┤ │\n│ │ Data / Globals │ │      │ │ Data / Globals │ │\n│ ├────────────────┤ │      │ ├────────────────┤ │\n│ │ Heap        ↓  │ │      │ │ Heap        ↓  │ │\n│ │                │ │      │ │                │ │\n│ │ Stack       ↑  │ │      │ │ Stack       ↑  │ │\n│ └────────────────┘ │      │ └────────────────┘ │\n└────────────────────┘      └────────────────────┘\n      ✕──── একে অপরের memory ছুঁতে পারে না (isolated) ────✕\n\n\nTHREADS — এক process এর ভেতরে, memory share করে\n┌── Process ────────────────────────────────────┐\n│ ┌─────────────────────┐  ← Code / Data / Heap  │\n│ │  Code   Data   Heap │    তিন thread-ই share │\n│ └─────────────────────┘                        │\n│  ┌────────┐ ┌────────┐ ┌────────┐              │\n│  │Stack T1│ │Stack T2│ │Stack T3│ ← শুধু এটা   │\n│  │ regs T1│ │ regs T2│ │ regs T3│   আলাদা      │\n│  └────────┘ └────────┘ └────────┘              │\n└────────────────────────────────────────────────┘\n\nএকনজরে — কী shared, কী আলাদা  (✓=shared, ✕=আলাদা):\n  Process :  Code ✕  Data ✕  Heap ✕  Stack ✕   (সব আলাদা)\n  Thread  :  Code ✓  Data ✓  Heap ✓  Stack ✕   (শুধু Stack আলাদা)",
+        "diagram": "PROCESS — প্রতিটির নিজস্ব সম্পূর্ণ address space\n┌── Process A ───────┐      ┌── Process B ───────┐\n│ ┌────────────────┐ │      │ ┌────────────────┐ │\n│ │ Code (text)    │ │      │ │ Code (text)    │ │\n│ ├────────────────┤ │      │ ├────────────────┤ │\n│ │ Data / Globals │ │      │ │ Data / Globals │ │\n│ ├────────────────┤ │      │ ├────────────────┤ │\n│ │ Heap        ↓  │ │      │ │ Heap        ↓  │ │\n│ │                │ │      │ │                │ │\n│ │ Stack       ↑  │ │      │ │ Stack       ↑  │ │\n│ └────────────────┘ │      │ └────────────────┘ │\n└────────────────────┘      └────────────────────┘\n      ✕──── একে অপরের memory ছুঁতে পারে না (isolated) ────✕\n\n\nTHREADS — এক process-এর ভেতরে, memory share করে\n┌── Process ──────────────────────────┐\n│  ┌─────────────────────┐            │\n│  │  Code   Data   Heap │            │   ← তিন thread-ই এটুকু share করে\n│  └─────────────────────┘            │\n│  ┌────────┐ ┌────────┐ ┌────────┐   │\n│  │Stack T1│ │Stack T2│ │Stack T3│   │   ← শুধু Stack ও registers আলাদা\n│  │ regs T1│ │ regs T2│ │ regs T3│   │\n│  └────────┘ └────────┘ └────────┘   │\n└─────────────────────────────────────┘\n\nএকনজরে — কী shared, কী আলাদা  (✓ = shared, ✕ = আলাদা):\n  Process :  Code ✕   Data ✕   Heap ✕   Stack ✕      (সব আলাদা)\n  Thread  :  Code ✓   Data ✓   Heap ✓   Stack ✕      (শুধু Stack আলাদা)",
         "mistakes": [
           [
             "Thread এর নিজস্ব কোনো memory নেই, সব share",
@@ -541,27 +851,63 @@
           "কারণ counter++ atomic নয় — এটা তিনটি আলাদা machine step (Load → Increment → Store), যা দুই thread এর মাঝে interleave হয়ে যায়।"
         ],
         "points": [
-          "ধরে নিচ্ছি প্রতি thread transactionCounter কে 1000 বার বাড়ায় → দুজন মিলে ideal 2000।",
-          "কিন্তু counter++ একটি মাত্র operation মনে হলেও CPU তে তিন ধাপ:",
+          "ধরে নিচ্ছি প্রতি thread transactionCounter-কে 1000 বার বাড়ায় — দুজন মিলে ideal 2000।",
+          "কিন্তু counter++ একটি মাত্র operation মনে হলেও CPU-তে তিন ধাপ:",
           {
-            "sub": "(১) LOAD: memory থেকে counter এর মান register এ আনে।"
+            "sub": "(১) LOAD: memory থেকে counter-এর মান register-এ আনে।"
           },
           {
-            "sub": "(২) INCREMENT: register এ 1 যোগ করে।"
+            "sub": "(২) INCREMENT: register-এ 1 যোগ করে।"
           },
           {
-            "sub": "(৩) STORE: নতুন মান আবার memory তে লেখে।"
+            "sub": "(৩) STORE: নতুন মান আবার memory-তে লেখে।"
           },
-          "দুই thread একই shared instance এর একই counter এ কাজ করছে, তাই এই তিন ধাপ interleave হতে পারে।",
-          "Lost update যেভাবে ঘটে: T1 LOAD করে 500, এখনো STORE করেনি; মাঝে T2-ও LOAD করে সেই 500; দুজনই 501 বানায়; দুজনই 501 STORE করে → দুটি increment মিলে মাত্র একটি হলো, একটি update হারিয়ে গেল।",
-          "এই hazard কে race condition বলে — ফলাফল নির্ভর করে কোন thread কখন schedule হলো তার উপর, যা অনিশ্চিত।",
-          "সমাধান: critical section কে atomic করা — synchronized/lock/mutex, বা AtomicInteger এর মতো atomic operation। তখনই 2000 guaranteed।",
+          "দুই thread একই shared instance-এর একই counter-এ কাজ করছে, তাই এই তিন ধাপ interleave হতে পারে।",
+          "Lost update যেভাবে ঘটে:",
+          {
+            "sub": "T1 LOAD করে 500, কিন্তু এখনো STORE করেনি।"
+          },
+          {
+            "sub": "মাঝখানে T2-ও LOAD করে সেই একই 500।"
+          },
+          {
+            "sub": "দুজনেই register-এ 501 বানায়।"
+          },
+          {
+            "sub": "দুজনেই 501 STORE করে।"
+          },
+          {
+            "sub": "দুটি increment মিলে মাত্র একটি হলো — একটি update হারিয়ে গেল।"
+          },
+          "এই hazard-কেই race condition বলে:",
+          {
+            "sub": "ফলাফল নির্ভর করে কোন thread কখন schedule হলো তার উপর — যা অনিশ্চিত।"
+          },
+          "সমাধান — critical section-কে atomic করা:",
+          {
+            "sub": "synchronized / lock / mutex দিয়ে একসাথে একটিমাত্র thread ঢুকতে দেওয়া।"
+          },
+          {
+            "sub": "অথবা AtomicInteger-এর মতো atomic operation ব্যবহার করা।"
+          },
+          {
+            "sub": "তখনই ফল 2000 guaranteed।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "একই হিসাব থেকে দুই ATM এ একসাথে টাকা তোলা, শেষ টিকিটটি দুজনের কাছে বিক্রি হয়ে যাওয়া, বা stock শূন্য হওয়ার পরও order নেওয়া — সবই এই lost update।"
+            "sub": "একই হিসাব থেকে দুই ATM-এ একসাথে টাকা তোলা।"
           },
           {
-            "sub": "তাই বাস্তব system এ balance বা counter কখনো সাধারণ ++ দিয়ে বাড়ানো হয় না; database এর row lock (SELECT ... FOR UPDATE) বা atomic operation ব্যবহার করা হয়।"
+            "sub": "শেষ টিকিটটি দুজনের কাছে বিক্রি হয়ে যাওয়া।"
+          },
+          {
+            "sub": "stock শূন্য হওয়ার পরও order নেওয়া — সবই এই lost update।"
+          },
+          {
+            "sub": "তাই বাস্তব system-এ balance বা counter কখনো সাধারণ ++ দিয়ে বাড়ানো হয় না।"
+          },
+          {
+            "sub": "বদলে database-এর row lock (SELECT ... FOR UPDATE) বা atomic operation ব্যবহার করা হয়।"
           }
         ],
         "diagram": "counter++ আসলে atomic নয় — তিন ধাপ:\n    LOAD  counter → reg      (memory → register)\n    INC   reg                (reg = reg + 1)\n    STORE reg → counter      (register → memory)\n\nLOST UPDATE — খারাপ interleaving (counter শুরুতে 500):\n\n সময়  Thread-1            Thread-2          memory(counter)\n ──────────────────────────────────────────────────────────\n  t1  LOAD  → reg=500                            500\n  t2                      LOAD  → reg=500        500\n  t3  INC   → reg=501                            500\n  t4                      INC   → reg=501        500\n  t5  STORE 501                                  501\n  t6                      STORE 501              501  ← 502 হওয়ার কথা!\n ──────────────────────────────────────────────────────────\n দুটি ++ চলল, কিন্তু counter বাড়ল মাত্র 1 → একটি update হারালো\n\n ভালো (synchronized/lock) হলে:\n   T1: LOAD-INC-STORE → 501,  তারপর T2: LOAD-INC-STORE → 502 ✅\n\n ফলাফল:  1000 ≤ transactionCounter ≤ 2000  (2000 guaranteed নয়)",
@@ -669,42 +1015,63 @@
           "মূল ফারাক: Compulsory cache size যাই হোক ঘটবেই; Capacity ঘটে শুধু cache ছোট বলে, তাই cache বড় করলে কমে।"
         ],
         "points": [
-          "Compulsory Miss (Cold Miss / Cold Start Miss)",
+          "Compulsory Miss (Cold Miss / Cold Start Miss):",
           {
-            "sub": "কোনো data প্রথমবার access করা হচ্ছে এবং সেটা তখনো cache এ নেই — এই অবস্থায় miss হয়।"
+            "sub": "কোনো data প্রথমবার access করা হচ্ছে এবং সেটি তখনো cache-এ নেই — এই অবস্থায় miss হয়।"
           },
           {
-            "sub": "Cache size যত বড়ই হোক, এটা ঘটবেই (happens regardless of cache size)।"
+            "sub": "Cache size যত বড়ই হোক, এটি ঘটবেই (happens regardless of cache size)।"
           },
           {
-            "sub": "নতুন data এর প্রথম access এ এড়ানো যায় না (cannot be avoided)।"
+            "sub": "নতুন data-র প্রথম access-এ এটি এড়ানো যায় না (cannot be avoided)।"
           },
           {
             "sub": "কমানোর উপায় শুধু: block size বাড়ানো বা prefetching — অর্থাৎ আগেভাগে এনে রাখা।"
           },
-          "Capacity Miss",
+          "Capacity Miss:",
           {
-            "sub": "cache এত ছোট যে program এর প্রয়োজনীয় সব data একসাথে ধরে না — এই অবস্থায় miss হয়।"
+            "sub": "cache এত ছোট যে program-এর প্রয়োজনীয় সব data একসাথে ধরে না — এই অবস্থায় miss হয়।"
           },
           {
-            "sub": "কারণ cache এর capacity যথেষ্ট নয় (cache capacity is insufficient)।"
+            "sub": "কারণ cache-এর capacity যথেষ্ট নয় (cache capacity is insufficient)।"
           },
           {
             "sub": "Cache size বাড়ালে এই miss কমানো যায় (can be reduced)।"
           },
           {
-            "sub": "ঘটে এভাবে: জায়গার অভাবে আগে cache এ থাকা data replace হয়ে যায়, পরে সেই data আবার চাইলে miss হয়।"
+            "sub": "ঘটে এভাবে: জায়গার অভাবে আগে cache-এ থাকা data replace হয়ে যায়।"
           },
-          "চেনার সহজ উপায়: data টি কি আগে কখনো cache এ এসেছিল? না → Compulsory। হ্যাঁ, কিন্তু জায়গার অভাবে সরে গেছে → Capacity।",
+          {
+            "sub": "পরে সেই data আবার চাইলে miss হয়।"
+          },
+          "চেনার সহজ উপায় — data-টি কি আগে কখনো cache-এ এসেছিল?",
+          {
+            "sub": "না, এবারই প্রথম → Compulsory Miss।"
+          },
+          {
+            "sub": "হ্যাঁ, কিন্তু জায়গার অভাবে সরে গিয়েছিল → Capacity Miss।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "server restart বা নতুন deploy এর পর প্রথম কিছু request ধীর হয় (compulsory/cold miss) — এজন্য cache warming করা হয়; CDN এর প্রথম hit ও ঠিক এমনই।"
+            "sub": "server restart বা নতুন deploy-এর পর প্রথম কিছু request ধীর হয় — এটাই compulsory/cold miss।"
           },
           {
-            "sub": "Capacity miss কমাতে কোডের কৌশল: বড় matrix বা array row-major ক্রমে traverse করা এবং blocking/tiling করা, যাতে cache এ আনা block পুরোপুরি কাজে লাগে — একই algorithm এ কয়েকগুণ গতি পার্থক্য হয়।"
+            "sub": "এজন্য আগেভাগে cache warming করা হয়।"
+          },
+          {
+            "sub": "CDN-এর প্রথম hit-ও ঠিক এমনই।"
+          },
+          {
+            "sub": "Capacity miss কমাতে কোডের কৌশল: বড় matrix বা array row-major ক্রমে traverse করা।"
+          },
+          {
+            "sub": "পাশাপাশি blocking/tiling করা, যাতে cache-এ আনা block পুরোপুরি কাজে লাগে।"
+          },
+          {
+            "sub": "একই algorithm-এ এতে কয়েকগুণ গতি পার্থক্য হয়।"
           }
         ],
-        "diagram": "উদাহরণ: cache এ ৪টি block ধরে, কিন্তু program বারবার ব্যবহার করে ৫টি — A B C D E\n\n\n[১] COMPULSORY MISS — A এর প্রথম access\n\n   CPU: \"A দাও\"\n         │\n         ▼\n   ┌────┬────┬────┬────┐\n   │ -- │ -- │ -- │ -- │  ← cache খালি, A কখনো আসেইনি\n   └────┴────┴────┴────┘\n         │ MISS\n         ▼\n   Main Memory ──A──▶ cache এ লোড হলো\n   ┌────┬────┬────┬────┐\n   │ A  │ -- │ -- │ -- │\n   └────┴────┴────┴────┘\n\n   প্রথমবার বলেই miss — cache যত বড়ই হোক, এড়ানো যেত না\n\n\n[২] CAPACITY MISS — A এর দ্বিতীয় access\n\n   access:   A      B      C      D      E        A\n             ▼      ▼      ▼      ▼      ▼        ▼\n   cache:  ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐  ┌────┐\n           │A...│ │AB..│ │ABC.│ │ABCD│ │BCDE│  │ ?  │\n           └────┘ └────┘ └────┘ └────┘ └────┘  └────┘\n            MISS   MISS   MISS   MISS   MISS     MISS\n           (cold) (cold) (cold) (cold)   │        │\n                                         │        └─ A নেই → CAPACITY MISS\n                                         └─ cache ভর্তি! A কে replace\n                                            করে E ঢোকানো হলো\n\n   ৫টি data, ৪টির জায়গা → capacity যথেষ্ট নয়\n   cache ৫ block হলে A সরত না, এই miss হতোই না\n\n\n[৩] এক নজরে\n\n   Cache size বাড়ালে →  Compulsory: কমে না  |  Capacity: কমে\n   প্রথম access এ     →  Compulsory: হবেই    |  Capacity: প্রশ্নই ওঠে না",
+        "diagram": "উদাহরণ: cache-এ ৪টি block ধরে, কিন্তু program বারবার ব্যবহার করে ৫টি — A B C D E\n\n\n[১] COMPULSORY MISS — A-এর প্রথম access\n\n   CPU: \"A দাও\"\n         │\n         ▼\n   ┌────┬────┬────┬────┐\n   │ -- │ -- │ -- │ -- │   ← cache খালি, A কখনো আসেইনি\n   └────┴────┴────┴────┘\n         │ MISS\n         ▼\n   Main Memory ──A──▶ cache-এ লোড হলো\n   ┌────┬────┬────┬────┐\n   │ A  │ -- │ -- │ -- │\n   └────┴────┴────┴────┘\n\n   প্রথমবার বলেই miss — cache যত বড়ই হোক, এড়ানো যেত না\n\n\n[২] CAPACITY MISS — A-এর দ্বিতীয় access\n\n   access:   A      B      C      D      E        A\n             ▼      ▼      ▼      ▼      ▼        ▼\n   cache:  ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐  ┌────┐\n           │A...│ │AB..│ │ABC.│ │ABCD│ │BCDE│  │ ?  │\n           └────┘ └────┘ └────┘ └────┘ └────┘  └────┘\n            MISS   MISS   MISS   MISS   MISS     MISS\n           (cold) (cold) (cold) (cold)\n\n   E ঢোকানোর সময় cache ভর্তি ছিল, তাই A-কে replace করা হলো\n   পরে A আবার চাইলে সে আর নেই — এটাই CAPACITY MISS\n\n   ৫টি data, ৪টির জায়গা → capacity যথেষ্ট নয়\n   cache ৫ block হলে A সরত না, এই miss হতোই না\n\n\n[৩] এক নজরে\n\n   Cache size বাড়ালে:\n     Compulsory  →  কমে না\n     Capacity    →  কমে\n\n   প্রথম access-এ:\n     Compulsory  →  হবেই\n     Capacity    →  প্রশ্নই ওঠে না",
         "mistakes": [
           [
             "Cache বড় করলে Compulsory miss কমে যাবে",
