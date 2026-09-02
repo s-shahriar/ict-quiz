@@ -1646,6 +1646,17 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* Question list */
 .written-list { display: flex; flex-direction: column; gap: 12px; }
 
+/* Pinned segment (e.g. "Time Complexity") — sits above the regular
+   numbered list under its own heading instead of blending in. */
+.written-segment { margin-bottom: 24px; }
+.written-segment-header {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.92rem; font-weight: 700;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 2px solid;
+}
+
 /* Card */
 .written-card {
   background: var(--surface-glass);
@@ -1807,21 +1818,57 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* Code snippet (question source listing) — same shell as the diagram, but
    tinted and rule-marked so code reads as code, not as an ASCII drawing. */
 .written-code-wrap { display: flex; flex-direction: column; }
+/* Neutral editor-pane colors (not the app's accent-tinted card look) — code
+   reads as code when the background actually matches an IDE. */
 .written-code-pre {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.78rem; line-height: 1.65;
-  color: var(--text);
-  background: color-mix(in srgb, var(--accent, #22d3ee) 5%, var(--elevated));
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--c, var(--accent, #22d3ee));
-  border-radius: 10px;
+  color: #24292e;
+  background: #fafbfc;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
   padding: 14px 16px;
   overflow-x: auto;
   white-space: pre;
   tab-size: 4;
-  box-shadow: inset 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.04);
+}
+[data-theme="dark"] .written-code-pre {
+  color: #d4d4d4;
+  background: #1e1e1e;
+  border-color: #333;
 }
 .written-code-pre code { font: inherit; color: inherit; background: none; padding: 0; }
+
+/* Syntax highlighting (Prism.js token classes) — shared by every code
+   block in the app (written-Q&A snippets + MCQ source listings), so the
+   colors only need defining once here. Light palette below is the default;
+   [data-theme="dark"] overrides to a VS-Code-Dark+-style set. */
+.code-tokens .token.comment { color: #008000; font-style: italic; }
+.code-tokens .token.keyword { color: #af00db; }
+.code-tokens .token.string,
+.code-tokens .token.char { color: #a31515; }
+.code-tokens .token.number,
+.code-tokens .token.boolean { color: #098658; }
+.code-tokens .token.function { color: #795e26; }
+.code-tokens .token.class-name { color: #267f99; }
+.code-tokens .token.macro,
+.code-tokens .token.property { color: #001080; }
+.code-tokens .token.operator,
+.code-tokens .token.punctuation { color: #24292e; }
+[data-theme="dark"] .code-tokens .token.operator,
+[data-theme="dark"] .code-tokens .token.punctuation { color: #d4d4d4; }
+
+[data-theme="dark"] .code-tokens .token.comment { color: #6a9955; }
+[data-theme="dark"] .code-tokens .token.keyword { color: #c586c0; }
+[data-theme="dark"] .code-tokens .token.string,
+[data-theme="dark"] .code-tokens .token.char { color: #ce9178; }
+[data-theme="dark"] .code-tokens .token.number,
+[data-theme="dark"] .code-tokens .token.boolean { color: #b5cea8; }
+[data-theme="dark"] .code-tokens .token.function { color: #dcdcaa; }
+[data-theme="dark"] .code-tokens .token.class-name { color: #4ec9b0; }
+[data-theme="dark"] .code-tokens .token.macro,
+[data-theme="dark"] .code-tokens .token.property { color: #9cdcfe; }
 
 /* Tables */
 .written-mistakes-wrap { display: flex; flex-direction: column; }

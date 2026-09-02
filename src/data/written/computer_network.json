@@ -2069,6 +2069,134 @@
         ],
         "mnemonic": "RIP = কান-কথা (মোড় গোনে, রাস্তা দেখে না)। DVR = সেই কান-কথার নিয়মটাই। OSPF = GPS (পুরো মানচিত্র দেখে নিজে হিসাব করে)। EIGRP = সঙ্গে অতিরিক্ত চাকা নিয়ে চলা গাড়ি (backup পথ আগেই প্রস্তুত, তাই থামতে হয় না)। BGP = দেশে দেশে কূটনীতি (কোন কোন দেশ পার হব, চুক্তি অনুযায়ী ঠিক করি)।"
       }
+    },
+    {
+      "id": "cn_030",
+      "q": "Explain the working principle of Stop-and-Wait ARQ, Sliding Window Protocol, Go-Back-N ARQ and Selective Repeat ARQ with diagram. What are the shortcomings of each?",
+      "tags": [
+        "ARQ",
+        "stop and wait ARQ",
+        "sliding window protocol",
+        "go back n arq",
+        "selective repeat arq",
+        "flow control",
+        "error control",
+        "sequence number",
+        "window size",
+        "data link layer"
+      ],
+      "answer": {
+        "summary": [
+          "ARQ (Automatic Repeat reQuest) হলো error control কৌশল — frame হারালে বা নষ্ট হলে sender সেটা আবার পাঠায়; পার্থক্য শুধু কয়টা frame একসাথে না-ACK অবস্থায় পাঠানো যায় (window size) আর error হলে কতটুকু আবার পাঠাতে হয়।",
+          "Stop-and-Wait প্রতিটি frame-এর জন্য আলাদা ACK-এর অপেক্ষা করে — সরল কিন্তু ধীর। Sliding Window একসাথে একাধিক frame পাঠানোর অনুমতি দেয়; Go-Back-N এবং Selective Repeat তার দুটি বাস্তবায়ন।",
+          "Go-Back-N-এ error হলে window-এর সব frame আবার পাঠাতে হয়; Selective Repeat-এ শুধু হারানো frame-টাই আবার পাঠাতে হয়, কিন্তু receiver-কে বাড়তি buffer রাখতে হয়।"
+        ],
+        "points": [
+          "Stop-and-Wait ARQ — নীতি: (Data+ACK) + timeout timer + sequence number:",
+          {
+            "sub": "Sender একটি frame পাঠিয়ে timer শুরু করে এবং ACK না আসা পর্যন্ত পরের frame পাঠায় না। Sequence number মাত্র ১ bit (0/1) — একসাথে একটাই frame in-flight থাকে বলে duplicate বোঝাতে এটুকুই যথেষ্ট।"
+          },
+          {
+            "sub": "সম্ভাব্য অবস্থা: Frame হারালে — timeout শেষে sender একই seq দিয়ে আবার পাঠায়; ACK হারালে — sender timeout-এ আবার পাঠায়, receiver seq দেখে duplicate বুঝে শুধু ACK আবার পাঠায়; ACK দেরি করলে — timeout ইতিমধ্যে হয়ে sender আবার পাঠিয়ে দেয়, receiver duplicate পায়।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: প্রতি মুহূর্তে মাত্র ১টি frame in-flight থাকে, তাই bandwidth-delay বেশি এমন link-এ (satellite) channel বেশিরভাগ সময় idle থাকে — throughput খুব কম।"
+          },
+          "Sliding Window Protocol — মূল ধারণা:",
+          {
+            "sub": "ACK-এর অপেক্ষা না করেই window size-সংখ্যক frame একসাথে পাঠানো যায়; প্রতিটি frame-এর নিজস্ব sequence number থাকে (নির্দিষ্ট range-এ modulo ঘুরে আসে)। Window sender ও receiver উভয় দিকেই থাকে, ACK আসার সাথে সাথে সামনে ‘slide’ করে।"
+          },
+          {
+            "sub": "উদ্দেশ্য: Stop-and-Wait-এর idle সময় কমিয়ে pipelining দিয়ে link পুরোপুরি ব্যবহার করা। Error হলে কীভাবে সামলাবে তার ভিত্তিতে এটি দুই ধরনের — Go-Back-N ও Selective Repeat।"
+          },
+          "Go-Back-N ARQ:",
+          {
+            "sub": "নীতি: sender window size N পর্যন্ত frame টানা পাঠাতে পারে; receiver শুধু ক্রমানুসারে (in-order) frame গ্রহণ করে এবং cumulative ACK পাঠায় (ACK=n মানে ‘n পর্যন্ত সব ঠিকভাবে পেয়েছি’)।"
+          },
+          {
+            "sub": "কোনো frame হারালে বা নষ্ট হলে receiver সেটা ও তার পরের সব frame বাতিল করে দেয় (out-of-order গ্রহণ করে না); sender timeout হলে হারানো frame থেকে শুরু করে window-এর বাকি সবকটা frame আবার পাঠায় — তাই নাম ‘go back N’।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: receiver-এর buffer লাগে না (সরল) কিন্তু একটি frame হারালে অনেকগুলো ভালো frame-ও আবার পাঠাতে হয় — window size বড় বা error rate বেশি হলে bandwidth বেশি নষ্ট হয়।"
+          },
+          "Selective Repeat ARQ:",
+          {
+            "sub": "নীতি: sender ও receiver দুজনেরই window থাকে; receiver প্রতিটি frame আলাদাভাবে ACK করে এবং সঠিকভাবে পাওয়া out-of-order frame-ও নিজের buffer-এ রেখে দেয় (বাতিল করে না)।"
+          },
+          {
+            "sub": "কোনো frame হারালে/নষ্ট হলে শুধু সেই frame-টাই আবার পাঠানো হয় (timeout দেখে) — অন্য ঠিকমতো পৌঁছানো frame আবার পাঠাতে হয় না।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: receiver-এ বাড়তি buffer ও প্রতিটি frame-এর জন্য আলাদা timer লাগে — জটিল ও ব্যয়বহুল; sequence number range window size-এর দ্বিগুণ না রাখলে sender ও receiver window গুলিয়ে যায় (ambiguity)।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Stop-and-Wait: খুব সরল/কম গতির link। Go-Back-N: HDLC-জাতীয় data-link protocol। Selective Repeat-এর ধারণা আধুনিক TCP-তে SACK (Selective ACK) হিসেবে এবং high-latency link-এ (satellite, Wi-Fi retransmission) ব্যবহৃত হয়।"
+          }
+        ],
+        "diagram": "STOP-AND-WAIT ARQ  —  (Data+ACK) + timeout timer + sequence(0/1)\n\n  স্বাভাবিক আদান-প্রদান          Frame হারালে                ACK হারালে                  ACK দেরি করলে\n  Sender     Receiver         Sender     Receiver          Sender     Receiver          Sender     Receiver\n    │──seq0───►│                │──seq0──X │                │──seq0───►│                │──seq0───►│\n    │◄──ACK0───│                │(timeout) │                │  X◄─ACK0─│                │◄─ACK0(দেরি)..│\n    │──seq1───►│                │──seq0───►│  (আবার পাঠানো)   │(timeout) │                │(timeout আগেই)│\n    │◄──ACK1───│                │◄──ACK0───│                │──seq0───►│  (আবার পাঠানো)   │──seq0───►│\n    │           │                │           │                │◄──ACK0───│ receiver duplicate│◄──ACK0───│\n    │           │                │           │                │           │ বাদ দেয়, ACK পাঠায়│duplicate পায়│\n\n\nGO-BACK-N ARQ (window size N)                        SELECTIVE REPEAT ARQ (window size N)\n\n  Sender          Receiver                                Sender          Receiver\n    │──0─────────►│                                          │──0─────────►│\n    │──1─────────►│                                          │──1─────────►│\n    │──2────X      │ (হারালো)                                  │──2────X      │ (হারালো)\n    │──3─────────►│ discard (in-order ছাড়া নিবে না)             │──3─────────►│ buffer-এ রেখে দেয়\n    │◄──ACK=1──────│ (cumulative: শুধু ‘1 পর্যন্ত ঠিক আছে’)        │◄─ACK0,1,3────│ (প্রতিটি frame-এর আলাদা ACK)\n    │ (timeout)     │                                          │ (timeout শুধু 2-এর)│\n    │──2,3,…N─────►│ পুরো window আবার পাঠাতে হলো                │──2──────────►│ শুধু হারানো frame আবার\n    │◄──ACK=N──────│                                          │◄──ACK=2──────│ buffer থেকে সঠিক ক্রমে সাজায়\n\n──────────────── at-a-glance ────────────────\n  Stop-and-Wait  : ১-এ-১, সবচেয়ে ধীর কিন্তু সবচেয়ে সরল\n  Go-Back-N      : error হলে গোটা window আবার পাঠাতে হয়\n  Selective Rep. : শুধু হারানো frame আবার পাঠাতে হয়, কিন্তু buffer+timer বেশি লাগে",
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Stop-and-Wait",
+            "Go-Back-N ARQ",
+            "Selective Repeat ARQ"
+          ],
+          "rows": [
+            [
+              "একসাথে কয়টি frame",
+              "১টি",
+              "N (window size)",
+              "N (window size)"
+            ],
+            [
+              "ACK ধরন",
+              "প্রতি frame-এ আলাদা",
+              "Cumulative (একটাই)",
+              "প্রতি frame-এ আলাদা"
+            ],
+            [
+              "Error হলে retransmit",
+              "শুধু সেই frame",
+              "হারানো frame থেকে window-এর সবকটা",
+              "শুধু হারানো frame"
+            ],
+            [
+              "Receiver buffer",
+              "লাগে না",
+              "লাগে না (out-of-order বাতিল)",
+              "লাগে (out-of-order রাখে)"
+            ],
+            [
+              "জটিলতা",
+              "সবচেয়ে সরল",
+              "মাঝারি",
+              "সবচেয়ে জটিল"
+            ],
+            [
+              "Efficiency",
+              "সবচেয়ে কম",
+              "ভালো, কিন্তু error-এ bandwidth নষ্ট",
+              "সবচেয়ে বেশি"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Sliding Window Protocol মানেই Go-Back-N",
+            "Sliding window হলো সাধারণ ধারণা (window size দিয়ে একাধিক frame পাঠানো); Go-Back-N ও Selective Repeat তার দুটি ভিন্ন বাস্তবায়ন — error handle করার পদ্ধতি আলাদা।"
+          ],
+          [
+            "Go-Back-N-এ receiver-এর buffer লাগে না বলেই এটা সেরা",
+            "Buffer না লাগা মানেই ভালো নয় — error rate বেশি হলে বারবার পুরো window retransmit করায় throughput কমে যায়; তখন buffer খরচ করেও Selective Repeat ভালো।"
+          ],
+          [
+            "Stop-and-Wait-এ অনেকগুলো sequence number দরকার",
+            "একসাথে একটাই frame in-flight থাকে বলে মাত্র ১ bit (0/1) sequence number-ই যথেষ্ট — duplicate বোঝার জন্য এটুকুই লাগে।"
+          ]
+        ],
+        "mnemonic": "Stop-Wait = ১-এ-১ ধীরে। Go-Back-N = ভুল হলে window-এর সবই ফেরত। Selective Repeat = ভুল হলে শুধু ভুলটাই ফেরত, কিন্তু মনে রাখতে (buffer) খরচ আছে।"
+      }
     }
   ]
 }

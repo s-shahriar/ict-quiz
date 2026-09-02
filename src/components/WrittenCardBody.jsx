@@ -1,5 +1,45 @@
 import { useState } from 'react'
 import { Brain } from 'lucide-react'
+import CodeBlock from './shared/CodeBlock.jsx'
+
+// `points` is normally a flat bullet list, but an item can also be a
+// `{ code, codeLang, label }` block (e.g. a per-pattern loop snippet) —
+// those render as standalone IDE-style code boxes, breaking the list into
+// separate <ul> chunks around them instead of becoming a bullet themselves.
+function renderPoints(points, topicColor) {
+  const blocks = []
+  let currentList = []
+  const flushList = () => {
+    if (currentList.length === 0) return
+    blocks.push(<ul className="written-points" key={`ul-${blocks.length}`}>{currentList}</ul>)
+    currentList = []
+  }
+
+  points.forEach((pt, i) => {
+    if (pt && typeof pt === 'object' && pt.code) {
+      flushList()
+      blocks.push(
+        <div className="written-code-wrap" key={`code-${i}`}>
+          <span className="written-block-label">{pt.label || pt.codeLang || 'Code'}</span>
+          <CodeBlock code={pt.code} lang={pt.codeLang} className="written-code-pre" />
+        </div>
+      )
+      return
+    }
+    const isSub = typeof pt === 'object' && pt.sub
+    currentList.push(
+      <li key={i} className={isSub ? 'written-point written-subpoint' : 'written-point'}
+        style={isSub ? { '--subpoint-color': topicColor } : {}}>
+        {isSub
+          ? <span className="written-subpoint-indent" />
+          : <span className="written-dot" style={{ background: topicColor }} />}
+        <span>{isSub ? pt.sub : pt}</span>
+      </li>
+    )
+  })
+  flushList()
+  return blocks
+}
 
 export function WrittenCardBody({ a, topicColor }) {
   const [extOpen, setExtOpen] = useState(false)
@@ -12,7 +52,7 @@ export function WrittenCardBody({ a, topicColor }) {
       {a.code && (
         <div className="written-code-wrap">
           <span className="written-block-label">{a.codeLang || 'Code'}</span>
-          <pre className="written-code-pre"><code>{a.code}</code></pre>
+          <CodeBlock code={a.code} lang={a.codeLang} className="written-code-pre" />
         </div>
       )}
 
@@ -32,20 +72,7 @@ export function WrittenCardBody({ a, topicColor }) {
           : <p>{a.summary}</p>}
       </div>
 
-      <ul className="written-points">
-        {a.points.map((pt, i) => {
-          const isSub = typeof pt === 'object' && pt.sub
-          return (
-            <li key={i} className={isSub ? 'written-point written-subpoint' : 'written-point'}
-              style={isSub ? { '--subpoint-color': topicColor } : {}}>
-              {isSub
-                ? <span className="written-subpoint-indent" />
-                : <span className="written-dot" style={{ background: topicColor }} />}
-              <span>{isSub ? pt.sub : pt}</span>
-            </li>
-          )
-        })}
-      </ul>
+      {renderPoints(a.points, topicColor)}
 
       {a.diagram && (
         <div className="written-diagram-wrap">

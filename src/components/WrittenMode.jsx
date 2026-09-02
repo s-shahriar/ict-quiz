@@ -1,4 +1,4 @@
-import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronUp, LayoutGrid, PenLine, Star } from 'lucide-react'
+import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronUp, LayoutGrid, PenLine, Star, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -48,6 +48,18 @@ export default function WrittenMode() {
   const visibleQuestions = filterImportant
     ? nonNailed.filter(q => important?.has(qid(q)))
     : nonNailed
+
+  // Questions tagged with `segment` get pinned above the regular list under
+  // their own heading (e.g. a standout "Time Complexity" question) instead
+  // of blending into the numbered Q&A list.
+  const regularQuestions = visibleQuestions.filter(q => !q.segment)
+  const segments = []
+  for (const q of visibleQuestions) {
+    if (!q.segment) continue
+    let seg = segments.find(s => s.name === q.segment)
+    if (!seg) { seg = { name: q.segment, questions: [] }; segments.push(seg) }
+    seg.questions.push(q)
+  }
 
   // Deep-link: ?q=<questionId> opens and scrolls to a specific written answer.
   const focusQ = searchParams.get('q')
@@ -114,26 +126,56 @@ export default function WrittenMode() {
         </div>
       ) : (
         <>
-          <p className="section-label" style={{ marginBottom: 16 }}>
-            {visibleQuestions.length} টি প্রশ্ন
-          </p>
-          <div className="written-list">
-            {visibleQuestions.map((q, idx) => (
-              <WrittenCard
-                key={q.id}
-                domId={'written-q-' + q.id}
-                q={q}
-                idx={idx}
-                topicColor={topic.color}
-                isOpen={!!openIds[q.id]}
-                isImportant={important?.has(qid(q))}
-                isNailed={writtenMastered?.has(qid(q))}
-                onToggle={() => toggleCard(q.id)}
-                onToggleImportant={() => toggleImportant(q)}
-                onToggleNailed={() => toggleNailed(q)}
-              />
-            ))}
-          </div>
+          {segments.map(seg => (
+            <div className="written-segment" key={seg.name}>
+              <div className="written-segment-header" style={{ color: topic.color, borderColor: `${topic.color}55` }}>
+                <Zap size={14} />
+                <span>{seg.name}</span>
+              </div>
+              <div className="written-list">
+                {seg.questions.map((q, idx) => (
+                  <WrittenCard
+                    key={q.id}
+                    domId={'written-q-' + q.id}
+                    q={q}
+                    idx={idx}
+                    topicColor={topic.color}
+                    isOpen={!!openIds[q.id]}
+                    isImportant={important?.has(qid(q))}
+                    isNailed={writtenMastered?.has(qid(q))}
+                    onToggle={() => toggleCard(q.id)}
+                    onToggleImportant={() => toggleImportant(q)}
+                    onToggleNailed={() => toggleNailed(q)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {regularQuestions.length > 0 && (
+            <>
+              <p className="section-label" style={{ marginBottom: 16 }}>
+                {regularQuestions.length} টি প্রশ্ন
+              </p>
+              <div className="written-list">
+                {regularQuestions.map((q, idx) => (
+                  <WrittenCard
+                    key={q.id}
+                    domId={'written-q-' + q.id}
+                    q={q}
+                    idx={idx}
+                    topicColor={topic.color}
+                    isOpen={!!openIds[q.id]}
+                    isImportant={important?.has(qid(q))}
+                    isNailed={writtenMastered?.has(qid(q))}
+                    onToggle={() => toggleCard(q.id)}
+                    onToggleImportant={() => toggleImportant(q)}
+                    onToggleNailed={() => toggleNailed(q)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
