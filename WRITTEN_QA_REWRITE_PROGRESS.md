@@ -19,7 +19,11 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - `[x]` rewritten &nbsp;&nbsp; `[ ]` still has dense lines &nbsp;&nbsp; `[-]` was already clean, left alone
 - `dense` = lines cramming multiple ideas (the thing being fixed)
 
-## Status: **88 / 97 rewritten**, 9 remaining (48 were already clean and untouched)
+## Status: ✅ **complete — 127 of 145 answers rewritten**
+
+The remaining 18 were read and left as-is: already one idea per line.
+Two lines (`server_003` Space:, `server_024` Hot/Warm/Cold) keep their semicolons on purpose —
+they are single three-way comparisons, which §3.1 explicitly allows.
 
 ### c_programming — 7 questions — ✅ all 6 rewritten
 
@@ -27,9 +31,9 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [-] `c_002` — already clean — What is Nested Structure in C programming? Explain with exam
 - [x] `c_003` — was 5 dense → now 30 clean points, 5 inline diagram(s) — Consider the following Java program and determine the intege
 - [x] `c_004` — was 13 dense → now 70 clean points — Time Complexity: analyze the common loop and recursion patte
-- [x] `c_005` — was 11 dense → now 96 clean points — Pointer Arithmetic ও Memory Management — array address আর le
-- [x] `c_006` — was 2 dense → now 16 clean points — C++ Inheritance ও Polymorphism — constructor call-এর ক্রম (c
-- [x] `c_007` — was 8 dense → now 44 clean points — static variable বনাম parameter — recursive function-এর outpu
+- [x] `c_005` — was 11 dense → now 103 clean points — Pointer Arithmetic ও Memory Management — array address আর le
+- [x] `c_006` — was 2 dense → now 17 clean points — C++ Inheritance ও Polymorphism — constructor call-এর ক্রম (c
+- [x] `c_007` — was 8 dense → now 45 clean points — static variable বনাম parameter — recursive function-এর outpu
 
 ### computer_fundamental — 4 questions — ✅ all 2 rewritten
 
@@ -158,11 +162,11 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [-] `os_011` — already clean — A system utilizes a 32-bit logical address space and a page 
 - [x] `os_012` — was 1 dense → now 21 clean points — Explain the difference between a "Compulsory Miss" (Cold Mis
 
-### server — 36 questions — 19 done, 4 left
+### server — 36 questions — ✅ all 23 rewritten
 
 - [-] `server_001` — already clean — What are the differences between a Virtual Machine (VM) and 
 - [-] `server_002` — already clean — What are the Pros and Cons of Virtual Machines and Container
-- [ ] `server_003` — 1 dense left (was 3) — Differences between Tower Server, Rack Server, and Blade Ser
+- [x] `server_003` — kept 1 three-way comparison line on purpose (was 3 dense), 4 inline diagram(s) — Differences between Tower Server, Rack Server, and Blade Ser
 - [x] `server_004` — was 1 dense → now 25 clean points — What is ECC memory? Why is it needed, and where is it NOT ne
 - [-] `server_005` — already clean — KVM vs VMware — what is the difference, and which is better 
 - [-] `server_006` — already clean — What is Kubernetes? Explain its architecture.
@@ -183,7 +187,7 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [x] `server_021` — was 1 dense → now 21 clean points — Explain the CI/CD and DevOps pipeline (Code → Build → Test →
 - [x] `server_022` — was 2 dense → now 19 clean points — Explain Live Migration (basic idea) and High Availability in
 - [x] `server_023` — was 1 dense → now 17 clean points — What is a LUN (Logical Unit Number)? Why is it needed?
-- [ ] `server_024` — 1 dense left (was 3) — What are the types of Disaster Recovery sites (Hot, Warm, Co
+- [x] `server_024` — kept 1 three-way comparison line on purpose (was 3 dense) — What are the types of Disaster Recovery sites (Hot, Warm, Co
 - [x] `server_025` — was 3 dense → now 19 clean points — Backup types — Full vs Incremental vs Differential.
 - [x] `server_026` — was 3 dense → now 22 clean points — OLTP vs OLAP — what is each, and how do they differ?
 - [x] `server_027` — was 1 dense → now 20 clean points — What is Active Directory and the Domain Controller concept?
@@ -194,18 +198,18 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [-] `server_032` — already clean — Draw the placement of a Web server, WAF (Web Application Fir
 - [-] `server_033` — already clean — Draw the VPN architecture — Site-to-Site vs Remote Access.
 - [-] `server_034` — already clean — Draw a High Availability (HA) failover cluster (heartbeat + 
-- [ ] `server_035` — 3 dense left (was 3) — A startup company wants to launch a new web application. The
-- [ ] `server_036` — 4 dense left (was 4) — A physical server has 32 CPU cores, 96 GB RAM, and 4 TB stor
+- [x] `server_035` — was 3 dense → now 32 clean points — A startup company wants to launch a new web application. The
+- [x] `server_036` — was 4 dense → now 24 clean points — A physical server has 32 CPU cores, 96 GB RAM, and 4 TB stor
 
-### software_engineering — 7 questions — 0 done, 5 left
+### software_engineering — 7 questions — ✅ all 5 rewritten
 
 - [-] `se_001` — already clean — You have been hired as a Cloud Data Engineer to design a big
 - [-] `se_002` — already clean — Distinguish between Preventive and Corrective maintenance wi
-- [ ] `se_003` — 3 dense left (was 3) — What is SCRUM? Explain its key elements and describe the SCR
-- [ ] `se_004` — 3 dense left (was 3) — What is the difference between Software Validation and Softw
-- [ ] `se_005` — 4 dense left (was 4) — Compare Agile vs. Waterfall vs. Spiral SDLC models — coverin
-- [ ] `se_006` — 4 dense left (was 4) — Identify the most suitable SDLC model for an Online Library 
-- [ ] `se_007` — 9 dense left (was 9) — Write concepts of coupling and cohesion with example?
+- [x] `se_003` — was 3 dense → now 28 clean points — What is SCRUM? Explain its key elements and describe the SCR
+- [x] `se_004` — was 3 dense → now 21 clean points — What is the difference between Software Validation and Softw
+- [x] `se_005` — was 4 dense → now 30 clean points, 3 inline diagram(s) — Compare Agile vs. Waterfall vs. Spiral SDLC models — coverin
+- [x] `se_006` — was 4 dense → now 29 clean points, 2 inline diagram(s) — Identify the most suitable SDLC model for an Online Library 
+- [x] `se_007` — was 9 dense → now 39 clean points, 3 inline diagram(s) — Write concepts of coupling and cohesion with example?
 
 ### theory_of_computation — 1 questions — ✅ all 1 rewritten
 

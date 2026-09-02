@@ -185,8 +185,14 @@
           "try block: যে code এ exception হতে পারে সেটা এখানে রাখো।",
           "catch block: exception ধরে handle করো — message দেখাও বা recovery করো। Multiple catch হতে পারে।",
           "finally block: exception হোক বা না হোক সবসময় execute হয় — resource close করার জন্য।",
-          "throw: manually exception তৈরি করে ছুঁড়ে দেওয়া। throw new ArithmeticException(\"message\");",
-          "throws: method signature এ declare করা যে এই method exception throw করতে পারে। Caller handle করবে।",
+          "throw — manually exception তৈরি করে ছুঁড়ে দেওয়া:",
+          {
+            "sub": "syntax: throw new ArithmeticException(\"message\");"
+          },
+          "throws — method signature-এ ঘোষণা করা যে এই method exception throw করতে পারে:",
+          {
+            "sub": "তখন সেই exception caller-কে handle করতে হয়।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
             "sub": "finally বা try-with-resources দিয়ে database connection, file ও socket বন্ধ করা হয়।"

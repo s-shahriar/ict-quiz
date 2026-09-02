@@ -478,7 +478,16 @@
           "height 0→2 এ মোট node = 1 + 4 + 16 = 21; প্রতিটিতে 3 key → 21 × 3 = 63।"
         ],
         "points": [
-          "নিয়ম: order m মানে প্রতি node এ সর্বোচ্চ m child pointer এবং সর্বোচ্চ (m−1) key। এখানে m = 4 → max 3 key প্রতি node।",
+          "নিয়ম:",
+          {
+            "sub": "order m মানে প্রতি node-এ সর্বোচ্চ m child pointer।"
+          },
+          {
+            "sub": "এবং প্রতি node-এ সর্বোচ্চ (m−1) key।"
+          },
+          {
+            "sub": "এখানে m = 4, তাই প্রতি node-এ সর্বোচ্চ 3 key।"
+          },
           "প্রতি level এ সর্বোচ্চ node সংখ্যা (পূর্ণ গাছ ধরে, প্রতি node এর 4 child):",
           {
             "sub": "height 0 (root): 4⁰ = 1 node"

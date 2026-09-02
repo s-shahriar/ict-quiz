@@ -138,7 +138,13 @@
           "যেমন: Student এর ভেতরে Address struct — access করতে dot operator ব্যবহার করা হয়।"
         ],
         "points": [
-          "Structure: related data গুলোকে একসাথে রাখার user-defined data type। struct keyword দিয়ে define করা হয়।",
+          "Structure:",
+          {
+            "sub": "related data গুলোকে একসাথে রাখার একটি user-defined data type।"
+          },
+          {
+            "sub": "struct keyword দিয়ে define করা হয়।"
+          },
           "Nested Structure: একটি struct এর member হিসেবে আরেকটি struct রাখা — দুটো উপায়ে করা যায়।",
           "উপায় ১ — Separate definition: আলাদাভাবে struct define করে ভেতরে ব্যবহার করো (recommended)।",
           "উপায় ২ — Embedded definition: একটি struct এর ভেতরেই আরেকটি define করো।",
@@ -744,7 +750,10 @@
             "sub": "fun(2) = 1 + 9 = 10।"
           },
           {
-            "sub": "fun(2)-এর ফলাফল (10) পেয়ে fun(3)-ও x-এর সর্বশেষ মান (9)-ই পড়ে — নিজের বসানো পুরনো মান 5 নয়। fun(3) = 10 + 9 = 19।"
+            "sub": "fun(2)-এর ফলাফল (10) পেয়ে fun(3)-ও x-এর সর্বশেষ মান (9)-ই পড়ে — নিজের বসানো পুরনো মান 5 নয়।"
+          },
+          {
+            "sub": "fun(3) = 10 + 9 = 19।"
           },
           {
             "sub": "→ Output: 19"
@@ -916,7 +925,10 @@
             "sub": "C++ কম্পাইলার derived class-এর object বানানোর আগে সবগুলো base class-এর constructor call করে নেয়, ইনহেরিটেন্স লিস্টের ক্রমে (বাম থেকে ডান) — এখানে আগে A, পরে B।"
           },
           {
-            "sub": "এরপর সবশেষে derived class (C)-এর নিজের constructor চলে। constructor-এর ভেতরের কোনো initializer list লেখার ক্রম এতে প্রভাব ফেলে না।"
+            "sub": "এরপর সবশেষে derived class (C)-এর নিজের constructor চলে।"
+          },
+          {
+            "sub": "constructor-এর ভেতরে initializer list কোন ক্রমে লেখা হলো, তাতে এই ক্রম বদলায় না।"
           },
           {
             "sub": "→ Output: A B C"
@@ -978,7 +990,10 @@
         "points": [
           "🔑 Pointer ও Array Address — সবচেয়ে বড় বিভ্রান্তি আগে সাফ করো (arr, &arr, &arr[i], *(arr+i)):",
           {
-            "sub": "arr — array-টা ব্যবহার করলে সে decay করে প্রথম element-এর address-এ পরিণত হয়। তাই arr এবং &arr[0] সবসময় সমান।"
+            "sub": "arr — array-টা ব্যবহার করলে সে decay করে প্রথম element-এর address-এ পরিণত হয়।"
+          },
+          {
+            "sub": "তাই arr এবং &arr[0] সবসময় সমান।"
           },
           {
             "sub": "&arr[i] বা (arr+i) — i-তম element-এর ADDRESS। তারকা নেই, তাই মান নয়, ঠিকানা।"
@@ -1000,7 +1015,10 @@
             "sub": "arr+1 (বা &arr[0]+1): এক ধাপ = 1টা int = 4 byte এগোয়। এটা দ্বিতীয় element-এর address।"
           },
           {
-            "sub": "&arr+1: এক ধাপ = পুরো array = n × 4 byte এগোয়। এটা array শেষ হওয়ার ঠিক পরের address — array-এর ভেতরে কোনো element নয়, বাইরে।"
+            "sub": "&arr+1: এক ধাপ = পুরো array = n × 4 byte এগোয়।"
+          },
+          {
+            "sub": "এটা array শেষ হওয়ার ঠিক পরের address — array-এর ভেতরে কোনো element নয়, বাইরে।"
           },
           {
             "sub": "তাই (int*)(&arr+1) করে int* এ নামিয়ে এনে -1 করলে array-এর একদম শেষ element-এ ফেরা যায় — array-এর শেষ থেকে গোনার একটা কৌশল।"
@@ -1023,7 +1041,10 @@
             "label": "প্রশ্ন ১"
           },
           {
-            "sub": "p = a মানে p এখন a[0]-কে point করছে (index 0)। p+1 মানে p থেকে ১টা int (4 byte) এগোনো — index 1, যেখানে মান 20।"
+            "sub": "p = a মানে p এখন a[0]-কে point করছে (index 0)।"
+          },
+          {
+            "sub": "p+1 মানে p থেকে ১টা int (4 byte) এগোনো — index 1, যেখানে মান 20।"
           },
           {
             "sub": "*(p+1) মানে সেই address-এর VALUE পড়া — 20, ঠিকানা নয়।"
@@ -1038,7 +1059,10 @@
             "label": "প্রশ্ন ২"
           },
           {
-            "sub": "a+2 মানে array-এর শুরু থেকে ২ ধাপ এগোনো address, index 2 (a[2])। p প্রথমেই সেই address দিয়ে initialize হয়েছে।"
+            "sub": "a+2 মানে array-এর শুরু থেকে ২ ধাপ এগোনো address — index 2 (a[2])।"
+          },
+          {
+            "sub": "p প্রথমেই সেই address দিয়ে initialize হয়েছে।"
           },
           {
             "sub": "a[0]=2, a[1]=4, a[2]=6, a[3]=8 — index 2-এর মান 6। *p মানে সেই address-এর VALUE — 6।"
@@ -1053,7 +1077,13 @@
             "label": "প্রশ্ন ৩"
           },
           {
-            "sub": "p = a → p index 0-তে (মান 3)। p++ → p নিজেই বদলে গিয়ে index 1-এ চলে যায় (মান 6) — কোনো dereference হয়নি, শুধু pointer নড়েছে।"
+            "sub": "p = a → p index 0-তে (মান 3)।"
+          },
+          {
+            "sub": "p++ → p নিজেই বদলে গিয়ে index 1-এ চলে যায় (মান 6)।"
+          },
+          {
+            "sub": "এখানে কোনো dereference হয়নি — শুধু pointer-টা নড়েছে।"
           },
           {
             "sub": "printf-এ *p মানে এখন p যেখানে আছে (index 1) তার মান পড়া — 6। array-এর কোনো মান পাল্টায়নি।"
@@ -1131,7 +1161,10 @@
             "label": "প্রশ্ন ৭"
           },
           {
-            "sub": "p = a+3 → শুরুতে p index 3-এ (মান 12)। *p-- (postfix): আগে *p পড়া হয় (12), তারপর p কমে index 2-এ যায়।"
+            "sub": "p = a+3 → শুরুতে p index 3-এ (মান 12)।"
+          },
+          {
+            "sub": "*p-- (postfix): আগে *p পড়া হয় (12), তারপর p কমে index 2-এ যায়।"
           },
           {
             "sub": "*--p (prefix): আগে p আরেক ধাপ কমে index 1-এ যায়, তারপর পড়া হয় (মান 6)। যোগফল = 12+6 = 18।"

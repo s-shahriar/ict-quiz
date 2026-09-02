@@ -21,20 +21,68 @@
           "প্রতিটি Hadoop component একটি নির্দিষ্ট layer এ কাজ করে।"
         ],
         "points": [
-          "Flume: Web server এর nginx/apache log real-time collect করে HDFS এ পাঠায়",
-          "Chukwa: Distributed system এর monitoring data collect করে — HDFS এর উপর built",
-          "Sqoop: MySQL/PostgreSQL থেকে product catalog ও order history HDFS এ import/export করে",
-          "Avro: Data serialization ও schema management — ingestion এ data format নিশ্চিত করে",
-          "HDFS: পুরো pipeline এর backbone — petabytes raw data store করে, data ৩ বার replicate করে fault-tolerant",
-          "HBase: Column-family NoSQL DB — user profile, clickstream এর random-access storage (HDFS এর উপর)",
-          "Cassandra: High-write, low-latency NoSQL — session data ও pre-computed recommendations দ্রুত serve করে",
-          "YARN: Cluster এর CPU ও memory allocate করে — MapReduce, Pig, Hive সবাই YARN এ চলে",
-          "ZooKeeper: Distributed coordination, leader election, configuration management",
-          "MapReduce: Heavy batch jobs — log aggregation, sales report, ML feature engineering",
-          "Pig: Pig Latin script দিয়ে ETL — log cleaning, data transformation, join operations",
-          "Hive: HiveQL (SQL-like) দিয়ে HDFS query — business analytics ও data warehousing",
-          "Oozie: Batch job workflow scheduler — 'রাত ২টায় Pig চালাও, শেষে Hive চালাও' এই pipeline manage করে",
-          "Mahout: ML library — Collaborative Filtering (recommendations), k-means clustering (segmentation), classification (fraud)"
+          "Layer 1 — Ingestion (data ভেতরে আনা):",
+          {
+            "sub": "Flume: web server এর nginx/apache log real-time collect করে HDFS এ পাঠায়।"
+          },
+          {
+            "sub": "Chukwa: distributed system এর monitoring data collect করে — HDFS এর উপর built।"
+          },
+          {
+            "sub": "Sqoop: MySQL/PostgreSQL থেকে product catalog ও order history HDFS এ import/export করে।"
+          },
+          {
+            "sub": "Avro: data serialization ও schema management — ingestion এ data format নিশ্চিত করে।"
+          },
+          "Layer 2 — Storage (petabyte scale এ রাখা):",
+          {
+            "sub": "HDFS: পুরো pipeline এর backbone — petabytes raw data store করে।"
+          },
+          {
+            "sub": "HDFS প্রতিটি data ৩ বার replicate করে, তাই fault-tolerant।"
+          },
+          {
+            "sub": "HBase: column-family NoSQL DB — user profile ও clickstream এর random-access storage (HDFS এর উপর)।"
+          },
+          {
+            "sub": "Cassandra: high-write ও low-latency NoSQL — session data ও pre-computed recommendation দ্রুত serve করে।"
+          },
+          "Layer 3 — Resource Management:",
+          {
+            "sub": "YARN: cluster এর CPU ও memory allocate করে।"
+          },
+          {
+            "sub": "MapReduce, Pig, Hive — সবাই YARN এর উপরেই চলে।"
+          },
+          {
+            "sub": "ZooKeeper: distributed coordination, leader election ও configuration management করে।"
+          },
+          "Layer 4 — Processing:",
+          {
+            "sub": "MapReduce: heavy batch job — log aggregation, sales report, ML feature engineering।"
+          },
+          {
+            "sub": "Pig: Pig Latin script দিয়ে ETL — log cleaning, data transformation, join operation।"
+          },
+          {
+            "sub": "Hive: HiveQL (SQL-like) দিয়ে HDFS query — business analytics ও data warehousing।"
+          },
+          {
+            "sub": "Oozie: batch job workflow scheduler — \"রাত ২টায় Pig চালাও, শেষে Hive চালাও\" এই pipeline manage করে।"
+          },
+          "Layer 5 — ML ও Serving:",
+          {
+            "sub": "Mahout: scale এ চলা ML library।"
+          },
+          {
+            "sub": "Collaborative Filtering দিয়ে product recommendation তৈরি করে।"
+          },
+          {
+            "sub": "k-means clustering দিয়ে customer segmentation করে।"
+          },
+          {
+            "sub": "Classification দিয়ে fraud detection করে।"
+          }
         ],
         "diagram": "                E-COMMERCE BIG DATA PIPELINE\n═══════════════════════════════════════════════════════\n\n  DATA SOURCES\n  ┌────────────┐  ┌────────────┐  ┌────────────┐\n  │Web Servers │  │App Servers │  │MySQL / RDB │\n  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘\n        │               │               │\n─────────────────────────────────────────────────────\n  LAYER 1: INGESTION\n        │               │               │\n   ┌────▼───┐      ┌────▼───┐      ┌────▼───┐\n   │ FLUME  │      │CHUKWA  │      │ SQOOP  │\n   │log coll│      │monitor │      │RDBMS ↔ │\n   └────┬───┘      └────┬───┘      └────┬───┘\n        │    AVRO (serialization)        │\n        └──────────────┬────────────────┘\n                       │\n─────────────────────────────────────────────────────\n  LAYER 2: STORAGE\n                       │\n        ┌──────────────┼─────────────┐\n        ▼              ▼             ▼\n   ┌─────────┐  ┌──────────┐  ┌──────────┐\n   │  HDFS   │  │  HBase   │  │Cassandra │\n   │Raw Data │  │Structured│  │High-speed│\n   │Petabytes│  │Clickstrm │  │Recommends│\n   └─────────┘  └──────────┘  └──────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 3: RESOURCE MANAGEMENT\n   ┌──────────────────┐  ┌───────────────────┐\n   │  YARN            │  │  ZooKeeper        │\n   │  Resource Mgr    │  │  Coordination     │\n   └──────────────────┘  └───────────────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 4: PROCESSING\n   ┌──────────┐ ┌─────┐ ┌──────┐ ┌──────────┐\n   │MapReduce │ │ Pig │ │ Hive │ │  Oozie   │\n   │  Batch   │ │ ETL │ │ SQL  │ │Scheduler │\n   └──────────┘ └─────┘ └──────┘ └──────────┘\n\n─────────────────────────────────────────────────────\n  LAYER 5: ML & SERVING\n   ┌──────────────────────────────────────┐\n   │              MAHOUT                  │\n   │  Collaborative Filtering → Reco      │\n   │  Clustering → Customer Segment       │\n   └───────────────┬──────────────────────┘\n                   │\n        ┌──────────┴──────────┐\n        ▼                     ▼\n   ┌──────────┐          ┌──────────┐\n   │  HBase   │          │Cassandra │\n   │(reco DB) │          │(fast API)│\n   └──────────┘          └──────────┘\n                   │\n                   ▼\n        ┌──────────────────┐\n        │ Recommendation   │\n        │      API         │\n        └──────────────────┘\n═══════════════════════════════════════════════════════",
         "mistakes": [
@@ -107,11 +155,46 @@
           "Series এ component বাড়লে reliability কমে — data center এ redundant (parallel) components ব্যবহার করা হয়।"
         ],
         "points": [
-          "Preventive: ব্যর্থতার আগে scheduled maintenance। Data center উদাহরণ: প্রতি ২ বছরে UPS battery পরিবর্তন, মাসিক fan cleaning, quarterly hardware diagnostics",
-          "Corrective: ব্যর্থতার পরে মেরামত। Data center উদাহরণ: হঠাৎ power supply নষ্ট হলে replace, RAID failure পরে disk swap, OS crash এর পরে restore",
-          "Series reliability formula: R_system = R1 × R2 × R3 = 0.95 × 0.95 × 0.95",
-          "R = (0.95)³ = 0.857375 ≈ 85.74%",
-          "Series এ component বাড়লে reliability কমে — তাই data center এ redundant (parallel) components ব্যবহার করা হয়"
+          "Preventive maintenance:",
+          {
+            "sub": "ব্যর্থতার আগেই scheduled রক্ষণাবেক্ষণ।"
+          },
+          {
+            "sub": "Data center উদাহরণ: প্রতি ২ বছরে UPS battery পরিবর্তন।"
+          },
+          {
+            "sub": "Data center উদাহরণ: মাসিক fan cleaning ও quarterly hardware diagnostics।"
+          },
+          "Corrective maintenance:",
+          {
+            "sub": "ব্যর্থতার পরে মেরামত।"
+          },
+          {
+            "sub": "Data center উদাহরণ: হঠাৎ power supply নষ্ট হলে সেটি replace করা।"
+          },
+          {
+            "sub": "Data center উদাহরণ: RAID failure এর পরে disk swap, OS crash এর পরে restore।"
+          },
+          "হিসাব — Series reliability:",
+          {
+            "sub": "Series এ যেকোনো একটি component নষ্ট হলেই পুরো system fail করে।"
+          },
+          {
+            "sub": "Formula: R_system = R1 × R2 × R3।"
+          },
+          {
+            "sub": "বসিয়ে পাই: R = 0.95 × 0.95 × 0.95 = (0.95)³।"
+          },
+          {
+            "sub": "R = 0.857375 ≈ 85.74%।"
+          },
+          "এর অর্থ কী:",
+          {
+            "sub": "Series এ component সংখ্যা বাড়লে total reliability কমতেই থাকে।"
+          },
+          {
+            "sub": "তাই data center এ redundant (parallel) component ব্যবহার করা হয়।"
+          }
         ],
         "diagram": "Series Configuration:\n Input ──▶ [Power Supply] ──▶ [Motherboard] ──▶ [Storage] ──▶ Output\n              0.95               0.95              0.95\n যেকোনো একটি নষ্ট = system fail ❌\n\n R = 0.95 × 0.95 × 0.95 = (0.95)³ = 0.857375 ≈ 85.74%\n\nParallel (তুলনার জন্য):\n          ┌──[Component 0.95]──┐\n Input ───┤                    ├─── Output\n          └──[Component 0.95]──┘\n R = 1 − (1−0.95)² = 1 − 0.0025 = 0.9975 = 99.75%\n Series এ কমে, Parallel এ বাড়ে → data center এ redundancy ব্যবহার করা হয়",
         "mistakes": [
@@ -179,21 +262,78 @@
           "তিনটি মূল role, পাঁচটি key element এবং একটি cyclical process নিয়ে গঠিত।"
         ],
         "points": [
-          "Sprint: SCRUM এর মূল unit — 1 থেকে 4 সপ্তাহের time-boxed iteration। প্রতিটি Sprint শেষে working software (Increment) deliver করতে হয়।",
-          "Product Backlog: সব requirements এর prioritized তালিকা। Product Owner maintain করেন। পুরো project এর কাজের master list।",
-          "Sprint Backlog: Product Backlog থেকে বেছে নেওয়া items যা current Sprint এ করা হবে। Team নিজে select করে।",
-          "Increment: প্রতিটি Sprint শেষে produce করা working, tested software। আগের Increment এর সাথে যোগ হয়।",
-          "Daily Scrum (Stand-up): প্রতিদিন 15 মিনিটের meeting। তিনটি প্রশ্ন: গতকাল কী করলাম? আজ কী করব? কোনো বাধা আছে কি?",
-          "Roles — Product Owner: requirements define করেন, backlog manage করেন। Scrum Master: process facilitate করেন, বাধা দূর করেন। Development Team: actual কাজ করে (3-9 জন)।",
-          "ব্যবহারিক প্রয়োগ:",
+          "Sprint — SCRUM এর মূল unit:",
           {
-            "sub": "product ও startup team এ সাধারণত ২ সপ্তাহের sprint চালানো হয়; backlog ও sprint board থাকে Jira/Trello তে, sprint শেষে review ও retrospective হয়।"
+            "sub": "1 থেকে 4 সপ্তাহের time-boxed iteration।"
           },
           {
-            "sub": "কোথায় কম উপযোগী: যেখানে scope, দাম ও সময় আগেই চুক্তিতে বাঁধা (সরকারি টেন্ডার বা regulatory প্রকল্প) — সেখানে পরিবর্তনশীল backlog মানানসই হয় না।"
+            "sub": "প্রতিটি Sprint শেষে working software (Increment) deliver করতে হয়।"
+          },
+          "Product Backlog:",
+          {
+            "sub": "সব requirement এর prioritized তালিকা।"
+          },
+          {
+            "sub": "Product Owner এটি maintain করেন।"
+          },
+          {
+            "sub": "এটিই পুরো project এর কাজের master list।"
+          },
+          "Sprint Backlog:",
+          {
+            "sub": "Product Backlog থেকে বেছে নেওয়া item, যা current Sprint এ করা হবে।"
+          },
+          {
+            "sub": "Team নিজেই সেগুলো select করে।"
+          },
+          "Increment:",
+          {
+            "sub": "প্রতিটি Sprint শেষে তৈরি হওয়া working ও tested software।"
+          },
+          {
+            "sub": "আগের Increment এর সাথে যোগ হতে থাকে।"
+          },
+          "Daily Scrum (Stand-up):",
+          {
+            "sub": "প্রতিদিন ১৫ মিনিটের meeting।"
+          },
+          {
+            "sub": "প্রশ্ন ১ — গতকাল কী করলাম?"
+          },
+          {
+            "sub": "প্রশ্ন ২ — আজ কী করব?"
+          },
+          {
+            "sub": "প্রশ্ন ৩ — কোনো বাধা আছে কি?"
+          },
+          "তিনটি Role:",
+          {
+            "sub": "Product Owner: requirement define করেন ও backlog manage করেন।"
+          },
+          {
+            "sub": "Scrum Master: process facilitate করেন এবং বাধা দূর করেন।"
+          },
+          {
+            "sub": "Development Team: actual কাজ করে (৩-৯ জন)।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Product ও startup team এ সাধারণত ২ সপ্তাহের sprint চালানো হয়।"
+          },
+          {
+            "sub": "Backlog ও sprint board রাখা হয় Jira বা Trello তে।"
+          },
+          {
+            "sub": "Sprint শেষে review ও retrospective হয়।"
+          },
+          {
+            "sub": "কোথায় কম উপযোগী: যেখানে scope, দাম ও সময় আগেই চুক্তিতে বাঁধা — সরকারি টেন্ডার বা regulatory প্রকল্প।"
+          },
+          {
+            "sub": "সেখানে পরিবর্তনশীল backlog মানানসই হয় না।"
           }
         ],
-        "diagram": "SCRUM Process Flow:\n\nProduct Backlog     Sprint Backlog        Sprint          Increment\n(সব requirements)  (selected items)    (1-4 weeks)    (working SW)\n┌──────────┐       ┌──────────┐       ┌──────────┐    ┌──────────┐\n│ • Req 1  │       │ • Req 2  │  ╔══▶ │          │══▶ │  v1.0    │\n│ • Req 2  │──────▶│ • Req 5  │  ║    │  Daily   │    │ Released │\n│ • Req 3  │       │ • Req 7  │  ╚════│  Scrum ↺ │    │          │\n│ • Req 4  │       └──────────┘       └──────────┘    └──────────┘\n│ ...      │                                ↑\n└──────────┘                         15 min/day\n\nKey Roles:\n  Product Owner  → What to build (backlog manage)\n  Scrum Master   → How to work (process, remove blockers)\n  Dev Team       → Build it (3-9 members, self-organizing)\n\nSprint Timeline:\n  Day 1: Sprint Planning\n  Day 2-N: Daily Scrum + Development\n  Last day: Sprint Review + Retrospective\n  → Next Sprint শুরু!",
+        "diagram": "SCRUM Process Flow:\n\nProduct Backlog     Sprint Backlog        Sprint          Increment\n(all requirements) (selected items)    (1-4 weeks)     (working SW)\n┌──────────┐       ┌──────────┐       ┌──────────┐    ┌──────────┐\n│ • Req 1  │       │ • Req 2  │  ╔══▶ │          │══▶ │  v1.0    │\n│ • Req 2  │──────▶│ • Req 5  │  ║    │  Daily   │    │ Released │\n│ • Req 3  │       │ • Req 7  │  ╚════│  Scrum ↺ │    │          │\n│ • Req 4  │       └──────────┘       └──────────┘    └──────────┘\n│ ...      │                                ↑\n└──────────┘                         15 min/day\n\nKey Roles:\n  Product Owner  → What to build (backlog manage)\n  Scrum Master   → How to work (process, remove blockers)\n  Dev Team       → Build it (3-9 members, self-organizing)\n\nSprint Timeline:\n  Day 1: Sprint Planning\n  Day 2-N: Daily Scrum + Development\n  Last day: Sprint Review + Retrospective\n  → এরপর পরের Sprint শুরু হয়",
         "table": {
           "headers": [
             "Element",
@@ -259,10 +399,61 @@
           "Validation = 'Are we building the right product?' — final software user এর actual need পূরণ করছে কি না।"
         ],
         "points": [
-          "Verification: Internal process — code, design, document specifications এর সাথে মেলানো হয়। Static Testing — code execute না করেও করা যায়। Early in lifecycle — requirements, design phase এ। Methods: Code Review, Walkthrough, Inspection, Static Analysis, Unit Testing",
-          "Validation: External process — final software user এর real need ও expectation পূরণ করছে কি না। Dynamic Testing — actual code execute করে test করতে হয়। Later in lifecycle — development এর পরে। Methods: System Testing, Integration Testing, UAT (User Acceptance Testing), Alpha/Beta Testing",
-          "Key distinction: Verification = blueprint ঠিক আছে কি না। Validation = blueprint অনুযায়ী বানানো জিনিস user এর কাজে লাগছে কি না",
-          "Real-life Example (Online Banking App — Fund Transfer): Verification: Developer TransferFunds() function এর code review করে — '$5000 limit logic টি design spec অনুযায়ী implement হয়েছে কি না?' চেক। Validation: Tester $5001 transfer করার চেষ্টা করে — 'User কি helpful error message পাচ্ছে এবং transfer block হচ্ছে?' — user need পূরণ হচ্ছে কি না confirm করে"
+          "Verification — \"Are we building the product right?\":",
+          {
+            "sub": "এটি একটি internal process।"
+          },
+          {
+            "sub": "Code, design ও document — specification এর সাথে মিলিয়ে দেখা হয়।"
+          },
+          {
+            "sub": "Static Testing — code execute না করেও করা যায়।"
+          },
+          {
+            "sub": "Lifecycle এর শুরুর দিকে হয় — requirement ও design phase এ।"
+          },
+          {
+            "sub": "পদ্ধতি: Code Review, Walkthrough, Inspection, Static Analysis, Unit Testing।"
+          },
+          "Validation — \"Are we building the right product?\":",
+          {
+            "sub": "এটি একটি external process।"
+          },
+          {
+            "sub": "Final software user এর real need ও expectation পূরণ করছে কি না দেখা হয়।"
+          },
+          {
+            "sub": "Dynamic Testing — actual code execute করে test করতে হয়।"
+          },
+          {
+            "sub": "Lifecycle এর পরের দিকে হয় — development শেষ হওয়ার পরে।"
+          },
+          {
+            "sub": "পদ্ধতি: System Testing, Integration Testing, UAT (User Acceptance Testing), Alpha/Beta Testing।"
+          },
+          "এক লাইনে পার্থক্য:",
+          {
+            "sub": "Verification = blueprint ঠিক আছে কি না।"
+          },
+          {
+            "sub": "Validation = blueprint অনুযায়ী বানানো জিনিস user এর কাজে লাগছে কি না।"
+          },
+          "বাস্তব উদাহরণ — Online Banking App এর Fund Transfer:",
+          {
+            "sub": "Verification: developer TransferFunds() function এর code review করেন।"
+          },
+          {
+            "sub": "তিনি দেখেন — $5000 limit এর logic টি design spec অনুযায়ী implement হয়েছে কি না।"
+          },
+          {
+            "sub": "Validation: tester $5001 transfer করার চেষ্টা করেন।"
+          },
+          {
+            "sub": "তিনি দেখেন — transfer block হচ্ছে কি না এবং user helpful error message পাচ্ছে কি না।"
+          },
+          {
+            "sub": "অর্থাৎ user এর প্রকৃত প্রয়োজন পূরণ হচ্ছে কি না তা confirm করা হয়।"
+          }
         ],
         "table": {
           "headers": [
@@ -323,10 +514,91 @@
           "Waterfall = Linear ও Sequential (requirements clear হলে ভালো)। Agile = Iterative ও Incremental (requirements বদলালে ভালো)। Spiral = Risk-Driven ও Evolutionary (large, high-risk project এ ভালো)।"
         ],
         "points": [
-          "Waterfall: Approach — Linear, Sequential। একটি phase শেষ না হলে পরেরটি শুরু হয় না। Flexibility — খুব কম। Risk — High (late detection)। Customer involvement — শুরু ও শেষে। Progress = Completed documents",
-          "Agile: Approach — Iterative, Incremental (Sprint ভিত্তিক)। Flexibility — খুব বেশি — requirement যেকোনো সময় বদলানো যায়। Risk — Moderate। Customer involvement — Maximum, continuous। Progress = Working software delivery",
-          "Spiral: Approach — Risk-driven, evolutionary। প্রতিটি spiral এ 4 ধাপ: Planning → Risk Analysis → Engineering → Evaluation। Flexibility — High। Risk — Low (risk-first approach)। Customer involvement — High। Progress = Prototypes",
-          "Cost: Waterfall — upfront cost কম (plan simple), change cost অনেক বেশি। Agile — moderate total cost, change cost কম (next sprint এ নেওয়া যায়)। Spiral — upfront cost অনেক বেশি (risk analysis প্রতিটি loop এ), total project cost সবচেয়ে বেশি"
+          "Waterfall:",
+          {
+            "sub": "Approach — Linear ও Sequential।"
+          },
+          {
+            "sub": "একটি phase সম্পূর্ণ শেষ না হলে পরেরটি শুরু হয় না।"
+          },
+          {
+            "sub": "Flexibility — খুব কম।"
+          },
+          {
+            "sub": "Risk — High, কারণ ভুল ধরা পড়ে অনেক দেরিতে (late detection)।"
+          },
+          {
+            "sub": "Customer involvement — শুধু শুরুতে ও শেষে।"
+          },
+          {
+            "sub": "Progress মাপা হয় completed document দিয়ে।"
+          },
+          {
+            "diagram": "WATERFALL — একমুখী, phase একে একে\n\n   Requirements\n        │\n        ▼\n     Design\n        │\n        ▼\n      Code\n        │\n        ▼\n      Test\n        │\n        ▼\n     Deploy\n\n   পিছনে ফেরার পথ নেই — ভুল ধরা পড়ে একদম শেষে",
+            "label": "Diagram — Waterfall"
+          },
+          "Agile:",
+          {
+            "sub": "Approach — Iterative ও Incremental, Sprint ভিত্তিক।"
+          },
+          {
+            "sub": "Flexibility — খুব বেশি, requirement যেকোনো সময় বদলানো যায়।"
+          },
+          {
+            "sub": "Risk — Moderate।"
+          },
+          {
+            "sub": "Customer involvement — Maximum ও continuous।"
+          },
+          {
+            "sub": "Progress মাপা হয় working software delivery দিয়ে।"
+          },
+          {
+            "diagram": "AGILE — ছোট ছোট sprint, প্রতিবার working software\n\n   Sprint 1        Sprint 2        Sprint 3\n   ┌────────┐      ┌────────┐      ┌────────┐\n   │ Plan   │      │ Plan   │      │ Plan   │\n   │ Build  │      │ Build  │      │ Build  │\n   │ Test   │      │ Test   │      │ Test   │\n   └───┬────┘      └───┬────┘      └───┬────┘\n       │               │               │\n       ▼               ▼               ▼\n    Release 1       Release 2       Release 3\n       │               │\n       └── feedback ───┴── feedback ──►  পরের sprint এ যোগ হয়",
+            "label": "Diagram — Agile"
+          },
+          "Spiral:",
+          {
+            "sub": "Approach — Risk-driven ও Evolutionary।"
+          },
+          {
+            "sub": "প্রতিটি spiral এ চারটি ধাপ: Planning, Risk Analysis, Engineering, Evaluation।"
+          },
+          {
+            "sub": "Flexibility — High।"
+          },
+          {
+            "sub": "Risk — Low, কারণ প্রতি loop এ আগে risk বিশ্লেষণ হয় (risk-first approach)।"
+          },
+          {
+            "sub": "Customer involvement — High।"
+          },
+          {
+            "sub": "Progress মাপা হয় prototype দিয়ে।"
+          },
+          {
+            "diagram": "SPIRAL — প্রতি loop এ আগে risk, পরে কাজ\n\n   Loop 1 ──► Planning ──► Risk Analysis ──► Engineering ──► Evaluation\n                                                                  │\n   Loop 2 ──► Planning ──► Risk Analysis ──► Engineering ──► Evaluation\n                                                                  │\n   Loop 3 ──► Planning ──► Risk Analysis ──► Engineering ──► Evaluation\n\n   প্রতিটি loop শেষে একটি prototype তৈরি হয়\n   Risk আগে যাচাই হয় বলে ঝুঁকি সবচেয়ে কম, কিন্তু খরচ সবচেয়ে বেশি",
+            "label": "Diagram — Spiral"
+          },
+          "খরচের তুলনা (cost analysis):",
+          {
+            "sub": "Waterfall: upfront cost কম, কারণ পরিকল্পনা সরল।"
+          },
+          {
+            "sub": "Waterfall: কিন্তু পরে পরিবর্তনের খরচ (change cost) অনেক বেশি।"
+          },
+          {
+            "sub": "Agile: total cost মাঝারি (moderate)।"
+          },
+          {
+            "sub": "Agile: পরিবর্তনের খরচ কম — পরের sprint এ নিয়ে নেওয়া যায়।"
+          },
+          {
+            "sub": "Spiral: upfront cost অনেক বেশি, কারণ প্রতিটি loop এ risk analysis করতে হয়।"
+          },
+          {
+            "sub": "Spiral: total project cost সবচেয়ে বেশি।"
+          }
         ],
         "table": {
           "headers": [
@@ -418,7 +690,7 @@
           "সুবিধা দুটি: (১) খুব দ্রুত কাজের সফটওয়্যার হাতে আসে — প্রথম increment এই লাইব্রেরি বই খোঁজা ও issue/return চালু করতে পারে; (২) requirement বদল বা ব্যবহারকারীর feedback অল্প খরচে গ্রহণ করা যায়, পুরো প্রকল্প নতুন করে শুরু করতে হয় না।"
         ],
         "points": [
-          "Online Library Management System এর জন্য increment গুলো যেভাবে সাজানো যায়:",
+          "Online Library Management System এর increment গুলো যেভাবে সাজানো যায়:",
           {
             "sub": "Increment 1 (core): book catalogue ও search, member registration, book issue ও return।"
           },
@@ -429,15 +701,73 @@
             "sub": "Increment 3: রিপোর্ট ও analytics, librarian dashboard, online payment।"
           },
           {
-            "sub": "প্রতিটি increment শেষে librarian ও ছাত্রছাত্রীরা সেটি ব্যবহার করে মতামত দেয়, আর সেই মতামত পরের increment এর requirement হিসেবে যোগ হয়।"
+            "sub": "প্রতিটি increment শেষে librarian ও ছাত্রছাত্রীরা সেটি ব্যবহার করে মতামত দেয়।"
           },
-          "সুবিধা ১ — দ্রুত ও কার্যকর delivery: পুরো system তৈরি হওয়ার অপেক্ষা করতে হয় না; প্রথম increment থেকেই লাইব্রেরি প্রকৃত কাজে সফটওয়্যারটি ব্যবহার শুরু করতে পারে, ফলে বিনিয়োগের ফেরত (ROI) আগে আসে।",
-          "সুবিধা ২ — কম ঝুঁকি ও সহজ পরিবর্তন: প্রতিটি increment ছোট বলে তার test ও debug সহজ; ব্যবহারকারীর feedback আগেভাগে ধরা পড়ায় বড় ভুল শেষ মুহূর্তে ধরা পড়ার ঝুঁকি থাকে না, এবং requirement বদলালে শুধু পরের increment সমন্বয় করলেই চলে।",
-          "কেন Waterfall নয়: Waterfall এ requirement শুরুতেই সম্পূর্ণ ও অপরিবর্তনীয় ধরে নেওয়া হয় এবং ব্যবহারকারী কাজের সফটওয়্যার দেখে একেবারে শেষ ধাপে — তাই ধাপে ধাপে delivery ও চলমান feedback এর শর্ত এতে মেটেই না।",
-          "কেন Prototype বা Spiral নয়: Prototype model মূলত requirement স্পষ্ট করার জন্য, তার prototype টি সাধারণত ফেলে দেওয়া হয় — এখানে চাওয়া হচ্ছে প্রতি ধাপে ব্যবহারযোগ্য delivery। Spiral model ঝুঁকি-বিশ্লেষণকেন্দ্রিক ও ব্যয়বহুল, যা এই মাপের প্রকল্পের জন্য অতিরিক্ত।",
-          "সীমাবদ্ধতা (জানা থাকা ভালো): শুরুতে ভালো architecture ঠিক করতে হয়, নইলে পরের increment গুলো জোড়াতালি হয়ে যায়; এবং প্রতি increment এ integration ও regression testing এর খরচ থাকে।"
+          {
+            "sub": "সেই মতামত পরের increment এর requirement হিসেবে যোগ হয়।"
+          },
+          {
+            "diagram": "INCREMENTAL MODEL — প্রতি increment এ একটি ছোট পূর্ণ SDLC\n\n  Increment 1        Increment 2        Increment 3\n  ┌───────────┐      ┌───────────┐      ┌───────────┐\n  │ Analysis  │      │ Analysis  │      │ Analysis  │\n  │ Design    │      │ Design    │      │ Design    │\n  │ Code      │      │ Code      │      │ Code      │\n  │ Test      │      │ Test      │      │ Test      │\n  └─────┬─────┘      └─────┬─────┘      └─────┬─────┘\n        │ DELIVER          │ DELIVER          │ DELIVER\n        ▼                  ▼                  ▼\n  ┌───────────┐      ┌───────────┐      ┌───────────┐\n  │ Catalogue │      │ + Fine    │      │ + Report  │\n  │ + Search  │      │ + Reserve │      │ + Dashbrd │\n  │ + Issue   │      │ + Notify  │      │ + Payment │\n  │ + Return  │      │           │      │           │\n  └─────┬─────┘      └─────┬─────┘      └───────────┘\n        │                  │\n        └── user feedback ─┴── user feedback ──►  পরের increment এ যোগ হয়\n\n  ব্যবহারযোগ্য সফটওয়্যার হাতে আসে একদম শুরুতেই (Increment 1 এর পরেই)\n  librarian ও ছাত্রছাত্রীরা ব্যবহার করে মতামত দেয়",
+            "label": "Diagram — Incremental Model"
+          },
+          "সুবিধা ১ — দ্রুত ও কার্যকর delivery:",
+          {
+            "sub": "পুরো system তৈরি হওয়ার অপেক্ষা করতে হয় না।"
+          },
+          {
+            "sub": "প্রথম increment থেকেই লাইব্রেরি প্রকৃত কাজে সফটওয়্যারটি ব্যবহার শুরু করতে পারে।"
+          },
+          {
+            "sub": "ফলে বিনিয়োগের ফেরত (ROI) আগেভাগে আসে।"
+          },
+          "সুবিধা ২ — কম ঝুঁকি ও সহজ পরিবর্তন:",
+          {
+            "sub": "প্রতিটি increment ছোট, তাই তার test ও debug সহজ।"
+          },
+          {
+            "sub": "ব্যবহারকারীর feedback আগেভাগে ধরা পড়ে।"
+          },
+          {
+            "sub": "তাই বড় ভুল শেষ মুহূর্তে ধরা পড়ার ঝুঁকি থাকে না।"
+          },
+          {
+            "sub": "Requirement বদলালে শুধু পরের increment সমন্বয় করলেই চলে।"
+          },
+          "কেন Waterfall নয়:",
+          {
+            "sub": "Waterfall এ requirement শুরুতেই সম্পূর্ণ ও অপরিবর্তনীয় ধরে নেওয়া হয়।"
+          },
+          {
+            "sub": "ব্যবহারকারী কাজের সফটওয়্যার দেখে একেবারে শেষ ধাপে।"
+          },
+          {
+            "sub": "তাই ধাপে ধাপে delivery ও চলমান feedback এর শর্ত এতে মেটেই না।"
+          },
+          {
+            "diagram": "সফটওয়্যার কখন হাতে আসে — তুলনা\n\n  WATERFALL\n    Req ──► Design ──► Code ──► Test ──► Deploy\n                                            ▲\n                                            └── প্রথম ব্যবহারযোগ্য সফটওয়্যার\n                                                (একদম শেষে, ঝুঁকি সর্বোচ্চ)\n    মাঝপথে feedback নেওয়ার কোনো সুযোগ নেই\n\n  INCREMENTAL\n    [ Inc 1 ] ──► [ Inc 2 ] ──► [ Inc 3 ]\n        ▲             ▲             ▲\n        │             │             └── delivery 3\n        │             └──────────────── delivery 2\n        └────────────────────────────── delivery 1  (অনেক আগেই কাজ শুরু)\n\n    প্রতিটি delivery এর পরেই feedback ঢোকে\n\n  ────────────────────────────────────────\n  উপযুক্ত model — Incremental (iterative / agile delivery)\n  সুবিধা ১ — দ্রুত কার্যকর delivery, আগেই ব্যবহার শুরু\n  সুবিধা ২ — কম ঝুঁকি, feedback ও requirement পরিবর্তন সহজে গ্রহণ",
+            "label": "Diagram — Waterfall বনাম Incremental"
+          },
+          "কেন Prototype বা Spiral নয়:",
+          {
+            "sub": "Prototype model মূলত requirement স্পষ্ট করার জন্য।"
+          },
+          {
+            "sub": "তার prototype টি সাধারণত ফেলে দেওয়া হয়, অথচ এখানে প্রতি ধাপে ব্যবহারযোগ্য delivery চাওয়া হয়েছে।"
+          },
+          {
+            "sub": "Spiral model ঝুঁকি-বিশ্লেষণকেন্দ্রিক ও ব্যয়বহুল।"
+          },
+          {
+            "sub": "এই মাপের প্রকল্পের জন্য সেটি অতিরিক্ত।"
+          },
+          "সীমাবদ্ধতা (জানা থাকা ভালো):",
+          {
+            "sub": "শুরুতেই ভালো architecture ঠিক করতে হয়, নইলে পরের increment গুলো জোড়াতালি হয়ে যায়।"
+          },
+          {
+            "sub": "প্রতি increment এ integration ও regression testing এর বাড়তি খরচ থাকে।"
+          }
         ],
-        "diagram": "INCREMENTAL MODEL — প্রতি increment এ একটি ছোট পূর্ণ SDLC\n\n  Increment 1        Increment 2        Increment 3\n  ┌───────────┐      ┌───────────┐      ┌───────────┐\n  │ Analysis  │      │ Analysis  │      │ Analysis  │\n  │ Design    │      │ Design    │      │ Design    │\n  │ Code      │      │ Code      │      │ Code      │\n  │ Test      │      │ Test      │      │ Test      │\n  └─────┬─────┘      └─────┬─────┘      └─────┬─────┘\n        │ ▼ DELIVER        │ ▼ DELIVER        │ ▼ DELIVER\n        │                  │                  │\n   ┌────▼──────┐      ┌────▼──────┐      ┌────▼──────┐\n   │ Catalogue │      │ + Fine ও  │      │ + Report, │\n   │ + Search  │ ───► │  Due date │ ───► │  Dashboard│\n   │ + Issue/  │      │ + Reserve │      │ + Payment │\n   │   Return  │      │ + Notify  │      │           │\n   └────┬──────┘      └────┬──────┘      └───────────┘\n        │                  │\n        └── user feedback ─┴── user feedback ──► পরের increment\n            (librarian ও ছাত্রছাত্রী ব্যবহার করে মতামত দেয়)\n\n   ব্যবহারযোগ্য সফটওয়্যার হাতে আসে এখানেই ↑ (শুরুতেই)\n\n\nWATERFALL এর সাথে তুলনা — সফটওয়্যার কখন হাতে আসে\n\n  WATERFALL   Req → Design → Code → Test → Deploy\n              ├──────────────────────────────┤\n              feedback নেওয়ার সুযোগ নেই      ▲\n                                    প্রথম ব্যবহারযোগ্য সফটওয়্যার\n                                    (একদম শেষে, ঝুঁকি সর্বোচ্চ)\n\n  INCREMENTAL ▓▓▓ ▓▓▓ ▓▓▓\n              ▲   ▲   ▲\n              │   │   └ delivery 3\n              │   └──── delivery 2   প্রতিবারই feedback ঢোকে\n              └──────── delivery 1 (অনেক আগেই কাজ শুরু)\n\n────────────────────────────────────────────\n  উপযুক্ত model : Incremental (iterative/agile delivery)\n  সুবিধা ১ : দ্রুত কার্যকর delivery, আগেই ব্যবহার শুরু\n  সুবিধা ২ : কম ঝুঁকি — feedback ও requirement পরিবর্তন সহজে গ্রহণ",
         "table": {
           "headers": [
             "বিষয়",
@@ -495,34 +825,113 @@
         "points": [
           "Coupling — উদাহরণসহ:",
           {
-            "sub": "High/tight coupling: Billing module সরাসরি Inventory module এর database table এ query চালায়। Inventory এর table structure বদলালেই Billing ভেঙে যায়, যদিও Billing এর নিজের কোডে কিছুই বদলায়নি।"
+            "sub": "High / tight coupling: Billing module সরাসরি Inventory module এর database table এ query চালায়।"
           },
           {
-            "sub": "Low/loose coupling: Billing শুধু Inventory এর public function getStockCount(itemId) ডাকে। Inventory ভিতরে table বদলাক, cache যোগ করুক বা অন্য database এ যাক — function এর signature ঠিক থাকলে Billing অক্ষত থাকে।"
+            "sub": "ফলে Inventory এর table structure বদলালেই Billing ভেঙে যায় — যদিও Billing এর নিজের কোডে কিছুই বদলায়নি।"
           },
           {
-            "sub": "Coupling এর মাত্রা (খারাপ → ভালো): Content (একটি module অন্যটির ভিতরের কোড/data সরাসরি ছোঁয়) → Common (একই global variable ভাগ করে) → Control (flag পাঠিয়ে অন্য module কে কী করতে হবে তা নিয়ন্ত্রণ করে) → Stamp (দরকারের চেয়ে বড় গোটা structure পাঠায়) → Data (শুধু প্রয়োজনীয় parameter পাঠায় — সবচেয়ে ভালো)।"
+            "sub": "Low / loose coupling: Billing শুধু Inventory এর public function getStockCount(itemId) ডাকে।"
+          },
+          {
+            "sub": "Inventory ভিতরে table বদলাক, cache যোগ করুক বা অন্য database এ যাক — function এর signature ঠিক থাকলে Billing অক্ষত থাকে।"
+          },
+          "Coupling এর মাত্রা (খারাপ থেকে ভালো):",
+          {
+            "sub": "Content — একটি module অন্যটির ভিতরের কোড বা data সরাসরি ছোঁয় (সবচেয়ে খারাপ)।"
+          },
+          {
+            "sub": "Common — দুটি module একই global variable ভাগ করে।"
+          },
+          {
+            "sub": "Control — একটি module flag পাঠিয়ে অন্যটিকে কী করতে হবে তা নিয়ন্ত্রণ করে।"
+          },
+          {
+            "sub": "Stamp — দরকারের চেয়ে বড় গোটা structure পাঠায়।"
+          },
+          {
+            "sub": "Data — শুধু প্রয়োজনীয় parameter পাঠায় (সবচেয়ে ভালো)।"
+          },
+          {
+            "diagram": "COUPLING — দুই module এর মধ্যেকার বাঁধন\n\n (ক) HIGH / TIGHT COUPLING — খারাপ\n\n   ┌──────────────┐                       ┌──────────────────┐\n   │   BILLING    │   SELECT qty          │    INVENTORY     │\n   │  calcBill()  │──────────────────────►│  ┌────────────┐  │\n   │              │   FROM stock_tbl      │  │ stock_tbl  │  │\n   │              │                       │  │  item_id   │  │\n   │              │                       │  │  qty       │  │\n   └──────────────┘                       │  └────────────┘  │\n                                          └──────────────────┘\n\n   Billing সরাসরি Inventory এর ভিতরের table পড়ছে\n   table এর নাম বা column বদলালেই Billing ভাঙে (ripple effect)\n\n (খ) LOW / LOOSE COUPLING — ভালো\n\n   ┌──────────────┐                       ┌──────────────────┐\n   │   BILLING    │  getStockCount(id)    │    INVENTORY     │\n   │  calcBill()  │──────────────────────►│  (internal free) │\n   └──────────────┘                       └──────────────────┘\n\n   Billing শুধু এই function এর চুক্তিটুকু জানে, ভিতরটা জানে না\n   ভিতরে table / cache / DB বদলালেও Billing অক্ষত থাকে",
+            "label": "Diagram — Coupling"
           },
           "Cohesion — উদাহরণসহ:",
           {
-            "sub": "High cohesion: InvoiceCalculator নামের module শুধু invoice এর total, tax ও discount হিসাব করে — সবগুলো কাজই একই উদ্দেশ্যের অংশ। Invoice এর নিয়ম বদলালে শুধু এই module ছুঁতে হয়।"
+            "sub": "High cohesion: InvoiceCalculator module শুধু invoice এর total, tax ও discount হিসাব করে।"
           },
           {
-            "sub": "Low cohesion: Utils নামের module একই সাথে invoice হিসাব করে, email পাঠায় আর date format করে — তিনটি সম্পূর্ণ অসম্পর্কিত কাজ। এটি তিনটি ভিন্ন কারণে বদলায়, তাই এতে ভুল ঢোকার ঝুঁকি বেশি এবং আলাদাভাবে পুনর্ব্যবহার করা যায় না।"
+            "sub": "সবগুলো কাজই একই উদ্দেশ্যের অংশ, তাই invoice এর নিয়ম বদলালে শুধু এই module ছুঁতে হয়।"
           },
           {
-            "sub": "Cohesion এর মাত্রা (খারাপ → ভালো): Coincidental (কোনো সম্পর্ক নেই, যেমন Utils) → Logical (একই জাতের কাজ, flag দিয়ে বাছাই হয়) → Temporal (একই সময়ে চলে, যেমন সব startup কাজ) → Procedural → Communicational (একই data নিয়ে কাজ করে) → Sequential (একটির output পরেরটির input) → Functional (একটিমাত্র সুনির্দিষ্ট কাজ — সবচেয়ে ভালো)।"
+            "sub": "Low cohesion: Utils নামের module একই সাথে invoice হিসাব করে, email পাঠায় আর date format করে।"
           },
-          "দুটির সম্পর্ক: cohesion বাড়ালে সাধারণত coupling নিজে থেকেই কমে। কারণ প্রতিটি module যখন নিজের একটাই দায়িত্ব সামলায়, তখন অন্যের ভিতরে ঢোকার প্রয়োজনই পড়ে না — Single Responsibility Principle এর মূল কথাও এটাই।",
+          {
+            "sub": "তিনটি সম্পূর্ণ অসম্পর্কিত কাজ — module টি তিনটি ভিন্ন কারণে বদলায়।"
+          },
+          {
+            "sub": "তাই এতে ভুল ঢোকার ঝুঁকি বেশি এবং আলাদাভাবে পুনর্ব্যবহার করা যায় না।"
+          },
+          "Cohesion এর মাত্রা (খারাপ থেকে ভালো):",
+          {
+            "sub": "Coincidental — কোনো সম্পর্কই নেই (যেমন Utils)।"
+          },
+          {
+            "sub": "Logical — একই জাতের কাজ, flag দিয়ে বাছাই হয়।"
+          },
+          {
+            "sub": "Temporal — একই সময়ে চলে (যেমন সব startup কাজ)।"
+          },
+          {
+            "sub": "Procedural — একটি নির্দিষ্ট ক্রম মেনে চলে।"
+          },
+          {
+            "sub": "Communicational — একই data নিয়ে কাজ করে।"
+          },
+          {
+            "sub": "Sequential — একটির output পরেরটির input।"
+          },
+          {
+            "sub": "Functional — একটিমাত্র সুনির্দিষ্ট কাজ (সবচেয়ে ভালো)।"
+          },
+          {
+            "diagram": "COHESION — এক module এর ভিতরের কাজগুলোর মিল\n\n (ক) HIGH COHESION — ভালো\n\n   ┌──────────────────────┐\n   │  InvoiceCalculator   │\n   ├──────────────────────┤\n   │  calcTotal()         │\n   │  calcTax()           │\n   │  applyDiscount()     │\n   └──────────────────────┘\n\n   সব কাজ একই উদ্দেশ্যে — invoice এর হিসাব\n   বদলানোর কারণ ১টি, পুনর্ব্যবহার সহজ, test সহজ\n\n (খ) LOW COHESION — খারাপ\n\n   ┌──────────────────────┐\n   │        Utils         │\n   ├──────────────────────┤\n   │  calcInvoice()       │\n   │  sendEmail()         │\n   │  formatDate()        │\n   └──────────────────────┘\n\n   তিনটি অসম্পর্কিত কাজ একসাথে জোড়া\n   বদলানোর কারণ ৩টি, পুনর্ব্যবহার কঠিন, test জটিল",
+            "label": "Diagram — Cohesion"
+          },
+          "দুটির সম্পর্ক:",
+          {
+            "sub": "Cohesion বাড়ালে সাধারণত coupling নিজে থেকেই কমে।"
+          },
+          {
+            "sub": "কারণ প্রতিটি module যখন নিজের একটাই দায়িত্ব সামলায়, তখন অন্যের ভিতরে ঢোকার প্রয়োজনই পড়ে না।"
+          },
+          {
+            "sub": "Single Responsibility Principle এর মূল কথাও এটাই।"
+          },
+          {
+            "diagram": "ভালো design এর লক্ষ্য\n\n   Coupling — খারাপ থেকে ভালো:\n     Content → Common → Control → Stamp → Data\n     (Data সবচেয়ে ভালো, তাই coupling কমানোই লক্ষ্য)\n\n   Cohesion — খারাপ থেকে ভালো:\n     Coincidental → Logical → Temporal → Procedural\n       → Communicational → Sequential → Functional\n     (Functional সবচেয়ে ভালো, তাই cohesion বাড়ানোই লক্ষ্য)\n\n   সূত্র:  LOW COUPLING  +  HIGH COHESION",
+            "label": "Diagram — ভালো design এর লক্ষ্য"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "Microservice architecture — প্রতিটি service এক domain এর দায়িত্ব নেয় (high cohesion) এবং অন্য service এর database এ হাত না দিয়ে শুধু REST/gRPC API দিয়ে কথা বলে (low coupling), ফলে একটি service আলাদাভাবে deploy ও scale করা যায়।"
+            "sub": "Microservice architecture — প্রতিটি service এক domain এর দায়িত্ব নেয় (high cohesion)।"
           },
           {
-            "sub": "Layered application — Controller, Service ও Repository আলাদা রেখে interface (dependency injection) দিয়ে যুক্ত করা হয়, তাই database বদলালে শুধু Repository বদলায় এবং unit test এ নকল (mock) repository বসানো যায়।"
+            "sub": "অন্য service এর database এ হাত না দিয়ে শুধু REST/gRPC API দিয়ে কথা বলে (low coupling)।"
+          },
+          {
+            "sub": "ফলে একটি service আলাদাভাবে deploy ও scale করা যায়।"
+          },
+          {
+            "sub": "Layered application — Controller, Service ও Repository আলাদা রাখা হয়।"
+          },
+          {
+            "sub": "এদের যুক্ত করা হয় interface (dependency injection) দিয়ে।"
+          },
+          {
+            "sub": "তাই database বদলালে শুধু Repository বদলায়, আর unit test এ নকল (mock) repository বসানো যায়।"
           }
         ],
-        "diagram": "COUPLING — দুই module এর মধ্যেকার বাঁধন\n\n  (ক) HIGH / TIGHT COUPLING — খারাপ\n\n   ┌─────────────────┐                 ┌─────────────────┐\n   │   BILLING       │                 │   INVENTORY     │\n   │                 │                 │  ┌───────────┐  │\n   │  calcBill() ────┼────────────────►│  │ stock_tbl │  │ ← ভিতরের table\n   │                 │  SELECT qty     │  │  item_id  │  │   সরাসরি পড়ছে\n   │                 │  FROM stock_tbl │  │  qty      │  │\n   │                 │                 │  └───────────┘  │\n   └─────────────────┘                 └─────────────────┘\n                         ▲\n                         └ table এর নাম/column বদলালেই Billing ভাঙে\n                           (ripple effect — এক জায়গার পরিবর্তন বহু জায়গায় ছড়ায়)\n\n  (খ) LOW / LOOSE COUPLING — ভালো\n\n   ┌─────────────────┐   ╭─ interface ─╮  ┌─────────────────┐\n   │   BILLING       │   │             │  │   INVENTORY     │\n   │                 │   │getStockCount│  │  ┌───────────┐  │\n   │  calcBill() ────┼──►│  (itemId)   ├─►│  │ যেকোনো    │  │\n   │                 │   │             │  │  │ ভিতরের    │  │\n   │                 │   ╰─────────────╯  │  │ গঠন       │  │\n   └─────────────────┘         ▲          │  └───────────┘  │\n                               │          └─────────────────┘\n                    শুধু এই চুক্তিটুকু জানে           ▲\n                    ভিতরটা কী তা জানে না             │\n                    ────────────────────────────────┘\n                    ভিতরে table/cache/DB বদলালেও Billing অক্ষত\n\n\nCOHESION — এক module এর ভিতরের কাজগুলোর মিল\n\n  (ক) HIGH COHESION — ভালো        (খ) LOW COHESION — খারাপ\n\n  ┌──────────────────────┐        ┌──────────────────────┐\n  │  InvoiceCalculator   │        │        Utils         │\n  ├──────────────────────┤        ├──────────────────────┤\n  │ ● calcTotal()        │        │ ● calcInvoice()      │\n  │ ● calcTax()          │        │ ● sendEmail()        │\n  │ ● applyDiscount()    │        │ ● formatDate()       │\n  └──────────────────────┘        └──────────────────────┘\n     সব কাজ একই উদ্দেশ্যে            তিনটি অসম্পর্কিত কাজ\n     (invoice এর হিসাব)              একসাথে জোড়া\n\n     বদলানোর কারণ : ১টি            বদলানোর কারণ : ৩টি\n     পুনর্ব্যবহার  : সহজ            পুনর্ব্যবহার  : কঠিন\n     Test          : সহজ            Test          : জটিল\n\n────────────────────────────────────────────\n  ভালো design এর লক্ষ্য :\n\n     Coupling  :  উচ্চ ─────────────► নিম্ন   (কমাও)\n                  Content  →  Data\n\n     Cohesion  :  নিম্ন ─────────────► উচ্চ   (বাড়াও)\n                  Coincidental → Functional\n\n     সূত্র :  LOW COUPLING  +  HIGH COHESION",
         "table": {
           "headers": [
             "বিষয়",

