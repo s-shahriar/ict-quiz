@@ -53,18 +53,24 @@ src/data/written/
   "questions": [
     {
       "id": "cn_001",
+      "segment": "Program Output",
+      "subsegment": "Pointer",
       "q": "Question text in English (as given by user)",
       "tags": ["RAID", "storage"],
       "answer": {
-        "summary": "One-liner Bengali summary (shown first, collapsed view)",
+        "code": "int main() { ... }",
+        "codeLang": "c",
+        "summary": ["One-liner Bengali summary lines (shown first, collapsed view)"],
         "points": [
           "বিন্দু ১: ...",
+          { "sub": "ইনডেন্টেড child point" },
+          { "code": "for (...) { ... }", "codeLang": "c", "label": "Pattern ২" },
+          { "diagram": "ASCII diagram for THIS section only", "label": "Diagram — Pattern ২" },
           "বিন্দু ২: ..."
         ],
-        "diagram": "ASCII diagram string (optional, null if none)",
-        "table": [
-          { "col1": "...", "col2": "..." }
-        ],
+        "diagram": "ASCII diagram string — only for a single-topic answer; see §7",
+        "table": { "headers": ["...", "..."], "rows": [["...", "..."]] },
+        "mistakes": [["ভুল ধারণা", "আসল কথা"]],
         "mnemonic": "মনে রাখার উপায়: ...",
         "extended": {
           "show": false,
@@ -80,8 +86,10 @@ src/data/written/
 ```
 
 - `extended` is only present when the user asks for further explanation.
-- `diagram` is null if no visual is needed.
-- `table` is empty array `[]` if no comparison is needed.
+- `diagram` is null/omitted if no visual is needed for that question as a whole.
+- `table` is omitted if no comparison is needed.
+- `segment` / `subsegment` are optional — only for a question that should be pinned above the normal numbered list under a heading (`segment`), optionally further grouped into a labeled sub-group (`subsegment`). Most questions have neither.
+- A `points[]` item is normally a string or `{ "sub": "..." }`, but can also be `{ "code", "codeLang", "label" }` or `{ "diagram", "label" }` — these render as a standalone box right at that spot in the list instead of a bullet. Use them so a multi-topic answer shows each topic's snippet/diagram immediately after that topic's own points — see §3.1 and §7.
 
 ---
 
@@ -103,6 +111,44 @@ src/data/written/
 - ❌ Long paragraphs
 - ❌ Repeating the question back
 - ❌ Over-explaining what's already obvious from the question
+
+---
+
+## 3.1 One idea per line — bad vs. good (real example)
+
+Confirmed by direct user feedback (2026-09-02, on the ARQ question): a `{sub}` that
+crams multiple sentences together reads as **"হিজিবিজি"** (a jumbled mess) even when
+every fact in it is correct. **This is the default for every written question now,
+not a special case for long answers.**
+
+**❌ BAD — multiple ideas crammed into one `{sub}`:**
+```json
+{ "sub": "Sender একটি frame পাঠিয়ে timer শুরু করে এবং ACK না আসা পর্যন্ত পরের frame পাঠায় না। Sequence number মাত্র ১ bit (0/1) — একসাথে একটাই frame in-flight থাকে বলে duplicate বোঝাতে এটুকুই যথেষ্ট।" },
+{ "sub": "সম্ভাব্য অবস্থা: Frame হারালে — timeout শেষে sender একই seq দিয়ে আবার পাঠায়; ACK হারালে — sender timeout-এ আবার পাঠায়, receiver seq দেখে duplicate বুঝে শুধু ACK আবার পাঠায়; ACK দেরি করলে — timeout ইতিমধ্যে হয়ে sender আবার পাঠিয়ে দেয়, receiver duplicate পায়।" }
+```
+Two `{sub}` items, but the second one alone buries **three separate scenarios**
+(frame lost / ACK lost / ACK delayed) in one run-on sentence — the reader has to
+mentally re-split it before they can even start studying it.
+
+**✅ GOOD — one clause, one `{sub}`, one scenario each:**
+```json
+{ "sub": "Sender একটি frame পাঠিয়ে timer শুরু করে।" },
+{ "sub": "ACK না আসা পর্যন্ত সে পরের frame পাঠায় না — একসাথে সর্বোচ্চ ১টা frame in-flight থাকে।" },
+{ "sub": "Sequence number মাত্র ১ bit (0/1) — একসাথে একটাই frame থাকে বলে duplicate বোঝাতে এটুকুই যথেষ্ট।" },
+{ "sub": "Frame হারালে: timeout শেষে sender একই sequence দিয়ে আবার পাঠায়।" },
+{ "sub": "ACK হারালে: sender timeout-এ আবার পাঠায়; receiver sequence দেখে duplicate বুঝে শুধু ACK আবার পাঠায় (data বাদ দিয়ে)।" },
+{ "sub": "ACK দেরি করলে: timeout ইতিমধ্যে হয়ে sender আবার পাঠিয়ে দেয়; receiver duplicate পায়।" }
+```
+Same information, six short lines instead of two dense ones. Each line answers
+exactly one question ("what does the sender do", "what happens if X"). A semicolon
+inside a `{sub}` is still fine when it's genuinely one thought with a short aside
+(`sender timeout-এ আবার পাঠায়; receiver ... বাদ দিয়ে`) — the rule is *one scenario/idea
+per line*, not *zero punctuation*.
+
+**How to tell if a `{sub}` needs splitting:** if it names more than one condition
+("Frame হারালে... ACK হারালে... ACK দেরি করলে...") or more than one action joined by
+"এবং" / "তারপর" / a semicolon-separated list of unrelated facts, split it — one line
+per condition/action.
 
 ---
 
@@ -245,6 +291,60 @@ Diagrams are **visual-first**, not decorative. A good `diagram` lets you grasp t
 | ER Diagram (Database) | Entity boxes + relationship lines |
 
 > If a diagram isn't clear in one glance, I redraw it — just say **"sketch টা বুঝলাম না"**.
+
+### 7.1 Multi-topic answers: one diagram per topic, placed inline — never combined, never side-by-side
+
+Confirmed by two real incidents on the ARQ question (Stop-and-Wait / Sliding Window /
+Go-Back-N / Selective Repeat), both from the same root mistake: one combined diagram
+covering every topic, built with topics laid out **side by side** on shared lines.
+
+**❌ BAD — side-by-side Bengali-labeled columns, all topics dumped in one combined `diagram` at the end of the answer:**
+```
+  স্বাভাবিক আদান-প্রদান          Frame হারালে                ACK হারালে                  ACK দেরি করলে
+  Sender     Receiver         Sender     Receiver          Sender     Receiver          Sender     Receiver
+    │──seq0───►│                │──seq0──X │                │──seq0───►│                │──seq0───►│
+    │◄──ACK0───│                │(timeout) │                │  X◄─ACK0─│                │◄─ACK0(দেরি)..│
+```
+This has two separate problems, and either one alone is enough to reject it:
+1. **It visibly breaks in the browser.** Bengali glyphs do NOT render at a fixed
+   monospace cell width (the diagram font, JetBrains Mono, has no Bengali glyphs, so
+   the browser silently substitutes a different font for that text). Any layout that
+   space-pads Bengali-labeled columns to line up next to *another* Bengali-labeled
+   column WILL drift out of alignment on screen, even though the raw text looks
+   perfectly aligned in the editor. This is not a style nitpick — it rendered as a
+   genuinely broken/garbled diagram in production.
+2. **Even if it rendered fine, it reads badly.** The reader has to jump back and
+   forth between the diagram (at the very end) and the topic's own explanation
+   (much earlier), instead of seeing the diagram right where the topic is discussed.
+
+**✅ GOOD — one topic's diagram placed immediately after that topic's own points, each one stacked as a simple 2-column sequence (no side-by-side columns at all):**
+```json
+"points": [
+  "Stop-and-Wait ARQ — নীতি: (Data+ACK) + timeout timer + sequence number",
+  { "sub": "Sender একটি frame পাঠিয়ে timer শুরু করে।" },
+  { "sub": "ACK না আসা পর্যন্ত সে পরের frame পাঠায় না — একসাথে সর্বোচ্চ ১টা frame in-flight থাকে।" },
+  { "sub": "Frame হারালে: timeout শেষে sender একই sequence দিয়ে আবার পাঠায়।" },
+  {
+    "label": "Diagram — Stop-and-Wait ARQ",
+    "diagram": "[১] স্বাভাবিক আদান-প্রদান\n  Sender                Receiver\n    │──seq0───────────►│\n    │◄──────────ACK0───│\n\n[২] Frame হারালে\n  Sender                Receiver\n    │──seq0────X        │   (frame হারিয়ে গেল)\n    │ (timeout)          │\n    │──seq0───────────►│   (আবার পাঠানো)\n    │◄──────────ACK0───│"
+  },
+  "Go-Back-N ARQ",
+  { "sub": "sender window size N পর্যন্ত frame টানা পাঠাতে পারে।" },
+  { "label": "Diagram — Go-Back-N ARQ", "diagram": "  Sender              Receiver\n    │──0───────────────►│\n    │──1───────────────►│\n    │──2────X            │   (হারালো)\n    │◄──────────ACK=1───│   (cumulative: শুধু '1 পর্যন্ত ঠিক আছে')" }
+]
+```
+Each scenario/topic is its **own fully vertical block** (`Sender` column, `Receiver`
+column, nothing else sharing those lines) — no two Bengali-labeled sections ever need
+to line up against each other, so there's nothing for the font-metric mismatch to
+break. And the diagram sits exactly where the reader is already looking.
+
+**The rule, stated generally:** only pure-ASCII/numeric content (`│ ─ ► ◄ X`, digits,
+Latin words) may participate in strict multi-column alignment. Bengali text is always
+a trailing annotation *after* an already-aligned ASCII structure, never something
+another column's alignment depends on. If a diagram idea needs two things side by
+side, keep both sides to ASCII/numbers only (e.g. the sliding-window box diagram,
+which is safe because `┌───┬───┬───┬───┐` and digits don't need font-metric
+cooperation from Bengali glyphs) — anything with Bengali labels goes fully vertical.
 
 ---
 
