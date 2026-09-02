@@ -51,14 +51,18 @@ export default function WrittenMode() {
 
   // Questions tagged with `segment` get pinned above the regular list under
   // their own heading (e.g. a standout "Time Complexity" question) instead
-  // of blending into the numbered Q&A list.
+  // of blending into the numbered Q&A list. Within a segment, `subsegment`
+  // further splits it into labeled sub-groups (e.g. "Pointer", "Recursion").
   const regularQuestions = visibleQuestions.filter(q => !q.segment)
   const segments = []
   for (const q of visibleQuestions) {
     if (!q.segment) continue
     let seg = segments.find(s => s.name === q.segment)
-    if (!seg) { seg = { name: q.segment, questions: [] }; segments.push(seg) }
-    seg.questions.push(q)
+    if (!seg) { seg = { name: q.segment, subgroups: [] }; segments.push(seg) }
+    const subKey = q.subsegment || null
+    let sub = seg.subgroups.find(s => s.name === subKey)
+    if (!sub) { sub = { name: subKey, questions: [] }; seg.subgroups.push(sub) }
+    sub.questions.push(q)
   }
 
   // Deep-link: ?q=<questionId> opens and scrolls to a specific written answer.
@@ -132,23 +136,32 @@ export default function WrittenMode() {
                 <Zap size={14} />
                 <span>{seg.name}</span>
               </div>
-              <div className="written-list">
-                {seg.questions.map((q, idx) => (
-                  <WrittenCard
-                    key={q.id}
-                    domId={'written-q-' + q.id}
-                    q={q}
-                    idx={idx}
-                    topicColor={topic.color}
-                    isOpen={!!openIds[q.id]}
-                    isImportant={important?.has(qid(q))}
-                    isNailed={writtenMastered?.has(qid(q))}
-                    onToggle={() => toggleCard(q.id)}
-                    onToggleImportant={() => toggleImportant(q)}
-                    onToggleNailed={() => toggleNailed(q)}
-                  />
-                ))}
-              </div>
+              {seg.subgroups.map(sub => (
+                <div className="written-subsegment" key={sub.name || '_'}>
+                  {sub.name && (
+                    <div className="written-subsegment-header" style={{ '--c': topic.color }}>
+                      {sub.name}
+                    </div>
+                  )}
+                  <div className="written-list">
+                    {sub.questions.map((q, idx) => (
+                      <WrittenCard
+                        key={q.id}
+                        domId={'written-q-' + q.id}
+                        q={q}
+                        idx={idx}
+                        topicColor={topic.color}
+                        isOpen={!!openIds[q.id]}
+                        isImportant={important?.has(qid(q))}
+                        isNailed={writtenMastered?.has(qid(q))}
+                        onToggle={() => toggleCard(q.id)}
+                        onToggleImportant={() => toggleImportant(q)}
+                        onToggleNailed={() => toggleNailed(q)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
 

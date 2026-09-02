@@ -3,9 +3,12 @@ import { Brain } from 'lucide-react'
 import CodeBlock from './shared/CodeBlock.jsx'
 
 // `points` is normally a flat bullet list, but an item can also be a
-// `{ code, codeLang, label }` block (e.g. a per-pattern loop snippet) —
-// those render as standalone IDE-style code boxes, breaking the list into
-// separate <ul> chunks around them instead of becoming a bullet themselves.
+// `{ code, codeLang, label }` block (e.g. a per-pattern loop snippet) or a
+// `{ diagram, label }` block (e.g. a per-protocol sequence diagram) — those
+// render as standalone boxes, breaking the list into separate <ul> chunks
+// around them instead of becoming a bullet themselves. Use this to put a
+// diagram right after the section it illustrates, instead of one combined
+// diagram dumped at the end of a multi-topic answer.
 function renderPoints(points, topicColor) {
   const blocks = []
   let currentList = []
@@ -22,6 +25,16 @@ function renderPoints(points, topicColor) {
         <div className="written-code-wrap" key={`code-${i}`}>
           <span className="written-block-label">{pt.label || pt.codeLang || 'Code'}</span>
           <CodeBlock code={pt.code} lang={pt.codeLang} className="written-code-pre" />
+        </div>
+      )
+      return
+    }
+    if (pt && typeof pt === 'object' && pt.diagram) {
+      flushList()
+      blocks.push(
+        <div className="written-diagram-wrap" key={`diagram-${i}`}>
+          <span className="written-block-label">{pt.label || 'Diagram'}</span>
+          <pre className="written-diagram-pre">{pt.diagram}</pre>
         </div>
       )
       return

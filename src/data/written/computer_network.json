@@ -2092,49 +2092,111 @@
           "Go-Back-N-এ error হলে window-এর সব frame আবার পাঠাতে হয়; Selective Repeat-এ শুধু হারানো frame-টাই আবার পাঠাতে হয়, কিন্তু receiver-কে বাড়তি buffer রাখতে হয়।"
         ],
         "points": [
-          "Stop-and-Wait ARQ — নীতি: (Data+ACK) + timeout timer + sequence number:",
+          "Stop-and-Wait ARQ — নীতি: (Data+ACK) + timeout timer + sequence number",
           {
-            "sub": "Sender একটি frame পাঠিয়ে timer শুরু করে এবং ACK না আসা পর্যন্ত পরের frame পাঠায় না। Sequence number মাত্র ১ bit (0/1) — একসাথে একটাই frame in-flight থাকে বলে duplicate বোঝাতে এটুকুই যথেষ্ট।"
+            "sub": "Sender একটি frame পাঠিয়ে timer শুরু করে।"
           },
           {
-            "sub": "সম্ভাব্য অবস্থা: Frame হারালে — timeout শেষে sender একই seq দিয়ে আবার পাঠায়; ACK হারালে — sender timeout-এ আবার পাঠায়, receiver seq দেখে duplicate বুঝে শুধু ACK আবার পাঠায়; ACK দেরি করলে — timeout ইতিমধ্যে হয়ে sender আবার পাঠিয়ে দেয়, receiver duplicate পায়।"
+            "sub": "ACK না আসা পর্যন্ত সে পরের frame পাঠায় না — একসাথে সর্বোচ্চ ১টা frame in-flight থাকে।"
           },
           {
-            "sub": "সীমাবদ্ধতা: প্রতি মুহূর্তে মাত্র ১টি frame in-flight থাকে, তাই bandwidth-delay বেশি এমন link-এ (satellite) channel বেশিরভাগ সময় idle থাকে — throughput খুব কম।"
-          },
-          "Sliding Window Protocol — মূল ধারণা:",
-          {
-            "sub": "ACK-এর অপেক্ষা না করেই window size-সংখ্যক frame একসাথে পাঠানো যায়; প্রতিটি frame-এর নিজস্ব sequence number থাকে (নির্দিষ্ট range-এ modulo ঘুরে আসে)। Window sender ও receiver উভয় দিকেই থাকে, ACK আসার সাথে সাথে সামনে ‘slide’ করে।"
+            "sub": "Sequence number মাত্র ১ bit (0/1) — একসাথে একটাই frame থাকে বলে duplicate বোঝাতে এটুকুই যথেষ্ট।"
           },
           {
-            "sub": "উদ্দেশ্য: Stop-and-Wait-এর idle সময় কমিয়ে pipelining দিয়ে link পুরোপুরি ব্যবহার করা। Error হলে কীভাবে সামলাবে তার ভিত্তিতে এটি দুই ধরনের — Go-Back-N ও Selective Repeat।"
-          },
-          "Go-Back-N ARQ:",
-          {
-            "sub": "নীতি: sender window size N পর্যন্ত frame টানা পাঠাতে পারে; receiver শুধু ক্রমানুসারে (in-order) frame গ্রহণ করে এবং cumulative ACK পাঠায় (ACK=n মানে ‘n পর্যন্ত সব ঠিকভাবে পেয়েছি’)।"
+            "sub": "Frame হারালে: timeout শেষে sender একই sequence দিয়ে আবার পাঠায়।"
           },
           {
-            "sub": "কোনো frame হারালে বা নষ্ট হলে receiver সেটা ও তার পরের সব frame বাতিল করে দেয় (out-of-order গ্রহণ করে না); sender timeout হলে হারানো frame থেকে শুরু করে window-এর বাকি সবকটা frame আবার পাঠায় — তাই নাম ‘go back N’।"
+            "sub": "ACK হারালে: sender timeout-এ আবার পাঠায়; receiver sequence দেখে duplicate বুঝে শুধু ACK আবার পাঠায় (data বাদ দিয়ে)।"
           },
           {
-            "sub": "সীমাবদ্ধতা: receiver-এর buffer লাগে না (সরল) কিন্তু একটি frame হারালে অনেকগুলো ভালো frame-ও আবার পাঠাতে হয় — window size বড় বা error rate বেশি হলে bandwidth বেশি নষ্ট হয়।"
-          },
-          "Selective Repeat ARQ:",
-          {
-            "sub": "নীতি: sender ও receiver দুজনেরই window থাকে; receiver প্রতিটি frame আলাদাভাবে ACK করে এবং সঠিকভাবে পাওয়া out-of-order frame-ও নিজের buffer-এ রেখে দেয় (বাতিল করে না)।"
+            "sub": "ACK দেরি করলে: timeout ইতিমধ্যে হয়ে sender আবার পাঠিয়ে দেয়; receiver duplicate পায়।"
           },
           {
-            "sub": "কোনো frame হারালে/নষ্ট হলে শুধু সেই frame-টাই আবার পাঠানো হয় (timeout দেখে) — অন্য ঠিকমতো পৌঁছানো frame আবার পাঠাতে হয় না।"
+            "diagram": "[১] স্বাভাবিক আদান-প্রদান\n  Sender                Receiver\n    │──seq0───────────►│\n    │◄──────────ACK0───│\n    │──seq1───────────►│\n    │◄──────────ACK1───│\n\n[২] Frame হারালে\n  Sender                Receiver\n    │──seq0────X        │   (frame হারিয়ে গেল)\n    │ (timeout)          │\n    │──seq0───────────►│   (আবার পাঠানো)\n    │◄──────────ACK0───│\n\n[৩] ACK হারালে\n  Sender                Receiver\n    │──seq0───────────►│\n    │        X◄──ACK0───│   (ACK হারিয়ে গেল)\n    │ (timeout)          │\n    │──seq0───────────►│   (আবার পাঠানো — receiver duplicate বুঝে data বাদ দেয়)\n    │◄──────────ACK0───│   (শুধু ACK আবার পাঠায়)\n\n[৪] ACK দেরি করলে\n  Sender                Receiver\n    │──seq0───────────►│\n    │ (timeout ইতিমধ্যে হয়ে গেছে)\n    │──seq0───────────►│   (আবার পাঠানো, receiver duplicate পায়)\n    │◄──────────ACK0───│   (দেরিতে আসা পুরনো ACK0-ও পরে পৌঁছাতে পারে)",
+            "label": "Diagram — Stop-and-Wait ARQ"
           },
           {
-            "sub": "সীমাবদ্ধতা: receiver-এ বাড়তি buffer ও প্রতিটি frame-এর জন্য আলাদা timer লাগে — জটিল ও ব্যয়বহুল; sequence number range window size-এর দ্বিগুণ না রাখলে sender ও receiver window গুলিয়ে যায় (ambiguity)।"
+            "sub": "সীমাবদ্ধতা: প্রতি মুহূর্তে মাত্র ১টি frame in-flight থাকে।"
           },
-          "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "Stop-and-Wait: খুব সরল/কম গতির link। Go-Back-N: HDLC-জাতীয় data-link protocol। Selective Repeat-এর ধারণা আধুনিক TCP-তে SACK (Selective ACK) হিসেবে এবং high-latency link-এ (satellite, Wi-Fi retransmission) ব্যবহৃত হয়।"
+            "sub": "bandwidth-delay বেশি এমন link-এ (satellite) channel বেশিরভাগ সময় idle থাকে — throughput খুব কম।"
+          },
+          "Sliding Window Protocol — মূল ধারণা",
+          {
+            "sub": "ACK-এর অপেক্ষা না করেই window size-সংখ্যক frame একসাথে পাঠানো যায়।"
+          },
+          {
+            "sub": "প্রতিটি frame-এর নিজস্ব sequence number থাকে (নির্দিষ্ট range-এ modulo ঘুরে আসে)।"
+          },
+          {
+            "sub": "Window sender ও receiver উভয় দিকেই থাকে, ACK আসার সাথে সাথে সামনে 'slide' করে।"
+          },
+          {
+            "diagram": "sequence:   0   1   2   3   4   5   6   7   8   9\n          ┌───┬───┬───┬───┐\nwindow →  │ 0 │ 1 │ 2 │ 3 │  4   5   6   7   8   9\n          └───┴───┴───┴───┘\n          এই ৪টা frame ACK ছাড়াই পাঠানো যায়\n\nACK 0 এলে window ডানে এক ঘর সরে যায়:\n              ┌───┬───┬───┬───┐\n  0   window →│ 1 │ 2 │ 3 │ 4 │  5   6   7   8   9\n              └───┴───┴───┴───┘",
+            "label": "Diagram — Sliding Window (window size 4)"
+          },
+          {
+            "sub": "উদ্দেশ্য: Stop-and-Wait-এর idle সময় কমিয়ে pipelining দিয়ে link পুরোপুরি ব্যবহার করা।"
+          },
+          {
+            "sub": "Error হলে কীভাবে সামলাবে তার ভিত্তিতে এটি দুই ধরনের — Go-Back-N ও Selective Repeat।"
+          },
+          "Go-Back-N ARQ",
+          {
+            "sub": "নীতি: sender window size N পর্যন্ত frame টানা পাঠাতে পারে।"
+          },
+          {
+            "sub": "receiver শুধু ক্রমানুসারে (in-order) frame গ্রহণ করে।"
+          },
+          {
+            "sub": "receiver cumulative ACK পাঠায় — ACK=n মানে 'n পর্যন্ত সব ঠিকভাবে পেয়েছি'।"
+          },
+          {
+            "sub": "কোনো frame হারালে বা নষ্ট হলে receiver সেটা ও তার পরের সব frame বাতিল করে দেয় (out-of-order গ্রহণ করে না)।"
+          },
+          {
+            "sub": "sender timeout হলে হারানো frame থেকে শুরু করে window-এর বাকি সবকটা frame আবার পাঠায় — তাই নাম 'go back N'।"
+          },
+          {
+            "diagram": "  Sender              Receiver\n    │──0───────────────►│\n    │──1───────────────►│\n    │──2────X            │   (হারালো)\n    │──3───────────────►│   discard করে (in-order ছাড়া নেয় না)\n    │◄──────────ACK=1───│   (cumulative: শুধু '1 পর্যন্ত ঠিক আছে')\n    │ (timeout)           │\n    │──2,3,…N───────────►│   পুরো window আবার পাঠাতে হলো\n    │◄──────────ACK=N───│",
+            "label": "Diagram — Go-Back-N ARQ"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: receiver-এর buffer লাগে না (সরল)।"
+          },
+          {
+            "sub": "কিন্তু একটি frame হারালে অনেকগুলো ভালো frame-ও আবার পাঠাতে হয়।"
+          },
+          {
+            "sub": "window size বড় বা error rate বেশি হলে bandwidth বেশি নষ্ট হয়।"
+          },
+          "Selective Repeat ARQ",
+          {
+            "sub": "নীতি: sender ও receiver দুজনেরই window থাকে।"
+          },
+          {
+            "sub": "receiver প্রতিটি frame আলাদাভাবে ACK করে।"
+          },
+          {
+            "sub": "সঠিকভাবে পাওয়া out-of-order frame-ও receiver নিজের buffer-এ রেখে দেয় (বাতিল করে না)।"
+          },
+          {
+            "sub": "কোনো frame হারালে/নষ্ট হলে শুধু সেই frame-টাই আবার পাঠানো হয় (timeout দেখে)।"
+          },
+          {
+            "sub": "অন্য ঠিকমতো পৌঁছানো frame আবার পাঠাতে হয় না।"
+          },
+          {
+            "diagram": "  Sender              Receiver\n    │──0───────────────►│\n    │──1───────────────►│\n    │──2────X            │   (হারালো)\n    │──3───────────────►│   buffer-এ রেখে দেয় (বাতিল করে না)\n    │◄──────ACK 0,1,3───│   (প্রতিটি frame-এর আলাদা ACK)\n    │ (timeout শুধু 2-এর)  │\n    │──2─────────────────►│   শুধু হারানো frame আবার পাঠানো হলো\n    │◄──────────ACK=2───│   buffer থেকে সঠিক ক্রমে সাজায়",
+            "label": "Diagram — Selective Repeat ARQ"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: receiver-এ বাড়তি buffer ও প্রতিটি frame-এর জন্য আলাদা timer লাগে — জটিল ও ব্যয়বহুল।"
+          },
+          {
+            "sub": "sequence number range window size-এর দ্বিগুণ না রাখলে sender ও receiver window গুলিয়ে যায় (ambiguity)।"
           }
         ],
-        "diagram": "STOP-AND-WAIT ARQ  —  (Data+ACK) + timeout timer + sequence(0/1)\n\n  স্বাভাবিক আদান-প্রদান          Frame হারালে                ACK হারালে                  ACK দেরি করলে\n  Sender     Receiver         Sender     Receiver          Sender     Receiver          Sender     Receiver\n    │──seq0───►│                │──seq0──X │                │──seq0───►│                │──seq0───►│\n    │◄──ACK0───│                │(timeout) │                │  X◄─ACK0─│                │◄─ACK0(দেরি)..│\n    │──seq1───►│                │──seq0───►│  (আবার পাঠানো)   │(timeout) │                │(timeout আগেই)│\n    │◄──ACK1───│                │◄──ACK0───│                │──seq0───►│  (আবার পাঠানো)   │──seq0───►│\n    │           │                │           │                │◄──ACK0───│ receiver duplicate│◄──ACK0───│\n    │           │                │           │                │           │ বাদ দেয়, ACK পাঠায়│duplicate পায়│\n\n\nGO-BACK-N ARQ (window size N)                        SELECTIVE REPEAT ARQ (window size N)\n\n  Sender          Receiver                                Sender          Receiver\n    │──0─────────►│                                          │──0─────────►│\n    │──1─────────►│                                          │──1─────────►│\n    │──2────X      │ (হারালো)                                  │──2────X      │ (হারালো)\n    │──3─────────►│ discard (in-order ছাড়া নিবে না)             │──3─────────►│ buffer-এ রেখে দেয়\n    │◄──ACK=1──────│ (cumulative: শুধু ‘1 পর্যন্ত ঠিক আছে’)        │◄─ACK0,1,3────│ (প্রতিটি frame-এর আলাদা ACK)\n    │ (timeout)     │                                          │ (timeout শুধু 2-এর)│\n    │──2,3,…N─────►│ পুরো window আবার পাঠাতে হলো                │──2──────────►│ শুধু হারানো frame আবার\n    │◄──ACK=N──────│                                          │◄──ACK=2──────│ buffer থেকে সঠিক ক্রমে সাজায়\n\n──────────────── at-a-glance ────────────────\n  Stop-and-Wait  : ১-এ-১, সবচেয়ে ধীর কিন্তু সবচেয়ে সরল\n  Go-Back-N      : error হলে গোটা window আবার পাঠাতে হয়\n  Selective Rep. : শুধু হারানো frame আবার পাঠাতে হয়, কিন্তু buffer+timer বেশি লাগে",
         "table": {
           "headers": [
             "বিষয়",

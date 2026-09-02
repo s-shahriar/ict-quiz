@@ -1657,6 +1657,23 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   border-bottom: 2px solid;
 }
 
+/* Sub-group inside a segment (e.g. "Pointer" / "Recursion" within
+   "Program Output") — a smaller pill-style label, not a full-width rule,
+   so it reads as a subdivision rather than another top-level section. */
+.written-subsegment { margin-bottom: 20px; }
+.written-subsegment-header {
+  display: inline-flex; align-items: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+  color: var(--c, var(--accent));
+  background: color-mix(in srgb, var(--c, var(--accent)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c, var(--accent)) 30%, transparent);
+}
+
 /* Card */
 .written-card {
   background: var(--surface-glass);

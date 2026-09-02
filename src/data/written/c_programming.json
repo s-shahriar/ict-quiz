@@ -284,7 +284,7 @@
             "sub": "এই harmonic কাঠামোর সাথে আর একটি স্বাধীন loop জুড়লে সেটি শুধু গুণক হিসেবে বসে: ভেতরে √n loop দিলে O(n√n log n), ভেতরে log n loop দিলে O(n log²n), আর পুরো কাঠামোটি বাইরের n-বার loop-এর ভেতরে রাখলে O(n² log n)।"
           },
           {
-            "code": "for (i = 1; i <= n; i++)        // n বার\n    for (j = i; j <= n; j += i) // n/i বার — n বার নয়",
+            "code": "for (i = 1; i <= n; i++)        // n বার\n    for (j = i; j <= n; j += i) // n/i বার — n বার নয়\n// মোট = n × H(n) ≈ n ln n  ->  O(n log n)",
             "codeLang": "c",
             "label": "Pattern ৩ — Harmonic nested loop"
           },
@@ -305,7 +305,7 @@
             "sub": "বাইরে i * i <= n (√n বার) এবং ভেতরে j <= i হলে একই যুক্তি: কাজ 1 + 2 + 3 + … + √n = √n(√n+1)/2 ≈ n/2 ⇒ O(n)। এখানে √n × √n = n আন্দাজে মিলে গেলেও কারণটি আলাদা — এটি যোগফল, গুণফল নয়।"
           },
           {
-            "code": "for (i = 1; i <= n; i *= 2)     // log n বার (i = 1,2,4,…,n)\n    for (j = 1; j <= i; j++)    // i বার  <- n বার নয়!\n\nfor (i = 1; i * i <= n; i++)    // √n বার (i = 1,2,3,…,√n)\n    for (j = 1; j <= i; j++)    // i বার",
+            "code": "for (i = 1; i <= n; i *= 2)     // log n বার (i = 1,2,4,…,n)\n    for (j = 1; j <= i; j++)    // i বার  <- n বার নয়!\n// মোট = 1+2+4+…+n = 2n-1  ->  O(n)\n\nfor (i = 1; i * i <= n; i++)    // √n বার (i = 1,2,3,…,√n)\n    for (j = 1; j <= i; j++)    // i বার\n// মোট = 1+2+…+√n ≈ n/2  ->  O(n)",
             "codeLang": "c",
             "label": "Pattern ৪ — নির্ভরশীল nested loop"
           },
@@ -332,7 +332,7 @@
             "sub": "ভেতরের k-loop i বা j-এর উপর নির্ভর করে না, তাই সেটি শুধু গুণক log n। মোট = 2n × log n ⇒ O(n log n) — তিনটি nested loop দেখে O(n³) বা O(n log²n) ধরে নেওয়া ভুল।"
           },
           {
-            "code": "for (i = 1; i <= n; i *= 2)          // log n বার\n    for (j = i; j <= n; j += i)      // n/i বার\n        for (k = 1; k <= n; k *= 2)  // log n বার (স্বাধীন)",
+            "code": "for (i = 1; i <= n; i *= 2)          // log n বার\n    for (j = i; j <= n; j += i)      // n/i বার\n        for (k = 1; k <= n; k *= 2)  // log n বার (স্বাধীন)\n// মোট = 2n × log n  ->  O(n log n)",
             "codeLang": "c",
             "label": "Pattern ৬ — মিশ্র উদাহরণ ১"
           },
@@ -347,7 +347,7 @@
             "sub": "মূল বিষয়: ভেতরের loop আগের অবস্থা মনে রাখে না — প্রতিবার j = n থেকেই আবার শুরু হয়। মনে রাখলে মোট কাজ হতো মাত্র log n।"
           },
           {
-            "code": "i = 1;\nwhile (i < n) {          // বাইরের: log n বার (i = 1,2,4,…,n)\n    j = n;                // প্রতিবার j আবার n থেকে শুরু\n    while (j > i)          // ভেতরের: log(n/i) বার  <- log n নয়\n        j = j / 2;\n    i = i * 2;\n}",
+            "code": "i = 1;\nwhile (i < n) {          // বাইরের: log n বার (i = 1,2,4,…,n)\n    j = n;                // প্রতিবার j আবার n থেকে শুরু\n    while (j > i)          // ভেতরের: log(n/i) বার  <- log n নয়\n        j = j / 2;\n    i = i * 2;\n}\n// মোট = log n + (log n-1) + … + 1  ->  O(log² n)",
             "codeLang": "c",
             "label": "Pattern ৭ — মিশ্র উদাহরণ ২ (while loop)"
           },
@@ -478,9 +478,230 @@
       }
     },
     {
+      "id": "c_007",
+      "segment": "Program Output",
+      "subsegment": "Recursion",
+      "q": "static variable বনাম parameter — recursive function-এর output বের করার কৌশল, আর n নিজেও যোগ হওয়া একটু জটিল variant",
+      "tags": [
+        "recursion",
+        "static variable",
+        "parameter",
+        "local variable",
+        "call stack",
+        "java",
+        "output prediction",
+        "cheat sheet"
+      ],
+      "answer": {
+        "summary": [
+          "recursion-এর output-prediction প্রশ্নে সবচেয়ে বড় trap: variable static নাকি local/parameter, সেটা না ধরতে পারলে পুরো হিসাব ভুল হয়ে যায় — নিচে একটা ৫-ধাপের strategy, তারপর তিনটে ক্রমান্বয়ে কঠিন উদাহরণ।",
+          "একই কোড শুধু static → parameter বদলে দিলে output 19 থেকে 17 হয়ে যায় (উদাহরণ ১ বনাম ২) — এই একটা তুলনাই আসল শিক্ষা দেয়।"
+        ],
+        "points": [
+          "🎯 পরীক্ষার জন্য দ্রুত Strategy (Cheat-Sheet) — এই ধরনের প্রশ্ন পেলে এই ধাপগুলো অনুসরণ করো:",
+          {
+            "sub": "১) প্রথমে চেক করো — variable-টা static (class-level, shared) নাকি local/parameter (প্রতি call-এর নিজস্ব আলাদা copy)। এটাই সবচেয়ে গুরুত্বপূর্ণ পার্থক্য তৈরি করে।"
+          },
+          {
+            "sub": "২) একটা টেবিল বানাও — প্রতিটা recursive call-এ (n যাওয়ার দিকে, অর্থাৎ 'going down') variable-টা কী মান পায়, সেটা লিখে ফেলো।"
+          },
+          {
+            "sub": "৩) Base case (n<=1, n==0 ইত্যাদি) কোথায় থামছে সেটা বের করো — ওটাই সবচেয়ে ভেতরের return।"
+          },
+          {
+            "sub": "৪) এবার উল্টো দিকে (return করার সময়, 'coming back up') হিসাব করো — variable static হলে সবসময় সর্বশেষ (সবচেয়ে নিচের call-এ সেট করা) মানটাই ব্যবহার হবে, প্রতিটি +x-এর জন্য একই মান — নিজের বসানো পুরনো মান নয়।"
+          },
+          {
+            "sub": "৫) ধাপে ধাপে নিচ থেকে উপরে যোগ করে answer বের করো।"
+          },
+          "উদাহরণ ১ (recap) — static variable হলে কী হয়:",
+          {
+            "code": "class Test {\n    static int x = 5;\n\n    public static int fun(int n) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
+            "codeLang": "Java",
+            "label": "Recursion ১ — static variable"
+          },
+          {
+            "sub": "x static — পুরো program-এ একটাই কপি, সব call সেটা ভাগাভাগি করে।"
+          },
+          {
+            "sub": "নিচে নামা (going down): fun(3) — n=3>1, তাই x = 5+2 = 7, তারপর কল করে fun(2)।"
+          },
+          {
+            "sub": "fun(2) — n=2>1, তাই x = 7+2 = 9, তারপর কল করে fun(1)।"
+          },
+          {
+            "sub": "fun(1) — n=1≤1, base case: সরাসরি return 1 (x আর বাড়ে না, x=9-ই থেকে যায়)।"
+          },
+          {
+            "sub": "উপরে ফেরা (coming back up): fun(1) থেকে 1 ফেরত পেয়ে fun(2) এখন x-এর সর্বশেষ মান (9) পড়ে — নিজের বসানো পুরনো মান 7 নয়। fun(2) = 1 + 9 = 10।"
+          },
+          {
+            "sub": "fun(2)-এর ফলাফল (10) পেয়ে fun(3)-ও x-এর সর্বশেষ মান (9)-ই পড়ে — নিজের বসানো পুরনো মান 5 নয়। fun(3) = 10 + 9 = 19।"
+          },
+          {
+            "sub": "→ Output: 19"
+          },
+          "উদাহরণ ২ (তুলনা) — একই কোড, কিন্তু x যদি static না হয়ে parameter হতো:",
+          {
+            "code": "class Test {\n    public static int fun(int n, int x) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1, x) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3, 5));\n    }\n}",
+            "codeLang": "Java",
+            "label": "Recursion ২ — x এখন parameter"
+          },
+          {
+            "sub": "এবার x কোনো static/shared variable না — এটা parameter, মানে প্রতিটি call-এর নিজস্ব আলাদা copy আছে। একটা call-এর x আরেকটা call-কে প্রভাবিত করে না।"
+          },
+          {
+            "sub": "fun(3,5): x=5+2=7 (এই call-এর নিজস্ব x), কল করে fun(2,7)+7। fun(2,7): x=7+2=9 (নিজস্ব x), কল করে fun(1,9)+9। fun(1,9): n<=1, সরাসরি return 1।"
+          },
+          {
+            "sub": "ফিরতি পথ: fun(2,7) = fun(1,9)+9 = 1+9 = 10। fun(3,5) = fun(2,7)+7 = 10+7 = 17 — এখানে নিজের বসানো পুরনো 7-ই ব্যবহার হচ্ছে, কারণ এটা local copy, কেউ বদলে দেয়নি।"
+          },
+          {
+            "sub": "→ Output: 17 (static হলে ছিল 19 — শুধু static→parameter বদলেই উত্তর বদলে গেল)"
+          },
+          "উদাহরণ ৩ (কঠিন) — n নিজেও যোগ হচ্ছে, static sum variable দিয়ে:",
+          {
+            "code": "class Test {\n    static int sum = 0;\n\n    static int fun(int n) {\n        if (n == 0) {\n            return 0;\n        }\n        sum = sum + n;\n        return fun(n - 1) + sum;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
+            "codeLang": "Java",
+            "label": "Recursion ৩ — static sum, n যোগ হচ্ছে"
+          },
+          {
+            "sub": "sum static, শুরুতে sum=0। নিচে নামতে নামতে: fun(3)→sum=0+3=3; fun(2)→sum=3+2=5; fun(1)→sum=5+1=6; fun(0)→n==0, সরাসরি return 0 (sum-এ হাত পড়ে না, sum=6-ই থাকে)।"
+          },
+          {
+            "sub": "ফেরার সময় প্রতিটি call sum-এর সর্বশেষ মান (6) পড়ে, নিজের ধাপে বসানো মান নয়: fun(1)=fun(0)+sum=0+6=6। fun(2)=fun(1)+sum=6+6=12। fun(3)=fun(2)+sum=12+6=18।"
+          },
+          {
+            "sub": "→ Output: 18"
+          }
+        ],
+        "diagram": "static sum — নিচে নামা (going down)              উপরে ফেরা (coming back up)\n\n fun(3): sum = 0+3 = 3                fun(0) = 0\n    │ call fun(2)                          │\n    ▼                                       ▼\n fun(2): sum = 3+2 = 5                fun(1) = fun(0) + sum = 0 + 6 = 6\n    │ call fun(1)                          │\n    ▼                                       ▼\n fun(1): sum = 5+1 = 6                fun(2) = fun(1) + sum = 6 + 6 = 12\n    │ call fun(0)                          │\n    ▼                                       ▼\n fun(0): n==0 → return 0 (sum অপরিবর্তিত)  fun(3) = fun(2) + sum = 12 + 6 = 18\n\n                    Output: 18\n\n⚠ লক্ষ করো: প্রতিটি ধাপে sum পড়া হচ্ছে তার সর্বশেষ মান (6),\n   নিজের বসানো পুরনো মান নয় — কারণ sum static, আর ফেরার আগে\n   আর কেউ সেটা বদলায়নি।",
+        "table": {
+          "headers": [
+            "Call",
+            "n",
+            "sum = sum + n",
+            "নতুন sum"
+          ],
+          "rows": [
+            [
+              "fun(3)",
+              "3",
+              "0+3",
+              "3"
+            ],
+            [
+              "fun(2)",
+              "2",
+              "3+2",
+              "5"
+            ],
+            [
+              "fun(1)",
+              "1",
+              "5+1",
+              "6"
+            ],
+            [
+              "fun(0)",
+              "0",
+              "(base case — sum অপরিবর্তিত)",
+              "6"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "static ও local/parameter variable একই আচরণ করে ভাবা",
+            "static variable পুরো program-এ একটাই কপি — সব call ভাগাভাগি করে, তাই এক call-এর পরিবর্তন সবাই দেখে। local/parameter variable-এর প্রতিটি call-এর নিজস্ব আলাদা copy থাকে, একটা আরেকটাকে প্রভাবিত করে না।"
+          ],
+          [
+            "static variable ফেরার সময় নিজের বসানো পুরনো মান ব্যবহার করে ভাবা",
+            "static variable-এর জন্য সবসময় সর্বশেষ (সবচেয়ে ভেতরের/নিচের call-এ সেট করা) মানই ব্যবহৃত হয় — যে call নিজে যে মান বসিয়েছিল, ফেরার সময় সেটা আর ফিরে আসে না।"
+          ],
+          [
+            "base case-এও variable আপডেট হয় ভাবা",
+            "base case (n<=1 বা n==0)-এ সরাসরি return হয়ে যায় — তার আগের update-লাইন (যেমন sum = sum+n) সেখানে চলে না।"
+          ]
+        ],
+        "mnemonic": "static মানে 'একটাই খাতা, সবাই লেখে' — নিচে নামার সময় খাতায় লেখা চলতেই থাকে, উপরে ওঠার সময় সবাই খাতার সর্বশেষ লেখাটাই পড়ে। local/parameter মানে 'যার যার নিজের খাতা' — কেউ কারো খাতা দেখে না।"
+      }
+    },
+    {
+      "id": "c_006",
+      "segment": "Program Output",
+      "subsegment": "Inheritance & Polymorphism",
+      "q": "C++ Inheritance ও Polymorphism — constructor call-এর ক্রম (compile-time) বনাম virtual function resolution (runtime)",
+      "tags": [
+        "c++",
+        "multiple inheritance",
+        "constructor order",
+        "virtual function",
+        "runtime polymorphism",
+        "oop",
+        "output prediction"
+      ],
+      "answer": {
+        "summary": [
+          "এই দুটো output-prediction প্রশ্নে মূল বিষয়টাই হলো: constructor-এর ক্রম compile-time-এই ঠিক হয়ে যায় (inheritance list-এ লেখা ক্রম অনুযায়ী), কিন্তু virtual function কোনটা চলবে সেটা runtime-এ ঠিক হয় (আসল object দেখে)।"
+        ],
+        "points": [
+          "── C++ Inheritance ও Polymorphism — কোনটা Compile-time, কোনটা Runtime-এ ঠিক হয় ──",
+          {
+            "sub": "Constructor call-এর ক্রম compile-time-এই ঠিক হয়ে যায় — base class-গুলো ঠিক যে ক্রমে inheritance list-এ লেখা (class C : public A, public B), সেই ক্রমেই call হয়, তারপর derived class-এর নিজের constructor।"
+          },
+          {
+            "sub": "virtual function কোন class-এর সংস্করণ চলবে সেটা runtime-এ ঠিক হয় — pointer-এর ঘোষিত TYPE দেখে নয়, pointer আসলে কোন OBJECT-কে point করছে সেটা দেখে।"
+          },
+          "১২ — multiple inheritance-এ class C : public A, public B হলে constructor-এর ক্রম কী হবে?",
+          {
+            "code": "class A {\npublic:\n    A() { cout << \"A \"; }\n};\n\nclass B {\npublic:\n    B() { cout << \"B \"; }\n};\n\nclass C : public A, public B {\npublic:\n    C() { cout << \"C \"; }\n};\n\nint main() {\n    C obj;\n}",
+            "codeLang": "cpp",
+            "label": "Inheritance ১ — Constructor Order"
+          },
+          {
+            "sub": "C++ কম্পাইলার derived class-এর object বানানোর আগে সবগুলো base class-এর constructor call করে নেয়, ইনহেরিটেন্স লিস্টের ক্রমে (বাম থেকে ডান) — এখানে আগে A, পরে B।"
+          },
+          {
+            "sub": "এরপর সবশেষে derived class (C)-এর নিজের constructor চলে। constructor-এর ভেতরের কোনো initializer list লেখার ক্রম এতে প্রভাব ফেলে না।"
+          },
+          {
+            "sub": "→ Output: A B C"
+          },
+          "১৩ — base class pointer দিয়ে derived object-কে point করে virtual function call করলে কার function চলে?",
+          {
+            "code": "class A {\npublic:\n    virtual void show() { cout << \"A\"; }\n};\n\nclass B : public A {\npublic:\n    void show() { cout << \"B\"; }\n};\n\nint main() {\n    A *p = new B();\n    p->show();\n}",
+            "codeLang": "cpp",
+            "label": "Inheritance ২ — Virtual Function"
+          },
+          {
+            "sub": "virtual না থাকলে C++ compile-time-এই ঠিক করে ফেলত, শুধু pointer-এর ঘোষিত TYPE (A*) দেখে — তখন output হতো A।"
+          },
+          {
+            "sub": "virtual থাকায় সিদ্ধান্তটা runtime-এ নেওয়া হয়, pointer আসলে কোন object-কে point করছে তা দেখে। এখানে p-এর টাইপ A* হলেও সে আসলে একটা B object (new B()) কে point করছে।"
+          },
+          {
+            "sub": "→ Output: B"
+          }
+        ],
+        "mistakes": [
+          [
+            "virtual function-এর ক্ষেত্রে pointer-এর ঘোষিত TYPE (A*) দেখে function বাছাই হয় ভাবা",
+            "virtual থাকলে আসল object-এর টাইপ (এখানে B) দেখে function বাছাই হয় — pointer-এর টাইপ শুধু virtual না থাকলেই প্রাসঙ্গিক।"
+          ],
+          [
+            "multiple inheritance-এ constructor-এর ক্রম initializer list লেখার উপর নির্ভর করে ভাবা",
+            "ক্রম নির্ভর করে শুধু inheritance list-এ (class C : public A, public B) লেখা ক্রমের উপর, initializer list-এ ভিন্ন ক্রমে লিখলেও বদলায় না।"
+          ]
+        ],
+        "mnemonic": "Constructor-এর ক্রম লেখা-ক্রম অনুযায়ী (compile-time); virtual function-এর ক্রম আসল object অনুযায়ী (runtime)।"
+      }
+    },
+    {
       "id": "c_005",
       "segment": "Program Output",
-      "q": "Program Output prediction — Pointer Arithmetic, Memory Management আর C++ Inheritance/Polymorphism-এর কমন confusion গুলো ধাপে ধাপে সমাধান",
+      "subsegment": "Pointer",
+      "q": "Pointer Arithmetic ও Memory Management — array address আর leak/dangling pointer নিয়ে কমন confusion, output prediction সহজ থেকে কঠিন",
       "tags": [
         "pointer",
         "array",
@@ -491,18 +712,12 @@
         "dangling pointer",
         "malloc",
         "free",
-        "c++",
-        "multiple inheritance",
-        "constructor order",
-        "virtual function",
-        "runtime polymorphism",
         "output prediction"
       ],
       "answer": {
         "summary": [
-          "এই এক প্রশ্নে তিনটি ভিন্ন topic-এর output-prediction সমস্যা সাজানো — Pointer Arithmetic (array address নিয়ে বিভ্রান্তি), Memory Management (leak বনাম dangling), আর C++ Inheritance/Polymorphism। প্রতিটি group শুরু হয়েছে তার মূল confusion clear করে, তারপর সহজ থেকে কঠিন উদাহরণ।",
           "Pointer-এ সবচেয়ে বড় ভুল হয় arr, &arr, &arr[i], *(arr+i) গুলিয়ে ফেললে — প্রথম অংশেই এটা এক নজরে সাফ করে দেওয়া হয়েছে, তারপর ৯টা output-prediction প্রশ্ন সহজ থেকে কঠিন ক্রমে।",
-          "Memory management-এ Leak (কখনো free না হওয়া memory) আর Dangling Pointer (ইতিমধ্যে invalid জায়গা ব্যবহার করা) দুটো আলাদা সমস্যা — গুলিয়ে ফেলা সবচেয়ে কমন ভুল। C++ অংশে constructor-ক্রম (compile-time) বনাম virtual function (runtime) এর পার্থক্যটাই মূল বিষয়।"
+          "শেষ অংশে Memory Management — Leak (কখনো free না হওয়া memory) আর Dangling Pointer (ইতিমধ্যে invalid জায়গা ব্যবহার করা) দুটো আলাদা সমস্যা, গুলিয়ে ফেলা সবচেয়ে কমন ভুল।"
         ],
         "points": [
           "🔑 Pointer ও Array Address — সবচেয়ে বড় বিভ্রান্তি আগে সাফ করো (arr, &arr, &arr[i], *(arr+i)):",
@@ -719,43 +934,6 @@
           },
           {
             "sub": "→ Output: Undefined Behavior (compile হয়ে যায়, সমস্যাটা runtime-এ)"
-          },
-          "── C++ Inheritance ও Polymorphism — কোনটা Compile-time, কোনটা Runtime-এ ঠিক হয় ──",
-          {
-            "sub": "Constructor call-এর ক্রম compile-time-এই ঠিক হয়ে যায় — base class-গুলো ঠিক যে ক্রমে inheritance list-এ লেখা (class C : public A, public B), সেই ক্রমেই call হয়, তারপর derived class-এর নিজের constructor।"
-          },
-          {
-            "sub": "virtual function কোন class-এর সংস্করণ চলবে সেটা runtime-এ ঠিক হয় — pointer-এর ঘোষিত TYPE দেখে নয়, pointer আসলে কোন OBJECT-কে point করছে সেটা দেখে।"
-          },
-          "১২ — multiple inheritance-এ class C : public A, public B হলে constructor-এর ক্রম কী হবে?",
-          {
-            "code": "class A {\npublic:\n    A() { cout << \"A \"; }\n};\n\nclass B {\npublic:\n    B() { cout << \"B \"; }\n};\n\nclass C : public A, public B {\npublic:\n    C() { cout << \"C \"; }\n};\n\nint main() {\n    C obj;\n}",
-            "codeLang": "cpp",
-            "label": "Inheritance ১ — Constructor Order"
-          },
-          {
-            "sub": "C++ কম্পাইলার derived class-এর object বানানোর আগে সবগুলো base class-এর constructor call করে নেয়, ইনহেরিটেন্স লিস্টের ক্রমে (বাম থেকে ডান) — এখানে আগে A, পরে B।"
-          },
-          {
-            "sub": "এরপর সবশেষে derived class (C)-এর নিজের constructor চলে। constructor-এর ভেতরের কোনো initializer list লেখার ক্রম এতে প্রভাব ফেলে না।"
-          },
-          {
-            "sub": "→ Output: A B C"
-          },
-          "১৩ — base class pointer দিয়ে derived object-কে point করে virtual function call করলে কার function চলে?",
-          {
-            "code": "class A {\npublic:\n    virtual void show() { cout << \"A\"; }\n};\n\nclass B : public A {\npublic:\n    void show() { cout << \"B\"; }\n};\n\nint main() {\n    A *p = new B();\n    p->show();\n}",
-            "codeLang": "cpp",
-            "label": "Inheritance ২ — Virtual Function"
-          },
-          {
-            "sub": "virtual না থাকলে C++ compile-time-এই ঠিক করে ফেলত, শুধু pointer-এর ঘোষিত TYPE (A*) দেখে — তখন output হতো A।"
-          },
-          {
-            "sub": "virtual থাকায় সিদ্ধান্তটা runtime-এ নেওয়া হয়, pointer আসলে কোন object-কে point করছে তা দেখে। এখানে p-এর টাইপ A* হলেও সে আসলে একটা B object (new B()) কে point করছে।"
-          },
-          {
-            "sub": "→ Output: B"
           }
         ],
         "diagram": "১) Pointer ও Array Address — মেমরি লেআউট\nধরি: int arr[4] = {10, 20, 30, 40};  arr শুরু হয় address 1000-এ (প্রতিটি int = 4 byte)\n\n  address:    1000    1004    1008    1012    1016\n  মান:      [ 10  ][ 20  ][ 30  ][ 40  ]|  ← array-এর বাইরে\n             arr[0]  arr[1]  arr[2]  arr[3]\n\n  arr, &arr[0]          ──────►  1000   (প্রথম element-এর ADDRESS)\n  *arr, *(arr+0)        ──────►  10     (প্রথম element-এর VALUE)\n  arr+1, &arr[1]        ──────►  1004   (দ্বিতীয় element-এর ADDRESS) ← মাত্র 1 int এগোলো\n  *(arr+1), arr[1]      ──────►  20     (দ্বিতীয় element-এর VALUE)\n  &arr                  ──────►  1000   (সংখ্যায় arr-এর সমান, কিন্তু TYPE আলাদা)\n  &arr+1                ──────►  1016   ⚠ পুরো array পার হয়ে গেল, array-এর বাইরে\n  (int*)(&arr+1) - 1    ──────►  1012   = &arr[3]  (শেষ element-এ ফেরার trick)\n\n──────── at-a-glance ────────\n  arr, &arr[0]         →  1000  (int*)      প্রথম element-এর address\n  arr+1, &arr[1]       →  1004  (int*)      দ্বিতীয় element-এর address\n  *(arr+1), arr[1]     →  20    (int)       দ্বিতীয় element-এর VALUE\n  &arr                 →  1000  (int(*)[4]) পুরো array-এর address\n  &arr+1               →  1016  (int(*)[4]) পুরো array পার হয়ে যাওয়া address\n\n\n২) প্রশ্ন ৯ (সবচেয়ে কঠিন) — &ledger+1 বনাম ledger+1\nledger:  [10][20][30][40][50]     index →   0    1    2    3    4      index 5 = বাইরে\n          ▲                                       ▲\n    &ledger, ledger                          ledger+1 = index 1\n\n  &ledger+1  ──► index 5 (বাইরে) ──(int*) cast──► ptr1\n  ptr1 - 1   ──► index 4 = 50   (array-এর শেষ element)\n\n  ledger+1   ──► index 1 ──(int*) cast──► ptr2\n  ptr2 + 2   ──► index 3 = 40",
@@ -829,17 +1007,9 @@
           [
             "Memory Leak আর Dangling Pointer একই সমস্যা",
             "Leak-এ memory valid থাকে কিন্তু কেউ তার address ধরে নেই (free করা যায় না); Dangling-এ address invalid হয়ে গেছে (free হয়ে গেছে বা scope শেষ) অথচ সেটা ব্যবহার করা হচ্ছে।"
-          ],
-          [
-            "virtual function-এর ক্ষেত্রে pointer-এর ঘোষিত TYPE (A*) দেখে function বাছাই হয় ভাবা",
-            "virtual থাকলে আসল object-এর টাইপ (এখানে B) দেখে function বাছাই হয় — pointer-এর টাইপ শুধু virtual না থাকলেই প্রাসঙ্গিক।"
-          ],
-          [
-            "multiple inheritance-এ constructor-এর ক্রম initializer list লেখার উপর নির্ভর করে ভাবা",
-            "ক্রম নির্ভর করে শুধু inheritance list-এ (class C : public A, public B) লেখা ক্রমের উপর, initializer list-এ ভিন্ন ক্রমে লিখলেও বদলায় না।"
           ]
         ],
-        "mnemonic": "Pointer: তারকা (*) = মান, & = ঠিকানা, &array = 'পুরোটা' লাফ (element নয়)। Memory: Leak = address হারিয়ে ফেলা (memory আটকে থাকে); Dangling = ইতিমধ্যে invalid জায়গা ব্যবহার করা। C++: Constructor-এর ক্রম লেখা-ক্রম অনুযায়ী (compile-time); virtual function-এর ক্রম আসল object অনুযায়ী (runtime)।"
+        "mnemonic": "তারকা (*) = মান, & = ঠিকানা, &array = 'পুরোটা' লাফ (element নয়)। Leak = memory হারানো (আটকে থাকে, কেউ free করতে পারে না); Dangling = ইতিমধ্যে invalid জায়গা ব্যবহার করা।"
       }
     }
   ]
