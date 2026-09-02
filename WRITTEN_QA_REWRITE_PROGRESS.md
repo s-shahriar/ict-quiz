@@ -16,198 +16,198 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 
 ## Legend
 
-- `[ ]` pending &nbsp;&nbsp; `[x]` rewritten &nbsp;&nbsp; `[-]` checked, already clean (no change needed)
-- `dense` = lines flagged as cramming multiple ideas (the thing being fixed)
+- `[x]` rewritten &nbsp;&nbsp; `[ ]` still has dense lines &nbsp;&nbsp; `[-]` was already clean, left alone
+- `dense` = lines cramming multiple ideas (the thing being fixed)
 
-## Overall: 0 / 145 done  (97 need a rewrite, 48 already clean)
+## Status: **75 / 97 rewritten**, 22 remaining (48 were already clean and untouched)
 
-### c_programming — 7 questions, 6 need work
+### c_programming — 7 questions — ✅ all 6 rewritten
 
-- [ ] `c_001` — 1 dense — Describe Dynamic Memory Allocation in C programming.
-- [-] `c_002` — clean — What is Nested Structure in C programming? Explain with exam
-- [ ] `c_003` — 5 dense, combined diagram → split inline — Consider the following Java program and determine the intege
-- [ ] `c_004` — 13 dense — Time Complexity: analyze the common loop and recursion patte
-- [ ] `c_005` — 11 dense — Pointer Arithmetic ও Memory Management — array address আর le
-- [ ] `c_006` — 2 dense — C++ Inheritance ও Polymorphism — constructor call-এর ক্রম (c
-- [ ] `c_007` — 8 dense — static variable বনাম parameter — recursive function-এর outpu
+- [x] `c_001` — was 1 dense → now 25 clean points — Describe Dynamic Memory Allocation in C programming.
+- [-] `c_002` — already clean — What is Nested Structure in C programming? Explain with exam
+- [x] `c_003` — was 5 dense → now 30 clean points, 5 inline diagram(s) — Consider the following Java program and determine the intege
+- [x] `c_004` — was 13 dense → now 70 clean points — Time Complexity: analyze the common loop and recursion patte
+- [x] `c_005` — was 11 dense → now 96 clean points — Pointer Arithmetic ও Memory Management — array address আর le
+- [x] `c_006` — was 2 dense → now 16 clean points — C++ Inheritance ও Polymorphism — constructor call-এর ক্রম (c
+- [x] `c_007` — was 8 dense → now 44 clean points — static variable বনাম parameter — recursive function-এর outpu
 
-### computer_fundamental — 4 questions, 2 need work
+### computer_fundamental — 4 questions — ✅ all 2 rewritten
 
-- [-] `cf_001` — clean — A maintenance engineer is setting up a RAID 5 array with fiv
-- [-] `cf_002` — clean — A bank's ATM network experiences an average of 4 hours of do
-- [ ] `cf_003` — 1 dense — You have 4 Hard Drives of 2TB each. Calculate usable storage
-- [ ] `cf_004` — 4 dense — Explain the concepts of Reinforcement Learning (RL), Deep Le
+- [-] `cf_001` — already clean — A maintenance engineer is setting up a RAID 5 array with fiv
+- [-] `cf_002` — already clean — A bank's ATM network experiences an average of 4 hours of do
+- [x] `cf_003` — was 1 dense → now 25 clean points, 3 inline diagram(s) — You have 4 Hard Drives of 2TB each. Calculate usable storage
+- [x] `cf_004` — was 4 dense → now 21 clean points, 3 inline diagram(s) — Explain the concepts of Reinforcement Learning (RL), Deep Le
 
-### computer_network — 30 questions, 23 need work
+### computer_network — 30 questions — ✅ all 23 rewritten
 
-- [-] `cn_001` — clean, combined diagram → split inline — Explain the logic of a Checksum. How is it used to verify da
-- [-] `cn_002` — clean — Draw a network architecture for Bangladesh Bank placing Fire
-- [ ] `cn_003` — 1 dense, combined diagram → split inline — Afsana sends email to Sinthia. Which application & transport
-- [ ] `cn_004` — 6 dense, combined diagram → split inline — How do RIP, OSPF, and BGP compare for network routing?
-- [-] `cn_005` — clean — Explain packet switching. A packet passes through 4 routers 
-- [ ] `cn_006` — 2 dense — At which layer of the OSI model does a standard Router prima
-- [ ] `cn_007` — 6 dense — What are the different types of transmission media used for 
-- [ ] `cn_008` — 5 dense — Differentiate among TDM, FDM and WDM. How does TDM work?
-- [-] `cn_009` — clean — What are the challenges in optimizing energy efficiency of d
-- [-] `cn_010` — clean — Why does DNS primarily use UDP instead of TCP? Describe the 
-- [ ] `cn_011` — 2 dense — What are SOAP and RESTful APIs in web services? State one ma
-- [ ] `cn_012` — 1 dense — A company developed private communication software (VoIP) wh
-- [ ] `cn_013` — 3 dense — What are the advantages and disadvantages of Net-Specific Ro
-- [ ] `cn_014` — 3 dense — What is an IT Disaster Recovery Plan (DRP)? Propose a compre
-- [ ] `cn_015` — 2 dense — Describe the security architecture (network flow) for a bank
-- [ ] `cn_016` — 2 dense — What is a Data Center to Cloud Transformation Strategy? Desc
-- [ ] `cn_017` — 3 dense — Compare SAS (Serial Attached SCSI) vs. SATA (Serial ATA). Wh
-- [ ] `cn_018` — 2 dense — What is BIOS and how does it affect hardware maintenance and
-- [ ] `cn_019` — 2 dense — What type of generator is best suited for a data center's co
-- [ ] `cn_020` — 3 dense — Explain how OSPF (Open Shortest Path First) works for packet
-- [ ] `cn_021` — 7 dense — How does TCP/IP Tunneling work? Explain its mechanism and re
-- [ ] `cn_022` — 3 dense, combined diagram → split inline — Excessive broadcast traffic (broadcast storm) in a LAN — wha
-- [-] `cn_023` — clean — A core router receives a packet with destination IP 192.168.
-- [ ] `cn_024` — 1 dense — A corporate network pool experiences IP exhaustion due to a 
-- [ ] `cn_025` — 3 dense — A satellite link has one-way propagation delay 250 ms and tr
-- [ ] `cn_026` — 2 dense — Compare between TCP and UDP: their connection, reliability, 
-- [ ] `cn_027` — 4 dense, combined diagram → split inline — 10Mbps bandwidth, average packet length 1500 bytes, what is 
-- [ ] `cn_028` — 3 dense — Differentiate between TCP 3-way handshake and 4-way handshak
-- [ ] `cn_029` — 11 dense, combined diagram → split inline — Differentiate among RIP, DVR (Distance Vector Routing), OSPF
-- [-] `cn_030` — clean — Explain the working principle of Stop-and-Wait ARQ, Sliding 
+- [-] `cn_001` — already clean — Explain the logic of a Checksum. How is it used to verify da
+- [-] `cn_002` — already clean — Draw a network architecture for Bangladesh Bank placing Fire
+- [x] `cn_003` — was 1 dense → now 18 clean points — Afsana sends email to Sinthia. Which application & transport
+- [x] `cn_004` — was 6 dense → now 26 clean points, 3 inline diagram(s) — How do RIP, OSPF, and BGP compare for network routing?
+- [-] `cn_005` — already clean — Explain packet switching. A packet passes through 4 routers 
+- [x] `cn_006` — was 2 dense → now 17 clean points — At which layer of the OSI model does a standard Router prima
+- [x] `cn_007` — was 6 dense → now 26 clean points — What are the different types of transmission media used for 
+- [x] `cn_008` — was 5 dense → now 28 clean points, 4 inline diagram(s) — Differentiate among TDM, FDM and WDM. How does TDM work?
+- [-] `cn_009` — already clean — What are the challenges in optimizing energy efficiency of d
+- [-] `cn_010` — already clean — Why does DNS primarily use UDP instead of TCP? Describe the 
+- [x] `cn_011` — was 2 dense → now 18 clean points — What are SOAP and RESTful APIs in web services? State one ma
+- [x] `cn_012` — was 1 dense → now 19 clean points — A company developed private communication software (VoIP) wh
+- [x] `cn_013` — was 3 dense → now 24 clean points — What are the advantages and disadvantages of Net-Specific Ro
+- [x] `cn_014` — was 3 dense → now 22 clean points — What is an IT Disaster Recovery Plan (DRP)? Propose a compre
+- [x] `cn_015` — was 2 dense → now 17 clean points — Describe the security architecture (network flow) for a bank
+- [x] `cn_016` — was 2 dense → now 27 clean points — What is a Data Center to Cloud Transformation Strategy? Desc
+- [x] `cn_017` — was 3 dense → now 20 clean points — Compare SAS (Serial Attached SCSI) vs. SATA (Serial ATA). Wh
+- [x] `cn_018` — was 2 dense → now 22 clean points — What is BIOS and how does it affect hardware maintenance and
+- [x] `cn_019` — was 2 dense → now 19 clean points — What type of generator is best suited for a data center's co
+- [x] `cn_020` — was 3 dense → now 18 clean points — Explain how OSPF (Open Shortest Path First) works for packet
+- [x] `cn_021` — was 7 dense → now 31 clean points — How does TCP/IP Tunneling work? Explain its mechanism and re
+- [x] `cn_022` — was 3 dense → now 33 clean points, 3 inline diagram(s) — Excessive broadcast traffic (broadcast storm) in a LAN — wha
+- [-] `cn_023` — already clean — A core router receives a packet with destination IP 192.168.
+- [x] `cn_024` — was 1 dense → now 19 clean points, 2 inline diagram(s) — A corporate network pool experiences IP exhaustion due to a 
+- [x] `cn_025` — was 3 dense → now 25 clean points, 2 inline diagram(s) — A satellite link has one-way propagation delay 250 ms and tr
+- [x] `cn_026` — was 2 dense → now 24 clean points, 2 inline diagram(s) — Compare between TCP and UDP: their connection, reliability, 
+- [x] `cn_027` — was 4 dense → now 24 clean points, 2 inline diagram(s) — 10Mbps bandwidth, average packet length 1500 bytes, what is 
+- [x] `cn_028` — was 3 dense → now 33 clean points, 2 inline diagram(s) — Differentiate between TCP 3-way handshake and 4-way handshak
+- [x] `cn_029` — was 11 dense → now 66 clean points, 4 inline diagram(s) — Differentiate among RIP, DVR (Distance Vector Routing), OSPF
+- [-] `cn_030` — already clean, 4 inline diagram(s) — Explain the working principle of Stop-and-Wait ARQ, Sliding 
 
-### database — 10 questions, 7 need work
+### database — 10 questions — 6 done, 1 left
 
-- [-] `db_001` — clean — What does the Consistency property in ACID guarantee during 
-- [-] `db_002` — clean — Consider the relation Sales(sales_id, salesman, region, sale
-- [ ] `db_003` — 1 dense, combined diagram → split inline — What is ON DELETE CASCADE? What happens when it is used vs n
-- [ ] `db_004` — 6 dense, combined diagram → split inline — Explain the distinct filtering behaviour of a WHERE clause v
-- [ ] `db_005` — 2 dense — An IT department assigns employees to projects. An employee 
-- [-] `db_006` — clean — In a B+ tree, each node can have a maximum of 4 child pointe
-- [ ] `db_007` — 2 dense — Consider a concurrent transaction schedule involving two dat
-- [ ] `db_008` — 10 dense — What is JDBC? Explain the steps required to connect a Java a
-- [ ] `db_009` — 4 dense, combined diagram → split inline — An institute wants to create a database table named STUDENT.
-- [ ] `db_010` — 3 dense, combined diagram → split inline — How indexing improve query performance?
+- [-] `db_001` — already clean — What does the Consistency property in ACID guarantee during 
+- [-] `db_002` — already clean — Consider the relation Sales(sales_id, salesman, region, sale
+- [x] `db_003` — was 1 dense → now 21 clean points — What is ON DELETE CASCADE? What happens when it is used vs n
+- [x] `db_004` — was 6 dense → now 21 clean points — Explain the distinct filtering behaviour of a WHERE clause v
+- [x] `db_005` — was 2 dense → now 29 clean points — An IT department assigns employees to projects. An employee 
+- [-] `db_006` — already clean — In a B+ tree, each node can have a maximum of 4 child pointe
+- [x] `db_007` — was 2 dense → now 33 clean points — Consider a concurrent transaction schedule involving two dat
+- [x] `db_008` — was 10 dense → now 46 clean points — What is JDBC? Explain the steps required to connect a Java a
+- [x] `db_009` — was 4 dense → now 33 clean points — An institute wants to create a database table named STUDENT.
+- [ ] `db_010` — 1 dense left (was 3) — How indexing improve query performance?
 
-### digital_logic — 2 questions, 2 need work
+### digital_logic — 2 questions — ✅ all 2 rewritten
 
-- [ ] `dl_001` — 5 dense, combined diagram → split inline — Explain the working principle of a PN junction diode. Draw i
-- [ ] `dl_002` — 3 dense, combined diagram → split inline — What is the difference between a Multiplexer and a Demultipl
+- [x] `dl_001` — was 5 dense → now 44 clean points, 5 inline diagram(s) — Explain the working principle of a PN junction diode. Draw i
+- [x] `dl_002` — was 3 dense → now 33 clean points, 3 inline diagram(s) — What is the difference between a Multiplexer and a Demultipl
 
-### dsa — 18 questions, 8 need work
+### dsa — 18 questions — ✅ all 8 rewritten
 
-- [-] `dsa_001` — clean — Analyze the time complexity of Quicksort when all elements a
-- [ ] `dsa_002` — 1 dense — Explain the logic of Bubble Sort. Why is it considered ineff
-- [-] `dsa_003` — clean — Determine whether Graph-3 (u1–u6) and Graph-4 (v1–v6) are is
-- [-] `dsa_004` — clean — Describe step-by-step how Binary Search locates a target val
-- [ ] `dsa_005` — 1 dense, combined diagram → split inline — You have two stacks. Explain the logic required to implement
-- [-] `dsa_006` — clean — Construct a logical argument explaining why a heuristic sear
-- [ ] `dsa_007` — 4 dense — Compare Dynamic Programming (DP) vs. Greedy Method vs. Divid
-- [-] `dsa_008` — clean — Explain the time complexity of merge sort. Best, Average, Wo
-- [-] `dsa_009` — clean, combined diagram → split inline — Why is a Circular Queue preferred over a Linear Queue in man
-- [ ] `dsa_010` — 1 dense — How can you design and implement a Stack using two Queues?
-- [-] `dsa_011` — clean — Given the array {45, 12, 78, 34, 23}, apply Bubble Sort in a
-- [-] `dsa_012` — clean — A Max Heap contains 31 elements. Determine the height of the
-- [ ] `dsa_013` — 4 dense — Which sorting algorithm is best for an already sorted array?
-- [ ] `dsa_014` — 1 dense, combined diagram → split inline — A BST contains 1000 nodes. Find its minimum possible height,
-- [-] `dsa_015` — clean, combined diagram → split inline — A message contains the characters with frequencies A = 30, B
-- [-] `dsa_016` — clean — A hash table has size 10 and uses the hash function h(k) = k
-- [ ] `dsa_017` — 2 dense, combined diagram → split inline — A hash table has size 13 and uses h(k) = k mod 13. Insert th
-- [ ] `dsa_018` — 1 dense, combined diagram → split inline — Explain Adjacency Matrix and Adjacency List representations 
+- [-] `dsa_001` — already clean — Analyze the time complexity of Quicksort when all elements a
+- [x] `dsa_002` — was 1 dense → now 16 clean points — Explain the logic of Bubble Sort. Why is it considered ineff
+- [-] `dsa_003` — already clean — Determine whether Graph-3 (u1–u6) and Graph-4 (v1–v6) are is
+- [-] `dsa_004` — already clean — Describe step-by-step how Binary Search locates a target val
+- [x] `dsa_005` — was 1 dense → now 21 clean points — You have two stacks. Explain the logic required to implement
+- [-] `dsa_006` — already clean — Construct a logical argument explaining why a heuristic sear
+- [x] `dsa_007` — was 4 dense → now 33 clean points, 3 inline diagram(s) — Compare Dynamic Programming (DP) vs. Greedy Method vs. Divid
+- [-] `dsa_008` — already clean — Explain the time complexity of merge sort. Best, Average, Wo
+- [-] `dsa_009` — already clean — Why is a Circular Queue preferred over a Linear Queue in man
+- [x] `dsa_010` — was 1 dense → now 18 clean points — How can you design and implement a Stack using two Queues?
+- [-] `dsa_011` — already clean — Given the array {45, 12, 78, 34, 23}, apply Bubble Sort in a
+- [-] `dsa_012` — already clean — A Max Heap contains 31 elements. Determine the height of the
+- [x] `dsa_013` — was 4 dense → now 28 clean points, 4 inline diagram(s) — Which sorting algorithm is best for an already sorted array?
+- [x] `dsa_014` — was 1 dense → now 19 clean points — A BST contains 1000 nodes. Find its minimum possible height,
+- [-] `dsa_015` — already clean — A message contains the characters with frequencies A = 30, B
+- [-] `dsa_016` — already clean — A hash table has size 10 and uses the hash function h(k) = k
+- [x] `dsa_017` — was 2 dense → now 23 clean points — A hash table has size 13 and uses h(k) = k mod 13. Insert th
+- [x] `dsa_018` — was 1 dense → now 16 clean points — Explain Adjacency Matrix and Adjacency List representations 
 
-### information_security — 8 questions, 6 need work
+### information_security — 8 questions — 0 done, 6 left
 
-- [-] `sec_001` — clean — Firewall rules - Rule 1: Source A, Dest B, Port 89. Rule 2: 
-- [-] `sec_002` — clean, combined diagram → split inline — What are XSS (Cross-Site Scripting), CSRF (Cross-Site Reques
-- [ ] `sec_003` — 5 dense — A bank has two different payment gateway service providers. 
-- [ ] `sec_004` — 4 dense — What is a firewall? What is the difference between a Statefu
-- [ ] `sec_005` — 2 dense — What security technologies and tools are needed for a secure
-- [ ] `sec_006` — 6 dense, combined diagram → split inline — What is Cross-Site Scripting (XSS)? Differentiate Reflected 
-- [ ] `sec_007` — 3 dense, combined diagram → split inline — Explain the operational difference between Hashing and Encry
-- [ ] `sec_008` — 5 dense — Differentiate between a Computer Virus and a Computer Worm b
+- [-] `sec_001` — already clean — Firewall rules - Rule 1: Source A, Dest B, Port 89. Rule 2: 
+- [-] `sec_002` — already clean — What are XSS (Cross-Site Scripting), CSRF (Cross-Site Reques
+- [ ] `sec_003` — 5 dense left (was 5) — A bank has two different payment gateway service providers. 
+- [ ] `sec_004` — 4 dense left (was 4) — What is a firewall? What is the difference between a Statefu
+- [ ] `sec_005` — 2 dense left (was 2) — What security technologies and tools are needed for a secure
+- [ ] `sec_006` — 6 dense left (was 6) — What is Cross-Site Scripting (XSS)? Differentiate Reflected 
+- [ ] `sec_007` — 3 dense left (was 3) — Explain the operational difference between Hashing and Encry
+- [ ] `sec_008` — 5 dense left (was 5) — Differentiate between a Computer Virus and a Computer Worm b
 
-### linux — 1 questions, 1 need work
+### linux — 1 questions — ✅ all 1 rewritten
 
-- [ ] `linux_001` — 5 dense — A high-traffic web application suddenly begins failing with 
+- [x] `linux_001` — was 5 dense → now 26 clean points — A high-traffic web application suddenly begins failing with 
 
-### machine_learning — 4 questions, 2 need work
+### machine_learning — 4 questions — ✅ all 2 rewritten
 
-- [-] `ml_001` — clean — Suppose your dataset has missing values and noise. How would
-- [-] `ml_002` — clean — What is a Decision Tree in Machine Learning? Describe its st
-- [ ] `ml_003` — 1 dense — What is a heuristic function? Explain its role in the A* sea
-- [ ] `ml_004` — 1 dense — What is a Bayesian Network in AI? Describe its two main comp
+- [-] `ml_001` — already clean — Suppose your dataset has missing values and noise. How would
+- [-] `ml_002` — already clean — What is a Decision Tree in Machine Learning? Describe its st
+- [x] `ml_003` — was 1 dense → now 23 clean points — What is a heuristic function? Explain its role in the A* sea
+- [x] `ml_004` — was 1 dense → now 20 clean points — What is a Bayesian Network in AI? Describe its two main comp
 
-### microprocessor — 1 questions, 1 need work
+### microprocessor — 1 questions — ✅ all 1 rewritten
 
-- [ ] `mp_001` — 1 dense — Why do modern processor designs favor multistage pipeline ap
+- [x] `mp_001` — was 1 dense → now 23 clean points — Why do modern processor designs favor multistage pipeline ap
 
-### oop — 4 questions, 2 need work
+### oop — 4 questions — ✅ all 2 rewritten
 
-- [-] `oop_001` — clean — Write a Java program to represent a BankAccount class with d
-- [ ] `oop_002` — 4 dense — Difference between Exception and Error in Java.
-- [-] `oop_003` — clean — What is Exception Handling? Explain with example in Java.
-- [ ] `oop_004` — 4 dense, combined diagram → split inline — Explain the concepts of Inheritance and Polymorphism in Java
+- [-] `oop_001` — already clean — Write a Java program to represent a BankAccount class with d
+- [x] `oop_002` — was 4 dense → now 26 clean points — Difference between Exception and Error in Java.
+- [-] `oop_003` — already clean — What is Exception Handling? Explain with example in Java.
+- [x] `oop_004` — was 4 dense → now 34 clean points — Explain the concepts of Inheritance and Polymorphism in Java
 
-### operating_system — 12 questions, 8 need work
+### operating_system — 12 questions — ✅ all 8 rewritten
 
-- [ ] `os_001` — 2 dense — Explain Paging vs. Framing vs. Segmentation in Operating Sys
-- [-] `os_002` — clean — In an office with 50-70 employees, what is Active Directory,
-- [ ] `os_003` — 2 dense — Differentiate between Logical Address and Physical Address i
-- [-] `os_004` — clean — Briefly explain 'Circular Wait.' In a Resource Allocation Gr
-- [-] `os_005` — clean — Consider a logical address space of 512 pages, each of 2-KB 
-- [ ] `os_006` — 4 dense — Explain the fundamental difference between a Process and a T
-- [ ] `os_007` — 3 dense — Explain the Producer-Consumer problem in operating systems. 
-- [ ] `os_008` — 2 dense — What is Multithreading programming? Why is Multithreading us
-- [ ] `os_009` — 5 dense — Differentiate a process from a thread regarding memory space
-- [ ] `os_010` — 2 dense, combined diagram → split inline — Two separate threads are initialized with the exact same ins
-- [-] `os_011` — clean — A system utilizes a 32-bit logical address space and a page 
-- [ ] `os_012` — 1 dense, combined diagram → split inline — Explain the difference between a "Compulsory Miss" (Cold Mis
+- [x] `os_001` — was 2 dense → now 21 clean points — Explain Paging vs. Framing vs. Segmentation in Operating Sys
+- [-] `os_002` — already clean — In an office with 50-70 employees, what is Active Directory,
+- [x] `os_003` — was 2 dense → now 19 clean points — Differentiate between Logical Address and Physical Address i
+- [-] `os_004` — already clean — Briefly explain 'Circular Wait.' In a Resource Allocation Gr
+- [-] `os_005` — already clean — Consider a logical address space of 512 pages, each of 2-KB 
+- [x] `os_006` — was 4 dense → now 23 clean points — Explain the fundamental difference between a Process and a T
+- [x] `os_007` — was 3 dense → now 24 clean points — Explain the Producer-Consumer problem in operating systems. 
+- [x] `os_008` — was 2 dense → now 17 clean points — What is Multithreading programming? Why is Multithreading us
+- [x] `os_009` — was 5 dense → now 19 clean points — Differentiate a process from a thread regarding memory space
+- [x] `os_010` — was 2 dense → now 24 clean points — Two separate threads are initialized with the exact same ins
+- [-] `os_011` — already clean — A system utilizes a 32-bit logical address space and a page 
+- [x] `os_012` — was 1 dense → now 21 clean points — Explain the difference between a "Compulsory Miss" (Cold Mis
 
-### server — 36 questions, 23 need work
+### server — 36 questions — 13 done, 10 left
 
-- [-] `server_001` — clean — What are the differences between a Virtual Machine (VM) and 
-- [-] `server_002` — clean — What are the Pros and Cons of Virtual Machines and Container
-- [ ] `server_003` — 3 dense, combined diagram → split inline — Differences between Tower Server, Rack Server, and Blade Ser
-- [ ] `server_004` — 1 dense, combined diagram → split inline — What is ECC memory? Why is it needed, and where is it NOT ne
-- [-] `server_005` — clean, combined diagram → split inline — KVM vs VMware — what is the difference, and which is better 
-- [-] `server_006` — clean — What is Kubernetes? Explain its architecture.
-- [ ] `server_007` — 1 dense, combined diagram → split inline — Docker vs Kubernetes — what is the difference, and how are t
-- [ ] `server_008` — 6 dense — NAS vs SAN vs DAS — what is the difference, and which is use
-- [ ] `server_009` — 4 dense — Explain Data Center Networking technology (topologies and ke
-- [ ] `server_010` — 2 dense — What is SDN (Software Defined Networking)? Why is it needed,
-- [-] `server_011` — clean — What is a Load Balancer? Explain static vs dynamic load bala
-- [ ] `server_012` — 2 dense — Kubernetes vs OpenShift — what is each, and how do they diff
-- [-] `server_013` — clean — What is Infrastructure as Code (IaC)? Why is it needed?
-- [ ] `server_014` — 1 dense — What is the ELK Stack? Explain its components.
-- [ ] `server_015` — 1 dense — Microservices vs Monolithic architecture — what is each, and
-- [ ] `server_016` — 3 dense — What are RTO, RPO, and Failover in disaster recovery?
-- [-] `server_017` — clean — Explain the Spine-Leaf network architecture.
-- [ ] `server_018` — 4 dense — Snapshots vs Backup vs Replicas — what is each, and how do t
-- [-] `server_019` — clean — Explain the VM (Virtual Machine) Lifecycle.
-- [ ] `server_020` — 1 dense — Explain the common Storage Protocols (iSCSI, Fibre Channel, 
-- [ ] `server_021` — 1 dense — Explain the CI/CD and DevOps pipeline (Code → Build → Test →
-- [ ] `server_022` — 2 dense — Explain Live Migration (basic idea) and High Availability in
-- [ ] `server_023` — 1 dense — What is a LUN (Logical Unit Number)? Why is it needed?
-- [ ] `server_024` — 3 dense — What are the types of Disaster Recovery sites (Hot, Warm, Co
-- [ ] `server_025` — 3 dense — Backup types — Full vs Incremental vs Differential.
-- [ ] `server_026` — 3 dense — OLTP vs OLAP — what is each, and how do they differ?
-- [ ] `server_027` — 1 dense — What is Active Directory and the Domain Controller concept?
-- [ ] `server_028` — 2 dense — What is the role of DNS in Active Directory?
-- [-] `server_029` — clean — What is Group Policy (GPO)? Explain the basic idea.
-- [ ] `server_030` — 6 dense — What are the Data Center Tiers (Tier I, II, III, IV)? Explai
-- [-] `server_031` — clean, combined diagram → split inline — Draw and explain the DMZ (Demilitarized Zone) network archit
-- [-] `server_032` — clean — Draw the placement of a Web server, WAF (Web Application Fir
-- [-] `server_033` — clean — Draw the VPN architecture — Site-to-Site vs Remote Access.
-- [-] `server_034` — clean — Draw a High Availability (HA) failover cluster (heartbeat + 
-- [ ] `server_035` — 3 dense — A startup company wants to launch a new web application. The
-- [ ] `server_036` — 4 dense, combined diagram → split inline — A physical server has 32 CPU cores, 96 GB RAM, and 4 TB stor
+- [-] `server_001` — already clean — What are the differences between a Virtual Machine (VM) and 
+- [-] `server_002` — already clean — What are the Pros and Cons of Virtual Machines and Container
+- [ ] `server_003` — 1 dense left (was 3) — Differences between Tower Server, Rack Server, and Blade Ser
+- [x] `server_004` — was 1 dense → now 25 clean points — What is ECC memory? Why is it needed, and where is it NOT ne
+- [-] `server_005` — already clean — KVM vs VMware — what is the difference, and which is better 
+- [-] `server_006` — already clean — What is Kubernetes? Explain its architecture.
+- [x] `server_007` — was 1 dense → now 22 clean points — Docker vs Kubernetes — what is the difference, and how are t
+- [x] `server_008` — was 6 dense → now 32 clean points — NAS vs SAN vs DAS — what is the difference, and which is use
+- [x] `server_009` — was 4 dense → now 44 clean points — Explain Data Center Networking technology (topologies and ke
+- [x] `server_010` — was 2 dense → now 36 clean points — What is SDN (Software Defined Networking)? Why is it needed,
+- [-] `server_011` — already clean — What is a Load Balancer? Explain static vs dynamic load bala
+- [x] `server_012` — was 2 dense → now 24 clean points — Kubernetes vs OpenShift — what is each, and how do they diff
+- [-] `server_013` — already clean — What is Infrastructure as Code (IaC)? Why is it needed?
+- [x] `server_014` — was 1 dense → now 19 clean points — What is the ELK Stack? Explain its components.
+- [x] `server_015` — was 1 dense → now 22 clean points — Microservices vs Monolithic architecture — what is each, and
+- [x] `server_016` — was 3 dense → now 18 clean points — What are RTO, RPO, and Failover in disaster recovery?
+- [-] `server_017` — already clean — Explain the Spine-Leaf network architecture.
+- [x] `server_018` — was 4 dense → now 23 clean points — Snapshots vs Backup vs Replicas — what is each, and how do t
+- [-] `server_019` — already clean — Explain the VM (Virtual Machine) Lifecycle.
+- [x] `server_020` — was 1 dense → now 18 clean points — Explain the common Storage Protocols (iSCSI, Fibre Channel, 
+- [x] `server_021` — was 1 dense → now 21 clean points — Explain the CI/CD and DevOps pipeline (Code → Build → Test →
+- [x] `server_022` — was 2 dense → now 19 clean points — Explain Live Migration (basic idea) and High Availability in
+- [ ] `server_023` — 1 dense left (was 1) — What is a LUN (Logical Unit Number)? Why is it needed?
+- [ ] `server_024` — 3 dense left (was 3) — What are the types of Disaster Recovery sites (Hot, Warm, Co
+- [ ] `server_025` — 3 dense left (was 3) — Backup types — Full vs Incremental vs Differential.
+- [ ] `server_026` — 3 dense left (was 3) — OLTP vs OLAP — what is each, and how do they differ?
+- [ ] `server_027` — 1 dense left (was 1) — What is Active Directory and the Domain Controller concept?
+- [ ] `server_028` — 2 dense left (was 2) — What is the role of DNS in Active Directory?
+- [-] `server_029` — already clean — What is Group Policy (GPO)? Explain the basic idea.
+- [ ] `server_030` — 6 dense left (was 6) — What are the Data Center Tiers (Tier I, II, III, IV)? Explai
+- [-] `server_031` — already clean — Draw and explain the DMZ (Demilitarized Zone) network archit
+- [-] `server_032` — already clean — Draw the placement of a Web server, WAF (Web Application Fir
+- [-] `server_033` — already clean — Draw the VPN architecture — Site-to-Site vs Remote Access.
+- [-] `server_034` — already clean — Draw a High Availability (HA) failover cluster (heartbeat + 
+- [ ] `server_035` — 3 dense left (was 3) — A startup company wants to launch a new web application. The
+- [ ] `server_036` — 4 dense left (was 4) — A physical server has 32 CPU cores, 96 GB RAM, and 4 TB stor
 
-### software_engineering — 7 questions, 5 need work
+### software_engineering — 7 questions — 0 done, 5 left
 
-- [-] `se_001` — clean, combined diagram → split inline — You have been hired as a Cloud Data Engineer to design a big
-- [-] `se_002` — clean — Distinguish between Preventive and Corrective maintenance wi
-- [ ] `se_003` — 3 dense — What is SCRUM? Explain its key elements and describe the SCR
-- [ ] `se_004` — 3 dense — What is the difference between Software Validation and Softw
-- [ ] `se_005` — 4 dense — Compare Agile vs. Waterfall vs. Spiral SDLC models — coverin
-- [ ] `se_006` — 4 dense, combined diagram → split inline — Identify the most suitable SDLC model for an Online Library 
-- [ ] `se_007` — 9 dense, combined diagram → split inline — Write concepts of coupling and cohesion with example?
+- [-] `se_001` — already clean — You have been hired as a Cloud Data Engineer to design a big
+- [-] `se_002` — already clean — Distinguish between Preventive and Corrective maintenance wi
+- [ ] `se_003` — 3 dense left (was 3) — What is SCRUM? Explain its key elements and describe the SCR
+- [ ] `se_004` — 3 dense left (was 3) — What is the difference between Software Validation and Softw
+- [ ] `se_005` — 4 dense left (was 4) — Compare Agile vs. Waterfall vs. Spiral SDLC models — coverin
+- [ ] `se_006` — 4 dense left (was 4) — Identify the most suitable SDLC model for an Online Library 
+- [ ] `se_007` — 9 dense left (was 9) — Write concepts of coupling and cohesion with example?
 
-### theory_of_computation — 1 questions, 1 need work
+### theory_of_computation — 1 questions — ✅ all 1 rewritten
 
-- [ ] `toc_001` — 3 dense, combined diagram → split inline — Consider the grammar: E → E + E | E * E | id. Show that the 
+- [x] `toc_001` — was 3 dense → now 38 clean points, 5 inline diagram(s) — Consider the grammar: E → E + E | E * E | id. Show that the 
 

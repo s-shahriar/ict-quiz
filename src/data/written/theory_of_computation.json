@@ -17,32 +17,112 @@
         "summary": [
           "একটি grammar ambiguous তখনই, যখন একই string এর জন্য একাধিক parse tree (বা একাধিক leftmost derivation) তৈরি করা যায়।",
           "id + id * id এর জন্য দুটি ভিন্ন parse tree আঁকা যায় — একটিতে * আগে হয়, অন্যটিতে + আগে। তাই grammar টি ambiguous।",
-          "কারণ: grammar এ + ও * এর precedence ও associativity নির্দিষ্ট করা নেই। সমাধান: আলাদা level (E, T, F) দিয়ে unambiguous grammar লেখা।"
+          "কারণ: grammar এ + ও * এর precedence ও associativity নির্দিষ্ট করা নেই।",
+          "সমাধান: আলাদা level (E, T, F) দিয়ে unambiguous grammar লেখা।"
         ],
         "points": [
-          "প্রমাণের নিয়ম: একই string এর দুটি ভিন্ন parse tree দেখাতে পারলেই প্রমাণ শেষ — আলাদা করে আর কিছু লাগে না।",
-          "Parse Tree 1 — id + (id * id): উপরে E → E + E, ডান পাশের E আবার E * E তে ভাঙে। অর্থ: গুণ আগে, তারপর যোগ।",
-          "Parse Tree 2 — (id + id) * id: উপরে E → E * E, বাম পাশের E আবার E + E তে ভাঙে। অর্থ: যোগ আগে, তারপর গুণ।",
-          "দুটি tree এর yield (পাতা বাম থেকে ডানে) একই — id + id * id, কিন্তু গঠন ও অর্থ আলাদা। একই string এ দুই রকম মানে থাকা মানেই ambiguity।",
-          "কেন হলো: production গুলোতে + ও * সমান স্তরে বসানো হয়েছে, তাই কোনটি আগে হবে তা grammar বলে দেয় না।",
-          "সমাধান (unambiguous form): E → E + T | T ; T → T * F | F ; F → id | ( E )",
+          "প্রমাণের নিয়ম:",
+          {
+            "sub": "একই string এর দুটি ভিন্ন parse tree দেখাতে পারলেই প্রমাণ শেষ — আলাদা করে আর কিছু লাগে না।"
+          },
+          "Parse Tree 1 — id + (id * id):",
+          {
+            "sub": "উপরে E → E + E, ডান পাশের E আবার E * E তে ভাঙে।"
+          },
+          {
+            "sub": "অর্থ: গুণ আগে, তারপর যোগ।"
+          },
+          {
+            "label": "Diagram — Parse Tree 1",
+            "diagram": "Grammar:  E → E + E  |  E * E  |  id\nString :  id + id * id\n\n                E\n              / | \\\n             E  +  E\n             |    /|\\\n            id   E * E\n                 |   |\n                id   id\n\n   ভাঙার ক্রম: আগে * , পরে +\n   অর্থ: id + (id * id)"
+          },
+          "Parse Tree 2 — (id + id) * id:",
+          {
+            "sub": "উপরে E → E * E, বাম পাশের E আবার E + E তে ভাঙে।"
+          },
+          {
+            "sub": "অর্থ: যোগ আগে, তারপর গুণ।"
+          },
+          {
+            "label": "Diagram — Parse Tree 2",
+            "diagram": "                E\n              / | \\\n             E  *  E\n            /|\\    |\n           E + E   id\n           |   |\n          id   id\n\n   ভাঙার ক্রম: আগে + , পরে *\n   অর্থ: (id + id) * id"
+          },
+          "সিদ্ধান্ত:",
+          {
+            "sub": "দুটি tree এর yield (পাতা বাম থেকে ডানে) একই — id + id * id।"
+          },
+          {
+            "sub": "কিন্তু গঠন ও অর্থ আলাদা।"
+          },
+          {
+            "sub": "একই string এ দুই রকম মানে থাকা মানেই ambiguity।"
+          },
+          {
+            "label": "Diagram — সিদ্ধান্ত",
+            "diagram": "   দুটি tree এর পাতা একই পড়া যায়:  id + id * id\n   কিন্তু গঠন আলাদা → অর্থ আলাদা → GRAMMAR AMBIGUOUS\n\n   (id = 2, 3, 4 বসালে: Tree 1 → 2 + 12 = 14,  Tree 2 → 5 * 4 = 20)"
+          },
+          "কেন হলো:",
+          {
+            "sub": "production গুলোতে + ও * সমান স্তরে বসানো হয়েছে।"
+          },
+          {
+            "sub": "তাই কোনটি আগে হবে তা grammar বলে দেয় না।"
+          },
+          "সমাধান (unambiguous form) — level দিয়ে precedence বসানো:",
+          {
+            "sub": "E → E + T | T"
+          },
+          {
+            "sub": "T → T * F | F"
+          },
+          {
+            "sub": "F → id | ( E )"
+          },
           {
             "sub": "নিচের level (F) সবচেয়ে বেশি precedence পায়, তাই * সবসময় + এর আগে বাঁধা পড়ে।"
           },
           {
             "sub": "Left recursion (E → E + T) ব্যবহার করায় operator গুলো left-associative হয়, অর্থাৎ a − b − c মানে (a − b) − c।"
           },
-          "পরীক্ষায় আসতে পারে এমন আরও grammar-সংক্রান্ত term ও তার দ্রুত সমাধান — নিচের table এ ছক আকারে দেওয়া আছে।",
-          "Ambiguity সংক্রান্ত অতিরিক্ত টীকা: Ambiguity সাধারণত grammar পাল্টে দূর করা যায়, কিন্তু কিছু ভাষার (inherently ambiguous language) কোনো unambiguous grammar-ই নেই। আর কোনো নির্বিচারে দেওয়া grammar ambiguous কিনা তা যাচাই করার সাধারণ algorithm নেই (undecidable problem)।",
-          "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "compiler ও parser নকশায় — এজন্যই প্রতিটি ভাষার specification এ operator precedence ও associativity এর ছক দেওয়া থাকে, নইলে a + b * c এর মানে নিয়ে সংশয় থাকত।"
+            "label": "Diagram — unambiguous grammar এর একটিমাত্র tree",
+            "diagram": "   E → E + T | T          ← সবচেয়ে কম precedence (+)\n   T → T * F | F          ← বেশি precedence (*)\n   F → id | ( E )         ← সর্বোচ্চ\n\n   এখন id + id * id এর একটিই tree সম্ভব:\n\n                E\n              / | \\\n             E  +  T\n             |    /|\\\n             T   T * F\n             |   |   |\n             F   F  id\n             |   |\n            id  id\n\n   নিচের level আগে বাঁধে বলে * সবসময় + এর ভেতরে পড়ে"
+          },
+          "Ambiguity সংক্রান্ত অতিরিক্ত টীকা:",
+          {
+            "sub": "Ambiguity সাধারণত grammar পাল্টে দূর করা যায়।"
           },
           {
-            "sub": "Parser generator (yacc/bison) এ ambiguous grammar দিলে shift-reduce conflict এর সতর্কবার্তা আসে; ভাষার বিখ্যাত উদাহরণ dangling-else — C/Java তে else সবসময় নিকটতম if এর সাথে বাঁধা হয়।"
+            "sub": "কিন্তু কিছু ভাষার (inherently ambiguous language) কোনো unambiguous grammar-ই নেই।"
+          },
+          {
+            "sub": "আর কোনো নির্বিচারে দেওয়া grammar ambiguous কিনা তা যাচাই করার সাধারণ algorithm নেই (undecidable problem)।"
+          },
+          "পরীক্ষায় আসতে পারে এমন আরও দুটি সমস্যা — টেমপ্লেট মুখস্থ রাখুন:",
+          {
+            "label": "Diagram — Left recursion সরানো ও Left factoring",
+            "diagram": "   LEFT RECURSION সরানো\n     A → A α | β        ⟹    A  → β A′\n                              A′ → α A′ | ε\n     উদাহরণ: E → E + T | T  ⟹  E → T E′ ,  E′ → + T E′ | ε\n\n   LEFT FACTORING\n     A → α β₁ | α β₂     ⟹    A  → α A′\n                              A′ → β₁ | β₂\n     উদাহরণ: S → if E then S | if E then S else S\n          ⟹  S → if E then S S′ ,  S′ → else S | ε"
+          },
+          {
+            "sub": "আরও grammar-সংক্রান্ত term ও তার দ্রুত সমাধান নিচের table এ ছক আকারে দেওয়া আছে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "compiler ও parser নকশায় এটি সরাসরি কাজে লাগে।"
+          },
+          {
+            "sub": "এজন্যই প্রতিটি ভাষার specification এ operator precedence ও associativity এর ছক দেওয়া থাকে।"
+          },
+          {
+            "sub": "নইলে a + b * c এর মানে নিয়ে সংশয় থাকত।"
+          },
+          {
+            "sub": "Parser generator (yacc/bison) এ ambiguous grammar দিলে shift-reduce conflict এর সতর্কবার্তা আসে।"
+          },
+          {
+            "sub": "ভাষার বিখ্যাত উদাহরণ dangling-else — C/Java তে else সবসময় নিকটতম if এর সাথে বাঁধা হয়।"
           }
         ],
-        "diagram": "Grammar:  E → E + E  |  E * E  |  id\nString :  id + id * id\n\n\n[১] PARSE TREE 1 — id + (id * id)\n\n                E\n              / | \\\n             E  +  E\n             |    /|\\\n            id   E * E\n                 |   |\n                id   id\n\n   ভাঙার ক্রম: আগে * , পরে +\n   অর্থ: id + (id * id)\n\n\n[২] PARSE TREE 2 — (id + id) * id\n\n                E\n              / | \\\n             E  *  E\n            /|\\    |\n           E + E   id\n           |   |\n          id   id\n\n   ভাঙার ক্রম: আগে + , পরে *\n   অর্থ: (id + id) * id\n\n\n[৩] সিদ্ধান্ত\n\n   দুটি tree এর পাতা একই পড়া যায়:  id + id * id\n   কিন্তু গঠন আলাদা → অর্থ আলাদা → GRAMMAR AMBIGUOUS\n\n   (id = 2, 3, 4 বসালে: Tree 1 → 2 + 12 = 14,  Tree 2 → 5 * 4 = 20)\n\n\n[৪] সমাধান — level দিয়ে precedence বসানো\n\n   E → E + T | T          ← সবচেয়ে কম precedence (+)\n   T → T * F | F          ← বেশি precedence (*)\n   F → id | ( E )         ← সর্বোচ্চ\n\n   এখন id + id * id এর একটিই tree সম্ভব:\n\n                E\n              / | \\\n             E  +  T\n             |    /|\\\n             T   T * F\n             |   |   |\n             F   F  id\n             |   |\n            id  id\n\n   নিচের level আগে বাঁধে বলে * সবসময় + এর ভেতরে পড়ে\n\n\n[৫] অন্য দুটি সমস্যা — টেমপ্লেট মুখস্থ রাখুন\n\n   LEFT RECURSION সরানো\n     A → A α | β        ⟹    A  → β A′\n                              A′ → α A′ | ε\n     উদাহরণ: E → E + T | T  ⟹  E → T E′ ,  E′ → + T E′ | ε\n\n   LEFT FACTORING\n     A → α β₁ | α β₂     ⟹    A  → α A′\n                              A′ → β₁ | β₂\n     উদাহরণ: S → if E then S | if E then S else S\n          ⟹  S → if E then S S′ ,  S′ → else S | ε",
         "mistakes": [
           [
             "দুটি ভিন্ন derivation দেখালেই ambiguity প্রমাণ হয়",

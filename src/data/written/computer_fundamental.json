@@ -175,19 +175,75 @@
           "সূত্র: RAID 1 = 1×size, RAID 5 = (n−1)×size, RAID 10 = (n/2)×size।"
         ],
         "points": [
-          "Total raw = 4 × 2 TB = 8 TB",
-          "RAID 1: সব ড্রাইভ একে অপরের mirror → Usable = 1 × 2 TB = 2 TB (বাকি 6 TB redundancy)",
-          "RAID 5: distributed parity → Usable = (4−1) × 2 TB = 3 × 2 = 6 TB (বাকি 2 TB parity)",
-          "RAID 10: mirror pair করে stripe → Usable = (4/2) × 2 TB = 2 × 2 = 4 TB (বাকি 4 TB mirrors)",
-          "ব্যবহারিক প্রয়োগ:",
+          "মোট raw storage:",
           {
-            "sub": "কোন RAID কোথায়: RAID 1 ছোট server এর OS/boot disk এ (নিরাপত্তা মুখ্য), RAID 5 file ও archive server এ (জায়গা বাঁচে), RAID 10 database ও high-transaction server এ — গতি ও নিরাপত্তা দুটোই লাগে বলে core banking DB সাধারণত RAID 10 এ থাকে।"
+            "sub": "Total raw = 4 × 2 TB = 8 TB।"
           },
           {
-            "sub": "এই হিসাব কেন লাগে: capacity planning ও কেনাকাটায় — 8 TB raw কিনলেও RAID 10 এ ব্যবহারযোগ্য মাত্র 4 TB; আগে না ধরলে storage কম পড়ে যায়।"
+            "sub": "RAID level অনুযায়ী এই 8 TB-এর কতটা ব্যবহারযোগ্য থাকে, সেটাই বের করতে হবে।"
+          },
+          "RAID 1 — সব ড্রাইভ একে অপরের mirror:",
+          {
+            "sub": "সূত্র: Usable = 1 × drive size।"
+          },
+          {
+            "sub": "Usable = 1 × 2 TB = 2 TB।"
+          },
+          {
+            "sub": "বাকি 6 TB redundancy-তে (mirror copy) খরচ হয়।"
+          },
+          {
+            "label": "Diagram — RAID 1 (সব mirror)",
+            "diagram": " ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐\n │  D1  │ │copy  │ │copy  │ │copy  │\n │  2TB │ │of D1 │ │of D1 │ │of D1 │\n └──────┘ └──────┘ └──────┘ └──────┘\n 4 × 2TB raw → usable মাত্র 2TB"
+          },
+          "RAID 5 — distributed parity:",
+          {
+            "sub": "সূত্র: Usable = (n − 1) × drive size।"
+          },
+          {
+            "sub": "Usable = (4 − 1) × 2 TB = 3 × 2 = 6 TB।"
+          },
+          {
+            "sub": "বাকি 2 TB parity-তে খরচ হয়।"
+          },
+          {
+            "label": "Diagram — RAID 5 (distributed parity)",
+            "diagram": " ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐\n │ Data │ │ Data │ │ Data │ │PARITY│   parity ঘোরে\n │  2TB │ │  2TB │ │  2TB │ │ 2TB  │\n └──────┘ └──────┘ └──────┘ └──────┘\n 4 × 2TB raw → usable 6TB, parity-তে যায় 2TB"
+          },
+          "RAID 10 — mirror pair করে stripe:",
+          {
+            "sub": "সূত্র: Usable = (n / 2) × drive size।"
+          },
+          {
+            "sub": "Usable = (4 / 2) × 2 TB = 2 × 2 = 4 TB।"
+          },
+          {
+            "sub": "বাকি 4 TB mirror copy-তে খরচ হয়।"
+          },
+          {
+            "label": "Diagram — RAID 10 (mirror + stripe)",
+            "diagram": " ┌──────────────────┐  ┌──────────────────┐\n │  D1  ←copy→  D2  │  │  D3  ←copy→  D4  │\n │  2TB        2TB  │  │  2TB        2TB  │\n └──────────────────┘  └──────────────────┘\n   Stripe across pairs → 2 + 2 = 4TB usable"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "RAID 1 ছোট server-এর OS/boot disk-এ — নিরাপত্তাই মুখ্য।"
+          },
+          {
+            "sub": "RAID 5 file ও archive server-এ — জায়গা বাঁচে।"
+          },
+          {
+            "sub": "RAID 10 database ও high-transaction server-এ — গতি ও নিরাপত্তা দুটোই লাগে।"
+          },
+          {
+            "sub": "তাই core banking DB সাধারণত RAID 10-এ রাখা হয়।"
+          },
+          {
+            "sub": "এই হিসাব capacity planning ও কেনাকাটায় দরকার হয়।"
+          },
+          {
+            "sub": "8 TB raw কিনলেও RAID 10-এ ব্যবহারযোগ্য মাত্র 4 TB — আগে না ধরলে storage কম পড়ে যায়।"
           }
         ],
-        "diagram": "Total raw = 4 × 2TB = 8 TB\n\nRAID 1 (সব mirror — usable = 2TB):\n ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐\n │  D1  │ │copy  │ │copy  │ │copy  │\n │  2TB │ │of D1 │ │of D1 │ │of D1 │\n └──────┘ └──────┘ └──────┘ └──────┘\n\nRAID 5 (distributed parity — usable = 6TB):\n ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐\n │ Data │ │ Data │ │ Data │ │PARITY│  parity ঘোরে\n │  2TB │ │  2TB │ │  2TB │ │ 2TB  │\n └──────┘ └──────┘ └──────┘ └──────┘\n\nRAID 10 (mirror + stripe — usable = 4TB):\n ┌──────────────────┐  ┌──────────────────┐\n │  D1  ←copy→  D2  │  │  D3  ←copy→  D4  │\n │  2TB        2TB  │  │  2TB        2TB  │\n └──────────────────┘  └──────────────────┘\n   Stripe across pairs → 2+2 = 4TB usable",
         "mistakes": [
           [
             "RAID 1 (4 drives) = 4 TB",
@@ -241,17 +297,73 @@
       ],
       "answer": {
         "summary": [
-          "তিনটি আলাদা ML approach: RL = reward দিয়ে শেখে (trial & error), DL = অনেক layer এর neural network দিয়ে শেখে, FL = data share না করে distributed ভাবে শেখে (privacy-preserving)।"
+          "তিনটি আলাদা ML approach — শেখার পদ্ধতিতেই মূল পার্থক্য।",
+          "Reinforcement Learning (RL) = reward দিয়ে শেখে, trial & error করে।",
+          "Deep Learning (DL) = অনেক layer-এর neural network দিয়ে শেখে।",
+          "Federated Learning (FL) = data share না করে distributed ভাবে শেখে (privacy-preserving)।"
         ],
         "points": [
-          "Reinforcement Learning (RL): একটি agent environment এ action নেয়, ভালো action এ reward পায়, খারাপ action এ penalty। Trial & error করতে করতে optimal policy শেখে। Data লাগে না — নিজেই experience থেকে শেখে।",
-          {"sub": "RL real-world: Chess/Go খেলা (AlphaGo), robotics, self-driving car, game playing (Atari), recommendation system।"},
-          "Deep Learning (DL): অনেক layer বিশিষ্ট Artificial Neural Network। Input থেকে output পর্যন্ত multiple hidden layer এ feature automatically extract হয়। বড় dataset ও GPU দরকার।",
-          {"sub": "DL real-world: Image recognition (face ID), speech recognition (Siri), NLP (ChatGPT), medical diagnosis, autonomous vehicle।"},
-          "Federated Learning (FL): Data কে central server এ না পাঠিয়ে, প্রতিটি device নিজের local data দিয়ে model train করে, শুধু model weights/updates পাঠায়। Privacy সুরক্ষিত থাকে।",
-          {"sub": "FL real-world: Google Keyboard (Gboard) — তোমার typing data তোমার phone এই থাকে, model update শুধু যায়। Hospital patient data share না করে collaborative model training।"}
+          "Reinforcement Learning (RL) — reward দিয়ে শেখা:",
+          {
+            "sub": "একটি agent environment-এ action নেয়।"
+          },
+          {
+            "sub": "ভালো action-এ reward পায়, খারাপ action-এ penalty পায়।"
+          },
+          {
+            "sub": "Trial & error করতে করতে optimal policy শেখে।"
+          },
+          {
+            "sub": "আলাদা dataset লাগে না — নিজের experience থেকেই শেখে।"
+          },
+          {
+            "sub": "RL real-world: Chess/Go খেলা (AlphaGo), robotics, self-driving car, game playing (Atari), recommendation system।"
+          },
+          {
+            "label": "Diagram — Reinforcement Learning",
+            "diagram": "  Agent ──action──▶ Environment\n    ↑                    │\n    └────reward/state────┘\n  শিক্ষা: reward maximize করো"
+          },
+          "Deep Learning (DL) — অনেক layer-এর neural network:",
+          {
+            "sub": "অনেক layer বিশিষ্ট Artificial Neural Network।"
+          },
+          {
+            "sub": "Input থেকে output পর্যন্ত multiple hidden layer-এ feature automatically extract হয়।"
+          },
+          {
+            "sub": "বড় dataset ও GPU দরকার।"
+          },
+          {
+            "sub": "DL real-world: Image recognition (face ID), speech recognition (Siri), NLP (ChatGPT), medical diagnosis, autonomous vehicle।"
+          },
+          {
+            "label": "Diagram — Deep Learning",
+            "diagram": "  Input → [Layer1] → [Layer2] → ... → [LayerN] → Output\n  (pixels)  (edges)  (shapes)          (features)  (cat/dog)\n  শিক্ষা: labeled data থেকে backpropagation"
+          },
+          "Federated Learning (FL) — data না সরিয়ে শেখা:",
+          {
+            "sub": "Data কে central server-এ পাঠানো হয় না।"
+          },
+          {
+            "sub": "প্রতিটি device নিজের local data দিয়ে model train করে।"
+          },
+          {
+            "sub": "শুধু model weights/updates server-এ পাঠায়।"
+          },
+          {
+            "sub": "ফলে privacy সুরক্ষিত থাকে।"
+          },
+          {
+            "sub": "FL real-world: Google Keyboard (Gboard) — তোমার typing data তোমার phone-এই থাকে, শুধু model update যায়।"
+          },
+          {
+            "sub": "Hospital-এ patient data share না করেই collaborative model training করা যায়।"
+          },
+          {
+            "label": "Diagram — Federated Learning",
+            "diagram": "  Phone A ──model update──┐\n  Phone B ──model update──┼──▶ Central Server\n  Phone C ──model update──┘    (aggregates)\n  ❌ Raw data কখনো server এ যায় না\n  ✅ Privacy সুরক্ষিত"
+          }
         ],
-        "diagram": "Reinforcement Learning:\n  Agent ──action──▶ Environment\n    ↑                    │\n    └────reward/state────┘\n  শিক্ষা: reward maximize করো\n\nDeep Learning:\n  Input → [Layer1] → [Layer2] → ... → [LayerN] → Output\n  (pixels)  (edges)  (shapes)          (features)  (cat/dog)\n  শিক্ষা: labeled data থেকে backpropagation\n\nFederated Learning:\n  Phone A ──model update──┐\n  Phone B ──model update──┼──▶ Central Server\n  Phone C ──model update──┘    (aggregates)\n  ❌ Raw data কখনো server এ যায় না\n  ✅ Privacy সুরক্ষিত",
         "table": {
           "headers": [
             "বৈশিষ্ট্য",

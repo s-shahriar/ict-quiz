@@ -21,30 +21,78 @@
           "শেষে scaling/normalization + encoding করে data কে model-ready বানাও।"
         ],
         "points": [
-          "ধাপ ০ — বোঝা: কোন column এ কত missing, কোথায় outlier, তা আগে দেখে নাও (describe/visualize)।",
+          "ধাপ ০ — আগে data বোঝা:",
+          {
+            "sub": "কোন column-এ কত missing value আছে তা দেখে নাও।"
+          },
+          {
+            "sub": "কোথায় outlier আছে তা describe/visualize করে বের করো।"
+          },
           "ধাপ ১ — Missing value handle:",
           {
-            "sub": "Deletion: missing খুব কম হলে ওই row বাদ; পুরো column এ বেশি missing হলে column বাদ।"
+            "sub": "Deletion: missing খুব কম হলে ওই row-টাই বাদ দাও।"
           },
           {
-            "sub": "Imputation: numeric হলে mean (symmetric data), median (outlier থাকলে নিরাপদ); categorical হলে mode।"
+            "sub": "পুরো column-এ বেশি missing থাকলে column-টাই বাদ দাও।"
           },
           {
-            "sub": "Advanced: KNN / regression imputation — কাছের মিল দেখে মান অনুমান; time-series এ forward/backward fill।"
+            "sub": "Imputation (numeric): symmetric data হলে mean বসাও।"
+          },
+          {
+            "sub": "Imputation (numeric): outlier থাকলে median নিরাপদ।"
+          },
+          {
+            "sub": "Imputation (categorical): mode বসাও।"
+          },
+          {
+            "sub": "Advanced: KNN বা regression imputation — কাছের মিল দেখে মান অনুমান করা।"
+          },
+          {
+            "sub": "Time-series data-তে forward fill বা backward fill ব্যবহার হয়।"
           },
           "ধাপ ২ — Noise handle (ভুল/random মান মসৃণ করা):",
           {
-            "sub": "Binning: sort করে সমান bin এ ভাগ করে প্রতিটিকে bin এর mean/median/boundary দিয়ে replace করো।"
+            "sub": "Binning: data sort করে সমান আকারের bin-এ ভাগ করো।"
+          },
+          {
+            "sub": "তারপর প্রতিটি মানকে সেই bin-এর mean, median বা boundary দিয়ে replace করো।"
           },
           {
             "sub": "Regression: data তে function fit করে সেই মসৃণ মান নাও।"
           },
           {
-            "sub": "Outlier detection: IQR (Q1−1.5·IQR এর বাইরে) বা Z-score (>3) দিয়ে চরম মান ধরে সরাও বা cap করো।"
+            "sub": "Outlier detection: IQR পদ্ধতি — Q1−1.5·IQR এর বাইরের মান চরম ধরা হয়।"
           },
-          "ধাপ ৩ — Consistency: duplicate row সরাও, ভুল type/format ঠিক করো, একই জিনিসের ভিন্ন বানান একীভূত করো।",
-          "ধাপ ৪ — Transform: numeric feature scaling (Min-Max normalization বা Z-score standardization); categorical → encoding (One-Hot/Label)।",
-          "কেন এই ক্রম: আগে ঘর ভরাট/পরিষ্কার না করলে পরের scaling ও model দূষিত data থেকে ভুল শেখে — garbage in, garbage out।"
+          {
+            "sub": "Outlier detection: Z-score পদ্ধতি — |Z| > 3 হলে চরম মান ধরা হয়।"
+          },
+          {
+            "sub": "ধরা পড়া চরম মান সরিয়ে দাও অথবা cap করে দাও।"
+          },
+          "ধাপ ৩ — Consistency ঠিক করা:",
+          {
+            "sub": "duplicate row সরাও।"
+          },
+          {
+            "sub": "ভুল data type বা format ঠিক করো।"
+          },
+          {
+            "sub": "একই জিনিসের ভিন্ন বানান একীভূত করো।"
+          },
+          "ধাপ ৪ — Transform:",
+          {
+            "sub": "Numeric feature scaling: Min-Max normalization বা Z-score standardization।"
+          },
+          {
+            "sub": "Categorical feature encoding: One-Hot বা Label encoding।"
+          },
+          "কেন এই ক্রম:",
+          {
+            "sub": "আগে ঘর ভরাট ও পরিষ্কার না করলে পরের scaling দূষিত data-র উপর হয়।"
+          },
+          {
+            "sub": "তখন model ভুল শেখে — garbage in, garbage out।"
+          }
         ],
         "diagram": "RAW DATA (নোংরা)\n ┌────┬─────┬────────┬─────────────────────────────┐\n │ id │ age │ income │ city                        │\n ├────┼─────┼────────┼─────────────────────────────┤\n │ 1  │ 25  │  30k   │ Dhaka                       │\n │ 2  │ ??  │  32k   │ dhaka   ← missing + বানান ভিন্ন│\n │ 3  │ 27  │ 9999k  │ Khulna  ← noise / outlier    │\n └────┴─────┴────────┴─────────────────────────────┘\n        │\n        ▼  ধাপ ১: MISSING ভরাট\n   age ?? → median(25,27) = 26  বসিয়ে দিলাম\n        │\n        ▼  ধাপ ২: NOISE মসৃণ\n   income 9999k → IQR এর বাইরে (outlier) → cap/remove\n        │\n        ▼  ধাপ ৩: CONSISTENCY\n   \"dhaka\" = \"Dhaka\" (একীভূত), duplicate সরাও\n        │\n        ▼  ধাপ ৪: TRANSFORM\n   age, income → Min-Max scale [0,1];  city → One-Hot\n        │\n        ▼\n CLEAN, MODEL-READY DATA ✅\n\n────────────────────────────────────────────\n Missing ≠ Noise:\n   Missing = ঘর খালি     → ভরাও (impute) বা বাদ (delete)\n   Noise   = ঘরে ভুল মান  → মসৃণ (bin/regression) বা outlier সরাও",
         "table": {
@@ -117,13 +165,34 @@
           {
             "sub": "Leaf Node: আর ভাগ হয় না — এখানেই চূড়ান্ত উত্তর/class (Yes / No)।"
           },
-          "কোন প্রশ্ন আগে আসবে: যে feature দিয়ে ভাগ করলে impurity সবচেয়ে বেশি কমে (Information Gain / Gini Index) সেটিকেই node বানানো হয় — তাই গুরুত্বপূর্ণ প্রশ্ন উপরে থাকে।",
-          "Pruning (ছাঁটাই):",
+          "কোন প্রশ্ন আগে আসবে:",
           {
-            "sub": "সমস্যা: গাছ যত গভীর হয় training data তে তত নিখুঁত, কিন্তু তখন সে noise-ও মুখস্থ করে ফেলে — নতুন data তে ভুল করে (overfitting)।"
+            "sub": "যে feature দিয়ে ভাগ করলে impurity সবচেয়ে বেশি কমে, সেটিকেই node বানানো হয়।"
           },
           {
-            "sub": "সমাধান: যেসব branch accuracy তে কিছু যোগ করে না সেগুলো কেটে গাছ ছোট ও সরল করা — generalization বাড়ে, prediction দ্রুত হয়।"
+            "sub": "impurity মাপা হয় Information Gain বা Gini Index দিয়ে।"
+          },
+          {
+            "sub": "তাই সবচেয়ে গুরুত্বপূর্ণ প্রশ্নটাই গাছের উপরে থাকে।"
+          },
+          "Pruning (ছাঁটাই):",
+          {
+            "sub": "সমস্যা: গাছ যত গভীর হয়, training data-তে সে তত নিখুঁত হয়।"
+          },
+          {
+            "sub": "কিন্তু তখন সে noise-ও মুখস্থ করে ফেলে।"
+          },
+          {
+            "sub": "ফলে নতুন data-তে ভুল করে — একেই overfitting বলে।"
+          },
+          {
+            "sub": "সমাধান: যেসব branch accuracy-তে কিছু যোগ করে না, সেগুলো কেটে দেওয়া।"
+          },
+          {
+            "sub": "এতে গাছ ছোট ও সরল হয়, generalization বাড়ে।"
+          },
+          {
+            "sub": "প্রেডিকশনও দ্রুত হয়।"
           },
           {
             "sub": "Pre-pruning (early stopping): বাড়ার সময়ই থামানো — max_depth, min_samples_leaf এর মতো শর্ত দিয়ে।"
@@ -201,12 +270,48 @@
             "sub": "h(n): n থেকে goal পর্যন্ত অনুমিত cost — এখানেই heuristic কাজ করে।"
           },
           {
-            "sub": "f(n): n হয়ে যাওয়া সবচেয়ে সস্তা সমাধানের মোট আনুমানিক cost। A* প্রতিবার সবচেয়ে ছোট f(n) ওয়ালা node আগে expand করে।"
+            "sub": "f(n) = g(n) + h(n): n হয়ে যাওয়া সবচেয়ে সস্তা সমাধানের মোট আনুমানিক cost।"
           },
-          "কেন কাজে দেয়: শুধু g(n) দেখলে algorithm অতীতমুখী (Dijkstra-এর মতো সব দিকে ছড়ায়); h(n) যোগ করলে সে ভবিষ্যতের দিকেও তাকায়, তাই goal এর দিকের শাখাগুলোই আগে খোলে।",
-          "ভালো heuristic এর শর্ত — admissible: h(n) কখনও প্রকৃত cost এর চেয়ে বেশি অনুমান করবে না (অতিরিক্ত অনুমান করলে সঠিক পথ বাদ পড়ে যেতে পারে)। Admissible হলেই A* optimal path দেয়।",
-          "উদাহরণ heuristic: map এ shortest route বের করতে h(n) = n থেকে গন্তব্যের straight-line দূরত্ব; 8-puzzle এ h(n) = ভুল জায়গায় থাকা tile এর সংখ্যা।",
-          "সুবিধা: heuristic ছাড়া Start → A → B → C → D → E → Goal (সব শাখা ঘাঁটা); heuristic সহ Start → A → C → Goal — কম node expansion, দ্রুত সমাধান।",
+          {
+            "sub": "A* প্রতিবার সবচেয়ে ছোট f(n) ওয়ালা node আগে expand করে।"
+          },
+          "কেন কাজে দেয়:",
+          {
+            "sub": "শুধু g(n) দেখলে algorithm অতীতমুখী হয়ে সব দিকে ছড়ায় (Dijkstra-এর মতো)।"
+          },
+          {
+            "sub": "h(n) যোগ করলে সে ভবিষ্যতের দিকেও তাকায়।"
+          },
+          {
+            "sub": "তাই goal-এর দিকের শাখাগুলোই আগে খোলে।"
+          },
+          "ভালো heuristic-এর শর্ত — admissible:",
+          {
+            "sub": "h(n) কখনও প্রকৃত cost-এর চেয়ে বেশি অনুমান করবে না।"
+          },
+          {
+            "sub": "অতিরিক্ত অনুমান করলে সঠিক পথটাই বাদ পড়ে যেতে পারে।"
+          },
+          {
+            "sub": "Admissible হলেই A* optimal path দেয়।"
+          },
+          "উদাহরণ heuristic:",
+          {
+            "sub": "Map-এ shortest route: h(n) = n থেকে গন্তব্যের straight-line দূরত্ব।"
+          },
+          {
+            "sub": "8-puzzle: h(n) = ভুল জায়গায় থাকা tile-এর সংখ্যা।"
+          },
+          "সুবিধা:",
+          {
+            "sub": "heuristic ছাড়া: Start → A → B → C → D → E → Goal — সব শাখা ঘেঁটে দেখতে হয়।"
+          },
+          {
+            "sub": "heuristic সহ: Start → A → C → Goal।"
+          },
+          {
+            "sub": "ফল: কম node expansion, দ্রুত সমাধান।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
             "sub": "GPS / Google Maps এর route planning।"
@@ -268,20 +373,44 @@
             "sub": "Node: প্রতিটি node একটি random variable, যার মান অনিশ্চিত (Rain, Sprinkler, Wet Grass)।"
           },
           {
-            "sub": "Edge: তীরচিহ্ন সরাসরি নির্ভরশীলতা/causal সম্পর্ক বোঝায়; edge না থাকলে ওই দুটি variable সরাসরি নির্ভরশীল নয়।"
+            "sub": "Edge: তীরচিহ্ন সরাসরি নির্ভরশীলতা বা causal সম্পর্ক বোঝায়।"
           },
           {
-            "sub": "Acyclic কেন: চক্র থাকলে একটি variable ঘুরে নিজেরই কারণ হয়ে যেত, তখন probability হিসাব সম্ভব হতো না।"
+            "sub": "দুই node-এর মাঝে edge না থাকলে তারা সরাসরি নির্ভরশীল নয়।"
+          },
+          {
+            "sub": "Acyclic কেন: চক্র থাকলে একটি variable ঘুরে নিজেরই কারণ হয়ে যেত।"
+          },
+          {
+            "sub": "তখন probability-র হিসাব আর সম্ভব হতো না।"
           },
           "২. Conditional Probability Table (CPT):",
           {
-            "sub": "প্রতিটি node এর জন্য একটি টেবিল — P(node | parents)। parent না থাকলে শুধু prior P(node)।"
+            "sub": "প্রতিটি node-এর জন্য একটি টেবিল থাকে — P(node | parents)।"
+          },
+          {
+            "sub": "যে node-এর parent নেই, তার জন্য শুধু prior P(node) রাখা হয়।"
           },
           {
             "sub": "parent এর প্রতিটি সম্ভাব্য combination এর জন্য এক সারি থাকে।"
           },
-          "কেন উপযোগী: পুরো joint probability টেবিল না রেখে ছোট ছোট CPT দিয়েই সব বের করা যায় — P(X₁…Xₙ) = ∏ P(Xᵢ | Parents(Xᵢ))। এতে জায়গা ও হিসাব দুটোই অনেক কমে।",
-          "কাজ (inference): কিছু evidence দেখে অজানা কারণের probability বের করা — ঘাস ভেজা দেখে জিজ্ঞেস করা \"বৃষ্টি হয়েছিল কি?\"",
+          "কেন উপযোগী:",
+          {
+            "sub": "পুরো joint probability টেবিল না রেখে ছোট ছোট CPT দিয়েই সব বের করা যায়।"
+          },
+          {
+            "sub": "সূত্র: P(X₁…Xₙ) = ∏ P(Xᵢ | Parents(Xᵢ))।"
+          },
+          {
+            "sub": "এতে জায়গা ও হিসাব দুটোই অনেক কমে যায়।"
+          },
+          "কাজ (inference):",
+          {
+            "sub": "কিছু evidence দেখে অজানা কারণের probability বের করা।"
+          },
+          {
+            "sub": "যেমন ঘাস ভেজা দেখে জিজ্ঞেস করা — \"বৃষ্টি হয়েছিল কি?\""
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
             "sub": "Medical diagnosis — উপসর্গ দেখে রোগের সম্ভাবনা নির্ণয়।"
