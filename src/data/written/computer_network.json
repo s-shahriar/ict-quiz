@@ -170,11 +170,50 @@
           "Transport Layer এ সবসময় TCP ব্যবহার হয় কারণ email delivery reliable হতে হবে।"
         ],
         "points": [
-          "SMTP (Simple Mail Transfer Protocol): email পাঠানোর protocol — Afsana → নিজের Mail Server, এবং Server → Server transfer। Port 25/587।",
-          "POP3 (Post Office Protocol v3): email server থেকে download করে local এ রাখে, server থেকে delete করে। Port 110।",
-          "IMAP (Internet Message Access Protocol): email server এ রেখে সব device এ sync করে। Port 143।",
-          "Transport Layer: সবগুলোই TCP ব্যবহার করে — email হারানো যাবে না, তাই reliable TCP দরকার।",
-          "MUA (Mail User Agent) = Afsana/Sinthia এর mail client (Outlook, Gmail app)। MTA (Mail Transfer Agent) = Mail Server।"
+          "SMTP (Simple Mail Transfer Protocol) — পাঠানোর protocol:",
+          {
+            "sub": "Afsana-র mail client থেকে তার নিজের Mail Server-এ mail যায় SMTP দিয়ে।"
+          },
+          {
+            "sub": "এক Server থেকে আরেক Server-এ transfer-ও হয় SMTP দিয়েই।"
+          },
+          {
+            "sub": "Port: 587 (client → server submission), 25 (server → server)।"
+          },
+          "POP3 (Post Office Protocol v3) — নামিয়ে নেওয়ার protocol:",
+          {
+            "sub": "Mail server থেকে download করে local device-এ রাখে।"
+          },
+          {
+            "sub": "download-এর পর সাধারণত server থেকে mail মুছে ফেলে।"
+          },
+          {
+            "sub": "Port: 110।"
+          },
+          "IMAP (Internet Message Access Protocol) — server-এ রেখে পড়ার protocol:",
+          {
+            "sub": "Mail server-এই থেকে যায়, download করে সরিয়ে নেওয়া হয় না।"
+          },
+          {
+            "sub": "ফলে সব device-এ একই অবস্থা sync থাকে (পড়া/না-পড়া, folder)।"
+          },
+          {
+            "sub": "Port: 143।"
+          },
+          "Transport Layer — তিনটিই TCP ব্যবহার করে:",
+          {
+            "sub": "Email একটি byte-ও হারানো যাবে না, তাই reliable delivery দরকার।"
+          },
+          {
+            "sub": "TCP acknowledgement ও retransmission দেয়, তাই SMTP/POP3/IMAP সবই TCP-র উপর চলে।"
+          },
+          "দুটি শব্দ আলাদা করে চেনো:",
+          {
+            "sub": "MUA (Mail User Agent) = Afsana/Sinthia-র mail client — Outlook, Gmail app।"
+          },
+          {
+            "sub": "MTA (Mail Transfer Agent) = Mail Server, যে mail এক জায়গা থেকে আরেক জায়গায় পাঠায়।"
+          }
         ],
         "diagram": "Afsana                                                        Sinthia\n(Sender)                                                     (Receiver)\n\n [Mail App]  →SMTP→  [Afsana's Server]  →SMTP→  [Sinthia's Server]  →POP3/IMAP→  [Mail App]\n   (MUA)               (MTA)                       (MTA)                             (MUA)\n\n──────────────────────────────────────────────────────────────────────────────\nStep 1 │ Afsana লিখে Send করে  →  SMTP  →  Port 587  (Submission)\nStep 2 │ Afsana-র Server পাঠায় →  SMTP  →  Port 25   (Server to Server)\nStep 3 │ Sinthia-র Server জমা রাখে (Store & Forward)\nStep 4 │ Sinthia পড়তে চায়      →  POP3  →  Port 110  (download করে)\n       │                        বা IMAP  →  Port 143  (server-এ রেখে পড়ে)\n──────────────────────────────────────────────────────────────────────────────\nProtocol  │  কাজ               │  Layer\n──────────┼────────────────────┼──────────────\nSMTP      │  Mail পাঠানো       │  Application\nPOP3/IMAP │  Mail নামানো/পড়া  │  Application\nTCP       │  সব ক্ষেত্রে       │  Transport",
         "mistakes": [
@@ -243,24 +282,80 @@
           "BGP আলাদা আলাদা Autonomous System (AS) এর মধ্যে Internet routing করে (Path Vector)।"
         ],
         "points": [
-          "RIP → Distance Vector: প্রতিটি router শুধু তার neighbor এর কাছ থেকে routing table শোনে — নিজে পুরো network দেখতে পায় না। Hop count মেট্রিক, max 15 hop।",
+          "RIP — Distance Vector:",
           {
-            "sub": "RIP এর বড় সমস্যা → Count-to-Infinity: কোনো link down হলে routers ভুল information নিয়ে একে অপরকে loop করতে থাকে, hop count বাড়তেই থাকে 16 না হওয়া পর্যন্ত।"
+            "sub": "প্রতিটি router শুধু তার neighbor-এর কাছ থেকে routing table শোনে।"
           },
-          "OSPF → Link State: প্রতিটি router পুরো network এর map (LSDB) তৈরি করে, তারপর Dijkstra's Algorithm চালিয়ে নিজে best path বের করে। Bandwidth-based cost metric।",
           {
-            "sub": "OSPF vs RIP: OSPF তে Count-to-Infinity নেই — কারণ সে নিজে পুরো map দেখে সিদ্ধান্ত নেয়, কারো কথায় বিশ্বাস করে না। Fast convergence।"
+            "sub": "নিজে পুরো network দেখতে পায় না — তাই একে 'routing by rumour' বলা হয়।"
           },
-          "BGP → Path Vector: একটি AS (Autonomous System) থেকে আরেকটি AS এ routing করে — এটাই পুরো Internet এর backbone। ISP রা BGP দিয়ে একে অপরের সাথে route advertise করে।",
           {
-            "sub": "AS কী: একটি organization বা ISP এর নিয়ন্ত্রণে থাকা router গুলোর group। যেমন Grameenphone = একটি AS, BTCL = আরেকটি AS। BGP এদের মধ্যে কাজ করে।"
+            "sub": "Metric = hop count, সর্বোচ্চ 15 hop (16 মানে unreachable)।"
+          },
+          {
+            "sub": "Bandwidth দেখে না — তাই ধীর কিন্তু কম-hop পথকেই ভালো মনে করে।"
+          },
+          {
+            "sub": "বড় সমস্যা Count-to-Infinity: কোনো link down হলে router-রা একে অপরের পুরনো তথ্য ফেরত দিয়ে loop তৈরি করে।"
+          },
+          {
+            "sub": "সেই loop-এ hop count বাড়তেই থাকে, 16 না হওয়া পর্যন্ত থামে না।"
+          },
+          {
+            "diagram": "A → B → C → D   (প্রতিটি ধাপ = 1 hop)\nA থেকে D = 3 hops — RIP এই পথটাই নেবে\n\nকিন্তু B→C link 1 Mbps আর A→D direct link 100 Mbps হলেও\nRIP শুধু hop count দেখে, bandwidth দেখে না\n\nCount-to-Infinity:\n  A — B — C  |  A-B link হঠাৎ down\n  B ভাবে: C-এর মাধ্যমে A পাওয়া যাবে (hop = 2)\n  C ভাবে: B-এর মাধ্যমে A পাওয়া যাবে (hop = 3)\n  B ভাবে: তাহলে hop = 4 ...\n  এভাবে 16 পর্যন্ত চলতে থাকে — খুব ধীর convergence",
+            "label": "Diagram — RIP (Distance Vector)"
+          },
+          "OSPF — Link State:",
+          {
+            "sub": "প্রতিটি router পুরো network-এর map (LSDB) নিজে তৈরি করে।"
+          },
+          {
+            "sub": "তারপর নিজেই Dijkstra's Algorithm চালিয়ে best path বের করে।"
+          },
+          {
+            "sub": "Metric = cost, যা bandwidth থেকে হিসাব হয় — hop সংখ্যা নয়।"
+          },
+          {
+            "sub": "Count-to-Infinity নেই, কারণ সে কারো কথায় বিশ্বাস না করে নিজের map দেখে সিদ্ধান্ত নেয়।"
+          },
+          {
+            "sub": "ফলে convergence দ্রুত হয়।"
+          },
+          {
+            "diagram": "প্রতিটি router পুরো network-এর map জানে (LSDB):\n\n        cost=1         cost=10\n   A ─────────── B ─────────── C\n    \\  cost=3           cost=3 /\n     ──────────── D ───────────\n\nDijkstra চালায়:\n  A→B→C = 1 + 10 = 11\n  A→D→C = 3 + 3  = 6    ← best path\n\nনিজেই map দেখে হিসাব করে বলে Count-to-Infinity হয় না",
+            "label": "Diagram — OSPF (Link State + Dijkstra)"
+          },
+          "BGP — Path Vector:",
+          {
+            "sub": "একটি AS (Autonomous System) থেকে আরেকটি AS-এ routing করে।"
+          },
+          {
+            "sub": "এটাই পুরো Internet-এর backbone routing protocol।"
+          },
+          {
+            "sub": "ISP-রা BGP দিয়ে একে অপরের কাছে নিজেদের route advertise করে।"
+          },
+          {
+            "sub": "AS কী: একটি organization বা ISP-র নিয়ন্ত্রণে থাকা router-গুলোর group।"
+          },
+          {
+            "sub": "যেমন Grameenphone = একটি AS, BTCL = আরেকটি AS — BGP এদের মধ্যে কাজ করে।"
+          },
+          {
+            "diagram": "  [AS 100]  ──BGP──  [AS 200]  ──BGP──  [AS 300]\n  (GP ISP)            (BD ISP)           (BTCL)\n\nBGP advertise করে: 'AS 300 পৌঁছাতে AS 200 → AS 300 path নাও'\nPath = [100, 200, 300]\nনিজের AS number path-এ দেখলেই loop ধরা পড়ে যায়\n\nRIP / OSPF = একটি AS-এর ভেতরে   (IGP)\nBGP        = আলাদা AS-এর মধ্যে  (EGP)   ← এটাই মূল পার্থক্য",
+            "label": "Diagram — BGP (Path Vector, AS to AS)"
           },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "কোথায় কোনটি: RIP এখন প্রায় অচল — শুধু খুব ছোট বা lab network এ; OSPF ব্যাংক, এন্টারপ্রাইজ ও ডাটা সেন্টারের ভেতরের routing এ (একই প্রতিষ্ঠানের সীমানায়); BGP ISP দের মধ্যে এবং প্রতিষ্ঠানের multi-homing এ — দুটি ISP নিলে BGP দিয়েই route advertise ও failover হয়।"
+            "sub": "RIP এখন প্রায় অচল — শুধু খুব ছোট বা শিক্ষামূলক lab network-এ।"
+          },
+          {
+            "sub": "OSPF ব্যাংক, এন্টারপ্রাইজ ও ডাটা সেন্টারের ভেতরের routing-এ (একই প্রতিষ্ঠানের সীমানায়)।"
+          },
+          {
+            "sub": "BGP ISP-দের মধ্যে, আর প্রতিষ্ঠানের multi-homing-এ — দুটি ISP নিলে BGP দিয়েই route advertise ও failover হয়।"
           }
         ],
-        "diagram": "RIP — Distance Vector (neighbor এর কথা বিশ্বাস করে)\n─────────────────────────────────────────────────\nA → B → C → D  (প্রতিটি = 1 hop)\nA থেকে D = 3 hops → RIP এটাই নেবে\nকিন্তু B→C link 1 Mbps, A→D direct link 100 Mbps হলেও\nRIP hop count দেখে, bandwidth দেখে না ❌\n\nCount-to-Infinity Problem:\nA — B — C,  A-B link হঠাৎ down\nB ভাবে: C এর মাধ্যমে A পাওয়া যাবে (hop=2)\nC ভাবে: B এর মাধ্যমে A পাওয়া যাবে (hop=3)\nB ভাবে: তাহলে hop=4 ... এভাবে 16 পর্যন্ত চলে → Slow!\n\n\nOSPF — Link State + Dijkstra\n─────────────────────────────────────────────────\nপ্রতিটি router পুরো network এর map জানে (LSDB):\n\n        cost=1         cost=10\n   A ─────────── B ─────────── C\n    \\  cost=3           cost=3 /\n     ──────────── D ───────────\n\nDijkstra চালায়:\n  A→B→C = 1+10 = 11\n  A→D→C = 3+3  = 6  ← best path ✅\nCount-to-Infinity নেই, কারণ নিজেই map দেখে calculate করে\n\n\nBGP — Path Vector (AS থেকে AS)\n─────────────────────────────────────────────────\n  [AS 100]  ──BGP──  [AS 200]  ──BGP──  [AS 300]\n  (GP ISP)            (BD ISP)           (BTCL)\n\nBGP advertise করে: 'AS 300 পৌঁছাতে AS 200 → AS 300 path নাও'\nPath = [100, 200, 300] — loop detect করা যায় নিজের AS দেখে\nRIP/OSPF = একটি AS এর ভেতরে (IGP)\nBGP      = আলাদা AS এর মধ্যে (EGP) ← এটাই পার্থক্য",
         "mistakes": [
           [
             "RIP সবচেয়ে বেশি hop এর path নেয়",
@@ -399,15 +494,48 @@
           "4 = 2² → prefix থেকে 2 বাদ দাও → /24 − 2 = /22।"
         ],
         "points": [
-          "Router = Layer 3 (Network Layer)। PDU = Packet। IP header দেখে routing সিদ্ধান্ত নেয়।",
-          "Switch = Layer 2 (Frame), Hub = Layer 1 (Bits)",
-          "Supernetting: কতটি network একত্রিত করতে হবে? 4 = 2² → 2 bit বাদ দাও prefix থেকে",
-          "নতুন prefix = /24 − 2 = /22",
-          "Supernet address = smallest address = 10.1.0.0/22",
-          "3rd octet binary: 00, 01, 10, 11 → প্রথম 22 bits common → /22 confirmed",
+          "Router কোন layer-এ, PDU কী:",
+          {
+            "sub": "Router কাজ করে Layer 3 (Network Layer)-এ।"
+          },
+          {
+            "sub": "এই layer-এর PDU-র নাম Packet।"
+          },
+          {
+            "sub": "সে IP header দেখে routing সিদ্ধান্ত নেয়।"
+          },
+          "তুলনার জন্য অন্য device:",
+          {
+            "sub": "Switch = Layer 2 (Data Link), PDU = Frame।"
+          },
+          {
+            "sub": "Hub = Layer 1 (Physical), PDU = Bits।"
+          },
+          "Supernetting-এর হিসাব:",
+          {
+            "sub": "কতটি network একত্রিত করতে হবে? এখানে 4টি।"
+          },
+          {
+            "sub": "4 = 2² — তাই prefix থেকে 2 bit বাদ দিতে হবে।"
+          },
+          {
+            "sub": "নতুন prefix = /24 − 2 = /22।"
+          },
+          {
+            "sub": "Supernet address = সবচেয়ে ছোট address = 10.1.0.0/22।"
+          },
+          {
+            "sub": "যাচাই: 3rd octet-এর binary 00, 01, 10, 11 — প্রথম 22 bit সবার একই, তাই /22 নিশ্চিত।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "Supernetting এর আসল ব্যবহার: ISP ও backbone router এ route aggregation — বহু ছোট prefix কে কয়েকটি বড় prefix এ মিলিয়ে routing table ছোট রাখা হয়, নইলে internet এর routing table router এর মেমরিতেই ধরত না।"
+            "sub": "Supernetting-এর আসল ব্যবহার ISP ও backbone router-এ route aggregation।"
+          },
+          {
+            "sub": "বহু ছোট prefix-কে কয়েকটি বড় prefix-এ মিলিয়ে routing table ছোট রাখা হয়।"
+          },
+          {
+            "sub": "নইলে Internet-এর পুরো routing table router-এর মেমরিতেই ধরত না।"
           }
         ],
         "diagram": "OSI Layer → Device → PDU:\n  Layer 3  Network   │ PACKET  ← Router\n  Layer 2  Data Link │ Frame   ← Switch\n  Layer 1  Physical  │ Bits    ← Hub\n\nCIDR Supernetting:\n  10.1. 00000000 .0  → 10.1.0.0/24\n  10.1. 00000001 .0  → 10.1.1.0/24\n  10.1. 00000010 .0  → 10.1.2.0/24\n  10.1. 00000011 .0  → 10.1.3.0/24\n              ^^  (শেষ 2 bits ভিন্ন)\n  Common = 22 bits → /22\n\n  4 networks = 2² → subtract 2 from prefix\n  /24 − 2 = /22\n  Supernet: 10.1.0.0/22\n  Hosts: 10.1.0.1 → 10.1.3.254 (1022 usable)",
@@ -442,14 +570,68 @@
           "Unguided এ আছে Radio Wave, Microwave, Infrared — electromagnetic wave দিয়ে data পাঠায়।"
         ],
         "points": [
-          "── GUIDED MEDIA (Wired) ──────────────────────────",
-          "Twisted Pair Cable: LAN এ সবচেয়ে বেশি ব্যবহৃত। ✅ কম দাম, সহজ install, high-speed LAN। ❌ দূরত্ব সীমিত, interference বেশি।",
-          "Coaxial Cable: Cable TV ও internet এ ব্যবহৃত। ✅ High-speed, ভালো shielding। ❌ ব্যয়বহুল, একটা ক্ষতি হলে পুরো network down।",
-          "Fiber Optic Cable: High-speed broadband ও long-distance। ✅ সর্বোচ্চ bandwidth, signal loss নেই, interference মুক্ত। ❌ ব্যয়বহুল, ভঙ্গুর, install জটিল।",
-          "── UNGUIDED MEDIA (Wireless) ─────────────────────",
-          "Radio Waves: Wi-Fi, AM/FM, mobile network। ✅ বড় এলাকা coverage, setup সস্তা। ❌ Interference বেশি, security কম।",
-          "Microwaves: Satellite ও long-distance। ✅ Cable লাগে না, remote area তে কাজ করে। ❌ Installation cost বেশি, weather এ affected।",
-          "Infrared: Remote control ও short-range। ✅ Secure, কম power। ❌ দূরত্ব খুব সীমিত, obstacle পার হতে পারে না।"
+          "── GUIDED MEDIA (Wired) ──",
+          "Twisted Pair Cable:",
+          {
+            "sub": "LAN-এ সবচেয়ে বেশি ব্যবহৃত media।"
+          },
+          {
+            "sub": "সুবিধা: কম দাম, install করা সহজ, high-speed LAN দেয়।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: দূরত্ব সীমিত, interference বেশি।"
+          },
+          "Coaxial Cable:",
+          {
+            "sub": "Cable TV ও broadband internet-এ ব্যবহৃত।"
+          },
+          {
+            "sub": "সুবিধা: High-speed, shielding ভালো বলে interference কম।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: ব্যয়বহুল; একটা জায়গায় ক্ষতি হলে পুরো network down হয়ে যায়।"
+          },
+          "Fiber Optic Cable:",
+          {
+            "sub": "High-speed broadband ও long-distance link-এ ব্যবহৃত।"
+          },
+          {
+            "sub": "সুবিধা: সর্বোচ্চ bandwidth, signal loss প্রায় নেই, electromagnetic interference মুক্ত।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: ব্যয়বহুল, ভঙ্গুর, install করা জটিল।"
+          },
+          "── UNGUIDED MEDIA (Wireless) ──",
+          "Radio Waves:",
+          {
+            "sub": "Wi-Fi, AM/FM radio ও mobile network-এ ব্যবহৃত।"
+          },
+          {
+            "sub": "সুবিধা: বড় এলাকা coverage দেয়, setup সস্তা।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: Interference বেশি, security তুলনামূলক কম।"
+          },
+          "Microwaves:",
+          {
+            "sub": "Satellite ও long-distance point-to-point link-এ ব্যবহৃত।"
+          },
+          {
+            "sub": "সুবিধা: Cable বসাতে হয় না, remote area-তেও কাজ করে।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: Installation cost বেশি, খারাপ weather-এ signal ক্ষতিগ্রস্ত হয়।"
+          },
+          "Infrared:",
+          {
+            "sub": "Remote control ও short-range device-এ ব্যবহৃত।"
+          },
+          {
+            "sub": "সুবিধা: Secure, খুব কম power লাগে।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: দূরত্ব খুব সীমিত, দেয়াল/obstacle পার হতে পারে না।"
+          }
         ],
         "diagram": "TRANSMISSION MEDIA\n├── Guided (Wired)\n│   ├── Twisted Pair ──── LAN, সস্তা, interference বেশি\n│   ├── Coaxial ───────── Cable TV, shielding ভালো\n│   └── Fiber Optic ───── সর্বোচ্চ speed, ব্যয়বহুল\n└── Unguided (Wireless)\n    ├── Radio Wave ─────── Wi-Fi, mobile, বড় coverage\n    ├── Microwave ──────── Satellite, weather dependent\n    └── Infrared ───────── Remote, short-range only\n\nSpeed ranking (fast → slow):\nFiber Optic > Coaxial > Twisted Pair\nMicrowave   > Radio Wave > Infrared\n\nCost ranking (high → low):\nFiber Optic > Coaxial > Twisted Pair\nMicrowave   > Radio Wave > Infrared",
         "table": {
@@ -517,20 +699,83 @@
           "TDM = time ভাগ করে, FDM = frequency ভাগ করে, WDM = আলোর wavelength ভাগ করে (fiber optic এ)।"
         ],
         "points": [
-          "TDM (Time Division Multiplexing): channel কে সমান time slot এ ভাগ করা হয়। প্রতিটি device পালা করে নিজের slot এ data পাঠায়। Digital signal এ ব্যবহৃত।",
-          "FDM (Frequency Division Multiplexing): channel এর total bandwidth কে ছোট ছোট frequency band এ ভাগ করা হয়। প্রতিটি device একটি নির্দিষ্ট frequency band পায়। Analog signal এ ব্যবহৃত (Radio, Cable TV)।",
-          "WDM (Wavelength Division Multiplexing): Fiber Optic cable এ আলোর বিভিন্ন wavelength (রঙ) ব্যবহার করে একসাথে অনেক signal পাঠানো হয়। Terabit/s পর্যন্ত capacity।",
-          "TDM কীভাবে কাজ করে: Channel কে N টি time slot এ ভাগ করা হয়। Device 1 → Slot 1, Device 2 → Slot 2, ... এভাবে round-robin পদ্ধতিতে চলে। Slot empty থাকলেও অন্য device সেটা নিতে পারে না (Synchronous TDM)।",
-          "Statistical TDM: Slot শুধু তখনই দেওয়া হয় যখন device এর data আছে → bandwidth efficient।",
-          "ব্যবহারিক প্রয়োগ:",
+          "Multiplexing কী: একটি channel দিয়ে একাধিক signal একসাথে পাঠানো।",
+          "TDM (Time Division Multiplexing) — সময় ভাগ করে:",
           {
-            "sub": "কোথায় কোনটি: TDM টেলিফোন backbone ও E1/T1 line এ (digital voice channel পালা করে যায়); FDM রেডিও, cable TV ও পুরোনো analog telephony তে; WDM/DWDM দূরপাল্লার ও সাবমেরিন fiber এ।"
+            "sub": "Channel-কে সমান সমান time slot-এ ভাগ করা হয়।"
           },
           {
-            "sub": "WDM কেন গুরুত্বপূর্ণ: নতুন fiber না বসিয়েই একই তন্তুতে ভিন্ন wavelength যোগ করে ক্ষমতা Tbps পর্যন্ত বাড়ানো যায় — তাই আন্তর্জাতিক bandwidth সস্তা হয়েছে।"
+            "sub": "প্রতিটি device পালা করে নিজের slot-এ data পাঠায়।"
+          },
+          {
+            "sub": "Digital signal-এ ব্যবহৃত হয়।"
+          },
+          {
+            "diagram": "  [A][B][C][A][B][C][A][B][C]...   → একটিই channel\n   ↑   ↑   ↑\n  slot1 slot2 slot3   (round-robin)",
+            "label": "Diagram — TDM (Time ভাগ)"
+          },
+          "FDM (Frequency Division Multiplexing) — frequency ভাগ করে:",
+          {
+            "sub": "Channel-এর total bandwidth ছোট ছোট frequency band-এ ভাগ করা হয়।"
+          },
+          {
+            "sub": "প্রতিটি device একটি নির্দিষ্ট frequency band পায়, সবাই একই সময়ে পাঠাতে পারে।"
+          },
+          {
+            "sub": "Analog signal-এ ব্যবহৃত — Radio, Cable TV।"
+          },
+          {
+            "diagram": "  f1 ████████████████████████████  → Device A\n  f2 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  → Device B\n  f3 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  → Device C\n     ──────────── time ──────────▶",
+            "label": "Diagram — FDM (Frequency ভাগ)"
+          },
+          "WDM (Wavelength Division Multiplexing) — আলোর wavelength ভাগ করে:",
+          {
+            "sub": "Fiber Optic cable-এ আলোর বিভিন্ন wavelength (রঙ) ব্যবহার করা হয়।"
+          },
+          {
+            "sub": "একই তন্তু দিয়ে একসাথে অনেকগুলো signal যায়।"
+          },
+          {
+            "sub": "Capacity Terabit/s পর্যন্ত যেতে পারে।"
+          },
+          {
+            "diagram": "  λ1 (লাল)  ──────────────────────▶\n  λ2 (সবুজ) ──────────────────────▶   একই fiber\n  λ3 (নীল)  ──────────────────────▶",
+            "label": "Diagram — WDM (Wavelength ভাগ, Fiber Optic)"
+          },
+          "TDM কীভাবে কাজ করে (ধাপে ধাপে):",
+          {
+            "sub": "Channel-কে N টি time slot-এ ভাগ করা হয়।"
+          },
+          {
+            "sub": "Device 1 পায় Slot 1, Device 2 পায় Slot 2 — এভাবে round-robin ক্রমে চলে।"
+          },
+          {
+            "sub": "Synchronous TDM-এ কোনো slot খালি থাকলেও অন্য device সেটা নিতে পারে না।"
+          },
+          {
+            "sub": "Statistical TDM-এ slot শুধু তখনই দেওয়া হয় যখন device-এর সত্যিই data আছে — তাই bandwidth বেশি efficient।"
+          },
+          {
+            "diagram": "  Frame = [ Slot-A | Slot-B | Slot-C ]\n\n  Cycle 1:  A পাঠায় → B পাঠায় → C পাঠায়\n  Cycle 2:  A পাঠায় → B পাঠায় → C পাঠায়\n\n  Synchronous: slot খালি থাকলেও পরের device-কে wait করতে হয়",
+            "label": "Diagram — TDM working detail"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "TDM: টেলিফোন backbone ও E1/T1 line-এ — digital voice channel পালা করে যায়।"
+          },
+          {
+            "sub": "FDM: রেডিও, cable TV ও পুরোনো analog telephony-তে।"
+          },
+          {
+            "sub": "WDM/DWDM: দূরপাল্লার ও সাবমেরিন fiber-এ।"
+          },
+          {
+            "sub": "WDM কেন গুরুত্বপূর্ণ: নতুন fiber না বসিয়েই একই তন্তুতে ভিন্ন wavelength যোগ করে ক্ষমতা Tbps পর্যন্ত বাড়ানো যায়।"
+          },
+          {
+            "sub": "এ কারণেই আন্তর্জাতিক bandwidth-এর দাম এত সস্তা হয়েছে।"
           }
         ],
-        "diagram": "FDM — Frequency ভাগ:\n  f1 ████████████████████████████  → Device A\n  f2 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  → Device B\n  f3 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  → Device C\n     ──────────── time ──────────▶\n\nTDM — Time ভাগ:\n  [A][B][C][A][B][C][A][B][C]...  → একটি channel\n   ↑   ↑   ↑\n   slot1 slot2 slot3 (round-robin)\n\nWDM — Wavelength ভাগ (Fiber Optic):\n  λ1 (লাল)  ──────────────────────▶\n  λ2 (সবুজ) ──────────────────────▶  একই fiber\n  λ3 (নীল)  ──────────────────────▶\n\nTDM Working Detail:\n  Frame = [Slot-A | Slot-B | Slot-C]\n  Cycle 1: A পাঠায় → B পাঠায় → C পাঠায়\n  Cycle 2: A পাঠায় → B পাঠায় → C পাঠায়\n  Synchronous: slot খালি থাকলেও wait করতে হয়",
         "table": {
           "headers": [
             "বৈশিষ্ট্য",
@@ -699,15 +944,51 @@
           "মূল পার্থক্য: SOAP শুধু XML এ কথা বলে — REST JSON, XML, HTML যেকোনো format এ কথা বলতে পারে।"
         ],
         "points": [
-          "SOAP (Simple Object Access Protocol): একটি standard communication protocol। XML format এ message আদান-প্রদান করে। Strict rules ও standards follow করে (WS-Security, WSDL)। High security ও ACID transaction এর জন্য উপযুক্ত",
-          "RESTful API (Representational State Transfer): একটি architectural style, protocol নয়। HTTP methods (GET, POST, PUT, DELETE) ব্যবহার করে। JSON, XML, HTML ইত্যাদি যেকোনো format সাপোর্ট করে। হালকা, দ্রুত, এবং web ও mobile app এ সবচেয়ে জনপ্রিয়",
-          "Data Exchange পার্থক্য: SOAP → শুধু XML envelope এ data পাঠায়। REST → JSON (সবচেয়ে সাধারণ), XML বা অন্য যেকোনো format ব্যবহার করতে পারে",
-          "ব্যবহারিক প্রয়োগ:",
+          "SOAP (Simple Object Access Protocol):",
           {
-            "sub": "কোথায় কোনটি: SOAP এখনো ব্যাংক, পেমেন্ট গেটওয়ে ও টেলিকমের legacy integration এ — কারণ WS-Security, formal contract (WSDL) ও transaction guarantee দরকার হয়।"
+            "sub": "এটি একটি standard communication protocol।"
           },
           {
-            "sub": "REST ব্যবহৃত হয় mobile app, public API ও microservice এ — হালকা JSON, HTTP এর নিজস্ব method ও caching সুবিধা থাকায় দ্রুত ও সহজ।"
+            "sub": "XML format-এ message আদান-প্রদান করে।"
+          },
+          {
+            "sub": "Strict rules ও standards follow করে — WS-Security, WSDL।"
+          },
+          {
+            "sub": "High security ও ACID transaction দরকার হলে উপযুক্ত।"
+          },
+          "RESTful API (Representational State Transfer):",
+          {
+            "sub": "এটি একটি architectural style, protocol নয়।"
+          },
+          {
+            "sub": "HTTP-র নিজস্ব method ব্যবহার করে — GET, POST, PUT, DELETE।"
+          },
+          {
+            "sub": "JSON, XML, HTML — যেকোনো format সাপোর্ট করে।"
+          },
+          {
+            "sub": "হালকা ও দ্রুত, তাই web ও mobile app-এ সবচেয়ে জনপ্রিয়।"
+          },
+          "Data Exchange-এর মূল পার্থক্য:",
+          {
+            "sub": "SOAP শুধু XML envelope-এ data পাঠাতে পারে — অন্য কোনো format নয়।"
+          },
+          {
+            "sub": "REST JSON (সবচেয়ে সাধারণ), XML বা অন্য যেকোনো format ব্যবহার করতে পারে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "SOAP এখনো ব্যাংক, পেমেন্ট গেটওয়ে ও টেলিকমের legacy integration-এ ব্যবহৃত হয়।"
+          },
+          {
+            "sub": "কারণ সেখানে WS-Security, formal contract (WSDL) ও transaction guarantee দরকার হয়।"
+          },
+          {
+            "sub": "REST ব্যবহৃত হয় mobile app, public API ও microservice-এ।"
+          },
+          {
+            "sub": "কারণ হালকা JSON, HTTP-র নিজস্ব method ও caching সুবিধা থাকায় এটি দ্রুত ও সহজ।"
           }
         ],
         "table": {
@@ -770,12 +1051,51 @@
           "এই layer এর মূল কাজই data encryption/decryption — তাই development time, cost ও maintainability সব দিক থেকে এটি সেরা।"
         ],
         "points": [
-          "Presentation Layer (Layer 6) কেন? Encryption ও decryption এই layer এর built-in responsibility। Standard libraries (SSL/TLS) সহজে ব্যবহার করা যায় — development fast ও cheap",
-          "Development Time & Cost: Layer 6 এ SSL/TLS implement করতে proven, ready-made libraries আছে। Custom packet-level encryption (Layer 3/4) লিখলে অনেক বেশি সময় ও খরচ লাগত",
-          "Software Maintainability: Separation of concerns — security logic application (Layer 7) ও network (Layer 3) থেকে আলাদা থাকে। Encryption algorithm পরিবর্তন করলে বাকি layers এ কোনো change লাগে না",
-          "End-to-End Protection: Voice data Application layer তৈরি করার পরপরই Layer 6 encrypt করে। Receiver এ Layer 6 decrypt করে Application layer কে দেয় — মাঝখানে কেউ পড়তে পারে না",
-          "কেন Layer 3/4 নয়? Layer 3 (Network) শুধু routing জানে — payload সুরক্ষার জায়গা নয়। Layer 4 (Transport) connection manage করে — content encryption এর জন্য design করা হয়নি",
-          "কেন Layer 7 নয়? Application layer তে implement করলে প্রতিটি application আলাদাভাবে encryption maintain করতে হয় — costly ও error-prone"
+          "উত্তর: Presentation Layer (Layer 6) — কেন:",
+          {
+            "sub": "Encryption ও decryption এই layer-এর built-in দায়িত্ব।"
+          },
+          {
+            "sub": "SSL/TLS-এর মতো standard library সহজে ব্যবহার করা যায়।"
+          },
+          "Development Time ও Cost:",
+          {
+            "sub": "Layer 6-এ SSL/TLS বসাতে proven, ready-made library পাওয়া যায়।"
+          },
+          {
+            "sub": "Layer 3/4-এ custom packet-level encryption লিখলে অনেক বেশি সময় ও খরচ লাগত।"
+          },
+          "Software Maintainability:",
+          {
+            "sub": "Separation of concerns — security logic application (Layer 7) ও network (Layer 3) থেকে আলাদা থাকে।"
+          },
+          {
+            "sub": "Encryption algorithm বদলালে বাকি layer-গুলোতে কোনো পরিবর্তন লাগে না।"
+          },
+          "End-to-End Protection:",
+          {
+            "sub": "Application layer voice data তৈরি করার পরপরই Layer 6 সেটা encrypt করে।"
+          },
+          {
+            "sub": "Receiver-এ Layer 6 decrypt করে Application layer-কে দেয়।"
+          },
+          {
+            "sub": "মাঝখানে কেউ packet ধরলেও পড়তে পারে না।"
+          },
+          "কেন Layer 3 বা 4 নয়:",
+          {
+            "sub": "Layer 3 (Network) শুধু routing জানে — payload সুরক্ষার জায়গা এটি নয়।"
+          },
+          {
+            "sub": "Layer 4 (Transport) connection manage করে — content encryption-এর জন্য design করা হয়নি।"
+          },
+          "কেন Layer 7 নয়:",
+          {
+            "sub": "Application layer-এ করলে প্রতিটি application-কে আলাদাভাবে encryption maintain করতে হয়।"
+          },
+          {
+            "sub": "এটি ব্যয়বহুল এবং ভুল হওয়ার আশঙ্কা বেশি।"
+          }
         ],
         "diagram": "OSI MODEL — ENCRYPTION AT LAYER 6\n\n Sender Side                    Receiver Side\n ─────────────────────────────────────────────\n Layer 7 (App)   Voice stream created\n      │\n Layer 6 (Pres)  ← ENCRYPT HERE ───────────── Layer 6 (Pres) → DECRYPT HERE\n      │               ↑                                              ↓\n Layer 5-1       Encrypted voice travels                    Original voice\n                  through network                          restored for app\n\n Anyone intercepting between Layer 6 → Layer 6 sees only encrypted data ✅",
         "mistakes": [
@@ -808,18 +1128,63 @@
           "Host-Specific Routing একটি নির্দিষ্ট IP কে target করে (/32 mask) — নিখুঁত control কিন্তু routing table বড় হয়।"
         ],
         "points": [
-          "Net-Specific Routing: একটি route entry পুরো network cover করে (e.g., /8 to /30)। Routing table ছোট ও manageable। RIP, OSPF এর মতো standard protocols এটি ব্যবহার করে। Individual host এর জন্য আলাদা policy দেওয়া যায় না",
-          "Host-Specific Routing: একটি route entry শুধু একটি IP cover করে (/32 for IPv4)। Granular control — critical host এর জন্য custom path বা security policy দেওয়া যায়। Routing table বিশাল হয়ে যায় large network এ। Most routing protocols host route advertise করে না — manually configure করতে হয়",
-          "Net-Specific Advantage: Scalable, less memory, standard, easy management",
-          "Net-Specific Disadvantage: No per-host control, no per-host security/optimization",
-          "Host-Specific Advantage: Granular control, redundant path for critical servers, per-host security policy",
-          "Host-Specific Disadvantage: Huge routing table, high overhead, static configuration, not scalable",
-          "ব্যবহারিক প্রয়োগ:",
+          "Net-Specific Routing — নীতি:",
           {
-            "sub": "Host-specific route বাস্তবে কোথায়: একটি নির্দিষ্ট critical server কে আলাদা বা redundant path দিয়ে পাঠাতে, কোনো একটি IP এর traffic blackhole (null route) করে আক্রমণ ঠেকাতে, বা troubleshooting এ সাময়িকভাবে এক host এর path বদলাতে।"
+            "sub": "একটি route entry পুরো network/subnet cover করে (যেমন /8 থেকে /30)।"
           },
           {
-            "sub": "বাকি প্রায় সব ক্ষেত্রে net-specific route ই ব্যবহৃত হয় — routing table ছোট ও দ্রুত রাখতে internet ও এন্টারপ্রাইজ দুই জায়গাতেই এটিই আদর্শ।"
+            "sub": "Routing table ছোট ও সহজে manage করার মতো থাকে।"
+          },
+          {
+            "sub": "RIP, OSPF-এর মতো standard protocol এটিই ব্যবহার করে।"
+          },
+          {
+            "sub": "একক host-এর জন্য আলাদা policy দেওয়া যায় না।"
+          },
+          "Host-Specific Routing — নীতি:",
+          {
+            "sub": "একটি route entry শুধু একটি IP cover করে (IPv4-তে /32 mask)।"
+          },
+          {
+            "sub": "Granular control পাওয়া যায় — critical host-এর জন্য custom path বা security policy দেওয়া যায়।"
+          },
+          {
+            "sub": "বড় network-এ routing table বিশাল হয়ে যায়।"
+          },
+          {
+            "sub": "বেশিরভাগ routing protocol host route advertise করে না — manually configure করতে হয়।"
+          },
+          "Net-Specific — সুবিধা:",
+          {
+            "sub": "Scalable, কম memory লাগে, standard, management সহজ।"
+          },
+          "Net-Specific — অসুবিধা:",
+          {
+            "sub": "Per-host control নেই, per-host security বা optimization দেওয়া যায় না।"
+          },
+          "Host-Specific — সুবিধা:",
+          {
+            "sub": "Granular control, critical server-এর জন্য redundant path, per-host security policy।"
+          },
+          "Host-Specific — অসুবিধা:",
+          {
+            "sub": "Routing table বিশাল হয়, overhead বেশি, static configuration লাগে, scalable নয়।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "একটি নির্দিষ্ট critical server-কে আলাদা বা redundant path দিয়ে পাঠাতে host-specific route ব্যবহার হয়।"
+          },
+          {
+            "sub": "কোনো একটি IP-র traffic blackhole (null route) করে আক্রমণ ঠেকাতেও এটি ব্যবহৃত হয়।"
+          },
+          {
+            "sub": "Troubleshooting-এ সাময়িকভাবে এক host-এর path বদলাতেও কাজে লাগে।"
+          },
+          {
+            "sub": "বাকি প্রায় সব ক্ষেত্রে net-specific route-ই ব্যবহৃত হয়।"
+          },
+          {
+            "sub": "Routing table ছোট ও দ্রুত রাখতে internet ও এন্টারপ্রাইজ দুই জায়গাতেই এটিই আদর্শ।"
           }
         ],
         "table": {
@@ -883,12 +1248,60 @@
           "একটি কার্যকর DR plan এ RPO/RTO নির্ধারণ, data replication, redundancy, regular testing ও backup policy থাকে।"
         ],
         "points": [
-          "DRP কী? Disaster Recovery Plan — প্রাকৃতিক বা মানবসৃষ্ট দুর্যোগের পর IT system ও data restore করার নির্দিষ্ট পদ্ধতি। BCP (Business Continuity Plan) নিশ্চিত করে দুর্যোগের সময়ও business চালু থাকে",
-          "RPO & RTO নির্ধারণ: RPO (Recovery Point Objective) = কতটুকু data loss acceptable (e.g., max 1 hour)। RTO (Recovery Time Objective) = কত দ্রুত system restore হতে হবে (e.g., 4 hours এর মধ্যে)",
-          "Data Replication: Primary DC থেকে DR site এ real-time বা near-real-time data sync। Synchronous replication (zero data loss, costly) বা Asynchronous (কিছু data loss হতে পারে, সস্তা)",
-          "Redundancy Strategy: Network redundancy (dual ISP, redundant switches/routers)। Server redundancy (clustering, failover)। Power redundancy (UPS + diesel generator)",
-          "Regular Testing: প্রতি ৬ মাসে disaster drill — failover test করে দেখা system ঠিকমতো recover হচ্ছে কি না। Tabletop exercise ও live failover test দুটোই করা",
-          "Backup Policy: 3-2-1 Rule — 3 copies, 2 different media, 1 off-site। Regular off-site backup (cloud বা remote DC)। Backup integrity test করা"
+          "DRP কী:",
+          {
+            "sub": "Disaster Recovery Plan — প্রাকৃতিক বা মানবসৃষ্ট দুর্যোগের পর IT system ও data restore করার নির্দিষ্ট পদ্ধতি।"
+          },
+          {
+            "sub": "BCP (Business Continuity Plan) আলাদা জিনিস — সেটি নিশ্চিত করে দুর্যোগের সময়ও business চালু থাকে।"
+          },
+          "ধাপ ১ — RPO ও RTO নির্ধারণ:",
+          {
+            "sub": "RPO (Recovery Point Objective) = কতটুকু data loss মেনে নেওয়া যাবে (যেমন সর্বোচ্চ 1 ঘণ্টা)।"
+          },
+          {
+            "sub": "RTO (Recovery Time Objective) = কত দ্রুত system ফিরিয়ে আনতে হবে (যেমন 4 ঘণ্টার মধ্যে)।"
+          },
+          "ধাপ ২ — Data Replication:",
+          {
+            "sub": "Primary DC থেকে DR site-এ real-time বা near-real-time data sync রাখা।"
+          },
+          {
+            "sub": "Synchronous replication: zero data loss, কিন্তু ব্যয়বহুল।"
+          },
+          {
+            "sub": "Asynchronous replication: কিছু data loss হতে পারে, কিন্তু সস্তা।"
+          },
+          "ধাপ ৩ — Redundancy Strategy:",
+          {
+            "sub": "Network redundancy: dual ISP, redundant switch ও router।"
+          },
+          {
+            "sub": "Server redundancy: clustering ও failover।"
+          },
+          {
+            "sub": "Power redundancy: UPS-এর সাথে diesel generator।"
+          },
+          "ধাপ ৪ — Regular Testing:",
+          {
+            "sub": "প্রতি ৬ মাসে disaster drill করে failover test করা।"
+          },
+          {
+            "sub": "দেখতে হবে system সত্যিই ঠিকমতো recover হচ্ছে কি না।"
+          },
+          {
+            "sub": "Tabletop exercise ও live failover test — দুটোই করা দরকার।"
+          },
+          "ধাপ ৫ — Backup Policy:",
+          {
+            "sub": "3-2-1 Rule মানা: 3টি copy, 2টি ভিন্ন media, 1টি off-site।"
+          },
+          {
+            "sub": "নিয়মিত off-site backup রাখা (cloud বা remote DC-তে)।"
+          },
+          {
+            "sub": "Backup যে সত্যিই restore হয় তা integrity test করে যাচাই করা।"
+          }
         ],
         "diagram": "PRIMARY DATA CENTER                    DR SITE\n─────────────────────────────────────────────────────\n┌─────────────────┐   Real-time/Near   ┌─────────────┐\n│  Production     │ ──replication────→  │  Standby    │\n│  Servers        │                     │  Servers    │\n│  Storage        │ ──────────────────→  │  Storage    │\n└─────────────────┘                     └─────────────┘\n        │                                      │\n  UPS + Generator                        UPS + Generator\n        │                                      │\n    ISP Link 1                            ISP Link 2\n\nDISASTER OCCURS ↓\n Primary DC goes down\n DNS/Load Balancer redirects to DR Site\n DR Site becomes active within RTO window ✅",
         "table": {
@@ -951,11 +1364,47 @@
           "Flow: Internet Users → Router/ISP → NGFW (filter) → Web/DNS/Mail Server"
         ],
         "points": [
-          "External Users: Internet থেকে bank এর website বা services access করার চেষ্টা করে",
-          "Router/ISP Gateway: ISP এর router প্রথমে traffic receive করে — basic routing করে NGFW এ পাঠায়",
-          "Next-Generation Firewall (NGFW): Traffic Filtering ও Security Rule Checking করে। Deep Packet Inspection (DPI) দিয়ে malicious traffic ধরে। Application-level control — নির্দিষ্ট app বা protocol block করতে পারে। IPS, Anti-virus, Sandboxing built-in",
-          "Internal Servers (behind NGFW): Web Server, DNS Server, Mail Server — শুধু NGFW-approved traffic পৌঁছায়। DMZ zone এ রাখা হয় web-facing servers — internal network থেকেও আলাদা",
-          "এই design এর সুবিধা: Unauthorized traffic automatically block। Single choke point এ সব security enforce। Layer-wise defense (Defense in Depth)"
+          "ধাপ ১ — External Users:",
+          {
+            "sub": "Internet থেকে ব্যবহারকারীরা bank-এর website বা service access করার চেষ্টা করে।"
+          },
+          "ধাপ ২ — Router / ISP Gateway:",
+          {
+            "sub": "ISP-র router প্রথমে traffic receive করে।"
+          },
+          {
+            "sub": "সে শুধু basic routing করে traffic-কে NGFW-তে পাঠিয়ে দেয়।"
+          },
+          "ধাপ ৩ — Next-Generation Firewall (NGFW):",
+          {
+            "sub": "Traffic filtering ও security rule checking এখানেই হয়।"
+          },
+          {
+            "sub": "Deep Packet Inspection (DPI) দিয়ে malicious traffic ধরে ফেলে।"
+          },
+          {
+            "sub": "Application-level control আছে — নির্দিষ্ট app বা protocol block করতে পারে।"
+          },
+          {
+            "sub": "IPS, Anti-virus ও Sandboxing এতে built-in থাকে।"
+          },
+          "ধাপ ৪ — Internal Servers (NGFW-এর পেছনে):",
+          {
+            "sub": "Web Server, DNS Server ও Mail Server — এদের কাছে শুধু NGFW-অনুমোদিত traffic পৌঁছায়।"
+          },
+          {
+            "sub": "Web-facing server-গুলো DMZ zone-এ রাখা হয়, যা internal network থেকেও আলাদা।"
+          },
+          "এই design-এর সুবিধা:",
+          {
+            "sub": "Unauthorized traffic স্বয়ংক্রিয়ভাবে block হয়ে যায়।"
+          },
+          {
+            "sub": "একটিই choke point-এ সব security enforce করা যায়।"
+          },
+          {
+            "sub": "Layer-wise defense তৈরি হয় — Defense in Depth।"
+          }
         ],
         "diagram": "[External Internet Users / Clients]\n              │\n              ▼\n   [Router / ISP Gateway]\n              │\n              ▼\n ┌────────────────────────────────┐\n │  Next-Generation Firewall      │\n │  (NGFW)                        │\n │  • Deep Packet Inspection      │\n │  • App Control (block FB etc.) │\n │  • IPS + Anti-virus            │\n │  • Security Rule Checking      │\n └───────────┬────────────────────┘\n             │ Authorized Traffic Only\n      ┌──────┼──────┐\n      ▼      ▼      ▼\n [Web    [DNS    [Mail\n Server] Server] Server]\n  (DMZ Zone — isolated from internal LAN)\n              │\n              ▼\n    [Internal Bank Network / DB Servers]\n    (only accessible from DMZ, not internet)",
         "mistakes": [
@@ -988,13 +1437,73 @@
           "Strategy: Assessment → Cloud Model Selection → Migration Path (6Rs) → Pilot → Data Migration → Cut-over।"
         ],
         "points": [
-          "Assessment & Inventory: বর্তমান DC তে কী কী application, server, database আছে তার inventory তৈরি। কোনটি cloud-ready, কোনটি legacy — classify করা",
-          "Cloud Model Selection: Public Cloud (AWS/Azure) — cost-effective, scalable। Private Cloud — data sovereignty, security। Hybrid Cloud — bank এর মতো sensitive industry এর জন্য best: critical data private, rest public",
-          "Migration Path — 6Rs: Rehost (Lift & Shift) — যেমন আছে তেমন cloud এ তোলা। Replatform — OS বা DB upgrade করে cloud optimize। Refactor — cloud-native architecture এ rebuild। Retire — unused apps বন্ধ। Retain — কিছু on-premise রাখা। Repurchase — SaaS solution এ switch",
-          "Pilot Phase: কম গুরুত্বপূর্ণ application প্রথমে cloud এ test। Production load simulate করে performance দেখা",
-          "Data Migration: Secure channel (VPN / AWS Direct Connect) দিয়ে data transfer। Downtime minimize করতে incremental migration",
-          "Synchronization: Physical ও cloud data sync রাখা migration চলাকালীন। Consistency check করা",
-          "Cut-over & Monitoring: সম্পূর্ণ traffic cloud এ shift। Performance, latency, cost — সব monitor। Rollback plan ready রাখা"
+          "ধাপ ১ — Assessment ও Inventory:",
+          {
+            "sub": "বর্তমান DC-তে কী কী application, server ও database আছে তার inventory তৈরি করা।"
+          },
+          {
+            "sub": "কোনটি cloud-ready আর কোনটি legacy — সেভাবে classify করা।"
+          },
+          "ধাপ ২ — Cloud Model Selection:",
+          {
+            "sub": "Public Cloud (AWS/Azure): cost-effective ও scalable।"
+          },
+          {
+            "sub": "Private Cloud: data sovereignty ও বাড়তি security দেয়।"
+          },
+          {
+            "sub": "Hybrid Cloud: ব্যাংকের মতো sensitive industry-র জন্য সবচেয়ে ভালো — critical data private-এ, বাকিটা public-এ।"
+          },
+          "ধাপ ৩ — Migration Path (6Rs):",
+          {
+            "sub": "Rehost (Lift & Shift): যেমন আছে তেমনই cloud-এ তুলে দেওয়া।"
+          },
+          {
+            "sub": "Replatform: OS বা DB upgrade করে cloud-এর জন্য optimize করা।"
+          },
+          {
+            "sub": "Refactor: cloud-native architecture-এ নতুন করে বানানো।"
+          },
+          {
+            "sub": "Retire: যেগুলো আর ব্যবহার হয় না সেগুলো বন্ধ করে দেওয়া।"
+          },
+          {
+            "sub": "Retain: কিছু জিনিস on-premise-এ রেখে দেওয়া।"
+          },
+          {
+            "sub": "Repurchase: SaaS solution-এ switch করা।"
+          },
+          "ধাপ ৪ — Pilot Phase:",
+          {
+            "sub": "কম গুরুত্বপূর্ণ application প্রথমে cloud-এ নিয়ে test করা।"
+          },
+          {
+            "sub": "Production load simulate করে performance যাচাই করা।"
+          },
+          "ধাপ ৫ — Data Migration:",
+          {
+            "sub": "Secure channel দিয়ে data transfer করা — VPN বা AWS Direct Connect।"
+          },
+          {
+            "sub": "Downtime কমাতে incremental migration ব্যবহার করা।"
+          },
+          "ধাপ ৬ — Synchronization:",
+          {
+            "sub": "Migration চলাকালীন physical ও cloud data sync রাখা।"
+          },
+          {
+            "sub": "দুই দিকের data মিলছে কি না তা consistency check করা।"
+          },
+          "ধাপ ৭ — Cut-over ও Monitoring:",
+          {
+            "sub": "সম্পূর্ণ traffic cloud-এ shift করে দেওয়া।"
+          },
+          {
+            "sub": "Performance, latency ও cost — সবকিছু monitor করা।"
+          },
+          {
+            "sub": "Rollback plan প্রস্তুত রাখা, যাতে দরকারে ফিরে আসা যায়।"
+          }
         ],
         "table": {
           "headers": [
@@ -1056,10 +1565,58 @@
           "SATA সাশ্রয়ী — backup, archive বা consumer-grade storage এর জন্য ঠিক আছে।"
         ],
         "points": [
-          "SAS (Serial Attached SCSI): Speed অনেক বেশি — 12Gbps বা তার বেশি। Dual Port support — একটি path fail হলে অন্যটি দিয়ে data read চলে। 24/7 continuous operation এর জন্য design করা। Highly reliable, MTBF (Mean Time Between Failure) অনেক বেশি। দাম বেশি",
-          "SATA (Serial ATA): Speed তুলনামূলক কম — 6Gbps। Single port — path fail মানে data access বন্ধ। Consumer/desktop grade — 24/7 heavy use এর জন্য নয়। সাশ্রয়ী। Backup ও archive storage এর জন্য উপযুক্ত",
-          "Server এর জন্য SAS কেন সেরা? Dual port = redundancy, failover। High speed = fast transaction processing। Enterprise reliability = data center এর uptime requirement পূরণ করে। Banking ও critical system এ SAS mandatory",
-          "SATA কখন ব্যবহার করবে? Backup storage, cold archive, less-critical data যেখানে cost priority"
+          "SAS (Serial Attached SCSI):",
+          {
+            "sub": "Speed অনেক বেশি — 12Gbps বা তার বেশি।"
+          },
+          {
+            "sub": "Dual Port support আছে — একটি path fail হলে অন্যটি দিয়ে data read চলতে থাকে।"
+          },
+          {
+            "sub": "24/7 একটানা চালানোর জন্য design করা।"
+          },
+          {
+            "sub": "Highly reliable — MTBF (Mean Time Between Failure) অনেক বেশি।"
+          },
+          {
+            "sub": "দাম বেশি।"
+          },
+          "SATA (Serial ATA):",
+          {
+            "sub": "Speed তুলনামূলক কম — 6Gbps।"
+          },
+          {
+            "sub": "Single port — path fail হলে data access একেবারে বন্ধ হয়ে যায়।"
+          },
+          {
+            "sub": "Consumer/desktop grade — 24/7 heavy use-এর জন্য নয়।"
+          },
+          {
+            "sub": "দাম সাশ্রয়ী।"
+          },
+          {
+            "sub": "Backup ও archive storage-এর জন্য উপযুক্ত।"
+          },
+          "Server-এর জন্য SAS কেন সেরা:",
+          {
+            "sub": "Dual port মানে redundancy ও failover — একটি path গেলেও সেবা চলে।"
+          },
+          {
+            "sub": "High speed মানে দ্রুত transaction processing।"
+          },
+          {
+            "sub": "Enterprise reliability data center-এর uptime requirement পূরণ করে।"
+          },
+          {
+            "sub": "Banking ও critical system-এ SAS কার্যত বাধ্যতামূলক।"
+          },
+          "SATA কখন ব্যবহার করবে:",
+          {
+            "sub": "Backup storage ও cold archive-এ।"
+          },
+          {
+            "sub": "কম গুরুত্বপূর্ণ data-তে, যেখানে খরচই মূল বিবেচনা।"
+          }
         ],
         "table": {
           "headers": [
@@ -1122,12 +1679,60 @@
           "Server boot এর সময় hardware initialize করা, boot order নির্ধারণ, RAID config, power management ও virtualization enable — সব BIOS এ হয়।"
         ],
         "points": [
-          "BIOS কী? Motherboard এ stored firmware। Hardware ও Operating System এর মধ্যে সেতু। আধুনিক server এ UEFI (Unified Extensible Firmware Interface) — BIOS এর advanced version। Server চালু হওয়ার সময় সবার আগে BIOS execute হয়",
-          "Hardware Initialization — POST (Power-On Self-Test): Server চালু হলে BIOS প্রথমেই CPU, RAM, Storage, NIC check করে। কোনো hardware fault থাকলে beep code বা error message দেখায় ও boot আটকে দেয়। এটি hardware maintenance এ সবচেয়ে গুরুত্বপূর্ণ diagnostic tool",
-          "Boot Order Configuration: Server কোথা থেকে OS load করবে — HDD, SSD, Network (PXE Boot), বা USB — তা BIOS এ set করা হয়। PXE Boot দিয়ে network থেকে OS deploy করা যায় (diskless server)",
-          "RAID Configuration: অনেক server এ onboard RAID controller BIOS থেকে configure করতে হয়। RAID 1, 5, 10 ইত্যাদি disk redundancy BIOS/UEFI RAID setup এ define হয়",
-          "Power Management: Power cut এর পর server automatically চালু হবে কি না (Power On AC Restore) — BIOS থেকে set করা হয়। Data center এ UPS restore এর পর auto-boot দরকার",
-          "Virtualization Support: Intel VT-x বা AMD-V virtualization feature BIOS থেকে enable করতে হয়। VMware, Hyper-V চালাতে এটি mandatory"
+          "BIOS কী:",
+          {
+            "sub": "Motherboard-এ stored একটি firmware।"
+          },
+          {
+            "sub": "Hardware ও Operating System-এর মধ্যে সেতু হিসেবে কাজ করে।"
+          },
+          {
+            "sub": "আধুনিক server-এ এর advanced রূপ UEFI (Unified Extensible Firmware Interface)।"
+          },
+          {
+            "sub": "Server চালু হওয়ার সময় সবার আগে BIOS-ই execute হয়।"
+          },
+          "Hardware Initialization — POST (Power-On Self-Test):",
+          {
+            "sub": "Server চালু হলে BIOS প্রথমেই CPU, RAM, Storage ও NIC পরীক্ষা করে।"
+          },
+          {
+            "sub": "কোনো hardware fault থাকলে beep code বা error message দেখায়।"
+          },
+          {
+            "sub": "ত্রুটি থাকলে সে boot প্রক্রিয়া সেখানেই আটকে দেয়।"
+          },
+          {
+            "sub": "Hardware maintenance-এ এটাই সবচেয়ে গুরুত্বপূর্ণ diagnostic tool।"
+          },
+          "Boot Order Configuration:",
+          {
+            "sub": "Server কোথা থেকে OS load করবে তা BIOS-এ ঠিক করা হয় — HDD, SSD, Network (PXE Boot) বা USB।"
+          },
+          {
+            "sub": "PXE Boot দিয়ে network থেকে OS deploy করা যায়, তাই diskless server চালানো সম্ভব।"
+          },
+          "RAID Configuration:",
+          {
+            "sub": "অনেক server-এ onboard RAID controller BIOS থেকেই configure করতে হয়।"
+          },
+          {
+            "sub": "RAID 1, 5, 10 ইত্যাদি disk redundancy BIOS/UEFI-র RAID setup-এ define হয়।"
+          },
+          "Power Management:",
+          {
+            "sub": "Power cut-এর পর server নিজে চালু হবে কি না (Power On AC Restore) তা BIOS থেকে ঠিক করা হয়।"
+          },
+          {
+            "sub": "Data center-এ UPS restore হওয়ার পর auto-boot দরকার হয়, তাই এই setting গুরুত্বপূর্ণ।"
+          },
+          "Virtualization Support:",
+          {
+            "sub": "Intel VT-x বা AMD-V feature BIOS থেকে enable করতে হয়।"
+          },
+          {
+            "sub": "VMware বা Hyper-V চালাতে এটি বাধ্যতামূলক।"
+          }
         ],
         "table": {
           "headers": [
@@ -1184,12 +1789,51 @@
           "কারণ: দ্রুত load নেয়, দীর্ঘমেয়াদে fuel store করা যায়, initial cost কম, এবং banking standard এ Standby diesel generator recommended।"
         ],
         "points": [
-          "পছন্দ: Diesel Generator (ডিজেল জেনারেটর)",
-          "Fuel (জ্বালানি): ডিজেল দীর্ঘদিন store করা যায়। দুর্যোগের সময় gas line বিচ্ছিন্ন হলেও diesel থাকে। Natural gas line এর উপর নির্ভরশীলতা নেই",
-          "Cost (খরচ): Natural gas generator এর চেয়ে initial purchase cost কম। Maintenance cost acceptable। ROI ভালো — দীর্ঘমেয়াদে টেকসই",
-          "Energy/Efficiency (শক্তি): Diesel generator সাধারণত 10-15 সেকেন্ডের মধ্যে full load নিতে পারে। Data center cooling system বন্ধ হওয়ার আগেই backup power আসে। High power output ঘনত্ব",
-          "Banking Standard: Banking data center এ 'Standby' rating এর diesel generator ব্যবহার করা হয়। Tier III ও Tier IV data center এ N+1 বা 2N redundancy — একাধিক generator রাখা হয়",
-          "UPS সাথে Integration: Generator চালু হওয়ার আগের 10-15 second gap UPS (Uninterruptible Power Supply) cover করে। Generator + UPS = zero-downtime power transition"
+          "পছন্দ: Diesel Generator (ডিজেল জেনারেটর)।",
+          "Fuel (জ্বালানি) বিবেচনা:",
+          {
+            "sub": "ডিজেল দীর্ঘদিন store করে রাখা যায়।"
+          },
+          {
+            "sub": "দুর্যোগের সময় gas line বিচ্ছিন্ন হলেও মজুত diesel দিয়ে চালানো যায়।"
+          },
+          {
+            "sub": "Natural gas line-এর উপর নির্ভরশীলতা থাকে না।"
+          },
+          "Cost (খরচ) বিবেচনা:",
+          {
+            "sub": "Natural gas generator-এর চেয়ে initial purchase cost কম।"
+          },
+          {
+            "sub": "Maintenance cost গ্রহণযোগ্য মাত্রায় থাকে।"
+          },
+          {
+            "sub": "ROI ভালো — দীর্ঘমেয়াদে টেকসই।"
+          },
+          "Energy / Efficiency বিবেচনা:",
+          {
+            "sub": "Diesel generator সাধারণত 10-15 সেকেন্ডের মধ্যে full load নিতে পারে।"
+          },
+          {
+            "sub": "ফলে data center-এর cooling system বন্ধ হওয়ার আগেই backup power চলে আসে।"
+          },
+          {
+            "sub": "Power output ঘনত্ব বেশি।"
+          },
+          "Banking Standard:",
+          {
+            "sub": "Banking data center-এ 'Standby' rating-এর diesel generator ব্যবহার করা হয়।"
+          },
+          {
+            "sub": "Tier III ও Tier IV data center-এ N+1 বা 2N redundancy রাখা হয় — অর্থাৎ একাধিক generator।"
+          },
+          "UPS-এর সাথে Integration:",
+          {
+            "sub": "Generator চালু হতে যে 10-15 সেকেন্ড লাগে, সেই ফাঁকটা UPS cover করে।"
+          },
+          {
+            "sub": "Generator + UPS মিলে zero-downtime power transition দেয়।"
+          }
         ],
         "table": {
           "headers": [
@@ -1252,13 +1896,85 @@
           "এটি private বা incompatible নেটওয়ার্ককে public internet-এর উপর দিয়ে securely সংযুক্ত করতে ব্যবহৃত হয়।"
         ],
         "points": [
-          "Core Concept — Encapsulation:\nOriginal packet (inner packet) কে আরেকটি protocol-এর header দিয়ে মুড়িয়ে দেওয়া হয়।\nNetwork-এ transit হওয়ার সময় মাঝের router গুলো শুধু outer header দেখে — inner packet সম্পর্কে জানে না।\nDestination-এ পৌঁছে outer header খুলে ফেলা হয় (decapsulation) এবং original packet পাওয়া যায়।",
-          "Step-by-Step Process:\nStep 1 — Sender original data packet তৈরি করে (e.g. private IP: 192.168.1.10 থেকে 10.0.0.5 এ)।\nStep 2 — Tunnel endpoint (e.g. VPN client) এই packet কে encrypt করে নতুন outer IP header যোগ করে (public IP ব্যবহার করে)।\nStep 3 — Encapsulated packet public internet-এ পাঠানো হয়।\nStep 4 — Destination tunnel endpoint outer header সরায়, decrypt করে, original packet পায়।\nStep 5 — Original packet তার গন্তব্যে পৌঁছে দেওয়া হয়।",
-          "Common Tunneling Protocols:\nGRE (Generic Routing Encapsulation) — Layer 3 tunneling, encryption নেই, multicast support আছে।\nIPsec — Layer 3, strong encryption (AES), enterprise VPN-এ বহুল ব্যবহৃত।\nSSH Tunneling — Application layer port forwarding, encrypted channel তৈরি করে।\nSSL/TLS VPN — HTTPS port (443) ব্যবহার করে, firewall bypass সহজ।\nL2TP (Layer 2 Tunneling Protocol) — Layer 2 tunneling, সাধারণত IPsec এর সাথে ব্যবহৃত হয়।",
-          "Application 1 — VPN (Virtual Private Network):\nRemote employee বাড়ি থেকে company network-এ secure access পায়।\nPublic internet-এর উপর দিয়ে encrypted tunnel তৈরি হয়।\nমনে হয় employee office-এ বসেই কাজ করছে।",
-          "Application 2 — Bypassing Firewall/Censorship:\nSSH tunneling দিয়ে blocked port-এর traffic অন্য allowed port (e.g. 443) দিয়ে পাঠানো যায়।\nGeo-restricted content access করতে VPN tunnel ব্যবহার হয়।",
-          "Application 3 — Connecting Different Networks:\nদুটি আলাদা private network কে public internet-এর উপর দিয়ে একটি নেটওয়ার্কের মতো connect করা (Site-to-Site VPN)।\nIPv6 traffic কে IPv4 network-এর উপর দিয়ে পাঠানো (6in4 tunneling)।",
-          "Application 4 — Cloud & Data Center:\nCloud server এবং on-premise নেটওয়ার্কের মধ্যে secure tunnel।\nKubernetes cluster গুলোর মধ্যে encrypted communication।"
+          "মূল ধারণা — Encapsulation:",
+          {
+            "sub": "Original packet (inner packet)-কে আরেকটি protocol-এর header দিয়ে মুড়িয়ে দেওয়া হয়।"
+          },
+          {
+            "sub": "Transit-এর সময় মাঝের router-গুলো শুধু outer header দেখে।"
+          },
+          {
+            "sub": "Inner packet-এ কী আছে তারা জানেই না।"
+          },
+          {
+            "sub": "Destination-এ পৌঁছে outer header খুলে ফেলা হয় (decapsulation) এবং original packet পাওয়া যায়।"
+          },
+          "ধাপে ধাপে প্রক্রিয়া:",
+          {
+            "sub": "Step 1: Sender original data packet তৈরি করে (যেমন private IP 192.168.1.10 থেকে 10.0.0.5-এ)।"
+          },
+          {
+            "sub": "Step 2: Tunnel endpoint (যেমন VPN client) সেই packet encrypt করে।"
+          },
+          {
+            "sub": "Step 3: তার উপর public IP দিয়ে নতুন outer IP header যোগ করা হয়।"
+          },
+          {
+            "sub": "Step 4: Encapsulated packet public internet দিয়ে পাঠানো হয়।"
+          },
+          {
+            "sub": "Step 5: Destination tunnel endpoint outer header সরিয়ে decrypt করে original packet উদ্ধার করে।"
+          },
+          {
+            "sub": "Step 6: Original packet তার আসল গন্তব্যে পৌঁছে দেওয়া হয়।"
+          },
+          "প্রচলিত Tunneling Protocol:",
+          {
+            "sub": "GRE (Generic Routing Encapsulation): Layer 3 tunneling, encryption নেই, multicast support আছে।"
+          },
+          {
+            "sub": "IPsec: Layer 3, শক্তিশালী encryption (AES), enterprise VPN-এ বহুল ব্যবহৃত।"
+          },
+          {
+            "sub": "SSH Tunneling: Application layer port forwarding, encrypted channel তৈরি করে।"
+          },
+          {
+            "sub": "SSL/TLS VPN: HTTPS port (443) ব্যবহার করে, তাই firewall পার হওয়া সহজ।"
+          },
+          {
+            "sub": "L2TP (Layer 2 Tunneling Protocol): Layer 2 tunneling, সাধারণত IPsec-এর সাথে জুড়ে ব্যবহার হয়।"
+          },
+          "প্রয়োগ ১ — VPN (Virtual Private Network):",
+          {
+            "sub": "Remote employee বাড়ি থেকে company network-এ secure access পায়।"
+          },
+          {
+            "sub": "Public internet-এর উপর দিয়েই encrypted tunnel তৈরি হয়।"
+          },
+          {
+            "sub": "ফলে মনে হয় employee অফিসে বসেই কাজ করছে।"
+          },
+          "প্রয়োগ ২ — Firewall বা Censorship পার হওয়া:",
+          {
+            "sub": "SSH tunneling দিয়ে blocked port-এর traffic অন্য allowed port (যেমন 443) দিয়ে পাঠানো যায়।"
+          },
+          {
+            "sub": "Geo-restricted content access করতে VPN tunnel ব্যবহার হয়।"
+          },
+          "প্রয়োগ ৩ — ভিন্ন network জোড়া লাগানো:",
+          {
+            "sub": "দুটি আলাদা private network-কে public internet-এর উপর দিয়ে একটিই network-এর মতো যুক্ত করা যায় (Site-to-Site VPN)।"
+          },
+          {
+            "sub": "IPv6 traffic-কে IPv4 network-এর উপর দিয়ে পাঠানো যায় (6in4 tunneling)।"
+          },
+          "প্রয়োগ ৪ — Cloud ও Data Center:",
+          {
+            "sub": "Cloud server ও on-premise network-এর মধ্যে secure tunnel তৈরি করা হয়।"
+          },
+          {
+            "sub": "Kubernetes cluster-গুলোর মধ্যে encrypted communication-এও এটি ব্যবহৃত হয়।"
+          }
         ],
         "diagram": "TCP/IP TUNNELING — HOW IT WORKS:\n\n Original Packet:\n ┌─────────────────────────────────┐\n │ Src: 192.168.1.10  Dst: 10.0.0.5│  ← Private IPs\n │         DATA PAYLOAD             │\n └─────────────────────────────────┘\n              ↓ Encapsulate\n Tunneled Packet (sent over internet):\n ┌──────────────────────────────────────────────┐\n │ Outer IP: Src: 203.0.113.1  Dst: 198.51.100.1│ ← Public IPs\n │ ┌──────────────────────────────────────────┐  │\n │ │ Tunnel Header (GRE/IPsec/etc.)           │  │\n │ │ ┌──────────────────────────────────────┐ │  │\n │ │ │ Inner IP: 192.168.1.10 → 10.0.0.5   │ │  │\n │ │ │         DATA PAYLOAD                  │ │  │\n │ │ └──────────────────────────────────────┘ │  │\n │ └──────────────────────────────────────────┘  │\n └──────────────────────────────────────────────┘\n              ↓ Decapsulate at destination\n Original Packet restored → forwarded to 10.0.0.5\n\n VPN USE CASE:\n Home PC ──[encrypted tunnel]──→ VPN Server ──→ Company Network\n (192.168.1.10)    Public Internet   (203.0.113.1)    (10.0.0.x)",
         "mnemonic": "Tunneling = Envelope in Envelope। চিঠির মতো ভাবো: ভেতরের চিঠি (private packet) একটি বড় খামে (public IP) ভরে পাঠাও — ডাকঘর (internet) শুধু বড় খাম দেখে, ভেতরে কী আছে জানে না।"
@@ -1283,11 +1999,50 @@
           "Process: LSA → LSDB তৈরি → SPF Algorithm → Routing Table update → Packet Forward।"
         ],
         "points": [
-          "Step 1 — LSA (Link-State Advertisement): প্রতিটি router তার neighbor router খুঁজে বের করে। নিজের connection এর speed ও cost তথ্য LSA আকারে সব router এ broadcast করে। Example: Router A জানায় Router B এর সাথে তার 1Gbps link আছে",
-          "Step 2 — LSDB (Link-State Database): সব router এর LSA মিলে পুরো network এর একটি complete map তৈরি হয়। প্রতিটি router এই একই map রাখে — সবার picture identical। Example: পুরো শহরের সব রাস্তার একটি common ম্যাপ",
-          "Step 3 — SPF Algorithm (Dijkstra's): LSDB থেকে Dijkstra's Algorithm চালিয়ে সবচেয়ে কম cost এর path বের করে। Cost = bandwidth এর inverse (বেশি bandwidth = কম cost)। Example: ঢাকা থেকে চট্টগ্রাম — সবচেয়ে কম যানজটের রাস্তা",
-          "Step 4 — Routing Table Update: SPF algorithm এ পাওয়া best path গুলো Routing Table এ save হয়। প্রতিটি destination network এর জন্য next-hop router লেখা থাকে",
-          "Step 5 — Packet Forwarding: Packet আসলে destination IP দেখে Routing Table থেকে next-hop বের করে। সঠিক interface দিয়ে packet forward করে দেয়"
+          "Step 1 — LSA (Link-State Advertisement):",
+          {
+            "sub": "প্রতিটি router প্রথমে তার neighbor router খুঁজে বের করে।"
+          },
+          {
+            "sub": "নিজের connection-এর speed ও cost তথ্য LSA আকারে সব router-এ broadcast করে।"
+          },
+          {
+            "sub": "উদাহরণ: Router A জানায় Router B-র সাথে তার 1Gbps link আছে।"
+          },
+          "Step 2 — LSDB (Link-State Database):",
+          {
+            "sub": "সব router-এর LSA মিলে পুরো network-এর একটি complete map তৈরি হয়।"
+          },
+          {
+            "sub": "প্রতিটি router এই একই map রাখে — সবার কাছে ছবিটা হুবহু এক।"
+          },
+          {
+            "sub": "উদাহরণ: পুরো শহরের সব রাস্তার একটি common মানচিত্র।"
+          },
+          "Step 3 — SPF Algorithm (Dijkstra's):",
+          {
+            "sub": "LSDB থেকে Dijkstra's Algorithm চালিয়ে সবচেয়ে কম cost-এর path বের করা হয়।"
+          },
+          {
+            "sub": "Cost = bandwidth-এর inverse — বেশি bandwidth মানে কম cost।"
+          },
+          {
+            "sub": "উদাহরণ: ঢাকা থেকে চট্টগ্রাম — সবচেয়ে কম যানজটের রাস্তা বেছে নেওয়া।"
+          },
+          "Step 4 — Routing Table Update:",
+          {
+            "sub": "SPF algorithm-এ পাওয়া best path গুলো Routing Table-এ save হয়।"
+          },
+          {
+            "sub": "প্রতিটি destination network-এর বিপরীতে next-hop router লেখা থাকে।"
+          },
+          "Step 5 — Packet Forwarding:",
+          {
+            "sub": "Packet এলে router destination IP দেখে Routing Table থেকে next-hop বের করে।"
+          },
+          {
+            "sub": "তারপর সঠিক interface দিয়ে packet forward করে দেয়।"
+          }
         ],
         "diagram": "OSPF PROCESS:\n\n Step 1: LSA Broadcast\n ┌──────┐   LSA   ┌──────┐   LSA   ┌──────┐\n │  R1  │ ──────→ │  R2  │ ──────→ │  R3  │\n │      │ ←────── │      │ ←────── │      │\n └──────┘         └──────┘         └──────┘\n  \"My link to R2 = 1Gbps, cost=1\"\n\n Step 2: LSDB (Same map in every router)\n ┌──────────────────────────────┐\n │  Network Map (LSDB)          │\n │  R1 ─── R2: cost 1           │\n │  R2 ─── R3: cost 2           │\n │  R1 ─── R3: cost 5           │\n └──────────────────────────────┘\n\n Step 3: SPF — Dijkstra's Algorithm\n  R1 → R3: Via R2 = 1+2 = 3 ✅ (best)\n           Direct  = 5   ❌\n\n Step 4: Routing Table\n  Destination  Next-Hop  Cost\n  R3 network   R2        3\n\n Step 5: Packet from R1 to R3\n  Packet → R1 checks table → sends to R2 → R2 sends to R3 ✅",
         "mnemonic": "OSPF = L-L-S-R-P: LSA → LSDB → SPF → Routing Table → Packet Forward। মনে রাখো: 'Link করো, Learn করো, Shortest নাও, Route করো, Packet পাঠাও'"
@@ -1312,21 +2067,89 @@
           "সমাধান: STP দিয়ে loop বন্ধ, VLAN দিয়ে broadcast domain ছোট করা, storm control, ও endpoint secure করা।"
         ],
         "points": [
-          "কারণ ১ — Layer-2 Switching Loop (সবচেয়ে সাধারণ): দুই switch এর মধ্যে redundant cable থাকলে এবং loop prevention না থাকলে broadcast frame ঘুরতেই থাকে। Switch broadcast কে সব port এ forward করে, তাই frame loop এ অসীমবার ঘোরে — exponentially বাড়ে।",
+          "কারণ ১ — Layer-2 Switching Loop (সবচেয়ে সাধারণ):",
           {
-            "sub": "Layer-2 তে TTL নেই, তাই switch broadcast frame কখনো drop করে না — loop থাকলে storm কখনো নিজে থামে না।"
+            "sub": "দুই switch-এর মধ্যে redundant cable থাকলে এবং loop prevention না থাকলে broadcast frame ঘুরতেই থাকে।"
           },
-          "কারণ ২ — বড় Broadcast Domain: এক VLAN/subnet এ অনেক device থাকলে স্বাভাবিক broadcast (ARP ইত্যাদি) এর পরিমাণই বিশাল হয়ে যায়।",
-          "কারণ ৩ — Malware / Virus: আক্রান্ত host ইচ্ছাকৃতভাবে প্রচুর broadcast request পাঠিয়ে network জ্যাম করে।",
-          "কারণ ৪ — ARP / DHCP Flooding: client থেকে অস্বাভাবিক বেশি ARP request বা DHCP broadcast এলে traffic বেড়ে যায়। Misconfigured বা faulty NIC/switch-ও এমন করতে পারে।",
-          "প্রভাব (Effects): network congestion, host ও switch এর CPU 100% হয়ে যায়, network ধীর হয়, packet loss ও communication failure।",
-          "সমাধান ১ — STP (Spanning Tree Protocol) চালু করা: Layer-2 loop detect করে redundant port block করে দেয় — broadcast storm এর মূল কারণ বন্ধ। এটাই সবচেয়ে জরুরি ধাপ।",
-          "সমাধান ২ — Network Segment করা: VLAN ও subnet দিয়ে broadcast domain ছোট করা — router broadcast forward করে না, তাই broadcast এক VLAN এর বাইরে যায় না।",
-          "সমাধান ৩ — Broadcast Storm Control: switch এ broadcast traffic এর rate limit সেট করা — threshold ছাড়ালে port অটো block হয়।",
-          "সমাধান ৪ — Monitoring: network monitoring tool দিয়ে কোন device storm তৈরি করছে তা খুঁজে বের করা।",
-          "সমাধান ৫ — Endpoint secure করা: malware scan করে আক্রান্ত host পরিষ্কার বা আলাদা করা।"
+          {
+            "sub": "Switch broadcast-কে সব port-এ forward করে, তাই frame loop-এ অসীমবার ঘোরে।"
+          },
+          {
+            "sub": "প্রতি চক্রে frame সংখ্যা গুণিতক হারে বাড়ে।"
+          },
+          {
+            "sub": "Layer-2-তে TTL নেই, তাই switch broadcast frame কখনো drop করে না।"
+          },
+          {
+            "sub": "ফলে loop থাকলে storm কখনো নিজে থেকে থামে না।"
+          },
+          {
+            "diagram": "         Host পাঠালো ১টা broadcast\n                  │\n                  ▼\n            ┌──────────┐\n      ┌────▶│ Switch A │────┐\n      │     └──────────┘    │\n      │  redundant link ↕   │   ← loop! কোনো STP নেই\n      │     ┌──────────┐    │\n      └─────│ Switch B │◀───┘\n            └──────────┘\n\n  Switch broadcast-কে সব port-এ forward করে\n  frame A→B→A→B→A→B… থামে না, প্রতি চক্রে গুণিতক হারে বাড়ে\n  ফল: 1 frame → হাজারো frame → network জ্যাম, CPU 100%",
+            "label": "Diagram — Broadcast Storm (Layer-2 loop)"
+          },
+          "কারণ ২ — বড় Broadcast Domain:",
+          {
+            "sub": "এক VLAN বা subnet-এ অনেক device থাকলে স্বাভাবিক broadcast-এর পরিমাণই বিশাল হয়ে যায় (যেমন ARP)।"
+          },
+          "কারণ ৩ — Malware / Virus:",
+          {
+            "sub": "আক্রান্ত host ইচ্ছাকৃতভাবে প্রচুর broadcast request পাঠিয়ে network জ্যাম করে দেয়।"
+          },
+          "কারণ ৪ — ARP / DHCP Flooding:",
+          {
+            "sub": "Client থেকে অস্বাভাবিক বেশি ARP request বা DHCP broadcast এলে traffic বেড়ে যায়।"
+          },
+          {
+            "sub": "Misconfigured বা ত্রুটিপূর্ণ NIC/switch-ও এমন আচরণ করতে পারে।"
+          },
+          "প্রভাব (Effects):",
+          {
+            "sub": "Network congestion তৈরি হয়।"
+          },
+          {
+            "sub": "Host ও switch-এর CPU 100%-এ উঠে যায়।"
+          },
+          {
+            "sub": "Network ধীর হয়ে যায়, packet loss ও communication failure হয়।"
+          },
+          "সমাধান ১ — STP (Spanning Tree Protocol) চালু করা:",
+          {
+            "sub": "STP Layer-2 loop detect করে redundant port block করে দেয়।"
+          },
+          {
+            "sub": "এতে broadcast storm-এর মূল কারণটাই বন্ধ হয়ে যায় — এটাই সবচেয়ে জরুরি ধাপ।"
+          },
+          {
+            "diagram": "            ┌──────────┐\n      ┌────▶│ Switch A │────┐\n      │     └──────────┘    │\n  FORWARD              ✕ BLOCKED   ← STP এই port বন্ধ রাখে\n      │     ┌──────────┐    │\n      └─────│ Switch B │    ┘\n            └──────────┘\n\n  loop নেই → broadcast একবার গিয়েই থামে\n  link টা backup থাকে — main fail করলে STP এই port চালু করে দেয়",
+            "label": "Diagram — সমাধান ১: STP loop ভাঙে"
+          },
+          "সমাধান ২ — Network Segment করা:",
+          {
+            "sub": "VLAN ও subnet দিয়ে broadcast domain ছোট করে ফেলা।"
+          },
+          {
+            "sub": "Router broadcast forward করে না, তাই broadcast এক VLAN-এর বাইরে যেতে পারে না।"
+          },
+          {
+            "diagram": "  ┌───── VLAN 10 ─────┐   ┌───── VLAN 20 ─────┐\n  │ PC  PC  PC        │   │ PC  PC  PC        │\n  │ broadcast এখানেই   │   │ broadcast এখানেই   │\n  │ আটকে থাকে         │   │ আটকে থাকে         │\n  └───────────────────┘   └───────────────────┘\n         ← router VLAN-এর broadcast পার করে না →\n\n  এক বড় domain-এর বদলে অনেক ছোট domain = কম storm",
+            "label": "Diagram — সমাধান ২: VLAN দিয়ে domain ছোট করা"
+          },
+          "সমাধান ৩ — Broadcast Storm Control:",
+          {
+            "sub": "Switch-এ broadcast traffic-এর rate limit সেট করা।"
+          },
+          {
+            "sub": "Threshold ছাড়ালে port নিজে থেকেই block হয়ে যায়।"
+          },
+          "সমাধান ৪ — Monitoring:",
+          {
+            "sub": "Network monitoring tool দিয়ে কোন device storm তৈরি করছে তা খুঁজে বের করা।"
+          },
+          "সমাধান ৫ — Endpoint secure করা:",
+          {
+            "sub": "Malware scan করে আক্রান্ত host পরিষ্কার করা বা network থেকে আলাদা করে ফেলা।"
+          }
         ],
-        "diagram": "BROADCAST STORM — Layer-2 loop এ frame অসীমবার ঘোরে\n\n         Host পাঠালো ১টা broadcast\n                  │\n                  ▼\n            ┌──────────┐\n      ┌────▶│ Switch A │────┐\n      │     └──────────┘    │\n      │  redundant link ↕   │ ← loop! কোনো STP নেই\n      │     ┌──────────┐    │\n      └─────│ Switch B │◀───┘\n            └──────────┘\n   Switch broadcast কে সব port এ forward করে →\n   frame A→B→A→B→A→B… থামে না, প্রতি চক্রে গুণিতক হারে বাড়ে\n   ফল: 1 frame → হাজারো frame → 🔴 network জ্যাম, CPU 100%\n\n\nSOLUTION 1 — STP redundant port BLOCK করে loop ভাঙে\n            ┌──────────┐\n      ┌────▶│ Switch A │────┐\n      │     └──────────┘    │\n  FORWARD              ✕ BLOCKED  ← STP এই port বন্ধ রাখে\n      │     ┌──────────┐    │\n      └─────│ Switch B │    ┘\n            └──────────┘\n   loop নেই → broadcast একবার গিয়েই থামে ✅\n   (link টা backup থাকে — main fail করলে STP port চালু করে)\n\n\nSOLUTION 2 — VLAN দিয়ে broadcast domain ছোট করা\n  ┌───── VLAN 10 ─────┐   ┌───── VLAN 20 ─────┐\n  │ PC  PC  PC        │   │ PC  PC  PC        │\n  │ broadcast এখানেই   │   │ broadcast এখানেই   │\n  │ আটকে থাকে         │   │ আটকে থাকে         │\n  └───────────────────┘   └───────────────────┘\n         ← router VLAN এর broadcast পার করে না →\n   এক বড় domain এর বদলে অনেক ছোট domain = কম storm",
         "mistakes": [
           [
             "Broadcast storm router দিয়েই থেমে যায়",
@@ -1454,13 +2277,56 @@
           "ফল: transient guest এর IP দ্রুত expire হয়ে pool এ ফেরত আসে, নতুন device পায়।"
         ],
         "points": [
-          "DHCP lease কী: একটি IP কতক্ষণ একটি device এর জন্য সংরক্ষিত থাকবে তার সময়সীমা। Lease time বড় (যেমন 7 দিন) হলে device চলে গেলেও IP ততদিন আটকে থাকে।",
-          "সমস্যা: transient guest অল্প সময়ের জন্য connect করে চলে যায়, কিন্তু লম্বা lease এর কারণে তাদের IP অনেকক্ষণ pool এ ফেরত আসে না → অল্প সক্রিয় device থাকলেও pool ভরে যায়।",
-          "সমাধান: lease duration কমাও — যেমন 7 দিন থেকে 1–4 ঘণ্টা (guest turnover অনুযায়ী মান নির্বাচন)।",
-          "কেন কাজ করে: short lease → অব্যবহৃত IP দ্রুত expire → DHCP server সেগুলো reclaim করে নতুন device কে allocate করে → exhaustion এড়ানো যায়।",
-          "সতর্কতা: lease অতিরিক্ত ছোট দিলে DHCP renew/discover broadcast traffic বেড়ে যায় — তাই guest turnover এর সাথে ভারসাম্য রেখে মান বসাতে হয়।"
+          "DHCP lease কী:",
+          {
+            "sub": "একটি IP কতক্ষণ একটি device-এর জন্য সংরক্ষিত থাকবে, সেই সময়সীমা।"
+          },
+          {
+            "sub": "Lease time বড় হলে (যেমন 7 দিন) device চলে গেলেও IP ততদিন আটকে থাকে।"
+          },
+          "সমস্যাটা কোথায়:",
+          {
+            "sub": "Transient guest অল্প সময়ের জন্য connect করে চলে যায়।"
+          },
+          {
+            "sub": "কিন্তু লম্বা lease-এর কারণে তাদের IP অনেকক্ষণ pool-এ ফেরত আসে না।"
+          },
+          {
+            "sub": "ফলে সক্রিয় device কম থাকলেও pool ভরে যায় — এটাই IP exhaustion।"
+          },
+          {
+            "diagram": " Guest connect ─┐                         guest চলে গেছে\n                ▼                              │ কিন্তু IP\n  IP 192.168.1.50 ব্যস্ত ████████████████████│ এখনো reserved\n  ◀──────────────── 7 দিন lease ───────────────────▶\n\n  guest ১ ঘণ্টা পরে চলে গেলেও IP ৭ দিন আটকে থাকে → pool শেষ",
+            "label": "Diagram — সমস্যা: লম্বা lease (7 দিন)"
+          },
+          "সমাধান:",
+          {
+            "sub": "DHCP lease duration কমিয়ে দেওয়া।"
+          },
+          {
+            "sub": "যেমন 7 দিন থেকে নামিয়ে 1–4 ঘণ্টা করা (guest turnover অনুযায়ী মান বেছে নিতে হবে)।"
+          },
+          {
+            "diagram": " Guest connect ─┐  guest চলে গেল\n                ▼      │\n  IP 192.168.1.50 ███──┘ expire → pool-এ ফেরত\n  ◀── 2h lease ──▶ │\n                   ▼ একই IP নতুন guest পায়\n  IP 192.168.1.50 ███ (নতুন device)\n\n  দ্রুত reclaim → একই pool দিয়ে বহু guest সামলানো যায়",
+            "label": "Diagram — সমাধান: ছোট lease (1–4 ঘণ্টা)"
+          },
+          "কেন এটা কাজ করে:",
+          {
+            "sub": "Short lease হলে অব্যবহৃত IP দ্রুত expire করে।"
+          },
+          {
+            "sub": "DHCP server সেগুলো reclaim করে নতুন device-কে allocate করতে পারে।"
+          },
+          {
+            "sub": "ফলে exhaustion এড়ানো যায়।"
+          },
+          "সতর্কতা:",
+          {
+            "sub": "Lease অতিরিক্ত ছোট দিলে DHCP renew/discover broadcast traffic বেড়ে যায়।"
+          },
+          {
+            "sub": "তাই guest turnover-এর সাথে ভারসাম্য রেখে মান বসাতে হয়।"
+          }
         ],
-        "diagram": "সমস্যা — লম্বা lease (7 দিন): IP আটকে থাকে\n\n Guest connect ─┐                         guest চলে গেছে\n                ▼                              │ কিন্তু IP\n  IP 192.168.1.50 ব্যস্ত ████████████████████│ এখনো reserved\n  ◀──────────────── 7 দিন lease ───────────────────▶\n  guest ১ ঘণ্টা পরে চলে গেলেও IP ৭ দিন আটকে → pool শেষ 🔴\n\n\nসমাধান — ছোট lease (1–4 ঘণ্টা): IP দ্রুত ফেরে\n\n Guest connect ─┐  guest চলে গেল\n                ▼      │\n  IP 192.168.1.50 ███──┘ expire → pool এ ফেরত ✅\n  ◀── 2h lease ──▶ │\n                   ▼ একই IP নতুন guest পায়\n  IP 192.168.1.50 ███ (নতুন device)\n  দ্রুত reclaim → একই pool বহু guest সামলায় ✅\n\n নিয়ম: lease time ছোট → IP turnover দ্রুত → exhaustion কমে\n        (তবে খুব ছোট হলে renew broadcast বাড়ে — ভারসাম্য রাখো)",
         "mistakes": [
           [
             "Pool এ আরও IP (বড় subnet) যোগ করাই একমাত্র সমাধান",
@@ -1492,18 +2358,70 @@
           "ন্যূনতম window size W ≥ 1 + 2a = 63.5 → W = 64 frame।"
         ],
         "points": [
-          "দেওয়া আছে: one-way propagation delay Tp = 250 ms = 0.25 s, rate = 1 Mbps = 1,000,000 bps, frame = 1000 byte = 8000 bit।",
-          "Step 1 — Transmission time: Tt = frame size ÷ bandwidth = 8000 ÷ 1,000,000 = 0.008 s = 8 ms।",
-          "Step 2 — RTT: ACK ফিরে আসতে যাওয়া-আসা দুই দিকের delay = 2 × Tp = 2 × 250 = 500 ms।",
-          "Step 3 — Stop-and-Wait efficiency: U = Tt ÷ (Tt + RTT) = 8 ÷ (8 + 500) = 8 ÷ 508 ≈ 0.01575 ≈ 1.57%। অর্থাৎ link এর মাত্র ~1.57% সময় কাজে লাগে, বাকিটা ACK এর অপেক্ষায় নষ্ট।",
-          "Step 4 — a (অনুপাত): a = Tp ÷ Tt = 250 ÷ 8 = 31.25।",
-          "Step 5 — ন্যূনতম window: sliding window এ 100% utilization এর শর্ত W ≥ 1 + 2a = 1 + 2(31.25) = 63.5। Window পূর্ণ frame সংখ্যা হতে হয়, তাই উপরে round → W = 64 frame।",
+          "দেওয়া আছে:",
+          {
+            "sub": "One-way propagation delay Tp = 250 ms = 0.25 s।"
+          },
+          {
+            "sub": "Transmission rate = 1 Mbps = 1,000,000 bps।"
+          },
+          {
+            "sub": "Frame size = 1000 byte = 8000 bit।"
+          },
+          "Step 1 — Transmission time:",
+          {
+            "sub": "Tt = frame size ÷ bandwidth = 8000 ÷ 1,000,000 = 0.008 s = 8 ms।"
+          },
+          "Step 2 — RTT:",
+          {
+            "sub": "ACK ফিরে আসতে যাওয়া-আসা দুই দিকের delay লাগে।"
+          },
+          {
+            "sub": "RTT = 2 × Tp = 2 × 250 = 500 ms।"
+          },
+          "Step 3 — Stop-and-Wait efficiency:",
+          {
+            "sub": "U = Tt ÷ (Tt + RTT) = 8 ÷ (8 + 500) = 8 ÷ 508 ≈ 0.01575।"
+          },
+          {
+            "sub": "অর্থাৎ efficiency ≈ 1.57%।"
+          },
+          {
+            "sub": "মানে link-এর মাত্র ~1.57% সময় কাজে লাগে, বাকিটা ACK-এর অপেক্ষায় নষ্ট হয়।"
+          },
+          {
+            "diagram": " Sender │█│←8ms                                  │█│\n        │  ╲ frame                          ACK ╱  │\n        │   ╲                                  ╱   │\n Receiver│    ╲___________________________╱       │\n        │◀──────── RTT = 500 ms ─────────▶│\n\n  এক cycle = 8 ms পাঠানো + 500 ms অপেক্ষা = 508 ms\n  কাজে লাগল মাত্র 8 ms\n\n  U = Tt/(Tt+RTT) = 8/508 ≈ 1.57%   (link প্রায় খালি বসে থাকে)",
+            "label": "Diagram — Stop-and-Wait (একটা frame, তারপর পুরো RTT অপেক্ষা)"
+          },
+          "Step 4 — a (অনুপাত):",
+          {
+            "sub": "a = Tp ÷ Tt = 250 ÷ 8 = 31.25।"
+          },
+          "Step 5 — ন্যূনতম window size:",
+          {
+            "sub": "Sliding window-এ 100% utilization-এর শর্ত W ≥ 1 + 2a।"
+          },
+          {
+            "sub": "W ≥ 1 + 2(31.25) = 63.5।"
+          },
+          {
+            "sub": "Window পূর্ণ সংখ্যক frame হতে হয়, তাই উপরে round করে W = 64 frame।"
+          },
+          {
+            "diagram": " Sender │█│█│█│ … │█│   ← একসাথে W টা frame পাঠানো হয়\n        │ ╲ ╲ ╲     ╲                              │\n Receiver│  ╲_╲_╲_____╲ … প্রথম ACK ফেরার মধ্যেই link ভরা\n        │◀──── 1 frame + RTT = (1+2a)·Tt ────▶│\n\n  a = Tp/Tt = 250/8 = 31.25\n  W ≥ 1 + 2a = 1 + 62.5 = 63.5  →  W = 64 frame\n\n  ┌──────────────────────────────────────────┐\n  │ Stop-and-Wait efficiency ≈ 1.57%          │\n  │ 100%-এর জন্য ন্যূনতম window = 64 frame     │\n  └──────────────────────────────────────────┘",
+            "label": "Diagram — Sliding Window (ACK ফেরার আগেই link ভরে দাও)"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "satellite, দূরপাল্লার সাবমেরিন লিংক ও উচ্চগতির long-fat network এ delay বেশি বলে stop-and-wait অচল; তাই TCP sliding window ব্যবহার করে, আর বড় bandwidth-delay product এর জন্য TCP Window Scaling দিয়ে window আরও বড় করা হয়।"
+            "sub": "Satellite, দূরপাল্লার সাবমেরিন লিংক ও উচ্চগতির long-fat network-এ delay বেশি বলে stop-and-wait কার্যত অচল।"
+          },
+          {
+            "sub": "তাই TCP sliding window ব্যবহার করে।"
+          },
+          {
+            "sub": "বড় bandwidth-delay product-এর জন্য TCP Window Scaling দিয়ে window আরও বড় করা হয়।"
           }
         ],
-        "diagram": "STOP-AND-WAIT — একটা frame পাঠাও, পুরো RTT অপেক্ষা করো\n\n Sender │█│←8ms                                  │█│\n        │  ╲ frame                          ACK ╱  │\n        │   ╲                                  ╱   │\n Receiver│    ╲___________________________╱       │\n        │◀──────── RTT = 500 ms ─────────▶│\n  এক cycle = 8 ms পাঠানো + 500 ms অপেক্ষা = 508 ms\n  কাজে লাগল মাত্র 8 ms\n\n  U = Tt/(Tt+RTT) = 8/508 ≈ 1.57%   🔴 (link প্রায় খালি বসে থাকে)\n\n\nSLIDING WINDOW — ACK ফেরার আগেই link ভরে দাও\n\n Sender │█│█│█│ … │█│  ← একসাথে W টা frame পাঠানো হয়\n        │ ╲ ╲ ╲     ╲                              │\n Receiver│  ╲_╲_╲_____╲ … প্রথম ACK ফেরার মধ্যেই link ভরা\n        │◀──── 1 frame + RTT = (1+2a)·Tt ────▶│\n\n  a = Tp/Tt = 250/8 = 31.25\n  W ≥ 1 + 2a = 1 + 62.5 = 63.5  →  W = 64 frame\n\n  ┌──────────────────────────────────────────┐\n  │ Stop-and-Wait efficiency ≈ 1.57%          │\n  │ 100% এর জন্য ন্যূনতম window = 64 frame     │\n  └──────────────────────────────────────────┘",
         "mistakes": [
           [
             "RTT = one-way delay = 250 ms",
@@ -1569,13 +2487,71 @@
           "UDP এর বাস্তব ব্যবহার: live video/voice call, streaming, online gaming, DNS — যেখানে গতি বেশি জরুরি।"
         ],
         "points": [
-          "Connection: TCP আগে 3-way handshake (SYN → SYN-ACK → ACK) করে সংযোগ গড়ে; UDP কোনো সংযোগ গড়ে না — fire-and-forget।",
-          "Reliability: TCP প্রতি segment এর ACK নেয়, হারালে retransmit করে, sequence number দিয়ে সঠিক ক্রমে সাজায় → data হারায় না। UDP তে ACK/retransmission নেই → packet হারাতে, উল্টাতে বা duplicate হতে পারে।",
-          "Speed: TCP এর handshake, ACK, flow ও congestion control এর overhead থাকায় ধীর; UDP এর overhead প্রায় শূন্য, header ছোট (8 byte vs TCP 20 byte) → দ্রুত, কম latency।",
-          "কেন এই trade-off: নির্ভরযোগ্যতা (ACK/retransmit) সময় খরচ করে; UDP সেই নিশ্চয়তা ছেড়ে দিয়ে গতি কেনে।",
-          "UDP এর বাস্তব use case: live video call / streaming (যেমন Zoom, YouTube Live) — এক-দুটো frame হারালেও সমস্যা নেই, কিন্তু দেরি হলে কথা আটকে যায়; তাই retransmission এর চেয়ে গতি জরুরি। (আরও: online gaming, VoIP, DNS query)।"
+          "Connection:",
+          {
+            "sub": "TCP আগে 3-way handshake (SYN → SYN-ACK → ACK) করে সংযোগ গড়ে তোলে।"
+          },
+          {
+            "sub": "UDP কোনো সংযোগ গড়ে না — fire-and-forget।"
+          },
+          "Reliability:",
+          {
+            "sub": "TCP প্রতিটি segment-এর ACK নেয়।"
+          },
+          {
+            "sub": "কিছু হারালে TCP সেটা retransmit করে।"
+          },
+          {
+            "sub": "Sequence number দিয়ে TCP data সঠিক ক্রমে সাজিয়ে দেয় — তাই data হারায় না।"
+          },
+          {
+            "sub": "UDP-তে ACK বা retransmission কিছুই নেই।"
+          },
+          {
+            "sub": "ফলে UDP-তে packet হারাতে পারে, উল্টো ক্রমে আসতে পারে, এমনকি duplicate-ও হতে পারে।"
+          },
+          {
+            "diagram": "  Client                         Server\n    │ ── SYN ───────────────────► │\n    │ ◄────────── SYN-ACK ─────── │   3-way handshake\n    │ ── ACK ───────────────────► │\n    │ ═══ DATA seq=1 ═══════════► │\n    │ ◄───────────── ACK 1 ────── │   প্রতি data-র ACK\n    │ ═══ DATA seq=2  ✗ হারালো    │\n    │ ═══ DATA seq=2 (আবার) ════► │   retransmit → কিছুই হারায় না",
+            "label": "Diagram — TCP: আগে হাত মেলাও, তারপর নির্ভরযোগ্য কথা"
+          },
+          "Speed:",
+          {
+            "sub": "TCP-তে handshake, ACK, flow control ও congestion control-এর overhead থাকে, তাই ধীর।"
+          },
+          {
+            "sub": "UDP-র overhead প্রায় শূন্য।"
+          },
+          {
+            "sub": "UDP-র header ছোট — মাত্র 8 byte, যেখানে TCP-র 20 byte।"
+          },
+          {
+            "sub": "ফলে UDP দ্রুত এবং latency কম।"
+          },
+          {
+            "diagram": "  Client ── DATA ─►  DATA ─►  DATA ─►  Server\n         (handshake নেই, ACK নেই, হারালে হারালো)\n         পথে একটা packet হারালে ✗ — কেউ খোঁজ নেয় না\n\n──────────── at-a-glance ────────────\n  নির্ভরযোগ্যতা    :  TCP  >  UDP\n  গতি / কম latency :  UDP  >  TCP\n  ব্যবহার : TCP = নির্ভুলতা জরুরি (web, email, file)\n           UDP = গতি জরুরি (live call, stream, game, DNS)",
+            "label": "Diagram — UDP: হাত না মিলিয়ে ছুঁড়ে দাও"
+          },
+          "কেন এই trade-off:",
+          {
+            "sub": "নির্ভরযোগ্যতা (ACK ও retransmit) সময় খরচ করে।"
+          },
+          {
+            "sub": "UDP সেই নিশ্চয়তা ছেড়ে দিয়ে বিনিময়ে গতি কিনে নেয়।"
+          },
+          "UDP-র বাস্তব use case:",
+          {
+            "sub": "Live video call বা streaming — যেমন Zoom, YouTube Live।"
+          },
+          {
+            "sub": "সেখানে এক-দুটো frame হারালেও বড় সমস্যা নেই।"
+          },
+          {
+            "sub": "কিন্তু দেরি হলে কথা আটকে যায়, তাই retransmission-এর চেয়ে গতিই জরুরি।"
+          },
+          {
+            "sub": "আরও উদাহরণ: online gaming, VoIP ও DNS query।"
+          }
         ],
-        "diagram": "TCP — আগে হাত মেলাও, তারপর নির্ভরযোগ্য কথা:\n  Client                         Server\n    │ ── SYN ───────────────────► │\n    │ ◄────────── SYN-ACK ─────── │   3-way handshake\n    │ ── ACK ───────────────────► │\n    │ ═══ DATA seq=1 ═══════════► │\n    │ ◄───────────── ACK 1 ────── │   প্রতি data-র ACK\n    │ ═══ DATA seq=2  ✗ হারালো    │\n    │ ═══ DATA seq=2 (আবার) ════► │   retransmit → কিছুই হারায় না\n\nUDP — হাত না মিলিয়ে ছুঁড়ে দাও:\n  Client ── DATA ─►  DATA ─►  DATA ─►  Server\n         (handshake নেই, ACK নেই, হারালে হারালো)\n         পথে একটা packet হারালে ✗ — কেউ খোঁজ নেয় না\n\n──────────── at-a-glance ────────────\n  নির্ভরযোগ্যতা :  TCP  >  UDP\n  গতি / কম latency:  UDP  >  TCP\n  ব্যবহার :  TCP = নির্ভুলতা জরুরি (web, email, file)\n            UDP = গতি জরুরি (live call, stream, game, DNS)",
         "table": {
           "headers": [
             "দিক",
@@ -1642,38 +2618,73 @@
           "উত্তর: প্রায় 833 packet/sec। এর চেয়ে দ্রুত packet এলে router এর buffer ভরতে থাকে, queuing delay বাড়ে এবং buffer উপচে গেলে packet drop অর্থাৎ congestion শুরু হয়।"
         ],
         "points": [
-          "সূত্র ও ধাপে ধাপে হিসাব:",
+          "সূত্র:",
           {
-            "sub": "Packet Rate (packet/sec) = Bandwidth (bps) ÷ [ Packet Length (byte) × 8 ]"
+            "sub": "Packet Rate (packet/sec) = Bandwidth (bps) ÷ [ Packet Length (byte) × 8 ]।"
+          },
+          "ধাপে ধাপে হিসাব:",
+          {
+            "sub": "ধাপ ১ — packet-কে bit-এ আনো: 1500 byte × 8 = 12,000 bit/packet।"
           },
           {
-            "sub": "ধাপ ১ — packet কে bit এ আনো: 1500 byte × 8 = 12,000 bit/packet।"
+            "sub": "ধাপ ২ — bandwidth-কে bps-এ আনো: 10 Mbps = 10 × 10⁶ = 10,000,000 bit/sec।"
           },
           {
-            "sub": "ধাপ ২ — bandwidth কে bps এ আনো: 10 Mbps = 10 × 10⁶ = 10,000,000 bit/sec (নেটওয়ার্কে M মানে 10⁶, 2²⁰ নয়)।"
+            "sub": "মনে রাখো: নেটওয়ার্কে M মানে 10⁶, 2²⁰ নয়।"
           },
           {
             "sub": "ধাপ ৩ — ভাগ করো: 10,000,000 ÷ 12,000 = 833.33 packet/sec ≈ 833 packet/sec।"
           },
-          "কেন এটিই congestion এর সীমা:",
           {
-            "sub": "Router এর কাছে packet জমা হওয়ার হার λ (arrival rate) আর বের হওয়ার হার μ (service rate = 833 pkt/s)। λ < μ হলে queue খালি হতে থাকে, ব্যবস্থা স্থিতিশীল।"
+            "diagram": "  ধাপ ১ — packet-কে bit-এ আনা\n  ┌──────────────────────────┐\n  │  1 packet = 1500 byte    │  × 8\n  │           = 12,000 bit   │ ◄────── 1 byte = 8 bit\n  └──────────────────────────┘\n\n  ধাপ ২ — এক সেকেন্ডের পাইপে কতটুকু ধরে\n\n   ১ সেকেন্ড ────────────────────────────────────►\n   ┌───────────────────────────────────────────────┐\n   │        10,000,000 bit  (10 Mbps)              │\n   └───────────────────────────────────────────────┘\n   │12000│12000│12000│ ... │12000│  ← এক একটি packet\n     #1    #2    #3           #833\n\n        10,000,000 bit / sec\n        ────────────────────  =  833.33 packet/sec\n          12,000 bit / packet\n\n  একক মিলিয়ে দেখা — কোনটি উপরে বসবে\n   ✔ সঠিক   bit/sec  ÷  bit/packet  =  packet/sec   ← চাওয়া হয়েছে\n   ✘ উল্টো   bit/packet ÷ bit/sec    =  sec/packet   ← এটি সময়, হার নয়\n\n   দুটি একে অপরের বিপরীত:\n        1 packet-এর সময় = 12,000 ÷ 10⁷ = 1.2 ms\n        হার              = 1 ÷ 1.2 ms   = 833.33 pkt/s",
+            "label": "Diagram — হিসাবটা কীভাবে দাঁড়ায়"
+          },
+          "কেন এটিই congestion-এর সীমা:",
+          {
+            "sub": "Router-এ packet জমা হওয়ার হার λ (arrival rate), আর বের হওয়ার হার μ (service rate = 833 pkt/s)।"
           },
           {
-            "sub": "λ > μ হলে প্রতি সেকেন্ডে (λ − μ) টি packet জমতে থাকে — buffer ভরে, queuing delay বাড়ে, শেষে buffer overflow হয়ে packet drop হয়। এটিই congestion।"
+            "sub": "λ < μ হলে queue খালি হতে থাকে, ব্যবস্থা স্থিতিশীল থাকে।"
           },
           {
-            "sub": "λ = μ হলে তাত্ত্বিকভাবে চলে, কিন্তু বাস্তবে traffic burst আকারে আসে বলে queue দ্রুত ফুলে ওঠে; তাই ব্যবহারিকভাবে link utilization ৭০–৮০% এ রাখা হয়, অর্থাৎ প্রায় ৫৮০–৬৭০ pkt/s।"
+            "sub": "λ > μ হলে প্রতি সেকেন্ডে (λ − μ) টি packet জমতে থাকে।"
+          },
+          {
+            "sub": "তখন buffer ভরে যায়, queuing delay বাড়ে, শেষে buffer overflow হয়ে packet drop হয় — এটিই congestion।"
+          },
+          {
+            "sub": "λ = μ হলে তাত্ত্বিকভাবে চলে, কিন্তু বাস্তবে traffic burst আকারে আসে বলে queue দ্রুত ফুলে ওঠে।"
+          },
+          {
+            "sub": "তাই ব্যবহারিকভাবে link utilization ৭০–৮০%-এ রাখা হয়, অর্থাৎ প্রায় ৫৮০–৬৭০ pkt/s।"
+          },
+          {
+            "diagram": "   arrival rate λ ──►┌───────────────┐──► service rate μ = 833 pkt/s\n                     │  ROUTER BUFFER│\n                     │  ▓▓░░░░░░░░░░ │\n                     └───────────────┘\n\n   λ = 600 pkt/s   ▓░░░░░░░░░  queue প্রায় খালি — স্বাভাবিক\n   λ = 833 pkt/s   ▓▓▓▓▓░░░░░  সীমারেখা — burst এলেই ফুলে ওঠে\n   λ = 1000 pkt/s  ▓▓▓▓▓▓▓▓▓▓  প্রতি সেকেন্ডে 167 packet জমে\n                   └─► delay বাড়ে → buffer overflow → PACKET DROP\n\n────────────────────────────────────────────\n  উত্তর:  10 × 10⁶ ÷ (1500 × 8)  ≈  833 packet/sec\n          (এক packet-এর transmission time 1.2 ms)",
+            "label": "Diagram — congestion কোথায় শুরু"
           },
           "সূক্ষ্ম দিক (উত্তরে লিখলে ভালো লাগে):",
           {
-            "sub": "এই হিসাব ধরে নিচ্ছে link ১০০% সময় data পাঠাচ্ছে এবং কোনো overhead নেই। বাস্তব Ethernet এ প্রতি frame এর সাথে preamble (8 byte), inter-frame gap (12 byte) ইত্যাদি যোগ হয়, তাই প্রকৃত হার কিছুটা কম হয়।"
+            "sub": "এই হিসাব ধরে নিচ্ছে link ১০০% সময় data পাঠাচ্ছে এবং কোনো overhead নেই।"
           },
           {
-            "sub": "1500 byte সংখ্যাটি Ethernet এর সাধারণ MTU — অর্থাৎ এটি সবচেয়ে বড় packet, তাই এই হিসাবটি সর্বনিম্ন packet-per-second এর হিসাব। packet ছোট হলে (যেমন 500 byte) একই bandwidth এ packet সংখ্যা তিন গুণ বেড়ে যায়, আর তখন router এর CPU/PPS সক্ষমতাই আগে সীমা হয়ে দাঁড়ায়।"
+            "sub": "বাস্তব Ethernet-এ প্রতি frame-এর সাথে preamble (8 byte) ও inter-frame gap (12 byte) যোগ হয়।"
+          },
+          {
+            "sub": "তাই প্রকৃত হার হিসাবের চেয়ে কিছুটা কম হয়।"
+          },
+          {
+            "sub": "1500 byte সংখ্যাটি Ethernet-এর সাধারণ MTU — অর্থাৎ এটিই সবচেয়ে বড় packet।"
+          },
+          {
+            "sub": "তাই এই হিসাবটি আসলে সর্বনিম্ন packet-per-second-এর হিসাব।"
+          },
+          {
+            "sub": "Packet ছোট হলে (যেমন 500 byte) একই bandwidth-এ packet সংখ্যা তিন গুণ বেড়ে যায়।"
+          },
+          {
+            "sub": "তখন router-এর CPU/PPS সক্ষমতাই আগে সীমা হয়ে দাঁড়ায়, bandwidth নয়।"
           }
         ],
-        "diagram": "প্রশ্ন : 10 Mbps link, packet = 1500 byte → সর্বোচ্চ কত packet/sec?\n\n  ধাপ ১ — packet কে bit এ আনা\n  ┌──────────────────────────┐\n  │  1 packet = 1500 byte    │  × 8\n  │           = 12,000 bit   │ ◄────── 1 byte = 8 bit\n  └──────────────────────────┘\n\n  ধাপ ২ — এক সেকেন্ডের পাইপে কতটুকু ধরে\n\n   ১ সেকেন্ড ────────────────────────────────────►\n   ┌───────────────────────────────────────────────┐\n   │        10,000,000 bit  (10 Mbps)              │\n   └───────────────────────────────────────────────┘\n   │12000│12000│12000│ ... │12000│  ← এক একটি packet\n     #1    #2    #3           #833\n\n        10,000,000 bit / sec\n        ────────────────────  =  833.33 packet/sec\n          12,000 bit / packet\n\n\nএকক মিলিয়ে দেখা — কোনটি উপরে বসবে\n\n   ✔ সঠিক        bit/sec  ÷  bit/packet  =  packet/sec   ← চাওয়া হয়েছে\n   ✘ উল্টো       bit/packet ÷ bit/sec    =  sec/packet   ← এটি সময়, হার নয়\n\n   দুটি একে অপরের বিপরীত :\n        1 packet এর সময় = 12,000 ÷ 10⁷      = 1.2 ms\n        হার              = 1 ÷ 1.2 ms        = 833.33 pkt/s\n\n\nCONGESTION কোথায় শুরু\n\n   arrival rate λ ──►┌───────────────┐──► service rate μ = 833 pkt/s\n                     │  ROUTER BUFFER│\n                     │  ▓▓░░░░░░░░░░ │\n                     └───────────────┘\n\n   λ = 600 pkt/s   ▓░░░░░░░░░  queue প্রায় খালি — স্বাভাবিক\n   λ = 833 pkt/s   ▓▓▓▓▓░░░░░  সীমারেখা — burst এলেই ফুলে ওঠে\n   λ = 1000 pkt/s  ▓▓▓▓▓▓▓▓▓▓  প্রতি সেকেন্ডে 167 packet জমে\n                   └─► delay বাড়ে → buffer overflow → PACKET DROP\n\n────────────────────────────────────────────\n  উত্তর :  10 × 10⁶ ÷ (1500 × 8)  ≈  833 packet/sec\n           (এক packet এর transmission time 1.2 ms)",
         "table": {
           "headers": [
             "রাশি",
@@ -1759,46 +2770,93 @@
             "sub": "Client → Server: SYN, seq=100 — client সংযোগ চায় এবং নিজের শুরুর sequence number জানায়।"
           },
           {
-            "sub": "Server → Client: SYN + ACK, seq=500, ack=101 — একই segment-এ দুই কাজ: server নিজের seq জানায় এবং client-এর SYN গ্রহণ করে।"
+            "sub": "Server → Client: SYN + ACK, seq=500, ack=101 — একই segment-এ দুই কাজ।"
           },
           {
-            "sub": "Client → Server: ACK, ack=501 — client server-এর seq গ্রহণ করে। দুই দিকের sequence number মিলে গেল, সংযোগ ESTABLISHED।"
+            "sub": "সেই দুই কাজ হলো: server নিজের seq জানায়, আর client-এর SYN গ্রহণ করে।"
+          },
+          {
+            "sub": "Client → Server: ACK, ack=501 — client server-এর seq গ্রহণ করে।"
+          },
+          {
+            "sub": "দুই দিকের sequence number মিলে গেল, সংযোগ ESTABLISHED।"
+          },
+          {
+            "diagram": "   Client                                    Server\n     │                                          │\n     │ ──── SYN, seq=100 ─────────────────────► │  ← \"কথা বলতে চাই\" + নিজের seq\n     │                                          │    (server: half-open queue-তে entry)\n     │ ◄─── SYN + ACK, seq=500, ack=101 ─────── │  ← এক segment-এ দুই কাজ:\n     │                                          │    নিজের seq + client-এর SYN গ্রহণ\n     │ ──── ACK, ack=501 ─────────────────────► │  ← server-এর seq গ্রহণ\n     │                                          │\n     ╞══════════ ESTABLISHED → DATA ════════════╡",
+            "label": "Diagram — 3-way Handshake (সংযোগ খোলা)"
           },
           "4-way Handshake — সংযোগ বন্ধ (Connection Termination):",
           {
             "sub": "Client → Server: FIN, seq=1000 — \"আমার পাঠানো শেষ\"।"
           },
           {
-            "sub": "Server → Client: ACK, ack=1001 — \"FIN পেলাম\", কিন্তু server-এর নিজের data তখনো বাকি থাকতে পারে। এই অবস্থাকে half-close বলে — একদিক বন্ধ, অন্যদিক খোলা।"
+            "sub": "Server → Client: ACK, ack=1001 — \"FIN পেলাম\"।"
+          },
+          {
+            "sub": "কিন্তু server-এর নিজের data তখনো বাকি থাকতে পারে।"
+          },
+          {
+            "sub": "এই অবস্থাকে half-close বলে — একদিক বন্ধ, অন্যদিক খোলা।"
           },
           {
             "sub": "Server → Client: FIN, seq=5000 — server-এর পাঠানোও শেষ হলে সে আলাদা করে নিজের FIN পাঠায়।"
           },
           {
-            "sub": "Client → Server: ACK, ack=5001 — শেষ স্বীকৃতি; TIME_WAIT শেষ হলে সংযোগ পুরোপুরি CLOSED।"
+            "sub": "Client → Server: ACK, ack=5001 — শেষ স্বীকৃতি।"
+          },
+          {
+            "sub": "TIME_WAIT শেষ হলে সংযোগ পুরোপুরি CLOSED।"
+          },
+          {
+            "diagram": "   Client                                    Server\n     │                                          │\n     │ ──── FIN, seq=1000 ────────────────────► │  ← \"আমার পাঠানো শেষ\"\n     │      (FIN_WAIT)                          │\n     │ ◄─── ACK, ack=1001 ───────────────────── │  ← \"পেলাম\" — কিন্তু আমার data বাকি\n     │                                          │\n     │ ◄═══ HALF-CLOSE: এই দিক এখনো খোলা ═══════ │  ← server চাইলে আরও data পাঠাতে পারে\n     │                                          │\n     │ ◄─── FIN, seq=5000 ───────────────────── │  ← \"এবার আমারও শেষ\"\n     │ ──── ACK, ack=5001 ────────────────────► │  ← শেষ স্বীকৃতি\n     │      (TIME_WAIT → CLOSED)                │\n\n──────────────── at-a-glance ────────────────\n  3-way :  খোলা   │ SYN → SYN+ACK → ACK\n  4-way :  বন্ধ   │ FIN → ACK → FIN → ACK\n  কেন ৩ :  server-এর SYN ও ACK একসাথে যায়\n  কেন ৪ :  ACK আগে, FIN পরে (data বাকি থাকতে পারে)\n  মূল সূত্র :  TCP full-duplex — প্রতি দিক আলাদাভাবে বন্ধ হয়",
+            "label": "Diagram — 4-way Handshake (সংযোগ বন্ধ)"
           },
           "৩ ধাপ বনাম ৪ ধাপ — আসল কারণ:",
           {
-            "sub": "TCP full-duplex — দুই দিকের সংযোগ আলাদা। তাই প্রতি দিক বন্ধ করতে একটি FIN + একটি ACK লাগে, মোট ৪টি।"
+            "sub": "TCP full-duplex — দুই দিকের সংযোগ আলাদা।"
           },
           {
-            "sub": "খোলার সময় server-এর কিছু পাঠানোর বাকি থাকে না, তাই SYN আর ACK এক segment-এ মিলিয়ে দেওয়া যায় → ৪-এর বদলে ৩ ধাপ।"
+            "sub": "তাই প্রতি দিক বন্ধ করতে একটি FIN ও একটি ACK লাগে, মোট ৪টি।"
           },
           {
-            "sub": "বন্ধের সময় ACK আর FIN মেলানো যায় না, কারণ FIN মানে \"আমার data শেষ\" — যা ACK পাঠানোর মুহূর্তে সত্যি নাও হতে পারে। তাই ACK আগে, FIN পরে।"
+            "sub": "খোলার সময় server-এর কিছু পাঠানোর বাকি থাকে না।"
+          },
+          {
+            "sub": "তাই SYN আর ACK এক segment-এ মিলিয়ে দেওয়া যায় — ৪-এর বদলে ৩ ধাপ।"
+          },
+          {
+            "sub": "বন্ধের সময় ACK আর FIN মেলানো যায় না।"
+          },
+          {
+            "sub": "কারণ FIN মানে \"আমার data শেষ\", যা ACK পাঠানোর মুহূর্তে সত্যি নাও হতে পারে — তাই ACK আগে, FIN পরে।"
           },
           "কোথায় ব্যবহৃত হয়:",
           {
-            "sub": "3-way handshake: TCP-র উপর চলা প্রতিটি সংযোগের শুরুতে — HTTP/HTTPS page load, SSH login, FTP/SMTP, database connection।"
+            "sub": "3-way handshake: TCP-র উপর চলা প্রতিটি সংযোগের শুরুতে।"
           },
           {
-            "sub": "4-way handshake: সেই সংযোগ শেষ করার সময় — file transfer শেষে, SSH logout, keep-alive timeout শেষে browser-এর connection ছেড়ে দেওয়া, connection pool থেকে connection close।"
+            "sub": "যেমন HTTP/HTTPS page load, SSH login, FTP/SMTP ও database connection।"
           },
           {
-            "sub": "নিরাপত্তা প্রসঙ্গ: 3-way handshake-এর দুর্বলতা কাজে লাগিয়ে SYN flood (DoS) attack হয় — attacker শুধু SYN পাঠায়, শেষ ACK দেয় না, ফলে server-এর half-open queue ভরে যায়। প্রতিকার: SYN cookies।"
+            "sub": "4-way handshake: সেই সংযোগ শেষ করার সময়।"
+          },
+          {
+            "sub": "যেমন file transfer শেষে, SSH logout, keep-alive timeout শেষে browser-এর connection ছেড়ে দেওয়া, connection pool থেকে connection close।"
+          },
+          "নিরাপত্তা প্রসঙ্গ:",
+          {
+            "sub": "3-way handshake-এর দুর্বলতা কাজে লাগিয়ে SYN flood (DoS) attack হয়।"
+          },
+          {
+            "sub": "Attacker শুধু SYN পাঠায়, শেষ ACK দেয় না।"
+          },
+          {
+            "sub": "ফলে server-এর half-open queue ভরে যায়।"
+          },
+          {
+            "sub": "প্রতিকার: SYN cookies।"
           }
         ],
-        "diagram": "3-WAY HANDSHAKE — সংযোগ খোলা (OPEN)\n\n   Client                                    Server\n     │                                          │\n     │ ──── SYN, seq=100 ─────────────────────► │  ← \"কথা বলতে চাই\" + নিজের seq\n     │                                          │    (server: half-open queue তে entry)\n     │ ◄─── SYN + ACK, seq=500, ack=101 ─────── │  ← এক segment-এ দুই কাজ:\n     │                                          │    নিজের seq + client-এর SYN গ্রহণ\n     │ ──── ACK, ack=501 ─────────────────────► │  ← server-এর seq গ্রহণ\n     │                                          │\n     ╞══════════ ESTABLISHED → DATA ════════════╡\n\n\n4-WAY HANDSHAKE — সংযোগ বন্ধ (CLOSE)\n\n   Client                                    Server\n     │                                          │\n     │ ──── FIN, seq=1000 ────────────────────► │  ← \"আমার পাঠানো শেষ\"\n     │      (FIN_WAIT)                          │\n     │ ◄─── ACK, ack=1001 ───────────────────── │  ← \"পেলাম\" — কিন্তু আমার data বাকি\n     │                                          │\n     │ ◄═══ HALF-CLOSE: এই দিক এখনো খোলা ═══════ │  ← server চাইলে আরও data পাঠাতে পারে\n     │                                          │\n     │ ◄─── FIN, seq=5000 ───────────────────── │  ← \"এবার আমারও শেষ\"\n     │ ──── ACK, ack=5001 ────────────────────► │  ← শেষ স্বীকৃতি\n     │      (TIME_WAIT → CLOSED)                │\n\n\n──────────────── at-a-glance ────────────────\n  3-way :  খোলা   │ SYN → SYN+ACK → ACK\n  4-way :  বন্ধ   │ FIN → ACK → FIN → ACK\n  কেন ৩ :  server-এর SYN ও ACK একসাথে যায়\n  কেন ৪ :  ACK আগে, FIN পরে (data বাকি থাকতে পারে)\n  মূল সূত্র :  TCP full-duplex — প্রতি দিক আলাদাভাবে বন্ধ হয়",
         "table": {
           "headers": [
             "দিক",
@@ -1893,78 +2951,195 @@
         "points": [
           "DVR (Distance Vector Routing) — শ্রেণিটির কাজের নীতি:",
           {
-            "sub": "প্রতিটি router শুধু নিজের প্রতিবেশীকে নিজের পুরো routing table পাঠায়, এবং প্রতিবেশীর দাবি বিশ্বাস করে নিজের দূরত্ব হিসাব করে (Bellman-Ford)। কেউ পুরো নেটওয়ার্ক দেখে না — তাই একে \"routing by rumour\" বলা হয়।"
+            "sub": "প্রতিটি router শুধু নিজের প্রতিবেশীকে নিজের পুরো routing table পাঠায়।"
+          },
+          {
+            "sub": "প্রতিবেশীর দাবি বিশ্বাস করেই সে নিজের দূরত্ব হিসাব করে (Bellman-Ford)।"
+          },
+          {
+            "sub": "কেউ পুরো নেটওয়ার্ক দেখে না — তাই একে \"routing by rumour\" বলা হয়।"
           },
           {
             "sub": "সুবিধা: খুব সরল, কম CPU/RAM লাগে, ছোট নেটওয়ার্কে configure করা সহজ।"
           },
           {
-            "sub": "সীমাবদ্ধতা: ধীর convergence এবং Count-to-Infinity — link down হলে দুই router একে অপরের পুরনো তথ্য ফেরত দিয়ে loop তৈরি করে, metric বাড়তেই থাকে।"
+            "sub": "সীমাবদ্ধতা: convergence ধীর।"
           },
           {
-            "sub": "প্রতিকার: Split Horizon (যার কাছ থেকে route শিখেছি তাকে সেটি ফেরত পাঠাব না), Route Poisoning / Poison Reverse (metric = অসীম করে ঘোষণা), Hold-down timer ও Triggered update।"
+            "sub": "সীমাবদ্ধতা: Count-to-Infinity — link down হলে দুই router একে অপরের পুরনো তথ্য ফেরত দিয়ে loop তৈরি করে, metric বাড়তেই থাকে।"
+          },
+          {
+            "sub": "প্রতিকার ১ — Split Horizon: যার কাছ থেকে route শিখেছি, তাকে সেটি আর ফেরত পাঠাব না।"
+          },
+          {
+            "sub": "প্রতিকার ২ — Route Poisoning / Poison Reverse: metric অসীম করে ঘোষণা করা।"
+          },
+          {
+            "sub": "প্রতিকার ৩ — Hold-down timer ও Triggered update।"
           },
           "RIP — DVR-এর ক্লাসিক বাস্তবায়ন:",
           {
-            "sub": "কাজের নীতি: প্রতি ৩০ সেকেন্ডে পুরো routing table প্রতিবেশীকে পাঠায় (UDP port 520)। Metric = hop count, সর্বোচ্চ ১৫ — ১৬ মানে unreachable।"
+            "sub": "কাজের নীতি: প্রতি ৩০ সেকেন্ডে পুরো routing table প্রতিবেশীকে পাঠায় (UDP port 520)।"
+          },
+          {
+            "sub": "Metric = hop count, সর্বোচ্চ ১৫ — ১৬ মানে unreachable।"
           },
           {
             "sub": "সুবিধা: প্রায় সব vendor-এ চলে, শেখা ও বসানো সবচেয়ে সহজ, ছোট নেটওয়ার্কে যথেষ্ট।"
           },
           {
-            "sub": "সীমাবদ্ধতা: bandwidth দেখে না — ১ Mbps-এর ২ hop পথকে ১০০ Mbps-এর ৩ hop পথের চেয়ে ভালো মনে করে; ১৫ hop সীমা; পর্যায়ক্রমিক full update-এ bandwidth নষ্ট।"
+            "sub": "সীমাবদ্ধতা: bandwidth দেখে না — ১ Mbps-এর ২ hop পথকে ১০০ Mbps-এর ৩ hop পথের চেয়ে ভালো মনে করে।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: ১৫ hop-এর সীমা।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: পর্যায়ক্রমিক full update পাঠানোয় bandwidth নষ্ট হয়।"
           },
           {
             "sub": "ব্যবহার: খুব ছোট বা শিক্ষামূলক lab নেটওয়ার্ক; বাস্তব enterprise-এ এখন প্রায় অচল।"
           },
+          {
+            "diagram": "  [A]═══[B]═══[C]═══[D]\n         │\n         └─ B শুধু জানে: \"A বলল D = 2 hop\" → B লেখে D = 3 hop\n            B কখনো C-D link-এর গতি বা অবস্থা দেখে না\n\n  প্রবাহ:  প্রতি 30s ─► পুরো table ─► শুধু direct neighbor\n\n  Count-to-Infinity (A-B link ছিঁড়ল):\n    B: \"A নেই... কিন্তু C বলছে A = 2 hop\"  → B: A = 3\n    C: \"তাহলে B হয়ে A = 4\"                → C: A = 4\n    B: 5 → C: 6 → ... 16 (= অসীম) না হওয়া পর্যন্ত চলে\n    প্রতিকার: Split Horizon · Poison Reverse · Hold-down",
+            "label": "Diagram — DVR / RIP (প্রতিবেশীর কথা শুনে, Bellman-Ford)"
+          },
           "OSPF — Link State:",
           {
-            "sub": "কাজের নীতি: প্রতিটি router তার সংযোগগুলোর তথ্য (LSA) পুরো area-তে flood করে; সবাই মিলে একই LSDB (নেটওয়ার্কের মানচিত্র) বানায়, তারপর প্রত্যেকে নিজে Dijkstra (SPF) চালিয়ে shortest path বের করে। Metric = cost, যা bandwidth-ভিত্তিক।"
+            "sub": "কাজের নীতি: প্রতিটি router তার সংযোগগুলোর তথ্য (LSA) পুরো area-তে flood করে।"
           },
           {
-            "sub": "সুবিধা: দ্রুত convergence, loop-free, VLSM/CIDR সমর্থন, Area দিয়ে বড় নেটওয়ার্ককে ভাগ করা যায় (সব area backbone Area 0-এর সাথে যুক্ত), এবং এটি open standard — যেকোনো vendor-এ চলে।"
+            "sub": "সবাই মিলে একই LSDB (নেটওয়ার্কের মানচিত্র) বানায়।"
           },
           {
-            "sub": "সীমাবদ্ধতা: CPU ও memory বেশি খায় (পুরো LSDB রাখতে হয়), design/configuration জটিল — area পরিকল্পনা, DR/BDR নির্বাচন ইত্যাদি বুঝতে হয়।"
+            "sub": "তারপর প্রত্যেকে নিজে Dijkstra (SPF) চালিয়ে shortest path বের করে।"
           },
           {
-            "sub": "ব্যবহার: ব্যাংক, এন্টারপ্রাইজ ও ডাটা সেন্টারের ভেতরের routing — যেখানে বহু-vendor সরঞ্জাম এবং বড় topology।"
+            "sub": "Metric = cost, যা bandwidth-ভিত্তিক।"
+          },
+          {
+            "sub": "সুবিধা: দ্রুত convergence এবং loop-free।"
+          },
+          {
+            "sub": "সুবিধা: VLSM/CIDR সমর্থন করে।"
+          },
+          {
+            "sub": "সুবিধা: Area দিয়ে বড় নেটওয়ার্ককে ভাগ করা যায় (সব area backbone Area 0-এর সাথে যুক্ত থাকে)।"
+          },
+          {
+            "sub": "সুবিধা: এটি open standard — যেকোনো vendor-এ চলে।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: CPU ও memory বেশি খায়, কারণ পুরো LSDB ধরে রাখতে হয়।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: design ও configuration জটিল — area পরিকল্পনা, DR/BDR নির্বাচন ইত্যাদি বুঝতে হয়।"
+          },
+          {
+            "sub": "ব্যবহার: ব্যাংক, এন্টারপ্রাইজ ও ডাটা সেন্টারের ভেতরের routing — যেখানে বহু-vendor সরঞ্জাম ও বড় topology।"
+          },
+          {
+            "diagram": "  ধাপ ১: Hello ─► প্রতিবেশী আবিষ্কার\n  ধাপ ২: LSA flood ─► সবার কাছে নিজের link-তথ্য\n  ধাপ ৩: সবাই একই LSDB (মানচিত্র) বানায়\n  ধাপ ৪: প্রত্যেকে নিজে Dijkstra (SPF) চালায়\n\n            cost=1          cost=10\n       A ───────────── B ───────────── C\n        \\ cost=3                cost=3 /\n         ───────────── D ─────────────\n\n     A→B→C = 11   |   A→D→C = 6  ← নির্বাচিত\n     গুজব নেই — নিজের মানচিত্র দেখে সিদ্ধান্ত",
+            "label": "Diagram — OSPF (সবাই একই মানচিত্র, নিজে হিসাব)"
           },
           "EIGRP — Advanced Distance Vector (Hybrid):",
           {
-            "sub": "কাজের নীতি: DVR-এর মতোই প্রতিবেশীর কাছ থেকে শেখে, কিন্তু DUAL অ্যালগরিদম চালায়। এটি তিনটি table রাখে — Neighbor, Topology, Routing। Topology table-এ best path (Successor) ছাড়াও যাচাই করা backup path (Feasible Successor) আগে থেকেই রাখা থাকে।"
+            "sub": "কাজের নীতি: DVR-এর মতোই প্রতিবেশীর কাছ থেকে শেখে, কিন্তু DUAL অ্যালগরিদম চালায়।"
           },
           {
-            "sub": "সুবিধা: link fail করলে Feasible Successor-এ প্রায় সঙ্গে সঙ্গে switch করে — পুনরায় হিসাব লাগে না, তাই convergence সবচেয়ে দ্রুত। Update পাঠায় শুধু পরিবর্তন হলে এবং শুধু প্রভাবিত router-কে (partial + bounded)। Metric = bandwidth + delay মিলিয়ে, তাই RIP-এর চেয়ে বাস্তবসম্মত। Unequal-cost load balancing (variance) করতে পারে — যা OSPF পারে না।"
+            "sub": "এটি তিনটি table রাখে — Neighbor, Topology ও Routing।"
           },
           {
-            "sub": "সীমাবদ্ধতা: মূলত Cisco-নির্ভর (২০১৩-তে RFC 7868 প্রকাশিত হলেও অন্য vendor-এ প্রায় নেই) — তাই vendor lock-in। Feasible Successor না থাকলে router route-টিকে Active করে প্রতিবেশীদের query পাঠায়; উত্তর না এলে SIA (Stuck-In-Active) সমস্যা হয়।"
+            "sub": "Topology table-এ best path (Successor) ছাড়াও যাচাই করা backup path (Feasible Successor) আগে থেকেই রাখা থাকে।"
+          },
+          {
+            "sub": "সুবিধা: link fail করলে Feasible Successor-এ প্রায় সঙ্গে সঙ্গে switch করে — নতুন করে হিসাব লাগে না।"
+          },
+          {
+            "sub": "তাই EIGRP-র convergence সবচেয়ে দ্রুত।"
+          },
+          {
+            "sub": "সুবিধা: update পাঠায় শুধু পরিবর্তন হলে, এবং শুধু প্রভাবিত router-কে (partial + bounded)।"
+          },
+          {
+            "sub": "সুবিধা: Metric = bandwidth ও delay মিলিয়ে হিসাব হয়, তাই RIP-এর চেয়ে বাস্তবসম্মত।"
+          },
+          {
+            "sub": "সুবিধা: Unequal-cost load balancing (variance) করতে পারে — যা OSPF পারে না।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: মূলত Cisco-নির্ভর — ২০১৩-তে RFC 7868 প্রকাশিত হলেও অন্য vendor-এ প্রায় নেই, তাই vendor lock-in।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: Feasible Successor না থাকলে router route-টিকে Active করে প্রতিবেশীদের query পাঠায়।"
+          },
+          {
+            "sub": "সেই query-র উত্তর না এলে SIA (Stuck-In-Active) সমস্যা হয়।"
           },
           {
             "sub": "ব্যবহার: পুরোপুরি Cisco-ভিত্তিক enterprise ও WAN নেটওয়ার্ক, যেখানে দ্রুত failover দরকার।"
           },
+          {
+            "diagram": "  Topology Table (গন্তব্য X-এর জন্য):\n  ┌──────────────────────────────────────────────┐\n  │ পথ ১ : B হয়ে,  metric 20  ← SUCCESSOR (চালু) │\n  │ পথ ২ : C হয়ে,  metric 30  ← FEASIBLE SUCC.   │ ← যাচাই করা backup\n  │ পথ ৩ : D হয়ে,  metric 45  (শর্ত মানে না)      │\n  └──────────────────────────────────────────────┘\n\n  B-র link fail ─►  সঙ্গে সঙ্গে পথ ২ চালু (হিসাব লাগে না)\n  Feasible Successor না থাকলে ─► route ACTIVE ─► প্রতিবেশীকে\n  Query ─► উত্তর না এলে SIA (Stuck-In-Active)",
+            "label": "Diagram — EIGRP (DUAL, backup আগেই তৈরি)"
+          },
           "BGP — Path Vector (আন্তঃ-AS):",
           {
-            "sub": "কাজের নীতি: দূরত্ব নয়, গন্তব্যে পৌঁছাতে কোন কোন AS পার হতে হবে সেই পুরো AS_PATH বিজ্ঞাপন করে। নিজের AS নম্বর path-এ দেখলেই সেটি বাদ দেয় — এভাবেই loop ঠেকে। TCP port 179-এ session গড়ে শুধু পরিবর্তন (incremental update) পাঠায়।"
+            "sub": "কাজের নীতি: দূরত্ব নয়, গন্তব্যে পৌঁছাতে কোন কোন AS পার হতে হবে সেই পুরো AS_PATH বিজ্ঞাপন করে।"
           },
           {
-            "sub": "সুবিধা: বিপুল আকারে scale করে (ইন্টারনেটের ~১০ লক্ষ route), এবং path নির্বাচন policy দিয়ে নিয়ন্ত্রণ করা যায় (Local Preference, AS_PATH length, MED) — অর্থাৎ ব্যবসায়িক চুক্তি অনুযায়ী route বাছা যায়, যা কোনো IGP পারে না।"
+            "sub": "নিজের AS নম্বর path-এ দেখলেই সেটি বাদ দেয় — এভাবেই loop ঠেকে।"
           },
           {
-            "sub": "সীমাবদ্ধতা: convergence খুব ধীর, configuration জটিল, বিশাল table-এ প্রচুর memory লাগে; এবং নকশাগতভাবে অনিরাপদ — ভুল বা উদ্দেশ্যমূলক ঘোষণায় route hijack হয় (প্রতিকার: RPKI, prefix filtering)।"
+            "sub": "TCP port 179-এ session গড়ে শুধু পরিবর্তন (incremental update) পাঠায়।"
           },
           {
-            "sub": "ব্যবহার: ISP-দের মধ্যে ইন্টারনেট routing; প্রতিষ্ঠানের multi-homing — দুই ISP নিলে BGP দিয়েই route ঘোষণা ও failover হয়।"
+            "sub": "সুবিধা: বিপুল আকারে scale করে — ইন্টারনেটের প্রায় ১০ লক্ষ route সামলায়।"
+          },
+          {
+            "sub": "সুবিধা: path নির্বাচন policy দিয়ে নিয়ন্ত্রণ করা যায় (Local Preference, AS_PATH length, MED)।"
+          },
+          {
+            "sub": "অর্থাৎ ব্যবসায়িক চুক্তি অনুযায়ী route বাছা যায় — যা কোনো IGP পারে না।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: convergence খুব ধীর।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: configuration জটিল এবং বিশাল table-এ প্রচুর memory লাগে।"
+          },
+          {
+            "sub": "সীমাবদ্ধতা: নকশাগতভাবে অনিরাপদ — ভুল বা উদ্দেশ্যমূলক ঘোষণায় route hijack হয় (প্রতিকার: RPKI, prefix filtering)।"
+          },
+          {
+            "sub": "ব্যবহার: ISP-দের মধ্যে ইন্টারনেট routing।"
+          },
+          {
+            "sub": "ব্যবহার: প্রতিষ্ঠানের multi-homing — দুই ISP নিলে BGP দিয়েই route ঘোষণা ও failover হয়।"
+          },
+          {
+            "diagram": "   [AS 100]──eBGP──[AS 200]──eBGP──[AS 300]\n    আপনার ISP        মধ্যবর্তী        গন্তব্য\n\n   ঘোষণা: \"203.0.113.0/24 পেতে AS_PATH = 200 300\"\n   AS 100 নিজের নম্বর path-এ দেখলে ─► loop ─► বাতিল\n   নির্বাচন দূরত্ব নয়, policy-তে: Local Pref → AS_PATH দৈর্ঘ্য → MED\n\n─────────── at-a-glance ───────────\n  পরিধি   :  RIP · OSPF · EIGRP = AS-এর ভেতরে (IGP)\n            BGP = AS-এর মধ্যে (EGP)\n  দৃষ্টি   :  RIP/EIGRP = প্রতিবেশীর কথা | OSPF = নিজের মানচিত্র\n            BGP = পুরো AS-পথের তালিকা\n  গতি     :  EIGRP > OSPF > RIP > BGP  (convergence)\n  পরিসর   :  BGP > OSPF ≈ EIGRP > RIP  (scale)",
+            "label": "Diagram — BGP (Path Vector, AS থেকে AS)"
           },
           "নির্বাচনের সূত্র (কোনটি কখন):",
           {
-            "sub": "নেটওয়ার্ক ছোট ও সরল → RIP; বড়, বহু-vendor ও এক প্রতিষ্ঠানের ভেতরে → OSPF; পুরো Cisco এবং দ্রুততম failover চাই → EIGRP; অন্য প্রতিষ্ঠান/ISP-এর সাথে সংযোগ বা multi-homing → BGP।"
+            "sub": "নেটওয়ার্ক ছোট ও সরল হলে → RIP।"
           },
           {
-            "sub": "একসাথেও চলে: বাস্তব নেটওয়ার্কে ভেতরে OSPF/EIGRP (IGP) আর প্রান্তে ISP-র দিকে BGP (EGP) — দুটি স্তরে দুই ধরনের protocol।"
+            "sub": "বড়, বহু-vendor ও এক প্রতিষ্ঠানের ভেতরে হলে → OSPF।"
+          },
+          {
+            "sub": "পুরোপুরি Cisco এবং দ্রুততম failover চাইলে → EIGRP।"
+          },
+          {
+            "sub": "অন্য প্রতিষ্ঠান/ISP-এর সাথে সংযোগ বা multi-homing হলে → BGP।"
+          },
+          {
+            "sub": "একসাথেও চলে: বাস্তব নেটওয়ার্কে ভেতরে OSPF/EIGRP (IGP), আর প্রান্তে ISP-র দিকে BGP (EGP)।"
+          },
+          {
+            "sub": "অর্থাৎ দুই স্তরে দুই ধরনের protocol একসাথে ব্যবহৃত হয়।"
           }
         ],
-        "diagram": "১. DVR / RIP — প্রতিবেশীর কথা শুনে (Bellman-Ford)\n──────────────────────────────────────────────────\n  [A]═══[B]═══[C]═══[D]\n         │\n         └─ B শুধু জানে: \"A বলল D = 2 hop\" → B লেখে D = 3 hop\n            B কখনো C-D link-এর গতি বা অবস্থা দেখে না ✗\n\n  প্রবাহ:  প্রতি 30s ─► পুরো table ─► শুধু direct neighbor\n\n  Count-to-Infinity (A-B link ছিঁড়ল):\n    B: \"A নেই... কিন্তু C বলছে A = 2 hop\"  → B: A = 3\n    C: \"তাহলে B হয়ে A = 4\"                → C: A = 4\n    B: 5 → C: 6 → ... 16 (= অসীম) না হওয়া পর্যন্ত চলে ✗\n    প্রতিকার: Split Horizon · Poison Reverse · Hold-down\n\n\n২. OSPF — Link State (সবাই একই মানচিত্র, নিজে হিসাব)\n──────────────────────────────────────────────────\n  ধাপ ১: Hello ─► প্রতিবেশী আবিষ্কার\n  ধাপ ২: LSA flood ─► সবার কাছে নিজের link-তথ্য\n  ধাপ ৩: সবাই একই LSDB (মানচিত্র) বানায়\n  ধাপ ৪: প্রত্যেকে নিজে Dijkstra (SPF) চালায়\n\n            cost=1          cost=10\n       A ───────────── B ───────────── C\n        \\ cost=3                cost=3 /\n         ───────────── D ─────────────\n\n     A→B→C = 11   |   A→D→C = 6  ← নির্বাচিত ✓\n     গুজব নেই — নিজের মানচিত্র দেখে সিদ্ধান্ত\n\n\n৩. EIGRP — DUAL (backup আগেই তৈরি)\n──────────────────────────────────────────────────\n  Topology Table (গন্তব্য X-এর জন্য):\n  ┌──────────────────────────────────────────────┐\n  │ পথ ১ : B হয়ে,  metric 20  ← SUCCESSOR (চালু) │\n  │ পথ ২ : C হয়ে,  metric 30  ← FEASIBLE SUCC.   │ ← যাচাই করা backup\n  │ পথ ৩ : D হয়ে,  metric 45  (শর্ত মানে না)      │\n  └──────────────────────────────────────────────┘\n\n  B-র link fail ─►  সঙ্গে সঙ্গে পথ ২ চালু (হিসাব লাগে না) ✓\n  Feasible Successor না থাকলে ─► route ACTIVE ─► প্রতিবেশীকে\n  Query ─► উত্তর না এলে SIA (Stuck-In-Active) ✗\n\n\n৪. BGP — Path Vector (AS থেকে AS)\n──────────────────────────────────────────────────\n   [AS 100]──eBGP──[AS 200]──eBGP──[AS 300]\n    আপনার ISP        মধ্যবর্তী        গন্তব্য\n\n   ঘোষণা: \"203.0.113.0/24 পেতে AS_PATH = 200 300\"\n   AS 100 নিজের নম্বর path-এ দেখলে ─► loop ─► বাতিল\n   নির্বাচন দূরত্ব নয়, policy-তে: Local Pref → AS_PATH দৈর্ঘ্য → MED\n\n\n─────────── at-a-glance ───────────\n  পরিধি   :  RIP · OSPF · EIGRP = AS-এর ভেতরে (IGP)\n            BGP = AS-এর মধ্যে (EGP)\n  দৃষ্টি   :  RIP/EIGRP = প্রতিবেশীর কথা | OSPF = নিজের মানচিত্র\n            BGP = পুরো AS-পথের তালিকা\n  গতি     :  EIGRP > OSPF > RIP > BGP  (convergence)\n  পরিসর   :  BGP > OSPF ≈ EIGRP > RIP  (scale)",
         "table": {
           "headers": [
             "দিক",

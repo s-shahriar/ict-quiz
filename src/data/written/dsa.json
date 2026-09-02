@@ -17,17 +17,41 @@
           "Recursion tree সম্পূর্ণ skewed হয়ে n level গভীর হয়।"
         ],
         "points": [
-          "Sorted array তে first element সবসময় সবচেয়ে ছোট → প্রতিটি partition এ left=0, right=n−1",
-          "Recurrence: T(n) = T(0) + T(n−1) + O(n) → সমাধান: T(n) = O(n²)",
-          "মোট comparisons = (n−1)+(n−2)+...+1 = n(n−1)/2 = O(n²)",
-          "Recursion tree সম্পূর্ণ skewed (একদিকে হেলে) → n level গভীর",
-          "এটি Quicksort এর worst case — average case O(n log n) থেকে অনেক খারাপ",
-          "ব্যবহারিক প্রয়োগ:",
+          "কেন এটি worst case:",
           {
-            "sub": "বাস্তবে যা করা হয়: pivot হিসেবে random element বা median-of-three নেওয়া হয়, ফলে sorted input এও গড়ে O(n log n) থাকে।"
+            "sub": "Sorted array-তে first element সবসময় সবচেয়ে ছোট।"
           },
           {
-            "sub": "Library তে: C এর qsort ও Java এর primitive sort (dual-pivot quicksort) এভাবেই লেখা; C++ এর introsort recursion গভীর হলে heapsort এ সরে গিয়ে O(n²) পুরোপুরি ঠেকায়।"
+            "sub": "তাই প্রতিটি partition-এ left = 0 আর right = n−1 হয় — কোনো ভাগই সমান হয় না।"
+          },
+          {
+            "sub": "Recursion tree সম্পূর্ণ skewed (একদিকে হেলে) হয়ে n level গভীর হয়।"
+          },
+          "হিসাব:",
+          {
+            "sub": "Recurrence: T(n) = T(0) + T(n−1) + O(n)।"
+          },
+          {
+            "sub": "সমাধান করলে T(n) = O(n²)।"
+          },
+          {
+            "sub": "মোট comparisons = (n−1) + (n−2) + … + 1 = n(n−1)/2 = O(n²)।"
+          },
+          {
+            "sub": "এটিই Quicksort-এর worst case — average case O(n log n)-এর চেয়ে অনেক খারাপ।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "বাস্তবে pivot হিসেবে random element বা median-of-three নেওয়া হয়।"
+          },
+          {
+            "sub": "ফলে sorted input-এও গড়ে O(n log n) থাকে।"
+          },
+          {
+            "sub": "C-এর qsort ও Java-এর primitive sort (dual-pivot quicksort) এভাবেই লেখা।"
+          },
+          {
+            "sub": "C++-এর introsort recursion গভীর হলে heapsort-এ সরে গিয়ে O(n²) পুরোপুরি ঠেকায়।"
           }
         ],
         "diagram": " Sorted: [1, 2, 3, 4, 5],  pivot = first element\n\n Step 1:  pivot=1  │ left=[]  right=[2,3,4,5]  │ 4 comparisons\n Step 2:  pivot=2  │ left=[]  right=[3,4,5]    │ 3 comparisons\n Step 3:  pivot=3  │ left=[]  right=[4,5]      │ 2 comparisons\n Step 4:  pivot=4  │ left=[]  right=[5]        │ 1 comparison\n                                         Total = 4+3+2+1 = 10 = O(n²)\n\n Recursion tree (সম্পূর্ণ skewed):\n        [1,2,3,4,5]                   ← depth 1\n       /             \\\n     []           [2,3,4,5]           ← depth 2\n                 /           \\\n               []          [3,4,5]    ← depth 3\n                           /      \\\n                         []      [4,5]← depth 4\n                                /    \\\n                              []     [5] ← depth 5\n n level গভীর → O(n²)",
@@ -94,17 +118,45 @@
           "In-place sorting — extra memory লাগে না (O(1) space)।"
         ],
         "points": [
-          "প্রতিটি pass এ পাশাপাশি দুটো element compare করা হয়, wrong order হলে swap করা হয়",
-          "এক pass এ সবচেয়ে বড় element array এর শেষে settle করে (বুদবুদের মতো ভেসে ওঠে)",
-          "n element এর জন্য সর্বোচ্চ n−1 pass লাগে",
-          "Worst case: O(n²) — reverse sorted array। Best case: O(n) — already sorted",
-          "In-place sorting → extra memory লাগে না: O(1) space",
-          "ব্যবহারিক প্রয়োগ:",
+          "Bubble Sort কীভাবে কাজ করে:",
           {
-            "sub": "কোথায় কোনটি: Bubble sort বাস্তব software এ ব্যবহার হয় না — শুধু শেখার জন্য বা খুব ছোট, প্রায়-সাজানো তালিকায়।"
+            "sub": "প্রতিটি pass-এ পাশাপাশি দুটো element compare করা হয়।"
           },
           {
-            "sub": "Merge sort দুই জায়গায় অপরিহার্য: RAM এ ধরে না এমন বিশাল file sort করা (external merge sort — database ও log processing এ), এবং stable sort দরকার হলে (Java এর Collections.sort/Timsort এর ভিত্তিই merge sort)।"
+            "sub": "Wrong order হলে তাদের swap করা হয়।"
+          },
+          {
+            "sub": "এক pass শেষে সবচেয়ে বড় element array-এর শেষে settle করে — বুদবুদের মতো ভেসে ওঠে।"
+          },
+          {
+            "sub": "n element-এর জন্য সর্বোচ্চ n−1 pass লাগে।"
+          },
+          "Complexity:",
+          {
+            "sub": "Worst case O(n²) — reverse sorted array।"
+          },
+          {
+            "sub": "Best case O(n) — already sorted array।"
+          },
+          {
+            "sub": "In-place sorting — extra memory লাগে না, O(1) space।"
+          },
+          "large dataset-এ কেন Merge Sort ভালো:",
+          {
+            "sub": "Merge Sort-এর complexity O(n log n)।"
+          },
+          {
+            "sub": "n বড় হলে O(n²)-এর সাথে ব্যবধান বিপুল হয়ে যায় — তাই Bubble Sort সেখানে অচল।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Bubble sort বাস্তব software-এ ব্যবহার হয় না — শুধু শেখার জন্য, বা খুব ছোট ও প্রায়-সাজানো তালিকায়।"
+          },
+          {
+            "sub": "Merge sort লাগে RAM-এ ধরে না এমন বিশাল file sort করতে — external merge sort, database ও log processing-এ।"
+          },
+          {
+            "sub": "Stable sort দরকার হলেও merge sort — Java-এর Collections.sort/Timsort-এর ভিত্তিই merge sort।"
           }
         ],
         "diagram": " Initial: [5, 3, 8, 1]\n\n Pass 1:\n  [5, 3, 8, 1] → 5>3 swap  → [3, 5, 8, 1]\n  [3, 5, 8, 1] → 5<8 no    → [3, 5, 8, 1]\n  [3, 5, 8, 1] → 8>1 swap  → [3, 5, 1, 8]  ✓ 8 settled\n\n Pass 2:\n  [3, 5, 1, 8] → 3<5 no    → [3, 5, 1, 8]\n  [3, 5, 1, 8] → 5>1 swap  → [3, 1, 5, 8]  ✓ 5 settled\n\n Pass 3:\n  [3, 1, 5, 8] → 3>1 swap  → [1, 3, 5, 8]  ✓ 3 settled\n\n Result: [1, 3, 5, 8] ✅",
@@ -171,19 +223,50 @@
           "Degree sequence না মিললে bijection সম্ভব নয় → NOT isomorphic।"
         ],
         "points": [
-          "Step 1 — Vertex count: Graph-3 = 6টি, Graph-4 = 6টি ✅ (মিলেছে, কিন্তু এটাই যথেষ্ট নয়)",
-          "Step 2 — Edge count: দুটোরই সমান কিনা চেক করো (এই ধাপেও মিলতে পারে)",
-          "Step 3 — Degree sequence: Graph-3 = (3,3,2,2,3,3) → sort করলে [2,2,3,3,3,3]; Graph-4 = (2,3,3,2,2,3) → sort করলে [2,2,2,3,3,3]",
-          "Sorted sequence মেলাও: [2,2,3,3,3,3] ≠ [2,2,2,3,3,3] ❌ — এখানেই বাদ!",
-          "Graph-3 এ degree-3 vertex = 4টি (u1,u2,u3,u6), degree-2 vertex = 2টি (u4,u5)",
-          "Graph-4 এ degree-3 vertex = 3টি (v2,v3,v6), degree-2 vertex = 3টি (v1,v4,v5)",
-          "∴ Degree sequence ভিন্ন → isomorphic bijection কখনো সম্ভব নয় → NOT ISOMORPHIC ✅",
-          "ব্যবহারিক প্রয়োগ:",
+          "ধাপে ধাপে যাচাই:",
           {
-            "sub": "রসায়নে দুটি যৌগের গঠন এক কিনা মেলানো (molecular structure matching), electronic circuit বা network topology একই নকশার কিনা যাচাই, এবং pattern/fingerprint মেলানো।"
+            "sub": "Step 1 — Vertex count: Graph-3 = 6টি, Graph-4 = 6টি। মিলেছে, কিন্তু এটাই যথেষ্ট নয়।"
           },
           {
-            "sub": "Degree sequence আগে মেলানো হয় কারণ এটি সস্তা — না মিললেই সাথে সাথে \"not isomorphic\" বলা যায়, ব্যয়বহুল bijection খোঁজার দরকারই পড়ে না।"
+            "sub": "Step 2 — Edge count: দুটোর সমান কিনা দেখো (এই ধাপেও মিলে যেতে পারে)।"
+          },
+          {
+            "sub": "Step 3 — Degree sequence sort করে মেলাও।"
+          },
+          {
+            "sub": "Graph-3 = (3,3,2,2,3,3) → sort করলে [2,2,3,3,3,3]।"
+          },
+          {
+            "sub": "Graph-4 = (2,3,3,2,2,3) → sort করলে [2,2,2,3,3,3]।"
+          },
+          {
+            "sub": "[2,2,3,3,3,3] ≠ [2,2,2,3,3,3] — এখানেই বাদ!"
+          },
+          "গুনে দেখলে পার্থক্যটা স্পষ্ট:",
+          {
+            "sub": "Graph-3-এ degree-3 vertex = 4টি (u1, u2, u3, u6), degree-2 vertex = 2টি (u4, u5)।"
+          },
+          {
+            "sub": "Graph-4-এ degree-3 vertex = 3টি (v2, v3, v6), degree-2 vertex = 3টি (v1, v4, v5)।"
+          },
+          {
+            "sub": "Degree sequence ভিন্ন হলে isomorphic bijection কখনো সম্ভব নয় → NOT ISOMORPHIC।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "রসায়নে দুটি যৌগের গঠন এক কিনা মেলানো (molecular structure matching)।"
+          },
+          {
+            "sub": "Electronic circuit বা network topology একই নকশার কিনা যাচাই করা।"
+          },
+          {
+            "sub": "Pattern ও fingerprint মেলানো।"
+          },
+          {
+            "sub": "Degree sequence আগে মেলানো হয় কারণ এটি সস্তা — না মিললেই সাথে সাথে \"not isomorphic\" বলা যায়।"
+          },
+          {
+            "sub": "তখন ব্যয়বহুল bijection খোঁজার দরকারই পড়ে না।"
           }
         ],
         "diagram": "Degree Sequence তুলনা:\n──────────────────────────────────────────────\n         Graph-3 (u)      Graph-4 (v)\n──────────────────────────────────────────────\nu1 → deg 3    v1 → deg 2\nu2 → deg 3    v2 → deg 3\nu3 → deg 2    v3 → deg 3\nu4 → deg 2    v4 → deg 2\nu5 → deg 3    v5 → deg 2\nu6 → deg 3    v6 → deg 3\n──────────────────────────────────────────────\nSorted:  [2,2,3,3,3,3]   [2,2,2,3,3,3]\n                    ❌ DIFFERENT!\n\nGraph-3: degree-3 আছে ৪টি\nGraph-4: degree-3 আছে ৩টি\n\n∴ NOT ISOMORPHIC\n\nমনে রাখো — Isomorphism চেক ধাপ:\n V count → E count → Degree Seq → Bijection\n যেকোনো ধাপে ❌ = NOT isomorphic, থামো!",
@@ -221,25 +304,48 @@
           "কারণ মাঝের element দেখে কোনদিকে যাবে সেটা unsorted এ বলা সম্ভব নয়।"
         ],
         "points": [
-          "low = 0, high = n−1 দিয়ে শুরু করো।",
-          "যতক্ষণ low ≤ high: mid = (high − low) / 2 বের করো।",
+          "Binary Search-এর ধাপ:",
           {
-            "sub": "arr[mid] == target → return mid ✅"
+            "sub": "low = 0, high = n−1 দিয়ে শুরু করো।"
           },
           {
-            "sub": "arr[mid] < target → low = mid + 1 (ডানে যাও)"
+            "sub": "যতক্ষণ low ≤ high: mid = low + (high − low) / 2 বের করো।"
           },
           {
-            "sub": "arr[mid] > target → high = mid − 1 (বামে যাও)"
+            "sub": "arr[mid] == target → return mid।"
           },
-          "লুপ শেষে target না পেলে return −1 ❌",
-          "Unsorted এ fail কেন: mid দেখে বাম/ডান decide করা হয় — unsorted এ সেই assumption ভুল, তাই element miss হয়।",
+          {
+            "sub": "arr[mid] < target → low = mid + 1, অর্থাৎ ডানদিকে যাও।"
+          },
+          {
+            "sub": "arr[mid] > target → high = mid − 1, অর্থাৎ বামদিকে যাও।"
+          },
+          {
+            "sub": "লুপ শেষেও না পেলে return −1।"
+          },
+          "প্রতিবার অর্ধেক বাদ পড়ে বলেই খরচ O(log n)।",
+          "Unsorted array-তে কেন fail করে:",
+          {
+            "sub": "mid দেখে বাম না ডান — এই সিদ্ধান্তটাই নেওয়া হয় \"array sorted\" ধরে নিয়ে।"
+          },
+          {
+            "sub": "Unsorted-এ সেই assumption ভুল, তাই যে অর্ধেক বাদ দেওয়া হলো তার ভেতরেই target থাকতে পারে।"
+          },
+          {
+            "sub": "ফলে element থাকা সত্ত্বেও miss হয়ে যায়।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "database index এর ভেতরে key খোঁজা, sorted log file এ timestamp ধরে খোঁজা, dictionary ও phonebook lookup।"
+            "sub": "Database index-এর ভেতরে key খোঁজা।"
           },
           {
-            "sub": "একটু ভিন্ন রূপে: git bisect দিয়ে কোন commit এ bug ঢুকেছে বের করা — commit গুলোকে sorted ধরে প্রতিবার অর্ধেক বাদ দেওয়াই binary search।"
+            "sub": "Sorted log file-এ timestamp ধরে খোঁজা।"
+          },
+          {
+            "sub": "Dictionary ও phonebook lookup।"
+          },
+          {
+            "sub": "git bisect — commit গুলোকে sorted ধরে প্রতিবার অর্ধেক বাদ দিয়ে কোন commit-এ bug ঢুকেছে বের করা।"
           }
         ],
         "diagram": "Array: [2, 5, 8, 12, 16, 23, 38, 42]  Target = 23\nIndex:  0  1  2   3   4   5   6   7\n\nRound 1: low=0, high=7 → mid=3 → arr[3]=12 < 23 → low=4\n         [_, _, _, _, 16, 23, 38, 42]\n\nRound 2: low=4, high=7 → mid=5 → arr[5]=23 == 23 ✅ FOUND!\n         [_, _, _, _, _, 23, _, _]\n\nমাত্র 2 step এ পাওয়া গেল (Linear Search এ 6 step লাগত)\n\nUnsorted এ fail:\nArray: [5, 23, 2, 38, 12]  Target = 12\nmid=2 → arr[2]=2 < 12 → low=3 (ডানে যাও)\nকিন্তু 12 আছে index 4 এ, 38 এর পরে → miss! ❌",
@@ -263,14 +369,59 @@
           "তাহলে order উল্টে যায় এবং FIFO হয় — amortized O(1) complexity।"
         ],
         "points": [
-          "Stack1 = Inbox (নতুন element ঢোকে), Stack2 = Outbox (element বের হয়)",
-          "Enqueue(x): সরাসরি Stack1 তে push করো — O(1)",
-          "Dequeue: Stack2 খালি থাকলে Stack1 এর সব element Stack2 তে push করো (order উল্টে যায়), তারপর Stack2 থেকে pop করো",
-          "কেন কাজ করে: Stack1 তে [1,2,3] থাকলে (3 উপরে), Stack2 তে ঢাললে হয় [3,2,1] (1 উপরে) → pop করলে 1 বের হয় = FIFO ✅",
-          "Dequeue time complexity: Amortized O(1) — প্রতিটি element একবার Stack1 এ push, একবার Stack2 এ push, একবার pop → মোট 3 operation।",
-          "খেয়াল করো: Enqueue(40) এর পর dequeue করলে 40 নয়, S2 তে পড়ে থাকা 30 আগে বেরোয় — S2 খালি না হওয়া পর্যন্ত S1 ছোঁয়াই হয় না। এটাই FIFO ঠিক রাখে।"
+          "দুই Stack-এর ভূমিকা:",
+          {
+            "sub": "Stack1 = Inbox — নতুন element এখানে ঢোকে।"
+          },
+          {
+            "sub": "Stack2 = Outbox — element এখান থেকে বের হয়।"
+          },
+          "Enqueue(x) — O(1):",
+          {
+            "sub": "সরাসরি Stack1-এ push করো, আর কিছুই করতে হয় না।"
+          },
+          "Dequeue:",
+          {
+            "sub": "Stack2 খালি না থাকলে সরাসরি Stack2 থেকে pop করো।"
+          },
+          {
+            "sub": "Stack2 খালি হলে আগে Stack1-এর সব element এক এক করে Stack2-তে push করো — এতে order উল্টে যায়।"
+          },
+          {
+            "sub": "তারপর Stack2 থেকে pop করো।"
+          },
+          "কেন কাজ করে:",
+          {
+            "sub": "Stack1-এ [1,2,3] থাকলে 3 উপরে থাকে (LIFO)।"
+          },
+          {
+            "sub": "Stack2-তে ঢাললে হয় [3,2,1] — এবার 1 উপরে।"
+          },
+          {
+            "sub": "pop করলে 1 বেরোয়, অর্থাৎ যে আগে ঢুকেছিল সে আগে বেরোলো — এটাই FIFO।"
+          },
+          "Complexity — amortized O(1):",
+          {
+            "sub": "প্রতিটি element জীবনে একবারই Stack1-এ push হয়।"
+          },
+          {
+            "sub": "একবারই Stack2-তে push হয়, আর একবারই pop হয়।"
+          },
+          {
+            "sub": "অর্থাৎ element প্রতি মোট 3টি operation — গড়ে O(1)।"
+          },
+          "একটা ফাঁদ খেয়াল করো:",
+          {
+            "sub": "Enqueue(40)-এর পর dequeue করলে 40 বেরোয় না।"
+          },
+          {
+            "sub": "S2-তে পড়ে থাকা পুরনো 30 আগে বেরোয়।"
+          },
+          {
+            "sub": "S2 খালি না হওয়া পর্যন্ত S1 ছোঁয়াই হয় না — এটাই FIFO ঠিক রাখে।"
+          }
         ],
-        "diagram": "Enqueue 1, 2, 3:\n  Stack1: [1, 2, 3]  (3 is top)\n  Stack2: []\n\nDequeue (Stack2 খালি → Stack1 উল্টাও):\n  Stack1 → Stack2:\n  Stack1: []          Stack2: [3, 2, 1]  (1 is top)\n\n  Stack2.pop() = 1  ← Queue এর front ✅ FIFO!\n\nDequeue আবার (Stack2 এখনো আছে):\n  Stack2.pop() = 2  ✅\n\nEnqueue 4 (Stack1 এ যাবে):\n  Stack1: [4]     Stack2: [3]\n  Dequeue: Stack2.pop() = 3 ✅ (Stack1 উল্টানো লাগেনি)\n\n────────────────────────────────────────\nALGORITHM\n\nENQUEUE(ITEM)                DEQUEUE()\n  1. Push ITEM into S1         1. If S2 খালি:\n  2. Return                         while S1 খালি নয়:\n                                        Push(Pop(S1)) into S2\n                               2. If S2 এখনো খালি → \"Queue Underflow\"\n                               3. ITEM ← Pop(S2)\n                               4. Return ITEM\n\n────────────────────────────────────────\nVISUALIZED FLOW  (10, 20, 30 ঢুকিয়ে বের করা)\n\n  ধাপ ১: Enqueue           ধাপ ২: S1 → S2 ঢালা\n  (সব S1 তে জমছে)          (order উল্টে গেল)\n\n  TOP→┌────┐               ┌────┐←TOP\n      │ 30 │               │ 10 │\n      ├────┤     ═══▶      ├────┤\n      │ 20 │               │ 20 │\n      ├────┤               ├────┤\n      │ 10 │               │ 30 │\n      └────┘  └────┘       └────┘  ┌────┐\n       S1      S2           S1      S2\n\n  ধাপ ৩: Pop from S2       ধাপ ৪: পরের Pop\n   → 10 বেরোলো             → 20 বেরোলো\n\n      ┌────┐←TOP               ┌────┐←TOP\n      │ 20 │                   │ 30 │\n      ├────┤                   └────┘\n      │ 30 │\n      └────┘\n        S2                       S2\n\n  ঢুকল  : 10 → 20 → 30\n  বেরোল : 10 → 20 → 30   (FIFO ✅)",
+        "diagram": "Enqueue 1, 2, 3:\n  Stack1: [1, 2, 3]   (3 is top)\n  Stack2: []\n\nDequeue (Stack2 খালি → Stack1 উল্টাও):\n  Stack1: []          Stack2: [3, 2, 1]   (1 is top)\n  Stack2.pop() = 1    ← Queue-এর front, FIFO ঠিক আছে\n\nDequeue আবার (Stack2-তে এখনো আছে):\n  Stack2.pop() = 2\n\nEnqueue 4 (Stack1-এ যাবে):\n  Stack1: [4]         Stack2: [3]\n  Dequeue: Stack2.pop() = 3   ← Stack1 উল্টানো লাগেনি\n\n────────────────────────────────────────\nALGORITHM\n\nENQUEUE(ITEM)\n  1. Push ITEM into S1\n  2. Return\n\nDEQUEUE()\n  1. If S2 খালি:\n         while S1 খালি নয়:\n             Push(Pop(S1)) into S2\n  2. If S2 এখনো খালি → \"Queue Underflow\"\n  3. ITEM ← Pop(S2)\n  4. Return ITEM\n\n────────────────────────────────────────\nVISUALIZED FLOW  (10, 20, 30 ঢুকিয়ে বের করা)\n\nধাপ ১: Enqueue — সব S1-তে জমছে\n  TOP→┌────┐\n      │ 30 │\n      ├────┤\n      │ 20 │\n      ├────┤\n      │ 10 │\n      └────┘\n        S1        S2: খালি\n\nধাপ ২: S1 → S2 ঢালা — order উল্টে গেল\n      ┌────┐←TOP\n      │ 10 │\n      ├────┤\n      │ 20 │\n      ├────┤\n      │ 30 │\n      └────┘\n  S1: খালি   S2\n\nধাপ ৩: Pop from S2 → 10 বেরোলো\n      ┌────┐←TOP\n      │ 20 │\n      ├────┤\n      │ 30 │\n      └────┘\n        S2\n\nধাপ ৪: পরের Pop → 20 বেরোলো\n      ┌────┐←TOP\n      │ 30 │\n      └────┘\n        S2\n\n  ঢুকল  : 10 → 20 → 30\n  বেরোল : 10 → 20 → 30   (FIFO)",
         "mistakes": [
           [
             "প্রতিটি dequeue এ Stack1 উল্টানো",
@@ -360,35 +511,55 @@
           "ফলে A* অনেক কম node explore করে তাই দ্রুত — কিন্তু estimate ভুল হলে optimal path miss হতে পারে।"
         ],
         "points": [
-          "BFS কী করে: Queue এর সামনের node বের করে, তার সব neighbor Queue এ ঢোকায়।",
+          "BFS কী করে:",
           {
-            "sub": "Goal কোথায় জানে না — সব দিকে সমান effort দেয়।"
-          },
-          "A* কী করে: প্রতিটি node এ দুটো জিনিস track করে —",
-          {
-            "sub": "(১) Start থেকে এখন পর্যন্ত কত cost হয়েছে"
+            "sub": "Queue-এর সামনের node বের করে, তার সব neighbor Queue-তে ঢোকায়।"
           },
           {
-            "sub": "(২) Goal থেকে আনুমানিক কতদূর (heuristic estimate)"
+            "sub": "Goal কোথায় সে জানে না — তাই সব দিকে সমান effort দেয়।"
+          },
+          "A* কী করে — প্রতিটি node-এ দুটো জিনিস track করে:",
+          {
+            "sub": "(১) Start থেকে এখন পর্যন্ত কত cost হয়েছে।"
           },
           {
-            "sub": "এই দুটো যোগ করে সবচেয়ে কম যার, সে আগে explore হয়।"
-          },
-          "পার্থক্য: Goal ডানদিকে। BFS ডান-বাম-উপর-নিচ সব দিকে ছড়ায়।",
-          {
-            "sub": "A* দেখে ডানের node এর total সবচেয়ে কম → ডানে যায় → আবার ডানে → Goal।"
+            "sub": "(২) Goal থেকে আনুমানিক কতদূর — heuristic estimate।"
           },
           {
-            "sub": "বাম-উপর-নিচ explore করতেই হয়নি — এটাই A* এর গতির কারণ।"
+            "sub": "এই দুটো যোগ করে যার মোট সবচেয়ে কম, সে আগে explore হয়।"
           },
-          "Admissible heuristic: estimate যদি সবসময় actual cost ≤ হয়, A* optimal path দেয়।",
-          "Trade-off: BFS = সবসময় optimal কিন্তু slow। A* = heuristic ভালো হলে optimal ও দ্রুত।",
+          "পার্থক্যটা উদাহরণে — ধরো Goal ডানদিকে:",
+          {
+            "sub": "BFS ডান, বাম, উপর, নিচ — সব দিকেই সমানভাবে ছড়ায়।"
+          },
+          {
+            "sub": "A* দেখে ডানের node-এর total সবচেয়ে কম, তাই ডানে যায়, আবার ডানে, তারপর Goal।"
+          },
+          {
+            "sub": "বাম-উপর-নিচ explore করতেই হয়নি — এটাই A*-এর গতির কারণ।"
+          },
+          "শর্ত ও trade-off:",
+          {
+            "sub": "Admissible heuristic: estimate সবসময় actual cost-এর ≤ হলে A* optimal path দেয়।"
+          },
+          {
+            "sub": "BFS সবসময় optimal, কিন্তু ধীর।"
+          },
+          {
+            "sub": "A* heuristic ভালো হলে optimal ও দ্রুত — heuristic খারাপ হলে সেই নিশ্চয়তা থাকে না।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "Google Maps ও GPS এ রাস্তা বের করা (heuristic = গন্তব্যের সরলরৈখিক দূরত্ব), গেমে চরিত্রের pathfinding, robot ও drone এর navigation।"
+            "sub": "Google Maps ও GPS-এ রাস্তা বের করা — heuristic হলো গন্তব্যের সরলরৈখিক দূরত্ব।"
           },
           {
-            "sub": "কেন heuristic লাগে: শহরের লক্ষ লক্ষ node এ BFS চালালে সব দিকে ছড়িয়ে সময় ও মেমরি দুটোই শেষ হয়; A* গন্তব্যের দিকে ঝুঁকে থাকায় অল্প node দেখেই উত্তরে পৌঁছায়।"
+            "sub": "গেমে চরিত্রের pathfinding, robot ও drone-এর navigation।"
+          },
+          {
+            "sub": "শহরের লক্ষ লক্ষ node-এ BFS চালালে সব দিকে ছড়িয়ে সময় ও মেমরি দুটোই শেষ হয়ে যায়।"
+          },
+          {
+            "sub": "A* গন্তব্যের দিকে ঝুঁকে থাকায় অল্প node দেখেই উত্তরে পৌঁছায়।"
           }
         ],
         "diagram": "Grid map: S থেকে G যেতে হবে (G ডানদিকে)\nS . . . . . . . G\n. . . . . . . . .\n. . . . . . . . .\n\nBFS — সব দিকে বৃত্তাকারে expand:\n. . . . . . . . G  ← G এখনো দেখেনি\n. . . 3 3 3 . . .\n. . 3 2 2 2 3 . .\n. 3 2 1 S 1 2 3 .  ← সব দিকে সমানভাবে\n. . 3 2 2 2 3 . .\n. . . 3 3 3 . . .\nG ডানদিকে থাকলেও বাম-উপর-নিচ সব explore\n\nA* — Goal এর দিকে ঝুঁকে যায়:\nStep 1: S থেকে সব neighbor check:\n  ডানের node:  cost=1, est=7 → total=8  ← সবচেয়ে কম!\n  বামের node:  cost=1, est=9 → total=10\n  নিচের node:  cost=1, est=8 → total=9\n  → ডানে যায়\nStep 2: আবার ডানের neighbor সবচেয়ে ভালো → ডানে\nStep 3: আবার ডানে... → G পৌঁছে গেলো!\nS → → → → → → → G  (বাম-উপর-নিচ explore করতেই হয়নি)",
@@ -413,20 +584,95 @@
           "D&C = independent subproblem combine করে। DP = overlapping subproblem একবার solve করে মনে রাখে। Greedy = সবসময় সেই মুহূর্তের best choice নেয়।"
         ],
         "points": [
-          "Divide and Conquer (D&C): Problem ভেঙে independent subproblem তৈরি করে। প্রতিটি subproblem independently solve হয়, তারপর merge করে। Always optimal। Top-down recursion। Examples: Merge Sort, Quick Sort, Binary Search",
-          "Dynamic Programming (DP): Overlapping subproblem — same subproblem বারবার আসে। একবার solve করে table/memo তে store করে — পরে সেখান থেকে নেয়। Always optimal। Bottom-up (Tabulation) বা Top-down (Memoization)। Examples: 0/1 Knapsack, Fibonacci, Floyd-Warshall",
-          "Greedy Method: প্রতিটি step এ locally optimal (সেই মুহূর্তে সবচেয়ে ভালো) choice নেয়। Future consequence দেখে না। Optimal guarantee নেই — শুধু Greedy Choice Property থাকলে optimal। সবচেয়ে fast। Examples: Dijkstra, Kruskal, Activity Selection",
-          "Key property differences: D&C = subproblem independent। DP = subproblem overlapping + optimal substructure। Greedy = optimal substructure + greedy choice property",
-          "Guaranteed optimality: D&C ✅ always। DP ✅ always। Greedy ❌ not always — depends on problem",
+          "Divide and Conquer (D&C):",
+          {
+            "sub": "Problem ভেঙে independent subproblem তৈরি করে — একটার উত্তর আরেকটার উপর নির্ভর করে না।"
+          },
+          {
+            "sub": "প্রতিটি subproblem আলাদাভাবে solve হয়, তারপর ফলাফল merge করা হয়।"
+          },
+          {
+            "sub": "গঠন: Top-down recursion।"
+          },
+          {
+            "sub": "Always optimal।"
+          },
+          {
+            "sub": "উদাহরণ: Merge Sort, Quick Sort, Binary Search।"
+          },
+          {
+            "label": "Diagram — D&C: একই subproblem বারবার হিসাব হয়",
+            "diagram": "একই সমস্যা, তিন পদ্ধতি — Fibonacci(5)\n\nD&C (pure recursion — বারবার recompute করে):\n  fib(5) → fib(4) + fib(3)\n  fib(4) → fib(3) + fib(2)\n           ↑ fib(3) দুইবার হিসাব হলো — এটাই অপচয়"
+          },
+          "Dynamic Programming (DP):",
+          {
+            "sub": "Overlapping subproblem — একই subproblem বারবার ফিরে আসে।"
+          },
+          {
+            "sub": "একবার solve করে table/memo-তে store করা হয়, পরে সেখান থেকেই নেওয়া হয়।"
+          },
+          {
+            "sub": "দুইভাবে লেখা যায়: Bottom-up (Tabulation) বা Top-down (Memoization)।"
+          },
+          {
+            "sub": "Always optimal।"
+          },
+          {
+            "sub": "উদাহরণ: 0/1 Knapsack, Fibonacci, Floyd-Warshall।"
+          },
+          {
+            "label": "Diagram — DP: একবার হিসাব করে store করে রাখে",
+            "diagram": "DP (memoization — ফল store করে রাখে):\n\n  fib(5) → fib(4) → fib(3) → fib(2) → fib(1)\n           প্রতিটি একবার হিসাব হয়ে store হয়\n           দ্বিতীয়বার আর কখনো recompute হয় না"
+          },
+          "Greedy Method:",
+          {
+            "sub": "প্রতিটি step-এ locally optimal — সেই মুহূর্তে যা সবচেয়ে ভালো — সেই choice নেয়।"
+          },
+          {
+            "sub": "ভবিষ্যতে তার পরিণতি কী হবে সেটা দেখে না।"
+          },
+          {
+            "sub": "তিনটির মধ্যে সবচেয়ে fast।"
+          },
+          {
+            "sub": "Optimal-এর guarantee নেই — শুধু Greedy Choice Property থাকলেই optimal হয়।"
+          },
+          {
+            "sub": "উদাহরণ: Dijkstra, Kruskal, Activity Selection।"
+          },
+          {
+            "label": "Diagram — Greedy কোথায় ব্যর্থ হয়",
+            "diagram": "Greedy (coin change — সবসময় optimal নয়):\n\n  {4, 3, 1} দিয়ে 6 ভাঙাতে হবে\n\n  Greedy : আগে সবচেয়ে বড় 4 নেয় → বাকি 2 = 1+1\n           মোট 3টি coin\n  Optimal: 3 + 3\n           মোট 2টি coin\n\n  এখানে greedy হেরে গেল — locally ভালো choice\n  globally ভালো না-ও হতে পারে"
+          },
+          "মূল property-র পার্থক্য:",
+          {
+            "sub": "D&C — subproblem গুলো independent।"
+          },
+          {
+            "sub": "DP — subproblem overlapping + optimal substructure।"
+          },
+          {
+            "sub": "Greedy — optimal substructure + greedy choice property।"
+          },
+          "Optimality-র নিশ্চয়তা:",
+          {
+            "sub": "D&C — always optimal।"
+          },
+          {
+            "sub": "DP — always optimal।"
+          },
+          {
+            "sub": "Greedy — always নয়; problem-এর গঠনের উপর নির্ভর করে।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
-            "sub": "DP: git/diff ও spell checker এর edit distance, DNA sequence alignment, বাজেট বা resource allocation (knapsack)।"
+            "sub": "DP: git/diff ও spell checker-এর edit distance, DNA sequence alignment, বাজেট বা resource allocation (knapsack)।"
           },
           {
-            "sub": "Greedy: ZIP ও JPEG এর Huffman coding, Maps এর Dijkstra, এবং Kruskal দিয়ে সবচেয়ে কম খরচে cable/network layout (minimum spanning tree)।"
+            "sub": "Greedy: ZIP ও JPEG-এর Huffman coding, Maps-এর Dijkstra, Kruskal দিয়ে সবচেয়ে কম খরচে cable/network layout (minimum spanning tree)।"
           },
           {
-            "sub": "Divide & Conquer: বিশাল file এর external merge sort, signal ও image processing এ FFT, বড় matrix গুণে Strassen।"
+            "sub": "Divide & Conquer: বিশাল file-এর external merge sort, signal ও image processing-এ FFT, বড় matrix গুণে Strassen।"
           }
         ],
         "table": {
@@ -475,7 +721,6 @@
             ]
           ]
         },
-        "diagram": "SAME PROBLEM — 3 APPROACHES:\nFibonacci(5)\n\nD&C (pure recursion — recomputes):\n fib(5) → fib(4) + fib(3)\n fib(4) → fib(3) + fib(2)   ← fib(3) calculated twice! ❌\n\nDP (memoization — store results):\n fib(5) → fib(4) → fib(3) → fib(2) → fib(1)\n          (each stored, never recomputed) ✅\n\nGreedy (coin change — not always optimal):\n Change 6 using {4, 3, 1}:\n Greedy picks 4 first → then 1+1 = 3 coins\n Optimal:  3+3 = 2 coins ← Greedy failed here ❌",
         "mnemonic": "D&C = ভাগ করো, জয় করো। DP = মনে রাখো, সময় বাঁচাও। Greedy = এখনই সেরাটা নাও (কিন্তু সবসময় সেরা ফল নাও না)।"
       }
     },
@@ -496,12 +741,37 @@
           "দাম: merge এর জন্য O(n) extra memory লাগে — এটাই এর মূল দুর্বলতা।"
         ],
         "points": [
-          "Divide: array কে বারবার মাঝখান থেকে দুই ভাগ করা হয় — element এর মান দেখে না, তাই split সবসময় সমান অর্ধেক।",
-          "log₂n বার ভাঙলে single-element এ পৌঁছায় → recursion tree এর উচ্চতা = log n level।",
-          "Merge: প্রতি level এ মোট n element compare করে জোড়া লাগে → প্রতি level এ O(n) কাজ।",
-          "মোট কাজ = (level সংখ্যা) × (প্রতি level এর কাজ) = log n × n = O(n log n)।",
-          "Recurrence: T(n) = 2·T(n/2) + O(n) → Master theorem → O(n log n)।",
-          "কেন তিন case-ই সমান: Quicksort এর মতো pivot নেই যে input দেখে unbalanced হয়ে যাবে — split সবসময় অর্ধেক, তাই Best = Average = Worst।"
+          "Divide ধাপ:",
+          {
+            "sub": "Array-কে বারবার মাঝখান থেকে দুই ভাগ করা হয়।"
+          },
+          {
+            "sub": "Element-এর মান দেখা হয় না, তাই split সবসময় সমান অর্ধেক।"
+          },
+          {
+            "sub": "log₂n বার ভাঙলে single-element-এ পৌঁছায় → recursion tree-এর উচ্চতা = log n level।"
+          },
+          "Merge ধাপ:",
+          {
+            "sub": "প্রতি level-এ মোট n element compare করে জোড়া লাগানো হয়।"
+          },
+          {
+            "sub": "অর্থাৎ প্রতি level-এ কাজ O(n)।"
+          },
+          "মোট হিসাব:",
+          {
+            "sub": "মোট কাজ = (level সংখ্যা) × (প্রতি level-এর কাজ) = log n × n = O(n log n)।"
+          },
+          {
+            "sub": "Recurrence: T(n) = 2·T(n/2) + O(n) → Master theorem → O(n log n)।"
+          },
+          "Best = Average = Worst — তিনটাই O(n log n), কেন:",
+          {
+            "sub": "Quicksort-এর মতো এখানে pivot নেই, যে input দেখে partition unbalanced হয়ে যাবে।"
+          },
+          {
+            "sub": "Split সবসময় ঠিক অর্ধেক, input যেমনই হোক — তাই তিন case-এ কোনো পার্থক্য নেই।"
+          }
         ],
         "diagram": "Array: [38, 27, 43, 3, 9, 82, 10, 1]   (n = 8)\n\nDIVIDE — সবসময় ঠিক মাঝখান থেকে (input যেমনই হোক):\nlevel 0:            [ 8 elements ]                ← merge, মোট n কাজ\n                   /              \\\nlevel 1:      [ 4 ]              [ 4 ]            ← merge, মোট n কাজ\n              /    \\             /    \\\nlevel 2:   [2]     [2]        [2]     [2]         ← merge, মোট n কাজ\n           / \\     / \\        / \\     / \\\nlevel 3:  [1][1] [1][1]     [1][1]  [1][1]        ← base case (single)\n\nউচ্চতা = log₂n level ;  প্রতি level এ merge = O(n)\nমোট = log n × n  =  O(n log n)\n\n────────────────────────────────────────────────\n সব case সমান — unbalanced হওয়ার পথ নেই:\n   Best  (already sorted)  : O(n log n)\n   Avg   (random)          : O(n log n)\n   Worst (reverse sorted)  : O(n log n)\n   Space                   : O(n)  extra (in-place নয়)",
         "table": {
@@ -559,32 +829,57 @@
           "Circular Queue এ rear শেষ ঘরের পর ঘুরে (wrap around) শুরুতে ফিরে আসে, তাই খালি ঘরগুলো আবার ব্যবহার হয় এবং false overflow হয় না।"
         ],
         "points": [
-          "Linear Queue এর সমস্যা",
+          "Linear Queue-এর সমস্যা",
           {
-            "sub": "delete করলে front সামনে এগোয়, কিন্তু পেছনে ফেলে আসা ঘরগুলো আর ব্যবহার হয় না — memory নষ্ট হয় (wastes memory after deletions)।"
+            "sub": "delete করলে front সামনে এগোয়, কিন্তু পেছনে ফেলে আসা ঘরগুলো আর ব্যবহার হয় না।"
           },
           {
-            "sub": "rear একবার শেষ index এ পৌঁছালে queue কে ভর্তি ধরা হয়, যদিও সামনে খালি ঘর আছে — একে false overflow বলে।"
+            "sub": "ফলে memory নষ্ট হয় (wastes memory after deletions)।"
           },
           {
-            "sub": "ঠিক করতে হলে প্রতিবার সব element সামনে সরিয়ে আনতে হয়, যা O(n) — প্রতি operation এ করা অবাস্তব।"
-          },
-          "Circular Queue এর সমাধান",
-          {
-            "sub": "শেষ index এর পরের ঘর হিসেবে ০ index ধরা হয়, অর্থাৎ array কে একটি বৃত্ত হিসেবে দেখা হয়।"
+            "sub": "rear একবার শেষ index-এ পৌঁছালে queue-কে ভর্তি ধরা হয়, যদিও সামনে খালি ঘর পড়ে আছে।"
           },
           {
-            "sub": "সূত্র: rear = (rear + 1) % SIZE এবং front = (front + 1) % SIZE — এই modulo-ই wrap around ঘটায়।"
+            "sub": "একেই বলে false overflow।"
+          },
+          {
+            "sub": "ঠিক করতে হলে প্রতিবার সব element সামনে সরিয়ে আনতে হয়, যা O(n) — প্রতি operation-এ করা অবাস্তব।"
+          },
+          "Circular Queue-এর সমাধান",
+          {
+            "sub": "শেষ index-এর পরের ঘর হিসেবে ০ index ধরা হয়, অর্থাৎ array-কে একটি বৃত্ত হিসেবে দেখা হয়।"
+          },
+          {
+            "sub": "সূত্র: rear = (rear + 1) % SIZE এবং front = (front + 1) % SIZE।"
+          },
+          {
+            "sub": "এই modulo-ই wrap around ঘটায়।"
           },
           {
             "sub": "delete করে খালি হওয়া ঘরগুলো আবার ব্যবহার হয় (reuses empty spaces), তাই false overflow হয় না।"
           },
           {
-            "sub": "সত্যিকারের full অবস্থা: (rear + 1) % SIZE == front। Insert/delete দুটোই O(1) থাকে।"
+            "sub": "সত্যিকারের full অবস্থা চেনা যায় এভাবে: (rear + 1) % SIZE == front।"
           },
-          "Operating System এ কেন এটাই লাগে: OS এর buffer গুলো নির্দিষ্ট আকারের memory তে অনির্দিষ্টকাল ধরে চলতে থাকে — তাই জায়গা পুনরায় ব্যবহার করতেই হয়।",
           {
-            "sub": "উদাহরণ: Round Robin scheduling এর ready queue (process ঘুরেফিরে বারবার আসে), keyboard buffer, printer spool queue, producer-consumer ring buffer, network packet buffer।"
+            "sub": "Insert ও delete দুটোই O(1) থাকে।"
+          },
+          "Operating System-এ কেন এটাই লাগে:",
+          {
+            "sub": "OS-এর buffer গুলো নির্দিষ্ট আকারের memory-তে অনির্দিষ্টকাল ধরে চলতে থাকে।"
+          },
+          {
+            "sub": "তাই খালি হওয়া জায়গা বারবার পুনরায় ব্যবহার করতেই হয়।"
+          },
+          "উদাহরণ:",
+          {
+            "sub": "Round Robin scheduling-এর ready queue — process ঘুরেফিরে বারবার আসে।"
+          },
+          {
+            "sub": "Keyboard buffer এবং printer spool queue।"
+          },
+          {
+            "sub": "Producer-consumer ring buffer ও network packet buffer।"
           }
         ],
         "diagram": "উদাহরণ: SIZE = ৫ এর একটি queue\n\n\n[১] দুটিতেই: A B C D E ঢোকানো হলো, তারপর A ও B delete\n\n   index:   0     1     2     3     4\n          ┌─────┬─────┬─────┬─────┬─────┐\n          │  -  │  -  │  C  │  D  │  E  │\n          └─────┴─────┴─────┴─────┴─────┘\n             ↑           ↑           ↑\n          খালি        front        rear\n          (২টি ঘর খালি পড়ে আছে)\n\n\n[২] LINEAR QUEUE — এখন F ঢোকাতে চাইলে\n\n          ┌─────┬─────┬─────┬─────┬─────┐\n          │  -  │  -  │  C  │  D  │  E  │  ← rear = 4 (শেষ index)\n          └─────┴─────┴─────┴─────┴─────┘\n             ▲     ▲                 │\n             └──┬──┘                 │\n            খালি, কিন্তু           rear আর\n            পৌঁছানো যায় না         এগোতে পারে না\n\n          F → ✗ OVERFLOW  ← কিন্তু ২টি ঘর তো খালি!\n                            এটাই FALSE OVERFLOW\n\n\n[৩] CIRCULAR QUEUE — একই অবস্থায় F ঢোকাতে চাইলে\n\n          rear = (4 + 1) % 5 = 0  ← ঘুরে শুরুতে ফিরল\n\n                    ┌─────┐\n                ┌──▶│  F  │ 0 ◀── নতুন rear (আগের খালি ঘরেই বসল)\n                │   ├─────┤\n                │   │  -  │ 1\n                │   ├─────┤\n         wrap   │   │  C  │ 2 ◀── front\n         around │   ├─────┤\n                │   │  D  │ 3\n                │   ├─────┤\n                └───│  E  │ 4\n                    └─────┘\n\n          F → ✓ সফলভাবে ঢুকল, কোনো memory নষ্ট হলো না\n\n\n[৪] এক নজরে\n\n   Linear   : rear শেষে পৌঁছালেই শেষ  →  খালি ঘর অব্যবহৃত, false overflow\n   Circular : rear ঘুরে শুরুতে ফেরে   →  খালি ঘর পুনর্ব্যবহার, false overflow নেই",
@@ -670,18 +965,48 @@
         "points": [
           "Push(x) — খরচ O(n):",
           {
-            "sub": "১. নতুন element x কে খালি Q2 তে enqueue করো।"
+            "sub": "১. নতুন element x কে খালি Q2-তে enqueue করো।"
           },
           {
-            "sub": "২. Q1 এর সব element এক এক করে dequeue করে Q2 তে enqueue করো।"
+            "sub": "২. Q1-এর সব element এক এক করে dequeue করে Q2-তে enqueue করো।"
           },
           {
-            "sub": "৩. Q1 ও Q2 এর নাম swap করো — এখন Q1 এ সবকিছু সঠিক order এ আছে।"
+            "sub": "৩. Q1 ও Q2-এর নাম swap করো — এখন Q1-এ সবকিছু সঠিক order-এ আছে।"
           },
-          "Pop() — খরচ O(1): Q1 খালি হলে \"Stack Underflow\"; নয়তো Q1 থেকে dequeue করে front element ফেরত দাও।",
-          "কেন কাজ করে: প্রতিবার push এ নতুনটি সবার সামনে বসে আর পুরনোরা তার পিছনে সরে যায় — FIFO queue থেকেই তখন LIFO order বেরিয়ে আসে।",
-          "বিকল্প (Pop-costly): push সরাসরি Q1 তে O(1) তে; pop এর সময় শেষটি ছাড়া বাকি সব Q2 তে সরিয়ে শেষটিকে dequeue করা। অর্থাৎ একটি operation সহজ হলে অন্যটি ব্যয়বহুল — দুটো একসাথে O(1) হয় না।",
-          "ব্যবহারিক প্রয়োগ: মূল শিক্ষা হলো একটি ADT দিয়ে অন্য ADT গঠন করা যায় — সীমিত API (যেমন message queue) এর উপর ভিন্ন আচরণ বানাতে এই কৌশল কাজে লাগে।"
+          "Pop() — খরচ O(1):",
+          {
+            "sub": "Q1 খালি হলে \"Stack Underflow\"।"
+          },
+          {
+            "sub": "নয়তো Q1 থেকে dequeue করে front element ফেরত দাও।"
+          },
+          "কেন কাজ করে:",
+          {
+            "sub": "প্রতিবার push-এ নতুন element সবার সামনে গিয়ে বসে।"
+          },
+          {
+            "sub": "পুরনোরা তার পিছনে সরে যায়।"
+          },
+          {
+            "sub": "FIFO queue থেকেই তখন LIFO order বেরিয়ে আসে।"
+          },
+          "বিকল্প নকশা (Pop-costly):",
+          {
+            "sub": "push সরাসরি Q1-তে করা হয় — খরচ O(1)।"
+          },
+          {
+            "sub": "pop-এর সময় শেষটি ছাড়া বাকি সব Q2-তে সরিয়ে শেষটিকে dequeue করা হয় — খরচ O(n)।"
+          },
+          {
+            "sub": "অর্থাৎ একটি operation সহজ হলে অন্যটি ব্যয়বহুল — দুটো একসাথে O(1) হয় না।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "মূল শিক্ষা হলো একটি ADT দিয়ে অন্য ADT গঠন করা যায়।"
+          },
+          {
+            "sub": "সীমিত API-এর উপর (যেমন message queue) ভিন্ন আচরণ বানাতে এই কৌশল কাজে লাগে।"
+          }
         ],
         "diagram": "PUSH-COSTLY পদ্ধতি   (Push: O(n), Pop: O(1))\n\nPush(10)\n  Q2 ← 10          Q1 খালি, সরানোর কিছু নেই\n  swap  →   Q1: [ 10 ]              Q2: [ ]\n\nPush(20)\n  Q2 ← 20 , তারপর Q1 এর 10 সরালাম → Q2: [ 20 , 10 ]\n  swap  →   Q1: [ 20 , 10 ]         Q2: [ ]\n\nPush(30)\n  Q2 ← 30 , তারপর Q1 এর 20 , 10 সরালাম → [ 30 , 20 , 10 ]\n  swap  →   Q1: [ 30 , 20 , 10 ]    Q2: [ ]\n\n          front              rear\n  Q1  →  [  30  |  20  |  10  ]\n            ↑\n            সর্বশেষ push, তাই সে-ই আগে বেরোবে\n\n  Pop() → 30      Q1: [ 20 , 10 ]\n  Pop() → 20      Q1: [ 10 ]\n\n────────────────────────────────────────\n  Push order :  10 → 20 → 30\n  Pop  order :  30 → 20 → 10      (LIFO ✅)",
         "table": {
@@ -740,12 +1065,72 @@
           "Final sorted array: 12, 23, 34, 45, 78।"
         ],
         "points": [
-          "Pass 1: (45,12) swap → (45,78) ঠিক → (78,34) swap → (78,23) swap ⇒ 12 45 34 23 78; সবচেয়ে বড় 78 নিজের জায়গায়।",
-          "Pass 2: (12,45) ঠিক → (45,34) swap → (45,23) swap ⇒ 12 34 23 45 78; 45 বসে গেল।",
-          "Pass 3: (12,34) ঠিক → (34,23) swap ⇒ 12 23 34 45 78; array এখন sorted।",
-          "Pass 4: কোনো swap হলো না → swapped = 0 → loop ভেঙে বেরিয়ে যায়। তাই ৫ element এ ৪ pass এর জায়গায় কাজ শেষ হলো ৩ pass এই।",
-          "ডানদিকের যে ঘরগুলো ইতিমধ্যে sorted, সেগুলো আর তুলনা করা লাগে না — এ কারণেই inner loop এর সীমা n − i − 1।",
-          "Complexity: worst ও average O(n²), best O(n) (swapped flag থাকলে), extra space O(1), এবং sort টি stable — সমান মানের element এর আপেক্ষিক অবস্থান বদলায় না।"
+          "Pass 1:",
+          {
+            "sub": "(45, 12) → swap।"
+          },
+          {
+            "sub": "(45, 78) → ঠিক আছে।"
+          },
+          {
+            "sub": "(78, 34) → swap।"
+          },
+          {
+            "sub": "(78, 23) → swap।"
+          },
+          {
+            "sub": "ফলাফল: 12 45 34 23 78 — সবচেয়ে বড় 78 নিজের জায়গায় বসে গেল।"
+          },
+          "Pass 2:",
+          {
+            "sub": "(12, 45) → ঠিক আছে।"
+          },
+          {
+            "sub": "(45, 34) → swap।"
+          },
+          {
+            "sub": "(45, 23) → swap।"
+          },
+          {
+            "sub": "ফলাফল: 12 34 23 45 78 — 45 বসে গেল।"
+          },
+          "Pass 3:",
+          {
+            "sub": "(12, 34) → ঠিক আছে।"
+          },
+          {
+            "sub": "(34, 23) → swap।"
+          },
+          {
+            "sub": "ফলাফল: 12 23 34 45 78 — array এখন sorted।"
+          },
+          "Pass 4:",
+          {
+            "sub": "কোনো swap হলো না, তাই swapped = 0।"
+          },
+          {
+            "sub": "loop ভেঙে বেরিয়ে যায়।"
+          },
+          {
+            "sub": "৫ element-এ ৪ pass-এর জায়গায় কাজ শেষ হলো ৩ pass-এই।"
+          },
+          "inner loop-এর সীমা n − i − 1 কেন:",
+          {
+            "sub": "ডানদিকের যে ঘরগুলো ইতিমধ্যে sorted, সেগুলো আর তুলনা করার দরকার নেই।"
+          },
+          "Complexity:",
+          {
+            "sub": "Worst ও average case O(n²)।"
+          },
+          {
+            "sub": "Best case O(n) — swapped flag থাকলে।"
+          },
+          {
+            "sub": "Extra space O(1)।"
+          },
+          {
+            "sub": "Sort টি stable — সমান মানের element-এর আপেক্ষিক অবস্থান বদলায় না।"
+          }
         ],
         "diagram": "Initial :  45   12   78   34   23\n\nPASS 1   (তুলনা 4 বার)\n  45,12 → swap    12  45  78  34  23\n  45,78 → ঠিক     12  45  78  34  23\n  78,34 → swap    12  45  34  78  23\n  78,23 → swap    12  45  34  23 [78]   ← 78 নিজের জায়গায়\n\nPASS 2   (তুলনা 3 বার)\n  12,45 → ঠিক     12  45  34  23 [78]\n  45,34 → swap    12  34  45  23 [78]\n  45,23 → swap    12  34  23 [45  78]   ← 45 বসল\n\nPASS 3   (তুলনা 2 বার)\n  12,34 → ঠিক     12  34  23 [45  78]\n  34,23 → swap    12  23 [34  45  78]   ← 34 বসল\n\nPASS 4   (তুলনা 1 বার)\n  12,23 → ঠিক     কোনো swap নেই → থেমে যাও\n\n────────────────────────────────────────\n FINAL :  12   23   34   45   78   ✅\n\n [ ] = ইতিমধ্যে নিজের জায়গায় বসে যাওয়া অংশ",
         "table": {
@@ -803,12 +1188,42 @@
           "MAX-HEAPIFY এ একটি element root থেকে সর্বনিম্ন level পর্যন্ত নামতে পারে → সর্বোচ্চ 4 level।"
         ],
         "points": [
-          "Level অনুযায়ী node সংখ্যা 1 + 2 + 4 + 8 + 16 = 31 — শেষ level ও ভরা, তাই এটি একটি perfect binary tree।",
-          "Height গোনা হয় edge এ: root থেকে সবচেয়ে দূরের leaf পর্যন্ত 4টি edge → h = 4। Level সংখ্যা = h + 1 = 5।",
-          "সূত্র প্রয়োগ: h = ⌊log₂ 31⌋ = ⌊4.95⌋ = 4।",
-          "Heapify তে root এ ভুল মান বসলে সে বড় child এর সাথে বদল হয়ে প্রতিবার এক level নিচে নামে; সবচেয়ে খারাপ ক্ষেত্রে leaf পর্যন্ত = 4 বার।",
-          "তাই heapify এর সময় O(h) = O(log n) — আর পুরো array কে heap বানাতে (build-heap) লাগে O(n)।",
-          "ফাঁদ: height (edge গোনা → 4) আর level সংখ্যা (সারি গোনা → 5) এক জিনিস নয়; প্রশ্নে কোনটি চাওয়া হয়েছে দেখে নাও।"
+          "Height বের করা:",
+          {
+            "sub": "Level অনুযায়ী node সংখ্যা 1 + 2 + 4 + 8 + 16 = 31।"
+          },
+          {
+            "sub": "শেষ level-ও ভরা, তাই এটি একটি perfect binary tree।"
+          },
+          {
+            "sub": "Height গোনা হয় edge-এ: root থেকে সবচেয়ে দূরের leaf পর্যন্ত 4টি edge → h = 4।"
+          },
+          {
+            "sub": "Level সংখ্যা = h + 1 = 5।"
+          },
+          {
+            "sub": "সূত্র দিয়েও মেলে: h = ⌊log₂ 31⌋ = ⌊4.95⌋ = 4।"
+          },
+          "Heapify-তে element সর্বোচ্চ কত level নামতে পারে:",
+          {
+            "sub": "root-এ ভুল মান বসলে সে বড় child-এর সাথে বদল হয়ে প্রতিবার এক level নিচে নামে।"
+          },
+          {
+            "sub": "সবচেয়ে খারাপ ক্ষেত্রে সে leaf পর্যন্ত নামে — অর্থাৎ 4 বার।"
+          },
+          {
+            "sub": "তাই heapify-এর খরচ O(h) = O(log n)।"
+          },
+          {
+            "sub": "তবে পুরো array-কে heap বানাতে (build-heap) লাগে O(n)।"
+          },
+          "ফাঁদ:",
+          {
+            "sub": "height (edge গোনা → 4) আর level সংখ্যা (সারি গোনা → 5) এক জিনিস নয়।"
+          },
+          {
+            "sub": "প্রশ্নে কোনটি চাওয়া হয়েছে দেখে নিয়ে উত্তর দাও।"
+          }
         ],
         "diagram": "n = 31  →  perfect binary heap (সব level ভরা)\n\n Level 0 :               ●                  1 node   = 2⁰\n Level 1 :         ●           ●            2 nodes  = 2¹\n Level 2 :      ●    ●      ●     ●         4 nodes  = 2²\n Level 3 :    ●● ●●  ●● ●●  ●● ●●           8 nodes  = 2³\n Level 4 :  ●●●●●●●●●●●●●●●●               16 nodes  = 2⁴\n                                          ───────────────\n                                     মোট  =  31 nodes\n\n Height  h = ⌊log₂ 31⌋ = 4      (2⁴ = 16 ≤ 31 < 32 = 2⁵)\n Level সংখ্যা = h + 1 = 5       (Level 0 … Level 4)\n\n────────────────────────────────────────\nMAX-HEAPIFY এ চলাচল (সবচেয়ে খারাপ ক্ষেত্রে)\n\n   root\n    L0 ──▶ L1 ──▶ L2 ──▶ L3 ──▶ L4\n        1      2      3      4        ← মোট 4 level নামা\n\n   অর্থাৎ heapify এর খরচ = O(h) = O(log n)",
         "table": {
@@ -863,14 +1278,83 @@
           "Quick Sort এ first/last element pivot হলে sorted array-ই worst case O(n²) বানিয়ে দেয়।"
         ],
         "points": [
-          "Insertion Sort — সেরা: প্রতিটি element ইতিমধ্যে নিজের জায়গায় আছে, তাই আগেরটির সাথে একটি তুলনা করেই থেমে যায়। মোট n−1 তুলনা, ০ shift → O(n)।",
-          "Bubble Sort (optimized): প্রথম pass এ n−1 তুলনা, কোনো swap নেই → swapped flag 0 → loop শেষ। তাই O(n)। কিন্তু flag ছাড়া সাধারণ Bubble Sort সব pass চালিয়ে O(n²)-ই থাকে।",
-          "Selection Sort: প্রতিটি ধাপে বাকি অংশের minimum খোঁজা input এর অবস্থার উপর নির্ভর করে না — best = average = worst = O(n²)। তাই sorted হওয়ার কোনো সুবিধা সে পায় না।",
-          "Quick Sort: balanced partition এ O(n log n), কিন্তু sorted array তে first/last pivot নিলে প্রতিবার ভাগ হয় (0 এবং n−1) — গাছ একদিকে হেলে পড়ে, খরচ O(n²)। Random pivot বা median-of-three নিলে সমস্যা কেটে যায়।",
-          "সিদ্ধান্ত: sorted বা প্রায় sorted data এ Insertion Sort ব্যবহার করো; optimized Bubble Sort ও চলে, তবে Selection Sort বা naive-pivot Quick Sort নয়।",
-          "ব্যবহারিক প্রয়োগ: Timsort (Python/Java এর built-in sort) ছোট ও প্রায়-sorted run গুলোতে Insertion Sort-ই চালায়, ঠিক এই O(n) সুবিধার জন্য।"
+          "Insertion Sort — সেরা:",
+          {
+            "sub": "প্রতিটি element ইতিমধ্যে নিজের জায়গাতেই আছে।"
+          },
+          {
+            "sub": "তাই আগেরটির সাথে একটিমাত্র তুলনা করেই থেমে যায়।"
+          },
+          {
+            "sub": "মোট n−1 তুলনা, ০টি shift → O(n)।"
+          },
+          {
+            "label": "Diagram — Insertion Sort (input: 1 2 3 4 5, ইতিমধ্যে sorted)",
+            "diagram": "INPUT :  1  2  3  4  5      (ইতিমধ্যে sorted)\n\n  2 কে 1-এর সাথে তুলনা → বড়, জায়গাতেই থাকো\n  3 কে 2-এর সাথে তুলনা → বড়, জায়গাতেই থাকো\n  ...  প্রতি element-এ ঠিক 1টি তুলনা, 0 shift\n  ⇒ n − 1 তুলনা      →  O(n)   ← সেরা"
+          },
+          "Bubble Sort (optimized) — চলে:",
+          {
+            "sub": "প্রথম pass-এ n−1 তুলনা হয়, কিন্তু কোনো swap হয় না।"
+          },
+          {
+            "sub": "swapped flag 0 থাকায় loop সেখানেই থেমে যায় → O(n)।"
+          },
+          {
+            "sub": "তবে flag ছাড়া সাধারণ Bubble Sort সব pass চালিয়ে O(n²)-ই থাকে।"
+          },
+          {
+            "label": "Diagram — Bubble Sort (swapped flag সহ)",
+            "diagram": "  Pass 1 : n−1 তুলনা, swap = 0\n           → flag 0 → এখানেই থেমে যাও\n  ⇒ মাত্র 1 pass     →  O(n)"
+          },
+          "Selection Sort — কোনো সুবিধা পায় না:",
+          {
+            "sub": "প্রতিটি ধাপে বাকি অংশের minimum খোঁজা input-এর অবস্থার উপর নির্ভর করে না।"
+          },
+          {
+            "sub": "তাই best = average = worst = O(n²)।"
+          },
+          {
+            "sub": "array আগে থেকে sorted থাকলেও তার কোনো লাভ সে পায় না।"
+          },
+          {
+            "label": "Diagram — Selection Sort",
+            "diagram": "  ধাপ 1 : বাকি 5 ঘরে minimum খোঁজো\n  ধাপ 2 : বাকি 4 ঘরে minimum খোঁজো\n  ...\n  ⇒ সবসময় n(n−1)/2 তুলনা  →  O(n²)"
+          },
+          "Quick Sort — এখানেই সবচেয়ে খারাপ:",
+          {
+            "sub": "Balanced partition-এ এর খরচ O(n log n)।"
+          },
+          {
+            "sub": "কিন্তু sorted array-তে first বা last element pivot নিলে প্রতিবার ভাগ হয় 0 আর n−1।"
+          },
+          {
+            "sub": "গাছ একদিকে হেলে পড়ে, খরচ দাঁড়ায় O(n²)।"
+          },
+          {
+            "sub": "Random pivot বা median-of-three নিলে সমস্যাটা কেটে যায়।"
+          },
+          {
+            "label": "Diagram — Quick Sort (pivot = first element)",
+            "diagram": "       [1 | 2 3 4 5]        ভাগ : 0 আর 4\n        └──▶ [2 | 3 4 5]    ভাগ : 0 আর 3\n              └──▶ [3 | 4 5]\n\n  প্রতিবার এক পাশ খালি → গভীরতা n\n  ⇒ O(n²)   (random pivot নিলে O(n log n))"
+          },
+          "সিদ্ধান্ত:",
+          {
+            "sub": "Sorted বা প্রায় sorted data-তে Insertion Sort ব্যবহার করো।"
+          },
+          {
+            "sub": "Optimized Bubble Sort-ও চলে।"
+          },
+          {
+            "sub": "Selection Sort বা naive-pivot Quick Sort এখানে ব্যবহার করো না।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Timsort (Python ও Java-এর built-in sort) ছোট ও প্রায়-sorted run গুলোতে Insertion Sort-ই চালায়।"
+          },
+          {
+            "sub": "ঠিক এই O(n) সুবিধাটা পাওয়ার জন্যই।"
+          }
         ],
-        "diagram": "INPUT :  1  2  3  4  5      (ইতিমধ্যে sorted)\n\nINSERTION SORT\n  2 কে 1 এর সাথে তুলনা → বড়, জায়গাতেই থাকো\n  3 কে 2 এর সাথে তুলনা → বড়, জায়গাতেই থাকো\n  ...  প্রতি element এ ঠিক 1 টি তুলনা, 0 shift\n  ⇒ n − 1 তুলনা          →  O(n)   ✅ সেরা\n\nBUBBLE SORT (swapped flag সহ)\n  Pass 1 : n−1 তুলনা, swap = 0  → flag 0 → থেমে যাও\n  ⇒ 1 pass                →  O(n)   ✅\n\nSELECTION SORT\n  ধাপ 1 : বাকি 5 ঘরে minimum খোঁজো\n  ধাপ 2 : বাকি 4 ঘরে minimum খোঁজো ...\n  ⇒ সবসময় n(n−1)/2 তুলনা →  O(n²)  ❌\n\nQUICK SORT (pivot = first element)\n       [1 | 2 3 4 5]        ভাগ : 0 আর 4\n        └──▶ [2 | 3 4 5]    ভাগ : 0 আর 3\n              └──▶ [3 | 4 5]\n  প্রতিবার এক পাশ খালি → গভীরতা n\n  ⇒ O(n²)  ❌   (random pivot নিলে O(n log n))",
         "table": {
           "headers": [
             "Algorithm",
@@ -932,11 +1416,53 @@
           "অর্থাৎ BST এর গতি পুরোপুরি তার গঠনের উপর নির্ভরশীল — balanced হলে ~10 তুলনা, skewed হলে 1000।"
         ],
         "points": [
-          "Height গোনা হয় edge এ, তাই level সংখ্যা = height + 1; search এ প্রতিটি level এ ঠিক একটি তুলনা লাগে — এ কারণেই max comparisons = height + 1।",
-          "Minimum height: গাছ যতটা সম্ভব ভরা থাকলে h height এ সর্বোচ্চ 2^(h+1) − 1 node ধরে। 2¹⁰ − 1 = 1023 ≥ 1000 কিন্তু 2⁹ − 1 = 511 < 1000, তাই h = 9।",
-          "Maximum height: sorted order এ (1, 2, 3, … 1000) insert করলে প্রতিটি node এর একটিমাত্র child হয় — গাছ কার্যত linked list, h = n − 1 = 999।",
-          "Balanced এ search O(log n) ≈ 10 ধাপ, skewed এ O(n) = 1000 ধাপ — একই data structure, ১০০ গুণ পার্থক্য।",
-          "এ কারণেই self-balancing BST (AVL, Red-Black Tree) দরকার — insert/delete এর সময় rotation করে height O(log n) এ ধরে রাখে।"
+          "প্রথমে দুটো সম্পর্ক মনে রাখো:",
+          {
+            "sub": "Height গোনা হয় edge-এ, তাই level সংখ্যা = height + 1।"
+          },
+          {
+            "sub": "Search-এ প্রতিটি level-এ ঠিক একটি তুলনা লাগে।"
+          },
+          {
+            "sub": "এ কারণেই max comparisons = height + 1।"
+          },
+          "Minimum height — গাছ যতটা সম্ভব ভরা:",
+          {
+            "sub": "h height-এ সর্বোচ্চ 2^(h+1) − 1 টি node ধরে।"
+          },
+          {
+            "sub": "2¹⁰ − 1 = 1023 ≥ 1000, কিন্তু 2⁹ − 1 = 511 < 1000।"
+          },
+          {
+            "sub": "তাই minimum height h = 9।"
+          },
+          "Maximum height — সবচেয়ে খারাপ ক্ষেত্রে:",
+          {
+            "sub": "sorted order-এ (1, 2, 3, … 1000) insert করলে প্রতিটি node-এর একটিমাত্র child হয়।"
+          },
+          {
+            "sub": "গাছটি তখন কার্যত একটি linked list।"
+          },
+          {
+            "sub": "তাই h = n − 1 = 999।"
+          },
+          "Search-এ এর প্রভাব:",
+          {
+            "sub": "Balanced গাছে search O(log n) ≈ 10 ধাপ।"
+          },
+          {
+            "sub": "Skewed গাছে search O(n) = 1000 ধাপ।"
+          },
+          {
+            "sub": "একই data structure, অথচ ১০০ গুণ পার্থক্য।"
+          },
+          "এ কারণেই self-balancing BST দরকার:",
+          {
+            "sub": "AVL ও Red-Black Tree insert/delete-এর সময় rotation করে।"
+          },
+          {
+            "sub": "এভাবে height সবসময় O(log n)-এ ধরে রাখে।"
+          }
         ],
         "diagram": "n = 1000\n\nMINIMUM HEIGHT — balanced (যতটা সম্ভব ভরা)\n\n              ●              Level 0     1 node\n           ●     ●           Level 1     2\n         ●  ●   ●  ●         Level 2     4\n             ...             ...\n        ●●●●●●●●●●●●         Level 9   512\n\n   2¹⁰ − 1 = 1023 ≥ 1000  আর  2⁹ − 1 = 511 < 1000\n   ⇒ h(min) = ⌈log₂(1000+1)⌉ − 1 = 10 − 1 = 9\n\n────────────────────────────────────────\nMAXIMUM HEIGHT — skewed (sorted order এ insert)\n\n   ●                Level 0\n    \\\n     ●              Level 1\n      \\\n       ●            Level 2\n        \\\n         ...\n          ●         Level 999\n\n   প্রতিটি node এর একটিই child → linked list\n   ⇒ h(max) = n − 1 = 999\n\n────────────────────────────────────────\n Search এ সর্বোচ্চ তুলনা = height + 1\n        balanced :   9 + 1  =    10\n        skewed   : 999 + 1  =  1000  ← প্রশ্নের উত্তর",
         "table": {
@@ -989,14 +1515,49 @@
           "Average code length = Σ(freq × length) / total = 225 / 100 = 2.25 bits per symbol।"
         ],
         "points": [
-          "ধাপ ১ — ascending সাজাও: E(10), D(15), C(20), B(25), A(30)।",
-          "ধাপ ২ — সবচেয়ে ছোট দুটি E(10) + D(15) = 25।",
-          "ধাপ ৩ — এখন ছোট দুটি C(20) ও নতুন node(25) → 45।",
-          "ধাপ ৪ — বাকি B(25) + A(30) = 55।",
-          "ধাপ ৫ — 45 + 55 = 100 → root, গাছ সম্পূর্ণ।",
-          "Prefix property: প্রতিটি code leaf এ শেষ হয়, তাই কোনো code অন্য কোনো code এর prefix নয় — decode করতে আলাদা separator লাগে না, bit stream পড়তে পড়তেই character চেনা যায়।",
-          "লাভ কতটা: fixed-length এ ৫টি symbol এর জন্য ৩ bit করে লাগত (মোট 300 bit); Huffman এ লাগে 225 bit — প্রায় 25% সাশ্রয়।",
-          "ব্যবহারিক প্রয়োগ: ZIP/GZIP, JPEG ও MP3 এর entropy coding ধাপে Huffman coding ব্যবহৃত হয়।"
+          "Huffman tree বানানোর ধাপ:",
+          {
+            "sub": "ধাপ ১ — ascending সাজাও: E(10), D(15), C(20), B(25), A(30)।"
+          },
+          {
+            "sub": "ধাপ ২ — সবচেয়ে ছোট দুটি E(10) + D(15) = 25।"
+          },
+          {
+            "sub": "ধাপ ৩ — এখন ছোট দুটি C(20) ও নতুন node(25) → 45।"
+          },
+          {
+            "sub": "ধাপ ৪ — বাকি B(25) + A(30) = 55।"
+          },
+          {
+            "sub": "ধাপ ৫ — 45 + 55 = 100 → root, গাছ সম্পূর্ণ।"
+          },
+          "Prefix property কেন গুরুত্বপূর্ণ:",
+          {
+            "sub": "প্রতিটি code leaf-এ গিয়ে শেষ হয়।"
+          },
+          {
+            "sub": "তাই কোনো code অন্য কোনো code-এর prefix নয়।"
+          },
+          {
+            "sub": "ফলে decode করতে আলাদা separator লাগে না — bit stream পড়তে পড়তেই character চেনা যায়।"
+          },
+          "লাভ কতটা:",
+          {
+            "sub": "Fixed-length-এ ৫টি symbol-এর জন্য ৩ bit করে লাগত — মোট 300 bit।"
+          },
+          {
+            "sub": "Huffman-এ লাগে 225 bit।"
+          },
+          {
+            "sub": "অর্থাৎ প্রায় 25% সাশ্রয়।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "ZIP ও GZIP-এর compression।"
+          },
+          {
+            "sub": "JPEG ও MP3-এর entropy coding ধাপ।"
+          }
         ],
         "diagram": "ধাপে ধাপে merge (সবসময় সবচেয়ে ছোট দুটি)\n\n  E(10) D(15) C(20) B(25) A(30)\n    └──┬──┘\n      (25)  C(20) B(25) A(30)\n       └──┬──┘\n         (45)   B(25) A(30)\n                 └──┬──┘\n         (45)       (55)\n           └────┬────┘\n              (100)\n\n────────────────────────────────────────\nHUFFMAN TREE     (বাঁ = 0 , ডান = 1)\n\n                  ( 100 )\n                0 /      \\ 1\n             (45)          (55)\n            0/   \\1       0/   \\1\n        C(20)   (25)   B(25)   A(30)\n               0/   \\1\n           E(10)    D(15)\n\n  C = 00      E = 010     D = 011\n  B = 10      A = 11\n\n────────────────────────────────────────\nAVERAGE CODE LENGTH\n\n  Σ(freq × length)\n   = (30×2) + (25×2) + (20×2) + (15×3) + (10×3)\n   = 60 + 50 + 40 + 45 + 30\n   = 225\n\n  225 / 100  =  2.25 bits per symbol  ✅\n  (fixed-length হলে লাগত 3 bits)",
         "table": {
@@ -1061,12 +1622,60 @@
           "বাকি index (0, 1, 4, 6, 7, 8, 9) NULL থাকে।"
         ],
         "points": [
-          "হিসাব: 25 mod 10 = 5, 35 mod 10 = 5, 42 mod 10 = 2, 52 mod 10 = 2, 63 mod 10 = 3, 73 mod 10 = 3।",
-          "Insert order অনুযায়ী chain এর শেষে যোগ করলে — index 2 → 42 → 52, index 3 → 63 → 73, index 5 → 25 → 35 (প্রতিটি chain NULL এ শেষ হয়)।",
-          "Load factor α = n / m = 6 / 10 = 0.6; search এর গড় খরচ O(1 + α) — অর্থাৎ chain গুলো ছোট থাকলে কার্যত O(1)।",
-          "Open addressing এর তুলনায় সুবিধা: table কখনো \"ভরে\" যায় না (α > 1 হতে পারে), আর deletion সহজ — শুধু node টি list থেকে সরালেই হয়।",
-          "অসুবিধা: প্রতিটি node এ pointer এর বাড়তি memory, আর সব key একই index এ পড়লে chain লম্বা হয়ে worst case O(n)।",
-          "এ কারণেই table size সাধারণত prime নেওয়া হয় — mod এর ফলাফল বেশি ছড়িয়ে পড়ে, chain সমান থাকে।"
+          "হিসাব — প্রতিটি key কোন index-এ যাবে:",
+          {
+            "sub": "25 mod 10 = 5।"
+          },
+          {
+            "sub": "35 mod 10 = 5।"
+          },
+          {
+            "sub": "42 mod 10 = 2।"
+          },
+          {
+            "sub": "52 mod 10 = 2।"
+          },
+          {
+            "sub": "63 mod 10 = 3।"
+          },
+          {
+            "sub": "73 mod 10 = 3।"
+          },
+          "Insert order অনুযায়ী chain — প্রতিটি chain NULL-এ শেষ:",
+          {
+            "sub": "index 2 → 42 → 52।"
+          },
+          {
+            "sub": "index 3 → 63 → 73।"
+          },
+          {
+            "sub": "index 5 → 25 → 35।"
+          },
+          "Load factor:",
+          {
+            "sub": "α = n / m = 6 / 10 = 0.6।"
+          },
+          {
+            "sub": "Search-এর গড় খরচ O(1 + α) — chain গুলো ছোট থাকলে কার্যত O(1)।"
+          },
+          "Open addressing-এর তুলনায় সুবিধা:",
+          {
+            "sub": "Table কখনো \"ভরে\" যায় না — α > 1 হতে পারে।"
+          },
+          {
+            "sub": "Deletion সহজ — শুধু node-টি list থেকে সরালেই হয়।"
+          },
+          "অসুবিধা:",
+          {
+            "sub": "প্রতিটি node-এ pointer রাখার বাড়তি memory লাগে।"
+          },
+          {
+            "sub": "সব key একই index-এ পড়লে chain লম্বা হয়ে worst case O(n)।"
+          },
+          "এ কারণেই table size সাধারণত prime নেওয়া হয়:",
+          {
+            "sub": "mod-এর ফলাফল তখন বেশি ছড়িয়ে পড়ে, ফলে chain গুলো সমান থাকে।"
+          }
         ],
         "diagram": "h(k) = k mod 10   →   index = শেষ digit\n\n  25 → 5      35 → 5      42 → 2\n  52 → 2      63 → 3      73 → 3\n\n────────────────────────────────────────\nFINAL HASH TABLE (separate chaining)\n\n Index │ Chain (Linked List)\n ──────┼──────────────────────────────────\n   0   │ → NULL\n   1   │ → NULL\n   2   │ → [ 42 ] → [ 52 ] → NULL\n   3   │ → [ 63 ] → [ 73 ] → NULL\n   4   │ → NULL\n   5   │ → [ 25 ] → [ 35 ] → NULL\n   6   │ → NULL\n   7   │ → NULL\n   8   │ → NULL\n   9   │ → NULL\n\n────────────────────────────────────────\n Load factor  α = n/m = 6/10 = 0.6\n গড় search খরচ = O(1 + α)  ≈ O(1)",
         "table": {
@@ -1129,15 +1738,63 @@
           "Linear probing এর মতো পাশাপাশি ঘর না নিয়ে লাফিয়ে খোঁজে বলে primary clustering কমে।"
         ],
         "points": [
-          "18: 18 mod 13 = 5 → ঘর 5 খালি → index 5।",
-          "41: 41 mod 13 = 2 → ঘর 2 খালি → index 2।",
-          "22: 22 mod 13 = 9 → ঘর 9 খালি → index 9।",
-          "44: 44 mod 13 = 5 → ভর্তি; i = 1 → (5 + 1) mod 13 = 6 → খালি → index 6।",
-          "59: 59 mod 13 = 7 → ঘর 7 খালি → index 7।",
-          "32: 32 mod 13 = 6 → ভর্তি; i = 1 → 7 ভর্তি; i = 2 → (6 + 4) = 10 → খালি → index 10।",
-          "31: 31 mod 13 = 5 → ভর্তি; i = 1 → 6 ভর্তি; i = 2 → (5 + 4) = 9 ভর্তি; i = 3 → (5 + 9) = 14 mod 13 = 1 → খালি → index 1।",
-          "সীমাবদ্ধতা (secondary clustering): একই home index থেকে শুরু হওয়া সব key হুবহু একই probe sequence ধরে চলে — যেমন 44 ও 31 দুজনেই 5 → 6 → 9 পথে গিয়েছে।",
-          "শর্ত: table size prime (এখানে 13) এবং load factor 0.5 এর নিচে থাকলে quadratic probing এ ফাঁকা ঘর পাওয়া নিশ্চিত।"
+          "সরাসরি বসে গেছে যেগুলো (কোনো collision নেই):",
+          {
+            "sub": "18 → 18 mod 13 = 5 → ঘর 5 খালি → index 5।"
+          },
+          {
+            "sub": "41 → 41 mod 13 = 2 → ঘর 2 খালি → index 2।"
+          },
+          {
+            "sub": "22 → 22 mod 13 = 9 → ঘর 9 খালি → index 9।"
+          },
+          {
+            "sub": "59 → 59 mod 13 = 7 → ঘর 7 খালি → index 7।"
+          },
+          "44 — একবার probe করতে হলো:",
+          {
+            "sub": "44 mod 13 = 5 → ঘর 5 ভর্তি (সেখানে 18 আছে)।"
+          },
+          {
+            "sub": "i = 1 → (5 + 1) mod 13 = 6 → খালি → index 6।"
+          },
+          "32 — দুইবার probe:",
+          {
+            "sub": "32 mod 13 = 6 → ঘর 6 ভর্তি (সেখানে 44 আছে)।"
+          },
+          {
+            "sub": "i = 1 → (6 + 1) = 7 → ভর্তি (সেখানে 59 আছে)।"
+          },
+          {
+            "sub": "i = 2 → (6 + 4) = 10 → খালি → index 10।"
+          },
+          "31 — তিনবার probe:",
+          {
+            "sub": "31 mod 13 = 5 → ঘর 5 ভর্তি।"
+          },
+          {
+            "sub": "i = 1 → (5 + 1) = 6 → ভর্তি।"
+          },
+          {
+            "sub": "i = 2 → (5 + 4) = 9 → ভর্তি।"
+          },
+          {
+            "sub": "i = 3 → (5 + 9) = 14 mod 13 = 1 → খালি → index 1।"
+          },
+          "সীমাবদ্ধতা — secondary clustering:",
+          {
+            "sub": "একই home index থেকে শুরু হওয়া সব key হুবহু একই probe sequence ধরে চলে।"
+          },
+          {
+            "sub": "যেমন 44 ও 31 দুজনেই 5 → 6 → 9 পথ ধরেই গিয়েছে।"
+          },
+          "কাজ করার শর্ত:",
+          {
+            "sub": "Table size prime হতে হবে — এখানে 13।"
+          },
+          {
+            "sub": "Load factor 0.5-এর নিচে থাকলে quadratic probing-এ ফাঁকা ঘর পাওয়া নিশ্চিত।"
+          }
         ],
         "diagram": "h(k) = k mod 13 ,   hᵢ(k) = (h(k) + i²) mod 13\n\n Key │ h(k) │ Probe sequence              │ বসল\n ────┼──────┼─────────────────────────────┼──────\n  18 │  5   │ i=0: 5  খালি                │  5\n  41 │  2   │ i=0: 2  খালি                │  2\n  22 │  9   │ i=0: 9  খালি                │  9\n  44 │  5   │ i=0: 5 ভর্তি → i=1: 6 খালি   │  6\n  59 │  7   │ i=0: 7  খালি                │  7\n  32 │  6   │ i=0: 6 ভর্তি → i=1: 7 ভর্তি   │\n     │      │ → i=2: (6+4)=10 খালি        │ 10\n  31 │  5   │ i=0: 5 ভর্তি → i=1: 6 ভর্তি   │\n     │      │ → i=2: 9 ভর্তি               │\n     │      │ → i=3: (5+9)=14 mod 13 = 1  │  1\n\n────────────────────────────────────────\nFINAL HASH TABLE (size 13)\n\n Index │ 0  1   2   3  4  5   6   7   8  9   10  11 12\n ──────┼───────────────────────────────────────────────\n Value │ –  31  41  –  –  18  44  59  –  22  32  –  –\n\n────────────────────────────────────────\n লাফের দূরত্ব : i² = 0, 1, 4, 9, 16 …\n তাই একই ঘরে ভিড় না জমে ছড়িয়ে পড়ে",
         "table": {
@@ -1224,16 +1881,45 @@
           "List — space O(V + E), প্রতিবেশী ঘোরা O(degree): sparse graph এ ভালো।"
         ],
         "points": [
-          "Undirected graph এ matrix symmetric হয় (matrix[i][j] = matrix[j][i]); directed graph এ নয় — তখন সারি মানে outgoing edge।",
-          "Matrix এ একটি vertex এর সব প্রতিবেশী বের করতে পুরো সারি ঘুরতে হয় → O(V), যদিও তার হয়তো ২টি edge-ই আছে। খালি ঘরগুলোও memory দখল করে।",
-          "List এ নির্দিষ্ট edge আছে কিনা দেখতে ওই vertex এর list ঘুরতে হয় → O(degree); কিন্তু প্রতিবেশী ঘোরা ঠিক ততটুকুই খরচ, বাড়তি নয়।",
-          "বাস্তবের অধিকাংশ graph sparse (E ≪ V²), তাই BFS, DFS, Dijkstra এ adjacency list ব্যবহার হয় — BFS/DFS এর খরচ তখন O(V + E), matrix এ হলে O(V²)।",
+          "Adjacency Matrix:",
+          {
+            "sub": "Undirected graph-এ matrix symmetric হয় — matrix[i][j] = matrix[j][i]।"
+          },
+          {
+            "sub": "Directed graph-এ symmetric নয়; সেখানে সারি মানে outgoing edge।"
+          },
+          {
+            "sub": "একটি vertex-এর সব প্রতিবেশী বের করতে পুরো সারি ঘুরতে হয় → O(V)।"
+          },
+          {
+            "sub": "তার হয়তো মাত্র ২টি edge আছে, তবুও পুরো সারি পড়তে হয়।"
+          },
+          {
+            "sub": "খালি ঘরগুলোও memory দখল করে রাখে।"
+          },
+          "Adjacency List:",
+          {
+            "sub": "নির্দিষ্ট edge আছে কিনা দেখতে ওই vertex-এর list ঘুরতে হয় → O(degree)।"
+          },
+          {
+            "sub": "কিন্তু প্রতিবেশী ঘোরার খরচ ঠিক ততটুকুই, বাড়তি নয়।"
+          },
+          "বাস্তবে কোনটা ব্যবহার হয়:",
+          {
+            "sub": "অধিকাংশ graph sparse — E ≪ V²।"
+          },
+          {
+            "sub": "তাই BFS, DFS ও Dijkstra-তে adjacency list ব্যবহার হয়।"
+          },
+          {
+            "sub": "তখন BFS/DFS-এর খরচ O(V + E); matrix-এ হলে হতো O(V²)।"
+          },
           "ব্যবহারিক প্রয়োগ:",
           {
             "sub": "Road network, social network, web graph — sparse, তাই adjacency list।"
           },
           {
-            "sub": "ছোট ও ঘন graph, বা Floyd–Warshall এর মতো matrix-ভিত্তিক algorithm — adjacency matrix।"
+            "sub": "ছোট ও ঘন graph, বা Floyd–Warshall-এর মতো matrix-ভিত্তিক algorithm — adjacency matrix।"
           }
         ],
         "diagram": "EXAMPLE GRAPH   (undirected)\n\n            A\n           / \\\n          B---C\n           \\ /\n            D\n\n  Edges : A–B , A–C , B–C , B–D , C–D\n\n────────────────────────────────────────\n1. ADJACENCY MATRIX      (V × V = 4 × 4)\n\n        A   B   C   D\n    A [ 0   1   1   0 ]\n    B [ 1   0   1   1 ]\n    C [ 1   1   0   1 ]\n    D [ 0   1   1   0 ]\n\n  matrix[i][j] = 1 → edge আছে , 0 → নেই\n  undirected বলে matrix symmetric\n  weighted হলে 1 এর জায়গায় weight w বসে\n\n────────────────────────────────────────\n2. ADJACENCY LIST\n\n    A →  B → C\n    B →  A → C → D\n    C →  A → B → D\n    D →  B → C\n\n  প্রতিটি vertex এর পাশে শুধু তার প্রতিবেশীরা\n\n────────────────────────────────────────\n Space :  Matrix O(V²)   >   List O(V + E)\n Edge check :  Matrix O(1)  <  List O(degree)\n Dense graph → Matrix ,  Sparse graph → List",

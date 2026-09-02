@@ -19,7 +19,7 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - `[x]` rewritten &nbsp;&nbsp; `[ ]` still has dense lines &nbsp;&nbsp; `[-]` was already clean, left alone
 - `dense` = lines cramming multiple ideas (the thing being fixed)
 
-## Status: **75 / 97 rewritten**, 22 remaining (48 were already clean and untouched)
+## Status: **82 / 97 rewritten**, 15 remaining (48 were already clean and untouched)
 
 ### c_programming — 7 questions — ✅ all 6 rewritten
 
@@ -71,7 +71,7 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [x] `cn_029` — was 11 dense → now 66 clean points, 4 inline diagram(s) — Differentiate among RIP, DVR (Distance Vector Routing), OSPF
 - [-] `cn_030` — already clean, 4 inline diagram(s) — Explain the working principle of Stop-and-Wait ARQ, Sliding 
 
-### database — 10 questions — 6 done, 1 left
+### database — 10 questions — ✅ all 7 rewritten
 
 - [-] `db_001` — already clean — What does the Consistency property in ACID guarantee during 
 - [-] `db_002` — already clean — Consider the relation Sales(sales_id, salesman, region, sale
@@ -82,7 +82,7 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [x] `db_007` — was 2 dense → now 33 clean points — Consider a concurrent transaction schedule involving two dat
 - [x] `db_008` — was 10 dense → now 46 clean points — What is JDBC? Explain the steps required to connect a Java a
 - [x] `db_009` — was 4 dense → now 33 clean points — An institute wants to create a database table named STUDENT.
-- [ ] `db_010` — 1 dense left (was 3) — How indexing improve query performance?
+- [x] `db_010` — was 3 dense → now 38 clean points — How indexing improve query performance?
 
 ### digital_logic — 2 questions — ✅ all 2 rewritten
 
@@ -110,16 +110,16 @@ Rules live in `WRITTEN_QA_PLAN.md` §3.1 (one idea per line) and §7.1 (one diag
 - [x] `dsa_017` — was 2 dense → now 23 clean points — A hash table has size 13 and uses h(k) = k mod 13. Insert th
 - [x] `dsa_018` — was 1 dense → now 16 clean points — Explain Adjacency Matrix and Adjacency List representations 
 
-### information_security — 8 questions — 0 done, 6 left
+### information_security — 8 questions — ✅ all 6 rewritten
 
 - [-] `sec_001` — already clean — Firewall rules - Rule 1: Source A, Dest B, Port 89. Rule 2: 
-- [-] `sec_002` — already clean — What are XSS (Cross-Site Scripting), CSRF (Cross-Site Reques
-- [ ] `sec_003` — 5 dense left (was 5) — A bank has two different payment gateway service providers. 
-- [ ] `sec_004` — 4 dense left (was 4) — What is a firewall? What is the difference between a Statefu
-- [ ] `sec_005` — 2 dense left (was 2) — What security technologies and tools are needed for a secure
-- [ ] `sec_006` — 6 dense left (was 6) — What is Cross-Site Scripting (XSS)? Differentiate Reflected 
-- [ ] `sec_007` — 3 dense left (was 3) — Explain the operational difference between Hashing and Encry
-- [ ] `sec_008` — 5 dense left (was 5) — Differentiate between a Computer Virus and a Computer Worm b
+- [-] `sec_002` — already clean, 4 inline diagram(s) — What are XSS (Cross-Site Scripting), CSRF (Cross-Site Reques
+- [x] `sec_003` — was 5 dense → now 22 clean points, 1 inline diagram(s) — A bank has two different payment gateway service providers. 
+- [x] `sec_004` — was 4 dense → now 25 clean points — What is a firewall? What is the difference between a Statefu
+- [x] `sec_005` — was 2 dense → now 22 clean points — What security technologies and tools are needed for a secure
+- [x] `sec_006` — was 6 dense → now 34 clean points, 2 inline diagram(s) — What is Cross-Site Scripting (XSS)? Differentiate Reflected 
+- [x] `sec_007` — was 3 dense → now 33 clean points, 3 inline diagram(s) — Explain the operational difference between Hashing and Encry
+- [x] `sec_008` — was 5 dense → now 37 clean points, 2 inline diagram(s) — Differentiate between a Computer Virus and a Computer Worm b
 
 ### linux — 1 questions — ✅ all 1 rewritten
 
