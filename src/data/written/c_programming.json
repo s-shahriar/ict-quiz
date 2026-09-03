@@ -1402,6 +1402,151 @@
       }
     },
     {
+      "id": "c_024",
+      "segment": "Program",
+      "subsegment": "Number",
+      "q": "Java — Palindrome Number: check whether a number reads the same when reversed. Dry run.",
+      "tags": [
+        "java",
+        "palindrome",
+        "reverse number",
+        "digit extraction",
+        "modulo",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class PalindromeNumber {\n\n    public static void main(String[] args) {\n\n        int num = 12321;\n\n        int temp = num;\n        int reverse = 0;\n\n        while (temp > 0) {\n            int digit = temp % 10;\n            reverse = reverse * 10 + digit;\n            temp = temp / 10;\n        }\n\n        System.out.println(\"Number     : \" + num);\n        System.out.println(\"Reverse    : \" + reverse);\n        System.out.println(\"Palindrome : \" + (reverse == num));\n    }\n\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Number 12321, Reverse 12321, Palindrome : true",
+          "একই %10 আর /10 loop — শুধু অঙ্ক যোগ না করে reverse = reverse * 10 + digit দিয়ে উল্টো সংখ্যাটা গড়া হয়।"
+        ],
+        "points": [
+          "reverse * 10 — এতদিনে গড়া অঙ্কগুলো এক ঘর বাঁয়ে সরে যায়।",
+          "+ digit — নতুন অঙ্কটা একক স্থানে বসে।",
+          "ফলে মূল সংখ্যার শেষ অঙ্ক উল্টো সংখ্যার প্রথমে চলে আসে।",
+          "শেষে reverse == num মিললে সংখ্যাটি palindrome।",
+          "Armstrong-এর সাথে পার্থক্য কেবল ভেতরের ওই এক লাইনে — সেখানে digit³ যোগ হয়, এখানে উল্টো সংখ্যা গড়া হয়।"
+        ],
+        "table": {
+          "headers": [
+            "temp",
+            "digit",
+            "reverse = reverse × 10 + digit",
+            "temp = temp / 10"
+          ],
+          "rows": [
+            [
+              "12321",
+              "1",
+              "0 × 10 + 1 = 1",
+              "1232"
+            ],
+            [
+              "1232",
+              "2",
+              "1 × 10 + 2 = 12",
+              "123"
+            ],
+            [
+              "123",
+              "3",
+              "12 × 10 + 3 = 123",
+              "12"
+            ],
+            [
+              "12",
+              "2",
+              "123 × 10 + 2 = 1232",
+              "1"
+            ],
+            [
+              "1",
+              "1",
+              "1232 × 10 + 1 = 12321",
+              "0"
+            ],
+            [
+              "0",
+              "—",
+              "reverse 12321 == num 12321 → true",
+              "—"
+            ]
+          ]
+        },
+        "mnemonic": "reverse = reverse × 10 + digit — পুরনোটা বাঁয়ে ঠেলো, নতুন অঙ্ক ডানে বসাও।"
+      }
+    },
+    {
+      "id": "c_023",
+      "segment": "Program",
+      "subsegment": "Number",
+      "q": "Java — Digit Sum: add up all the digits of a number. Dry run.",
+      "tags": [
+        "java",
+        "digit extraction",
+        "modulo",
+        "while loop",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class DigitSum {\n\n    public static void main(String[] args) {\n\n        int num = 4729;\n\n        int temp = num;\n        int sum = 0;\n\n        while (temp > 0) {\n            int digit = temp % 10;\n            sum = sum + digit;\n            temp = temp / 10;\n        }\n\n        System.out.println(\"Number    : \" + num);\n        System.out.println(\"Digit sum : \" + sum);\n    }\n\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Number 4729, Digit sum 22",
+          "temp % 10 শেষ অঙ্কটা দেয়, temp / 10 সেটাকে কেটে ফেলে — while চলতে চলতে সব অঙ্ক বেরিয়ে আসে।"
+        ],
+        "points": [
+          "temp % 10 — সংখ্যার একদম শেষ অঙ্কটা আলাদা করে দেয়।",
+          "temp / 10 — int ভাগ, তাই শেষ অঙ্কটা কেটে যায় (4729 → 472)।",
+          "প্রতিবার সেই অঙ্ক sum-এ যোগ হয়।",
+          "temp শূন্য হলে while থামে — তখন সব অঙ্ক শেষ।",
+          "মূল num আলাদা রাখা হয়েছে, নইলে শেষে আর ছাপা যেত না।"
+        ],
+        "table": {
+          "headers": [
+            "temp",
+            "digit = temp % 10",
+            "sum",
+            "temp = temp / 10"
+          ],
+          "rows": [
+            [
+              "4729",
+              "9",
+              "0 + 9 = 9",
+              "472"
+            ],
+            [
+              "472",
+              "2",
+              "9 + 2 = 11",
+              "47"
+            ],
+            [
+              "47",
+              "7",
+              "11 + 7 = 18",
+              "4"
+            ],
+            [
+              "4",
+              "4",
+              "18 + 4 = 22",
+              "0"
+            ],
+            [
+              "0",
+              "—",
+              "loop থামল, sum = 22",
+              "—"
+            ]
+          ]
+        },
+        "mnemonic": "%10 অঙ্ক দেয়, /10 অঙ্ক কাটে — temp শূন্য হলে থামো।"
+      }
+    },
+    {
       "id": "c_021",
       "segment": "Program",
       "subsegment": "Number",
