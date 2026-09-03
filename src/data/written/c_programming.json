@@ -2698,6 +2698,75 @@
         },
         "mnemonic": "getOrDefault দিয়ে গোনো, contains দিয়ে খোঁজো, equals দিয়ে মেলাও।"
       }
+    },
+    {
+      "id": "c_027",
+      "q": "What does a friend class do in C++? Explain with a code example.",
+      "tags": [
+        "c++",
+        "friend class",
+        "encapsulation",
+        "private member",
+        "access specifier",
+        "oop"
+      ],
+      "answer": {
+        "code": "#include <iostream>\nusing namespace std;\n\nclass Account {\nprivate:\n    double balance = 5000;\n\n    friend class Auditor;      // Auditor-কে private দেখার অনুমতি দেওয়া হলো\n};\n\nclass Auditor {\npublic:\n    void show(Account a) {\n        cout << \"Balance: \" << a.balance << endl;   // private, তবু ঢোকা যাচ্ছে\n    }\n};\n\nint main() {\n    Account acc;\n    Auditor aud;\n    aud.show(acc);\n}",
+        "codeLang": "cpp",
+        "summary": [
+          "Output: Balance: 5000",
+          "friend class মানে একটি class-কে অন্য class-এর private ও protected member ব্যবহারের অনুমতি দেওয়া — এখানে Auditor বাইরের class হয়েও Account-এর private balance পড়তে পারছে।"
+        ],
+        "points": [
+          "সাধারণত private member শুধু নিজের class-এর ভেতর থেকেই ছোঁয়া যায়।",
+          "Account-এর ভেতরে friend class Auditor; লিখলে Auditor সেই বাধা পেরোতে পারে।",
+          "অনুমতি দেয় যে class সে-ই লেখে — Auditor নিজে নিজেকে friend বানিয়ে নিতে পারে না।",
+          "friend লাইনটা public না private অংশে লিখলে ফল একই — access specifier এখানে খাটে না।",
+          "এটি ইচ্ছে করেই encapsulation ভাঙে, তাই শুধু সত্যিকারের দরকারে ব্যবহার করা উচিত।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "operator overloading — cout << obj লিখতে হলে সেই function-কে object-এর ভেতরটা দেখতে হয়।"
+          },
+          {
+            "sub": "container ও তার iterator — iterator-কে container-এর ভেতরের গঠন জানতে হয়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "প্রশ্ন",
+            "উত্তর",
+            "মানে"
+          ],
+          "rows": [
+            [
+              "friendship কি দুই দিকেই খাটে?",
+              "না",
+              "Account, Auditor-কে friend করলেও Auditor আপনা থেকে Account-কে friend করে না"
+            ],
+            [
+              "derived class কি friendship পায়?",
+              "না",
+              "Auditor-এর child class Account-এর private দেখতে পাবে না"
+            ],
+            [
+              "friend-এর friend কি পায়?",
+              "না",
+              "friendship transitive নয়, এক ধাপেই শেষ"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Auditor নিজে লিখেই Account-এর private-এ ঢুকতে পারবে",
+            "অনুমতি দিতে হয় Account-কেই, নিজের ভেতরে friend class Auditor; লিখে। বাইরে থেকে জোর করে বন্ধুত্ব নেওয়া যায় না।"
+          ],
+          [
+            "friend class-এর derived class-ও access পেয়ে যাবে",
+            "পায় না — compiler সরাসরি বলে 'balance is private within this context'।"
+          ]
+        ],
+        "mnemonic": "friend মানে \"আমি তোমাকে আমার ভেতরটা দেখতে দিলাম\" — অনুমতি দেয় মালিক, নিজে নেওয়া যায় না; আর সেই অনুমতি উত্তরাধিকারেও যায় না।"
+      }
     }
   ]
 }
