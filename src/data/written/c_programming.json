@@ -1331,6 +1331,1069 @@
         ],
         "mnemonic": "তারকা (*) = মান, & = ঠিকানা, &array = 'পুরোটা' লাফ (element নয়)। Leak = memory হারানো (আটকে থাকে, কেউ free করতে পারে না); Dangling = ইতিমধ্যে invalid জায়গা ব্যবহার করা।"
       }
+    },
+    {
+      "id": "c_022",
+      "segment": "Program",
+      "subsegment": "Number",
+      "q": "Java — Armstrong Numbers: print all 3-digit Armstrong numbers. Dry run.",
+      "tags": [
+        "java",
+        "armstrong",
+        "digit extraction",
+        "modulo",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class ArmstrongRange {\n\n    public static void main(String[] args) {\n        \n        for(int num = 100; num <= 999; num++){\n\n            int temp = num;\n            int sum = 0;\n\n            while (temp > 0) {\n                int digit = temp % 10;\n                sum = sum + (digit * digit * digit);\n                temp = temp / 10;\n            }\n\n            if (sum == num)\n                System.out.print(num + \" \");\n        }\n    }\n    \n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: 153 370 371 407",
+          "প্রতিটি সংখ্যার অঙ্ক আলাদা করে ঘন (cube) করে যোগ — যোগফল সংখ্যাটির সমান হলেই Armstrong।"
+        ],
+        "points": [
+          "temp % 10 শেষ অঙ্কটা দেয়, temp / 10 সেই অঙ্কটা ফেলে দেয়।",
+          "while (temp > 0) চলতে চলতে সব অঙ্ক বেরিয়ে আসে।",
+          "৩ অঙ্কের সংখ্যা বলেই digit³ — n অঙ্কের হলে digitⁿ হতো।",
+          "মূল num অক্ষত রাখতে আলাদা temp ব্যবহার করা হয়েছে, নইলে শেষে মেলানো যেত না।",
+          "100..999 প্রতিটির জন্য ৩টি করে ধাপ, তাই কাজ সামান্যই।"
+        ],
+        "table": {
+          "headers": [
+            "num",
+            "অঙ্ক",
+            "digit³ যোগফল",
+            "sum == num?"
+          ],
+          "rows": [
+            [
+              "153",
+              "1, 5, 3",
+              "1 + 125 + 27 = 153",
+              "হ্যাঁ"
+            ],
+            [
+              "154",
+              "1, 5, 4",
+              "1 + 125 + 64 = 190",
+              "না"
+            ],
+            [
+              "370",
+              "3, 7, 0",
+              "27 + 343 + 0 = 370",
+              "হ্যাঁ"
+            ],
+            [
+              "371",
+              "3, 7, 1",
+              "27 + 343 + 1 = 371",
+              "হ্যাঁ"
+            ],
+            [
+              "407",
+              "4, 0, 7",
+              "64 + 0 + 343 = 407",
+              "হ্যাঁ"
+            ]
+          ]
+        },
+        "mnemonic": "%10 অঙ্ক দেয়, /10 অঙ্ক কাটে — ঘন করে যোগ, মিললেই Armstrong।"
+      }
+    },
+    {
+      "id": "c_021",
+      "segment": "Program",
+      "subsegment": "Number",
+      "q": "Java — Prime Range: print all prime numbers between 0 and 30. Dry run.",
+      "tags": [
+        "java",
+        "prime",
+        "loop",
+        "modulo",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class PrimeRange {\n    public static void main(String[] args) {\n        \n        int start = 0;\n        int end = 30;\n\n        for(int num = start; num <= end; num++){\n\n            if (num < 2) continue;\n\n            boolean prime = true;\n            for(int i = 2; i < num; i++){\n                if(num % i == 0) prime = false;\n            }\n\n            if (prime) System.out.print(num + \" \");\n        }\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: 2 3 5 7 11 13 17 19 23 29",
+          "প্রতিটি সংখ্যার জন্য 2 থেকে num−1 পর্যন্ত ভাগ করে দেখা হয় — একবারও নিঃশেষে ভাগ গেলে সেটি prime নয়।"
+        ],
+        "points": [
+          "num < 2 হলে continue — 0 আর 1 prime নয়।",
+          "num = 2-এ ভেতরের loop একবারও চলে না (i = 2, শর্ত 2 < 2 মিথ্যা), তাই prime সত্যি থেকে যায়।",
+          "একটাও ভাজক পাওয়া গেলে prime = false বসে যায়।",
+          "কিন্তু break নেই — ভাজক পাওয়ার পরেও loop শেষ পর্যন্ত চলতেই থাকে, যা অপচয়।",
+          "i < num-এর বদলে i × i <= num লিখলে কাজ O(n√n)-এ নেমে আসত।"
+        ],
+        "table": {
+          "headers": [
+            "num",
+            "ভেতরের loop যা পেল",
+            "prime?"
+          ],
+          "rows": [
+            [
+              "2",
+              "loop চলেই না",
+              "হ্যাঁ"
+            ],
+            [
+              "3",
+              "3%2 ≠ 0",
+              "হ্যাঁ"
+            ],
+            [
+              "4",
+              "4%2 = 0 → ভাজক",
+              "না"
+            ],
+            [
+              "9",
+              "9%3 = 0 → ভাজক",
+              "না"
+            ],
+            [
+              "29",
+              "2..28-এর কেউ ভাগ করে না",
+              "হ্যাঁ"
+            ],
+            [
+              "30",
+              "30%2 = 0 → ভাজক",
+              "না"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "break না থাকায় কোনো ভুল হয়",
+            "ফলাফল ঠিকই আসে, শুধু অপ্রয়োজনীয় কাজ হয় — ভাজক পাওয়ার পরেও loop চলতে থাকে।"
+          ]
+        ],
+        "mnemonic": "2 থেকে num−1 পর্যন্ত কেউ ভাগ করতে না পারলেই prime।"
+      }
+    },
+    {
+      "id": "c_020",
+      "segment": "Program",
+      "subsegment": "Matrix",
+      "q": "Java — Diagonal Sums: find the main diagonal and anti-diagonal sums of a square matrix. Dry run.",
+      "tags": [
+        "java",
+        "matrix",
+        "diagonal",
+        "anti diagonal",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class DiagonalMatrix {\n    public static void main(String[] args) {\n        \n        int[][] m = {\n            {1, 2, 3},\n            {4, 5, 6},\n            {7, 8, 9}\n        };\n\n        int n = m.length;\n\n        int diagonalSum = 0;\n        int antiDiagonalSum = 0;\n\n        for (int i = 0; i < n; i++) {\n            diagonalSum = diagonalSum + m[i][i];\n            antiDiagonalSum =  antiDiagonalSum + m[i][n-i-1];\n        }\n\n        System.out.println(\"Main diagonal : \" + diagonalSum);\n        System.out.println(\"Anti diagonal : \" + antiDiagonalSum);\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Main diagonal 15, Anti diagonal 15",
+          "একটাই loop — main diagonal-এ index [i][i], anti diagonal-এ [i][n−i−1]।"
+        ],
+        "points": [
+          "Main diagonal উপরের বাঁ থেকে নিচের ডানে: m[0][0], m[1][1], m[2][2] = 1, 5, 9।",
+          "Anti diagonal উপরের ডান থেকে নিচের বাঁয়ে: m[0][2], m[1][1], m[2][0] = 3, 5, 7।",
+          "n−i−1 সূত্রটাই কলাম উল্টো দিক থেকে গোনে।",
+          "বিজোড় মাপের matrix-এ মাঝের ঘর (এখানে 5) দুই diagonal-এই পড়ে।",
+          "একটাই loop, তাই O(n) — পুরো matrix ঘোরার দরকার নেই।"
+        ],
+        "table": {
+          "headers": [
+            "i",
+            "m[i][i]",
+            "diagonalSum",
+            "m[i][n−i−1]",
+            "antiDiagonalSum"
+          ],
+          "rows": [
+            [
+              "0",
+              "1",
+              "1",
+              "m[0][2] = 3",
+              "3"
+            ],
+            [
+              "1",
+              "5",
+              "6",
+              "m[1][1] = 5",
+              "8"
+            ],
+            [
+              "2",
+              "9",
+              "15",
+              "m[2][0] = 7",
+              "15"
+            ]
+          ]
+        },
+        "mnemonic": "[i][i] সোজা diagonal, [i][n−i−1] উল্টো diagonal — একই loop-এ দুটোই।"
+      }
+    },
+    {
+      "id": "c_019",
+      "segment": "Program",
+      "subsegment": "Matrix",
+      "q": "Java — Transpose: transpose a 2x3 matrix into a 3x2 one. Dry run.",
+      "tags": [
+        "java",
+        "matrix",
+        "2d array",
+        "transpose",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class Transpose {\n    public static void main(String[] args) {\n        \n        int[][] m = {\n            {1, 2, 3},\n            {4, 5, 6}\n        };\n\n        int rows = m.length;\n        int cols = m[0].length;\n\n        int[][] t = new int[cols][rows];\n\n\n        for (int i = 0; i < rows; i++) {\n            for (int j = 0; j < cols; j++) {\n                t[j][i] = m[i][j];\n            }\n        }\n\n        System.out.println(\"Transpose Matrix : \");\n\n        for (int i = 0; i < cols; i++) {\n            for (int j = 0; j < rows; j++) {\n                System.out.print(t[i][j] + \" \");\n            }\n            System.out.println();\n        }\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: 1 4 / 2 5 / 3 6",
+          "সারি আর কলাম উল্টে দেওয়া — m-এর [i][j] ঘরটা t-এর [j][i] ঘরে বসে।"
+        ],
+        "points": [
+          "m হলো 2×3, তাই t বানাতে হয় 3×2 — new int[cols][rows]।",
+          "মূল লাইন t[j][i] = m[i][j] — index দুটো জায়গা বদল করে।",
+          "m-এর প্রথম সারি {1,2,3} গিয়ে t-এর প্রথম কলাম হয়ে দাঁড়ায়।",
+          "ছাপার loop চলে cols × rows ধরে, কারণ t-এর মাপ উল্টো।",
+          "প্রতিটি ঘর একবার করে ছোঁয়া হয়, তাই O(rows × cols)।"
+        ],
+        "table": {
+          "headers": [
+            "i",
+            "j",
+            "m[i][j]",
+            "বসল t-এর ঘরে"
+          ],
+          "rows": [
+            [
+              "0",
+              "0",
+              "1",
+              "t[0][0]"
+            ],
+            [
+              "0",
+              "1",
+              "2",
+              "t[1][0]"
+            ],
+            [
+              "0",
+              "2",
+              "3",
+              "t[2][0]"
+            ],
+            [
+              "1",
+              "0",
+              "4",
+              "t[0][1]"
+            ],
+            [
+              "1",
+              "1",
+              "5",
+              "t[1][1]"
+            ],
+            [
+              "1",
+              "2",
+              "6",
+              "t[2][1]"
+            ]
+          ]
+        },
+        "mnemonic": "t[j][i] = m[i][j] — শুধু index দুটো জায়গা বদল করে।"
+      }
+    },
+    {
+      "id": "c_018",
+      "segment": "Program",
+      "subsegment": "String",
+      "q": "Java — Anagram Check: decide whether two strings are anagrams by comparing character counts. Dry run.",
+      "tags": [
+        "java",
+        "string",
+        "anagram",
+        "hashmap",
+        "equals",
+        "dry run"
+      ],
+      "answer": {
+        "code": "import java.util.HashMap;\n\npublic class AnagramCheck {\n\n    static HashMap<Character, Integer> count (String s) {\n\n        HashMap<Character,Integer> map = new HashMap<>();\n\n        for (int i = 0; i < s.length(); i++) {\n            char ch = s.charAt(i);\n            map.put(ch, map.getOrDefault(ch, 0) +1);\n        }\n\n        return map;\n    }\n\n    public static void main(String[] args) {\n        String s1 = \"listen\";\n        String s2 = \"silent\";\n\n        boolean anagram = count(s1).equals(count(s2));\n        System.out.println(\"Anagram: \" + anagram);\n    }\n\n\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Anagram: true",
+          "দুটো string-এর character-count map বানিয়ে map দুটো equals() দিয়ে মেলানো হয়।"
+        ],
+        "points": [
+          "count() একই helper, দুইবার ডাকা হয় — একবার listen, একবার silent-এর জন্য।",
+          "দুটো map-ই দাঁড়ায় {l=1, i=1, s=1, t=1, e=1, n=1}।",
+          "HashMap.equals() ক্রম দেখে না, শুধু key-value জোড়া মেলে কি না দেখে — তাই true।",
+          "length আলাদা হলে কোনো না কোনো count মিলত না, তাই আলাদা করে length মেলানোর দরকার নেই।",
+          "দুটো string একবার করে পড়া হয়, O(n)। sort করে মেলালে লাগত O(n log n)।"
+        ],
+        "table": {
+          "headers": [
+            "character",
+            "listen",
+            "silent"
+          ],
+          "rows": [
+            [
+              "l",
+              "1",
+              "1"
+            ],
+            [
+              "i",
+              "1",
+              "1"
+            ],
+            [
+              "s",
+              "1",
+              "1"
+            ],
+            [
+              "t",
+              "1",
+              "1"
+            ],
+            [
+              "e",
+              "1",
+              "1"
+            ],
+            [
+              "n",
+              "1",
+              "1"
+            ]
+          ]
+        },
+        "mnemonic": "একই অক্ষর একই সংখ্যায় — ক্রম যা-ই হোক, anagram।"
+      }
+    },
+    {
+      "id": "c_017",
+      "segment": "Program",
+      "subsegment": "String",
+      "q": "Java — Character Frequency: count how many times each character appears, using a HashMap. Dry run.",
+      "tags": [
+        "java",
+        "string",
+        "hashmap",
+        "frequency",
+        "getOrDefault",
+        "dry run"
+      ],
+      "answer": {
+        "code": "import java.util.HashMap;\n\npublic class CharFrequency {\n    public static void main(String[] args) {\n        \n        String text = \"programming\";\n\n        HashMap<Character, Integer> freq = new HashMap<>();\n\n        for (int i = 0; i < text.length(); i++) {\n            char ch = text.charAt(i);\n            freq.put(ch, freq.getOrDefault(ch, 0) + 1);\n        }\n\n        for(char ch : freq.keySet()){\n            System.out.println(ch + \" \" + freq.get(ch));\n        }\n\n    }   \n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: p 1, a 1, r 2, g 2, i 1, m 2, n 1, o 1",
+          "প্রতিটি character-এর জন্য map-এ count এক বাড়ানো হয়; getOrDefault নতুন character-কে 0 ধরে শুরু করে।"
+        ],
+        "points": [
+          "\"programming\" = p r o g r a m m i n g — ১১টি character।",
+          "r, g, m প্রতিটি দুইবার আসে, বাকিরা একবার।",
+          "ছাপার ক্রম কিন্তু insertion ক্রম নয় — HashMap নিজের hash অনুযায়ী সাজায়।",
+          "তাই output আসে p, a, r, g, i, m, n, o — মূল শব্দের ক্রমে নয়।",
+          "ক্রম ধরে রাখতে হলে LinkedHashMap, আর বর্ণানুক্রম চাইলে TreeMap।"
+        ],
+        "table": {
+          "headers": [
+            "character",
+            "কতবার"
+          ],
+          "rows": [
+            [
+              "p",
+              "1"
+            ],
+            [
+              "r",
+              "2"
+            ],
+            [
+              "o",
+              "1"
+            ],
+            [
+              "g",
+              "2"
+            ],
+            [
+              "a",
+              "1"
+            ],
+            [
+              "m",
+              "2"
+            ],
+            [
+              "i",
+              "1"
+            ],
+            [
+              "n",
+              "1"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "HashMap insertion ক্রমে ছাপবে ভাবা",
+            "HashMap কোনো ক্রমের নিশ্চয়তা দেয় না — এখানে output p, a, r, g, i, m, n, o, অথচ শব্দে ক্রম p, r, o, g…। ক্রম দরকার হলে LinkedHashMap।"
+          ]
+        ],
+        "mnemonic": "getOrDefault(ch, 0) + 1 — নতুন হলে 0 থেকে শুরু, পুরনো হলে বাড়ো।"
+      }
+    },
+    {
+      "id": "c_016",
+      "segment": "Program",
+      "subsegment": "String",
+      "q": "Java — Count Characters: count vowels, consonants and digits in a string. Dry run.",
+      "tags": [
+        "java",
+        "string",
+        "vowel",
+        "consonant",
+        "digit",
+        "charAt",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class CountCharacters {\n    public static void main(String[] args) {\n        \n        String text = \"Dhaka 1000 is a City\";\n\n        int vowels = 0;\n        int consonents = 0;\n        int digits = 0;\n        \n\n        for (int i = 0; i < text.length(); i++) {\n            char ch = text.charAt(i);\n\n            ch = Character.toLowerCase(ch);\n\n            if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {\n                vowels++;\n            } else if(ch >= 'a' && ch <= 'z'){\n                consonents++;\n            } else if(ch >= '0' && ch <= '9'){\n                digits++;\n            }\n        }\n\n        System.out.println(\"Vowels     : \" + vowels);\n        System.out.println(\"Consonants : \" + consonents);\n        System.out.println(\"Digits     : \" + digits);\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Vowels 5, Consonants 7, Digits 4",
+          "প্রতিটি character ছোট হাতের করে নিয়ে ক্রমে vowel → consonant → digit যাচাই করা হয়।"
+        ],
+        "points": [
+          "toLowerCase() করায় 'D' আর 'C'-ও ছোট হাতের নিয়মেই ধরা পড়ে।",
+          "else-if শৃঙ্খল, তাই vowel মিলে গেলে আর consonant পরীক্ষা হয় না।",
+          "consonant-এর শর্ত ch >= 'a' && ch <= 'z' — vowel আগেই ধরা পড়ায় বাকিরাই consonant।",
+          "space কোনো শর্তেই মেলে না, তাই চুপচাপ বাদ পড়ে — ৪টি space গোনা হয়নি।",
+          "একবার loop, O(n)।"
+        ],
+        "table": {
+          "headers": [
+            "ধরন",
+            "কোন character গুলো",
+            "সংখ্যা"
+          ],
+          "rows": [
+            [
+              "Vowel",
+              "a, a, i, a, i",
+              "5"
+            ],
+            [
+              "Consonant",
+              "D, h, k, s, C, t, y",
+              "7"
+            ],
+            [
+              "Digit",
+              "1, 0, 0, 0",
+              "4"
+            ],
+            [
+              "কোনোটাই নয়",
+              "৪টি space",
+              "গোনা হয়নি"
+            ]
+          ]
+        },
+        "mnemonic": "আগে vowel, না হলে অক্ষর মানেই consonant, তারপর digit — space আপনা থেকেই বাদ।"
+      }
+    },
+    {
+      "id": "c_015",
+      "segment": "Program",
+      "subsegment": "String",
+      "q": "Java — Reverse Words: reverse each word of a sentence but keep the word order. Dry run.",
+      "tags": [
+        "java",
+        "string",
+        "split",
+        "charAt",
+        "reverse",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class ReverseWords {\n    public static void main(String[] args) {\n        \n        String text = \"University Examination 2026\";\n\n        String[] words = text.split(\" \");\n\n        for (int i = 0; i < words.length; i++) {\n            \n            String word = words[i];\n            String rev = \"\";\n\n            for (int j = word.length() - 1; j >= 0; j--) {\n                rev = rev + word.charAt(j);\n            }\n\n            System.out.print(rev + \" \");\n        }\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: ytisrevinU noitanimaxE 6202",
+          "split(\" \") দিয়ে শব্দে ভাগ, তারপর প্রতিটি শব্দ শেষ অক্ষর থেকে পড়ে নতুন string বানানো।"
+        ],
+        "points": [
+          "split(\" \") তিনটি শব্দ দেয়: University, Examination, 2026।",
+          "ভেতরের loop j শুরু হয় word.length()−1 থেকে, কমতে কমতে 0 — অর্থাৎ উল্টো দিকে।",
+          "rev = rev + word.charAt(j) — প্রতিবার শেষের অক্ষরটা সামনে যোগ হয়।",
+          "শব্দের ক্রম বদলায় না, কারণ বাইরের loop বাঁ থেকে ডানেই চলে।",
+          "প্রতিবার string যোগ করায় নতুন object তৈরি হয় — বড় input-এ StringBuilder ভালো।"
+        ],
+        "table": {
+          "headers": [
+            "words[i]",
+            "j যেভাবে চলে",
+            "rev"
+          ],
+          "rows": [
+            [
+              "University",
+              "9 → 0",
+              "ytisrevinU"
+            ],
+            [
+              "Examination",
+              "10 → 0",
+              "noitanimaxE"
+            ],
+            [
+              "2026",
+              "3 → 0",
+              "6202"
+            ]
+          ]
+        },
+        "mnemonic": "শব্দ ভাঙো, প্রতিটি শব্দ উল্টো দিক থেকে পড়ো — ক্রম রাখো অটুট।"
+      }
+    },
+    {
+      "id": "c_014",
+      "segment": "Program",
+      "subsegment": "Array",
+      "q": "Java — Bubble Sort: sort an array ascending and show the array after every pass. Dry run.",
+      "tags": [
+        "java",
+        "sorting",
+        "bubble sort",
+        "swap",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class BubbleSort {\n    public static void main(String[] args) {\n        int[] arr = {45, 12, 78, 23, 6};\n\n        int n = arr.length;\n\n        for(int i = 0; i < n-1 ; i++){\n            for(int j = 0; j < n-1-i; j++){\n\n                if(arr[j] > arr[j+1]){\n                    int temp = arr[j];\n                    arr[j] = arr[j+1];\n                    arr[j+1] = temp;\n                }\n            }\n        }\n\n        System.out.print(\"Sorted: \");\n        for (int i = 0; i < n; i++) {\n            System.out.print(arr[i] + \" \");\n        }\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Sorted: 6 12 23 45 78",
+          "পাশাপাশি দুটি মান উল্টো ক্রমে থাকলে swap — প্রতিটি pass-এ সবচেয়ে বড়টা ভেসে গিয়ে ডানে বসে।"
+        ],
+        "points": [
+          "ভেতরের loop j < n-1-i — প্রতি pass শেষে ডানদিকের একটা ঘর পাকা হয়ে যায়, তাই সীমা কমে।",
+          "Pass 1-এ 78 ডানে চলে যায়, Pass 2-এ 45, এভাবে চলতে থাকে।",
+          "n−1টা pass লাগে, কারণ শেষ element আপনা থেকেই ঠিক জায়গায় পড়ে।",
+          "সবচেয়ে খারাপ ও গড় ক্ষেত্রে O(n²), swap হয় in-place তাই extra space O(1)।",
+          "এই code-এ swapped flag নেই, তাই array আগে থেকে sorted হলেও পুরো n² কাজ করে।"
+        ],
+        "table": {
+          "headers": [
+            "Pass (i)",
+            "ভেতরের j-এর সীমা",
+            "pass শেষে array",
+            "পাকা হলো"
+          ],
+          "rows": [
+            [
+              "1",
+              "0..3",
+              "12 45 23 6 78",
+              "78"
+            ],
+            [
+              "2",
+              "0..2",
+              "12 23 6 45 78",
+              "45"
+            ],
+            [
+              "3",
+              "0..1",
+              "12 6 23 45 78",
+              "23"
+            ],
+            [
+              "4",
+              "0..0",
+              "6 12 23 45 78",
+              "12"
+            ]
+          ]
+        },
+        "mnemonic": "প্রতি pass-এ সবচেয়ে বড় বুদবুদ ভেসে ডানে যায়, আর ডানের সীমা এক ঘর কমে।"
+      }
+    },
+    {
+      "id": "c_013",
+      "segment": "Program",
+      "subsegment": "Array",
+      "q": "Java — Common Elements: find the values present in both arrays using a HashSet. Dry run.",
+      "tags": [
+        "java",
+        "array",
+        "hashset",
+        "intersection",
+        "dry run"
+      ],
+      "answer": {
+        "code": "import java.util.HashSet;\n\npublic class CommonElements {\n    public static void main(String[] args) {\n        int[] a = {4, 9, 5, 1, 7};\n        int[] b = {9, 4, 9, 8, 4};\n\n        HashSet<Integer> inB = new HashSet<>();\n        for(int j = 0; j < b.length; j++){\n            inB.add(b[j]);\n        }\n\n        HashSet<Integer> common = new HashSet<>();\n\n        for(int i = 0; i < a.length; i++){\n            if(inB.contains(a[i]))\n                common.add(a[i]);\n        }\n\n        System.out.println(\"Common values : \" + common);\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Common values : [4, 9]",
+          "প্রথমে b-এর সব মান একটা HashSet-এ ভরা হয়, তারপর a-এর প্রতিটি মান সেখানে আছে কি না দেখা হয়।"
+        ],
+        "points": [
+          "inB = {9, 4, 8} — b-তে 9 আর 4 দুইবার থাকলেও Set-এ একবারই বসে।",
+          "contains() HashSet-এ O(1), তাই পুরো কাজ O(n + m)।",
+          "common-ও একটা Set, তাই একই মান দুইবার এলেও ফলাফলে একবারই থাকে।",
+          "Set ব্যবহার না করে nested loop করলে লাগত O(n × m)।",
+          "ছাপার ক্রম Set-এর নিজের ক্রম — array-এর ক্রম নয়।"
+        ],
+        "table": {
+          "headers": [
+            "a[i]",
+            "inB = {9,4,8} এ আছে?",
+            "common"
+          ],
+          "rows": [
+            [
+              "4",
+              "হ্যাঁ",
+              "{4}"
+            ],
+            [
+              "9",
+              "হ্যাঁ",
+              "{4, 9}"
+            ],
+            [
+              "5",
+              "না",
+              "{4, 9}"
+            ],
+            [
+              "1",
+              "না",
+              "{4, 9}"
+            ],
+            [
+              "7",
+              "না",
+              "{4, 9}"
+            ]
+          ]
+        },
+        "mnemonic": "একটাকে Set বানাও, অন্যটাকে জিজ্ঞেস করো — O(1)-এ উত্তর।"
+      }
+    },
+    {
+      "id": "c_012",
+      "segment": "Program",
+      "subsegment": "Array",
+      "q": "Java — Pair With Sum: print every pair of array values that adds up to a target. Dry run.",
+      "tags": [
+        "java",
+        "array",
+        "two sum",
+        "nested loop",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class PairWithSum {\n\n    public static void main(String[] args){\n\n        int[] arr = {2, 7, 11, 15, 4, 6};\n        int target = 13;\n\n        for(int i = 0; i < arr.length; i++){\n\n            for(int j = i+1; j < arr.length; j++){\n                if(target - arr[i] == arr[j])\n                    System.out.println(arr[i] + \" \" + arr[j]);\n            }\n            \n        }\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: 2 11 এবং 7 6",
+          "প্রতিটি element ধরে তার পরের element-গুলোর মধ্যে খোঁজা হয় target − arr[i] আছে কি না।"
+        ],
+        "points": [
+          "ভেতরের loop j = i+1 থেকে শুরু, তাই একই জোড়া দুইবার আসে না।",
+          "শর্ত target − arr[i] == arr[j], অর্থাৎ arr[i]-এর জন্য কত দরকার তা আগে হিসাব হয়।",
+          "target = 13: 2-এর দরকার 11 (আছে), 7-এর দরকার 6 (আছে)।",
+          "11-এর দরকার 2 — কিন্তু 2 আগে বসে আছে, j কেবল সামনে তাকায়, তাই আবার ছাপা হয় না।",
+          "দুই nested loop, তাই O(n²) — HashSet দিয়ে করলে O(n)-এ নামানো যেত।"
+        ],
+        "table": {
+          "headers": [
+            "i",
+            "arr[i]",
+            "দরকার = 13 − arr[i]",
+            "সামনে পাওয়া গেল?",
+            "ছাপা"
+          ],
+          "rows": [
+            [
+              "0",
+              "2",
+              "11",
+              "হ্যাঁ, j=2",
+              "2 11"
+            ],
+            [
+              "1",
+              "7",
+              "6",
+              "হ্যাঁ, j=5",
+              "7 6"
+            ],
+            [
+              "2",
+              "11",
+              "2",
+              "না (2 পেছনে)",
+              "—"
+            ],
+            [
+              "3",
+              "15",
+              "−2",
+              "না",
+              "—"
+            ],
+            [
+              "4",
+              "4",
+              "9",
+              "না",
+              "—"
+            ],
+            [
+              "5",
+              "6",
+              "7",
+              "সামনে কেউ নেই",
+              "—"
+            ]
+          ]
+        },
+        "mnemonic": "j = i+1 — সবসময় সামনে তাকাও, তাহলে জোড়া দুইবার আসে না।"
+      }
+    },
+    {
+      "id": "c_011",
+      "segment": "Program",
+      "subsegment": "Array",
+      "q": "Java — Remove Duplicates: print each value only the first time it appears, using a HashMap. Dry run.",
+      "tags": [
+        "java",
+        "array",
+        "duplicate",
+        "hashmap",
+        "getOrDefault",
+        "dry run"
+      ],
+      "answer": {
+        "code": "import java.util.HashMap;\n\npublic class RemoveDuplicates {\n    \n    public static void main(String[] args) {\n        int[] arr = {5, 3, 5, 8, 3, 9, 8};\n\n        HashMap<Integer, Integer> count = new HashMap<>();\n\n        for(int i = 0; i<arr.length; i++){\n            int c = count.getOrDefault(arr[i],0) + 1;\n            count.put(arr[i],c);\n\n            if(c == 1){\n                System.out.print(arr[i] + \" \");\n            }\n\n        }\n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: 5 3 8 9",
+          "প্রতিটি সংখ্যার count রাখা হয়; count প্রথমবার 1 হলেই ছাপা হয়, পরে আর নয়।"
+        ],
+        "points": [
+          "getOrDefault(key, 0) + 1 — আগে না থাকলে 0 ধরে, তাই প্রথমবারে c = 1।",
+          "if (c == 1) শর্তটাই প্রথম-বার চিনিয়ে দেয়।",
+          "দ্বিতীয়বার একই সংখ্যা এলে c = 2, তাই ছাপা হয় না।",
+          "মূল array-এর ক্রম বজায় থাকে, কারণ ছাপা হয় দেখা পাওয়ার সাথে সাথেই।",
+          "HashMap দেখে O(1)-এ, তাই পুরোটা O(n) — nested loop লাগে না।"
+        ],
+        "table": {
+          "headers": [
+            "i",
+            "arr[i]",
+            "c = আগের + 1",
+            "ছাপা হলো?"
+          ],
+          "rows": [
+            [
+              "0",
+              "5",
+              "1",
+              "5"
+            ],
+            [
+              "1",
+              "3",
+              "1",
+              "3"
+            ],
+            [
+              "2",
+              "5",
+              "2",
+              "না"
+            ],
+            [
+              "3",
+              "8",
+              "1",
+              "8"
+            ],
+            [
+              "4",
+              "3",
+              "2",
+              "না"
+            ],
+            [
+              "5",
+              "9",
+              "1",
+              "9"
+            ],
+            [
+              "6",
+              "8",
+              "2",
+              "না"
+            ]
+          ]
+        },
+        "mnemonic": "count প্রথমবার 1 — তখনই ছাপো, এরপর চুপ।"
+      }
+    },
+    {
+      "id": "c_010",
+      "segment": "Program",
+      "subsegment": "Array",
+      "q": "Java — Left Rotate: rotate an array left by k positions using index arithmetic. Dry run.",
+      "tags": [
+        "java",
+        "array",
+        "rotation",
+        "modulo",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class LeftRotate {\n\n    public static void main(String[] args){\n\n        int[] arr = {1, 2, 3, 4, 5, 6};\n        int k = 2;\n\n        int n = arr.length;\n        int[] out = new int[n];\n\n        for(int i = 0; i < arr.length; i++){\n            out[i] = arr[(i+k) % n];\n        }\n\n        System.out.println(\"After \" + k + \" rotations : \");\n\n        for(int i = 0; i < out.length; i++){\n            System.out.print(out[i] + \" \");\n        }\n\n    }\n    \n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: 3 4 5 6 1 2",
+          "নতুন array-এর i নম্বর ঘরে বসে পুরনো array-এর (i+k) নম্বর ঘর — modulo দিয়ে শেষ থেকে শুরুতে ফিরে আসে।"
+        ],
+        "points": [
+          "k = 2, তাই প্রতিটি element ২ ঘর বাঁয়ে সরে।",
+          "সূত্র: out[i] = arr[(i + k) % n]।",
+          "% n না দিলে i = 4, 5-এ index 6, 7 চাওয়া হতো — array-এর বাইরে।",
+          "% n সেটাকে ঘুরিয়ে 0, 1-এ নিয়ে আসে, তাই শুরুর element গুলো শেষে বসে।",
+          "একবার loop, O(n) সময় — তবে আলাদা out array লাগায় O(n) extra space।"
+        ],
+        "table": {
+          "headers": [
+            "i",
+            "(i+k) % n",
+            "arr[…]",
+            "out এখন পর্যন্ত"
+          ],
+          "rows": [
+            [
+              "0",
+              "2",
+              "3",
+              "3"
+            ],
+            [
+              "1",
+              "3",
+              "4",
+              "3 4"
+            ],
+            [
+              "2",
+              "4",
+              "5",
+              "3 4 5"
+            ],
+            [
+              "3",
+              "5",
+              "6",
+              "3 4 5 6"
+            ],
+            [
+              "4",
+              "(4+2)%6 = 0",
+              "1",
+              "3 4 5 6 1"
+            ],
+            [
+              "5",
+              "(5+2)%6 = 1",
+              "2",
+              "3 4 5 6 1 2"
+            ]
+          ]
+        },
+        "mnemonic": "(i+k) % n — % টাই array-কে বৃত্ত বানিয়ে দেয়।"
+      }
+    },
+    {
+      "id": "c_009",
+      "segment": "Program",
+      "subsegment": "Array",
+      "q": "Java — Second Largest: find the second largest distinct value in an array that has duplicates. Dry run.",
+      "tags": [
+        "java",
+        "array",
+        "second largest",
+        "duplicate",
+        "two pass",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class SecondLargest {\n\n    public static void main(String[] args) {\n\n         int[] arr = {12, 35, 1, 10, 35, 2};\n\n         int largest = arr[0];\n        \n         for(int i = 0; i < arr.length; i++){\n            if(arr[i] > largest) largest = arr[i];\n         }\n\n         int secondLargest = -1;\n\n         for(int i = 0; i < arr.length; i++){\n            if(arr[i] > secondLargest && arr[i] != largest)\n                secondLargest = arr[i];\n         }\n\n        System.out.println(\"Second Largest is : \" + secondLargest);\n    }\n\n\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Second Largest is : 12",
+          "দুটি আলাদা pass — প্রথমে largest বের করা, তারপর largest বাদ দিয়ে সবচেয়ে বড়টা।"
+        ],
+        "points": [
+          "Pass 1: largest = 35 (35 দুইবার থাকলেও largest একটাই)।",
+          "Pass 2: শর্ত arr[i] != largest, তাই দুটো 35-ই বাদ পড়ে।",
+          "বাকি {12, 1, 10, 2}-এর মধ্যে সবচেয়ে বড় = 12।",
+          "secondLargest শুরু হয় −1 থেকে, তাই সব element ছোট হলেও ফল ভুল হয় না।",
+          "এখানেই ফাঁদ: duplicate 35-কে second largest ধরলে উত্তর ভুল হতো।"
+        ],
+        "table": {
+          "headers": [
+            "i",
+            "arr[i]",
+            "Pass 1 — largest",
+            "Pass 2 — secondLargest"
+          ],
+          "rows": [
+            [
+              "0",
+              "12",
+              "12",
+              "12"
+            ],
+            [
+              "1",
+              "35",
+              "35",
+              "12  (35 == largest, বাদ)"
+            ],
+            [
+              "2",
+              "1",
+              "35",
+              "12"
+            ],
+            [
+              "3",
+              "10",
+              "35",
+              "12"
+            ],
+            [
+              "4",
+              "35",
+              "35",
+              "12  (35 == largest, বাদ)"
+            ],
+            [
+              "5",
+              "2",
+              "35",
+              "12"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "duplicate 35-কে second largest ধরা",
+            "শর্ত arr[i] != largest বলে সব 35 বাদ পড়ে — distinct দ্বিতীয় বৃহত্তম 12।"
+          ]
+        ],
+        "mnemonic": "আগে সবচেয়ে বড়টা খুঁজে নাও, তারপর তাকে বাদ দিয়ে আবার সবচেয়ে বড়টা খোঁজো।"
+      }
+    },
+    {
+      "id": "c_008",
+      "segment": "Program",
+      "subsegment": "Array",
+      "q": "Java — Missing Number: find the one missing value from an array holding 1..n. Dry run.",
+      "tags": [
+        "java",
+        "array",
+        "missing number",
+        "sum formula",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class MissingNumber {\n    public static void main(String[] args) {\n\n        int[] arr = {1, 2, 4, 5, 6, 7, 8};\n        \n        int n = arr.length + 1;\n\n        int total = n*(n+1) / 2;\n\n        int sum = 0;\n\n        for(int i = 0; i < arr.length; i++){\n            sum = sum + arr[i];\n        }\n\n        int missing = total - sum;\n\n        System.out.println(\"Total (1..n) : \" + total);\n        System.out.println(\"Array sum    : \" + sum);\n        System.out.println(\"Missing      : \" + missing);\n        \n    }\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Total 36, Array sum 33, Missing 3",
+          "1..n-এর পুরো যোগফল বের করে তা থেকে array-এর যোগফল বিয়োগ করলেই যেটা নেই সেটাই পড়ে থাকে।"
+        ],
+        "points": [
+          "array-তে 7টা সংখ্যা আছে, একটা missing — তাই n = 7 + 1 = 8।",
+          "1..8-এর যোগফল সূত্রে: n(n+1)/2 = 8×9/2 = 36।",
+          "loop চালিয়ে array-এর আসল যোগফল = 33।",
+          "missing = 36 − 33 = 3।",
+          "একবার loop চলে বলে O(n), আর কোনো বাড়তি array লাগে না।"
+        ],
+        "table": {
+          "headers": [
+            "i",
+            "arr[i]",
+            "sum"
+          ],
+          "rows": [
+            [
+              "0",
+              "1",
+              "1"
+            ],
+            [
+              "1",
+              "2",
+              "3"
+            ],
+            [
+              "2",
+              "4",
+              "7"
+            ],
+            [
+              "3",
+              "5",
+              "12"
+            ],
+            [
+              "4",
+              "6",
+              "18"
+            ],
+            [
+              "5",
+              "7",
+              "25"
+            ],
+            [
+              "6",
+              "8",
+              "33"
+            ],
+            [
+              "—",
+              "শেষে",
+              "36 − 33 = 3"
+            ]
+          ]
+        },
+        "mnemonic": "যা থাকার কথা ছিল বিয়োগ যা আছে = যা নেই।"
+      }
     }
   ]
 }
