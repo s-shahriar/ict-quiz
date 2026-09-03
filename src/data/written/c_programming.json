@@ -1975,7 +1975,7 @@
         "dry run"
       ],
       "answer": {
-        "code": "public class ReverseWords {\n    public static void main(String[] args) {\n        \n        String text = \"University Examination 2026\";\n\n        String[] words = text.split(\" \");\n\n        for (int i = 0; i < words.length; i++) {\n            \n            String word = words[i];\n            String rev = \"\";\n\n            for (int j = word.length() - 1; j >= 0; j--) {\n                rev = rev + word.charAt(j);\n            }\n\n            System.out.print(rev + \" \");\n        }\n    }\n}",
+        "code": "public class ReverseWords {\n    public static void main(String[] args) {\n        \n        String text = \"University Examination 2026\";\n\n        String[] words = text.split(\" \");\n\n        for (int i = 0; i < words.length; i++) {\n            \n            String word = words[i];\n            String rev = \"\";\n\n            // index 0 থেকে শুরু, তাই শেষ অক্ষরের index = length() - 1\n            // শুধু length() দিলে ওই index-এ কিছু নেই → StringIndexOutOfBoundsException\n            for (int j = word.length() - 1; j >= 0; j--) {\n                rev = rev + word.charAt(j);\n            }\n\n            System.out.print(rev + \" \");\n        }\n    }\n}",
         "codeLang": "Java",
         "summary": [
           "Output: ytisrevinU noitanimaxE 6202",
