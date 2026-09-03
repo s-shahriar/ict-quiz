@@ -2016,6 +2016,83 @@
       }
     },
     {
+      "id": "c_026",
+      "segment": "Program",
+      "subsegment": "Array",
+      "q": "Java — Binary Search: find a target in a sorted array by halving the range. Dry run.",
+      "tags": [
+        "java",
+        "binary search",
+        "sorted array",
+        "divide and conquer",
+        "overflow",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class BinarySearch {\n\n    public static void main(String[] args) {\n\n        int[] arr = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};\n        int target = 23;\n\n        int low = 0;\n        int high = arr.length - 1;\n        int found = -1;\n\n        while (low <= high) {\n\n            int mid = low + (high - low) / 2;\n\n            if (arr[mid] == target) {\n                found = mid;\n                break;\n            } else if (arr[mid] < target) {\n                low = mid + 1;\n            } else {\n                high = mid - 1;\n            }\n        }\n\n        System.out.println(\"Target : \" + target);\n        System.out.println(\"Index  : \" + found);\n    }\n\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: Target : 23, Index : 5",
+          "প্রতিবার মাঝের element দেখে বাকি অর্ধেক বাদ — তাই ১০টা element-এ মাত্র ৩ বার তুলনা লেগেছে।"
+        ],
+        "points": [
+          "array আগে থেকেই sorted থাকতে হবে — নইলে 'অর্ধেক বাদ' যুক্তিটাই ভেঙে পড়ে।",
+          "mid = low + (high − low) / 2 — (low + high) / 2 লিখলে বড় সংখ্যায় overflow হতে পারে।",
+          "arr[mid] < target হলে বাঁ অর্ধেক বাদ যায়, low = mid + 1।",
+          "arr[mid] > target হলে ডান অর্ধেক বাদ যায়, high = mid − 1।",
+          "প্রতি ধাপে খোঁজার জায়গা অর্ধেক হয়, তাই O(log n) — 10 element-এ মাত্র 3 ধাপ।",
+          "না পাওয়া গেলে low > high হয়ে while থামে, found থেকে যায় −1।"
+        ],
+        "table": {
+          "headers": [
+            "ধাপ",
+            "low",
+            "high",
+            "mid",
+            "arr[mid]",
+            "সিদ্ধান্ত"
+          ],
+          "rows": [
+            [
+              "1",
+              "0",
+              "9",
+              "4",
+              "16",
+              "16 < 23 → low = mid + 1 = 5"
+            ],
+            [
+              "2",
+              "5",
+              "9",
+              "7",
+              "56",
+              "56 > 23 → high = mid − 1 = 6"
+            ],
+            [
+              "3",
+              "5",
+              "6",
+              "5",
+              "23",
+              "== target → found = 5, break"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "mid = (low + high) / 2 লেখা",
+            "ছোট array-তে ঠিকই চলে, কিন্তু low ও high বড় হলে যোগফল int-এর সীমা ছাড়িয়ে negative হয়ে যেতে পারে — low + (high − low) / 2 নিরাপদ।"
+          ],
+          [
+            "unsorted array-তেও চালানো",
+            "binary search শুধু sorted array-তে কাজ করে; না হলে ভুল দিক বাদ পড়ে যায়।"
+          ]
+        ],
+        "mnemonic": "মাঝেরটা দেখো — ছোট হলে ডানে যাও, বড় হলে বাঁয়ে। প্রতিবার অর্ধেক শেষ।"
+      }
+    },
+    {
       "id": "c_014",
       "segment": "Program",
       "subsegment": "Array",
@@ -2538,6 +2615,98 @@
           ]
         },
         "mnemonic": "যা থাকার কথা ছিল বিয়োগ যা আছে = যা নেই।"
+      }
+    },
+    {
+      "id": "c_025",
+      "segment": "Program",
+      "subsegment": "Notes",
+      "q": "Java — Quick Notes: the HashMap, HashSet, String and array methods these programs keep using.",
+      "tags": [
+        "java",
+        "hashmap",
+        "hashset",
+        "string",
+        "array",
+        "api reference",
+        "cheat sheet"
+      ],
+      "answer": {
+        "code": "// count রাখা — HashMap\nmap.put(ch, map.getOrDefault(ch, 0) + 1);\n\n// \"আছে কি না\" দ্রুত দেখা — HashSet\nset.add(x);\nif (set.contains(y)) { ... }\n\n// দুই map একসাথে মেলানো (ক্রম দেখে না)\nboolean same = map1.equals(map2);",
+        "codeLang": "Java",
+        "summary": [
+          "এই segment-এর program গুলোতে ঘুরেফিরে যে কয়টা function লাগে, সব এক জায়গায়।",
+          "সবচেয়ে বেশি কাজে লাগে তিনটা: getOrDefault দিয়ে গোনা, contains দিয়ে খোঁজা, equals দিয়ে মেলানো।"
+        ],
+        "points": [
+          "arr.length বন্ধনী ছাড়া, কিন্তু text.length() বন্ধনী সহ — এখানেই সবচেয়ে বেশি ভুল হয়।",
+          "getOrDefault(k, 0) + 1 — count রাখার standard কৌশল, আলাদা করে containsKey দেখার দরকার পড়ে না।",
+          "HashSet-এ add করলে duplicate আপনা থেকেই বাদ পড়ে, নিজে check করতে হয় না।",
+          "equals() ভেতরের key-value জোড়া মেলায়, ক্রম নয় — anagram check তাই এক লাইনে হয়ে যায়।",
+          "HashMap ও HashSet কোনো ক্রমের নিশ্চয়তা দেয় না — ক্রম দরকার হলে LinkedHashMap / LinkedHashSet।",
+          "2D array-তে m.length সারির সংখ্যা, m[0].length কলামের সংখ্যা।"
+        ],
+        "table": {
+          "headers": [
+            "Function",
+            "কী করে"
+          ],
+          "rows": [
+            [
+              "map.put(k, v)",
+              "k-এর বিপরীতে v বসায়; k আগে থাকলে পুরনো v বদলে যায়"
+            ],
+            [
+              "map.getOrDefault(k, 0)",
+              "k না থাকলে 0 দেয়, তাই + 1 করলেই count শুরু হয়"
+            ],
+            [
+              "map.get(k)",
+              "v দেয়; k না থাকলে null"
+            ],
+            [
+              "map.keySet()",
+              "সব key ঘুরে দেখার জন্য"
+            ],
+            [
+              "map1.equals(map2)",
+              "দুই map-এর key-value মেলে কি না — ক্রম দেখে না"
+            ],
+            [
+              "set.add(x)",
+              "ঢোকায়; আগে থাকলে কিছুই হয় না, তাই duplicate জমে না"
+            ],
+            [
+              "set.contains(x)",
+              "আছে কি না, O(1) সময়ে"
+            ],
+            [
+              "text.length()",
+              "string-এর দৈর্ঘ্য — বন্ধনী লাগে"
+            ],
+            [
+              "text.charAt(i)",
+              "i নম্বর character"
+            ],
+            [
+              "text.split(\" \")",
+              "space দিয়ে ভেঙে String[] দেয়"
+            ],
+            [
+              "Character.toLowerCase(ch)",
+              "character ছোট হাতের করে"
+            ],
+            [
+              "arr.length",
+              "array-এর দৈর্ঘ্য — বন্ধনী নেই"
+            ],
+            [
+              "m.length / m[0].length",
+              "2D array-তে সারি / কলামের সংখ্যা"
+            ]
+          ]
+        },
+        "mnemonic": "getOrDefault দিয়ে গোনো, contains দিয়ে খোঁজো, equals দিয়ে মেলাও।"
       }
     }
   ]
