@@ -2632,77 +2632,67 @@
         "cheat sheet"
       ],
       "answer": {
-        "code": "// count রাখা — HashMap\nmap.put(ch, map.getOrDefault(ch, 0) + 1);\n\n// \"আছে কি না\" দ্রুত দেখা — HashSet\nset.add(x);\nif (set.contains(y)) { ... }\n\n// দুই map একসাথে মেলানো (ক্রম দেখে না)\nboolean same = map1.equals(map2);",
+        "code": "map.put(ch, map.getOrDefault(ch, 0) + 1);   // count রাখা\nboolean same = map1.equals(map2);           // দুই map মেলানো\n\nSystem.out.println(map);   // {p=1, a=1, r=2}\nSystem.out.println(set);   // [4, 9]",
         "codeLang": "Java",
         "summary": [
-          "এই segment-এর program গুলোতে ঘুরেফিরে যে কয়টা function লাগে, সব এক জায়গায়।",
-          "সবচেয়ে বেশি কাজে লাগে তিনটা: getOrDefault দিয়ে গোনা, contains দিয়ে খোঁজা, equals দিয়ে মেলানো।"
+          "এই segment-এর program গুলোতে যে function গুলো বারবার লাগে — এক নজরে।"
         ],
         "points": [
-          "arr.length বন্ধনী ছাড়া, কিন্তু text.length() বন্ধনী সহ — এখানেই সবচেয়ে বেশি ভুল হয়।",
-          "getOrDefault(k, 0) + 1 — count রাখার standard কৌশল, আলাদা করে containsKey দেখার দরকার পড়ে না।",
-          "HashSet-এ add করলে duplicate আপনা থেকেই বাদ পড়ে, নিজে check করতে হয় না।",
-          "equals() ভেতরের key-value জোড়া মেলায়, ক্রম নয় — anagram check তাই এক লাইনে হয়ে যায়।",
-          "HashMap ও HashSet কোনো ক্রমের নিশ্চয়তা দেয় না — ক্রম দরকার হলে LinkedHashMap / LinkedHashSet।",
-          "2D array-তে m.length সারির সংখ্যা, m[0].length কলামের সংখ্যা।"
+          "arr.length বন্ধনী ছাড়া, কিন্তু text.length() বন্ধনী সহ।",
+          "getOrDefault(k, 0) + 1 — count রাখার নিয়ম, containsKey লাগে না।",
+          "println(map) আর println(set) দুটোই সরাসরি ছাপে — loop লাগে শুধু নিজের format চাইলে।",
+          "equals() ভেতরের জিনিস মেলায়, ক্রম নয় — anagram এভাবেই এক লাইনে।",
+          "HashMap ও HashSet কোনো ক্রম রাখে না — ক্রম চাইলে LinkedHashMap / LinkedHashSet।"
         ],
         "table": {
           "headers": [
-            "Function",
-            "কী করে"
+            "HashMap",
+            "HashSet",
+            "String",
+            "Array"
           ],
           "rows": [
             [
-              "map.put(k, v)",
-              "k-এর বিপরীতে v বসায়; k আগে থাকলে পুরনো v বদলে যায়"
+              "put(k, v)",
+              "add(x)",
+              "length()",
+              "arr.length"
             ],
             [
-              "map.getOrDefault(k, 0)",
-              "k না থাকলে 0 দেয়, তাই + 1 করলেই count শুরু হয়"
+              "getOrDefault(k, 0)",
+              "contains(x)",
+              "charAt(i)",
+              "m.length  (সারি)"
             ],
             [
-              "map.get(k)",
-              "v দেয়; k না থাকলে null"
+              "get(k)",
+              "",
+              "split(\" \")",
+              "m[0].length  (কলাম)"
             ],
             [
-              "map.keySet()",
-              "সব key ঘুরে দেখার জন্য"
-            ],
-            [
-              "map1.equals(map2)",
-              "দুই map-এর key-value মেলে কি না — ক্রম দেখে না"
-            ],
-            [
-              "set.add(x)",
-              "ঢোকায়; আগে থাকলে কিছুই হয় না, তাই duplicate জমে না"
-            ],
-            [
-              "set.contains(x)",
-              "আছে কি না, O(1) সময়ে"
-            ],
-            [
-              "text.length()",
-              "string-এর দৈর্ঘ্য — বন্ধনী লাগে"
-            ],
-            [
-              "text.charAt(i)",
-              "i নম্বর character"
-            ],
-            [
-              "text.split(\" \")",
-              "space দিয়ে ভেঙে String[] দেয়"
-            ],
-            [
+              "keySet()",
+              "",
               "Character.toLowerCase(ch)",
-              "character ছোট হাতের করে"
+              "new int[n]"
             ],
             [
-              "arr.length",
-              "array-এর দৈর্ঘ্য — বন্ধনী নেই"
+              "values()",
+              "",
+              "",
+              ""
             ],
             [
-              "m.length / m[0].length",
-              "2D array-তে সারি / কলামের সংখ্যা"
+              "entrySet()",
+              "",
+              "",
+              ""
+            ],
+            [
+              "equals(map2)",
+              "",
+              "",
+              ""
             ]
           ]
         },
