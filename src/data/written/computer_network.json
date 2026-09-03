@@ -3440,6 +3440,129 @@
         ],
         "mnemonic": "Stop-Wait = ১-এ-১ ধীরে। Go-Back-N = ভুল হলে window-এর সবই ফেরত। Selective Repeat = ভুল হলে শুধু ভুলটাই ফেরত, কিন্তু মনে রাখতে (buffer) খরচ আছে।"
       }
+    },
+    {
+      "id": "cn_031",
+      "q": "Differentiate between LAN and VLAN. Why was VLAN needed?",
+      "tags": [
+        "LAN",
+        "VLAN",
+        "broadcast domain",
+        "802.1Q",
+        "trunk",
+        "inter-VLAN routing",
+        "segmentation"
+      ],
+      "answer": {
+        "summary": [
+          "LAN = একটাই physical network, সবাই এক broadcast domain-এ; কে কার সাথে থাকবে তা ঠিক করে দেয় cable কোথায় লাগানো।",
+          "VLAN = একই physical switch-কে software দিয়ে ভাগ করে একাধিক আলাদা logical network — অবস্থান নয়, ভূমিকা দেখে গ্রুপ হয়।",
+          "VLAN লেগেছে কারণ LAN-এ broadcast domain বড় হয়ে যায়, গ্রুপিং physical অবস্থানে আটকে থাকে, আর আলাদা করতে বাড়তি hardware লাগে।"
+        ],
+        "points": [
+          "LAN-এর যে তিনটি সমস্যা থেকে VLAN-এর জন্ম:",
+          {
+            "sub": "পুরো LAN একটাই broadcast domain — একজন broadcast পাঠালে সবাই পায়, device বাড়লে অপচয় বাড়তেই থাকে।"
+          },
+          {
+            "sub": "গ্রুপ ঠিক হয় physical অবস্থান দেখে — HR আর Accounts এক floor-এ বসলে জোর করে এক network-এ পড়ে যায়।"
+          },
+          {
+            "sub": "সবাই এক network-এ বলে একে অন্যের কাছে পৌঁছাতে পারে, তাই আলাদা করার কোনো উপায় থাকে না।"
+          },
+          {
+            "sub": "আলাদা করতে হলে আলাদা switch ও cable কিনতে হতো — খরচ বেশি।"
+          },
+          {
+            "diagram": "LAN — একটাই switch, একটাই broadcast domain\n\n     ┌──────────── Switch ────────────┐\n     │  P1   P2   P3   P4   P5   P6   │\n     └───┬────┬────┬────┬────┬────┬───┘\n        HR   HR   ACC  ACC  GST  GST\n\n  একজন broadcast পাঠালে ছয়জনই পায়\n  আলাদা করতে হলে আলাদা switch ও cable কিনতে হয়",
+            "label": "Diagram — LAN (এক domain)"
+          },
+          "VLAN কীভাবে সমাধান করে:",
+          {
+            "sub": "একই switch-এর port গুলো software দিয়ে গ্রুপে ভাগ করা হয় — port 1-2 = VLAN 10, port 3-4 = VLAN 20।"
+          },
+          {
+            "sub": "প্রতিটি VLAN আলাদা broadcast domain, তাই VLAN 10-এর broadcast VLAN 20-এ যায় না।"
+          },
+          {
+            "sub": "কে কোন VLAN-এ তা ঠিক হয় ভূমিকা দেখে — HR ভিন্ন floor-এ বসলেও একই VLAN-এ থাকতে পারে।"
+          },
+          {
+            "sub": "নতুন cable নয়, শুধু configuration বদলেই device অন্য VLAN-এ সরানো যায়।"
+          },
+          {
+            "diagram": "VLAN — একই switch, software দিয়ে ভাগ\n\n     ┌──────────── Switch ────────────┐\n     │  P1   P2  │  P3   P4  │  P5  P6 │\n     │  VLAN 10  │  VLAN 20  │ VLAN 30 │\n     └───┬────┬──┴───┬────┬──┴──┬───┬──┘\n        HR   HR     ACC  ACC   GST GST\n\n  broadcast নিজের VLAN-এর ভেতরেই আটকে থাকে\n  VLAN 10 → VLAN 20 যেতে router বা L3 switch লাগে\n  এক cable-এ একাধিক VLAN গেলে সেটি trunk, frame-এ 802.1Q tag বসে",
+            "label": "Diagram — VLAN (একই switch, আলাদা domain)"
+          },
+          "VLAN চালাতে যে দুটো জিনিস লাগে:",
+          {
+            "sub": "Trunk port — এক cable দিয়ে একাধিক VLAN-এর traffic যায়, প্রতিটি frame-এ 802.1Q tag বসিয়ে কোন VLAN তা বোঝানো হয়।"
+          },
+          {
+            "sub": "Inter-VLAN routing — VLAN গুলো আলাদা network, তাই এক VLAN থেকে আরেকটিতে যেতে router বা Layer 3 switch লাগে।"
+          },
+          "ব্যবহার: অফিসে HR / Accounts / Guest WiFi আলাদা রাখা, আর VoIP phone আলাদা VLAN-এ রেখে voice traffic-কে অগ্রাধিকার দেওয়া।"
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "LAN",
+            "VLAN"
+          ],
+          "rows": [
+            [
+              "Broadcast domain",
+              "পুরো LAN-এ একটাই",
+              "প্রতি VLAN-এ আলাদা"
+            ],
+            [
+              "গ্রুপ হয় কী দেখে",
+              "physical অবস্থান, cable কোথায় লাগানো",
+              "ভূমিকা বা বিভাগ, অবস্থান যাই হোক"
+            ],
+            [
+              "আলাদা করতে লাগে",
+              "আলাদা switch ও cable",
+              "শুধু configuration"
+            ],
+            [
+              "Device সরানো",
+              "cable খুলে নতুন জায়গায় লাগাতে হয়",
+              "config বদলালেই হয়ে যায়"
+            ],
+            [
+              "নিরাপত্তা",
+              "সবাই সবার কাছে পৌঁছাতে পারে",
+              "VLAN আলাদা, মাঝে routing ও ACL বসানো যায়"
+            ],
+            [
+              "এক গ্রুপ থেকে আরেক গ্রুপে",
+              "এমনিতেই যায়",
+              "router বা L3 switch লাগে"
+            ],
+            [
+              "খরচ",
+              "বাড়াতে গেলে hardware কিনতে হয়",
+              "একই hardware-এ অনেক network"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "VLAN মানে আলাদা physical network বা আলাদা switch",
+            "switch একটাই থাকে, ভাগটা software-এ — তাই বাড়তি hardware ছাড়াই আলাদা network পাওয়া যায়।"
+          ],
+          [
+            "একই switch-এ আছে মানেই দুই VLAN-এর device কথা বলতে পারবে",
+            "পারবে না — VLAN আলাদা broadcast domain ও আলাদা subnet; কথা বলাতে router বা Layer 3 switch লাগে।"
+          ],
+          [
+            "VLAN শুধু নিরাপত্তার জন্য",
+            "মূল উদ্দেশ্য broadcast domain ছোট করা ও যুক্তিসঙ্গত গ্রুপিং — নিরাপত্তা তার একটা ফল মাত্র।"
+          ]
+        ],
+        "mnemonic": "LAN ভাগ হয় তার দিয়ে, VLAN ভাগ হয় software দিয়ে — একই switch, তবু broadcast নিজের ঘরেই আটকে; ঘর বদলাতে router লাগে।"
+      }
     }
   ]
 }
