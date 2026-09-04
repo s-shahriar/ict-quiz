@@ -1454,6 +1454,43 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 .practice-cmd-desc { color: var(--text-2); font-size: 0.86rem; overflow-wrap: anywhere; padding: 0 2px; white-space: pre-line; }
 
+/* Schema bar — pinned so the tables stay visible while the query is typed.
+   Sits below .written-topbar (z-index 100) and above the drill content. */
+.schema-bar {
+  position: sticky; top: 46px; z-index: 60;
+  border: 1px solid var(--border-md); border-radius: 12px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.schema-bar-toggle {
+  width: 100%; display: flex; align-items: center; gap: 7px;
+  padding: 8px 12px; background: none; border: none; cursor: pointer;
+  color: var(--text-1); font-weight: 600; font-size: 0.82rem; text-align: left;
+}
+.schema-bar-title { color: var(--accent-2); }
+.schema-bar-hint { color: var(--text-3); font-weight: 400; font-size: 0.72rem; }
+.schema-bar .sample-data-chev { margin-left: auto; flex-shrink: 0; }
+
+/* compact: one line per table, capped so it never eats the screen */
+.schema-bar-compact {
+  padding: 0 12px 9px; max-height: 9.5em; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.schema-line {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem; line-height: 1.5;
+  overflow-wrap: anywhere;   /* wrap rather than hide columns behind a scroll */
+}
+.schema-tname { color: var(--accent-2); font-weight: 700; }
+.schema-cols { color: var(--text-2); }
+
+/* expanded: real rows, still capped and scrollable */
+.schema-bar-full {
+  padding: 2px 12px 12px; max-height: 46vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
 /* Sample data reference (collapsible, mobile-friendly) */
 .sample-data {
   margin-bottom: 14px; border: 1px solid var(--border);

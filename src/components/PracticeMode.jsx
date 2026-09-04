@@ -94,12 +94,10 @@ export default function PracticeMode() {
           <CommandsPanel commands={topic.commands} practice={topic.practice}
             important={important} makeId={cmdImpId} onToggleImportant={toggleImportant} />
         </>}
-        {tab === 'practice' && <>
-          <SampleTables data={sampleData} />
-          <CommandPractice key={topic.id} problems={topic.practice}
+        {tab === 'practice' &&
+          <CommandPractice key={topic.id} problems={topic.practice} sampleData={sampleData}
             important={important} onToggleImportant={toggleImportant}
-            idOf={p => cmdImpId(p.accept?.[0])} ciOf={() => categoryId === 'sql'} />
-        </>}
+            idOf={p => cmdImpId(p.accept?.[0])} ciOf={() => categoryId === 'sql'} />}
       </div>
     </div>
   )
@@ -224,6 +222,65 @@ function SampleTables({ data }) {
   )
 }
 
+
+// Schema kept within reach while typing. The full tables used to sit at the top
+// of the page, so scrolling down to the input pushed them off screen — on a
+// phone they were never visible at the same time as the box you type into.
+// This pins under the topbar instead: one compact line per table by default
+// (costs ~3 lines), expandable to the real rows when a query needs the data.
+function SchemaBar({ data }) {
+  const [expanded, setExpanded] = useState(false)
+  if (!data) return null
+  const tables = Object.entries(data)
+  if (!tables.length) return null
+
+  return (
+    <div className={`schema-bar${expanded ? ' expanded' : ''}`}>
+      <button className="schema-bar-toggle" onClick={() => setExpanded(v => !v)} aria-expanded={expanded}>
+        <Table2 size={13} />
+        <span className="schema-bar-title">Tables</span>
+        <span className="schema-bar-hint">{expanded ? 'rows সহ' : 'ট্যাপ করলে rows দেখাবে'}</span>
+        <ChevronDown size={14} className={`sample-data-chev${expanded ? ' open' : ''}`} />
+      </button>
+
+      {!expanded && (
+        <div className="schema-bar-compact">
+          {tables.map(([name, t]) => (
+            <div key={name} className="schema-line">
+              <span className="schema-tname">{name}</span>
+              <span className="schema-cols">({t.columns.join(', ')})</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {expanded && (
+        <div className="schema-bar-full">
+          {tables.map(([name, t]) => (
+            <div key={name} className="sample-table-block">
+              <div className="sample-table-name">{name}</div>
+              <div className="sample-table-scroll">
+                <table className="sample-table">
+                  <thead>
+                    <tr>{t.columns.map((c, i) => <th key={i}>{c}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {t.rows.map((row, i) => (
+                      <tr key={i}>{row.map((cell, j) => (
+                        <td key={j}>{cell === null ? <span className="sample-null">NULL</span> : cell}</td>
+                      ))}</tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function CommandsPanel({ commands, practice, important, makeId, onToggleImportant }) {
   const list = buildCommandList(commands, practice)
   const [impOnly, setImpOnly] = useState(false)
@@ -274,7 +331,7 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
   )
 }
 
-export function CommandPractice({ problems, important, onToggleImportant, idOf, ciOf = () => false, showFilter = true, showTopicTag = false }) {
+export function CommandPractice({ problems, important, onToggleImportant, idOf, ciOf = () => false, showFilter = true, showTopicTag = false, sampleData = null }) {
   const [impOnly, setImpOnly] = useState(false)
   const [idx, setIdx] = useState(0)
   const [input, setInput] = useState('')
@@ -373,6 +430,8 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
       {showTopicTag && problem._topicName && (
         <div className="practice-topic-tag">{problem._catName ? problem._catName + ' · ' : ''}{problem._topicName}</div>
       )}
+
+      <SchemaBar data={sampleData} />
 
       <div className="practice-prompt-row">
         <div className="practice-prompt">{problem.prompt}</div>
