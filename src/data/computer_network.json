@@ -1118,6 +1118,357 @@
       "correct_answer": "c",
       "correct_answer_text": "It describes when a router sets the metric for a downed link to infinity",
       "explanation": "Route poisoning হলো যখন router কোনো downed link-এর metric infinity (16) তে set করে। Distance-vector routing protocol network down হলে route poisoning শুরু করে — network-কে unreachable হিসেবে advertise করে loop এড়াতে।"
+    },
+    {
+      "id": 84,
+      "question": "Which layer of the OSI model is responsible for end-to-end delivery?",
+      "options": {
+        "a": "Network",
+        "b": "Transport",
+        "c": "Session",
+        "d": "Data Link"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Transport",
+      "explanation": "Network layer শুধু hop-to-hop কাজ করে — এক router থেকে পরের router পর্যন্ত packet পৌঁছে দেয়, কিন্তু সেটি শেষ পর্যন্ত গন্তব্যে পৌঁছাল কি না তা জানে না। Transport layer উৎস process থেকে গন্তব্য process পর্যন্ত পুরো delivery-র দায়িত্ব নেয়: sequence number দিয়ে ক্রম ঠিক রাখে, ACK না এলে retransmit করে। তাই end-to-end delivery Transport layer-এর কাজ।"
+    },
+    {
+      "id": 85,
+      "question": "Which layer is responsible for logical addressing?",
+      "options": {
+        "a": "Data Link",
+        "b": "Network",
+        "c": "Transport",
+        "d": "Session"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Network",
+      "explanation": "Logical address মানে IP address — software দিয়ে assign করা হয় এবং device অন্য network-এ গেলে বদলে যায়। Network layer এই IP address দেখেই routing decision নেয়। Data Link layer ব্যবহার করে physical address অর্থাৎ MAC, যা NIC-এর ভেতরে hardware-এ বসানো এবং বদলায় না।"
+    },
+    {
+      "id": 86,
+      "question": "Which OSI layer provides services such as encryption and compression?",
+      "options": {
+        "a": "Session",
+        "b": "Presentation",
+        "c": "Application",
+        "d": "Transport"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Presentation",
+      "explanation": "Presentation layer data-র রূপ নিয়ে কাজ করে — character encoding, encryption ও compression। তার দায়িত্ব হলো sender-এর পাঠানো data যেন receiver-এর application হুবহু একইভাবে বুঝতে পারে। Session layer কেবল কথোপকথন খোলা-বন্ধ ও synchronize করে, data-র রূপ বদলায় না।"
+    },
+    {
+      "id": 87,
+      "question": "Which layer uses port numbers?",
+      "options": {
+        "a": "Network",
+        "b": "Transport",
+        "c": "Data Link",
+        "d": "Session"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Transport",
+      "explanation": "একটি machine-এ একসাথে অনেক application চলে। IP address data-কে শুধু machine পর্যন্ত পৌঁছে দেয়; এরপর কোন application সেটি পাবে তা ঠিক করে port number। এই multiplexing ও demultiplexing Transport layer করে — TCP/UDP header-এ source port ও destination port থাকে।"
+    },
+    {
+      "id": 88,
+      "question": "Which OSI layer is responsible for synchronization and dialog control?",
+      "options": {
+        "a": "Presentation",
+        "b": "Session",
+        "c": "Transport",
+        "d": "Application"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Session",
+      "explanation": "Session layer দুই application-এর কথোপকথন পরিচালনা করে — কে কখন পাঠাবে তা ঠিক করা হলো dialog control। আর বড় transfer-এর মাঝে মাঝে checkpoint বসানো হলো synchronization, যাতে transfer ব্যর্থ হলে শুরু থেকে নয়, শেষ checkpoint থেকে আবার শুরু করা যায়।"
+    },
+    {
+      "id": 89,
+      "question": "In a ring topology with 10 devices, how many direct links are normally required to form the complete ring?",
+      "options": {
+        "a": "5",
+        "b": "9",
+        "c": "10",
+        "d": "20"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "10",
+      "explanation": "Ring-এ প্রতিটি device তার দুই পাশের device-এর সাথে যুক্ত থাকে এবং শেষ device আবার প্রথমটির সাথে যুক্ত হয়ে বৃত্তটি সম্পূর্ণ করে। তাই n device-এর জন্য link লাগে n টি, এখানে 10। ওই শেষ link না দিলে বৃত্ত বন্ধ হয় না, তখন সেটি ring নয় — 9 link-এর একটি খোলা line বা bus হয়ে যায়।"
+    },
+    {
+      "id": 90,
+      "question": "In a star topology with 12 devices connected to one central switch, how many direct links are required?",
+      "options": {
+        "a": "11",
+        "b": "12",
+        "c": "22",
+        "d": "24"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "12",
+      "explanation": "Star-এ প্রতিটি device কেবল কেন্দ্রীয় switch-এর সাথে একটি link দিয়ে যুক্ত, device-রা নিজেদের মধ্যে সরাসরি যুক্ত নয়। তাই link সংখ্যা = device সংখ্যা = 12। তুলনায় mesh topology-তে সবাই সবার সাথে যুক্ত হতো, তখন লাগত n(n−1)/2 = 66 টি link।"
+    },
+    {
+      "id": 91,
+      "question": "Which topology is commonly associated with token-based access mechanisms?",
+      "options": {
+        "a": "Ring",
+        "b": "Star",
+        "c": "Bus",
+        "d": "Tree"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Ring",
+      "explanation": "Token Ring-এ একটি বিশেষ frame বা token পুরো ring জুড়ে ঘুরতে থাকে, আর যে device-এর হাতে token থাকে কেবল সেই data পাঠাতে পারে। ফলে collision হওয়ার সুযোগই থাকে না, কারণ একসাথে দুজন পাঠাতে পারে না। Bus বা Ethernet-এ উল্টোটা — CSMA/CD দিয়ে collision হতে দেওয়া হয়, পরে শনাক্ত করে সামলানো হয়।"
+    },
+    {
+      "id": 92,
+      "question": "What is the complete private IPv4 range within the 172.x.x.x block?",
+      "options": {
+        "a": "172.0.0.0/12",
+        "b": "172.16.0.0/12",
+        "c": "172.16.0.0/16",
+        "d": "172.32.0.0/12"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "172.16.0.0/12",
+      "explanation": "RFC 1918 অনুযায়ী private range তিনটি: 10.0.0.0/8, 172.16.0.0/12 এবং 192.168.0.0/16। /12 মানে প্রথম 12 bit fixed, তাই এই block-এ পড়ে 172.16.0.0 থেকে 172.31.255.255 পর্যন্ত অর্থাৎ 16টি /16 block। 172.16.0.0/16 লিখলে শুধু 172.16.x.x বোঝাত, পুরো range নয় — এটাই এখানে প্রধান ফাঁদ। 172.32.x.x আর private নয়, public।"
+    },
+    {
+      "id": 93,
+      "question": "Which range is reserved for private IPv4 addresses in the 192.x.x.x block?",
+      "options": {
+        "a": "192.0.0.0/16",
+        "b": "192.168.0.0/16",
+        "c": "192.168.1.0/24",
+        "d": "192.169.0.0/16"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "192.168.0.0/16",
+      "explanation": "পুরো private block হলো 192.168.0.0/16, অর্থাৎ 192.168.0.0 থেকে 192.168.255.255। 192.168.1.0/24 এর ভেতরের ছোট একটি অংশ মাত্র — ঘরের router-এ এটি বেশি দেখা যায় বলে অনেকে ভুল করে সেটিকেই পুরো range ভাবে। 192.169.x.x public address, private নয়।"
+    },
+    {
+      "id": 94,
+      "question": "What is the IPv6 equivalent of the IPv4 loopback address 127.0.0.1?",
+      "options": {
+        "a": "::1",
+        "b": "::",
+        "c": "FE80::1",
+        "d": "FF02::1"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "::1",
+      "explanation": "IPv6-তে loopback address হলো ::1, যার পূর্ণরূপ 0:0:0:0:0:0:0:1 — মাঝের শূন্যগুলো :: দিয়ে সংক্ষেপ করা। শুধু :: মানে unspecified address (সব bit শূন্য), যা IPv4-এর 0.0.0.0-র সমতুল্য। FE80:: হলো link-local prefix আর FF02:: multicast, এ দুটি loopback নয়।"
+    },
+    {
+      "id": 95,
+      "question": "Which DNS record maps a domain name to an IPv4 address?",
+      "options": {
+        "a": "AAAA",
+        "b": "MX",
+        "c": "A",
+        "d": "CNAME"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "A",
+      "explanation": "A record অর্থাৎ Address record একটি domain name-কে 32-bit IPv4 address-এ map করে, যেমন example.com থেকে 93.184.216.34। IPv6-র জন্য আলাদা record লাগে বলে AAAA রাখা হয়েছে, নামটিই ইঙ্গিত দেয় সেটি চার গুণ বড় address-এর জন্য।"
+    },
+    {
+      "id": 96,
+      "question": "Which DNS record maps a domain name to an IPv6 address?",
+      "options": {
+        "a": "A",
+        "b": "AAAA",
+        "c": "MX",
+        "d": "PTR"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "AAAA",
+      "explanation": "IPv6 address 128 bit, যা IPv4-এর 32 bit-এর ঠিক চার গুণ — তাই record-এর নামে চারটি A, উচ্চারণ quad-A। কাজ A record-এর মতোই, domain name থেকে address বের করা, শুধু address-টি IPv6।"
+    },
+    {
+      "id": 97,
+      "question": "Which DNS record specifies mail servers for a domain?",
+      "options": {
+        "a": "MX",
+        "b": "NS",
+        "c": "PTR",
+        "d": "TXT"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "MX",
+      "explanation": "MX মানে Mail Exchanger. কোনো domain-এ mail পাঠানোর আগে sending server DNS-কে ওই domain-এর MX record জিজ্ঞেস করে জেনে নেয় mail কোন server গ্রহণ করবে। MX record-এ একটি preference number-ও থাকে; ছোট সংখ্যার server আগে চেষ্টা করা হয়, তাই backup mail server রাখা যায়। NS record বলে domain-এর authoritative name server কারা, mail server নয়।"
+    },
+    {
+      "id": 98,
+      "question": "Which DNS record is used to create an alias for another domain name?",
+      "options": {
+        "a": "MX",
+        "b": "A",
+        "c": "CNAME",
+        "d": "PTR"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "CNAME",
+      "explanation": "CNAME মানে Canonical Name — এটি এক নামকে আরেক নামের alias বানায়, যেমন www.example.com কে example.com-এর দিকে পাঠানো। সুবিধা হলো server-এর IP বদলালে শুধু মূল নামের A record বদলালেই চলে, সব alias স্বয়ংক্রিয়ভাবে নতুন IP পেয়ে যায়। PTR উল্টো কাজ করে — IP থেকে নাম বের করে, একে reverse lookup বলে।"
+    },
+    {
+      "id": 99,
+      "question": "Which protocol is primarily used for sending email between mail servers?",
+      "options": {
+        "a": "POP3",
+        "b": "SMTP",
+        "c": "HTTP",
+        "d": "FTP"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "SMTP",
+      "explanation": "SMTP অর্থাৎ Simple Mail Transfer Protocol একটি push protocol — mail পাঠানোর জন্য ব্যবহৃত হয়, client থেকে server এবং এক server থেকে আরেক server পর্যন্ত। POP3 ও IMAP উল্টো দিকের pull protocol, শুধু mailbox থেকে mail নামানোর কাজে লাগে, পাঠানোর কাজে নয়।"
+    },
+    {
+      "id": 100,
+      "question": "Which protocol is primarily used by an email client to retrieve emails from a mail server?",
+      "options": {
+        "a": "SMTP",
+        "b": "POP3",
+        "c": "HTTP",
+        "d": "DNS"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "POP3",
+      "explanation": "POP3 mail server থেকে mail download করে এনে সাধারণত server থেকে মুছে দেয়, তাই একটি মাত্র device-এ mail পড়ার জন্য উপযুক্ত। IMAP ব্যবহার করলে mail server-এই থেকে যায় ও সব device-এ sync হয়, তাই আজকাল সেটি বেশি ব্যবহৃত। SMTP-র কাজ ঠিক উল্টো — mail পাঠানো, আনা নয়।"
+    },
+    {
+      "id": 101,
+      "question": "What is the default port number for SMTP?",
+      "options": {
+        "a": "21",
+        "b": "25",
+        "c": "53",
+        "d": "110"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "25",
+      "explanation": "SMTP-র default port 25, যা মূলত server থেকে server-এ mail relay করার জন্য ব্যবহৃত হয়। মনে রাখার ক্রম: 21 FTP, 25 SMTP, 53 DNS, 80 HTTP, 110 POP3, 143 IMAP, 443 HTTPS। আজকাল mail client থেকে mail submit করতে 587 ব্যবহার করা হয়, কারণ spam ঠেকাতে অনেক ISP port 25 block করে রাখে।"
+    },
+    {
+      "id": 102,
+      "question": "Which protocol is a link-state interior gateway protocol (IGP)?",
+      "options": {
+        "a": "RIP",
+        "b": "OSPF",
+        "c": "BGP",
+        "d": "ARP"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "OSPF",
+      "explanation": "OSPF প্রতিটি router-এর কাছে পুরো network-এর topology map রাখে, যাকে link-state database বলে, তারপর Dijkstra algorithm চালিয়ে shortest path বের করে — এজন্যই একে link-state বলা হয়। RIP distance-vector, সে পুরো map জানে না, শুধু প্রতিবেশীর কাছে শোনে কোন গন্তব্য কত দূরে। BGP path-vector এবং সেটি interior নয়, দুই autonomous system-এর মধ্যে চলা exterior protocol।"
+    },
+    {
+      "id": 103,
+      "question": "In RIP, which hop count value is treated as infinity, marking a route unreachable?",
+      "options": {
+        "a": "15",
+        "b": "16",
+        "c": "30",
+        "d": "255"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "16",
+      "explanation": "RIP-এ সর্বোচ্চ ব্যবহারযোগ্য hop count 15, আর 16 কে infinity ধরা হয় অর্থাৎ ওই route unreachable। এত ছোট সীমা ইচ্ছাকৃত — count-to-infinity সমস্যায় metric যেন অসীম পর্যন্ত বাড়তে না থাকে, দ্রুত থেমে যায়। ফাঁদটি হলো প্রশ্নের গঠন: সর্বোচ্চ কত hop পর্যন্ত পৌঁছানো যায় জিজ্ঞেস করলে উত্তর 15, আর কোন মান unreachable বোঝায় জিজ্ঞেস করলে উত্তর 16।"
+    },
+    {
+      "id": 104,
+      "question": "Which routing protocol is classified as a distance-vector protocol?",
+      "options": {
+        "a": "OSPF",
+        "b": "RIP",
+        "c": "BGP",
+        "d": "ARP"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "RIP",
+      "explanation": "Distance-vector protocol শুধু প্রতিবেশীদের কাছ থেকে distance অর্থাৎ hop count এবং direction অর্থাৎ কোন প্রতিবেশীর দিক দিয়ে যেতে হবে — এই দুটি তথ্য নিয়ে routing table বানায়, পুরো topology কখনো জানে না। এজন্য একে routing by rumour বলা হয়। RIP এভাবেই কাজ করে, OSPF link-state আর BGP path-vector।"
+    },
+    {
+      "id": 105,
+      "question": "Which protocol is primarily responsible for reporting errors and providing diagnostic information at the IP layer?",
+      "options": {
+        "a": "ICMP",
+        "b": "ARP",
+        "c": "SNMP",
+        "d": "RIP"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "ICMP",
+      "explanation": "ICMP নিজে কোনো user data বহন করে না, তার কাজ IP layer-এ সমস্যা হলে খবর পাঠানো — যেমন Destination Unreachable বা Time Exceeded message। ping এবং traceroute এই ICMP message ব্যবহার করেই কাজ করে। ARP-র কাজ IP থেকে MAC বের করা, আর SNMP device monitoring ও management-এর protocol।"
+    },
+    {
+      "id": 106,
+      "question": "ARP operates primarily between which OSI layers?",
+      "options": {
+        "a": "Transport and Session",
+        "b": "Network and Data Link",
+        "c": "Presentation and Application",
+        "d": "Physical and Transport"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Network and Data Link",
+      "explanation": "ARP-র input একটি Network layer address অর্থাৎ IP, আর output একটি Data Link layer address অর্থাৎ MAC — তাই সে ঠিক এই দুই layer-এর মাঝে সেতুর কাজ করে। ARP request পুরো LAN-এ broadcast হয়, আর যে host-এর ওই IP সে unicast ARP reply-তে নিজের MAC জানিয়ে দেয়।"
+    },
+    {
+      "id": 107,
+      "question": "Which protocol generally provides better bandwidth utilization on long-delay links?",
+      "options": {
+        "a": "Stop-and-Wait",
+        "b": "Sliding Window",
+        "c": "Simplex",
+        "d": "Circuit Switching"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Sliding Window",
+      "explanation": "Stop-and-Wait-এ একটি frame পাঠিয়ে ACK না আসা পর্যন্ত বসে থাকতে হয়, তাই satellite-এর মতো long-delay link-এ বেশিরভাগ সময় line খালি পড়ে থাকে। Sliding Window-এ ACK আসার আগেই window size পর্যন্ত পরপর একাধিক frame পাঠিয়ে দেওয়া যায়, ফলে link ভরা থাকে এবং bandwidth utilization অনেক বেড়ে যায়।"
+    },
+    {
+      "id": 108,
+      "question": "Which device divides a LAN into separate collision domains?",
+      "options": {
+        "a": "Hub",
+        "b": "Switch",
+        "c": "Repeater",
+        "d": "Modem"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Switch",
+      "explanation": "Hub শুধু signal repeat করে সব port-এ পাঠায়, তাই তার সব port মিলে একটিই collision domain। Switch প্রতিটি port-এ আলাদা collision domain তৈরি করে এবং frame কেবল নির্দিষ্ট port-এ পাঠায়। তবে মনে রাখতে হবে switch broadcast domain ভাঙে না — সেটির জন্য router বা VLAN লাগে।"
+    },
+    {
+      "id": 109,
+      "question": "Which device is generally considered a multiport bridge?",
+      "options": {
+        "a": "Router",
+        "b": "Switch",
+        "c": "Modem",
+        "d": "Repeater"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Switch",
+      "explanation": "Bridge-এর কাজ MAC address দেখে দুটি segment-এর মধ্যে frame forward বা filter করা। Switch ঠিক একই কাজ করে, কিন্তু দুটির বদলে অনেক port-এ এবং ASIC hardware দিয়ে অনেক দ্রুত — তাই তাকে multiport bridge বলা হয়। Router MAC নয়, IP address দেখে কাজ করে বলে সে আলাদা শ্রেণির device।"
+    },
+    {
+      "id": 110,
+      "question": "What is the result of 11010 XOR 10111?",
+      "options": {
+        "a": "01101",
+        "b": "01111",
+        "c": "11101",
+        "d": "00101"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "01101",
+      "explanation": "XOR-এর নিয়ম: দুটি bit আলাদা হলে ফল 1, একই হলে 0।\nbit ধরে ধরে: 1^1=0, 1^0=1, 0^1=1, 1^1=0, 0^1=1\nতাই ফল 01101।\nNetworking-এ XOR গুরুত্বপূর্ণ কারণ parity bit ও CRC checksum এভাবেই হিসাব করা হয় — এটিই error detection-এর ভিত্তি।"
     }
   ]
 }
