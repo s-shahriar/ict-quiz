@@ -4867,6 +4867,415 @@
         ],
         "mnemonic": "Workgroup = পাড়ার আড্ডা, প্রত্যেকের নিজের ঘরের চাবি নিজের কাছে। Domain = অফিস, একটাই ID card দিয়ে সব দরজা খোলে, আর সেটা বাতিল হলে সব বন্ধ।"
       }
+    },
+    {
+      "id": "cn_044",
+      "q": "A router's table has 192.168.10.0/24 via G0/0, 192.168.20.0/24 via G0/1, 10.10.0.0/16 via S0/0 and a default route 0.0.0.0/0 via 10.10.10.1. A packet for 192.168.20.55 arrives. Which interface is used, which entry is selected, and what changes if 192.168.20.0/25 is added?",
+      "tags": [
+        "routing table",
+        "longest prefix match",
+        "default route",
+        "0.0.0.0/0",
+        "gateway of last resort",
+        "forwarding"
+      ],
+      "answer": {
+        "summary": [
+          "Packet যাবে G0/1 দিয়ে, নির্বাচিত entry 192.168.20.0/24।",
+          "Default route 0.0.0.0/0-ও মেলে, কিন্তু তার prefix length 0 — সবচেয়ে ছোট, তাই সে কেবল শেষ ভরসা।",
+          "192.168.20.0/25 যোগ করলে সেটিই জিতবে, কারণ /25 > /24 এবং 55 তার পরিধির ভেতরে পড়ে।"
+        ],
+        "points": [
+          "প্রশ্ন ১ — কোন interface দিয়ে যাবে",
+          {
+            "sub": "Destination 192.168.20.55 কোন কোন route-এর সাথে মেলে তা আগে দেখতে হবে।"
+          },
+          {
+            "sub": "192.168.10.0/24 মেলে না, কারণ তৃতীয় octet 10, আমাদের দরকার 20।"
+          },
+          {
+            "sub": "192.168.20.0/24 মেলে — পরিধি 192.168.20.0 থেকে 192.168.20.255।"
+          },
+          {
+            "sub": "10.10.0.0/16 মেলে না, কারণ প্রথম octet-ই আলাদা।"
+          },
+          {
+            "sub": "0.0.0.0/0 মেলে — prefix length 0 মানে কোনো bit মেলানোর দরকার নেই, তাই সব address-এর সাথেই মেলে।"
+          },
+          {
+            "sub": "দুটি মিলল, তাই Longest Prefix Match নিয়ম খাটবে: /24 বনাম /0 → /24 জিতবে।"
+          },
+          {
+            "sub": "উত্তর: packet যাবে G0/1 interface দিয়ে।"
+          },
+          "প্রশ্ন ২ — কোন entry নির্বাচিত হলো",
+          {
+            "sub": "নির্বাচিত entry: 192.168.20.0/24 → G0/1।"
+          },
+          {
+            "diagram": "  Destination: 192.168.20.55\n\n    192.168.10.0/24   →  মেলে না, তৃতীয় octet 10, দরকার 20\n    192.168.20.0/24   →  মেলে, prefix length 24\n    10.10.0.0/16      →  মেলে না, প্রথম octet আলাদা\n    0.0.0.0/0         →  মেলে, prefix length 0 (সবার সাথেই মেলে)\n\n    সবচেয়ে বড় prefix = /24  →  G0/1",
+            "label": "Diagram — কোন route মেলে, কে জেতে"
+          },
+          "প্রশ্ন ৩ — 192.168.20.0/25 যোগ করলে",
+          {
+            "sub": "/25 মানে block size 128, তাই পরিধি 192.168.20.0 থেকে 192.168.20.127।"
+          },
+          {
+            "sub": "55 এই পরিধির ভেতরেই পড়ে, তাই নতুন route-টিও মেলে।"
+          },
+          {
+            "sub": "এখন /25 বনাম /24 বনাম /0 — সবচেয়ে বড় /25।"
+          },
+          {
+            "sub": "তাই router এবার 192.168.20.0/25 route ব্যবহার করবে।"
+          },
+          {
+            "sub": "লক্ষণীয়: destination 192.168.20.200 হলে সে /25-এর বাইরে পড়ত, তখন আবার /24-ই জিতত।"
+          },
+          "Default route কী এবং কখন কাজে লাগে",
+          {
+            "sub": "0.0.0.0/0 মানে 'যেকোনো গন্তব্য' — prefix length 0 বলে কোনো bit-ই মেলাতে হয় না।"
+          },
+          {
+            "sub": "প্রতিটি packet-ই এর সাথে মেলে, কিন্তু prefix সবচেয়ে ছোট বলে সে সবসময় সবার শেষে বিবেচিত হয়।"
+          },
+          {
+            "sub": "তাই একে gateway of last resort বলা হয় — আর কিছু না মিললে তবেই এটি ব্যবহৃত হয়।"
+          },
+          {
+            "sub": "এর সুবিধা হলো internet-এর লক্ষ লক্ষ route মুখস্থ রাখতে হয় না, অচেনা সব packet ISP-র দিকে পাঠিয়ে দিলেই হলো।"
+          },
+          {
+            "sub": "Default route না থাকলে অচেনা গন্তব্যের packet router ফেলে দিত এবং ICMP Destination Unreachable ফেরত পাঠাত।"
+          }
+        ],
+        "mistakes": [
+          [
+            "Default route আগে দেখা হয়, কারণ সেটি সবার সাথে মেলে",
+            "মেলে ঠিকই, কিন্তু নির্বাচনের ভিত্তি মেলা নয় — prefix length। /0 সবচেয়ে ছোট, তাই সে সবার শেষে থাকে।"
+          ],
+          [
+            "Route table-এ যেটি উপরে লেখা সেটিই আগে নেওয়া হয়",
+            "Route table-এ লেখার ক্রম কোনো ভূমিকা রাখে না। কেবল prefix length গোনা হয়।"
+          ],
+          [
+            "বেশি নির্দিষ্ট route যোগ করলে পুরনোটি অকেজো হয়ে যায়",
+            "হয় না। /25 শুধু তার নিজের পরিধির (0–127) packet নেবে, বাকি 128–255 এর packet আগের মতোই /24 দিয়েই যাবে।"
+          ]
+        ],
+        "mnemonic": "সবচেয়ে লম্বা prefix জেতে। 0.0.0.0/0 সবার সাথে মেলে বলেই সবচেয়ে দুর্বল — সে দারোয়ান নয়, শেষ ভরসা।"
+      }
+    },
+    {
+      "id": "cn_045",
+      "q": "What is a port number and why is it needed? Differentiate well-known, registered and dynamic ports, and list the important well-known port numbers.",
+      "tags": [
+        "port number",
+        "well-known ports",
+        "socket",
+        "multiplexing",
+        "transport layer",
+        "TCP",
+        "UDP"
+      ],
+      "answer": {
+        "summary": [
+          "Port number একটি ১৬-bit সংখ্যা, যা বলে দেয় একটি machine-এর ভেতরে কোন application-এর জন্য data এসেছে।",
+          "IP address machine পর্যন্ত পৌঁছে দেয়, port number তার ভেতরের সঠিক process পর্যন্ত পৌঁছে দেয়।",
+          "১৬ bit বলে পরিসর 0 থেকে 65535, যা তিন ভাগে ভাগ করা — well-known, registered ও dynamic।"
+        ],
+        "points": [
+          "কেন দরকার",
+          {
+            "sub": "একটি computer-এ একসাথে browser, email client ও game চলতে পারে।"
+          },
+          {
+            "sub": "তিনটিরই IP address এক, তাই শুধু IP দিয়ে বোঝার উপায় নেই কোন data কার।"
+          },
+          {
+            "sub": "Port number সেই পার্থক্য করে দেয় — এই কাজটির নাম multiplexing ও demultiplexing।"
+          },
+          {
+            "sub": "Transport layer (TCP/UDP) header-এ source port ও destination port দুটোই থাকে।"
+          },
+          {
+            "sub": "IP address আর port number একসাথে মিলে যা তৈরি হয় তাকে বলে socket, যেমন 192.168.1.10:443।"
+          },
+          "তিনটি পরিসর",
+          {
+            "sub": "0–1023 — Well-known port: প্রচলিত service-এর জন্য সংরক্ষিত, চালাতে সাধারণত administrator অধিকার লাগে।"
+          },
+          {
+            "sub": "1024–49151 — Registered port: নির্দিষ্ট কোম্পানি বা software-এর জন্য নিবন্ধিত, যেমন MySQL 3306।"
+          },
+          {
+            "sub": "49152–65535 — Dynamic বা ephemeral port: client নিজের জন্য সাময়িকভাবে যেকোনো একটি নেয়, কাজ শেষে ছেড়ে দেয়।"
+          },
+          {
+            "diagram": "  Client 192.168.1.5                     Server 93.184.216.34\n\n    browser নিজের জন্য একটি ephemeral port নিল: 51234\n\n    Source      192.168.1.5 : 51234      ← ephemeral, প্রতিবার বদলায়\n    Destination 93.184.216.34 : 443      ← well-known, সবসময় একই\n\n    উত্তর ফেরার সময় দুটি ঠিকানা উল্টে যায়:\n\n    Source      93.184.216.34 : 443\n    Destination 192.168.1.5 : 51234      ← তাই উত্তর ঠিক browser-এই পৌঁছায়",
+            "label": "Diagram — একটি request-এ কোন port কোথায় বসে"
+          },
+          "মনে রাখার কৌশল",
+          {
+            "sub": "Server-এর port স্থির, কারণ client-কে আগে থেকেই জানতে হয় কোথায় কড়া নাড়তে হবে।"
+          },
+          {
+            "sub": "Client-এর port পরিবর্তনশীল, কারণ সেটি কাউকে জানানোর দরকার নেই।"
+          },
+          {
+            "sub": "নিরাপদ সংস্করণগুলোর port আলাদা: HTTP 80 হলে HTTPS 443, FTP 21 হলে FTPS 990।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "Port",
+            "Protocol",
+            "কাজ",
+            "TCP/UDP"
+          ],
+          "rows": [
+            [
+              "20, 21",
+              "FTP",
+              "File transfer — 20 data, 21 control",
+              "TCP"
+            ],
+            [
+              "22",
+              "SSH",
+              "নিরাপদ remote login",
+              "TCP"
+            ],
+            [
+              "23",
+              "Telnet",
+              "remote login, encryption ছাড়া",
+              "TCP"
+            ],
+            [
+              "25",
+              "SMTP",
+              "mail পাঠানো",
+              "TCP"
+            ],
+            [
+              "53",
+              "DNS",
+              "domain name থেকে IP",
+              "UDP (বড় হলে TCP)"
+            ],
+            [
+              "67, 68",
+              "DHCP",
+              "স্বয়ংক্রিয় IP বিতরণ",
+              "UDP"
+            ],
+            [
+              "80",
+              "HTTP",
+              "web, encryption ছাড়া",
+              "TCP"
+            ],
+            [
+              "110",
+              "POP3",
+              "mail নামানো",
+              "TCP"
+            ],
+            [
+              "143",
+              "IMAP",
+              "mail server-এ রেখেই পড়া",
+              "TCP"
+            ],
+            [
+              "161",
+              "SNMP",
+              "device monitoring",
+              "UDP"
+            ],
+            [
+              "443",
+              "HTTPS",
+              "web, TLS দিয়ে encrypted",
+              "TCP"
+            ],
+            [
+              "3389",
+              "RDP",
+              "Windows remote desktop",
+              "TCP"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "DNS শুধু UDP 53 ব্যবহার করে",
+            "সাধারণ query-তে UDP 53। কিন্তু response 512 byte ছাড়ালে বা zone transfer হলে একই 53 নম্বরেই TCP ব্যবহৃত হয়। port একই, transport protocol আলাদা।"
+          ],
+          [
+            "Port number IP header-এ থাকে",
+            "থাকে না। Port number Transport layer-এর জিনিস, তাই TCP বা UDP header-এ বসে। IP header-এ শুধু IP address থাকে।"
+          ],
+          [
+            "একই port একসাথে দুটি application ব্যবহার করতে পারে না",
+            "একই protocol-এ পারে না, কিন্তু TCP 53 আর UDP 53 আলাদা — দুটি ভিন্ন application দখল করতে পারে।"
+          ]
+        ],
+        "mnemonic": "IP = বাড়ির ঠিকানা, Port = ফ্ল্যাট নম্বর। ২১ FTP, ২২ SSH, ২৩ Telnet, ২৫ SMTP, ৫৩ DNS, ৮০ HTTP, ১১০ POP3, ৪৪৩ HTTPS।"
+      }
+    },
+    {
+      "id": "cn_046",
+      "q": "Explain TCP flow control. What does the receiver window mean, and what should the sender do if the receiver advertises a window size of 0?",
+      "tags": [
+        "flow control",
+        "receiver window",
+        "rwnd",
+        "zero window",
+        "window probe",
+        "silly window syndrome",
+        "TCP"
+      ],
+      "answer": {
+        "summary": [
+          "Flow control নিশ্চিত করে যে দ্রুত sender ধীর receiver-এর buffer উপচে না ফেলে।",
+          "Receiver প্রতিটি ACK-এর সাথে window size জানায় — অর্থাৎ সে এখন আর কত byte নিতে পারবে।",
+          "Window 0 হলে sender পাঠানো বন্ধ করে, কিন্তু connection ছাড়ে না — সে মাঝে মাঝে window probe পাঠিয়ে খোঁজ নেয়।"
+        ],
+        "points": [
+          "মূল ধারণা",
+          {
+            "sub": "Receiver-এর একটি নির্দিষ্ট আকারের buffer আছে।"
+          },
+          {
+            "sub": "Data সেখানে জমা হয়, আর application নিজের গতিতে সেখান থেকে পড়ে নেয়।"
+          },
+          {
+            "sub": "Application ধীরে পড়লে buffer ভরতে থাকে।"
+          },
+          {
+            "sub": "Buffer উপচে গেলে নতুন data ফেলে দিতে হতো, তাই আগেই sender-কে থামানো দরকার।"
+          },
+          {
+            "sub": "Receiver তাই প্রতিটি ACK-এর সাথে window size জানিয়ে দেয় — এটাই receiver window বা rwnd।"
+          },
+          {
+            "sub": "Sender কখনোই window size-এর চেয়ে বেশি un-acknowledged data পাঠাতে পারে না।"
+          },
+          "Window 0 হলে sender কী করবে",
+          {
+            "sub": "Sender সঙ্গে সঙ্গে নতুন data পাঠানো বন্ধ করে দেয়।"
+          },
+          {
+            "sub": "কিন্তু connection বন্ধ করে না — এটি সাময়িক অবস্থা।"
+          },
+          {
+            "sub": "সে একটি persist timer চালু করে।"
+          },
+          {
+            "sub": "Timer শেষ হলে সে ১ byte-এর একটি ছোট window probe পাঠায়।"
+          },
+          {
+            "sub": "Receiver উত্তরে বর্তমান window size জানায়।"
+          },
+          {
+            "sub": "Window এখনো 0 থাকলে sender আবার অপেক্ষা করে ও পরে আবার probe পাঠায়।"
+          },
+          {
+            "diagram": "  Sender                            Receiver\n    │───── 1000 bytes ─────────────►│  buffer-এ জমল, app এখনো পড়েনি\n    │◄──── ACK, win = 3000 ─────────│  আর 3000 byte নিতে পারবে\n    │───── 3000 bytes ─────────────►│  buffer পুরো ভরে গেল\n    │◄──── ACK, win = 0 ────────────│  আর জায়গা নেই\n    │  (sender stops)               │  sender পাঠানো বন্ধ রাখে\n    │───── window probe ───────────►│  মাঝে মাঝে ছোট probe পাঠায়\n    │◄──── ACK, win = 0 ────────────│  এখনো জায়গা হয়নি\n    │  (app reads buffer)           │  application data পড়ে নিল, জায়গা খালি হলো\n    │◄──── win update = 4000 ───────│  এখন আবার পাঠানো যাবে\n    │───── 4000 bytes ─────────────►│",
+            "label": "Diagram — buffer ভরে যাওয়া থেকে আবার চালু হওয়া"
+          },
+          "Probe কেন দরকার",
+          {
+            "sub": "Receiver জায়গা খালি হলে window update পাঠায়।"
+          },
+          {
+            "sub": "কিন্তু সেই window update packet পথে হারিয়ে যেতে পারে।"
+          },
+          {
+            "sub": "তখন receiver ভাবে সে জানিয়ে দিয়েছে, আর sender ভাবে window এখনো 0।"
+          },
+          {
+            "sub": "দুজনেই অপেক্ষা করতে থাকলে connection চিরতরে আটকে যেত — একে deadlock বলে।"
+          },
+          {
+            "sub": "Probe এই deadlock ভাঙে, কারণ sender নিজে থেকেই খোঁজ নিতে থাকে।"
+          },
+          "Silly Window Syndrome",
+          {
+            "sub": "Receiver যদি অল্প কয়েক byte খালি হতেই ছোট window জানায়, sender তখন খুব ছোট segment পাঠাতে থাকে।"
+          },
+          {
+            "sub": "প্রতিটি segment-এর সাথে ৪০ byte header যায়, তাই কয়েক byte data-র জন্য বিপুল overhead হয়।"
+          },
+          {
+            "sub": "সমাধান receiver দিকে Clark's solution — বড় জায়গা খালি না হওয়া পর্যন্ত window 0 বলেই রাখে।"
+          },
+          {
+            "sub": "সমাধান sender দিকে Nagle's algorithm — ছোট data জমিয়ে একসাথে পাঠায়।"
+          },
+          "Flow control বনাম congestion control",
+          {
+            "sub": "Flow control একজন receiver-কে বাঁচায়, নিয়ন্ত্রক receiver নিজে (rwnd)।"
+          },
+          {
+            "sub": "Congestion control মাঝের পুরো network-কে বাঁচায়, নিয়ন্ত্রক sender নিজে (cwnd)।"
+          },
+          {
+            "sub": "Sender আসলে দুটোর মধ্যে ছোটটি মেনে চলে: পাঠানোর সীমা = min(rwnd, cwnd)।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Flow Control",
+            "Congestion Control"
+          ],
+          "rows": [
+            [
+              "কাকে বাঁচায়",
+              "ধীর receiver-কে",
+              "মাঝের network-কে"
+            ],
+            [
+              "কোন window",
+              "rwnd (receiver window)",
+              "cwnd (congestion window)"
+            ],
+            [
+              "কে ঠিক করে",
+              "Receiver জানিয়ে দেয়",
+              "Sender নিজে হিসাব করে"
+            ],
+            [
+              "সংকেত কী",
+              "ACK-এ window size",
+              "packet loss বা duplicate ACK"
+            ],
+            [
+              "ব্যবস্থা",
+              "window 0 জানানো, probe",
+              "cwnd কমানো, slow start"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Window 0 পেলে sender connection বন্ধ করে দেবে",
+            "করবে না। এটি সাময়িক বিরতি মাত্র। Sender persist timer চালিয়ে probe পাঠাতে থাকে এবং জায়গা হলেই আবার শুরু করে।"
+          ],
+          [
+            "Window 0 মানে network-এ সমস্যা",
+            "না। এটি receiver-এর application ধীরে পড়ছে তার লক্ষণ, network একদম ঠিক থাকতে পারে। Network-এর সমস্যা ধরা পড়ে packet loss দিয়ে, window দিয়ে নয়।"
+          ],
+          [
+            "Flow control আর congestion control একই ব্যবস্থা",
+            "আলাদা। একটির নিয়ন্ত্রক receiver, অন্যটির sender। Sender দুটোর মধ্যে ছোট সীমাটিই মানে।"
+          ]
+        ],
+        "mnemonic": "rwnd = receiver-এর হাঁড়ি কতটা খালি। শূন্য হলে থামো, কিন্তু উঠে যেও না — মাঝে মাঝে probe পাঠিয়ে জিজ্ঞেস করো 'জায়গা হলো?'"
+      }
     }
   ]
 }
