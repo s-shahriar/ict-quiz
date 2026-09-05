@@ -346,6 +346,43 @@ side, keep both sides to ASCII/numbers only (e.g. the sliding-window box diagram
 which is safe because `┌───┬───┬───┬───┐` and digits don't need font-metric
 cooperation from Bengali glyphs) — anything with Bengali labels goes fully vertical.
 
+### 7.2 The second alignment trap: box-drawing glyphs are NOT the same width as ASCII
+
+Found 2026-09-05 while redrawing the ARQ diagrams. §7.1 says "only pure-ASCII
+content may participate in strict multi-column alignment" — that turned out to be
+necessary but **not sufficient**. A diagram can be 100% ASCII + box-drawing, with
+every line character-counted to the exact same length, and *still* render with a
+wandering right-hand edge.
+
+**Why:** the loaded JetBrains Mono subset has no glyphs for U+2500–257F (`─ │ ┌ ┐
+└ ┘ ┬ ┴ ┼`), the arrows (`► ◄`), or the block chars (`▇`). The browser silently
+pulls those from a fallback face whose advance width is ~0.17px narrower than
+JetBrains Mono's ASCII (7.83px vs 8.00px at the diagram's font size). So a line
+made mostly of `─` and a line made mostly of spaces end up different pixel widths
+even at identical character counts. Measured on the real page:
+
+```
+    │───── Frame 1 ────────────────►│      right bar at x = 599.5
+    │  (timeout: Frame 3)           │      right bar at x = 601.9   ← 2.4px drift
+```
+
+**The fix is in CSS, not in the diagram text.** `.written-diagram-pre` no longer
+uses JetBrains Mono; it uses a stack (`'DejaVu Sans Mono', 'Liberation Mono',
+'Noto Sans Mono', ui-monospace, monospace`) whose first available face supplies
+ASCII *and* box-drawing from the same font, so every cell is one width again.
+Code blocks keep JetBrains Mono — code is pure ASCII and never mixes.
+
+**What this means when writing a diagram:** you may now mix box-drawing and ASCII
+freely; §7.1's Bengali rule still stands in full, because that one is about font
+*substitution for a script the mono face doesn't cover at all*, which no font
+stack fixes. Bengali stays a trailing annotation after the last aligned glyph.
+
+**How to verify a new diagram** rather than trusting the character count: build it
+in a script that asserts (a) each line's bar column index, and (b) that nothing
+but ASCII and box-drawing sits between the bars. Then measure the rendered page —
+`document.createRange()` over the `<pre>`'s text node gives the true pixel x of
+each bar, and every sequence row should report a single distinct x.
+
 ---
 
 ## 8. Mnemonic Strategy

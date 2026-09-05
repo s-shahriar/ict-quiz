@@ -1854,9 +1854,17 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 
 /* ASCII Diagram */
+/* NOT JetBrains Mono, deliberately. The loaded JetBrains Mono subset carries no
+   box-drawing glyphs, so the browser silently pulls U+2500-257F (and the arrows
+   and block glyphs) from a fallback face whose advance width is ~0.17px
+   narrower than its ASCII. Any line mixing the two then drifts against a line
+   that mixes them in a different ratio, which is what made every sender/receiver
+   diagram's right-hand bar wander. The generic monospace family supplies ASCII
+   and box-drawing from one face, so every cell is the same width again.
+   Code blocks keep JetBrains Mono - code is pure ASCII and never mixes. */
 .written-diagram-wrap { display: flex; flex-direction: column; }
 .written-diagram-pre {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'DejaVu Sans Mono', 'Liberation Mono', 'Noto Sans Mono', ui-monospace, monospace;
   font-size: 0.76rem; line-height: 1.6;
   color: var(--text);
   background: var(--elevated);
