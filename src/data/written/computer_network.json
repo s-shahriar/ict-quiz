@@ -3293,7 +3293,7 @@
             "sub": "ACK দেরি করলে: timeout ইতিমধ্যে হয়ে sender আবার পাঠিয়ে দেয়; receiver duplicate পায়।"
           },
           {
-            "diagram": "[১] স্বাভাবিক আদান-প্রদান\n  Sender                Receiver\n    │──seq0───────────►│\n    │◄──────────ACK0───│\n    │──seq1───────────►│\n    │◄──────────ACK1───│\n\n[২] Frame হারালে\n  Sender                Receiver\n    │──seq0────X        │   (frame হারিয়ে গেল)\n    │ (timeout)          │\n    │──seq0───────────►│   (আবার পাঠানো)\n    │◄──────────ACK0───│\n\n[৩] ACK হারালে\n  Sender                Receiver\n    │──seq0───────────►│\n    │        X◄──ACK0───│   (ACK হারিয়ে গেল)\n    │ (timeout)          │\n    │──seq0───────────►│   (আবার পাঠানো — receiver duplicate বুঝে data বাদ দেয়)\n    │◄──────────ACK0───│   (শুধু ACK আবার পাঠায়)\n\n[৪] ACK দেরি করলে\n  Sender                Receiver\n    │──seq0───────────►│\n    │ (timeout ইতিমধ্যে হয়ে গেছে)\n    │──seq0───────────►│   (আবার পাঠানো, receiver duplicate পায়)\n    │◄──────────ACK0───│   (দেরিতে আসা পুরনো ACK0-ও পরে পৌঁছাতে পারে)",
+            "diagram": "[১] স্বাভাবিক আদান-প্রদান\n  Sender                            Receiver\n    │───── Frame 0 ────────────────►│\n    │◄──── ACK 0 ───────────────────│\n    │───── Frame 1 ────────────────►│\n    │◄──── ACK 1 ───────────────────│\n\n[২] Frame হারালে\n  Sender                            Receiver\n    │───── Frame 0 ────X            │  frame পথেই হারিয়ে গেল\n    │  (timeout)                    │  ACK না আসায় timer শেষ\n    │───── Frame 0 ────────────────►│  একই seq দিয়ে আবার\n    │◄──── ACK 0 ───────────────────│\n\n[৩] ACK হারালে\n  Sender                            Receiver\n    │───── Frame 0 ────────────────►│  ঠিকমতো পৌঁছেছে\n    │  ACK 0 ────X                  │  ফেরার পথে ACK হারাল\n    │  (timeout)                    │\n    │───── Frame 0 ────────────────►│  sender আবার পাঠায়\n    │◄──── ACK 0 ───────────────────│  receiver duplicate বুঝে data বাদ দিয়ে শুধু ACK দেয়\n\n[৪] ACK দেরি করলে\n  Sender                            Receiver\n    │───── Frame 0 ────────────────►│\n    │  (timeout)                    │  timeout আগেই হয়ে গেছে\n    │───── Frame 0 ────────────────►│  receiver এবার duplicate পায়\n    │◄──── ACK 0 ───────────────────│  পুরনো দেরি করা ACK-ও পরে এসে পৌঁছাতে পারে",
             "label": "Diagram — Stop-and-Wait ARQ"
           },
           {
@@ -3313,7 +3313,7 @@
             "sub": "Window sender ও receiver উভয় দিকেই থাকে, ACK আসার সাথে সাথে সামনে 'slide' করে।"
           },
           {
-            "diagram": "sequence:   0   1   2   3   4   5   6   7   8   9\n          ┌───┬───┬───┬───┐\nwindow →  │ 0 │ 1 │ 2 │ 3 │  4   5   6   7   8   9\n          └───┴───┴───┴───┘\n          এই ৪টা frame ACK ছাড়াই পাঠানো যায়\n\nACK 0 এলে window ডানে এক ঘর সরে যায়:\n              ┌───┬───┬───┬───┐\n  0   window →│ 1 │ 2 │ 3 │ 4 │  5   6   7   8   9\n              └───┴───┴───┴───┘",
+            "diagram": "window size = 4 → ACK ছাড়াই ৪টি frame পাঠানো যায়\n  Sender (window 4)                 Receiver\n    │───── Frame 1 ────────────────►│\n    │───── Frame 2 ────────────────►│\n    │───── Frame 3 ────────────────►│\n    │───── Frame 4 ────────────────►│  window পূর্ণ — আর পাঠানো যাবে না\n    │◄──── ACK 1 ───────────────────│\n    │◄──── ACK 2 ───────────────────│\n    │◄──── ACK 3 ───────────────────│\n    │◄──── ACK 4 ───────────────────│\n    │───── Frame 5 ────────────────►│  window সরায় নতুন frame ছাড়া গেল\n    │───── Frame 6 ────────────────►│\n    │───── Frame 7 ────────────────►│\n    │───── Frame 8 ────────────────►│\n\nSender-এর window কীভাবে সরে:\n\nশুরুতে — Frame 1–4 পাঠানো যাবে\n  ┌───┬───┬───┬───┐\n  │ 1 │ 2 │ 3 │ 4 │ 5   6   7   8   9  10\n  └───┴───┴───┴───┘\n  ◄── window = 4 ──►\n\nACK 1–4 আসার পর — window ডানে সরে গেল\n                  ┌───┬───┬───┬───┐\n    1   2   3   4 │ 5 │ 6 │ 7 │ 8 │ 9  10\n                  └───┴───┴───┴───┘\n                  ◄── window = 4 ──►",
             "label": "Diagram — Sliding Window (window size 4)"
           },
           {
@@ -3339,7 +3339,7 @@
             "sub": "sender timeout হলে হারানো frame থেকে শুরু করে window-এর বাকি সবকটা frame আবার পাঠায় — তাই নাম 'go back N'।"
           },
           {
-            "diagram": "  Sender              Receiver\n    │──0───────────────►│\n    │──1───────────────►│\n    │──2────X            │   (হারালো)\n    │──3───────────────►│   discard করে (in-order ছাড়া নেয় না)\n    │◄──────────ACK=1───│   (cumulative: শুধু '1 পর্যন্ত ঠিক আছে')\n    │ (timeout)           │\n    │──2,3,…N───────────►│   পুরো window আবার পাঠাতে হলো\n    │◄──────────ACK=N───│",
+            "diagram": "  Sender (window 4)                 Receiver\n    │───── Frame 1 ────────────────►│  Received\n    │───── Frame 2 ────────────────►│  Received\n    │───── Frame 3 ────X            │  হারিয়ে গেল\n    │───── Frame 4 ────────────────►│  DISCARDED — ক্রম ভাঙায় নেয় না\n    │───── Frame 5 ────────────────►│  DISCARDED\n    │◄──── ACK 1 ───────────────────│\n    │◄──── ACK 2 ───────────────────│  3-এর কোনো ACK নেই\n    │  (timeout: Frame 3)           │\n    │───── Frame 3 ────────────────►│  Received   ← retransmit\n    │───── Frame 4 ────────────────►│  Received   ← ভালো frame-ও আবার\n    │───── Frame 5 ────────────────►│  Received   ← ভালো frame-ও আবার\n    │◄──── ACK 3 ───────────────────│\n    │◄──── ACK 4 ───────────────────│\n    │◄──── ACK 5 ───────────────────│",
             "label": "Diagram — Go-Back-N ARQ"
           },
           {
@@ -3368,7 +3368,7 @@
             "sub": "অন্য ঠিকমতো পৌঁছানো frame আবার পাঠাতে হয় না।"
           },
           {
-            "diagram": "  Sender              Receiver\n    │──0───────────────►│\n    │──1───────────────►│\n    │──2────X            │   (হারালো)\n    │──3───────────────►│   buffer-এ রেখে দেয় (বাতিল করে না)\n    │◄──────ACK 0,1,3───│   (প্রতিটি frame-এর আলাদা ACK)\n    │ (timeout শুধু 2-এর)  │\n    │──2─────────────────►│   শুধু হারানো frame আবার পাঠানো হলো\n    │◄──────────ACK=2───│   buffer থেকে সঠিক ক্রমে সাজায়",
+            "diagram": "  Sender (window 4)                 Receiver (window 4)\n    │───── Frame 1 ────────────────►│  Received\n    │───── Frame 2 ────────────────►│  Received\n    │───── Frame 3 ────X            │  হারিয়ে গেল\n    │───── Frame 4 ────────────────►│  BUFFERED — out of order, তবু রেখে দেয়\n    │◄──── ACK 1 ───────────────────│\n    │◄──── ACK 2 ───────────────────│\n    │◄──── NACK 3 ──────────────────│  3 চাই — এটা আলাদা করে জানায়\n    │◄──── ACK 4 ───────────────────│  4-এরও আলাদা ACK\n    │───── Frame 3 ────────────────►│  Received   ← শুধু হারানোটাই আবার\n    │◄──── ACK 3 ───────────────────│  buffer থেকে 3,4 সঠিক ক্রমে সাজায়",
             "label": "Diagram — Selective Repeat ARQ"
           },
           {
@@ -3562,6 +3562,1310 @@
           ]
         ],
         "mnemonic": "LAN ভাগ হয় তার দিয়ে, VLAN ভাগ হয় software দিয়ে — একই switch, তবু broadcast নিজের ঘরেই আটকে; ঘর বদলাতে router লাগে।"
+      }
+    },
+    {
+      "id": "cn_032",
+      "q": "Why does IPv6 not use broadcasting? Explain how multicast replaces broadcast communication.",
+      "tags": [
+        "IPv6",
+        "broadcast",
+        "multicast",
+        "NDP",
+        "ARP",
+        "efficiency"
+      ],
+      "answer": {
+        "summary": [
+          "IPv6-তে broadcast একেবারেই নেই — তার জায়গা নিয়েছে multicast।",
+          "কারণ broadcast packet network-এর প্রতিটি device-কে বাধ্য করে packet খুলে দেখতে, এমনকি যাদের সেটা দরকার নেই তাদেরও।",
+          "Multicast packet শুধু আগ্রহী device-দের নির্দিষ্ট group-এ যায়, তাই অপ্রয়োজনীয় traffic ও CPU খরচ দুটোই বাঁচে।"
+        ],
+        "points": [
+          "Broadcast-এর সমস্যা কোথায়",
+          {
+            "sub": "Broadcast frame LAN-এর সব device-এ পৌঁছায়।"
+          },
+          {
+            "sub": "প্রতিটি device-এর NIC frame টা তুলে নেয় এবং CPU পর্যন্ত পাঠায়।"
+          },
+          {
+            "sub": "CPU packet খুলে দেখে, তারপর বুঝতে পারে এটা তার জন্য নয় — তখন ফেলে দেয়।"
+          },
+          {
+            "sub": "অর্থাৎ কাজে না লাগলেও প্রত্যেকের bandwidth ও processing time খরচ হয়ে যায়।"
+          },
+          {
+            "sub": "device সংখ্যা বাড়লে এই অপচয় দ্রুত বাড়ে, বড় network-এ broadcast storm-এর ঝুঁকি তৈরি হয়।"
+          },
+          "Multicast কীভাবে সমাধান করে",
+          {
+            "sub": "Multicast address একটি নির্দিষ্ট group বোঝায়, সবাইকে নয়।"
+          },
+          {
+            "sub": "যে device ওই group-এ যোগ দিয়েছে কেবল তারই NIC address মিলিয়ে packet তুলে নেয়।"
+          },
+          {
+            "sub": "বাকি device-এর NIC-ই address মেলাতে না পেরে packet ফেলে দেয় — CPU পর্যন্ত ওঠেই না।"
+          },
+          {
+            "sub": "তাই filtering-এর কাজটা software নয়, hardware করে ফেলে — এটাই মূল লাভ।"
+          },
+          {
+            "diagram": "IPv4 — ARP request broadcast হয়\n  Host ──► LAN-এর প্রত্যেকে\n           [PC1] [PC2] [PC3] [Printer] [IP-Cam]\n  পাঁচজনই packet খুলে দেখে, চারজনের কোনো কাজে লাগে না\n\nIPv6 — NDP solicited-node multicast ব্যবহার করে\n  Host ──► FF02::1:FFxx:xxxx  (শুধু ওই একটি group)\n           [PC2]\n  বাকিদের NIC-ই address মেলাতে পারে না, তাই CPU পর্যন্ত packet ওঠে না",
+            "label": "Diagram — একই কাজ, দুই পদ্ধতিতে"
+          },
+          "IPv6-তে ARP-এর বদলে NDP",
+          {
+            "sub": "IPv4-এর ARP broadcast করে জিজ্ঞেস করত — কার কাছে এই IP আছে।"
+          },
+          {
+            "sub": "IPv6-তে সেই কাজ করে NDP (Neighbor Discovery Protocol)।"
+          },
+          {
+            "sub": "NDP জিজ্ঞাসা পাঠায় solicited-node multicast address-এ, যা target IP-র শেষ ২৪ bit থেকে বানানো হয়।"
+          },
+          {
+            "sub": "ফলে কার্যত শুধু লক্ষ্যের device-টিই প্রশ্নটা শোনে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "বড় data center-এ IPv6 ব্যবহার করলে neighbor discovery-র traffic নাটকীয়ভাবে কমে।"
+          },
+          {
+            "sub": "Video streaming ও IPTV multicast দিয়েই একই stream বহু গ্রাহককে পাঠায়, প্রতিটির জন্য আলাদা copy নয়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Broadcast (IPv4)",
+            "Multicast (IPv6)"
+          ],
+          "rows": [
+            [
+              "কে পায়",
+              "network-এর প্রতিটি device",
+              "শুধু group-এর সদস্যরা"
+            ],
+            [
+              "ফিল্টার কে করে",
+              "প্রতিটি device-এর CPU",
+              "প্রতিটি device-এর NIC (hardware)"
+            ],
+            [
+              "অপ্রয়োজনীয় traffic",
+              "অনেক বেশি",
+              "খুব কম"
+            ],
+            [
+              "Address চেনার উপায়",
+              "শেষ address (255.255.255.255)",
+              "FF00::/8 দিয়ে শুরু"
+            ],
+            [
+              "Scalability",
+              "device বাড়লে খারাপ হয়",
+              "device বাড়লেও ভালো থাকে"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "IPv6-তে broadcast address আলাদা রূপে আছে",
+            "IPv6-তে broadcast ধারণাটাই বাদ দেওয়া হয়েছে। 'সবাইকে' পাঠাতে হলে all-nodes multicast group FF02::1 ব্যবহার করতে হয় — এটি multicast, broadcast নয়।"
+          ],
+          [
+            "Multicast মানে একজনকে পাঠানো",
+            "Multicast এক-থেকে-অনেক, তবে সেই 'অনেক' মানে একটি নির্দিষ্ট group — সবাই নয়। একজনকে পাঠানো হলো unicast।"
+          ]
+        ],
+        "mnemonic": "Broadcast = পাড়ায় মাইকিং, সবাইকে শুনতে হয়। Multicast = শুধু গ্রাহকদের ফোন, বাকিদের ফোন বাজেই না।"
+      }
+    },
+    {
+      "id": "cn_033",
+      "q": "Explain HTTP (HyperText Transfer Protocol) and its working process with a neat diagram.",
+      "tags": [
+        "HTTP",
+        "application layer",
+        "request response",
+        "DNS",
+        "TCP handshake",
+        "web"
+      ],
+      "answer": {
+        "summary": [
+          "HTTP হলো Application layer-এর protocol, যা দিয়ে browser (client) ও web server কথা বলে।",
+          "এটি request–response মডেলে চলে: client একটি request পাঠায়, server একটি response ফেরত দেয়।",
+          "HTTP নিজে stateless — প্রতিটি request স্বাধীন, server আগের request মনে রাখে না।"
+        ],
+        "points": [
+          "ধাপে ধাপে কী ঘটে",
+          {
+            "sub": "১. ব্যবহারকারী browser-এ URL লেখে, যেমন www.example.com।"
+          },
+          {
+            "sub": "২. DNS lookup — domain name থেকে server-এর IP address বের করা হয়।"
+          },
+          {
+            "sub": "৩. TCP connection — browser ও server-এর মধ্যে three-way handshake হয় (SYN, SYN+ACK, ACK)।"
+          },
+          {
+            "sub": "৪. HTTP request পাঠানো হয়, যেমন GET /index.html HTTP/1.1।"
+          },
+          {
+            "sub": "৫. Server request পড়ে, চাওয়া resource খুঁজে বের করে response তৈরি করে।"
+          },
+          {
+            "sub": "৬. HTTP response ফেরত আসে — status code (200 OK) সহ HTML, CSS, JS, image।"
+          },
+          {
+            "sub": "৭. Browser response parse করে page render করে দেখায়।"
+          },
+          {
+            "diagram": "  CLIENT (Browser)                              SERVER\n      │                                            │\n [1]  URL লেখা হলো\n      │                                            │\n [2]  │──── DNS query: www.example.com ───────────►│  (DNS server)\n      │◄─── 93.184.216.34 ─────────────────────────│\n      │                                            │\n [3]  │──── SYN ──────────────────────────────────►│\n      │◄─── SYN + ACK ─────────────────────────────│\n      │──── ACK ──────────────────────────────────►│  TCP connection তৈরি\n      │                                            │\n [4]  │──── GET /index.html HTTP/1.1 ─────────────►│\n      │                                            │\n [5]  resource খুঁজে response বানায় (server-এ)\n      │                                            │\n [6]  │◄─── 200 OK + HTML / CSS / JS ──────────────│\n      │                                            │\n [7]  browser render করে page দেখায়",
+            "label": "Diagram — একটি page load-এর পুরো পথ"
+          },
+          "গুরুত্বপূর্ণ বৈশিষ্ট্য",
+          {
+            "sub": "Stateless: server দুটি request-এর মধ্যে কোনো তথ্য মনে রাখে না।"
+          },
+          {
+            "sub": "এই সীমা পার করতে cookie, session বা token ব্যবহার করা হয়।"
+          },
+          {
+            "sub": "HTTP/1.1-এ persistent connection এসেছে — একই TCP connection-এ পরপর অনেক request চলে।"
+          },
+          {
+            "sub": "HTTPS হলো HTTP + TLS — উপরের ধাপ ৩-এর পরে একটি TLS handshake যোগ হয়, তারপর সব কিছু encrypted যায়।"
+          },
+          "মূল method গুলো",
+          {
+            "sub": "GET — resource চাওয়া, কোনো পরিবর্তন করে না।"
+          },
+          {
+            "sub": "POST — নতুন data পাঠানো বা তৈরি করা।"
+          },
+          {
+            "sub": "PUT — বিদ্যমান resource সম্পূর্ণ বদলে দেওয়া।"
+          },
+          {
+            "sub": "DELETE — resource মুছে ফেলা।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "Status code",
+            "অর্থ",
+            "কখন দেখা যায়"
+          ],
+          "rows": [
+            [
+              "200 OK",
+              "সফল",
+              "request ঠিকমতো পূরণ হয়েছে"
+            ],
+            [
+              "301 / 302",
+              "Redirect",
+              "resource অন্য ঠিকানায় সরে গেছে"
+            ],
+            [
+              "400",
+              "Bad Request",
+              "client-এর request-এ ভুল আছে"
+            ],
+            [
+              "401 / 403",
+              "Unauthorized / Forbidden",
+              "login নেই বা অনুমতি নেই"
+            ],
+            [
+              "404",
+              "Not Found",
+              "চাওয়া resource server-এ নেই"
+            ],
+            [
+              "500",
+              "Internal Server Error",
+              "server-এর নিজের ভেতরে সমস্যা"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "HTTP নিজেই connection তৈরি করে",
+            "HTTP শুধু message-এর গঠন ঠিক করে। নির্ভরযোগ্য connection তৈরির কাজটা নিচের স্তরে TCP করে।"
+          ],
+          [
+            "HTTPS আলাদা একটি protocol",
+            "HTTPS আলাদা কিছু নয় — এটি HTTP-ই, নিচে TLS encryption স্তর বসানো। Port 80-এর বদলে 443 ব্যবহার করে।"
+          ]
+        ],
+        "mnemonic": "URL → DNS → TCP → Request → Process → Response → Render. মনে রাখো: 'ঠিকানা খুঁজে, লাইন ধরে, চেয়ে, পেয়ে, দেখাও'।"
+      }
+    },
+    {
+      "id": "cn_034",
+      "q": "Differentiate between Physical Address and Logical Address.",
+      "tags": [
+        "MAC address",
+        "IP address",
+        "physical address",
+        "logical address",
+        "data link layer",
+        "network layer"
+      ],
+      "answer": {
+        "summary": [
+          "Physical address হলো MAC address — NIC-এ hardware-এ বসানো থাকে, Data Link layer ব্যবহার করে।",
+          "Logical address হলো IP address — software দিয়ে বসানো হয়, Network layer ব্যবহার করে।",
+          "মূল পার্থক্য: IP address বলে 'কোথায় যেতে হবে', MAC address বলে 'এই মুহূর্তে পাশের কাকে দিতে হবে'।"
+        ],
+        "points": [
+          "Physical Address (MAC)",
+          {
+            "sub": "NIC তৈরির সময়ই এটি বসিয়ে দেওয়া হয়, তাই এটি device-এর সাথে লেগে থাকে।"
+          },
+          {
+            "sub": "আকার ৪৮ bit, hexadecimal-এ লেখা হয়, যেমন 00:1A:2B:3C:4D:5E।"
+          },
+          {
+            "sub": "শুধু একই local network-এর ভেতরে কাজে লাগে।"
+          },
+          {
+            "sub": "Switch এই address দেখে frame forward করে।"
+          },
+          "Logical Address (IP)",
+          {
+            "sub": "Network administrator বা DHCP server এটি বসায়।"
+          },
+          {
+            "sub": "IPv4-এ ৩২ bit (192.168.1.10), IPv6-এ ১২৮ bit (2001:db8::1)।"
+          },
+          {
+            "sub": "এক network থেকে আরেক network-এ যাওয়ার জন্য এটিই দরকার।"
+          },
+          {
+            "sub": "Router এই address দেখে packet forward করে।"
+          },
+          {
+            "sub": "Device অন্য network-এ গেলে তার IP বদলে যায়, কিন্তু MAC একই থাকে।"
+          },
+          "একটি packet পথে গেলে কী বদলায়",
+          {
+            "sub": "IP address উৎস থেকে গন্তব্য পর্যন্ত পুরো পথে অপরিবর্তিত থাকে।"
+          },
+          {
+            "sub": "MAC address প্রতিটি hop-এ নতুন করে বসে — কারণ প্রতি hop আলাদা local link।"
+          },
+          {
+            "sub": "তাই প্রতিটি router packet পাওয়ার পর পুরনো frame header ফেলে নতুন MAC দিয়ে নতুন frame বানায়।"
+          },
+          {
+            "diagram": "  PC-A ─────────► R1 ─────────► R2 ─────────► PC-B\n\n            A→R1 link     R1→R2 link     R2→B link\n  Src IP  : 10.0.0.5      10.0.0.5       10.0.0.5      অপরিবর্তিত\n  Dst IP  : 200.1.1.9     200.1.1.9      200.1.1.9     অপরিবর্তিত\n  Src MAC : A             R1             R2            প্রতি hop-এ বদলায়\n  Dst MAC : R1            R2             B             প্রতি hop-এ বদলায়",
+            "label": "Diagram — এক hop থেকে আরেক hop-এ কী বদলায়"
+          },
+          "সেতুবন্ধন কে করে",
+          {
+            "sub": "IP জানা আছে কিন্তু MAC জানা নেই — এই ফাঁক পূরণ করে ARP (IPv6-তে NDP)।"
+          },
+          {
+            "sub": "ARP local network-এ জিজ্ঞেস করে, কার কাছে এই IP, আর উত্তরে MAC পায়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Physical Address",
+            "Logical Address"
+          ],
+          "rows": [
+            [
+              "অন্য নাম",
+              "MAC address",
+              "IP address"
+            ],
+            [
+              "কে বসায়",
+              "NIC প্রস্তুতকারক",
+              "Administrator বা DHCP"
+            ],
+            [
+              "OSI layer",
+              "Data Link (Layer 2)",
+              "Network (Layer 3)"
+            ],
+            [
+              "আকার",
+              "৪৮ bit",
+              "IPv4 ৩২ bit, IPv6 ১২৮ bit"
+            ],
+            [
+              "লেখার ধরন",
+              "Hexadecimal",
+              "IPv4 decimal, IPv6 hexadecimal"
+            ],
+            [
+              "পরিধি",
+              "শুধু local network",
+              "পুরো internet"
+            ],
+            [
+              "কে ব্যবহার করে",
+              "Switch",
+              "Router"
+            ],
+            [
+              "পরিবর্তনশীলতা",
+              "সাধারণত স্থির",
+              "network বদলালে বদলায়"
+            ],
+            [
+              "উদাহরণ",
+              "00:1A:2B:3C:4D:5E",
+              "192.168.1.10"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "MAC address কখনোই বদলানো যায় না",
+            "hardware-এ বসানো address স্থির, কিন্তু OS চাইলে সেটি overwrite করে পাঠাতে পারে — একে MAC spoofing বলে।"
+          ],
+          [
+            "Packet-এর MAC address গন্তব্য পর্যন্ত একই থাকে",
+            "না। MAC প্রতিটি hop-এ বদলায়; শুধু IP অপরিবর্তিত থাকে। এটাই সবচেয়ে বেশি ভুল হয়।"
+          ]
+        ],
+        "mnemonic": "IP = চিঠির ঠিকানা, শেষ পর্যন্ত একই। MAC = প্রতিটি ডাকঘরের পরের ডাকপিয়নের নাম, প্রতি ধাপে বদলায়।"
+      }
+    },
+    {
+      "id": "cn_035",
+      "q": "Two LAN segments need to be connected, but the organization wants to reduce unnecessary traffic between the segments. Design a simple network using a bridge and explain where the bridge should be placed.",
+      "tags": [
+        "bridge",
+        "LAN segment",
+        "collision domain",
+        "MAC filtering",
+        "network design",
+        "data link layer"
+      ],
+      "answer": {
+        "summary": [
+          "Bridge হলো Layer 2 device, যা দুটি LAN segment জোড়া লাগায় এবং MAC address দেখে ঠিক করে কোন frame ওপারে যাবে।",
+          "Bridge বসাতে হবে ঠিক দুই segment-এর মাঝখানে — অর্থাৎ দুই segment-এর switch বা backbone-এর সংযোগস্থলে।",
+          "ফলে যে traffic-এর উৎস ও গন্তব্য একই segment-এ, সেটি আর ওপারে যায় না — অপ্রয়োজনীয় traffic কমে।"
+        ],
+        "points": [
+          "নকশা",
+          {
+            "sub": "Segment A: 192.168.1.0/24, ২০টি PC, একটি switch (SW1) দিয়ে যুক্ত।"
+          },
+          {
+            "sub": "Segment B: 192.168.2.0/24, ২০টি PC, আরেকটি switch (SW2) দিয়ে যুক্ত।"
+          },
+          {
+            "sub": "Bridge বসবে SW1 ও SW2-এর মাঝখানে, দুই segment-এর একমাত্র সংযোগপথ হিসেবে।"
+          },
+          {
+            "diagram": "        LAN-1 / Segment A                    LAN-2 / Segment B\n        192.168.1.0/24                       192.168.2.0/24\n     ┌────────────────────┐              ┌────────────────────┐\n     │  [PC] [PC] … [PC]  │              │  [PC] [PC] … [PC]  │\n     │     │   │      │   │              │     │   │      │   │\n     │   ┌─┴───┴──────┴─┐ │              │   ┌─┴───┴──────┴─┐ │\n     │   │     SW1      │ │              │   │     SW2      │ │\n     │   └──────┬───────┘ │              │   └──────┬───────┘ │\n     └──────────┼─────────┘              └──────────┼─────────┘\n                │            ┌────────┐             │\n                └───────────►│ BRIDGE │◄────────────┘\n                             └────────┘\n\n  Bridge-এর অবস্থান: ঠিক দুই segment-এর মাঝখানে, দুই switch-এর সংযোগস্থলে",
+            "label": "Diagram — bridge কোথায় বসবে"
+          },
+          "Bridge কীভাবে traffic কমায়",
+          {
+            "sub": "Bridge প্রতিটি port-এ কোন কোন MAC address আছে তা শিখে একটি table বানায়।"
+          },
+          {
+            "sub": "একটি frame এলে সে source MAC দেখে শেখে, destination MAC দেখে সিদ্ধান্ত নেয়।"
+          },
+          {
+            "sub": "Destination একই segment-এ থাকলে frame ওপারে পাঠায় না — একে filtering বলে।"
+          },
+          {
+            "sub": "Destination অন্য segment-এ থাকলে তবেই frame forward করে।"
+          },
+          {
+            "sub": "Destination অজানা হলে সাময়িকভাবে forward করে, উত্তর পেলে table-এ শিখে রাখে।"
+          },
+          "কী লাভ হলো",
+          {
+            "sub": "প্রতিটি segment আলাদা collision domain হয়ে গেল, তাই collision কমল।"
+          },
+          {
+            "sub": "Segment A-র ভেতরের কথাবার্তা Segment B-র bandwidth নষ্ট করে না।"
+          },
+          {
+            "sub": "সমস্যা হলে কোন segment-এ হয়েছে তা আলাদা করে ধরা সহজ হয়।"
+          },
+          "গুরুত্বপূর্ণ সীমাবদ্ধতা",
+          {
+            "sub": "Bridge broadcast frame আটকায় না — broadcast দুই segment-এই ছড়ায়।"
+          },
+          {
+            "sub": "অর্থাৎ দুটি segment আলাদা collision domain হলেও একই broadcast domain-এ থাকে।"
+          },
+          {
+            "sub": "Broadcast আলাদা করতে হলে router বা VLAN লাগবে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "আজকাল আলাদা bridge যন্ত্র প্রায় দেখা যায় না — switch নিজেই multiport bridge, তাই এই কাজটা switch-ই করে।"
+          },
+          {
+            "sub": "তবে দুটি দূরের ভবনের LAN wireless দিয়ে জুড়তে এখনো wireless bridge ব্যবহৃত হয়।"
+          }
+        ],
+        "mistakes": [
+          [
+            "Bridge broadcast traffic-ও কমায়",
+            "না। Bridge শুধু unicast frame filter করে। Broadcast সব port-এ ছড়িয়ে পড়ে — সেটি থামাতে router বা VLAN লাগে।"
+          ],
+          [
+            "Bridge IP address দেখে সিদ্ধান্ত নেয়",
+            "Bridge Layer 2 device, সে শুধু MAC address দেখে। IP দেখার কাজ router-এর।"
+          ]
+        ],
+        "mnemonic": "Bridge = দুই পাড়ার মাঝের সেতুতে বসা দারোয়ান। নিজের পাড়ার লোক হলে ফিরিয়ে দেয়, ওপারের লোক হলেই কেবল পার হতে দেয়।"
+      }
+    },
+    {
+      "id": "cn_036",
+      "q": "A user runs 'tracert www.example.com' and gets: hop 1 = 192.168.1.1 (1 ms), hop 2 = 10.10.1.1 (5 ms), hop 3 = * * *, hop 4 = 203.x.x.x (80 ms), hop 5 = Destination Request timed out. Analyze the tracert output.",
+      "tags": [
+        "tracert",
+        "traceroute",
+        "ICMP",
+        "TTL",
+        "troubleshooting",
+        "latency"
+      ],
+      "answer": {
+        "summary": [
+          "tracert প্রতিটি hop-এ TTL এক এক করে বাড়িয়ে packet পাঠায়, তাই পথের প্রতিটি router নিজের পরিচয় জানাতে বাধ্য হয়।",
+          "এখানে hop 1 ও 2 ঠিক আছে, hop 3 উত্তর দেয়নি, hop 4 উত্তর দিয়েছে কিন্তু দেরিতে, আর গন্তব্য একেবারেই সাড়া দেয়নি।",
+          "সিদ্ধান্ত: local network ও ISP পর্যন্ত সব ঠিক; সমস্যা গন্তব্য server-এর দিকে বা তার firewall-এ।"
+        ],
+        "points": [
+          {
+            "diagram": "C:\\Users\\Admin> tracert www.example.com\n\n  1    192.168.1.1      1 ms\n  2    10.10.1.1        5 ms\n  3    *  *  *\n  4    203.x.x.x       80 ms\n  5    Destination     Request timed out",
+            "label": "Output"
+          },
+          "Hop ধরে ধরে বিশ্লেষণ",
+          {
+            "sub": "Hop 1 — 192.168.1.1, 1 ms: এটি local gateway বা বাসার router। সাড়া দ্রুত, তাই LAN ঠিক আছে।"
+          },
+          {
+            "sub": "Hop 2 — 10.10.1.1, 5 ms: ISP-র ভেতরের router। এখান পর্যন্ত পৌঁছানো মানে internet-এ বেরোনো ঠিক আছে।"
+          },
+          {
+            "sub": "Hop 3 — তিনটি তারকা: ওই router traceroute-এর কোনো উত্তর দেয়নি।"
+          },
+          {
+            "sub": "Hop 4 — 203.x.x.x, 80 ms: packet কিন্তু hop 3 পেরিয়ে গেছে, তাই hop 3 ভাঙা নয়।"
+          },
+          {
+            "sub": "Hop 5 — Destination Request timed out: গন্তব্য server পর্যন্ত পৌঁছেও কোনো সাড়া মেলেনি।"
+          },
+          "তারকা (*) মানেই সমস্যা নয় — এটাই মূল কথা",
+          {
+            "sub": "অনেক router নিরাপত্তার কারণে ICMP time-exceeded উত্তর পাঠানো বন্ধ রাখে।"
+          },
+          {
+            "sub": "এমন router নিজে উত্তর দেয় না, কিন্তু packet ঠিকই পরের hop-এ পাঠিয়ে দেয়।"
+          },
+          {
+            "sub": "hop 4 উত্তর দিয়েছে — এটাই প্রমাণ যে hop 3 packet পার করে দিয়েছে।"
+          },
+          {
+            "sub": "তাই hop 3-এর তারকা এখানে নিরীহ, দুশ্চিন্তার কারণ নয়।"
+          },
+          {
+            "sub": "সব hop টানা তারকা হলে তবেই বুঝতে হবে পথ সত্যিই সেখানে ভেঙেছে।"
+          },
+          "80 ms কী বোঝায়",
+          {
+            "sub": "1 ms থেকে 5 ms, তারপর হঠাৎ 80 ms — এটি সাধারণত দূরত্ব বাড়ার লক্ষণ।"
+          },
+          {
+            "sub": "hop 4 সম্ভবত অন্য দেশ বা অন্য মহাদেশের কোনো router, তাই propagation delay বেশি।"
+          },
+          {
+            "sub": "একে congestion ভেবে ভুল করা যাবে না — একবারের লাফ স্বাভাবিক, বারবার ওঠানামা করলে তবেই congestion সন্দেহ করতে হয়।"
+          },
+          "শেষ hop-এর সমস্যা: সম্ভাব্য কারণ",
+          {
+            "sub": "গন্তব্য server-এর firewall ICMP packet আটকে দিচ্ছে (সবচেয়ে সাধারণ কারণ)।"
+          },
+          {
+            "sub": "Server নিজেই বন্ধ বা down আছে।"
+          },
+          {
+            "sub": "Server-এর ঠিক আগের router-এ routing সমস্যা রয়েছে।"
+          },
+          "পরের ধাপে কী করা উচিত",
+          {
+            "sub": "ping দিয়ে দেখা — সেটিও ICMP, তাই একইভাবে ব্লক হতে পারে।"
+          },
+          {
+            "sub": "তাই আসল পরীক্ষা হলো port ধরে দেখা, যেমন telnet বা curl দিয়ে port 80/443-এ যাওয়ার চেষ্টা।"
+          },
+          {
+            "sub": "Website browser-এ খুললে বোঝা যায় শুধু ICMP ব্লক, নাকি server সত্যিই down।"
+          }
+        ],
+        "mistakes": [
+          [
+            "hop 3-এ তারকা মানে ওখানেই connection ভেঙেছে",
+            "hop 4 উত্তর দিয়েছে, তাই packet hop 3 পেরিয়েছে। ওই router শুধু ICMP উত্তর দেয় না। পথ ভাঙলে hop 3-এর পর সব hop-ই তারকা থাকত।"
+          ],
+          [
+            "Request timed out মানেই server down",
+            "বেশিরভাগ ক্ষেত্রে server চালু আছে, শুধু নিরাপত্তার জন্য ICMP-র উত্তর দেয় না। website তখনো স্বাভাবিকভাবে কাজ করতে পারে।"
+          ]
+        ],
+        "mnemonic": "মাঝপথের তারকা = চুপচাপ রাউটার। শেষ ঘরের তারকা = আসল সমস্যা। মাঝে চুপ থাকলেও পরেরজন কথা বললে বুঝবে পথ খোলা আছে।"
+      }
+    },
+    {
+      "id": "cn_037",
+      "q": "Explain TCP congestion control. Describe Slow Start, Congestion Avoidance, Fast Retransmit and Fast Recovery.",
+      "tags": [
+        "TCP",
+        "congestion control",
+        "slow start",
+        "congestion avoidance",
+        "fast retransmit",
+        "fast recovery",
+        "cwnd",
+        "ssthresh"
+      ],
+      "answer": {
+        "summary": [
+          "Congestion control-এর কাজ network-কে অতিরিক্ত data দিয়ে ডুবিয়ে না ফেলা — এটি flow control থেকে আলাদা, যা শুধু receiver-কে বাঁচায়।",
+          "TCP একটি congestion window (cwnd) রাখে — সে ACK ছাড়া সর্বোচ্চ কত byte পাঠাতে পারবে তা এই window ঠিক করে।",
+          "কৌশলটি সরল: সব ঠিক থাকলে cwnd বাড়াও, loss দেখলে cwnd কমাও।"
+        ],
+        "points": [
+          "১. Slow Start — দ্রুত বাড়া",
+          {
+            "sub": "cwnd শুরু হয় খুব ছোট থেকে, সাধারণত ১ MSS।"
+          },
+          {
+            "sub": "প্রতিটি ACK পেলে cwnd বাড়ে, ফলে প্রতি RTT-তে cwnd দ্বিগুণ হয়।"
+          },
+          {
+            "sub": "অর্থাৎ বৃদ্ধি exponential — নাম 'slow' হলেও বৃদ্ধি আসলে সবচেয়ে দ্রুত।"
+          },
+          {
+            "sub": "cwnd যখন ssthresh (threshold) ছুঁয়ে ফেলে, তখন এই ধাপ শেষ।"
+          },
+          "২. Congestion Avoidance — সাবধানে বাড়া",
+          {
+            "sub": "ssthresh পেরোনোর পর প্রতি RTT-তে cwnd মাত্র ১ MSS বাড়ে।"
+          },
+          {
+            "sub": "অর্থাৎ বৃদ্ধি এখন linear, exponential নয়।"
+          },
+          {
+            "sub": "কারণ এখানে network-এর সীমা কাছাকাছি, তাই লাফিয়ে বাড়লে congestion হবে।"
+          },
+          {
+            "diagram": "  Slow Start (দ্বিগুণ হয়)\n    RTT 1 :  cwnd =  1   ▇\n    RTT 2 :  cwnd =  2   ▇▇\n    RTT 3 :  cwnd =  4   ▇▇▇▇\n    RTT 4 :  cwnd =  8   ▇▇▇▇▇▇▇▇          ssthresh ছুঁলো\n\n  Congestion Avoidance (১ করে বাড়ে)\n    RTT 5 :  cwnd =  9   ▇▇▇▇▇▇▇▇▇\n    RTT 6 :  cwnd = 10   ▇▇▇▇▇▇▇▇▇▇\n    RTT 7 :  cwnd = 11   ▇▇▇▇▇▇▇▇▇▇▇\n\n  ৩টি duplicate ACK এলে (হালকা সমস্যা)\n    RTT 8 :  cwnd =  5   ▇▇▇▇▇                অর্ধেক — Fast Recovery\n\n  Timeout হলে (গুরুতর সমস্যা)\n    RTT 8 :  cwnd =  1   ▇                    একদম শুরু থেকে Slow Start",
+            "label": "Diagram — cwnd কীভাবে ওঠানামা করে (ssthresh = 8 ধরে)"
+          },
+          "৩. Fast Retransmit — timeout-এর অপেক্ষা না করা",
+          {
+            "sub": "Receiver ক্রমের বাইরের segment পেলে বারবার একই ACK পাঠাতে থাকে।"
+          },
+          {
+            "sub": "Sender পরপর ৩টি duplicate ACK পেলে ধরে নেয় একটি segment হারিয়েছে।"
+          },
+          {
+            "sub": "সে timer শেষ হওয়ার অপেক্ষা না করেই সঙ্গে সঙ্গে ওই segment আবার পাঠায়।"
+          },
+          {
+            "sub": "লাভ: timeout-এর দীর্ঘ অপেক্ষা বেঁচে যায়, throughput ধরে রাখা যায়।"
+          },
+          "৪. Fast Recovery — শূন্য থেকে শুরু না করা",
+          {
+            "sub": "Fast retransmit-এর পর cwnd অর্ধেক করা হয়, ১-এ নামানো হয় না।"
+          },
+          {
+            "sub": "তারপর সরাসরি congestion avoidance-এ ফেরা হয়, slow start-এ নয়।"
+          },
+          {
+            "sub": "যুক্তি: duplicate ACK আসছে মানে receiver এখনো segment পাচ্ছে, তাই পথ পুরো বন্ধ নয় — হালকা সমস্যা।"
+          },
+          {
+            "sub": "Timeout সম্পূর্ণ আলাদা ব্যাপার — কোনো ACK-ই আসছে না, তাই cwnd ১-এ নামিয়ে slow start থেকেই শুরু করতে হয়।"
+          },
+          "loss-এর দুই রকম প্রতিক্রিয়া — এটাই আসল কথা",
+          {
+            "sub": "৩ duplicate ACK = হালকা সমস্যা → cwnd অর্ধেক, congestion avoidance-এ ফেরা।"
+          },
+          {
+            "sub": "Timeout = গুরুতর সমস্যা → ssthresh অর্ধেক, cwnd = ১, slow start থেকে শুরু।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "পর্যায়",
+            "cwnd কীভাবে বদলায়",
+            "কখন শেষ হয়"
+          ],
+          "rows": [
+            [
+              "Slow Start",
+              "প্রতি RTT-তে দ্বিগুণ (exponential)",
+              "cwnd ssthresh ছুঁলে, বা loss হলে"
+            ],
+            [
+              "Congestion Avoidance",
+              "প্রতি RTT-তে +১ MSS (linear)",
+              "loss ধরা পড়লে"
+            ],
+            [
+              "Fast Retransmit",
+              "cwnd বদলায় না, হারানো segment তখনই পাঠায়",
+              "retransmit করা মাত্র"
+            ],
+            [
+              "Fast Recovery",
+              "cwnd অর্ধেক, তারপর linear",
+              "নতুন ACK এলে"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Congestion control আর flow control একই জিনিস",
+            "Flow control receiver-কে বাঁচায় (receiver window দিয়ে)। Congestion control network-কে বাঁচায় (congestion window দিয়ে)। Sender আসলে দুটোর মধ্যে ছোটটি মেনে চলে।"
+          ],
+          [
+            "Slow Start ধীরে বাড়ে বলেই নাম Slow Start",
+            "বৃদ্ধি আসলে exponential, সবচেয়ে দ্রুত। নামটি এসেছে শুরুর বিন্দু থেকে — cwnd = ১ থেকে শুরু হয়, যা আগের যুগের 'শুরুতেই পুরো window' পদ্ধতির চেয়ে ধীর।"
+          ],
+          [
+            "Loss মানেই cwnd ১-এ নেমে যায়",
+            "শুধু timeout হলে ১-এ নামে। ৩ duplicate ACK হলে cwnd অর্ধেক হয় এবং congestion avoidance চলতে থাকে।"
+          ]
+        ],
+        "mnemonic": "দ্বিগুণ → সীমা → এক এক করে → হোঁচট। হালকা হোঁচট (৩ dup ACK) হলে অর্ধেক, বড় হোঁচট (timeout) হলে একদম শুরু থেকে।"
+      }
+    },
+    {
+      "id": "cn_038",
+      "q": "Compare Circuit Switching, Packet Switching and Message Switching.",
+      "tags": [
+        "circuit switching",
+        "packet switching",
+        "message switching",
+        "store and forward",
+        "switching"
+      ],
+      "answer": {
+        "summary": [
+          "Circuit switching কথা শুরুর আগেই একটি পুরো পথ দখল করে রাখে — telephone network-এর পদ্ধতি।",
+          "Packet switching data-কে ছোট packet-এ ভেঙে দেয়, প্রতিটি packet আলাদা পথে যেতে পারে — internet-এর পদ্ধতি।",
+          "Message switching পুরো message এক নোডে জমা রেখে তারপর পরের নোডে পাঠায় — store and forward, এখন প্রায় অচল।"
+        ],
+        "points": [
+          "Circuit Switching",
+          {
+            "sub": "Data পাঠানোর আগে উৎস থেকে গন্তব্য পর্যন্ত একটি dedicated path তৈরি হয়।"
+          },
+          {
+            "sub": "পুরো session জুড়ে ওই path-এর bandwidth সংরক্ষিত থাকে, কেউ ব্যবহার না করলেও।"
+          },
+          {
+            "sub": "Setup শেষ হলে delay কম ও স্থির থাকে — তাই voice-এর জন্য ভালো।"
+          },
+          {
+            "sub": "অপচয় বেশি, কারণ চুপ থাকার সময়েও line দখলে থাকে।"
+          },
+          "Packet Switching",
+          {
+            "sub": "Data ছোট packet-এ ভাগ হয়, প্রতিটির নিজস্ব header থাকে।"
+          },
+          {
+            "sub": "প্রতিটি packet স্বাধীনভাবে route হয়, তাই ভিন্ন পথে যেতে পারে।"
+          },
+          {
+            "sub": "কোনো bandwidth আগে থেকে সংরক্ষিত থাকে না, সবাই ভাগ করে নেয়।"
+          },
+          {
+            "sub": "একটি path নষ্ট হলে packet অন্য পথে ঘুরে যেতে পারে — তাই বেশি নির্ভরযোগ্য।"
+          },
+          {
+            "sub": "Delay পরিবর্তনশীল, কারণ প্রতিটি router-এ queue-তে অপেক্ষা করতে হয়।"
+          },
+          "Message Switching",
+          {
+            "sub": "পুরো message এক টুকরো হিসেবে পাঠানো হয়, ভাগ করা হয় না।"
+          },
+          {
+            "sub": "প্রতিটি মধ্যবর্তী নোড পুরো message জমা রাখে, তারপর পরেরটিতে পাঠায়।"
+          },
+          {
+            "sub": "তাই এতে বড় storage লাগে এবং delay সবচেয়ে বেশি হয়।"
+          },
+          {
+            "sub": "Real-time যোগাযোগে অচল, কিন্তু telegraph ও পুরনো email-এ ব্যবহৃত হতো।"
+          },
+          {
+            "diagram": "  [1] Circuit Switching\n        A ══════════════════════════════════► B\n        কথা শেষ না হওয়া পর্যন্ত পুরো পথ শুধু A ও B-র দখলে\n\n  [2] Packet Switching\n        A ──► P1 ──► R1 ──► R3 ──► B\n        A ──► P2 ──► R2 ─────────► B\n        একই message-এর packet ভিন্ন পথে যেতে পারে, পরে সাজানো হয়\n\n  [3] Message Switching\n        A ──► [MESSAGE] ──► R1 ──► R2 ──► B\n                          store   store\n        প্রতিটি নোড পুরো message জমা রেখে তবেই পরেরটিতে পাঠায়",
+            "label": "Diagram — তিনটি পদ্ধতি"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Circuit Switching",
+            "Packet Switching",
+            "Message Switching"
+          ],
+          "rows": [
+            [
+              "মূল ধারণা",
+              "আগেই dedicated path তৈরি",
+              "ছোট packet-এ ভেঙে পাঠানো",
+              "পুরো message জমা রেখে forward"
+            ],
+            [
+              "Connection setup",
+              "আবশ্যক",
+              "লাগে না (datagram-এ)",
+              "লাগে না"
+            ],
+            [
+              "Data unit",
+              "একটানা stream",
+              "ছোট packet",
+              "সম্পূর্ণ message"
+            ],
+            [
+              "পথ",
+              "স্থির, একটাই",
+              "packet ভেদে আলাদা হতে পারে",
+              "message ভেদে আলাদা হতে পারে"
+            ],
+            [
+              "Bandwidth",
+              "পুরো session-এর জন্য সংরক্ষিত",
+              "সবাই ভাগ করে নেয়",
+              "সবাই ভাগ করে নেয়"
+            ],
+            [
+              "Delay",
+              "setup-এর পর কম ও স্থির",
+              "পরিবর্তনশীল",
+              "সবচেয়ে বেশি"
+            ],
+            [
+              "Storage দরকার",
+              "লাগে না",
+              "সামান্য (queue)",
+              "অনেক (পুরো message)"
+            ],
+            [
+              "উদাহরণ",
+              "পুরনো টেলিফোন network",
+              "Internet, Ethernet",
+              "Telegraph, পুরনো email"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Packet switching-এ packet সবসময় ভিন্ন পথে যায়",
+            "যেতে পারে, কিন্তু বাধ্য নয়। Virtual circuit পদ্ধতিতে (যেমন MPLS বা ATM) সব packet একই নির্ধারিত পথে যায়।"
+          ],
+          [
+            "Message switching আর packet switching কাছাকাছি জিনিস",
+            "দুটোই store and forward, কিন্তু packet switching message ভেঙে ফেলে বলে delay ও storage নাটকীয়ভাবে কমে যায়। এই ভাঙাটাই মূল পার্থক্য।"
+          ]
+        ],
+        "mnemonic": "Circuit = আগে লাইন দখল করো। Packet = টুকরো করে ছেড়ে দাও। Message = পুরোটা জমিয়ে তারপর ঠেলো।"
+      }
+    },
+    {
+      "id": "cn_039",
+      "q": "Host A (10.0.1.33/27) cannot ping Host B (10.0.1.62/27), even though both are plugged into the same unmanaged switch. Explain why.",
+      "tags": [
+        "subnetting",
+        "/27",
+        "ping",
+        "ICMP",
+        "troubleshooting",
+        "firewall",
+        "ARP"
+      ],
+      "answer": {
+        "summary": [
+          "প্রথমে subnet যাচাই করতে হবে — এবং যাচাই করলে দেখা যায় দুটি host একই subnet-এ আছে।",
+          "/27 মানে block size 32, তাই এই subnet-এর পরিধি 10.0.1.32 থেকে 10.0.1.63; দুটি host-ই এর ভেতরে।",
+          "অর্থাৎ subnet এখানে সমস্যা নয়। সমস্যা অন্য কোথাও — সবচেয়ে সম্ভাব্য কারণ firewall ICMP আটকে দিচ্ছে।"
+        ],
+        "points": [
+          "ধাপ ১ — subnet-এর সীমা বের করা",
+          {
+            "sub": "/27 মানে ৩২ − ২৭ = ৫ bit host-এর জন্য বাকি।"
+          },
+          {
+            "sub": "তাই block size = ২^৫ = ৩২।"
+          },
+          {
+            "sub": "Subnet গুলো শুরু হয় 10.0.1.0, 10.0.1.32, 10.0.1.64 … এভাবে ৩২ ধাপে।"
+          },
+          {
+            "sub": "দুটি host-ই 10.0.1.32 subnet-এ পড়ে।"
+          },
+          {
+            "diagram": "  10.0.1.32    network address     (ব্যবহার করা যায় না)\n  10.0.1.33    ← Host A            প্রথম usable\n     ⋮\n  10.0.1.62    ← Host B            শেষ usable\n  10.0.1.63    broadcast address   (ব্যবহার করা যায় না)\n\n  পরিধি 10.0.1.32 – 10.0.1.63, মোট ৩২টি address, usable ৩০টি\n  দুজনেই একই subnet-এ → router লাগে না, switch-ই যথেষ্ট",
+            "label": "Diagram — 10.0.1.32/27 এর ভেতরটা"
+          },
+          "ধাপ ২ — তাই subnet বাদ দিয়ে অন্য কারণ খোঁজা",
+          {
+            "sub": "Firewall ICMP echo request আটকে দিচ্ছে — Windows-এ এটি ডিফল্টভাবেই বন্ধ থাকে, তাই এটাই সবচেয়ে সম্ভাব্য কারণ।"
+          },
+          {
+            "sub": "দুটি device-এ একই IP বসানো (duplicate IP) থাকলে ARP গুলিয়ে যায়।"
+          },
+          {
+            "sub": "Subnet mask ভুল করে একটিতে /27 আর অন্যটিতে অন্য কিছু বসানো থাকতে পারে।"
+          },
+          {
+            "sub": "Cable, port বা NIC নষ্ট থাকতে পারে।"
+          },
+          {
+            "sub": "দুটি host আলাদা VLAN-এ থাকলেও এটি হয় — তবে প্রশ্নে switch unmanaged, তাই VLAN সম্ভব নয়।"
+          },
+          "ধাপ ৩ — কীভাবে ধরবে",
+          {
+            "sub": "ipconfig /all দিয়ে দুই দিকের IP ও subnet mask মিলিয়ে দেখা।"
+          },
+          {
+            "sub": "arp -a দিয়ে দেখা Host B-র MAC address আদৌ শেখা হয়েছে কি না।"
+          },
+          {
+            "sub": "ARP entry থাকলে বুঝতে হবে Layer 2 ঠিক আছে, সমস্যা শুধু ICMP-তে — অর্থাৎ firewall।"
+          },
+          {
+            "sub": "ARP entry না থাকলে সমস্যা আরও নিচে — cable, port বা duplicate IP।"
+          },
+          {
+            "sub": "Firewall সাময়িকভাবে বন্ধ করে ping করে দেখলে কারণটি নিশ্চিত হয়ে যায়।"
+          }
+        ],
+        "mistakes": [
+          [
+            "/27 দেখেই ধরে নেওয়া যে দুটি host আলাদা subnet-এ",
+            "গণনা না করে অনুমান করলেই এই ভুল হয়। .33 আর .62 দেখতে দূরের মনে হলেও দুটোই 10.0.1.32–10.0.1.63 এর ভেতরে।"
+          ],
+          [
+            "ping না হওয়া মানেই connectivity নেই",
+            "ping ICMP ব্যবহার করে। ICMP ব্লক থাকলেও file sharing, RDP বা web ঠিকমতো কাজ করতে পারে। তাই ping ব্যর্থ হলেই network ভাঙা ধরে নেওয়া ভুল।"
+          ]
+        ],
+        "mnemonic": "আগে block size গোনো, তারপর দোষ দাও। /27 → ৩২-এর ঘর → .32 থেকে .63 একই ঘরে। একই ঘরে থেকেও কথা না হলে দোষ firewall-এর।"
+      }
+    },
+    {
+      "id": "cn_040",
+      "q": "What is Piggybacking? What are its advantages?",
+      "tags": [
+        "piggybacking",
+        "ACK",
+        "bidirectional",
+        "data link layer",
+        "efficiency",
+        "flow control"
+      ],
+      "answer": {
+        "summary": [
+          "Piggybacking হলো আলাদা ACK frame না পাঠিয়ে, ফেরত যাওয়া data frame-এর সাথেই ACK জুড়ে দেওয়া।",
+          "এটি কাজে লাগে শুধু bidirectional যোগাযোগে, যেখানে দুই পক্ষই একে অপরকে data পাঠায়।",
+          "লাভ হলো frame সংখ্যা কমে, তাই bandwidth ও header overhead দুটোই বাঁচে।"
+        ],
+        "points": [
+          "কীভাবে কাজ করে",
+          {
+            "sub": "A একটি data frame B-কে পাঠায়।"
+          },
+          {
+            "sub": "B frame পেয়ে বুঝল তাকে একটি ACK পাঠাতে হবে।"
+          },
+          {
+            "sub": "B সঙ্গে সঙ্গে ACK না পাঠিয়ে অল্প কিছুক্ষণ অপেক্ষা করে।"
+          },
+          {
+            "sub": "এই সময়ের মধ্যে B-র নিজের কোনো data পাঠানোর থাকলে, সে ACK-টা ওই data frame-এর header-এ বসিয়ে দেয়।"
+          },
+          {
+            "sub": "একটি frame-ই তখন দুই কাজ করে — data বহন করে, আবার আগের frame-এর প্রাপ্তিও জানায়।"
+          },
+          {
+            "sub": "অপেক্ষার সময়ে B-র কোনো data না এলে সে আলাদা ACK পাঠিয়ে দেয়।"
+          },
+          {
+            "diagram": "  Piggyback ছাড়া — ৩টি frame লাগল\n     A ───── Data 1 ──────────► B\n     A ◄──── ACK 1 ──────────── B\n     A ◄──── Data X ─────────── B\n\n  Piggyback করলে — ২টি frame-এই হয়ে গেল\n     A ───── Data 1 ──────────► B\n     A ◄──── Data X + ACK 1 ─── B\n\n  ACK আলাদা frame না হয়ে Data X-এর header-এ বসে গেল",
+            "label": "Diagram — আলাদা ACK বনাম piggyback"
+          },
+          "সুবিধা",
+          {
+            "sub": "Frame সংখ্যা কমে, তাই channel-এর ব্যবহার বেড়ে যায়।"
+          },
+          {
+            "sub": "প্রতিটি frame-এর নিজস্ব header থাকে, তাই একটি frame বাঁচা মানে একটি পুরো header বাঁচা।"
+          },
+          {
+            "sub": "কম frame মানে কম collision ও কম congestion।"
+          },
+          {
+            "sub": "Sender ও receiver উভয়ের প্রক্রিয়াকরণের চাপ কমে।"
+          },
+          "অসুবিধা",
+          {
+            "sub": "ACK পাঠাতে সামান্য দেরি হয়, কারণ B কিছুক্ষণ data-র অপেক্ষা করে।"
+          },
+          {
+            "sub": "এই অপেক্ষা বেশি হয়ে গেলে sender-এর timer শেষ হয়ে অপ্রয়োজনীয় retransmission হতে পারে।"
+          },
+          {
+            "sub": "তাই অপেক্ষার সময়সীমা অবশ্যই timeout-এর চেয়ে ছোট রাখতে হয়।"
+          },
+          {
+            "sub": "শুধুমাত্র দুই দিকেই data চলছে এমন অবস্থায় কাজে লাগে; একমুখী transfer-এ কোনো লাভ নেই।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "TCP-তে piggybacking সবসময় হয় — TCP header-এ ACK number আলাদা কোনো field নয়, প্রতিটি segment-এই থাকে।"
+          },
+          {
+            "sub": "তাই একটি HTTP response segment একই সাথে data আর আগের request-এর ACK দুটোই বহন করে।"
+          }
+        ],
+        "mistakes": [
+          [
+            "Piggybacking মানে দুটি data frame একসাথে পাঠানো",
+            "না। একটি data frame আর একটি ACK একসাথে যায়, দুটি data নয়। দুটি data একসাথে পাঠানো হলো pipelining।"
+          ],
+          [
+            "Piggybacking সবসময়ই লাভজনক",
+            "একমুখী transfer-এ (যেমন বড় file download) receiver-এর পাঠানোর মতো data নেই, তাই ACK শুধু দেরিই করে — কোনো লাভ হয় না।"
+          ]
+        ],
+        "mnemonic": "ফেরার পথে যে গাড়ি খালি যাচ্ছে, তাতেই চিঠিটা তুলে দাও — আলাদা গাড়ি ভাড়া করার দরকার নেই।"
+      }
+    },
+    {
+      "id": "cn_041",
+      "q": "Explain the working principle of VPN (Virtual Private Network).",
+      "tags": [
+        "VPN",
+        "tunneling",
+        "encryption",
+        "encapsulation",
+        "remote access",
+        "security"
+      ],
+      "answer": {
+        "summary": [
+          "VPN public internet-এর উপর দিয়ে একটি encrypted tunnel বানায়, যাতে দূরের device যেন private network-এর ভেতরেই আছে এমন আচরণ করে।",
+          "মূল দুটি কাজ: data encrypt করা, আর encrypted packet-কে আরেকটি packet-এর ভেতরে ঢুকিয়ে দেওয়া (encapsulation)।",
+          "ফলে মাঝপথের ISP বা attacker শুধু বাইরের header দেখে, ভেতরের আসল ঠিকানা ও data পড়তে পারে না।"
+        ],
+        "points": [
+          "ধাপে ধাপে কাজ",
+          {
+            "sub": "১. VPN client VPN server-এর সাথে যুক্ত হয় এবং নিজের পরিচয় প্রমাণ করে (authentication)।"
+          },
+          {
+            "sub": "২. দুই পক্ষ মিলে encryption key ঠিক করে নেয় এবং tunnel তৈরি হয়।"
+          },
+          {
+            "sub": "৩. পাঠানোর আগে client আসল packet-টি encrypt করে।"
+          },
+          {
+            "sub": "৪. Encrypted packet-কে নতুন একটি outer IP header-এর ভেতরে মুড়ে দেওয়া হয় — এটাই encapsulation।"
+          },
+          {
+            "sub": "৫. Packet public internet দিয়ে VPN server পর্যন্ত যায়।"
+          },
+          {
+            "sub": "৬. VPN server outer header খুলে, decrypt করে আসল packet বের করে গন্তব্যে পাঠায়।"
+          },
+          {
+            "sub": "৭. উত্তর উল্টো পথে ফেরে — server encrypt করে, client decrypt করে ব্যবহারকারীকে দেয়।"
+          },
+          {
+            "diagram": "  [1] আসল packet\n        [ IP-hdr | DATA ]\n\n  [2] encrypt করা হলো\n        [ ENCRYPTED( IP-hdr | DATA ) ]\n\n  [3] নতুন outer header দিয়ে encapsulate করা হলো\n        [ outer IP-hdr | ENCRYPTED( IP-hdr | DATA ) ]\n          └──────┬──────┘\n                 └─ মাঝপথে শুধু এই বাইরের অংশটুকুই পড়া যায়\n\n  Client ═══════════ encrypted tunnel ═══════════► VPN server ──► গন্তব্য\n         (public internet-এর উপর দিয়ে)\n\n  মাঝের ISP বা attacker দেখতে পায় শুধু outer header\n  ভেতরের আসল গন্তব্য ও আসল data-র কিছুই পড়তে পারে না",
+            "label": "Diagram — packet কীভাবে মোড়ানো হয়"
+          },
+          "কেন নিরাপদ",
+          {
+            "sub": "Encryption নিশ্চিত করে data চুরি হলেও পড়া যাবে না (confidentiality)।"
+          },
+          {
+            "sub": "Authentication নিশ্চিত করে শুধু বৈধ ব্যবহারকারীই tunnel তৈরি করতে পারবে।"
+          },
+          {
+            "sub": "Integrity check নিশ্চিত করে পথে data বদলে দেওয়া হলে ধরা পড়বে।"
+          },
+          {
+            "sub": "Encapsulation ভেতরের আসল IP ঠিকানা লুকিয়ে রাখে।"
+          },
+          "প্রধান ধরন",
+          {
+            "sub": "Remote Access VPN — একজন কর্মী বাসা থেকে অফিসের network-এ ঢোকে।"
+          },
+          {
+            "sub": "Site-to-Site VPN — দুটি অফিসের পুরো network internet-এর উপর দিয়ে স্থায়ীভাবে যুক্ত থাকে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Work from home-এ কর্মীরা অফিসের internal server ও database-এ নিরাপদে ঢোকে।"
+          },
+          {
+            "sub": "ব্যাংকের শাখা অফিসগুলো head office-এর সাথে site-to-site VPN দিয়ে যুক্ত থাকে, আলাদা leased line-এর খরচ ছাড়াই।"
+          },
+          {
+            "sub": "Public Wi-Fi-তে VPN ব্যবহার করলে একই network-এর অন্য কেউ traffic পড়তে পারে না।"
+          }
+        ],
+        "mistakes": [
+          [
+            "VPN ব্যবহার করলে সম্পূর্ণ anonymous হওয়া যায়",
+            "VPN provider নিজে সব traffic দেখতে পায়। অর্থাৎ ISP-র উপর থেকে বিশ্বাসটা সরে VPN provider-এর উপর যায়, একেবারে উবে যায় না।"
+          ],
+          [
+            "VPN মানেই শুধু encryption",
+            "Encryption অর্ধেক কাজ। বাকি অর্ধেক tunneling বা encapsulation — এর জোরেই দূরের device private network-এর অংশ হয়ে যায়। শুধু encrypt করলে সেটা HTTPS, VPN নয়।"
+          ]
+        ],
+        "mnemonic": "চিঠি লিখে সাংকেতিক ভাষায় (encrypt), তারপর নতুন খামে ভরে অন্য ঠিকানা লিখে দাও (encapsulate)। ডাকপিয়ন খাম দেখে, চিঠি নয়।"
+      }
+    },
+    {
+      "id": "cn_042",
+      "q": "What is MPLS (Multiprotocol Label Switching)? Explain its working principle.",
+      "tags": [
+        "MPLS",
+        "label switching",
+        "LSR",
+        "LSP",
+        "layer 2.5",
+        "routing",
+        "QoS"
+      ],
+      "answer": {
+        "summary": [
+          "MPLS packet forward করে label দেখে, IP address দেখে নয়।",
+          "এটি Layer 2 ও Layer 3-এর মাঝামাঝি কাজ করে, তাই একে প্রায়ই 'Layer 2.5' বলা হয়।",
+          "লাভ: প্রতিটি router-এ দীর্ঘ routing table খোঁজার দরকার হয় না, তাই forwarding দ্রুত ও পথ নিয়ন্ত্রণযোগ্য হয়।"
+        ],
+        "points": [
+          "কীভাবে কাজ করে",
+          {
+            "sub": "Packet MPLS network-এ ঢোকার মুখে ingress router তাতে একটি label বসায় (PUSH)।"
+          },
+          {
+            "sub": "ভেতরের core router শুধু label দেখে, পুরনো label সরিয়ে নতুন label বসিয়ে দেয় (SWAP)।"
+          },
+          {
+            "sub": "Core router কখনোই IP header খুলে দেখে না, তাই কাজটা অনেক দ্রুত হয়।"
+          },
+          {
+            "sub": "বেরোনোর মুখে egress router label খুলে ফেলে (POP) এবং আসল IP packet গন্তব্যে পাঠায়।"
+          },
+          {
+            "sub": "এভাবে তৈরি হওয়া নির্দিষ্ট পথটিকে বলে LSP (Label Switched Path)।"
+          },
+          {
+            "diagram": "   IP packet\n      │\n      ▼\n  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐\n  │ Ingress LSR │────►│  Core LSR   │────►│ Egress LSR  │────► IP packet\n  │  PUSH  17   │     │ SWAP 17→22  │     │  POP label  │\n  └─────────────┘     └─────────────┘     └─────────────┘\n\n  Ingress LSR : packet-এ label বসায়, একবারই IP lookup করে\n  Core LSR    : শুধু label দেখে বদলে দেয়, IP একেবারেই দেখে না\n  Egress LSR  : label খুলে আসল IP packet গন্তব্যে পাঠায়",
+            "label": "Diagram — label-এর যাত্রা"
+          },
+          "Label কোথায় বসে",
+          {
+            "sub": "Label বসে Layer 2 header ও Layer 3 header-এর ঠিক মাঝখানে।"
+          },
+          {
+            "sub": "এই অবস্থানের কারণেই MPLS-কে Layer 2.5 বলা হয়।"
+          },
+          {
+            "sub": "Label-এর আকার ৩২ bit, যার মধ্যে ২০ bit আসল label মান।"
+          },
+          "কেন ব্যবহার করা হয়",
+          {
+            "sub": "Forwarding দ্রুত — লম্বা routing table-এ longest prefix match খুঁজতে হয় না।"
+          },
+          {
+            "sub": "Traffic engineering সম্ভব — কোন traffic কোন পথে যাবে তা নির্দিষ্ট করে দেওয়া যায়।"
+          },
+          {
+            "sub": "QoS দেওয়া সহজ — voice-এর label-কে অগ্রাধিকার দেওয়া যায়।"
+          },
+          {
+            "sub": "'Multiprotocol' নামের অর্থ এটি IPv4, IPv6, Ethernet — যেকোনো protocol বহন করতে পারে।"
+          },
+          {
+            "sub": "একই অবকাঠামোতে অনেক গ্রাহকের আলাদা VPN চালানো যায় (MPLS L3VPN)।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Telecom operator-রা গ্রাহক প্রতিষ্ঠানের শাখাগুলো জুড়তে MPLS VPN বিক্রি করে।"
+          },
+          {
+            "sub": "ব্যাংকের ATM ও শাখা network সাধারণত MPLS link-এ চলে, কারণ পথ ও latency নিয়ন্ত্রণযোগ্য।"
+          }
+        ],
+        "mistakes": [
+          [
+            "MPLS একটি routing protocol",
+            "MPLS routing protocol নয়, forwarding পদ্ধতি। পথ ঠিক করার কাজ এখনো OSPF বা BGP-ই করে; MPLS শুধু সেই পথ ধরে label দিয়ে দ্রুত packet চালায়।"
+          ],
+          [
+            "MPLS নিজে data encrypt করে",
+            "করে না। MPLS VPN আলাদা রাখে (isolation), কিন্তু গোপন রাখে না। গোপনীয়তা লাগলে উপরে IPsec বসাতে হয়।"
+          ]
+        ],
+        "mnemonic": "PUSH → SWAP → POP. ঢোকার মুখে টিকিট দাও, ভেতরে শুধু টিকিট দেখে চালাও, বেরোনোর মুখে টিকিট নিয়ে নাও।"
+      }
+    },
+    {
+      "id": "cn_043",
+      "q": "What is a Workgroup and what is a Domain? Differentiate between them.",
+      "tags": [
+        "workgroup",
+        "domain",
+        "active directory",
+        "domain controller",
+        "centralized management",
+        "windows network"
+      ],
+      "answer": {
+        "summary": [
+          "Workgroup হলো peer-to-peer নেটওয়ার্ক — প্রতিটি computer নিজের user account ও password নিজেই রাখে, কোনো কেন্দ্রীয় কর্তৃপক্ষ নেই।",
+          "Domain হলো client-server নেটওয়ার্ক — একটি Domain Controller (Active Directory) সব account ও policy কেন্দ্রীয়ভাবে নিয়ন্ত্রণ করে।",
+          "মূল পার্থক্য: Workgroup-এ নিয়ন্ত্রণ ছড়ানো, Domain-এ নিয়ন্ত্রণ এক জায়গায়।"
+        ],
+        "points": [
+          "Workgroup — সংজ্ঞা ও বৈশিষ্ট্য",
+          {
+            "sub": "এটি একই local network-এ থাকা কিছু computer-এর সমান মর্যাদার দল।"
+          },
+          {
+            "sub": "প্রতিটি computer নিজের user account নিজের ভেতরে (local SAM database-এ) রাখে।"
+          },
+          {
+            "sub": "একজন ব্যবহারকারীকে পাঁচটি PC-তে ঢুকতে হলে পাঁচটি PC-তে আলাদা account বানাতে হয়।"
+          },
+          {
+            "sub": "Password বদলাতে হলে প্রতিটি PC-তে আলাদা করে বদলাতে হয়।"
+          },
+          {
+            "sub": "কোনো server লাগে না, তাই খরচ ও জটিলতা কম।"
+          },
+          {
+            "sub": "সাধারণত ১০-১৫টি computer পর্যন্ত ব্যবহারযোগ্য, এর বেশি হলে সামলানো কঠিন।"
+          },
+          "Domain — সংজ্ঞা ও বৈশিষ্ট্য",
+          {
+            "sub": "এটি এমন একটি নেটওয়ার্ক যেখানে সব account ও নিরাপত্তা নীতি একটি কেন্দ্রীয় database-এ থাকে।"
+          },
+          {
+            "sub": "এই কেন্দ্রীয় server-এর নাম Domain Controller, আর database-টি হলো Active Directory।"
+          },
+          {
+            "sub": "ব্যবহারকারীর একটিই account থাকে, যা দিয়ে domain-এর যেকোনো computer-এ login করা যায়।"
+          },
+          {
+            "sub": "Login করার সময় computer নিজে যাচাই করে না, Domain Controller-কে জিজ্ঞেস করে।"
+          },
+          {
+            "sub": "Group Policy দিয়ে সব computer-এ একসাথে নিয়ম প্রয়োগ করা যায়।"
+          },
+          {
+            "sub": "হাজার হাজার computer পর্যন্ত সহজে বাড়ানো যায়।"
+          },
+          {
+            "diagram": "  WORKGROUP — প্রত্যেকে নিজের কর্তা\n\n     [PC1]        [PC2]        [PC3]\n      own          own          own\n     accounts     accounts     accounts\n\n  কোনো কেন্দ্রীয় server নেই, প্রত্যেকে নিজের account নিজে রাখে\n\n\n  DOMAIN — এক কেন্দ্র সবাইকে চালায়\n\n            ┌────────────────────────┐\n            │   Domain Controller    │\n            │   (Active Directory)   │\n            └───────────┬────────────┘\n                        │\n         ┌──────────────┼──────────────┐\n         │              │              │\n      [PC1]          [PC2]          [PC3]\n\n  একটিই account দিয়ে যেকোনো PC-তে login, policy কেন্দ্র থেকে আসে",
+            "label": "Diagram — নিয়ন্ত্রণ কোথায় থাকে"
+          },
+          "কোনটি কখন বেছে নেবে",
+          {
+            "sub": "ছোট অফিস বা বাসা, অল্প কয়েকটি computer, আলাদা IT লোক নেই — Workgroup।"
+          },
+          {
+            "sub": "প্রতিষ্ঠান বড়, কর্মী বেশি, নিরাপত্তা ও কেন্দ্রীয় নিয়ন্ত্রণ দরকার — Domain।"
+          },
+          {
+            "sub": "কর্মী চাকরি ছাড়লে Domain-এ একটিমাত্র account বন্ধ করলেই সব access বন্ধ — এটিই Domain-এর সবচেয়ে বড় ব্যবহারিক সুবিধা।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Workgroup",
+            "Domain"
+          ],
+          "rows": [
+            [
+              "গঠন",
+              "Peer-to-peer, সবাই সমান",
+              "Client-server, কেন্দ্রীয় নিয়ন্ত্রণ"
+            ],
+            [
+              "Account কোথায়",
+              "প্রতিটি computer-এর নিজের ভেতরে",
+              "Domain Controller-এ (Active Directory)"
+            ],
+            [
+              "Login",
+              "যে PC-তে account আছে শুধু সেটিতে",
+              "একটি account দিয়ে যেকোনো PC-তে"
+            ],
+            [
+              "Server দরকার",
+              "লাগে না",
+              "Domain Controller লাগে"
+            ],
+            [
+              "নিরাপত্তা নিয়ন্ত্রণ",
+              "প্রতিটি PC-তে আলাদা করে",
+              "Group Policy দিয়ে একসাথে সবখানে"
+            ],
+            [
+              "আকার",
+              "ছোট, সাধারণত ১০-১৫টি PC",
+              "হাজার হাজার PC"
+            ],
+            [
+              "খরচ",
+              "কম",
+              "বেশি (server ও license)"
+            ],
+            [
+              "উপযুক্ত জায়গা",
+              "বাসা, ছোট অফিস",
+              "প্রতিষ্ঠান, ব্যাংক, বিশ্ববিদ্যালয়"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Workgroup আর Domain দুটোই এক ধরনের network topology",
+            "কোনোটিই topology নয়। দুটোই প্রশাসনিক মডেল — অর্থাৎ user account ও নিরাপত্তা কে নিয়ন্ত্রণ করবে তার পদ্ধতি। দুটোই একই physical topology-তে চলতে পারে।"
+          ],
+          [
+            "Domain-এ যোগ দিলে computer-এর local account মুছে যায়",
+            "মুছে যায় না, local account থেকেই যায় এবং দরকারে ব্যবহার করা যায়। শুধু দৈনন্দিন login-এ domain account ব্যবহৃত হয়।"
+          ]
+        ],
+        "mnemonic": "Workgroup = পাড়ার আড্ডা, প্রত্যেকের নিজের ঘরের চাবি নিজের কাছে। Domain = অফিস, একটাই ID card দিয়ে সব দরজা খোলে, আর সেটা বাতিল হলে সব বন্ধ।"
       }
     }
   ]
