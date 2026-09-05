@@ -5276,6 +5276,147 @@
         ],
         "mnemonic": "rwnd = receiver-এর হাঁড়ি কতটা খালি। শূন্য হলে থামো, কিন্তু উঠে যেও না — মাঝে মাঝে probe পাঠিয়ে জিজ্ঞেস করো 'জায়গা হলো?'"
       }
+    },
+    {
+      "id": "cn_047",
+      "q": "A network administrator runs tracert because users cannot reach a remote server. At one hop the response time becomes very high and the next hop shows 'Request timed out'. (1) Which command traces the route? (2) What does each hop represent? (3) What does 'Request timed out' indicate? (4) How can the administrator locate the problem? (5) Write an example tracert command for www.google.com.",
+      "tags": [
+        "tracert",
+        "traceroute",
+        "TTL",
+        "ICMP",
+        "troubleshooting",
+        "latency",
+        "request timed out"
+      ],
+      "answer": {
+        "summary": [
+          "Windows-এ command হলো tracert, Linux ও macOS-এ traceroute।",
+          "প্রতিটি hop = পথের একটি router; 'Request timed out' = ওই hop সময়মতো উত্তর দেয়নি।",
+          "সমস্যা খুঁজতে দেখতে হবে দেরিটা পরের hop গুলোতেও রয়ে গেল কি না — রয়ে গেলে তবেই সেটি আসল সমস্যা।"
+        ],
+        "points": [
+          "১. কোন command",
+          {
+            "sub": "Windows-এ: tracert"
+          },
+          {
+            "sub": "Linux ও macOS-এ: traceroute"
+          },
+          "২. প্রতিটি hop কী বোঝায়",
+          {
+            "sub": "প্রতিটি hop হলো একটি router বা Layer 3 device, যা পার হয়ে packet গন্তব্যের দিকে গেছে।"
+          },
+          {
+            "sub": "Hop গুলো ক্রমানুসারে দেখানো হয় — উৎস থেকে গন্তব্যের দিকে।"
+          },
+          {
+            "sub": "প্রতিটি hop-এ তিনটি সময় দেখায়, কারণ tracert প্রতি hop-এ তিনবার probe পাঠায়।"
+          },
+          "কীভাবে প্রতিটি router ধরা পড়ে (মূল কৌশল)",
+          {
+            "sub": "tracert প্রথমে TTL = 1 দিয়ে packet পাঠায়।"
+          },
+          {
+            "sub": "প্রতিটি router TTL এক কমায়; TTL শূন্য হলে সে packet ফেলে দিয়ে ICMP Time Exceeded ফেরত পাঠায়।"
+          },
+          {
+            "sub": "ওই উত্তরেই router নিজের ঠিকানা জানিয়ে দেয় — এভাবেই সে ধরা পড়ে।"
+          },
+          {
+            "sub": "এরপর TTL = 2, 3, 4 … করে পাঠানো হয়, তাই একে একে পুরো পথ বেরিয়ে আসে।"
+          },
+          {
+            "diagram": "  TTL = 1  →  R1        Time Exceeded ফেরত এল, তাই R1 চেনা গেল\n  TTL = 2  →  R2        Time Exceeded ফেরত এল\n  TTL = 3  →  R3        কোনো উত্তর নেই, তাই এই hop-এ  *  *  *\n  TTL = 4  →  R4        Time Exceeded ফেরত এল\n  TTL = 5  →  Server    গন্তব্যে পৌঁছাল, যাত্রা শেষ",
+            "label": "Diagram — TTL বাড়িয়ে বাড়িয়ে পথ বের করা"
+          },
+          "৩. Request timed out কী বোঝায়",
+          {
+            "sub": "ওই hop নির্ধারিত সময়ের মধ্যে কোনো উত্তর পাঠায়নি।"
+          },
+          {
+            "sub": "সম্ভাব্য কারণ: firewall বা ACL ICMP আটকে রেখেছে (সবচেয়ে সাধারণ)।"
+          },
+          {
+            "sub": "Router অতিরিক্ত ব্যস্ত, তাই ICMP-র উত্তর দেওয়াকে কম গুরুত্ব দিচ্ছে।"
+          },
+          {
+            "sub": "Router বা তার পরের অংশ সত্যিই অচল বা unreachable।"
+          },
+          {
+            "sub": "তাই একটিমাত্র timeout দেখেই সমস্যা ধরে নেওয়া যাবে না।"
+          },
+          "৪. সমস্যার অবস্থান কীভাবে বের করবে",
+          {
+            "sub": "যে hop-এ সময় হঠাৎ বেড়ে গেছে, সেটি চিহ্নিত করো।"
+          },
+          {
+            "sub": "এরপর পরের hop গুলোর সময় দেখো — এটাই আসল পরীক্ষা।"
+          },
+          {
+            "sub": "দেরি পরের hop গুলোতেও থেকে গেলে সমস্যা ওই router বা তার পরের segment-এ।"
+          },
+          {
+            "sub": "পরের hop-এ সময় আবার স্বাভাবিক হয়ে গেলে ওই router শুধু ICMP-কে কম গুরুত্ব দিচ্ছিল — এটি সমস্যা নয়।"
+          },
+          {
+            "sub": "মাঝের timeout-এর পরেও পরের hop উত্তর দিলে বুঝতে হবে পথ খোলা আছে, ওই router শুধু চুপ থাকে।"
+          },
+          {
+            "sub": "timeout শেষ hop থেকে শুরু হয়ে আর না থামলে সমস্যা গন্তব্য server বা তার firewall-এ।"
+          },
+          {
+            "diagram": "  [ক] দেরি একটিমাত্র hop-এ, পরেরগুলো আবার স্বাভাবিক\n        1 ms  →  5 ms  →  90 ms  →  12 ms  →  15 ms\n        ওই router শুধু ICMP-র উত্তর দিতে দেরি করে — সমস্যা নয়\n\n  [খ] দেরি শুরু হয়ে পরের সব hop-এও রয়ে গেল\n        1 ms  →  5 ms  →  90 ms  →  95 ms  →  110 ms\n        সমস্যা ওই router বা তার পরের segment-এ — এখানেই খুঁজতে হবে",
+            "label": "Diagram — দুটি অবস্থা আলাদা করা"
+          },
+          "৫. উদাহরণ command",
+          {
+            "sub": "tracert www.google.com"
+          },
+          {
+            "sub": "Linux হলে: traceroute www.google.com"
+          }
+        ],
+        "table": {
+          "headers": [
+            "যা দেখা যাচ্ছে",
+            "সম্ভাব্য অর্থ"
+          ],
+          "rows": [
+            [
+              "মাঝের এক hop-এ * * *, পরেরগুলো ঠিক",
+              "ওই router ICMP-র উত্তর দেয় না — স্বাভাবিক, সমস্যা নয়"
+            ],
+            [
+              "এক hop-এ latency বেশি, পরেরগুলো স্বাভাবিক",
+              "ওই router ICMP-কে কম গুরুত্ব দেয় — সমস্যা নয়"
+            ],
+            [
+              "এক hop থেকে latency বেড়ে আর কমল না",
+              "ওই router বা তার পরের link-এ congestion"
+            ],
+            [
+              "একটি hop-এর পর সব hop-ই * * *",
+              "পথ সেখানেই ভেঙেছে বা routing সমস্যা"
+            ],
+            [
+              "শুধু শেষ hop-এ timeout",
+              "গন্তব্য server-এর firewall ICMP আটকাচ্ছে, বা server down"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Request timed out মানেই ওই router নষ্ট",
+            "বেশিরভাগ সময় router ঠিকই আছে, শুধু নিরাপত্তার জন্য ICMP-র উত্তর দেয় না। পরের hop উত্তর দিলেই বোঝা যায় packet ওই router পার হয়েছে।"
+          ],
+          [
+            "একটি hop-এ latency বেশি মানেই সেখানে সমস্যা",
+            "পরের hop-এ সময় স্বাভাবিক হয়ে গেলে সমস্যা নেই। কেবল দেরিটা পরের hop গুলোতেও রয়ে গেলে তবেই সেটি আসল congestion।"
+          ]
+        ],
+        "mnemonic": "TTL এক এক করে বাড়াও, প্রতিটি router নিজেই নাম বলে দেয়। তারকা দেখে ভয় পেয়ো না — দেখো দেরিটা পরের hop-এও থাকে কি না।"
+      }
     }
   ]
 }
