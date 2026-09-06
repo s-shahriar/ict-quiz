@@ -1188,6 +1188,10 @@
           "MAX-HEAPIFY এ একটি element root থেকে সর্বনিম্ন level পর্যন্ত নামতে পারে → সর্বোচ্চ 4 level।"
         ],
         "points": [
+          {
+            "diagram": "  HEAP  —  আকৃতি সবসময় নিশ্চিত (complete binary tree)  <<<\n\n    height h           =  floor(log2 n)\n    level count        =  h + 1\n    heapify / sift     =  at most h levels\n    perfect tree       :  n = 2^(h+1) - 1\n    heapify cost       =  O(log n),  build-heap = O(n)\n\n\n  BST  —  আকৃতি নিশ্চিত নয়, তাই একটি নয়, দুটি সীমা\n\n    min height         =  ceil(log2(n+1)) - 1     (balanced)\n    max height         =  n - 1                   (skewed)\n    level count        =  height + 1\n    max comparisons    =  height + 1\n    search cost        =  O(log n) .. O(n)\n\n\n  গুলিয়ে ফেলা ঠেকানোর আসল কথা:\n\n    floor(log2 n)  ==  ceil(log2(n+1)) - 1        (সব n-এর জন্য সমান)\n\n  দুটো সূত্র দেখতে আলাদা হলেও একই সংখ্যা দেয় — দুটোই minimum height.\n  তাই কোন সূত্র কোথায় বসাব, সেটা মনে রাখার দরকারই নেই।\n  যা মনে রাখতে হবে: HEAP সবসময় ওই minimum height-এই থাকে (আকৃতি বাঁধা),\n  BST থাকতেও পারে, নাও পারে — তাই BST-তেই কেবল max height n-1 আসে।",
+            "label": "সূত্র — আগে এটুকু মনে রাখো ( <<< চিহ্নিতটি এই প্রশ্নের )"
+          },
           "Height বের করা:",
           {
             "sub": "Level অনুযায়ী node সংখ্যা 1 + 2 + 4 + 8 + 16 = 31।"
@@ -1255,7 +1259,13 @@
             ]
           ]
         },
-        "mnemonic": "31 = 2⁵ − 1 → গাছ পুরোপুরি ভরা, 5 সারি কিন্তু height 4। Heapify সর্বোচ্চ height সমান ধাপ নামে।"
+        "mnemonic": "31 = 2⁵ − 1 → গাছ পুরোপুরি ভরা, 5 সারি কিন্তু height 4। Heapify সর্বোচ্চ height সমান ধাপ নামে।",
+        "mistakes": [
+          [
+            "Heap-এ floor, BST-তে ceil — দুটো আলাদা সূত্র মুখস্থ করতে হবে",
+            "floor(log2 n) আর ceil(log2(n+1)) - 1 সব n-এর জন্য একই মান দেয়, দুটোই minimum height-এর সূত্র। আলাদা করে মনে রাখার কিছু নেই। পার্থক্য সূত্রে নয়, আকৃতির নিশ্চয়তায় — heap সবসময় complete, তাই সে ওই minimum-এই বাঁধা; BST-র আকৃতি খোলা, তাই তার একটি max height-ও (n-1) থাকে।"
+          ]
+        ]
       }
     },
     {
@@ -1416,6 +1426,10 @@
           "অর্থাৎ BST এর গতি পুরোপুরি তার গঠনের উপর নির্ভরশীল — balanced হলে ~10 তুলনা, skewed হলে 1000।"
         ],
         "points": [
+          {
+            "diagram": "  HEAP  —  আকৃতি সবসময় নিশ্চিত (complete binary tree)\n\n    height h           =  floor(log2 n)\n    level count        =  h + 1\n    heapify / sift     =  at most h levels\n    perfect tree       :  n = 2^(h+1) - 1\n    heapify cost       =  O(log n),  build-heap = O(n)\n\n\n  BST  —  আকৃতি নিশ্চিত নয়, তাই একটি নয়, দুটি সীমা  <<<\n\n    min height         =  ceil(log2(n+1)) - 1     (balanced)\n    max height         =  n - 1                   (skewed)\n    level count        =  height + 1\n    max comparisons    =  height + 1\n    search cost        =  O(log n) .. O(n)\n\n\n  গুলিয়ে ফেলা ঠেকানোর আসল কথা:\n\n    floor(log2 n)  ==  ceil(log2(n+1)) - 1        (সব n-এর জন্য সমান)\n\n  দুটো সূত্র দেখতে আলাদা হলেও একই সংখ্যা দেয় — দুটোই minimum height.\n  তাই কোন সূত্র কোথায় বসাব, সেটা মনে রাখার দরকারই নেই।\n  যা মনে রাখতে হবে: HEAP সবসময় ওই minimum height-এই থাকে (আকৃতি বাঁধা),\n  BST থাকতেও পারে, নাও পারে — তাই BST-তেই কেবল max height n-1 আসে।",
+            "label": "সূত্র — আগে এটুকু মনে রাখো ( <<< চিহ্নিতটি এই প্রশ্নের )"
+          },
           "প্রথমে দুটো সম্পর্ক মনে রাখো:",
           {
             "sub": "Height গোনা হয় edge-এ, তাই level সংখ্যা = height + 1।"
@@ -1494,7 +1508,13 @@
             ]
           ]
         },
-        "mnemonic": "Balanced BST = ছড়ানো ঝোপ (height ≈ log n), Skewed BST = সোজা লাঠি (height = n−1)। তুলনা সবসময় height এর চেয়ে ১ বেশি।"
+        "mnemonic": "Balanced BST = ছড়ানো ঝোপ (height ≈ log n), Skewed BST = সোজা লাঠি (height = n−1)। তুলনা সবসময় height এর চেয়ে ১ বেশি।",
+        "mistakes": [
+          [
+            "Heap-এ floor, BST-তে ceil — দুটো আলাদা সূত্র মুখস্থ করতে হবে",
+            "floor(log2 n) আর ceil(log2(n+1)) - 1 সব n-এর জন্য একই মান দেয়, দুটোই minimum height-এর সূত্র। আলাদা করে মনে রাখার কিছু নেই। পার্থক্য সূত্রে নয়, আকৃতির নিশ্চয়তায় — heap সবসময় complete, তাই সে ওই minimum-এই বাঁধা; BST-র আকৃতি খোলা, তাই তার একটি max height-ও (n-1) থাকে।"
+          ]
+        ]
       }
     },
     {
