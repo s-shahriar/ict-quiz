@@ -1532,6 +1532,7 @@
           "নিয়ম: প্রতিবার সবচেয়ে ছোট দুটি frequency মিলিয়ে নতুন node বানাও, যতক্ষণ না একটিমাত্র root থাকে।",
           "বাঁ edge = 0, ডান edge = 1; root থেকে leaf পর্যন্ত পথটাই ওই character এর code।",
           "Code: A = 11, B = 10, C = 00, D = 011, E = 010 — বেশি frequency যার, তার code তত ছোট।",
+          "Compression ছাড়া লাগত 100 × 8 = 800 bit; Huffman-এ encoded data লাগে 225 bit — সাশ্রয় 575 bit বা 71.88%।",
           "Average code length = Σ(freq × length) / total = 225 / 100 = 2.25 bits per symbol।"
         ],
         "points": [
@@ -1561,15 +1562,33 @@
           {
             "sub": "ফলে decode করতে আলাদা separator লাগে না — bit stream পড়তে পড়তেই character চেনা যায়।"
           },
-          "লাভ কতটা:",
+          "লাভ কতটা — মোট bit হিসাব:",
           {
-            "sub": "Fixed-length-এ ৫টি symbol-এর জন্য ৩ bit করে লাগত — মোট 300 bit।"
+            "sub": "Compression ছাড়া ASCII-তে প্রতিটি character 8 bit, তাই 100 × 8 = 800 bit।"
           },
           {
-            "sub": "Huffman-এ লাগে 225 bit।"
+            "sub": "৫টি symbol-এর জন্য fixed-length code হলে 3 bit করে, তাই 100 × 3 = 300 bit।"
           },
           {
-            "sub": "অর্থাৎ প্রায় 25% সাশ্রয়।"
+            "sub": "Huffman-এ encoded data লাগে Σ(freq × length) = 225 bit।"
+          },
+          {
+            "sub": "ASCII-র তুলনায় সাশ্রয় 800 − 225 = 575 bit, অর্থাৎ 71.88%।"
+          },
+          {
+            "sub": "Fixed-length-এর তুলনায় সাশ্রয় 300 − 225 = 75 bit, অর্থাৎ 25%।"
+          },
+          {
+            "sub": "Decode করতে receiver-এর code table লাগে, তাই বাস্তব ফাইলে সেটিও যোগ হয়।"
+          },
+          {
+            "sub": "Table-সহ হিসাব: characters 5 × 8 = 40, frequencies যোগ = 100, data = 225 → মোট 365 bit।"
+          },
+          {
+            "sub": "তবু 365 bit < 800 bit, তাই table ধরেও Huffman স্পষ্টভাবে লাভজনক।"
+          },
+          {
+            "sub": "পরীক্ষায় শুধু average code length চাইলে Σ(freq × length) / n = 2.25 লিখলেই যথেষ্ট।"
           },
           "ব্যবহারিক প্রয়োগ:",
           {
@@ -1579,7 +1598,7 @@
             "sub": "JPEG ও MP3-এর entropy coding ধাপ।"
           }
         ],
-        "diagram": "ধাপে ধাপে merge (সবসময় সবচেয়ে ছোট দুটি)\n\n  E(10) D(15) C(20) B(25) A(30)\n    └──┬──┘\n      (25)  C(20) B(25) A(30)\n       └──┬──┘\n         (45)   B(25) A(30)\n                 └──┬──┘\n         (45)       (55)\n           └────┬────┘\n              (100)\n\n────────────────────────────────────────\nHUFFMAN TREE     (বাঁ = 0 , ডান = 1)\n\n                  ( 100 )\n                0 /      \\ 1\n             (45)          (55)\n            0/   \\1       0/   \\1\n        C(20)   (25)   B(25)   A(30)\n               0/   \\1\n           E(10)    D(15)\n\n  C = 00      E = 010     D = 011\n  B = 10      A = 11\n\n────────────────────────────────────────\nAVERAGE CODE LENGTH\n\n  Σ(freq × length)\n   = (30×2) + (25×2) + (20×2) + (15×3) + (10×3)\n   = 60 + 50 + 40 + 45 + 30\n   = 225\n\n  225 / 100  =  2.25 bits per symbol  ✅\n  (fixed-length হলে লাগত 3 bits)",
+        "diagram": "ধাপে ধাপে merge (সবসময় সবচেয়ে ছোট দুটি)\n\n  E(10) D(15) C(20) B(25) A(30)\n    └──┬──┘\n      (25)  C(20) B(25) A(30)\n       └──┬──┘\n         (45)   B(25) A(30)\n                 └──┬──┘\n         (45)       (55)\n           └────┬────┘\n              (100)\n\n────────────────────────────────────────\nHUFFMAN TREE     (বাঁ = 0 , ডান = 1)\n\n                  ( 100 )\n                0 /      \\ 1\n             (45)          (55)\n            0/   \\1       0/   \\1\n        C(20)   (25)   B(25)   A(30)\n               0/   \\1\n           E(10)    D(15)\n\n  C = 00      E = 010     D = 011\n  B = 10      A = 11\n\n────────────────────────────────────────\nAVERAGE CODE LENGTH\n\n  Σ(freq × length)\n   = (30×2) + (25×2) + (20×2) + (15×3) + (10×3)\n   = 60 + 50 + 40 + 45 + 30\n   = 225\n\n  225 / 100  =  2.25 bits per symbol  ✅\n  (fixed-length হলে লাগত 3 bits)\n\n────────────────────────────────────────\nমোট কত bit লাগল — তিনভাবে\n\n  [1] no compression, ASCII 8 bit each\n        100 x 8                      =  800 bit\n      এটাই তুলনার ভিত্তি — সব character সমান 8 bit\n\n  [2] fixed-length code (5 symbol -> 3 bit)\n        100 x 3                      =  300 bit\n\n  [3] Huffman, encoded data only\n        sum(freq x length)           =  225 bit\n\n  সাশ্রয়:\n        800 - 225 = 575 bit          ->  71.88%\n        300 - 225 =  75 bit          ->  25.00%\n\n────────────────────────────────────────\nCode table-ও রাখতে হলে (decode করতে এটি লাগে)\n\n  characters    :  5 x 8             =   40 bit\n  frequencies   :  30+25+20+15+10    =  100 bit\n  encoded data  :  sum(freq x len)   =  225 bit\n                                        ─────────\n  TOTAL                              =  365 bit\n\n  365 < 800, তাই table ধরেও Huffman অনেক লাভজনক\n  পরীক্ষায় average code length চাইলে table ধরার দরকার নেই",
         "table": {
           "headers": [
             "Character",
@@ -1620,7 +1639,13 @@
             ]
           ]
         },
-        "mnemonic": "Huffman = গরিব দুজনকে জোড়া লাগাও (সবচেয়ে ছোট দুটি merge)। যে যত ধনী (frequent), তার পথ তত ছোট।"
+        "mnemonic": "Huffman = গরিব দুজনকে জোড়া লাগাও (সবচেয়ে ছোট দুটি merge)। যে যত ধনী (frequent), তার পথ তত ছোট।",
+        "mistakes": [
+          [
+            "Compression-এর লাভ মানেই fixed-length 3 bit-এর সাথে তুলনা",
+            "দুটি ভিত্তি আলাদা। সাধারণ ফাইল ASCII-তে 8 bit করে রাখে, তাই আসল তুলনা 800 bit-এর সাথে (সাশ্রয় 71.88%)। 3 bit fixed-length ধরলে তুলনাটা 300 bit-এর সাথে হয় (সাশ্রয় 25%)। প্রশ্নে কোনটির কথা বলা হয়েছে দেখে নিতে হবে।"
+          ]
+        ]
       }
     },
     {
