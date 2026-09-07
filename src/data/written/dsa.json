@@ -2209,6 +2209,168 @@
         },
         "mnemonic": "RAID 1 = এক-ই real (বাকি সব copy) → 2TB। RAID 5 = এক বাদ (n−1) → 6TB। RAID 10 = অর্ধেক (n÷2) → 4TB।"
       }
+    },
+    {
+      "id": "dsa_021",
+      "q": "Solve the following tree and graph counting problems. (a) How many nodes can a binary tree of height N hold in total, and how many at its last level? (b) An undirected graph has 4 nodes — what is the maximum number of spanning trees that can be formed? (c) A complete binary tree has height 3 — how many nodes does it have? (d) A binary tree has 11 nodes and every node has either 0 or 2 children — find its maximum and minimum possible height.",
+      "tags": [
+        "binary tree",
+        "height",
+        "node count",
+        "full binary tree",
+        "complete binary tree",
+        "spanning tree",
+        "Cayley formula",
+        "MST"
+      ],
+      "answer": {
+        "summary": [
+          "(a) Last level এ সর্বোচ্চ 2^N node, পুরো গাছে সর্বোচ্চ 2^(N+1) − 1 node (root height = 0 ধরে)।",
+          "(b) 4 node এর complete graph K4 এ Cayley সূত্রে n^(n−2) = 4² = 16টি spanning tree। সব edge weight সমান হলে ঐ 16টিই MST।",
+          "(c) Height 3 এ সব level ভরা থাকলে 2⁴ − 1 = 15 node। (root height = 1 প্রথায় 2³ − 1 = 7)।",
+          "(d) 0 বা 2 child বাধ্যতামূলক হলে max height = (n−1)/2 = 5, min height = ⌈log₂ 12⌉ − 1 = 3।"
+        ],
+        "points": [
+          {
+            "diagram": "  BINARY TREE  —  capacity  (root height = 0)                <<<\n\n    max node at level L        =  2^L\n    max node in whole tree     =  2^(h+1) - 1\n    level count                =  h + 1\n    min height for n nodes     =  ceil(log2(n+1)) - 1\n    max height for n nodes     =  n - 1\n\n    other convention (root height = 1, h = level count):\n    max node in whole tree     =  2^h - 1\n\n\n  FULL BINARY TREE  —  every node has 0 or 2 children        <<<\n\n    n is always odd\n    internal nodes             =  (n - 1) / 2\n    leaves                     =  (n + 1) / 2\n    max height                 =  (n - 1) / 2      one-sided\n    min height                 =  ceil(log2(n+1)) - 1\n\n\n  SPANNING TREE COUNT  —  Cayley                             <<<\n\n    complete graph on n nodes  =  n^(n-2) spanning trees\n    all edge weights equal     =>  all of them are MST\n\n\n  HEAP / BST height            ->  separate card, in those two questions\n\n    heap  min height           =  floor(log2 n)        always this\n    BST   min .. max height    =  ceil(log2(n+1))-1 .. n-1\n\n\n  কোনটা কখন লাগবে:\n\n    কত node ধরে জানতে চাইলে — 2^L (এক সারিতে), 2^(h+1) - 1 (পুরো গাছে)\n    কত height লাগবে জানতে চাইলে — ceil(log2(n+1)) - 1\n    0 বা 2 child বাধ্যতামূলক থাকলে max height অর্ধেক হয়ে যায় — (n-1)/2\n    কতগুলো আলাদা tree বানানো যায় জানতে চাইলে — Cayley, n^(n-2)",
+            "label": "সূত্র — আগে এটুকু মনে রাখো (heap/BST এর সূত্র এখানে আলাদা করে দেখানো আছে)"
+          },
+          "(a) ধারণক্ষমতা:",
+          {
+            "sub": "Level L এ সর্বোচ্চ node = 2^L, কারণ প্রতি level এ node সংখ্যা দ্বিগুণ হয়।"
+          },
+          {
+            "sub": "Height N মানে Level 0 থেকে Level N, অর্থাৎ N+1টি সারি।"
+          },
+          {
+            "sub": "যোগফল 2⁰ + 2¹ + … + 2^N = 2^(N+1) − 1 — geometric series।"
+          },
+          {
+            "sub": "শুধু শেষ level চাইলে উত্তর 2^N, পুরো গাছ চাইলে 2^(N+1) − 1। প্রশ্নে কোনটি চাওয়া হয়েছে দেখে নাও।"
+          },
+          "(b) Spanning tree গোনা:",
+          {
+            "sub": "সংখ্যাটি সর্বোচ্চ হয় যখন graph টি complete, কারণ edge যত বেশি tree তত বেশি।"
+          },
+          {
+            "sub": "Cayley সূত্র: n লেবেলযুক্ত node এর complete graph এ spanning tree সংখ্যা = n^(n−2)।"
+          },
+          {
+            "sub": "n = 4 → 4² = 16।"
+          },
+          {
+            "sub": "হাতে যাচাই: K4 তে 6টি edge, 3টি বেছে নেওয়ার উপায় C(6,3) = 20। এর মধ্যে 4টি বাছাই triangle বানায় (cycle), তাই 20 − 4 = 16।"
+          },
+          {
+            "sub": "MST বলা হলেও সংখ্যাটি একই হয় কেবল তখনই, যখন সব edge weight সমান — তখন প্রতিটি spanning tree ই minimum।"
+          },
+          "(c) Complete binary tree, height 3:",
+          {
+            "sub": "Level 0,1,2,3 এ 1 + 2 + 4 + 8 = 15।"
+          },
+          {
+            "sub": "সূত্রে 2^(3+1) − 1 = 15।"
+          },
+          {
+            "sub": "কিছু বইয়ে root এর height 1 ধরা হয়; সেই প্রথায় h = 3 মানে 3টি সারি, উত্তর 2³ − 1 = 7।"
+          },
+          {
+            "sub": "প্রশ্নে convention না বলা থাকলে root height = 0 ধরে 15 লেখো, পাশে এক লাইনে প্রথাটি উল্লেখ করে দাও।"
+          },
+          "(d) n = 11, প্রতিটি node এর 0 বা 2 child (full binary tree):",
+          {
+            "sub": "এমন গাছে node সংখ্যা সবসময় বিজোড় — root এর সাথে প্রতিবার জোড়ায় node যোগ হয়।"
+          },
+          {
+            "sub": "Internal node = (n−1)/2 = 5, leaf = (n+1)/2 = 6।"
+          },
+          {
+            "sub": "Max height: গাছটাকে একদিকে হেলিয়ে দিলেও প্রতি ধাপে একটি leaf বাধ্যতামূলকভাবে সঙ্গে যায়, তাই প্রতি নতুন level এ 2টি node খরচ হয়।"
+          },
+          {
+            "sub": "1 + 2×(ধাপ) = 11 → ধাপ = 5। অর্থাৎ h(max) = (n−1)/2 = 5, internal node সংখ্যার সমান।"
+          },
+          {
+            "sub": "Min height: h = 2 ধরে সর্বোচ্চ 7 node, 11 আঁটে না। h = 3 ধরে সর্বোচ্চ 15, আঁটে।"
+          },
+          {
+            "sub": "তাই h(min) = ⌈log₂(11+1)⌉ − 1 = 4 − 1 = 3।"
+          },
+          {
+            "sub": "root height = 1 প্রথায় এই দুটি হবে 6 এবং 4 — মানে একই, শুধু গোনা এক বেশি।"
+          }
+        ],
+        "diagram": "(a)  height h এর binary tree সর্বোচ্চ কত node ধরে\n\n     Level 0 :          o                    2^0  =   1\n     Level 1 :       o     o                 2^1  =   2\n     Level 2 :     o  o   o  o               2^2  =   4\n     Level 3 :    oo oo  oo oo               2^3  =   8    <- last level\n                                                   ────\n                                      total       =  15      (= 2^4 - 1)\n\n     শেষ সারিতে 2^h, পুরো গাছে 2^(h+1) - 1\n\n────────────────────────────────────────\n(b)  4 node undirected graph -> সর্বোচ্চ কতগুলো spanning tree\n\n     সংখ্যাটি সর্বোচ্চ হয় যখন graph টি complete (K4), অর্থাৎ 6টি edge\n\n         1 ─── 2          Cayley :  n^(n-2)\n         │ \\ / │                 =  4^(4-2)\n         │  X  │                 =  4^2\n         │ / \\ │                 =  16\n         3 ─── 4\n\n     হাতে গুনেও মেলে:\n\n         pick any 3 edges      =  C(6,3)  =  20\n         of those, triangles   =  C(4,3)  =   4     cycle, তাই tree নয়\n         spanning trees        =  20 - 4  =  16\n\n     সব edge weight সমান হলে ঐ 16টিই MST\n\n────────────────────────────────────────\n(c)  complete binary tree, height 3\n\n     Level 0 + 1 + 2 + 3   =  1 + 2 + 4 + 8   =  15\n     সূত্র 2^(h+1) - 1 দিয়ে  ->  2^4 - 1 = 15\n     root height = 1 প্রথায় ->  2^3 - 1 = 7\n\n────────────────────────────────────────\n(d)  n = 11, প্রতিটি node এর 0 বা 2 child\n\n     MAX HEIGHT — একদিকে হেলানো\n\n        o             L0       node গোনা\n       / \\\n      o   o           L1       1 + 2  =  3\n         / \\\n        o   o         L2       3 + 2  =  5\n           / \\\n          o   o       L3       5 + 2  =  7\n             / \\\n            o   o     L4       7 + 2  =  9\n               / \\\n              o   o   L5       9 + 2  = 11   <- সব node শেষ\n\n     প্রতি ধাপে ঠিক 2টি node খরচ হয়, তাই ধাপ সংখ্যা (11 - 1) / 2 = 5\n     internal node (n-1)/2 = 5,  leaf (n+1)/2 = 6\n\n     h(max)  =  (n - 1) / 2  =  5\n\n     MIN HEIGHT — যতটা সম্ভব ভরা\n\n        h = 2  ->  max  2^3 - 1  =   7  <  11     হবে না\n        h = 3  ->  max  2^4 - 1  =  15  >= 11     হবে\n\n     h(min)  =  ceil(log2(11+1)) - 1  =  ceil(3.585) - 1  =  4 - 1  =  3",
+        "table": {
+          "headers": [
+            "যা চাওয়া হয়েছে",
+            "সূত্র",
+            "হিসাব",
+            "উত্তর"
+          ],
+          "rows": [
+            [
+              "(a) Height N, last level এ max node",
+              "2^N",
+              "—",
+              "2^N"
+            ],
+            [
+              "(a) Height N, পুরো গাছে max node",
+              "2^(N+1) − 1",
+              "—",
+              "2^(N+1) − 1"
+            ],
+            [
+              "(b) 4 node graph, max spanning tree",
+              "n^(n−2)",
+              "4^(4−2) = 4²",
+              "16"
+            ],
+            [
+              "(c) Complete BT, height 3",
+              "2^(h+1) − 1",
+              "2⁴ − 1",
+              "15"
+            ],
+            [
+              "(d) n = 11 full BT, max height",
+              "(n − 1) / 2",
+              "(11 − 1) / 2",
+              "5"
+            ],
+            [
+              "(d) n = 11 full BT, min height",
+              "⌈log₂(n+1)⌉ − 1",
+              "⌈log₂ 12⌉ − 1",
+              "3"
+            ]
+          ]
+        },
+        "mnemonic": "সারিতে 2^L, পুরো গাছে 2^(h+1)−1। গাছ গুনতে হলে Cayley n^(n−2)। 0-বা-2 child বাধ্যতামূলক হলে প্রতি ধাপে 2টি node খরচ, তাই max height অর্ধেক — (n−1)/2, সাধারণ গাছের n−1 নয়।",
+        "mistakes": [
+          [
+            "4 node এর MST সংখ্যা মানেই 16",
+            "n^(n−2) গোনে complete graph এর সব spanning tree। Graph টি complete না হলে সংখ্যা কম হবে। আর ঐ সবগুলো MST হয় কেবল সব edge weight সমান হলে; weight আলাদা হলে MST হয়তো একটিই।"
+          ],
+          [
+            "Complete binary tree মানেই সব level ভরা",
+            "কড়া সংজ্ঞায় complete = শেষ level বাদে সব ভরা, আর শেষটা বাঁ দিক থেকে ভরা — তাই height 3 এ 8 থেকে 15 যেকোনো সংখ্যা হতে পারে। সব level ভরা গাছের নাম perfect। প্রশ্নে একটিমাত্র সংখ্যা চাইলে 15 ই কাঙ্ক্ষিত উত্তর, তবে পার্থক্যটা জেনে রাখো।"
+          ],
+          [
+            "0 বা 2 child হলেও max height = n − 1",
+            "n − 1 হয় সাধারণ binary tree তে, যেখানে প্রতিটি node এর একটি করে child থাকতে পারে। 0 বা 2 বাধ্যতামূলক হলে একা child রাখা যায় না, প্রতি ধাপে জোড়ায় node যায় — তাই (n−1)/2।"
+          ],
+          [
+            "Height আর level সংখ্যা একই জিনিস",
+            "Height edge গোনে, level সংখ্যা = height + 1। root এর height 0 না 1 ধরা হচ্ছে সেটাও দেখে নাও — একই প্রশ্নে উত্তর 15 বা 7 হয়ে যেতে পারে।"
+          ],
+          [
+            "এই সূত্রগুলো heap/BST এর সূত্রের সাথে গুলিয়ে ফেলা",
+            "heap এর height সবসময় floor(log2 n), কারণ আকৃতি বাঁধা। BST তে দুটি সীমা — ceil(log2(n+1))−1 থেকে n−1। আর এখানকার 2^(h+1)−1 কোনো height এর সূত্র নয়, সেটি ধারণক্ষমতার সূত্র।"
+          ]
+        ]
+      }
     }
   ]
 }
