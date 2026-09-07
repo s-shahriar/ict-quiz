@@ -2782,30 +2782,29 @@
         "dry run"
       ],
       "answer": {
-        "code": "public class GcdLcm {\n\n    public static void main(String[] args) {\n\n        int firstNumber = 36;\n        int secondNumber = 60;\n\n        int a = firstNumber;\n        int b = secondNumber;\n\n        while (b != 0) {\n            int r = a % b;\n            a = b;\n            b = r;\n        }\n\n        int gcd = a;\n        int lcm = (firstNumber / gcd) * secondNumber;\n\n        System.out.println(\"GCD = \" + gcd);\n        System.out.println(\"LCM = \" + lcm);\n    }\n\n}",
+        "code": "public class GcdLcm {\n\n    public static void main(String[] args) {\n\n        int firstNumber = 36;\n        int secondNumber = 60;\n\n        int product = firstNumber * secondNumber;\n\n        while (secondNumber != 0) {\n            int remainder = firstNumber % secondNumber;\n            firstNumber = secondNumber;\n            secondNumber = remainder;\n        }\n\n        int gcd = firstNumber;\n        int lcm = product / gcd;\n\n        System.out.println(\"GCD = \" + gcd);\n        System.out.println(\"LCM = \" + lcm);\n    }\n\n}",
         "codeLang": "Java",
         "summary": [
           "Output: GCD = 12 এবং LCM = 180।",
           "Euclid এর নিয়ম: বড়টাকে ছোট দিয়ে ভাগ করে ভাগশেষ নাও, এই জোড়া নিয়ে আবার চালাও — ভাগশেষ 0 হলে হাতে থাকা সংখ্যাটিই GCD।",
-          "GCD পেয়ে গেলে LCM আলাদা করে বের করতে হয় না, কারণ a × b = GCD × LCM।"
+          "GCD পেয়ে গেলে LCM আলাদা করে বের করতে হয় না, কারণ দুটি সংখ্যার গুণফল = GCD × LCM।"
         ],
         "points": [
-          "gcd(a, b) = gcd(b, a % b) — কারণ a আর b এর যেকোনো সাধারণ ভাজক a % b কেও ভাগ করে, তাই ভাজকের সেটটা বদলায় না।",
-          "loop টা a আর b কে বদলে ফেলে, তাই firstNumber আর secondNumber অক্ষত রেখে দুটি অনুলিপি a, b তে কাজ করানো হয়েছে।",
-          "মূল দুটি সংখ্যা অক্ষত না রাখলে শেষে LCM এর লাইনে বসানোর মতো কিছু থাকত না।",
-          "b শূন্য হলে loop থামে, আর তখন উত্তর জমা থাকে a তে — সেটাই gcd এ তুলে নেওয়া হয়েছে।",
-          "প্রথমবার a < b হলেও সমস্যা নেই — 36 % 60 = 36, তাই এক চক্রেই দুটি আপনা থেকে জায়গা বদল করে নেয়।",
-          "কোডে LCM লেখা হয়েছে (firstNumber / gcd) * secondNumber, অর্থাৎ আগে ভাগ পরে গুণ।",
-          "gcd নিশ্চিতভাবে firstNumber কে ভাগ করে, তাই আগে ভাগ করলে কিছু হারায় না, অথচ মাঝের সংখ্যাটা ছোট থাকে বলে overflow এড়ানো যায়।",
-          "Euclid এ ধাপ সংখ্যা O(log min(a, b)) — 1 থেকে গুনে গুনে ভাজক খোঁজার চেয়ে অনেক দ্রুত।"
+          "নিয়মটা হলো gcd(first, second) = gcd(second, first % second) — কারণ দুটির যেকোনো সাধারণ ভাজক ভাগশেষকেও ভাগ করে, তাই ভাজকের সেটটা বদলায় না।",
+          "loop প্রতিবার secondNumber কে firstNumber এ তুলে দেয় আর ভাগশেষকে নতুন secondNumber বানায় — এভাবে সংখ্যা দুটি দ্রুত ছোট হয়ে আসে।",
+          "secondNumber শূন্য হলে loop থামে, আর তখন GCD জমা থাকে firstNumber এ।",
+          "loop চলার সময় দুটি চলকই বদলে যায়, তাই LCM এর জন্য দরকারি গুণফলটা loop শুরুর আগেই product এ তুলে রাখা হয়েছে।",
+          "প্রথমবার firstNumber ছোট হলেও সমস্যা নেই — 36 % 60 = 36, তাই এক চক্রেই দুটি আপনা থেকে জায়গা বদল করে নেয়।",
+          "শেষে LCM = product / gcd, কারণ যেকোনো দুটি সংখ্যার ক্ষেত্রে গুণফল = GCD × LCM।",
+          "Euclid এ ধাপ সংখ্যা O(log min(first, second)) — 1 থেকে গুনে গুনে ভাজক খোঁজার চেয়ে অনেক দ্রুত।"
         ],
         "table": {
           "headers": [
             "ধাপ",
-            "a",
-            "b",
-            "r = a % b",
-            "পরের a, b"
+            "firstNumber",
+            "secondNumber",
+            "remainder",
+            "loop শেষে অবস্থা"
           ],
           "rows": [
             [
@@ -2813,50 +2812,50 @@
               "36",
               "60",
               "36",
-              "a = 60, b = 36"
+              "first = 60, second = 36"
             ],
             [
               "2",
               "60",
               "36",
               "24",
-              "a = 36, b = 24"
+              "first = 36, second = 24"
             ],
             [
               "3",
               "36",
               "24",
               "12",
-              "a = 24, b = 12"
+              "first = 24, second = 12"
             ],
             [
               "4",
               "24",
               "12",
               "0",
-              "a = 12, b = 0"
+              "first = 12, second = 0"
             ],
             [
               "5",
               "12",
               "0",
               "—",
-              "b = 0, loop থামল → GCD = 12"
+              "second = 0, loop থামল → GCD = 12"
             ]
           ]
         },
         "mistakes": [
           [
-            "আলাদা অনুলিপি না নিয়ে সরাসরি firstNumber আর secondNumber এর উপরেই loop চালানো",
-            "loop শেষে firstNumber হয়ে যায় GCD আর secondNumber হয়ে যায় 0। তখন LCM এর লাইনে মূল সংখ্যা দুটি আর নেই, উত্তর আসে ভুল। তাই a, b নামে দুটি কাজ-চালানো অনুলিপি রাখা হয়েছে।"
+            "গুণফলটা loop এর পরে বের করার চেষ্টা করা",
+            "loop শেষে firstNumber হয়ে গেছে GCD আর secondNumber হয়ে গেছে 0 — মূল সংখ্যা দুটি আর নেই। তাই গুণফল loop শুরুর আগেই product এ রেখে দিতে হয়।"
           ],
           [
-            "LCM = firstNumber * secondNumber / gcd সরাসরি লিখে দেওয়া",
-            "গণিতে ঠিক, কিন্তু int এ গুণটা আগে হিসাব হয় বলে বড় সংখ্যায় overflow হতে পারে। (firstNumber / gcd) * secondNumber লিখলে মাঝের মানটা ছোট থাকে, আর gcd যেহেতু firstNumber কে পুরোপুরি ভাগ করে, ফল একই থাকে।"
+            "খুব বড় সংখ্যাতেও product ব্যবহার করা",
+            "first × second আগে হিসাব হয় বলে int এর সীমা (প্রায় ২.১ বিলিয়ন) ছাড়ালে ফল ভুল আসবে। বড় সংখ্যার কাজে হয় long নাও, নয়তো মূল সংখ্যার একটি অনুলিপি রেখে (first / gcd) * second লেখো — তাতে মাঝের মানটা ছোট থাকে।"
           ],
           [
-            "loop এর শর্ত b != 0 এর বদলে a != 0 লেখা",
-            "loop শেষে উত্তর জমা থাকে a তে। শর্ত উল্টে দিলে থামার সময় ভুল চলকটি ফেরত যায়।"
+            "loop এর শর্ত secondNumber != 0 এর বদলে firstNumber != 0 লেখা",
+            "loop শেষে উত্তর জমা থাকে firstNumber এ। শর্ত উল্টে দিলে থামার সময় ভুল চলকটি হাতে আসে।"
           ],
           [
             "GCD আর LCM গুলিয়ে ফেলা",
