@@ -11,6 +11,8 @@ import { ProgressProvider, useProgressSyncing } from './contexts/ProgressContext
 import { TrashProvider } from './contexts/TrashContext.jsx'
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext.jsx'
 import { HandProvider } from './contexts/HandContext.jsx'
+import { HighlightProvider } from './contexts/HighlightContext.jsx'
+import HighlightBar from './components/shared/HighlightBar.jsx'
 
 const ExamConfig = lazy(() => import('./components/ExamConfig.jsx'))
 const ExamMode = lazy(() => import('./components/ExamMode.jsx'))
@@ -43,7 +45,10 @@ export default function App() {
         <HandProvider>
           <ProgressProvider>
             <TrashProvider>
-              <AppRoutes />
+              <HighlightProvider>
+                <AppRoutes />
+                <HighlightBar />
+              </HighlightProvider>
             </TrashProvider>
           </ProgressProvider>
         </HandProvider>

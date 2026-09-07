@@ -1,6 +1,18 @@
 import { useState } from 'react'
 import { Brain } from 'lucide-react'
 import CodeBlock from './shared/CodeBlock.jsx'
+import HighlightableText from './shared/HighlightableText.jsx'
+import { useHighlights } from '../contexts/HighlightContext.jsx'
+
+// Every piece of answer prose is wrapped in <HighlightableText> with a stable
+// BLOCK KEY describing where it sits in the payload ('summary.1', 'points.7',
+// 'table.r2.c1', 'mnemonic', …). The key is what a saved highlight is anchored
+// to, so it must stay the same in every browser and across renders — it is
+// derived from the payload's own structure, never from render order or the DOM.
+//
+// Code blocks are deliberately NOT highlightable: Prism splits them into nested
+// token spans, so character offsets there would not survive a re-render. ASCII
+// diagrams are plain text and are included.
 
 // `points` is normally a flat bullet list, but an item can also be a
 // `{ code, codeLang, label }` block (e.g. a per-pattern loop snippet) or a
@@ -9,7 +21,7 @@ import CodeBlock from './shared/CodeBlock.jsx'
 // around them instead of becoming a bullet themselves. Use this to put a
 // diagram right after the section it illustrates, instead of one combined
 // diagram dumped at the end of a multi-topic answer.
-function renderPoints(points, topicColor) {
+function renderPoints(points, topicColor, hl) {
   const blocks = []
   let currentList = []
   const flushList = () => {
@@ -34,19 +46,21 @@ function renderPoints(points, topicColor) {
       blocks.push(
         <div className="written-diagram-wrap" key={`diagram-${i}`}>
           <span className="written-block-label">{pt.label || 'Diagram'}</span>
-          <pre className="written-diagram-pre">{pt.diagram}</pre>
+          <HighlightableText as="pre" className="written-diagram-pre"
+            block={`points.${i}.diagram`} text={pt.diagram} highlights={hl(`points.${i}.diagram`)} />
         </div>
       )
       return
     }
     const isSub = typeof pt === 'object' && pt.sub
+    const key = `points.${i}`
     currentList.push(
       <li key={i} className={isSub ? 'written-point written-subpoint' : 'written-point'}
         style={isSub ? { '--subpoint-color': topicColor } : {}}>
         {isSub
           ? <span className="written-subpoint-indent" />
           : <span className="written-dot" style={{ background: topicColor }} />}
-        <span>{isSub ? pt.sub : pt}</span>
+        <HighlightableText block={key} text={isSub ? pt.sub : pt} highlights={hl(key)} />
       </li>
     )
   })
@@ -54,11 +68,17 @@ function renderPoints(points, topicColor) {
   return blocks
 }
 
-export function WrittenCardBody({ a, topicColor }) {
+export function WrittenCardBody({ a, topicColor, uid }) {
   const [extOpen, setExtOpen] = useState(false)
+  const { getFor } = useHighlights()
+
+  const all = uid ? getFor(uid) : null
+  // Highlights for one block key. Nothing saved for this question -> undefined,
+  // and HighlightableText renders exactly what it did before this feature.
+  const hl = (key) => all?.length ? all.filter(h => h.block === key) : undefined
 
   return (
-    <div className="written-card-body">
+    <div className="written-card-body" data-hl-root={uid || undefined}>
 
       {/* Code snippet the question refers to (if provided) — kept out of the
           question text itself so the collapsed header stays readable. */}
@@ -80,24 +100,28 @@ export function WrittenCardBody({ a, topicColor }) {
         <span className="written-summary-label" style={{ color: topicColor }}>সংক্ষেপ</span>
         {Array.isArray(a.summary)
           ? <div className="written-summary-lines">
-              {a.summary.map((line, i) => <p key={i} className="written-summary-line">{line}</p>)}
+              {a.summary.map((line, i) => (
+                <HighlightableText key={i} as="p" className="written-summary-line"
+                  block={`summary.${i}`} text={line} highlights={hl(`summary.${i}`)} />
+              ))}
             </div>
-          : <p>{a.summary}</p>}
+          : <HighlightableText as="p" block="summary" text={a.summary} highlights={hl('summary')} />}
       </div>
 
-      {renderPoints(a.points, topicColor)}
+      {renderPoints(a.points, topicColor, hl)}
 
       {a.diagram && (
         <div className="written-diagram-wrap">
           <span className="written-block-label">Diagram</span>
-          <pre className="written-diagram-pre">{a.diagram}</pre>
+          <HighlightableText as="pre" className="written-diagram-pre"
+            block="diagram" text={a.diagram} highlights={hl('diagram')} />
         </div>
       )}
 
       {a.table && a.table.rows?.length > 0 && (
         <div className="written-mistakes-wrap">
           <span className="written-block-label">তুলনা</span>
-          <DataTable headers={a.table.headers} rows={a.table.rows} />
+          <DataTable headers={a.table.headers} rows={a.table.rows} prefix="table" hl={hl} />
         </div>
       )}
 
@@ -115,8 +139,10 @@ export function WrittenCardBody({ a, topicColor }) {
               <tbody>
                 {a.mistakes.map((row, i) => (
                   <tr key={i}>
-                    <td>{row[0]}</td>
-                    <td>{row[1]}</td>
+                    {row.map((cell, j) => (
+                      <HighlightableText key={j} as="td" block={`mistakes.r${i}.c${j}`}
+                        text={cell} highlights={hl(`mistakes.r${i}.c${j}`)} />
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -127,7 +153,7 @@ export function WrittenCardBody({ a, topicColor }) {
 
       <div className="written-mnemonic" style={{ borderColor: `${topicColor}35`, background: `color-mix(in srgb, ${topicColor} 9%, var(--elevated))` }}>
         <Brain size={15} style={{ color: topicColor, flexShrink: 0 }} />
-        <span>{a.mnemonic}</span>
+        <HighlightableText block="mnemonic" text={a.mnemonic} highlights={hl('mnemonic')} />
       </div>
 
       {a.extended && (
@@ -146,7 +172,7 @@ export function WrittenCardBody({ a, topicColor }) {
               {a.extended.points?.map((pt, i) => (
                 <div key={i} className="written-point" style={{ marginBottom: 8 }}>
                   <span className="written-dot" style={{ background: topicColor }} />
-                  <span>{pt}</span>
+                  <HighlightableText block={`ext.points.${i}`} text={pt} highlights={hl(`ext.points.${i}`)} />
                 </div>
               ))}
 
@@ -163,7 +189,10 @@ export function WrittenCardBody({ a, topicColor }) {
                     <tbody>
                       {a.extended.table.map((row, i) => (
                         <tr key={i} className={row[0] === 'RAID 5' ? 'highlight-row' : ''}>
-                          {row.map((cell, j) => <td key={j}>{cell}</td>)}
+                          {row.map((cell, j) => (
+                            <HighlightableText key={j} as="td" block={`ext.table.r${i}.c${j}`}
+                              text={cell} highlights={hl(`ext.table.r${i}.c${j}`)} />
+                          ))}
                         </tr>
                       ))}
                     </tbody>
@@ -174,7 +203,8 @@ export function WrittenCardBody({ a, topicColor }) {
               {a.extended.diagram && (
                 <div className="written-diagram-wrap" style={{ marginTop: 16 }}>
                   <span className="written-block-label">Diagram</span>
-                  <pre className="written-diagram-pre">{a.extended.diagram}</pre>
+                  <HighlightableText as="pre" className="written-diagram-pre"
+                    block="ext.diagram" text={a.extended.diagram} highlights={hl('ext.diagram')} />
                 </div>
               )}
             </div>
@@ -186,7 +216,7 @@ export function WrittenCardBody({ a, topicColor }) {
   )
 }
 
-export function DataTable({ headers, rows }) {
+export function DataTable({ headers, rows, prefix, hl }) {
   return (
     <div className="written-table-scroll">
       <table className="written-table">
@@ -198,7 +228,10 @@ export function DataTable({ headers, rows }) {
         <tbody>
           {rows.map((row, i) => (
             <tr key={i}>
-              {row.map((cell, j) => <td key={j}>{cell}</td>)}
+              {row.map((cell, j) => (prefix && hl)
+                ? <HighlightableText key={j} as="td" block={`${prefix}.r${i}.c${j}`}
+                    text={cell} highlights={hl(`${prefix}.r${i}.c${j}`)} />
+                : <td key={j}>{cell}</td>)}
             </tr>
           ))}
         </tbody>

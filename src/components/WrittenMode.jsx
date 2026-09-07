@@ -229,7 +229,7 @@ function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed,
 
       {isOpen && (
         <div className="anim-slide">
-          <WrittenCardBody a={a} topicColor={topicColor} />
+          <WrittenCardBody a={a} topicColor={topicColor} uid={q._uid} />
         </div>
       )}
     </div>

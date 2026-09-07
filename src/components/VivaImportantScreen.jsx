@@ -97,7 +97,7 @@ function VivaImportantCard({ q, qid, topicColor, onUnmark }) {
         </button>
         <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
       </div>
-      <WrittenCardBody a={q.answer} topicColor={topicColor} />
+      <WrittenCardBody a={q.answer} topicColor={topicColor} uid={q._uid} />
     </div>
   )
 }
