@@ -2782,7 +2782,7 @@
         "dry run"
       ],
       "answer": {
-        "code": "public class GcdLcm {\n\n    static int gcd(int a, int b) {\n        while (b != 0) {\n            int r = a % b;\n            a = b;\n            b = r;\n        }\n        return a;\n    }\n\n    public static void main(String[] args) {\n\n        int x = 36, y = 60;\n\n        int g = gcd(x, y);\n        int l = (x / g) * y;\n\n        System.out.println(\"GCD = \" + g);\n        System.out.println(\"LCM = \" + l);\n    }\n\n}",
+        "code": "public class GcdLcm {\n\n    public static void main(String[] args) {\n\n        int firstNumber = 36;\n        int secondNumber = 60;\n\n        int a = firstNumber;\n        int b = secondNumber;\n\n        while (b != 0) {\n            int r = a % b;\n            a = b;\n            b = r;\n        }\n\n        int gcd = a;\n        int lcm = (firstNumber / gcd) * secondNumber;\n\n        System.out.println(\"GCD = \" + gcd);\n        System.out.println(\"LCM = \" + lcm);\n    }\n\n}",
         "codeLang": "Java",
         "summary": [
           "Output: GCD = 12 এবং LCM = 180।",
@@ -2791,10 +2791,12 @@
         ],
         "points": [
           "gcd(a, b) = gcd(b, a % b) — কারণ a আর b এর যেকোনো সাধারণ ভাজক a % b কেও ভাগ করে, তাই ভাজকের সেটটা বদলায় না।",
-          "b শূন্য হলে loop থামে, আর তখন উত্তর থাকে a তে।",
+          "loop টা a আর b কে বদলে ফেলে, তাই firstNumber আর secondNumber অক্ষত রেখে দুটি অনুলিপি a, b তে কাজ করানো হয়েছে।",
+          "মূল দুটি সংখ্যা অক্ষত না রাখলে শেষে LCM এর লাইনে বসানোর মতো কিছু থাকত না।",
+          "b শূন্য হলে loop থামে, আর তখন উত্তর জমা থাকে a তে — সেটাই gcd এ তুলে নেওয়া হয়েছে।",
           "প্রথমবার a < b হলেও সমস্যা নেই — 36 % 60 = 36, তাই এক চক্রেই দুটি আপনা থেকে জায়গা বদল করে নেয়।",
-          "কোডে LCM লেখা হয়েছে (x / g) * y, অর্থাৎ আগে ভাগ পরে গুণ।",
-          "g নিশ্চিতভাবে x কে ভাগ করে, তাই আগে ভাগ করলে কিছু হারায় না, অথচ মাঝের সংখ্যাটা ছোট থাকে বলে overflow এড়ানো যায়।",
+          "কোডে LCM লেখা হয়েছে (firstNumber / gcd) * secondNumber, অর্থাৎ আগে ভাগ পরে গুণ।",
+          "gcd নিশ্চিতভাবে firstNumber কে ভাগ করে, তাই আগে ভাগ করলে কিছু হারায় না, অথচ মাঝের সংখ্যাটা ছোট থাকে বলে overflow এড়ানো যায়।",
           "Euclid এ ধাপ সংখ্যা O(log min(a, b)) — 1 থেকে গুনে গুনে ভাজক খোঁজার চেয়ে অনেক দ্রুত।"
         ],
         "table": {
@@ -2845,8 +2847,12 @@
         },
         "mistakes": [
           [
-            "LCM = a * b / gcd সরাসরি লিখে দেওয়া",
-            "গণিতে ঠিক, কিন্তু int এ a * b আগে হিসাব হয় বলে বড় সংখ্যায় overflow হতে পারে। (a / g) * b লিখলে মাঝের মানটা ছোট থাকে, আর g যেহেতু a কে পুরোপুরি ভাগ করে, ফল একই থাকে।"
+            "আলাদা অনুলিপি না নিয়ে সরাসরি firstNumber আর secondNumber এর উপরেই loop চালানো",
+            "loop শেষে firstNumber হয়ে যায় GCD আর secondNumber হয়ে যায় 0। তখন LCM এর লাইনে মূল সংখ্যা দুটি আর নেই, উত্তর আসে ভুল। তাই a, b নামে দুটি কাজ-চালানো অনুলিপি রাখা হয়েছে।"
+          ],
+          [
+            "LCM = firstNumber * secondNumber / gcd সরাসরি লিখে দেওয়া",
+            "গণিতে ঠিক, কিন্তু int এ গুণটা আগে হিসাব হয় বলে বড় সংখ্যায় overflow হতে পারে। (firstNumber / gcd) * secondNumber লিখলে মাঝের মানটা ছোট থাকে, আর gcd যেহেতু firstNumber কে পুরোপুরি ভাগ করে, ফল একই থাকে।"
           ],
           [
             "loop এর শর্ত b != 0 এর বদলে a != 0 লেখা",
