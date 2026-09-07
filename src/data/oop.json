@@ -2,91 +2,6 @@
   "topic": "Object Oriented Programming",
   "questions": [
     {
-      "id": 1,
-      "question": "Which information is not correct for any constructor of a java class?",
-      "options": {
-        "a": "Constructor is not inherited",
-        "b": "Constructor has no return type",
-        "c": "Constructor can be final",
-        "d": "Constructor can be overloaded"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Constructor can be final",
-      "page": "Constructor",
-      "explanation": "Java তে constructor কে final করা যায় না কারণ final মেথড override করা যায় না, কিন্তু constructor আসলে inherit বা override হয় না। Constructor শুধুমাত্র overload করা যায়, final ঘোষণা করার কোনো অর্থ নেই।"
-    },
-    {
-      "id": 2,
-      "question": "Which of the following is the destructor of class Vehicle?",
-      "options": {
-        "a": "*Vehicle()",
-        "b": "~Vehicle()",
-        "c": "~Vehicle(int value)",
-        "d": "*Vehicle(int value)"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "~Vehicle()",
-      "page": "Constructor",
-      "explanation": "Destructor-এর নাম class-এর নামের আগে ~ (tilde) চিহ্ন দিয়ে লেখা হয়। Destructor-এ কোনো parameter বা return type থাকে না। তাই Vehicle class-এর destructor হবে ~Vehicle()।"
-    },
-    {
-      "id": 3,
-      "question": "Which of the following is not an operator in Java?",
-      "options": {
-        "a": "instanceof",
-        "b": "sizeof",
-        "c": "new",
-        "d": "All of this"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "sizeof",
-      "page": "Java Basics",
-      "note": "There is no sizeof operator in Java",
-      "explanation": "Java তে sizeof অপারেটর নেই কারণ Java তে সব ডেটা টাইপের আকার পূর্বনির্ধারিত এবং প্ল্যাটফর্ম-স্বাধীন। C/C++ এ sizeof আছে, কিন্তু Java তে এর প্রয়োজন হয় না।"
-    },
-    {
-      "id": 4,
-      "question": "Object being passed to a copy constructor ----",
-      "options": {
-        "a": "Must be passed by reference",
-        "b": "Must be passed by value",
-        "c": "Must be passed with integer type",
-        "d": "Must not be mentioned in parameter list"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "Must be passed by reference",
-      "page": "Constructor",
-      "explanation": "Copy constructor এ অবজেক্ট অবশ্যই reference দিয়ে পাস করতে হয় কারণ value দিয়ে পাস করলে আবার copy constructor ডাকা হতো, যা infinite recursion তৈরি করত।"
-    },
-    {
-      "id": 5,
-      "question": "Does constructor overloading include different return types for constructors to be overloaded?",
-      "options": {
-        "a": "Yes, if return types are different, signature becomes different",
-        "b": "Yes, because return types can differentiate two functions",
-        "c": "No, return type can't differentiate two functions",
-        "d": "No, constructors doesn't have any return type"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "No, constructors doesn't have any return type",
-      "page": "Constructor",
-      "explanation": "Constructor এর কোনো return type নেই, এমনকি void ও না। তাই constructor overloading শুধুমাত্র parameter এর সংখ্যা বা ধরনের পার্থক্যের উপর নির্ভর করে, return type এর উপর নয়।"
-    },
-    {
-      "id": 6,
-      "question": "Which of the following format is a correct format for declaration of function?",
-      "options": {
-        "a": "return-type function-name(argument type);",
-        "b": "return-type function-name(argument type){}",
-        "c": "return-type (argument type) function-name;",
-        "d": "return-type {} function-name"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "return-type function-name(argument type){}",
-      "page": "Functions",
-      "explanation": "একটি সম্পূর্ণ function definition এর সঠিক ফরম্যাট হলো: প্রথমে return type, তারপর function নাম, প্যারেন্থেসিসে argument, এবং curly braces {} এ function body। অপশন (a) হলো function prototype/declaration, সম্পূর্ণ definition নয়।"
-    },
-    {
       "id": 7,
       "question": "A function having more than one distinct meaning is called --------- function.",
       "options": {
@@ -99,20 +14,6 @@
       "correct_answer_text": "Overloaded",
       "page": "Polymorphism",
       "explanation": "Overloaded function হলো এমন একটি function যার একই নামে একাধিক সংজ্ঞা থাকে কিন্তু ভিন্ন parameter। এটি compile-time polymorphism এর একটি উদাহরণ।"
-    },
-    {
-      "id": 8,
-      "question": "What is the process of defining two or more methods within the same class that have the same name but different parameters declaration?",
-      "options": {
-        "a": "Method Overloading",
-        "b": "Method Overriding",
-        "c": "Encapsulation",
-        "d": "Abstraction"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "Method Overloading",
-      "page": "Polymorphism",
-      "explanation": "Method Overloading হলো একই ক্লাসে একই নামের একাধিক মেথড তৈরি করা যেখানে parameter এর সংখ্যা বা ধরন আলাদা। এটি compile-time polymorphism এবং কোড পুনর্ব্যবহারযোগ্যতা বাড়ায়।"
     },
     {
       "id": 9,
@@ -157,20 +58,6 @@
       "explanation": "Virtual function ব্যবহার করলে runtime এ কোন function call হবে তা নির্ধারিত হয়, এটিকে dynamic binding বলে। Base class pointer দিয়ে derived class এর overridden function কল করা যায়।"
     },
     {
-      "id": 12,
-      "question": "What is the name of the feature in which we enforce the definitions of the function at the compile time?",
-      "options": {
-        "a": "Dynamic Polymorphism",
-        "b": "Static Polymorphism",
-        "c": "Dynamic or Static Polymorphism according to need",
-        "d": "Polymorphism"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Static Polymorphism",
-      "page": "Polymorphism",
-      "explanation": "Static Polymorphism (compile-time polymorphism) এ function এর সংজ্ঞা compile এর সময়ই নির্ধারিত হয়। Method overloading এবং operator overloading হলো static polymorphism এর উদাহরণ।"
-    },
-    {
       "id": 13,
       "question": "Overloaded functions are required to",
       "options": {
@@ -185,89 +72,6 @@
       "explanation": "Overloaded functions এর মূল উদ্দেশ্য একই রকম কাজ করা, তবে বিভিন্ন ধরনের বা সংখ্যার parameter নিয়ে। Return type বা parameter type আলাদা হতে পারে, কিন্তু মূল কার্যকারিতা একই হওয়া উচিত।"
     },
     {
-      "id": 14,
-      "question": "Which of these inheritances is shown in case we inherit some base class from another class, then one of the classes derives it?",
-      "options": {
-        "a": "Single",
-        "b": "Multiple",
-        "c": "Multi-level",
-        "d": "Hierarchical"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Multi-level",
-      "page": "Inheritance",
-      "explanation": "Multi-level inheritance হলো যখন একটি class অন্য একটি derived class থেকে inherit করে, যেমন A → B → C। এখানে C, B থেকে এবং B, A থেকে inherit করে, ফলে একটি শৃঙ্খল তৈরি হয়।"
-    },
-    {
-      "id": 15,
-      "question": "A base class may also be called a",
-      "options": {
-        "a": "child class",
-        "b": "subclass",
-        "c": "derived class",
-        "d": "parent class"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "parent class",
-      "page": "Inheritance",
-      "explanation": "Base class কে parent class বলা হয় কারণ এটি অন্য class গুলোর (derived/child class) উৎস। Derived class সবসময় base/parent class থেকে বৈশিষ্ট্য ও মেথড inherit করে।"
-    },
-    {
-      "id": 16,
-      "question": "When you omit parameters from a function call, values can be provided by",
-      "options": {
-        "a": "formal parameters",
-        "b": "reference parameters",
-        "c": "overloaded parameters",
-        "d": "default parameters"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "default parameters",
-      "page": "Functions",
-      "explanation": "Default parameters ব্যবহার করলে function call করার সময় সেই argument না দিলেও চলে, কারণ function definition এ আগে থেকে একটি default মান নির্ধারিত থাকে।"
-    },
-    {
-      "id": 17,
-      "question": "The first element in a string is",
-      "options": {
-        "a": "the name of the string",
-        "b": "the first character in the string",
-        "c": "the length of the string",
-        "d": "the name of the array holding the string"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "the first character in the string",
-      "page": "Strings",
-      "explanation": "String এর প্রথম উপাদান হলো সেই string এর প্রথম character, যা index 0 এ অবস্থিত। প্রোগ্রামিংয়ে array এবং string উভয়ই 0 index থেকে শুরু হয়।"
-    },
-    {
-      "id": 18,
-      "question": "Variables declared outside a block are called ______",
-      "options": {
-        "a": "global",
-        "b": "universal",
-        "c": "stellar",
-        "d": "external"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "global",
-      "page": "Variables",
-      "explanation": "কোনো block বা function এর বাইরে declare করা variable কে global variable বলে। Global variable প্রোগ্রামের যেকোনো জায়গা থেকে access করা যায় এবং পুরো প্রোগ্রাম চলার সময় মেমরিতে থাকে।"
-    },
-    {
-      "id": 19,
-      "question": "OOPs is invented by",
-      "options": {
-        "a": "Andrea Ferro",
-        "b": "Dennis Ritchie",
-        "c": "Adele Goldberg",
-        "d": "Alan Kay"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "Alan Kay",
-      "explanation": "OOP (Object-Oriented Programming) এর ধারণা মূলত Alan Kay উদ্ভাবন করেন, যিনি Smalltalk প্রোগ্রামিং ভাষা তৈরিতেও গুরুত্বপূর্ণ ভূমিকা রেখেছিলেন। Dennis Ritchie ছিলেন C এর জনক।"
-    },
-    {
       "id": 20,
       "question": "Which of the following does not have a body",
       "options": {
@@ -279,32 +83,6 @@
       "correct_answer": "c",
       "correct_answer_text": "An Abstract Method",
       "explanation": "Abstract method এর কোনো body বা implementation থাকে না, শুধু signature থাকে। Abstract method কে subclass এ অবশ্যই override করে implement করতে হয়।"
-    },
-    {
-      "id": 21,
-      "question": "In oops public, private & protected are",
-      "options": {
-        "a": "Classes",
-        "b": "Access Modifiers",
-        "c": "Interfaces",
-        "d": "Method signature"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Access Modifiers",
-      "explanation": "public, private এবং protected হলো access modifier যা class এর member এর accessibility নিয়ন্ত্রণ করে। public সর্বত্র, protected subclass এ এবং private শুধু নিজ class এ accessible।"
-    },
-    {
-      "id": 22,
-      "question": "A private member of a class is visible to",
-      "options": {
-        "a": "every where",
-        "b": "in sub class",
-        "c": "members to same package",
-        "d": "only members of same class"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "only members of same class",
-      "explanation": "Private member শুধুমাত্র সেই class এর ভেতরের মেথড ও variable থেকে access করা যায়। Subclass বা অন্য কোনো class থেকে private member সরাসরি access করা সম্ভব নয়, যা encapsulation নিশ্চিত করে।"
     },
     {
       "id": 23,
@@ -346,19 +124,6 @@
       "explanation": "Friend function কোনো class এর member নয়, বরং এটি class এর বাইরের একটি function যাকে class এর private ও protected member access করার অনুমতি দেওয়া হয়। এটি class scope এ নেই।"
     },
     {
-      "id": 26,
-      "question": "How many catch blocks can you use with a single Try block?",
-      "options": {
-        "a": "Only 2",
-        "b": "Only 1",
-        "c": "Maximum 256",
-        "d": "As many as required"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "As many as required",
-      "explanation": "একটি try block এর সাথে যতগুলো প্রয়োজন ততগুলো catch block ব্যবহার করা যায়। প্রতিটি catch block ভিন্ন ধরনের exception handle করতে পারে, যা exception handling কে আরও নমনীয় করে।"
-    },
-    {
       "id": 27,
       "question": "Which of the following is not a type of constructor?",
       "options": {
@@ -385,58 +150,6 @@
       "explanation": "C++ এ class এর member গুলো default এ private হয়, আর structure এর member গুলো default এ public হয়। এটি class এবং structure এর মধ্যে প্রধান পার্থক্য।"
     },
     {
-      "id": 29,
-      "question": "Which of the following concepts means waiting until runtime to determine which function to call?",
-      "options": {
-        "a": "Data hiding",
-        "b": "Dynamic casting",
-        "c": "Dynamic binding",
-        "d": "Dynamic loading"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Dynamic binding",
-      "explanation": "Dynamic binding (late binding) এ কোন function call হবে তা compile time এ নয়, runtime এ নির্ধারিত হয়। Virtual function এর মাধ্যমে dynamic binding প্রয়োগ করা হয় এবং এটি runtime polymorphism এর ভিত্তি।"
-    },
-    {
-      "id": 30,
-      "question": "Which of the following is a mechanism of static polymorphism?",
-      "options": {
-        "a": "Operator overloading",
-        "b": "Function overloading",
-        "c": "Templates",
-        "d": "All of the above"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "All of the above",
-      "explanation": "Operator overloading, function overloading এবং templates সবগুলোই static (compile-time) polymorphism এর উদাহরণ। এগুলোতে compile এর সময়ই সিদ্ধান্ত নেওয়া হয় কোন function বা operation call হবে।"
-    },
-    {
-      "id": 31,
-      "question": "Which of the following is not a type of inheritance?",
-      "options": {
-        "a": "Multiple",
-        "b": "Multilevel",
-        "c": "Distributive",
-        "d": "Hierarchical"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Distributive",
-      "explanation": "OOP এ inheritance এর প্রকারভেদ হলো: Single, Multiple, Multilevel, Hierarchical এবং Hybrid। Distributive inheritance বলে কোনো প্রকার নেই, এটি OOP এর কোনো স্বীকৃত inheritance type নয়।"
-    },
-    {
-      "id": 32,
-      "question": "Which inheritance type is used in the class given below? class A : public X, public Y {}",
-      "options": {
-        "a": "Multilevel inheritance",
-        "b": "Multiple inheritance",
-        "c": "Hybrid inheritance",
-        "d": "Hierarchical Inheritance"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Multiple inheritance",
-      "explanation": "class A : public X, public Y এখানে class A একসাথে দুটি base class X এবং Y থেকে inherit করছে, এটিই Multiple inheritance। একটি derived class যখন একাধিক base class থেকে inherit করে তখন তাকে multiple inheritance বলে।"
-    },
-    {
       "id": 33,
       "question": "What is correct about the static data member of a class?",
       "options": {
@@ -448,19 +161,6 @@
       "correct_answer": "d",
       "correct_answer_text": "Both A and B",
       "explanation": "Static data member সেই class এর সব অবজেক্টের মধ্যে shared হয়, মানে সব object একই মেমরি স্পেস ব্যবহার করে। Static member function শুধুমাত্র static data member access করতে পারে কারণ এর কোনো 'this' pointer নেই।"
-    },
-    {
-      "id": 34,
-      "question": "Which of the following statements is correct?",
-      "options": {
-        "a": "Class is an instance of an object",
-        "b": "Object is an instance of a class",
-        "c": "Class is an instance of data type",
-        "d": "None"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Object is an instance of a class",
-      "explanation": "Class হলো একটি blueprint বা template, আর Object হলো সেই class এর একটি নির্দিষ্ট instance। যেমন 'Car' একটি class হলে 'myCar' হলো সেই class এর একটি object বা instance।"
     },
     {
       "id": 35,
@@ -526,19 +226,6 @@
       "correct_answer": "d",
       "correct_answer_text": "all of these",
       "explanation": "Conversion operator, new এবং delete — এই তিনটি operator function global হতে পারে না, এগুলো অবশ্যই class-এর member function হতে হবে। Conversion operator class-specific type conversion করে, তাই member হওয়া বাধ্যতামূলক।"
-    },
-    {
-      "id": 41,
-      "question": "Which of the following is true regarding a constructor in Object Oriented Programming?",
-      "options": {
-        "a": "May consist of a return type",
-        "b": "Does not consist of any return type",
-        "c": "Has some return type",
-        "d": "None of the above"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Does not consist of any return type",
-      "explanation": "Constructor-এ কোনো return type থাকে না — এমনকি void-ও না। Constructor-এর নাম class-এর নামের মতোই হয় এবং object তৈরির সময় automatically call হয়। Java constructor abstract, final, static বা synchronized হতে পারে না।"
     },
     {
       "id": 42,

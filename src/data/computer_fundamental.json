@@ -30,48 +30,6 @@
       "explanation": "এনালগ কম্পিউটার বৈদ্যুতিক সংকেত সরাসরি প্রক্রিয়া করে বলে নির্দিষ্ট ধরনের কাজে ডিজিটালের চেয়ে দ্রুত ফলাফল দিতে পারে। তবে নির্ভুলতা ও নির্ভরযোগ্যতায় ডিজিটাল কম্পিউটার এগিয়ে।"
     },
     {
-      "id": 3,
-      "question": "In plasma display, gas is electrified by grid of ______.",
-      "options": {
-        "a": "electronics",
-        "b": "phosphors",
-        "c": "electrons",
-        "d": "electrodes"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "electrodes",
-      "page": 9,
-      "explanation": "প্লাজমা ডিসপ্লেতে দুটি কাচের প্যানেলের মাঝে গ্যাস থাকে, এবং ইলেকট্রোডের গ্রিডের মাধ্যমে সেই গ্যাসকে তড়িৎ প্রয়োগ করে আলোকিত করা হয়। ইলেকট্রোড ছাড়া গ্যাসকে সঠিকভাবে উত্তেজিত করা সম্ভব নয়।"
-    },
-    {
-      "id": 4,
-      "question": "Which of the following contain configuration information of a window?",
-      "options": {
-        "a": ".exe",
-        "b": ".ini",
-        "c": ".dll",
-        "d": ".ehn"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": ".ini",
-      "page": 9,
-      "explanation": ".ini (Initialization) ফাইল হলো Windows-এর কনফিগারেশন ফাইল যেখানে সফটওয়্যার সেটিংস ও প্রোগ্রামের প্রাথমিক তথ্য সংরক্ষিত থাকে। .exe হলো এক্সিকিউটেবল এবং .dll হলো লাইব্রেরি ফাইল।"
-    },
-    {
-      "id": 5,
-      "question": "In a spreadsheet ______ can help you make sense of a worksheet contains.",
-      "options": {
-        "a": "value",
-        "b": "labels",
-        "c": "formula",
-        "d": "macros"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "labels",
-      "page": 9,
-      "explanation": "স্প্রেডশিটে লেবেল হলো টেক্সট ডেটা যা কলাম বা রোর শিরোনাম হিসেবে ব্যবহৃত হয়, ফলে ওয়ার্কশিটের ডেটা বোঝা সহজ হয়। লেবেল ছাড়া শুধু সংখ্যা দেখে বোঝা কঠিন যে কোন তথ্য কোথায় আছে।"
-    },
-    {
       "id": 6,
       "question": "Which of the following uses the flip-flop circuit in a memory cell?",
       "options": {
@@ -142,20 +100,6 @@
       "explanation": "বিট (Binary Digit) হলো কম্পিউটারের তথ্যের সবচেয়ে ছোট একক, যার মান হয় ০ অথবা ১। সব ডিজিটাল তথ্য শেষ পর্যন্ত এই দুটি মানের সমন্বয়ে তৈরি।"
     },
     {
-      "id": 11,
-      "question": "The central processing unit is located in the ______.",
-      "options": {
-        "a": "Hard disk",
-        "b": "System unit",
-        "c": "Memory unit",
-        "d": "Monitor"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "System unit",
-      "page": "Exercise",
-      "explanation": "CPU (Central Processing Unit) সিস্টেম ইউনিটের ভেতরে মাদারবোর্ডে অবস্থিত। সিস্টেম ইউনিট হলো কম্পিউটারের মূল বাক্স যেখানে প্রসেসর, র্যাম, মাদারবোর্ড সহ সব গুরুত্বপূর্ণ হার্ডওয়্যার থাকে।"
-    },
-    {
       "id": 12,
       "question": "Input Devices that use a special ink that contains magnetizable particles of iron oxide are ______.",
       "options": {
@@ -224,20 +168,6 @@
       "correct_answer_text": "1024 ZB",
       "page": 30,
       "explanation": "ডেটা স্টোরেজের ক্রমানুসার হলো: KB → MB → GB → TB → PB → EB → ZB → YB। তাই ১ ইয়োটাবাইট = ১০২৪ জেটাবাইট (ZB)। ইয়োটাবাইট এখন পর্যন্ত ব্যবহৃত সবচেয়ে বড় স্ট্যান্ডার্ড ডেটা একক।"
-    },
-    {
-      "id": 17,
-      "question": "Rotation of the disk must vary ______ with the radius of the disk.",
-      "options": {
-        "a": "directly",
-        "b": "inversely",
-        "c": "concurrently",
-        "d": "accordingly"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "inversely",
-      "page": 30,
-      "explanation": "ডিস্কের প্রতিটি অংশে সমান লিনিয়ার গতি বজায় রাখতে (CLV - Constant Linear Velocity), ব্যাসার্ধ বাড়লে ঘূর্ণন গতি কমাতে হয়। তাই ডিস্কের ঘূর্ণন ব্যাসার্ধের সাথে বিপরীতভাবে পরিবর্তিত হয়।"
     },
     {
       "id": 18,
@@ -331,32 +261,6 @@
       "explanation": "Marcian E. Hoff (Ted Hoff) ইন্টেলে কাজ করার সময় ১৯৭১ সালে Intel 4004 নামে প্রথম মাইক্রোপ্রসেসর আবিষ্কার করেন। এটি ছিল একটি ছোট চিপে সম্পূর্ণ CPU-এর কার্যকারিতা একীভূত করার প্রথম সফল প্রচেষ্টা।"
     },
     {
-      "id": 25,
-      "question": "A dumb terminal has",
-      "options": {
-        "a": "an embedded microcomputer",
-        "b": "extensive memory",
-        "c": "independent processing",
-        "d": "a keyboard and screen"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "a keyboard and screen",
-      "explanation": "ডাম্ব টার্মিনালে শুধুমাত্র কীবোর্ড এবং স্ক্রিন থাকে, নিজস্ব কোনো প্রসেসর বা মেমোরি থাকে না। এটি সব প্রসেসিং মূল হোস্ট কম্পিউটারে পাঠিয়ে দেয় এবং শুধু ইনপুট-আউটপুটের মাধ্যম হিসেবে কাজ করে।"
-    },
-    {
-      "id": 26,
-      "question": "In analog computer",
-      "options": {
-        "a": "input is first converted to digital form",
-        "b": "input is never converted to digital form",
-        "c": "output is displayed in digital form",
-        "d": "all of them"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "input is never converted to digital form",
-      "explanation": "এনালগ কম্পিউটার ভোল্টেজ, তাপমাত্রা বা চাপের মতো ক্রমাগত পরিবর্তনশীল সংকেত সরাসরি প্রক্রিয়া করে, কখনো ডিজিটালে রূপান্তরিত করে না। এ কারণে এটি বাস্তব জগতের সংকেত প্রক্রিয়ায় দ্রুত কিন্তু নির্ভুলতায় কম।"
-    },
-    {
       "id": 27,
       "question": "The act of retrieving existing data from memory is called",
       "options": {
@@ -448,32 +352,6 @@
       "explanation": "কম্পিউটার সাধারণত BCD (Binary Coded Decimal) ফরম্যাটে ডেটা সংরক্ষণ করে। এটি প্রতিটি decimal digit কে 4-bit binary দিয়ে represent করে।"
     },
     {
-      "id": 34,
-      "question": "Swap space exists in ---",
-      "options": {
-        "a": "CPU",
-        "b": "random memory",
-        "c": "primary memory",
-        "d": "secondary memory"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "secondary memory",
-      "explanation": "Swap space হলো secondary memory (হার্ড ডিস্ক)-এ অবস্থিত একটি বিশেষ অংশ যা RAM পূর্ণ হয়ে গেলে virtual memory হিসেবে ব্যবহৃত হয়।"
-    },
-    {
-      "id": 35,
-      "question": "Which of the following is Cloud Platform by Microsoft?",
-      "options": {
-        "a": "Azure",
-        "b": "AWS",
-        "c": "Cloudera",
-        "d": "Openstack"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "Azure",
-      "explanation": "Microsoft Azure হলো Microsoft-এর cloud computing platform। AWS হলো Amazon-এর, Cloudera ও Openstack ভিন্ন কোম্পানির।"
-    },
-    {
       "id": 36,
       "question": "Java source code is compiled into —",
       "options": {
@@ -485,19 +363,6 @@
       "correct_answer": "b",
       "correct_answer_text": "Byte Code",
       "explanation": "Java source code (.java) কম্পাইল করলে Byte Code (.class) তৈরি হয়, যা JVM (Java Virtual Machine) দ্বারা execute হয়। এটি Java-কে platform-independent করে তোলে।"
-    },
-    {
-      "id": 37,
-      "question": "Word Press can be called as —",
-      "options": {
-        "a": "Static website",
-        "b": "Dynamic website",
-        "c": "Content Managed website",
-        "d": "E Commerce website"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Content Managed website",
-      "explanation": "WordPress হলো একটি CMS (Content Management System)। এটি ব্যবহারকারীদের technical knowledge ছাড়াই website-এর content তৈরি ও পরিচালনা করতে দেয়।"
     },
     {
       "id": 38,
@@ -539,19 +404,6 @@
       "explanation": "ASCII (American Standard Code for Information Interchange) হলো terminals-এর মধ্যে তথ্য আদান-প্রদানের জন্য ব্যবহৃত standard computer code। এটি 128টি character represent করতে পারে।"
     },
     {
-      "id": 42,
-      "question": "The step by step instruction that solved a problem are called —",
-      "options": {
-        "a": "Algorithm",
-        "b": "A list",
-        "c": "A plan",
-        "d": "None of the above"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "Algorithm",
-      "explanation": "Algorithm হলো কোনো সমস্যা সমাধানের জন্য ধাপে ধাপে (step by step) নির্দেশাবলীর একটি সুনির্দিষ্ট সেট। প্রতিটি ধাপ সুস্পষ্ট এবং finite সংখ্যক ধাপে সমস্যার সমাধান দেয়।"
-    },
-    {
       "id": 43,
       "question": "Dark data represents —",
       "options": {
@@ -563,19 +415,6 @@
       "correct_answer": "a",
       "correct_answer_text": "Unused data",
       "explanation": "Dark data হলো এমন তথ্য যা সংগৃহীত ও সংরক্ষিত হয় কিন্তু কোনো কাজে ব্যবহার হয় না। এটি storage দখল করে কিন্তু business value তৈরি করে না।"
-    },
-    {
-      "id": 44,
-      "question": "Source code is a(an) —",
-      "options": {
-        "a": "Program",
-        "b": "List of commands",
-        "c": "Source of variables",
-        "d": "Explanation of the algorithm"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "Program",
-      "explanation": "Source code হলো একটি program যা human-readable programming language-এ লেখা হয়। এটি compiler বা interpreter দ্বারা machine code-এ রূপান্তরিত হয়।"
     },
     {
       "id": 45,
@@ -615,32 +454,6 @@
       "correct_answer": "c",
       "correct_answer_text": "FORTRAN",
       "explanation": "FORTRAN (Formula Translation) হলো প্রথম high-level programming language যা 1957 সালে IBM তৈরি করে। এটি বৈজ্ঞানিক ও গাণিতিক computation-এর জন্য তৈরি হয়েছিল।"
-    },
-    {
-      "id": 48,
-      "question": "Which one is the first search engine?",
-      "options": {
-        "a": "Google",
-        "b": "Archie",
-        "c": "Alta vista",
-        "d": "WAIS"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Archie",
-      "explanation": "Archie হলো বিশ্বের প্রথম search engine যা 1990 সালে তৈরি হয়। এটি FTP servers-এর files index করত। Google 1998 সালে, AltaVista 1995 সালে তৈরি হয়।"
-    },
-    {
-      "id": 49,
-      "question": "In a computer, folder opening is denied by which of the following names?",
-      "options": {
-        "a": "con",
-        "b": "com",
-        "c": "mak",
-        "d": "make"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "con",
-      "explanation": "Windows-এ \"con\" নামে folder তৈরি করা যায় না কারণ এটি system-এর reserved name। Windows এই নামটি specific system tasks-এর জন্য সংরক্ষণ করে রাখে। com1, com2 ইত্যাদিও reserved।"
     },
     {
       "id": 50,

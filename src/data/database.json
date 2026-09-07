@@ -30,20 +30,6 @@
       "explanation": "Relational algebra-তে rename, select এবং union তিনটিই মৌলিক operations। Rename একটি relation বা attribute-এর নাম পরিবর্তন করে, select নির্দিষ্ট শর্তে tuple বেছে নেয়, এবং union দুটি relation-এর সকল tuple একত্রিত করে।"
     },
     {
-      "id": 3,
-      "question": "Which one of the following is a set of one or more attributes taken collectively to uniquely identify a record?",
-      "options": {
-        "a": "Candidate key",
-        "b": "Sub key",
-        "c": "Super key",
-        "d": "Foreign key"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Super key",
-      "page": "Keys",
-      "explanation": "Super key হলো এক বা একাধিক attributes-এর এমন একটি সেট যা একটি relation-এর প্রতিটি tuple-কে uniquely identify করতে পারে। এটি candidate key-এর superset হতে পারে।"
-    },
-    {
       "id": 4,
       "question": "In SQL, which command is used to add a column/integrity constraint to a table?",
       "options": {
@@ -58,20 +44,6 @@
       "explanation": "ALTER TABLE কমান্ড ব্যবহার করে বিদ্যমান table-এ নতুন column যোগ করা বা integrity constraint প্রয়োগ করা যায়। উদাহরণ: ALTER TABLE student ADD COLUMN age INT;"
     },
     {
-      "id": 5,
-      "question": "Which normal form is concerned with removing transitive dependency?",
-      "options": {
-        "a": "1NF",
-        "b": "2NF",
-        "c": "3NF",
-        "d": "BCN"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "3NF",
-      "page": "Normalization",
-      "explanation": "Third Normal Form (3NF) transitive dependency দূর করে। Transitive dependency মানে যখন একটি non-key attribute অন্য একটি non-key attribute-এর উপর নির্ভরশীল থাকে, যা 3NF-এ অনুমোদিত নয়।"
-    },
-    {
       "id": 6,
       "question": "Which command is used to enable/disable/drop an integrity constraint in SQL?",
       "options": {
@@ -84,21 +56,6 @@
       "correct_answer_text": "ALTER TABLE",
       "page": "SQL",
       "explanation": "ALTER TABLE কমান্ড দিয়ে একটি table-এর constraint enable, disable বা drop করা যায়। SQL-এ integrity constraint পরিচালনার জন্য এটিই মানক কমান্ড।"
-    },
-    {
-      "id": 7,
-      "question": "An attribute A of datatype varchar(20) has the value 'Avi'. The attribute B of datatype char(20) has value 'Reed'. Here attribute A has ___ spaces and attribute B has ___ spaces.",
-      "options": {
-        "a": "3, 20",
-        "b": "20, 4",
-        "c": "20, 20",
-        "d": "3, 4"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "3, 20",
-      "page": "SQL",
-      "note": "varchar stores only actual chars (3 for 'Avi'), char pads to full width (20 for 'Reed' in char(20))",
-      "explanation": "VARCHAR শুধুমাত্র actual characters সংরক্ষণ করে, তাই 'Avi' তিনটি space নেয়। কিন্তু CHAR একটি fixed length data type, তাই char(20)-এ 'Reed' সংরক্ষণ করলে বাকি জায়গা padding দিয়ে পূরণ হয় এবং মোট 20টি space ব্যবহার হয়।"
     },
     {
       "id": 8,
@@ -236,20 +193,6 @@
       "explanation": "File-based database সিস্টেম small-group situation-এর জন্য সবচেয়ে উপযুক্ত কারণ এটি সহজ এবং কম জটিল। বড় বা জটিল ব্যবহারের ক্ষেত্রে পূর্ণাঙ্গ DBMS বেশি কার্যকর।"
     },
     {
-      "id": 19,
-      "question": "A primary key must also be ----------------",
-      "options": {
-        "a": "Foreign key",
-        "b": "Unique",
-        "c": "Identical",
-        "d": "Case sensitive"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Unique",
-      "page": "Keys",
-      "explanation": "Primary key অবশ্যই unique হতে হবে কারণ এটি প্রতিটি record-কে আলাদাভাবে সনাক্ত করে। Primary key-তে duplicate বা NULL মান থাকতে পারে না।"
-    },
-    {
       "id": 20,
       "question": "The language used in application programs to request data from the DBMS is referred to as the-",
       "options": {
@@ -332,19 +275,6 @@
       "correct_answer_text": "Fields",
       "page": "Database Basics",
       "explanation": "Database-এ প্রতিটি record একাধিক fields নিয়ে গঠিত। Field হলো data-র সবচেয়ে ছোট একক, যেমন নাম, বয়স, ঠিকানা। একটি record হলো সংশ্লিষ্ট fields-এর সমন্বয়।"
-    },
-    {
-      "id": 26,
-      "question": "Which normal form specifically eliminates partial functional dependencies?",
-      "options": {
-        "a": "1NF",
-        "b": "2NF",
-        "c": "3NF",
-        "d": "4NF"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "2NF",
-      "explanation": "Second Normal Form (2NF) partial functional dependency দূর করে। Partial dependency তখন হয় যখন একটি non-key attribute composite primary key-এর শুধুমাত্র একটি অংশের উপর নির্ভরশীল থাকে, সম্পূর্ণ key-এর উপর নয়।"
     },
     {
       "id": 27,
@@ -438,19 +368,6 @@
       "explanation": "Database-এর সবগুলো বৈশিষ্ট্যই সঠিক: এটি logically related records-এর সংগ্রহ, পৃথক files একত্রিত করে, এবং application programs থেকে data স্বাধীন থাকে। এই তিনটি একসাথে database-এর core properties।"
     },
     {
-      "id": 34,
-      "question": "The DBMS language component which can be embedded in a program is",
-      "options": {
-        "a": "DDL",
-        "b": "DML",
-        "c": "DCL",
-        "d": "Query language"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "DML",
-      "explanation": "DML (Data Manipulation Language) statements যেমন SELECT, INSERT, UPDATE, DELETE সরাসরি application programs-এ embed করা যায়। এটি host language-এর সাথে মিলিয়ে database-এ data manipulate করতে ব্যবহৃত হয়।"
-    },
-    {
       "id": 35,
       "question": "Count function in SQL returns the number of",
       "options": {
@@ -516,19 +433,6 @@
       "explanation": "Relational Algebra একটি procedural query language কারণ এটি step-by-step specify করে কীভাবে data retrieve করতে হবে। এটি operators যেমন select, project, join ব্যবহার করে query তৈরি করে।"
     },
     {
-      "id": 40,
-      "question": "Key to represent the relationship between tables is called",
-      "options": {
-        "a": "Primary Key",
-        "b": "Secondary Key",
-        "c": "Foreign Key",
-        "d": "None of these"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Foreign Key",
-      "explanation": "Foreign key দুটি table-এর মধ্যে সম্পর্ক তৈরি করে। এটি একটি table-এ অন্য table-এর primary key-কে reference হিসেবে ব্যবহার করে এবং referential integrity নিশ্চিত করে।"
-    },
-    {
       "id": 41,
       "question": "Which of the following is a valid SQL type?",
       "options": {
@@ -540,19 +444,6 @@
       "correct_answer": "d",
       "correct_answer_text": "All of the above",
       "explanation": "CHARACTER, NUMERIC এবং FLOAT তিনটিই SQL-এর valid data types। CHARACTER text data, NUMERIC সংখ্যাসূচক data, এবং FLOAT floating-point সংখ্যা সংরক্ষণের জন্য ব্যবহৃত হয়।"
-    },
-    {
-      "id": 42,
-      "question": "Which of the following is a legal expression in SQL?",
-      "options": {
-        "a": "SELECT NULL FROM EMPLOYEE;",
-        "b": "SELECT NAME FROM EMPLOYEE;",
-        "c": "SELECT NAME FROM EMPLOYEE WHERE SALARY = NULL;",
-        "d": "None of the above"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "SELECT NAME FROM EMPLOYEE;",
-      "explanation": "SELECT NAME FROM EMPLOYEE; একটি valid SQL expression কারণ এটি সঠিক syntax অনুসরণ করে। NULL-এর সাথে তুলনা করতে = NULL ব্যবহার করা যায় না; IS NULL ব্যবহার করতে হয়।"
     },
     {
       "id": 43,
@@ -646,32 +537,6 @@
       "explanation": "Transaction হলো database operations-এর একটি logical unit যা একটি sequence of queries এবং/অথবা updates নিয়ে গঠিত। ACID properties (Atomicity, Consistency, Isolation, Durability) transaction-এর নির্ভরযোগ্যতা নিশ্চিত করে।"
     },
     {
-      "id": 50,
-      "question": "Which of the following makes the transaction permanent in the database?",
-      "options": {
-        "a": "View",
-        "b": "Commit",
-        "c": "Rollback",
-        "d": "Flashback"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Commit",
-      "explanation": "COMMIT statement একটি transaction-এর সকল পরিবর্তন স্থায়ীভাবে database-এ সংরক্ষণ করে। COMMIT-এর পরে পরিবর্তনগুলো আর undo করা যায় না এবং অন্য users তা দেখতে পারে।"
-    },
-    {
-      "id": 51,
-      "question": "In case of any shut down during a transaction before commit, which of the following statements is done automatically?",
-      "options": {
-        "a": "View",
-        "b": "Commit",
-        "c": "Rollback",
-        "d": "Flashback"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "Rollback",
-      "explanation": "যদি commit-এর আগে transaction-এর সময় system shutdown হয়, তাহলে DBMS স্বয়ংক্রিয়ভাবে ROLLBACK করে। এটি transaction-এর সকল partial changes বাতিল করে database-কে আগের consistent state-এ ফিরিয়ে নেয়।"
-    },
-    {
       "id": 52,
       "question": "Which is a bottom-up approach to database design that design by examining the relationship between attributes?",
       "options": {
@@ -683,19 +548,6 @@
       "correct_answer": "c",
       "correct_answer_text": "Normalization",
       "explanation": "Normalization একটি bottom-up approach যেখানে attributes-এর মধ্যে functional dependency পরীক্ষা করে database design করা হয়। এটি redundancy কমায় এবং data integrity নিশ্চিত করে।"
-    },
-    {
-      "id": 53,
-      "question": "In the ___ normal form, a composite attribute is converted to individual attributes.",
-      "options": {
-        "a": "First",
-        "b": "Second",
-        "c": "Third",
-        "d": "Fourth"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "First",
-      "explanation": "First Normal Form (1NF) নিশ্চিত করে যে প্রতিটি column atomically অর্থাৎ অবিভাজ্য মান ধারণ করে। তাই composite বা multi-valued attributes-কে পৃথক individual attributes-এ রূপান্তরিত করতে হয়।"
     },
     {
       "id": 54,
@@ -722,201 +574,6 @@
       "correct_answer": "a",
       "correct_answer_text": "Key",
       "explanation": "Functional dependency key-এর উপর ভিত্তি করে তৈরি constraints। যখন একটি attribute বা attribute set অন্য attribute-কে uniquely determine করে, সেই ধারণাটি key dependency থেকেই উদ্ভূত হয়।"
-    },
-    {
-      "id": 56,
-      "question": "We indicate roles in E-R diagrams by labeling the lines that connect ___ to ___",
-      "options": {
-        "a": "Diamond, diamond",
-        "b": "Rectangle, diamond",
-        "c": "Rectangle, rectangle",
-        "d": "Diamond, rectangle"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "Diamond, rectangle",
-      "explanation": "E-R diagram-এ role label করা হয় diamond (relationship set) এবং rectangle (entity set)-এর মধ্যে সংযোগকারী line-এ। এটি বিশেষত recursive relationship-এ গুরুত্বপূর্ণ যেখানে একটি entity দুটি ভিন্ন ভূমিকায় থাকে।"
-    },
-    {
-      "id": 57,
-      "question": "Which of the following is an Open Source DBMS?",
-      "options": {
-        "a": "MySQL",
-        "b": "Microsoft SQL Server",
-        "c": "Microsoft Access",
-        "d": "Oracle"
-      },
-      "correct_answer": "a",
-      "correct_answer_text": "MySQL",
-      "explanation": "MySQL একটি open source relational DBMS যা বিনামূল্যে ব্যবহার করা যায় এবং এর source code publicly available। Microsoft SQL Server, Access এবং Oracle হলো proprietary (closed-source) DBMS।"
-    },
-    {
-      "id": 58,
-      "question": "3NF removes which type of dependency?",
-      "options": {
-        "a": "Partial dependency",
-        "b": "Transitive dependency",
-        "c": "Multivalued dependency",
-        "d": "Redundancy"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Transitive dependency",
-      "explanation": "3NF অপসারণ করে Transitive dependency (non-key → non-key)। 2NF অপসারণ করে Partial dependency। 4NF সামলায় Multivalued dependency। সব normal form redundancy কমায় কিন্তু প্রতিটি নির্দিষ্ট dependency type টার্গেট করে।"
-    },
-    {
-      "id": 59,
-      "question": "ACID property 'Durability' means:",
-      "options": {
-        "a": "Data can change",
-        "b": "Data is permanent after commit",
-        "c": "No duplication",
-        "d": "Atomic transaction"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Data is permanent after commit",
-      "explanation": "Durability নিশ্চিত করে যে committed transaction স্থায়ীভাবে টিকে থাকে crash/power loss-এর পরেও (disk-এ সংরক্ষিত)। Atomicity = সব বা কিছুই না। Consistency = বৈধ state। Isolation = transaction একে অপরের সাথে হস্তক্ষেপ করে না।"
-    },
-    {
-      "id": 60,
-      "question": "Which SQL join returns ALL records from both tables?",
-      "options": {
-        "a": "INNER JOIN",
-        "b": "LEFT JOIN",
-        "c": "FULL OUTER JOIN",
-        "d": "CROSS JOIN"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "FULL OUTER JOIN",
-      "explanation": "FULL OUTER JOIN উভয় টেবিলের সকল record ফেরত দেয়, যেখানে match নেই সেখানে NULL থাকে। INNER শুধু match ফেরত দেয়। LEFT বাম টেবিলের সব + ডান টেবিলের matched। CROSS ফেরত দেয় Cartesian product।"
-    },
-    {
-      "id": 61,
-      "question": "Which SQL clause is used to filter grouped data?",
-      "options": {
-        "a": "WHERE",
-        "b": "GROUP BY",
-        "c": "HAVING",
-        "d": "ORDER BY"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "HAVING",
-      "explanation": "HAVING GROUP BY-এর পরে filter করে (aggregated result-এ)। WHERE grouping-এর আগে row filter করে। GROUP BY row গুছিয়ে দেয়। ORDER BY result সাজায়। WHERE-এর সাথে COUNT/SUM-এর মতো aggregate function ব্যবহার করা যায় না।"
-    },
-    {
-      "id": 62,
-      "question": "Index is used to:",
-      "options": {
-        "a": "Increase redundancy",
-        "b": "Improve query speed",
-        "c": "Normalize table",
-        "d": "Reduce memory"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Improve query speed",
-      "explanation": "Index ডেটা retrieval দ্রুত করে একটি আলাদা lookup structure তৈরি করে। এগুলো redundancy বাড়ায় না (এগুলো metadata)। এগুলো normalize করে না বা মেমোরি কমায় না — index আসলে অতিরিক্ত storage ব্যবহার করে।"
-    },
-    {
-      "id": 63,
-      "question": "Primary key cannot contain:",
-      "options": {
-        "a": "Integer values",
-        "b": "Duplicate values",
-        "c": "Unique values",
-        "d": "NOT NULL values"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Duplicate values",
-      "explanation": "Primary key অবশ্যই UNIQUE এবং NOT NULL হতে হবে। Duplicate value uniqueness constraint ভঙ্গ করবে — record গুলোর মধ্যে পার্থক্য করা যাবে না। Integer এবং unique value বৈধ primary key type।"
-    },
-    {
-      "id": 64,
-      "question": "Which normal form removes partial dependency?",
-      "options": {
-        "a": "1NF",
-        "b": "2NF",
-        "c": "3NF",
-        "d": "BCNF"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "2NF",
-      "explanation": "2NF অপসারণ করে Partial dependency (non-key attribute composite primary key-এর অংশের উপর নির্ভর করে)। 1NF atomic value নিশ্চিত করে। 3NF transitive dependency অপসারণ করে। BCNF, 3NF-এর চেয়ে কঠোর।"
-    },
-    {
-      "id": 65,
-      "question": "Which SQL command removes the entire table structure?",
-      "options": {
-        "a": "DELETE",
-        "b": "DROP",
-        "c": "TRUNCATE",
-        "d": "REMOVE"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "DROP",
-      "explanation": "DROP পুরো টেবিল structure এবং ডেটা স্থায়ীভাবে মুছে দেয়। DELETE row মুছে (DML, rollback সম্ভব)। TRUNCATE সব row মুছে কিন্তু structure রাখে (DELETE-এর চেয়ে দ্রুত)। REMOVE কোনো SQL command নয়।"
-    },
-    {
-      "id": 66,
-      "question": "Functional dependency A → B means:",
-      "options": {
-        "a": "B determines A",
-        "b": "A uniquely determines B",
-        "c": "A and B are independent",
-        "d": "None of these"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "A uniquely determines B",
-      "explanation": "A → B মানে A functionally determine করে B — A-এর প্রতিটি value-এর জন্য B-এর ঠিক একটি value আছে। এর মানে এই নয় যে B, A কে determine করে (সেটি হতো B → A)। এরা independent নয়।"
-    },
-    {
-      "id": 67,
-      "question": "BCNF is stricter than:",
-      "options": {
-        "a": "1NF",
-        "b": "2NF",
-        "c": "3NF",
-        "d": "All of these"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "All of these",
-      "explanation": "BCNF (Boyce-Codd Normal Form) 1NF, 2NF এবং 3NF-এর সবগুলোর চেয়ে কঠোর। BCNF-এর প্রতিটি relation 3NF, 2NF এবং 1NF-এ আছে, কিন্তু বিপরীতটি নয়। BCNF প্রয়োজন করে যে প্রতিটি determinant একটি candidate key হবে।"
-    },
-    {
-      "id": 68,
-      "question": "Which SQL join returns only the common/matching records?",
-      "options": {
-        "a": "LEFT JOIN",
-        "b": "RIGHT JOIN",
-        "c": "INNER JOIN",
-        "d": "FULL JOIN"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "INNER JOIN",
-      "explanation": "INNER JOIN শুধুমাত্র সেই row গুলো ফেরত দেয় যেখানে উভয় টেবিলে match আছে (intersection)। LEFT JOIN বাম টেবিলের সব row + ডান টেবিলের matched। RIGHT JOIN ডান টেবিলের সব row + বাম টেবিলের matched। FULL JOIN উভয় টেবিলের সব row।"
-    },
-    {
-      "id": 69,
-      "question": "ACID property 'I' stands for:",
-      "options": {
-        "a": "Integrity",
-        "b": "Isolation",
-        "c": "Index",
-        "d": "Independence"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Isolation",
-      "explanation": "ACID: Atomicity, Consistency, Isolation, Durability। Isolation নিশ্চিত করে যে concurrent transaction গুলো এমনভাবে execute হয় যেন একটি অন্যটির intermediate state দেখতে না পায়। Integrity সাধারণ DB ধারণা, ACID-এর 'I' নয়।"
-    },
-    {
-      "id": 70,
-      "question": "Which of the following is NOT a NoSQL database?",
-      "options": {
-        "a": "MongoDB",
-        "b": "Cassandra",
-        "c": "MySQL",
-        "d": "Redis"
-      },
-      "correct_answer": "c",
-      "correct_answer_text": "MySQL",
-      "explanation": "MySQL একটি relational (SQL) database যা table এবং structured query language ব্যবহার করে। MongoDB হলো document-based NoSQL। Cassandra হলো column-family NoSQL। Redis হলো key-value NoSQL। NoSQL = non-relational database।"
     },
     {
       "id": 71,
@@ -997,19 +654,6 @@
       "explanation": "প্রতিটি relationship-এ দুটি entity থাকে এবং প্রতিটির জন্য minimum cardinality 0 অথবা 1 হতে পারে। তাই সম্ভাব্য combinations = 2 × 2 = 4 (0,0), (0,1), (1,0), (1,1)।"
     },
     {
-      "id": 77,
-      "question": "What does a COMMIT statement do to a CURSOR?",
-      "options": {
-        "a": "Open the cursor",
-        "b": "Fetch the cursor",
-        "c": "Close the cursor",
-        "d": "None of this"
-      },
-      "correct_answer": "d",
-      "correct_answer_text": "None of this",
-      "explanation": "COMMIT statement cursor-এ সরাসরি কিছু করে না। COMMIT current transaction-এ database-এ করা সব পরিবর্তন permanent করে দেয়। Cursor open, fetch বা close করা COMMIT-এর কাজ নয়।"
-    },
-    {
       "id": 78,
       "question": "Which data structure is used for indexing?",
       "options": {
@@ -1021,19 +665,6 @@
       "correct_answer": "b",
       "correct_answer_text": "B+ tree",
       "explanation": "Database indexing-এ B+ tree ব্যবহার হয় কারণ এটি sorted data রাখে এবং O(log n) সময়ে search, insert ও delete করতে পারে। সব data leaf node-এ থাকে এবং leaf nodes linked থাকায় range query দ্রুত হয়।"
-    },
-    {
-      "id": 80,
-      "question": "Which one is an entity?",
-      "options": {
-        "a": "Roll no",
-        "b": "Student",
-        "c": "Passport no",
-        "d": "Department ID"
-      },
-      "correct_answer": "b",
-      "correct_answer_text": "Student",
-      "explanation": "Entity হলো real world-এর একটি object বা concept যার সম্পর্কে তথ্য সংরক্ষণ করা হয়। Student একটি entity। Roll no, Passport no, Department ID হলো attributes — entity-র বৈশিষ্ট্য বা property।"
     },
     {
       "id": 81,

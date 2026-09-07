@@ -132,39 +132,6 @@
         "diagram": "s1 = \"listen\"          s2 = \"silent\"\n\ncount(s1) ▸  l=1  i=1  s=1  t=1  e=1  n=1\ncount(s2) ▸  s=1  i=1  l=1  e=1  n=1  t=1\n\nequals() key ধরে ধরে মেলায়, ক্রম দেখে না —\n\n    l : 1 = 1  ok        t : 1 = 1  ok\n    i : 1 = 1  ok        e : 1 = 1  ok\n    s : 1 = 1  ok        n : 1 = 1  ok\n\nসব key মিলে গেছে ▸ Anagram: true\n\n\nমিললো না হলে কেমন হতো —\n\n    \"aab\" ▸ {a=2, b=1}\n    \"abb\" ▸ {a=1, b=2}\n             a-এর ঘরেই অমিল ▸ false\n\nদৈর্ঘ্য আলাদা হলেও একইভাবে ধরা পড়ে, তাই\nআলাদা করে length মেলানোর দরকার নেই।\n\nOutput ▸ Anagram: true",
         "mnemonic": "দুই দিকেই অক্ষর গুনে ফেলো, তারপর দুই map-কে equals() দিয়ে মেলাও। সাজানো আলাদা হলেও গণনা এক হলেই anagram।"
       }
-    },
-    {
-      "id": "code_str_005",
-      "q": "Write a Java program to find the first non-repeating character in a string.",
-      "tags": [
-        "string",
-        "non-repeating",
-        "unique character",
-        "LinkedHashMap",
-        "frequency"
-      ],
-      "answer": {
-        "codeLang": "Java",
-        "code": "import java.util.LinkedHashMap;\nimport java.util.Map;\n\npublic class FirstUnique {\n\n    public static void main(String[] args) {\n\n        String text = \"swiss bank\";\n\n        // ধাপ ১ — প্রতিটি অক্ষর কতবার আছে\n        LinkedHashMap<Character, Integer> freq = new LinkedHashMap<>();\n\n        for (int i = 0; i < text.length(); i++) {\n\n            char ch = text.charAt(i);\n\n            if (ch == ' ') {\n                continue;\n            }\n\n            freq.put(ch, freq.getOrDefault(ch, 0) + 1);\n        }\n\n        // ধাপ ২ — ঢোকার ক্রমে প্রথম যেটির গণনা 1\n        char result = '-';\n\n        for (Map.Entry<Character, Integer> e : freq.entrySet()) {\n\n            if (e.getValue() == 1) {\n                result = e.getKey();\n                break;\n            }\n        }\n\n        System.out.println(\"First unique: \" + result);\n    }\n}\n\n/*  Output:\n    First unique: w                                */",
-        "summary": [
-          "ধাপ ১ — পুরো string একবার ঘুরে প্রতিটি অক্ষরের গণনা তোলা হয়।",
-          "ধাপ ২ — map-টি ঘুরে প্রথম যে অক্ষরের গণনা 1, সেটিই উত্তর।",
-          "LinkedHashMap ঢোকার ক্রম ধরে রাখে, তাই map-এর \"প্রথম\" মানেই string-এর \"প্রথম\" — string আবার ঘুরতে হয় না।"
-        ],
-        "points": [
-          "কাজটা দুই ধাপের, এক ধাপে হয় না — কোনো অক্ষর একবার না একাধিকবার আছে, সেটা পুরো string না দেখে বলা যায় না। তাই আগে গোনা, পরে খোঁজা।",
-          "ধাপ ১-এর গঠনটি P9 (Character Frequency)-এর হুবহু একই — getOrDefault দিয়ে আগের গণনায় 1 যোগ।",
-          "ধাপ ২-তে entrySet() ঘোরা হয় এবং প্রথম যেটির value 1, সেখানেই break — \"প্রথম\"টাই দরকার, বাকিগুলো দেখার মানে নেই।",
-          "LinkedHashMap এখানে বাধ্যতামূলক, শখের ব্যাপার নয়। সাধারণ HashMap হলে map-এর ক্রম এলোমেলো হতো, আর \"প্রথম\" কথাটার কোনো মানেই থাকত না — ভুল অক্ষর বেরিয়ে আসতে পারত।",
-          "space বাদ দেওয়া হয়েছে গণনার সময়েই, continue দিয়ে — তাই space কখনো map-এ ঢোকেই না, উত্তর হিসেবেও আসতে পারে না।",
-          "result = '-' দিয়ে শুরু, যাতে সব অক্ষরই একাধিকবার থাকলে (যেমন \"aabb\") বোঝা যায় উত্তর নেই।",
-          "e.getValue() == 1 কাজ করে কারণ 1 একটি int literal, তাই Integer-টি নিজে থেকে খুলে (unboxing) মান মেলানো হয়। কিন্তু দুটি Integer-কে == দিয়ে মেলালে মান নয়, রেফারেন্স মেলে — বড় সংখ্যায় সেটি ভুল উত্তর দেয়। মান মেলাতে .equals() ব্যবহার করো বা int-এ নামিয়ে নাও।",
-          "দুটি import লাগবে: java.util.LinkedHashMap আর java.util.Map।",
-          "আগের পদ্ধতিতে প্রতিটি অক্ষরের জন্য পুরো string ঘুরতে হতো। এখন string একবার, map একবার — কাজ অনেক কমে যায়।"
-        ],
-        "diagram": "text = \"swiss bank\"        (space গোনা হয় না)\n\nধাপ ১ — গণনা, ঢোকার ক্রমে\n\n    s=3   w=1   i=1   b=1   a=1   n=1   k=1\n\nধাপ ২ — ক্রম ধরে প্রথম যেটির গণনা 1\n\n    s → 3   একাধিকবার এসেছে, বাদ\n    w → 1   পেয়ে গেছি ▸ break\n\n     s  w  i  s  s     b  a  n  k\n        ^\n        প্রথম যেটি একবারই এসেছে\n\ni-ও একবার আছে, কিন্তু w তার আগে এসেছে —\nLinkedHashMap ক্রম ধরে রাখে বলেই w-ই আগে ধরা পড়ে।\n\nOutput ▸ First unique: w",
-        "mnemonic": "আগে গোনো, পরে খোঁজো। LinkedHashMap ক্রম ধরে রাখে বলে map-এর প্রথম 1-ই string-এর প্রথম একক অক্ষর।"
-      }
     }
   ]
 }

@@ -1,25 +1,25 @@
 {
   "mcq": {
-    "c_programming": 36,
-    "computer_fundamental": 50,
+    "c_programming": 20,
+    "computer_fundamental": 36,
     "computer_network": 110,
-    "database": 109,
+    "database": 81,
     "digital_logic": 37,
     "dsa": 113,
     "information_security": 27,
     "linux": 31,
     "machine_learning": 85,
     "microprocessor": 18,
-    "oop": 43,
+    "oop": 20,
     "operating_system": 33,
     "software_engineering": 33,
     "theory_of_computation": 2
   },
   "written": {
-    "c_programming": 29,
+    "c_programming": 28,
     "computer_fundamental": 1,
     "computer_network": 47,
-    "database": 11,
+    "database": 10,
     "digital_logic": 2,
     "dsa": 21,
     "information_security": 8,
@@ -28,7 +28,7 @@
     "microprocessor": 1,
     "oop": 4,
     "operating_system": 12,
-    "server": 36,
+    "server": 32,
     "software_engineering": 7,
     "theory_of_computation": 1
   },
@@ -59,6 +59,6 @@
     "matrix": 2,
     "number": 5,
     "sorting_searching": 2,
-    "string": 5
+    "string": 4
   }
 }
