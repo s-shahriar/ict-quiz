@@ -1,4 +1,5 @@
 import { segmentsFor } from '../../lib/textAnchor.js'
+import { DEFAULT_COLOR } from '../../lib/highlightSync.js'
 
 // Renders one block of answer text, splitting it into <mark> spans wherever the
 // user has highlighted. The wrapper carries `data-hl-block` so a live selection
@@ -16,7 +17,12 @@ export default function HighlightableText({ text, block, highlights, as: Tag = '
   return (
     <Tag data-hl-block={block} {...rest}>
       {segs.map((seg, i) => seg.ids
-        ? <mark key={i} className="hl-mark" data-hl-ids={seg.ids.join(',')}>{seg.text}</mark>
+        ? <mark
+            key={i}
+            className={`hl-mark hl-c-${seg.color || DEFAULT_COLOR}`}
+            data-hl-ids={seg.ids.join(',')}
+            data-hl-color={seg.color || DEFAULT_COLOR}
+          >{seg.text}</mark>
         : <span key={i}>{seg.text}</span>)}
     </Tag>
   )

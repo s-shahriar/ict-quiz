@@ -33,12 +33,14 @@ export function resolveAnchor(blockText, h) {
 // Turn a list of stored highlights into non-overlapping, sorted ranges for one
 // block. Overlaps are merged so two marks that touch render as one continuous
 // band (what a PDF reader does) — `ids` keeps every highlight the band came
-// from, so removing it removes all of them.
+// from, so removing or recolouring it applies to all of them. A merged band
+// takes the colour of its earliest highlight; picking a colour on it repaints
+// the whole band, which is the only unambiguous thing it can mean.
 export function rangesFor(blockText, highlights) {
   const placed = []
   for (const h of highlights) {
     const r = resolveAnchor(blockText, h)
-    if (r) placed.push({ ...r, ids: [h.id] })
+    if (r) placed.push({ ...r, ids: [h.id], color: h.color })
   }
   if (!placed.length) return []
   placed.sort((a, b) => a.start - b.start || a.end - b.end)
@@ -61,7 +63,7 @@ export function segmentsFor(blockText, highlights) {
   let at = 0
   for (const r of ranges) {
     if (r.start > at) out.push({ text: blockText.slice(at, r.start), ids: null })
-    out.push({ text: blockText.slice(r.start, r.end), ids: r.ids })
+    out.push({ text: blockText.slice(r.start, r.end), ids: r.ids, color: r.color })
     at = r.end
   }
   if (at < blockText.length) out.push({ text: blockText.slice(at), ids: null })

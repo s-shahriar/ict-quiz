@@ -1,21 +1,27 @@
 // Supabase read/write for per-user text highlights, keyed by the stable
 // question `uid` plus a block key inside that answer. RLS-scoped to the user,
 // same as user_progress.
+//
+// Nothing here is called as you highlight — the context batches every change
+// and only flushes on an explicit Save. See contexts/HighlightContext.jsx.
+
 import { supabase } from './supabase.js'
+
+export const COLORS = ['mint', 'amber', 'rose', 'violet']
+export const DEFAULT_COLOR = 'mint'
+
+const COLS = 'id, uid, block, start_off, end_off, quote, color'
 
 const fromRow = (r) => ({
   id: r.id, uid: r.uid, block: r.block,
-  start: r.start_off, end: r.end_off, quote: r.quote,
+  start: r.start_off, end: r.end_off, quote: r.quote, color: r.color,
 })
 
-// Every highlight the user has, grouped by question uid. One request — the
-// volume is small (a few hundred at most) and the Written module needs them
-// available the moment a card is expanded.
+// Every highlight the user has, grouped by question uid. One request at session
+// start — the volume is small and it means expanding a card costs nothing.
 export async function fetchHighlights() {
   const { data, error } = await supabase
-    .from('user_highlights')
-    .select('id, uid, block, start_off, end_off, quote')
-    .order('start_off')
+    .from('user_highlights').select(COLS).order('start_off')
   if (error) throw error
   const byUid = new Map()
   for (const r of data) {
@@ -26,17 +32,13 @@ export async function fetchHighlights() {
   return byUid
 }
 
-// Insert one or more anchors (a selection spanning several blocks makes several)
-// and return them with their real ids.
-export async function insertHighlights(userId, anchors) {
-  const rows = anchors.map(a => ({
+export async function insertHighlights(userId, list) {
+  if (!list.length) return []
+  const rows = list.map(a => ({
     user_id: userId, uid: a.uid, block: a.block,
-    start_off: a.start, end_off: a.end, quote: a.quote,
+    start_off: a.start, end_off: a.end, quote: a.quote, color: a.color || DEFAULT_COLOR,
   }))
-  const { data, error } = await supabase
-    .from('user_highlights')
-    .insert(rows)
-    .select('id, uid, block, start_off, end_off, quote')
+  const { data, error } = await supabase.from('user_highlights').insert(rows).select(COLS)
   if (error) throw error
   return data.map(fromRow)
 }
@@ -45,4 +47,17 @@ export async function deleteHighlights(ids) {
   if (!ids.length) return
   const { error } = await supabase.from('user_highlights').delete().in('id', ids)
   if (error) throw error
+}
+
+// Colour changes on already-saved rows, grouped so each colour is one request.
+export async function recolorHighlights(edits) {
+  const byColor = new Map()
+  for (const [id, color] of edits) {
+    if (!byColor.has(color)) byColor.set(color, [])
+    byColor.get(color).push(id)
+  }
+  for (const [color, ids] of byColor) {
+    const { error } = await supabase.from('user_highlights').update({ color }).in('id', ids)
+    if (error) throw error
+  }
 }

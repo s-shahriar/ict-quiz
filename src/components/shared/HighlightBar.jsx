@@ -1,39 +1,38 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Highlighter, Eraser } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { selectionToAnchors } from '../../lib/textAnchor.js'
-import { useHighlights } from '../../contexts/HighlightContext.jsx'
 import { placeBar } from '../../lib/barPlacement.js'
+import { COLORS } from '../../lib/highlightSync.js'
+import { useHighlights } from '../../contexts/HighlightContext.jsx'
 
-// Floating "Highlight" / "Remove" bar, PDF-reader style.
+// Floating highlight bar, PDF-reader style: four colour dots, plus a bin when
+// you tap an existing mark. Nothing here touches the network — every action
+// edits local state and waits for Save (see HighlightSaveBar).
 //
-// Mobile is the primary case here, which drives three decisions:
-//  • `selectionchange` (not mouseup) is the event that fires when Android's
-//    selection handles are dragged, so it is what we listen to, debounced past
-//    the handle-drag so the bar does not flicker under the user's thumb.
-//  • Android draws its own Copy/Share bar directly ABOVE the selection, so ours
-//    goes BELOW by default and only flips above when there is no room, keeping
-//    the two from covering each other.
-//  • Touch targets are full-height buttons, and the bar is clamped inside the
-//    viewport so it never hangs off the edge of a narrow screen.
-//
-// Tapping an existing mark opens the same bar in remove mode.
+// Mobile is the primary case, which drives four decisions:
+//  • `selectionchange` (not mouseup) is what fires when Android's selection
+//    handles are dragged, debounced past the drag so the bar does not chase
+//    the thumb.
+//  • Android draws its own Copy/Share bar ABOVE the selection, so ours goes
+//    BELOW by default and flips above only when there is no room.
+//  • Scrolling repositions the bar rather than hiding it — Android nudges the
+//    page while selecting, and hiding would make it vanish as it appeared.
+//  • The bar is dots-only, so it fits a 360px screen with room to spare, and
+//    every dot is a 34px touch target.
 
 const SETTLE_MS = 320          // let Android's handles settle before showing
 
 export default function HighlightBar() {
-  const { add, remove, canHighlight } = useHighlights()
+  const { add, remove, recolor, color, setColor, canHighlight } = useHighlights()
   const [bar, setBar] = useState(null)   // { x, y, above, mode, uid, anchors|ids }
   const barRef = useRef(null)
   const timer = useRef(null)
-  // How to re-measure the thing the bar is pointing at. Kept in a ref so a
-  // scroll can reposition the bar instead of dismissing it — Android nudges the
-  // page while you drag the selection handles, and hiding on every scroll would
-  // make the bar disappear the moment it appeared.
+  // How to re-measure what the bar points at, so a scroll can reposition it.
   const measure = useRef(null)
 
   useEffect(() => {
-    const hide = () => setBar(null)
+    const hide = () => { measure.current = null; setBar(null) }
 
     const place = (rect, payload) =>
       setBar({ ...placeBar(rect, window.innerWidth, window.innerHeight), ...payload })
@@ -52,7 +51,6 @@ export default function HighlightBar() {
         const root = (sel.anchorNode?.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode)
           ?.closest?.('[data-hl-root]')
         if (!root) return hide()
-        const uid = root.getAttribute('data-hl-root')
         const anchors = selectionToAnchors(sel)
         if (!anchors.length) return hide()
         const rect = sel.getRangeAt(0).getBoundingClientRect()
@@ -62,11 +60,11 @@ export default function HighlightBar() {
           if (!s2 || s2.isCollapsed || !s2.rangeCount) return null
           return s2.getRangeAt(0).getBoundingClientRect()
         }
-        place(rect, { mode: 'add', uid, anchors })
+        place(rect, { mode: 'add', uid: root.getAttribute('data-hl-root'), anchors })
       }, SETTLE_MS)
     }
 
-    // Tap/click straight on an existing mark → offer to remove it.
+    // Tap/click straight on an existing mark → recolour or remove it.
     const onPointerDown = (e) => {
       const mark = e.target.closest?.('.hl-mark')
       if (!mark) {
@@ -78,9 +76,10 @@ export default function HighlightBar() {
       window.clearTimeout(timer.current)
       measure.current = () => mark.isConnected ? mark.getBoundingClientRect() : null
       place(mark.getBoundingClientRect(), {
-        mode: 'remove',
+        mode: 'edit',
         uid: root.getAttribute('data-hl-root'),
         ids: mark.getAttribute('data-hl-ids').split(','),
+        current: mark.getAttribute('data-hl-color'),
       })
     }
 
@@ -99,27 +98,54 @@ export default function HighlightBar() {
 
   if (!bar || !canHighlight) return null
 
-  const act = async (e) => {
-    e.preventDefault(); e.stopPropagation()
-    if (bar.mode === 'add') await add(bar.uid, bar.anchors)
-    else await remove(bar.uid, bar.ids)
+  const close = () => {
     window.getSelection()?.removeAllRanges()
     measure.current = null
     setBar(null)
   }
+
+  // pointerdown, not click: on Android a click would first dismiss the
+  // selection, and the range would be gone by the time the handler ran.
+  const pick = (c) => (e) => {
+    e.preventDefault(); e.stopPropagation()
+    setColor(c)
+    if (bar.mode === 'add') add(bar.uid, bar.anchors, c)
+    else recolor(bar.uid, bar.ids, c)
+    close()
+  }
+
+  const del = (e) => {
+    e.preventDefault(); e.stopPropagation()
+    remove(bar.uid, bar.ids)
+    close()
+  }
+
+  const active = bar.mode === 'add' ? color : bar.current
 
   return createPortal(
     <div
       ref={barRef}
       className="hl-bar"
       style={{ left: bar.x, top: bar.y, transform: `translate(-50%, ${bar.above ? '-100%' : '0'})` }}
-      // pointerdown, not click: on Android a click would first dismiss the
-      // selection and the range would be gone by the time the handler ran.
-      onPointerDown={act}
+      onPointerDown={(e) => e.stopPropagation()}
     >
-      {bar.mode === 'add'
-        ? <><Highlighter size={15} /><span>Highlight</span></>
-        : <><Eraser size={15} /><span>Remove</span></>}
+      {COLORS.map(c => (
+        <button
+          key={c}
+          type="button"
+          className={`hl-swatch hl-c-${c}${active === c ? ' on' : ''}`}
+          aria-label={`Highlight ${c}`}
+          onPointerDown={pick(c)}
+        />
+      ))}
+      {bar.mode === 'edit' && (
+        <>
+          <span className="hl-bar-sep" />
+          <button type="button" className="hl-bar-del" aria-label="Remove highlight" onPointerDown={del}>
+            <Trash2 size={16} />
+          </button>
+        </>
+      )}
     </div>,
     document.body
   )
