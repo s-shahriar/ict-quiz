@@ -3762,14 +3762,19 @@
           ],
           "rows": [
             [
-              "200 OK",
-              "সফল",
+              "200",
+              "OK",
               "request ঠিকমতো পূরণ হয়েছে"
             ],
             [
+              "201",
+              "Created",
+              "POST/PUT দিয়ে নতুন resource তৈরি হয়েছে"
+            ],
+            [
               "301 / 302",
-              "Redirect",
-              "resource অন্য ঠিকানায় সরে গেছে"
+              "Moved Permanently / Found",
+              "resource অন্য ঠিকানায় সরে গেছে, browser সেখানে চলে যায়"
             ],
             [
               "400",
@@ -3779,7 +3784,7 @@
             [
               "401 / 403",
               "Unauthorized / Forbidden",
-              "login নেই বা অনুমতি নেই"
+              "login নেই, বা login আছে কিন্তু অনুমতি নেই"
             ],
             [
               "404",
@@ -3790,6 +3795,16 @@
               "500",
               "Internal Server Error",
               "server-এর নিজের ভেতরে সমস্যা"
+            ],
+            [
+              "501",
+              "Not Implemented",
+              "server এই method বা feature-টাই সমর্থন করে না"
+            ],
+            [
+              "502",
+              "Bad Gateway",
+              "proxy/gateway পেছনের server থেকে ভুল response পেয়েছে"
             ]
           ]
         },
