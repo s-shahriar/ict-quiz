@@ -3,7 +3,7 @@
   "questions": [
     {
       "id": "oop_001",
-      "q": "Write a Java program to represent a BankAccount class with data members: account holder's name, account number, and balance. Include member functions deposit(), withdraw() (ensuring sufficient balance), and display(). Demonstrate encapsulation by keeping data members private and providing public methods.",
+      "q": "Write a Java program to represent a BankAccount class with data members:\n\n    account holder's name\n    account number\n    balance\n\nInclude member functions:\n\n    deposit()\n    withdraw()  — ensuring sufficient balance\n    display()\n\nDemonstrate encapsulation by keeping data members private and providing public methods.",
       "tags": [
         "OOP",
         "encapsulation",

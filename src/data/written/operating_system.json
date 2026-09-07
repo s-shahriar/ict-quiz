@@ -416,7 +416,7 @@
     },
     {
       "id": "os_005",
-      "q": "Consider a logical address space of 512 pages, each of 2-KB page size, mapped onto a physical memory containing 128 frames. a) How many bits are required in the logical address? b) How many bits are required in the physical address?",
+      "q": "Consider a logical address space of 512 pages, each of 2-KB page size, mapped onto a physical memory containing 128 frames.\n\n    a) How many bits are required in the logical address?\n    b) How many bits are required in the physical address?",
       "tags": [
         "paging",
         "logical address",
@@ -835,7 +835,7 @@
     },
     {
       "id": "os_010",
-      "q": "Two separate threads are initialized with the exact same instance of CounterSubsystem and run concurrently to completion. State definitively whether the final value of transactionCounter is guaranteed to be exactly 2000. Name the specific multithreading hazard that occurs here and explain the low-level mechanical steps that cause this behavior.",
+      "q": "Two separate threads are initialized with the exact same instance of CounterSubsystem and run concurrently to completion.\n\n    (a) State definitively whether the final value of transactionCounter is guaranteed to be exactly 2000.\n    (b) Name the specific multithreading hazard that occurs here.\n    (c) Explain the low-level mechanical steps that cause this behavior.",
       "tags": [
         "race condition",
         "multithreading",

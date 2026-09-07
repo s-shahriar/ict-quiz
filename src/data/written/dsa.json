@@ -209,7 +209,7 @@
     },
     {
       "id": "dsa_003",
-      "q": "Determine whether Graph-3 (u1–u6) and Graph-4 (v1–v6) are isomorphic. Graph-3 degree sequence: (3,3,2,2,3,3). Graph-4 degree sequence: (2,3,3,2,2,3).",
+      "q": "Determine whether Graph-3 (u1–u6) and Graph-4 (v1–v6) are isomorphic.\n\n    Graph-3 degree sequence: (3,3,2,2,3,3).\n    Graph-4 degree sequence: (2,3,3,2,2,3).",
       "tags": [
         "graph",
         "isomorphism",

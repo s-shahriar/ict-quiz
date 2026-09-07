@@ -3,7 +3,7 @@
   "questions": [
     {
       "id": "cf_002",
-      "q": "A bank's ATM network experiences an average of 4 hours of downtime every 30 days due to server maintenance and network glitches. Calculate the System Availability percentage for the month. If the bank processes an average of 500 transactions per hour with an average fee of Taka 0.50 per transaction, calculate the total revenue loss during this downtime.",
+      "q": "A bank's ATM network experiences an average of 4 hours of downtime every 30 days due to server maintenance and network glitches.\n\n    (a) Calculate the System Availability percentage for the month.\n    (b) If the bank processes an average of 500 transactions per hour with an average fee of Taka 0.50 per transaction, calculate the total revenue loss during this downtime.",
       "tags": [
         "availability",
         "downtime",

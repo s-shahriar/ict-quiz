@@ -3,7 +3,7 @@
   "questions": [
     {
       "id": "se_001",
-      "q": "You have been hired as a Cloud Data Engineer to design a big data analytics pipeline for an e-commerce company. The company needs to: ingest millions of real-time web server logs, store and manage petabytes of raw and structured data, process data for batch and stream analytics, provide near real-time product recommendations, run machine learning models at scale. From the Hadoop ecosystem components: MapReduce, HDFS, YARN, HBase, ZooKeeper, Pig, Hive, Mahout, Chukwa, Cassandra, Avro, Oozie, Flume, Sqoop — what will be your plan?",
+      "q": "You have been hired as a Cloud Data Engineer to design a big data analytics pipeline for an e-commerce company. The company needs to:\n\n    ingest millions of real-time web server logs\n    store and manage petabytes of raw and structured data\n    process data for batch and stream analytics\n    provide near real-time product recommendations\n    run machine learning models at scale\n\nFrom the Hadoop ecosystem components:\n\n    MapReduce, HDFS, YARN, HBase, ZooKeeper, Pig, Hive,\n    Mahout, Chukwa, Cassandra, Avro, Oozie, Flume, Sqoop\n\nwhat will be your plan?",
       "tags": [
         "hadoop",
         "big data",
@@ -140,7 +140,7 @@
     },
     {
       "id": "se_002",
-      "q": "Distinguish between Preventive and Corrective maintenance with a real-world example for each in a data center environment. A critical system consists of three components (Power Supply, Motherboard, and Storage) connected in a series configuration. If each component has a reliability of 0.95, what is the total reliability of the system?",
+      "q": "Distinguish between Preventive and Corrective maintenance with a real-world example for each in a data center environment.\n\nA critical system consists of three components (Power Supply, Motherboard, and Storage) connected in a series configuration. If each component has a reliability of 0.95, what is the total reliability of the system?",
       "tags": [
         "preventive maintenance",
         "corrective maintenance",

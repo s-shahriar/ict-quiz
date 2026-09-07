@@ -3,7 +3,7 @@
   "questions": [
     {
       "id": "toc_001",
-      "q": "Consider the grammar: E → E + E | E * E | id. Show that the grammar is ambiguous for the string: id + id * id",
+      "q": "Consider the grammar:\n\n    E → E + E | E * E | id\n\nShow that the grammar is ambiguous for the string: id + id * id",
       "tags": [
         "ambiguous grammar",
         "parse tree",

@@ -3652,7 +3652,7 @@
     },
     {
       "id": "server_036",
-      "q": "A physical server has 32 CPU cores, 96 GB RAM, and 4 TB storage. Each virtual machine (VM) requires 4 CPU cores, 16 GB RAM, and 500 GB storage. Calculate the maximum number of VMs that can be hosted on the server without overcommitting resources. Identify which hardware resource limits the number of VMs.",
+      "q": "A physical server has:\n\n    32 CPU cores\n    96 GB RAM\n    4 TB storage\n\nEach virtual machine (VM) requires:\n\n    4 CPU cores\n    16 GB RAM\n    500 GB storage\n\nCalculate the maximum number of VMs that can be hosted on the server without overcommitting resources. Identify which hardware resource limits the number of VMs.",
       "tags": [
         "virtualization",
         "VM",

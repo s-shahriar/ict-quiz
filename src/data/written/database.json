@@ -3,7 +3,7 @@
   "questions": [
     {
       "id": "db_001",
-      "q": "What does the Consistency property in ACID guarantee during a bank fund transfer transaction? You are designing the schema for a Savings_Accounts table. Write the specific SQL constraint clause to ensure that the current_balance column can never drop below zero.",
+      "q": "What does the Consistency property in ACID guarantee during a bank fund transfer transaction?\n\nYou are designing the schema for a Savings_Accounts table. Write the specific SQL constraint clause to ensure that the current_balance column can never drop below zero.",
       "tags": [
         "ACID",
         "consistency",
@@ -70,7 +70,7 @@
     },
     {
       "id": "db_002",
-      "q": "Consider the relation Sales(sales_id, salesman, region, sale_amount, sale_date). Write an SQL query to display the region, average sale amount, and total number of sales for each region where the average sale amount exceeds BDT 50,000 and the total number of sales is at least 5.",
+      "q": "Consider the relation:\n\n    Sales(sales_id, salesman, region, sale_amount, sale_date)\n\nWrite an SQL query to display the region, average sale amount, and total number of sales for each region where:\n\n    the average sale amount exceeds BDT 50,000\n    the total number of sales is at least 5",
       "tags": [
         "SQL",
         "GROUP BY",
