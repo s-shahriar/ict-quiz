@@ -2767,6 +2767,202 @@
         ],
         "mnemonic": "friend মানে \"আমি তোমাকে আমার ভেতরটা দেখতে দিলাম\" — অনুমতি দেয় মালিক, নিজে নেওয়া যায় না; আর সেই অনুমতি উত্তরাধিকারেও যায় না।"
       }
+    },
+    {
+      "id": "c_028",
+      "segment": "Program",
+      "subsegment": "Number",
+      "q": "Java — GCD and LCM: find the GCD of two numbers with Euclid's algorithm and derive the LCM from it. Dry run.",
+      "tags": [
+        "java",
+        "gcd",
+        "lcm",
+        "euclid algorithm",
+        "modulo",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class GcdLcm {\n\n    static int gcd(int a, int b) {\n        while (b != 0) {\n            int r = a % b;\n            a = b;\n            b = r;\n        }\n        return a;\n    }\n\n    public static void main(String[] args) {\n\n        int x = 36, y = 60;\n\n        int g = gcd(x, y);\n        int l = (x / g) * y;\n\n        System.out.println(\"GCD = \" + g);\n        System.out.println(\"LCM = \" + l);\n    }\n\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: GCD = 12 এবং LCM = 180।",
+          "Euclid এর নিয়ম: বড়টাকে ছোট দিয়ে ভাগ করে ভাগশেষ নাও, এই জোড়া নিয়ে আবার চালাও — ভাগশেষ 0 হলে হাতে থাকা সংখ্যাটিই GCD।",
+          "GCD পেয়ে গেলে LCM আলাদা করে বের করতে হয় না, কারণ a × b = GCD × LCM।"
+        ],
+        "points": [
+          "gcd(a, b) = gcd(b, a % b) — কারণ a আর b এর যেকোনো সাধারণ ভাজক a % b কেও ভাগ করে, তাই ভাজকের সেটটা বদলায় না।",
+          "b শূন্য হলে loop থামে, আর তখন উত্তর থাকে a তে।",
+          "প্রথমবার a < b হলেও সমস্যা নেই — 36 % 60 = 36, তাই এক চক্রেই দুটি আপনা থেকে জায়গা বদল করে নেয়।",
+          "কোডে LCM লেখা হয়েছে (x / g) * y, অর্থাৎ আগে ভাগ পরে গুণ।",
+          "g নিশ্চিতভাবে x কে ভাগ করে, তাই আগে ভাগ করলে কিছু হারায় না, অথচ মাঝের সংখ্যাটা ছোট থাকে বলে overflow এড়ানো যায়।",
+          "Euclid এ ধাপ সংখ্যা O(log min(a, b)) — 1 থেকে গুনে গুনে ভাজক খোঁজার চেয়ে অনেক দ্রুত।"
+        ],
+        "table": {
+          "headers": [
+            "ধাপ",
+            "a",
+            "b",
+            "r = a % b",
+            "পরের a, b"
+          ],
+          "rows": [
+            [
+              "1",
+              "36",
+              "60",
+              "36",
+              "a = 60, b = 36"
+            ],
+            [
+              "2",
+              "60",
+              "36",
+              "24",
+              "a = 36, b = 24"
+            ],
+            [
+              "3",
+              "36",
+              "24",
+              "12",
+              "a = 24, b = 12"
+            ],
+            [
+              "4",
+              "24",
+              "12",
+              "0",
+              "a = 12, b = 0"
+            ],
+            [
+              "5",
+              "12",
+              "0",
+              "—",
+              "b = 0, loop থামল → GCD = 12"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "LCM = a * b / gcd সরাসরি লিখে দেওয়া",
+            "গণিতে ঠিক, কিন্তু int এ a * b আগে হিসাব হয় বলে বড় সংখ্যায় overflow হতে পারে। (a / g) * b লিখলে মাঝের মানটা ছোট থাকে, আর g যেহেতু a কে পুরোপুরি ভাগ করে, ফল একই থাকে।"
+          ],
+          [
+            "loop এর শর্ত b != 0 এর বদলে a != 0 লেখা",
+            "loop শেষে উত্তর জমা থাকে a তে। শর্ত উল্টে দিলে থামার সময় ভুল চলকটি ফেরত যায়।"
+          ],
+          [
+            "GCD আর LCM গুলিয়ে ফেলা",
+            "GCD ভাগ করে (সবচেয়ে বড় সাধারণ ভাজক, সংখ্যাদুটির চেয়ে ছোট), LCM গুণ করে (সবচেয়ে ছোট সাধারণ গুণিতক, সংখ্যাদুটির চেয়ে বড়)। 36 ও 60 এর ক্ষেত্রে 12 আর 180।"
+          ]
+        ],
+        "mnemonic": "ভাগ করো, ভাগশেষ নাও, আবার চালাও — ভাগশেষ ০ হলে হাতে যা থাকে সেটাই GCD। তারপর LCM = গুণফল ÷ GCD।"
+      }
+    },
+    {
+      "id": "c_029",
+      "segment": "Program",
+      "subsegment": "Number",
+      "q": "Java — Fibonacci using recursion: print the first 8 Fibonacci terms with a recursive function. Dry run and show the call tree.",
+      "tags": [
+        "java",
+        "fibonacci",
+        "recursion",
+        "base case",
+        "call tree",
+        "time complexity",
+        "dry run"
+      ],
+      "answer": {
+        "code": "public class FibonacciRecursion {\n\n    static int fib(int n) {\n        if (n <= 1)\n            return n;\n        return fib(n - 1) + fib(n - 2);\n    }\n\n    public static void main(String[] args) {\n\n        int terms = 8;\n\n        for (int i = 0; i < terms; i++)\n            System.out.print(fib(i) + \" \");\n    }\n\n}",
+        "codeLang": "Java",
+        "summary": [
+          "Output: 0 1 1 2 3 5 8 13",
+          "base case দুটি — fib(0) = 0 আর fib(1) = 1; এই দুটিই recursion থামায়।",
+          "বাকি প্রতিটি পদ আগের দুটির যোগফল, তাই fib(n) = fib(n−1) + fib(n−2)।",
+          "সহজ কোড, কিন্তু একই উপ-সমস্যা বারবার হিসাব হয় বলে খরচ O(2ⁿ)।"
+        ],
+        "points": [
+          "if (n <= 1) return n; লাইনটাই base case — এটি বাদ দিলে call কখনো থামে না, StackOverflowError হয়।",
+          "return fib(n-1) + fib(n-2); হলো recursive case, প্রতিটি call নিজে আবার দুটি call জন্ম দেয়।",
+          "গাছটি প্রতি স্তরে দুই ভাগ হয়, তাই node সংখ্যা প্রায় দ্বিগুণ হারে বাড়ে।",
+          "fib(5) বের করতেই মোট 15টি call লাগে; সূত্রে মোট call = 2 × fib(n+1) − 1।",
+          "একই কাজ বারবার: fib(5) এর ভেতরে fib(2) তিনবার আর fib(1) পাঁচবার নতুন করে হিসাব হয়।",
+          "Time complexity O(2ⁿ), space complexity O(n) — space টা call stack এর গভীরতা, একসাথে সর্বোচ্চ n টি frame থাকে।",
+          "একটি HashMap বা array তে ফল জমিয়ে রাখলে (memoization) প্রতিটি fib(k) একবারই হিসাব হয়, খরচ নেমে আসে O(n) এ।",
+          "loop দিয়ে দুটি চলক রেখে লিখলে O(n) সময় আর O(1) জায়গাতেই কাজ হয়।"
+        ],
+        "diagram": "fib(5) এর call tree\n\nfib(5)\n├── fib(4)\n│   ├── fib(3)\n│   │   ├── fib(2)\n│   │   │   ├── fib(1)  = 1\n│   │   │   └── fib(0)  = 0\n│   │   └── fib(1)      = 1\n│   └── fib(2)\n│       ├── fib(1)      = 1\n│       └── fib(0)      = 0\n└── fib(3)\n    ├── fib(2)\n    │   ├── fib(1)      = 1\n    │   └── fib(0)      = 0\n    └── fib(1)          = 1\n\nশুধু পাতাগুলোর মান যোগ করলেই উত্তর: 1+0+1+1+0+1+0+1 = 5\n\n────────────────────────────────────────\nএকই কাজ বারবার হচ্ছে\n\n    fib(5)       ->   1 time\n    fib(4)       ->   1 time\n    fib(3)       ->   2 times\n    fib(2)       ->   3 times\n    fib(1)       ->   5 times\n    fib(0)       ->   3 times\n                     ─────────\n    total calls  =  15        (= 2 x fib(6) - 1)\n\n    n বাড়লে এই গাছ প্রায় দ্বিগুণ হারে বড় হয়, তাই খরচ O(2^n)",
+        "table": {
+          "headers": [
+            "i",
+            "কীভাবে বের হলো",
+            "fib(i)"
+          ],
+          "rows": [
+            [
+              "0",
+              "n <= 1, তাই সরাসরি n ফেরত",
+              "0"
+            ],
+            [
+              "1",
+              "n <= 1, তাই সরাসরি n ফেরত",
+              "1"
+            ],
+            [
+              "2",
+              "fib(1) + fib(0) = 1 + 0",
+              "1"
+            ],
+            [
+              "3",
+              "fib(2) + fib(1) = 1 + 1",
+              "2"
+            ],
+            [
+              "4",
+              "fib(3) + fib(2) = 2 + 1",
+              "3"
+            ],
+            [
+              "5",
+              "fib(4) + fib(3) = 3 + 2",
+              "5"
+            ],
+            [
+              "6",
+              "fib(5) + fib(4) = 5 + 3",
+              "8"
+            ],
+            [
+              "7",
+              "fib(6) + fib(5) = 8 + 5",
+              "13"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "শুধু fib(n-1) + fib(n-2) লিখে base case বাদ দেওয়া",
+            "তখন n ঋণাত্মক হয়ে নামতেই থাকে, call stack উপচে পড়ে StackOverflowError হয়। থামার শর্তটাই recursion এর মেরুদণ্ড।"
+          ],
+          [
+            "recursion মানেই দ্রুত ধরে নেওয়া",
+            "এখানে উল্টো — এই লেখাটি O(2ⁿ), কারণ একই fib(2), fib(3) বহুবার নতুন করে হিসাব হয়। loop বা memoization এ একই কাজ O(n) এ হয়।"
+          ],
+          [
+            "ধারা শুরু fib(1) = 1, fib(2) = 1 ধরে নেওয়া",
+            "এই কোডে শুরু 0 থেকে: fib(0) = 0, fib(1) = 1। প্রশ্নে কোন প্রথা চাওয়া হয়েছে দেখে নাও, নইলে পুরো উত্তরটাই এক ঘর সরে যাবে।"
+          ],
+          [
+            "space complexity ও O(2ⁿ) ধরে নেওয়া",
+            "গাছে node 2ⁿ টা ঠিকই, কিন্তু সবগুলো একসাথে stack এ থাকে না। যেকোনো মুহূর্তে একটি পথ ধরেই নামা হয়, তাই space O(n)।"
+          ]
+        ],
+        "mnemonic": "দুটো base case থামায় (0 আর 1), উপরের দুই ঘরের যোগফল পরেরটা বানায়। গাছ দুই দিকে ছড়ায় বলেই সময় 2ⁿ, কিন্তু একবারে একটাই পথ বলে জায়গা মাত্র n।"
+      }
     }
   ]
 }
