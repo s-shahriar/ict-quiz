@@ -3,7 +3,7 @@
   "questions": [
     {
       "id": "sec_001",
-      "q": "Firewall rules - Rule 1: Source A, Dest B, Port 89. Rule 2: Source A, Dest B, Port < 443. Rule 3: Source A, Dest B, Port 443. If a packet comes from Port 443, is it accepted or rejected? Explain 'First Inspection rules'.",
+      "q": "Firewall rules:\n\n    Rule 1: Source A, Dest B, Port 89\n    Rule 2: Source A, Dest B, Port < 443\n    Rule 3: Source A, Dest B, Port 443\n\nIf a packet comes from Port 443, is it accepted or rejected? Explain 'First Inspection rules'.",
       "tags": [
         "firewall",
         "first match",

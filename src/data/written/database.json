@@ -544,7 +544,7 @@
     },
     {
       "id": "db_007",
-      "q": "Consider a concurrent transaction schedule involving two data items, X and Y: T1: Read(X), Write(X), Read(Y), Write(Y) T2: Read(Y), Write(Y), Read(X), Write(X). Describe how the standard 2PL protocol treats these transactions. Contrast with Strict 2PL.",
+      "q": "Consider a concurrent transaction schedule involving two data items, X and Y:\n\n    T1: Read(X), Write(X), Read(Y), Write(Y)\n    T2: Read(Y), Write(Y), Read(X), Write(X)\n\nDescribe how the standard 2PL protocol treats these transactions. Contrast with Strict 2PL.",
       "tags": [
         "2PL",
         "strict 2PL",

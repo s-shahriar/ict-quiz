@@ -2348,7 +2348,7 @@
     },
     {
       "id": "cn_025",
-      "q": "A satellite link has one-way propagation delay 250 ms and transmission rate 1 Mbps. Frame size is 1000 bytes. (a) Find the link utilization (efficiency) if Stop-and-Wait is used. (b) What minimum window size achieves ~100% efficiency?",
+      "q": "A satellite link has one-way propagation delay 250 ms and transmission rate 1 Mbps. Frame size is 1000 bytes.\n\n    (a) Find the link utilization (efficiency) if Stop-and-Wait is used.\n    (b) What minimum window size achieves ~100% efficiency?",
       "tags": [
         "stop-and-wait",
         "sliding window",
@@ -4074,7 +4074,7 @@
     },
     {
       "id": "cn_036",
-      "q": "A user runs 'tracert www.example.com' and gets: hop 1 = 192.168.1.1 (1 ms), hop 2 = 10.10.1.1 (5 ms), hop 3 = * * *, hop 4 = 203.x.x.x (80 ms), hop 5 = Destination Request timed out. Analyze the tracert output.",
+      "q": "A user runs 'tracert www.example.com' and gets:\n\n    hop 1 = 192.168.1.1 (1 ms)\n    hop 2 = 10.10.1.1 (5 ms)\n    hop 3 = * * *\n    hop 4 = 203.x.x.x (80 ms)\n    hop 5 = Destination Request timed out\n\nAnalyze the tracert output.",
       "tags": [
         "tracert",
         "traceroute",
@@ -4908,7 +4908,7 @@
     },
     {
       "id": "cn_044",
-      "q": "A router's table has 192.168.10.0/24 via G0/0, 192.168.20.0/24 via G0/1, 10.10.0.0/16 via S0/0 and a default route 0.0.0.0/0 via 10.10.10.1. A packet for 192.168.20.55 arrives. Which interface is used, which entry is selected, and what changes if 192.168.20.0/25 is added?",
+      "q": "A router's table has these entries:\n\n    192.168.10.0/24 via G0/0\n    192.168.20.0/24 via G0/1\n    10.10.0.0/16 via S0/0\n    0.0.0.0/0 via 10.10.10.1 (default route)\n\nA packet for 192.168.20.55 arrives.\n\n    (a) Which interface is used?\n    (b) Which entry is selected?\n    (c) What changes if 192.168.20.0/25 is added?",
       "tags": [
         "routing table",
         "longest prefix match",
@@ -5317,7 +5317,7 @@
     },
     {
       "id": "cn_047",
-      "q": "A network administrator runs tracert because users cannot reach a remote server. At one hop the response time becomes very high and the next hop shows 'Request timed out'. (1) Which command traces the route? (2) What does each hop represent? (3) What does 'Request timed out' indicate? (4) How can the administrator locate the problem? (5) Write an example tracert command for www.google.com.",
+      "q": "A network administrator runs tracert because users cannot reach a remote server. At one hop the response time becomes very high and the next hop shows 'Request timed out'.\n\n    (1) Which command traces the route?\n    (2) What does each hop represent?\n    (3) What does 'Request timed out' indicate?\n    (4) How can the administrator locate the problem?\n    (5) Write an example tracert command for www.google.com.",
       "tags": [
         "tracert",
         "traceroute",

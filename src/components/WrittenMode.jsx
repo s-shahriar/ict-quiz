@@ -11,6 +11,7 @@ import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
+import WrittenQuestionText from './shared/WrittenQuestionText.jsx'
 
 export default function WrittenMode() {
   const navigate = useNavigate()
@@ -204,7 +205,7 @@ function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed,
       <div className="written-card-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="written-card-toggle">
           <span className="written-qnum" style={{ color: topicColor }}>Q{idx + 1}</span>
-          <span className="written-qtext">{q.q}</span>
+          <WrittenQuestionText text={q.q} className="written-qtext" />
           <span className="written-chevron">
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </span>

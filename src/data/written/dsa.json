@@ -1519,7 +1519,7 @@
     },
     {
       "id": "dsa_015",
-      "q": "A message contains the characters with frequencies A = 30, B = 25, C = 20, D = 15, E = 10. Construct the Huffman tree, find the optimal prefix codes, and calculate the average code length.",
+      "q": "A message contains the characters with these frequencies:\n\n    A = 30\n    B = 25\n    C = 20\n    D = 15\n    E = 10\n\nConstruct the Huffman tree, find the optimal prefix codes, and calculate the average code length.",
       "tags": [
         "huffman coding",
         "greedy",
@@ -2212,7 +2212,7 @@
     },
     {
       "id": "dsa_021",
-      "q": "Solve the following tree and graph counting problems. (a) How many nodes can a binary tree of height N hold in total, and how many at its last level? (b) An undirected graph has 4 nodes — what is the maximum number of spanning trees that can be formed? (c) A complete binary tree has height 3 — how many nodes does it have? (d) A binary tree has 11 nodes and every node has either 0 or 2 children — find its maximum and minimum possible height.",
+      "q": "Solve the following tree and graph counting problems.\n\n    (a) How many nodes can a binary tree of height N hold in total, and how many at its last level?\n    (b) An undirected graph has 4 nodes — what is the maximum number of spanning trees that can be formed?\n    (c) A complete binary tree has height 3 — how many nodes does it have?\n    (d) A binary tree has 11 nodes and every node has either 0 or 2 children — find its maximum and minimum possible height.",
       "tags": [
         "binary tree",
         "height",

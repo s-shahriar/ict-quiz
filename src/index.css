@@ -1772,6 +1772,16 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   font-family: 'Inter', sans-serif;
 }
 
+/* Structured question text (routing tables, tracert output, (a)/(b)/(c)
+   sub-questions) — see shared/WrittenQuestionText.jsx. Each line is its own
+   element so a wrapped item keeps its indent instead of falling back to the
+   margin; the negative text-indent puts continuation lines just past the
+   "(a) " marker. Only applies to questions that actually carry line breaks. */
+.written-qtext .wq-para,
+.written-qtext .wq-item { display: block; }
+.written-qtext .wq-item { padding-left: 2.9em; text-indent: -1.5em; }
+.written-qtext .wq-gap  { display: block; height: 0.55em; }
+
 .written-chevron {
   flex-shrink: 0; color: var(--text-3);
   padding-top: 2px; transition: color 0.18s;

@@ -3,7 +3,7 @@
   "questions": [
     {
       "id": "lx_ex_001",
-      "q": "A network engineer needs to remotely manage a Linux server in a branch office and runs: ssh admin@192.168.1.10. (a) Explain the purpose of this command, (b) why SSH is preferred over Telnet, (c) which security features SSH provides, (d) troubleshooting steps if the connection fails.",
+      "q": "A network engineer needs to remotely manage a Linux server in a branch office and runs:\n\n    ssh admin@192.168.1.10\n\n    (a) Explain the purpose of this command\n    (b) why SSH is preferred over Telnet\n    (c) which security features SSH provides\n    (d) troubleshooting steps if the connection fails",
       "tags": [
         "ssh",
         "telnet",

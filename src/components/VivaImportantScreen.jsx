@@ -10,6 +10,7 @@ import DeleteButton from './shared/DeleteButton.jsx'
 import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
+import WrittenQuestionText from './shared/WrittenQuestionText.jsx'
 
 const PAGE_SIZE = 20
 
@@ -84,7 +85,7 @@ function VivaImportantCard({ q, qid, topicColor, onUnmark }) {
     <div className="written-card open" style={{ '--c': topicColor }}>
       <div className="written-card-header">
         <div className="written-card-toggle" style={{ cursor: 'default' }}>
-          <span className="written-qtext" style={{ paddingTop: 2 }}>{q.q}</span>
+          <WrittenQuestionText text={q.q} className="written-qtext" style={{ paddingTop: 2 }} />
         </div>
         <button
           className="nailed-unnail-btn"
