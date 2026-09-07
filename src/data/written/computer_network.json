@@ -4448,7 +4448,7 @@
         "summary": [
           "প্রথমে subnet যাচাই করতে হবে — এবং যাচাই করলে দেখা যায় দুটি host একই subnet-এ আছে।",
           "/27 মানে block size 32, তাই এই subnet-এর পরিধি 10.0.1.32 থেকে 10.0.1.63; দুটি host-ই এর ভেতরে।",
-          "অর্থাৎ subnet এখানে সমস্যা নয়। সমস্যা অন্য কোথাও — সবচেয়ে সম্ভাব্য কারণ firewall ICMP আটকে দিচ্ছে।"
+          "অর্থাৎ subnet এখানে সমস্যা নয়। সম্ভাব্য কারণ মূলত তিনটি — firewall-এ ICMP block, IP conflict, আর ARP resolve না হওয়া।"
         ],
         "points": [
           "ধাপ ১ — subnet-এর সীমা বের করা",
@@ -4468,21 +4468,18 @@
             "diagram": "  10.0.1.32    network address     (ব্যবহার করা যায় না)\n  10.0.1.33    ← Host A            প্রথম usable\n     ⋮\n  10.0.1.62    ← Host B            শেষ usable\n  10.0.1.63    broadcast address   (ব্যবহার করা যায় না)\n\n  পরিধি 10.0.1.32 – 10.0.1.63, মোট ৩২টি address, usable ৩০টি\n  দুজনেই একই subnet-এ → router লাগে না, switch-ই যথেষ্ট",
             "label": "Diagram — 10.0.1.32/27 এর ভেতরটা"
           },
-          "ধাপ ২ — তাই subnet বাদ দিয়ে অন্য কারণ খোঁজা",
+          "ধাপ ২ — subnet বাদ, তাহলে কারণ কী",
           {
-            "sub": "Firewall ICMP echo request আটকে দিচ্ছে — Windows-এ এটি ডিফল্টভাবেই বন্ধ থাকে, তাই এটাই সবচেয়ে সম্ভাব্য কারণ।"
+            "sub": "১) Firewall ICMP block — Windows firewall ডিফল্টভাবেই ICMP echo request আটকে রাখে। Host B packet পায়, কিন্তু reply দেয় না। network পুরো ঠিক থাকা সত্ত্বেও ping fail করে, তাই এটাই সবচেয়ে সম্ভাব্য কারণ।"
           },
           {
-            "sub": "দুটি device-এ একই IP বসানো (duplicate IP) থাকলে ARP গুলিয়ে যায়।"
+            "sub": "২) IP conflict — নেটওয়ার্কের আরেকটি device-এ একই IP বসানো থাকলে ARP-এ ভুল MAC ঢুকে যায়। ping-এর reply তখন ভুল device-এ চলে যায়, Host A কিছুই ফেরত পায় না।"
           },
           {
-            "sub": "Subnet mask ভুল করে একটিতে /27 আর অন্যটিতে অন্য কিছু বসানো থাকতে পারে।"
+            "sub": "৩) ARP resolve হয়নি — destination MAC না জানলে frame বানানোই যায় না, তাই ICMP packet কখনো তারেই ওঠে না। arp -a-তে entry অনুপস্থিত বা incomplete দেখায়। ভুল static ARP entry বসানো থাকলেও একই অবস্থা।"
           },
           {
-            "sub": "Cable, port বা NIC নষ্ট থাকতে পারে।"
-          },
-          {
-            "sub": "দুটি host আলাদা VLAN-এ থাকলেও এটি হয় — তবে প্রশ্নে switch unmanaged, তাই VLAN সম্ভব নয়।"
+            "sub": "কম সম্ভাব্য কিন্তু সম্ভব: দুই দিকে ভিন্ন subnet mask, অথবা নষ্ট cable/port/NIC। VLAN এখানে বাদ, কারণ switch unmanaged।"
           },
           "ধাপ ৩ — কীভাবে ধরবে",
           {
