@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Bookmark, CheckCircle, Lightbulb, Star, XCircle } from 'lucide-react'
 import QuestionText from './QuestionText.jsx'
 import DeleteButton from './DeleteButton.jsx'
+import HighlightableText from './HighlightableText.jsx'
+import { useHighlights } from '../../contexts/HighlightContext.jsx'
 
 // One study-mode question card: prompt, tappable options that reveal the answer,
 // and the explanation. Shared by StudyMode (single topic) and the Important
@@ -19,6 +21,12 @@ export default function StudyCard({
   onMarkImportant,
   onUnmarkImportant,
 }) {
+  // MCQ explanations are highlightable, keyed by the same question uid the
+  // Written module uses. Block key 'explanation' — an MCQ answer has one text
+  // block, so it needs no index.
+  const { getFor } = useHighlights()
+  const hlExp = q._uid ? getFor(q._uid).filter(h => h.block === 'explanation') : undefined
+
   const [shown, setShown]       = useState(false)
   const [selected, setSelected] = useState(null)
   const opts = ['a','b','c','d','e'].filter(k => q.options?.[k])
@@ -96,12 +104,13 @@ export default function StudyCard({
       </div>
 
       {shown && q.explanation && (
-        <div className="explanation-box anim-slide" style={{ '--c': color }}>
+        <div className="explanation-box anim-slide" style={{ '--c': color }} data-hl-root={q._uid || undefined}>
           <div className="explanation-header">
             <Lightbulb size={14} style={{ color, flexShrink: 0 }} />
             <span className="explanation-label" style={{ color }}>ব্যাখ্যা</span>
           </div>
-          <p className="explanation-text">{q.explanation}</p>
+          <HighlightableText as="p" className="explanation-text"
+            block="explanation" text={q.explanation} highlights={hlExp} />
         </div>
       )}
     </div>

@@ -3747,7 +3747,8 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* Selection must stay enabled everywhere inside an answer, including on
    touch devices where some resets disable it. Controls are excluded so a
    long-press on a button selects nothing instead of grabbing its label. */
-.written-card-body, .written-card-body :not(button):not(button *):not(svg):not(svg *) {
+.written-card-body, .written-card-body :not(button):not(button *):not(svg):not(svg *),
+.explanation-box, .explanation-box :not(button):not(button *):not(svg):not(svg *) {
   -webkit-user-select: text;
   user-select: text;
   -webkit-touch-callout: default;

@@ -6,6 +6,8 @@ import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
+import HighlightableText from './shared/HighlightableText.jsx'
+import { useHighlights } from '../contexts/HighlightContext.jsx'
 
 export default function ExamMode() {
   const location = useLocation()
@@ -21,6 +23,10 @@ export default function ExamMode() {
   const [done, setDone]         = useState(false)
   const [stopConfirm, setStopConfirm] = useState(false)
 
+  // Saved highlights, read here with the rest of the hooks — it must run
+  // before the early returns below or the hook order changes between renders.
+  const { getFor } = useHighlights()
+
   if (!questions) return <Navigate to="/exam" replace />
 
   const goHome = () => navigate('/')
@@ -34,6 +40,9 @@ export default function ExamMode() {
   const q    = questions[idx]
   const opts = q ? ['a','b','c','d','e'].filter(k => q.options?.[k]) : []
   const qid  = q?._uid ?? null
+  // Highlights for this question's explanation (block key 'explanation' —
+  // an MCQ answer has one text block, so it needs no index).
+  const hlExp = qid ? getFor(qid).filter(h => h.block === 'explanation') : undefined
   const isNailed = qid ? mastered?.has(qid) : false
   const isImportant = qid ? important?.has(qid) : false
 
@@ -150,7 +159,7 @@ export default function ExamMode() {
         )}
 
         {revealed && q.explanation && (
-          <div className="explanation-box anim-slide" style={{ '--c': accent }}>
+          <div className="explanation-box anim-slide" data-hl-root={qid || undefined} style={{ '--c': accent }}>
             <div className="explanation-header">
               <Lightbulb size={14} style={{ color: accent, flexShrink: 0 }} />
               <span className="explanation-label" style={{ color: accent }}>ব্যাখ্যা</span>
@@ -158,7 +167,8 @@ export default function ExamMode() {
                 {isCorrect ? '✓ সঠিক' : '✗ ভুল'}
               </span>
             </div>
-            <p className="explanation-text">{q.explanation}</p>
+            <HighlightableText as="p" className="explanation-text"
+              block="explanation" text={q.explanation} highlights={hlExp} />
           </div>
         )}
       </div>

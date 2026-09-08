@@ -8,6 +8,8 @@ import { useModuleReady } from '../data/contentLoader.js'
 import DeleteButton from './shared/DeleteButton.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
+import HighlightableText from './shared/HighlightableText.jsx'
+import { useHighlights } from '../contexts/HighlightContext.jsx'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -38,6 +40,9 @@ export default function QuizMode() {
   const [revealed, setRevealed] = useState(false)
   const [score, setScore] = useState(0)
   const [done, setDone] = useState(false)
+  // Saved highlights, read here with the rest of the hooks — it must run
+  // before the early returns below or the hook order changes between renders.
+  const { getFor } = useHighlights()
 
   if (!topic) return <Navigate to="/" replace />
   if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
@@ -45,6 +50,9 @@ export default function QuizMode() {
   const q = questions[idx]
   const opts = q ? ['a','b','c','d','e'].filter(k => q.options?.[k]) : []
   const qid = q ? q._uid : null
+  // Highlights for this question's explanation (block key 'explanation' —
+  // an MCQ answer has one text block, so it needs no index).
+  const hlExp = qid ? getFor(qid).filter(h => h.block === 'explanation') : undefined
   const isNailed = qid ? mastered?.has(qid) : false
   const isImportant = qid ? important?.has(qid) : false
 
@@ -156,7 +164,7 @@ export default function QuizMode() {
         )}
 
         {revealed && q.explanation && (
-          <div className="explanation-box anim-slide" style={{ '--c': topic.color }}>
+          <div className="explanation-box anim-slide" data-hl-root={qid || undefined} style={{ '--c': topic.color }}>
             <div className="explanation-header">
               <Lightbulb size={14} style={{ color: topic.color, flexShrink: 0 }} />
               <span className="explanation-label" style={{ color: topic.color }}>ব্যাখ্যা</span>
@@ -164,7 +172,8 @@ export default function QuizMode() {
                 {isCorrect ? '✓ সঠিক' : '✗ ভুল'}
               </span>
             </div>
-            <p className="explanation-text">{q.explanation}</p>
+            <HighlightableText as="p" className="explanation-text"
+              block="explanation" text={q.explanation} highlights={hlExp} />
           </div>
         )}
       </div>
