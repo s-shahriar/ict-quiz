@@ -174,21 +174,10 @@ export default function WrittenMode() {
                       { state: backTo ? { backTo } : undefined },
                     )}
                   >
-                    <span className="written-seg-card-top">
-                      <Zap size={14} style={{ color: topic.color, flexShrink: 0 }} />
-                      <span className="written-seg-card-name">{seg.name}</span>
-                      <span className="written-seg-card-count">{count}</span>
-                      <ChevronRight size={15} className="written-seg-card-arrow" />
-                    </span>
-                    {seg.subgroups.some(g => g.name) && (
-                      <span className="written-seg-card-subs">
-                        {seg.subgroups.filter(g => g.name).map(g => (
-                          <span className="written-seg-chip" key={g.name}>
-                            {g.name} <b>{g.questions.length}</b>
-                          </span>
-                        ))}
-                      </span>
-                    )}
+                    <Zap size={14} style={{ color: topic.color, flexShrink: 0 }} />
+                    <span className="written-seg-card-name">{seg.name}</span>
+                    <span className="written-seg-card-count">{count}</span>
+                    <ChevronRight size={15} className="written-seg-card-arrow" />
                   </button>
                 )
               })}

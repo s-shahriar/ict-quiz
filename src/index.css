@@ -3758,8 +3758,8 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
    c_programming keeps 25 of its 28 questions inside three segments. Rendering
    them inline buried the plain list under a wall of pinned cards, so the
    category page shows one entry card per segment and each opens on its own
-   route (?segment=). The card carries the counts, so nothing is hidden — you
-   can see what is in there before tapping. */
+   route (?segment=). One row each: name and total, nothing else — the
+   sub-group breakdown belongs inside, not on the way in. */
 .written-seg-nav {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -3768,7 +3768,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 
 .written-seg-card {
-  display: flex; flex-direction: column; gap: 8px;
+  display: flex; align-items: center; gap: 8px;
   padding: 13px 14px;
   border-radius: 14px;
   text-align: left;
@@ -3780,7 +3780,6 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .written-seg-card:hover  { border-color: var(--border-md); background: var(--elevated); }
 .written-seg-card:active { transform: scale(0.985); }
 
-.written-seg-card-top { display: flex; align-items: center; gap: 8px; }
 .written-seg-card-name {
   font-size: 0.92rem; font-weight: 700; color: var(--text);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -3793,15 +3792,6 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 .written-seg-card-arrow { color: var(--text-3); flex-shrink: 0; }
 
-.written-seg-card-subs { display: flex; flex-wrap: wrap; gap: 5px; }
-.written-seg-chip {
-  font-size: 0.7rem; font-weight: 600; color: var(--text-3);
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  border-radius: 999px; padding: 2px 8px;
-}
-.written-seg-chip b { color: var(--text-2); font-weight: 700; }
-.written-seg-card:hover .written-seg-chip { background: var(--surface); }
 
 /* Inside a segment page the topbar already names it, so its sub-groups start
    straight away with no extra heading. */
