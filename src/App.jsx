@@ -1,5 +1,5 @@
 import { Moon, Sun } from 'lucide-react'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import HomeScreen from './components/HomeScreen.jsx'
 import AccountButton from './components/auth/AccountButton.jsx'
@@ -12,6 +12,7 @@ import { TrashProvider } from './contexts/TrashContext.jsx'
 import { ThemeProvider, useThemeContext } from './contexts/ThemeContext.jsx'
 import { HandProvider } from './contexts/HandContext.jsx'
 import { HighlightProvider } from './contexts/HighlightContext.jsx'
+import { initDragScroll } from './lib/dragScroll.js'
 import HighlightBar from './components/shared/HighlightBar.jsx'
 import HighlightSaveBar from './components/shared/HighlightSaveBar.jsx'
 
@@ -40,6 +41,9 @@ const VivaNailedScreen = lazy(() => import('./components/VivaNailedScreen.jsx'))
 const RecycleBinScreen = lazy(() => import('./components/RecycleBinScreen.jsx'))
 
 export default function App() {
+  // Grab-and-drag panning for the wide diagram blocks.
+  useEffect(() => initDragScroll(), [])
+
   return (
     <AuthProvider>
       <ThemeProvider>
