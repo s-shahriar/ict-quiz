@@ -82,24 +82,20 @@ function blockElFor(node) {
 }
 
 // Character offset of `node`/`offset` within its block element's text content.
-// Walks text nodes in document order, which is what textContent concatenates,
-// so this stays correct even though the block is already split by <mark>s.
+//
+// Measured with a Range rather than by walking text nodes, because a selection
+// boundary is NOT always a text node: browsers hand back an element container
+// with a child index when a word is double-tapped, when a whole node is
+// selected, or when the boundary sits between elements. A text-node walk misses
+// those and silently returns the block length, which drops the highlight.
+// Range.toString() counts exactly the characters textContent would, so this is
+// correct for text nodes, element containers, and blocks already split by
+// <mark>s alike.
 function offsetInBlock(blockEl, node, offset) {
-  if (node === blockEl) {
-    // Selection landed on the element itself: offset counts child nodes.
-    let n = 0
-    for (let i = 0; i < offset && i < blockEl.childNodes.length; i++) {
-      n += blockEl.childNodes[i].textContent.length
-    }
-    return n
-  }
-  const walker = document.createTreeWalker(blockEl, NodeFilter.SHOW_TEXT)
-  let n = 0
-  while (walker.nextNode()) {
-    if (walker.currentNode === node) return n + offset
-    n += walker.currentNode.textContent.length
-  }
-  return n
+  const r = document.createRange()
+  r.selectNodeContents(blockEl)
+  try { r.setEnd(node, offset) } catch { return 0 }
+  return r.toString().length
 }
 
 // A selection may run across several blocks (bullet into the next bullet, or a
