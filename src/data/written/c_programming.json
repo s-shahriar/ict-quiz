@@ -162,694 +162,6 @@
       }
     },
     {
-      "id": "c_007",
-      "segment": "Program Output",
-      "subsegment": "Recursion",
-      "q": "static variable বনাম parameter — recursive function-এর output বের করার কৌশল, আর n নিজেও যোগ হওয়া একটু জটিল variant",
-      "tags": [
-        "recursion",
-        "static variable",
-        "parameter",
-        "local variable",
-        "call stack",
-        "java",
-        "output prediction",
-        "cheat sheet"
-      ],
-      "answer": {
-        "summary": [
-          "recursion-এর output-prediction প্রশ্নে সবচেয়ে বড় trap: variable static নাকি local/parameter, সেটা না ধরতে পারলে পুরো হিসাব ভুল হয়ে যায় — নিচে একটা ৫-ধাপের strategy, তারপর তিনটে ক্রমান্বয়ে কঠিন উদাহরণ।",
-          "একই কোড শুধু static → parameter বদলে দিলে output 19 থেকে 17 হয়ে যায় (উদাহরণ ১ বনাম ২) — এই একটা তুলনাই আসল শিক্ষা দেয়।"
-        ],
-        "points": [
-          "🎯 পরীক্ষার জন্য দ্রুত Strategy (Cheat-Sheet) — এই ধরনের প্রশ্ন পেলে এই ধাপগুলো অনুসরণ করো:",
-          {
-            "sub": "১) প্রথমে চেক করো — variable-টা static (class-level, shared) নাকি local/parameter (প্রতি call-এর নিজস্ব আলাদা copy)।"
-          },
-          {
-            "sub": "এই একটা পার্থক্যই পুরো উত্তর বদলে দেয়, তাই সবার আগে এটি দেখো।"
-          },
-          {
-            "sub": "২) একটা টেবিল বানাও — প্রতিটা recursive call-এ (n যাওয়ার দিকে, অর্থাৎ 'going down') variable-টা কী মান পায়, সেটা লিখে ফেলো।"
-          },
-          {
-            "sub": "৩) Base case (n<=1, n==0 ইত্যাদি) কোথায় থামছে সেটা বের করো — ওটাই সবচেয়ে ভেতরের return।"
-          },
-          {
-            "sub": "৪) এবার উল্টো দিকে (return করার সময়, 'coming back up') হিসাব করো।"
-          },
-          {
-            "sub": "variable static হলে সবসময় সর্বশেষ (সবচেয়ে নিচের call-এ সেট করা) মানটাই ব্যবহার হবে।"
-          },
-          {
-            "sub": "প্রতিটি +x-এর জন্য সেই একই মান বসবে — নিজের বসানো পুরনো মান নয়।"
-          },
-          {
-            "sub": "৫) ধাপে ধাপে নিচ থেকে উপরে যোগ করে answer বের করো।"
-          },
-          "উদাহরণ ১ (recap) — static variable হলে কী হয়:",
-          {
-            "code": "class Test {\n    static int x = 5;\n\n    public static int fun(int n) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
-            "codeLang": "Java",
-            "label": "Recursion ১ — static variable"
-          },
-          {
-            "sub": "x static — পুরো program-এ একটাই কপি, সব call সেটা ভাগাভাগি করে।"
-          },
-          {
-            "sub": "নিচে নামা (going down): fun(3) — n=3>1, তাই x = 5+2 = 7, তারপর কল করে fun(2)।"
-          },
-          {
-            "sub": "fun(2) — n=2>1, তাই x = 7+2 = 9, তারপর কল করে fun(1)।"
-          },
-          {
-            "sub": "fun(1) — n=1≤1, base case: সরাসরি return 1 (x আর বাড়ে না, x=9-ই থেকে যায়)।"
-          },
-          {
-            "sub": "উপরে ফেরা (coming back up): fun(1) থেকে 1 ফেরত পেল fun(2)।"
-          },
-          {
-            "sub": "fun(2) এখন x-এর সর্বশেষ মান (9) পড়ে — নিজের বসানো পুরনো মান 7 নয়।"
-          },
-          {
-            "sub": "fun(2) = 1 + 9 = 10।"
-          },
-          {
-            "sub": "fun(2)-এর ফলাফল (10) পেয়ে fun(3)-ও x-এর সর্বশেষ মান (9)-ই পড়ে — নিজের বসানো পুরনো মান 5 নয়।"
-          },
-          {
-            "sub": "fun(3) = 10 + 9 = 19।"
-          },
-          {
-            "sub": "→ Output: 19"
-          },
-          "উদাহরণ ২ (তুলনা) — একই কোড, কিন্তু x যদি static না হয়ে parameter হতো:",
-          {
-            "code": "class Test {\n    public static int fun(int n, int x) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1, x) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3, 5));\n    }\n}",
-            "codeLang": "Java",
-            "label": "Recursion ২ — x এখন parameter"
-          },
-          {
-            "sub": "এবার x কোনো static/shared variable না — এটা parameter।"
-          },
-          {
-            "sub": "parameter মানে প্রতিটি call-এর নিজস্ব আলাদা copy আছে।"
-          },
-          {
-            "sub": "তাই একটা call-এর x আরেকটা call-কে প্রভাবিত করে না।"
-          },
-          {
-            "sub": "fun(3,5): x = 5+2 = 7 (এই call-এর নিজস্ব x), তারপর কল করে fun(2,7)+7।"
-          },
-          {
-            "sub": "fun(2,7): x = 7+2 = 9 (এই call-এর নিজস্ব x), তারপর কল করে fun(1,9)+9।"
-          },
-          {
-            "sub": "fun(1,9): n ≤ 1, তাই সরাসরি return 1।"
-          },
-          {
-            "sub": "ফিরতি পথ: fun(2,7) = fun(1,9) + 9 = 1 + 9 = 10।"
-          },
-          {
-            "sub": "fun(3,5) = fun(2,7) + 7 = 10 + 7 = 17।"
-          },
-          {
-            "sub": "এখানে নিজের বসানো পুরনো 7-ই ব্যবহার হচ্ছে, কারণ এটা local copy — কেউ বদলে দেয়নি।"
-          },
-          {
-            "sub": "→ Output: 17 (static হলে ছিল 19 — শুধু static→parameter বদলেই উত্তর বদলে গেল)"
-          },
-          "উদাহরণ ৩ (কঠিন) — n নিজেও যোগ হচ্ছে, static sum variable দিয়ে:",
-          {
-            "code": "class Test {\n    static int sum = 0;\n\n    static int fun(int n) {\n        if (n == 0) {\n            return 0;\n        }\n        sum = sum + n;\n        return fun(n - 1) + sum;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
-            "codeLang": "Java",
-            "label": "Recursion ৩ — static sum, n যোগ হচ্ছে"
-          },
-          {
-            "sub": "sum static, শুরুতে sum = 0।"
-          },
-          {
-            "sub": "নিচে নামা: fun(3) → sum = 0+3 = 3।"
-          },
-          {
-            "sub": "fun(2) → sum = 3+2 = 5।"
-          },
-          {
-            "sub": "fun(1) → sum = 5+1 = 6।"
-          },
-          {
-            "sub": "fun(0) → n == 0, সরাসরি return 0 (sum-এ হাত পড়ে না, sum = 6-ই থাকে)।"
-          },
-          {
-            "sub": "ফেরার সময় প্রতিটি call sum-এর সর্বশেষ মান (6) পড়ে, নিজের ধাপে বসানো মান নয়।"
-          },
-          {
-            "sub": "fun(1) = fun(0) + sum = 0 + 6 = 6।"
-          },
-          {
-            "sub": "fun(2) = fun(1) + sum = 6 + 6 = 12।"
-          },
-          {
-            "sub": "fun(3) = fun(2) + sum = 12 + 6 = 18।"
-          },
-          {
-            "sub": "→ Output: 18"
-          }
-        ],
-        "diagram": "static sum — নিচে নামা (going down)              উপরে ফেরা (coming back up)\n\n fun(3): sum = 0+3 = 3                fun(0) = 0\n    │ call fun(2)                          │\n    ▼                                       ▼\n fun(2): sum = 3+2 = 5                fun(1) = fun(0) + sum = 0 + 6 = 6\n    │ call fun(1)                          │\n    ▼                                       ▼\n fun(1): sum = 5+1 = 6                fun(2) = fun(1) + sum = 6 + 6 = 12\n    │ call fun(0)                          │\n    ▼                                       ▼\n fun(0): n==0 → return 0 (sum অপরিবর্তিত)  fun(3) = fun(2) + sum = 12 + 6 = 18\n\n                    Output: 18\n\n⚠ লক্ষ করো: প্রতিটি ধাপে sum পড়া হচ্ছে তার সর্বশেষ মান (6),\n   নিজের বসানো পুরনো মান নয় — কারণ sum static, আর ফেরার আগে\n   আর কেউ সেটা বদলায়নি।",
-        "table": {
-          "headers": [
-            "Call",
-            "n",
-            "sum = sum + n",
-            "নতুন sum"
-          ],
-          "rows": [
-            [
-              "fun(3)",
-              "3",
-              "0+3",
-              "3"
-            ],
-            [
-              "fun(2)",
-              "2",
-              "3+2",
-              "5"
-            ],
-            [
-              "fun(1)",
-              "1",
-              "5+1",
-              "6"
-            ],
-            [
-              "fun(0)",
-              "0",
-              "(base case — sum অপরিবর্তিত)",
-              "6"
-            ]
-          ]
-        },
-        "mistakes": [
-          [
-            "static ও local/parameter variable একই আচরণ করে ভাবা",
-            "static variable পুরো program-এ একটাই কপি — সব call ভাগাভাগি করে, তাই এক call-এর পরিবর্তন সবাই দেখে। local/parameter variable-এর প্রতিটি call-এর নিজস্ব আলাদা copy থাকে, একটা আরেকটাকে প্রভাবিত করে না।"
-          ],
-          [
-            "static variable ফেরার সময় নিজের বসানো পুরনো মান ব্যবহার করে ভাবা",
-            "static variable-এর জন্য সবসময় সর্বশেষ (সবচেয়ে ভেতরের/নিচের call-এ সেট করা) মানই ব্যবহৃত হয় — যে call নিজে যে মান বসিয়েছিল, ফেরার সময় সেটা আর ফিরে আসে না।"
-          ],
-          [
-            "base case-এও variable আপডেট হয় ভাবা",
-            "base case (n<=1 বা n==0)-এ সরাসরি return হয়ে যায় — তার আগের update-লাইন (যেমন sum = sum+n) সেখানে চলে না।"
-          ]
-        ],
-        "mnemonic": "static মানে 'একটাই খাতা, সবাই লেখে' — নিচে নামার সময় খাতায় লেখা চলতেই থাকে, উপরে ওঠার সময় সবাই খাতার সর্বশেষ লেখাটাই পড়ে। local/parameter মানে 'যার যার নিজের খাতা' — কেউ কারো খাতা দেখে না।"
-      }
-    },
-    {
-      "id": "c_006",
-      "segment": "Program Output",
-      "subsegment": "Inheritance & Polymorphism",
-      "q": "C++ Inheritance ও Polymorphism — constructor call-এর ক্রম (compile-time) বনাম virtual function resolution (runtime)",
-      "tags": [
-        "c++",
-        "multiple inheritance",
-        "constructor order",
-        "virtual function",
-        "runtime polymorphism",
-        "oop",
-        "output prediction"
-      ],
-      "answer": {
-        "summary": [
-          "এই দুটো output-prediction প্রশ্নে মূল বিষয়টাই হলো: constructor-এর ক্রম compile-time-এই ঠিক হয়ে যায় (inheritance list-এ লেখা ক্রম অনুযায়ী), কিন্তু virtual function কোনটা চলবে সেটা runtime-এ ঠিক হয় (আসল object দেখে)।"
-        ],
-        "points": [
-          "── C++ Inheritance ও Polymorphism — কোনটা Compile-time, কোনটা Runtime-এ ঠিক হয় ──",
-          {
-            "sub": "Constructor call-এর ক্রম compile-time-এই ঠিক হয়ে যায়।"
-          },
-          {
-            "sub": "base class-গুলো ঠিক যে ক্রমে inheritance list-এ লেখা (class C : public A, public B), সেই ক্রমেই call হয়।"
-          },
-          {
-            "sub": "সবার শেষে derived class-এর নিজের constructor চলে।"
-          },
-          {
-            "sub": "virtual function কোন class-এর সংস্করণ চলবে সেটা runtime-এ ঠিক হয় — pointer-এর ঘোষিত TYPE দেখে নয়, pointer আসলে কোন OBJECT-কে point করছে সেটা দেখে।"
-          },
-          "১২ — multiple inheritance-এ class C : public A, public B হলে constructor-এর ক্রম কী হবে?",
-          {
-            "code": "class A {\npublic:\n    A() { cout << \"A \"; }\n};\n\nclass B {\npublic:\n    B() { cout << \"B \"; }\n};\n\nclass C : public A, public B {\npublic:\n    C() { cout << \"C \"; }\n};\n\nint main() {\n    C obj;\n}",
-            "codeLang": "cpp",
-            "label": "Inheritance ১ — Constructor Order"
-          },
-          {
-            "sub": "C++ কম্পাইলার derived class-এর object বানানোর আগে সবগুলো base class-এর constructor call করে নেয়, ইনহেরিটেন্স লিস্টের ক্রমে (বাম থেকে ডান) — এখানে আগে A, পরে B।"
-          },
-          {
-            "sub": "এরপর সবশেষে derived class (C)-এর নিজের constructor চলে।"
-          },
-          {
-            "sub": "constructor-এর ভেতরে initializer list কোন ক্রমে লেখা হলো, তাতে এই ক্রম বদলায় না।"
-          },
-          {
-            "sub": "→ Output: A B C"
-          },
-          "১৩ — base class pointer দিয়ে derived object-কে point করে virtual function call করলে কার function চলে?",
-          {
-            "code": "class A {\npublic:\n    virtual void show() { cout << \"A\"; }\n};\n\nclass B : public A {\npublic:\n    void show() { cout << \"B\"; }\n};\n\nint main() {\n    A *p = new B();\n    p->show();\n}",
-            "codeLang": "cpp",
-            "label": "Inheritance ২ — Virtual Function"
-          },
-          {
-            "sub": "virtual না থাকলে C++ compile-time-এই ঠিক করে ফেলত, শুধু pointer-এর ঘোষিত TYPE (A*) দেখে — তখন output হতো A।"
-          },
-          {
-            "sub": "virtual থাকায় সিদ্ধান্তটা runtime-এ নেওয়া হয়, pointer আসলে কোন object-কে point করছে তা দেখে।"
-          },
-          {
-            "sub": "এখানে p-এর টাইপ A* হলেও সে আসলে একটা B object (new B()) কে point করছে।"
-          },
-          {
-            "sub": "→ Output: B"
-          }
-        ],
-        "mistakes": [
-          [
-            "virtual function-এর ক্ষেত্রে pointer-এর ঘোষিত TYPE (A*) দেখে function বাছাই হয় ভাবা",
-            "virtual থাকলে আসল object-এর টাইপ (এখানে B) দেখে function বাছাই হয় — pointer-এর টাইপ শুধু virtual না থাকলেই প্রাসঙ্গিক।"
-          ],
-          [
-            "multiple inheritance-এ constructor-এর ক্রম initializer list লেখার উপর নির্ভর করে ভাবা",
-            "ক্রম নির্ভর করে শুধু inheritance list-এ (class C : public A, public B) লেখা ক্রমের উপর, initializer list-এ ভিন্ন ক্রমে লিখলেও বদলায় না।"
-          ]
-        ],
-        "mnemonic": "Constructor-এর ক্রম লেখা-ক্রম অনুযায়ী (compile-time); virtual function-এর ক্রম আসল object অনুযায়ী (runtime)।"
-      }
-    },
-    {
-      "id": "c_005",
-      "segment": "Program Output",
-      "subsegment": "Pointer",
-      "q": "Pointer Arithmetic ও Memory Management — array address আর leak/dangling pointer নিয়ে কমন confusion, output prediction সহজ থেকে কঠিন",
-      "tags": [
-        "pointer",
-        "array",
-        "pointer arithmetic",
-        "&array vs array",
-        "array decay",
-        "memory leak",
-        "dangling pointer",
-        "malloc",
-        "free",
-        "output prediction"
-      ],
-      "answer": {
-        "summary": [
-          "Pointer-এ সবচেয়ে বড় ভুল হয় arr, &arr, &arr[i], *(arr+i) গুলিয়ে ফেললে — প্রথম অংশেই এটা এক নজরে সাফ করে দেওয়া হয়েছে, তারপর ৯টা output-prediction প্রশ্ন সহজ থেকে কঠিন ক্রমে।",
-          "শেষ অংশে Memory Management — Leak (কখনো free না হওয়া memory) আর Dangling Pointer (ইতিমধ্যে invalid জায়গা ব্যবহার করা) দুটো আলাদা সমস্যা, গুলিয়ে ফেলা সবচেয়ে কমন ভুল।"
-        ],
-        "points": [
-          "🔑 Pointer ও Array Address — সবচেয়ে বড় বিভ্রান্তি আগে সাফ করো (arr, &arr, &arr[i], *(arr+i)):",
-          {
-            "sub": "arr — array-টা ব্যবহার করলে সে decay করে প্রথম element-এর address-এ পরিণত হয়।"
-          },
-          {
-            "sub": "তাই arr এবং &arr[0] সবসময় সমান।"
-          },
-          {
-            "sub": "&arr[i] বা (arr+i) — i-তম element-এর ADDRESS। তারকা নেই, তাই মান নয়, ঠিকানা।"
-          },
-          {
-            "sub": "*(arr+i) বা arr[i] — i-তম element-এর আসল VALUE। তারকা আছে, তাই এবার মান বেরিয়ে আসে।"
-          },
-          {
-            "sub": "&arr — পুরো array-টার address, single element-এর নয়।"
-          },
-          {
-            "sub": "সংখ্যায় এটি arr-এর সমান, কিন্তু TYPE ভিন্ন — int(*)[n]।"
-          },
-          {
-            "sub": "TYPE আলাদা বলেই এর উপর arithmetic করলে ফলাফল আলাদা আসে।"
-          },
-          "arr+1 বনাম &arr+1 — আসল পার্থক্য এখানেই:",
-          {
-            "sub": "arr+1 (বা &arr[0]+1): এক ধাপ = 1টা int = 4 byte এগোয়। এটা দ্বিতীয় element-এর address।"
-          },
-          {
-            "sub": "&arr+1: এক ধাপ = পুরো array = n × 4 byte এগোয়।"
-          },
-          {
-            "sub": "এটা array শেষ হওয়ার ঠিক পরের address — array-এর ভেতরে কোনো element নয়, বাইরে।"
-          },
-          {
-            "sub": "তাই (int*)(&arr+1) করে int* এ নামিয়ে এনে -1 করলে array-এর একদম শেষ element-এ ফেরা যায় — array-এর শেষ থেকে গোনার একটা কৌশল।"
-          },
-          "সংক্ষেপে চেনার উপায়:",
-          {
-            "sub": "তারকা (*) আছে? → VALUE। নেই? → ADDRESS।"
-          },
-          {
-            "sub": "&variable → ADDRESS (variable-টা যেকোনো টাইপের হতে পারে, এমনকি পুরো array-ও)।"
-          },
-          {
-            "sub": "+1 করার সময় ভাবো: pointer-টা কোন TYPE-এর দিকে নির্দেশ করছে? int* হলে 4 byte, int(*)[n] হলে n×4 byte এগোবে।"
-          },
-          "── Pointer Arithmetic — এবার নিচের প্রতিটি output ধাপে ধাপে বের করো (সহজ → কঠিন) ──",
-          "১ (সহজ) — p array-এর শুরুতে থাকলে *(p+1) দিয়ে কোন element পাওয়া যায়?",
-          {
-            "code": "int a[3] = {10, 20, 30};\nint *p = a;\n\nprintf(\"%d\", *(p + 1));",
-            "codeLang": "c",
-            "label": "প্রশ্ন ১"
-          },
-          {
-            "sub": "p = a মানে p এখন a[0]-কে point করছে (index 0)।"
-          },
-          {
-            "sub": "p+1 মানে p থেকে ১টা int (4 byte) এগোনো — index 1, যেখানে মান 20।"
-          },
-          {
-            "sub": "*(p+1) মানে সেই address-এর VALUE পড়া — 20, ঠিকানা নয়।"
-          },
-          {
-            "sub": "→ Output: 20"
-          },
-          "২ (সহজ) — pointer p সরাসরি a+2 দিয়ে শুরু হলে *p দিয়ে কী পাওয়া যাবে?",
-          {
-            "code": "int a[4] = {2, 4, 6, 8};\nint *p = a + 2;\n\nprintf(\"%d\", *p);",
-            "codeLang": "c",
-            "label": "প্রশ্ন ২"
-          },
-          {
-            "sub": "a+2 মানে array-এর শুরু থেকে ২ ধাপ এগোনো address — index 2 (a[2])।"
-          },
-          {
-            "sub": "p প্রথমেই সেই address দিয়ে initialize হয়েছে।"
-          },
-          {
-            "sub": "a[0]=2, a[1]=4, a[2]=6, a[3]=8 — index 2-এর মান 6। *p মানে সেই address-এর VALUE — 6।"
-          },
-          {
-            "sub": "→ Output: 6"
-          },
-          "৩ — p++ করার পর *p দিয়ে output কী আসবে?",
-          {
-            "code": "int a[3] = {3, 6, 9};\nint *p = a;\np++;\n\nprintf(\"%d\", *p);",
-            "codeLang": "c",
-            "label": "প্রশ্ন ৩"
-          },
-          {
-            "sub": "p = a → p index 0-তে (মান 3)।"
-          },
-          {
-            "sub": "p++ → p নিজেই বদলে গিয়ে index 1-এ চলে যায় (মান 6)।"
-          },
-          {
-            "sub": "এখানে কোনো dereference হয়নি — শুধু pointer-টা নড়েছে।"
-          },
-          {
-            "sub": "printf-এ *p মানে এখন p যেখানে আছে (index 1) তার মান পড়া — 6। array-এর কোনো মান পাল্টায়নি।"
-          },
-          {
-            "sub": "→ Output: 6"
-          },
-          "৪ — *(p++ + 2) এ p++ আর +2 কোন ক্রমে কাজ করে?",
-          {
-            "code": "int arr[] = {10, 20, 30, 40};\nint *p = arr;\n\nprintf(\"%d\", *(p++ + 2));",
-            "codeLang": "c",
-            "label": "প্রশ্ন ৪"
-          },
-          {
-            "sub": "postfix ++ শুধু p variable-এর সাথে বাঁধা — p++ + 2 মানে (p-এর বর্তমান/পুরনো মান) + 2, তারপর p নিজে এক ধাপ বাড়ে (side effect)।"
-          },
-          {
-            "sub": "p++ এর মান হিসেবে ব্যবহার হয় index 0-এর address।"
-          },
-          {
-            "sub": "তাতে +2 যোগ হয়ে দাঁড়ায় index 2-এর address (arr+2)।"
-          },
-          {
-            "sub": "*(...) দিয়ে সেই address-এর মান বের হয় — arr[2] = 30।"
-          },
-          {
-            "sub": "→ Output: 30"
-          },
-          "৫ — *(p++) + *p এ একই statement-এ দুইবার pointer ব্যবহার করলে কী হয়?",
-          {
-            "code": "int a[3] = {1, 2, 3};\nint *p = a;\n\nprintf(\"%d\", *(p++) + *p);",
-            "codeLang": "c",
-            "label": "প্রশ্ন ৫"
-          },
-          {
-            "sub": "*(p++): প্রথমে *p পড়া হয় (মান a[0]=1), তারপর p বেড়ে index 1-এ চলে যায়। ফলাফল হিসেবে বসে 1।"
-          },
-          {
-            "sub": "এরপরের *p এখন p-এর নতুন (বেড়ে যাওয়া) মান দিয়ে পড়া হয় — index 1, মান 2। যোগফল = 1+2 = 3।"
-          },
-          {
-            "sub": "⚠ C স্ট্যান্ডার্ড অনুযায়ী + এর দুই operand কোন ক্রমে হিসাব হবে unspecified — বেশিরভাগ compiler বাম থেকে ডান ধরে বলে উত্তর 3 আসে, কিন্তু এটা সবসময় guaranteed না।"
-          },
-          {
-            "sub": "→ Output: 3 (বেশিরভাগ compiler-এ)"
-          },
-          "৬ — pointer p = a+1 হলে *(p+2) - *(p-1) এর output কী?",
-          {
-            "code": "int a[5] = {10, 20, 30, 40, 50};\nint *p = a + 1;\n\nprintf(\"%d\", *(p + 2) - *(p - 1));",
-            "codeLang": "c",
-            "label": "প্রশ্ন ৬"
-          },
-          {
-            "sub": "p = a+1 → p শুরুতেই index 1-এ (মান 20), index 0-তে নয়।"
-          },
-          {
-            "sub": "+2/-1 এর হিসাব সবসময় p যেখানে বসে আছে সেখান থেকে হয়, array-এর শুরু থেকে নয়।"
-          },
-          {
-            "sub": "p+2 = index (1+2) = index 3 = 40।"
-          },
-          {
-            "sub": "p-1 = index (1-1) = index 0 = 10।"
-          },
-          {
-            "sub": "বিয়োগফল = 40 - 10 = 30।"
-          },
-          {
-            "sub": "→ Output: 30"
-          },
-          "৭ — *p-- + *--p এ postfix আর prefix decrement একসাথে থাকলে?",
-          {
-            "code": "int a[4] = {3, 6, 9, 12};\nint *p = a + 3;\n\nprintf(\"%d\", *p-- + *--p);",
-            "codeLang": "c",
-            "label": "প্রশ্ন ৭"
-          },
-          {
-            "sub": "p = a+3 → শুরুতে p index 3-এ (মান 12)।"
-          },
-          {
-            "sub": "*p-- (postfix): আগে *p পড়া হয় (12), তারপর p কমে index 2-এ যায়।"
-          },
-          {
-            "sub": "*--p (prefix): আগে p আরেক ধাপ কমে index 1-এ যায়, তারপর পড়া হয় (মান 6)। যোগফল = 12+6 = 18।"
-          },
-          {
-            "sub": "মনে রাখো: প্রতীক (--) p-এর আগে থাকলে কাজ আগে (prefix), পরে থাকলে কাজ পরে (postfix)।"
-          },
-          {
-            "sub": "→ Output: 18"
-          },
-          "৮ (কঠিন) — &arr+1 করে int* এ cast করার পর -2 করলে কোন element পাওয়া যায়?",
-          {
-            "code": "int arr[5] = {1, 2, 3, 4, 5};\n\nprintf(\"%d\", *((int*)(&arr + 1) - 2));",
-            "codeLang": "c",
-            "label": "প্রশ্ন ৮"
-          },
-          {
-            "sub": "&arr মানে পুরো array-এর address।"
-          },
-          {
-            "sub": "&arr+1 মানে একটা 'সম্পূর্ণ array' (৫টা int) এগিয়ে যাওয়া।"
-          },
-          {
-            "sub": "সেটি index 5-এর ঠিক পরের address — array-এর বাইরে।"
-          },
-          {
-            "sub": "(int*) cast করে সেই address-কে আবার '১টা int-এর দিকে নির্দেশকারী' pointer বানানো হলো।"
-          },
-          {
-            "sub": "এখন +1/-1 মানে ১টা int (4 byte) করে নড়া।"
-          },
-          {
-            "sub": "-2 করলে index (5-2) = 3, যার মান 4।"
-          },
-          {
-            "sub": "→ Output: 4"
-          },
-          "৯ (সবচেয়ে কঠিন) — &ledger+1 বনাম ledger+1: দুই pointer কোন কোন জায়গা point করছে?",
-          {
-            "code": "int ledger[5] = {10, 20, 30, 40, 50};\nint *ptr1 = (int*)(&ledger + 1);\nint *ptr2 = (int*)(ledger + 1);\n\nprintf(\"%d, %d\", *(ptr1 - 1), *(ptr2 + 2));",
-            "codeLang": "c",
-            "label": "প্রশ্ন ৯ (Combined Bank AP'26)"
-          },
-          {
-            "sub": "ptr1 = (int*)(&ledger+1) → &ledger পুরো array-এর address।"
-          },
-          {
-            "sub": "তাতে +1 মানে পুরো array (৫টা int) পার হয়ে যাওয়া — index 5, array-এর বাইরে।"
-          },
-          {
-            "sub": "int*-এ cast করার পর এক ধাপ = ১টা int।"
-          },
-          {
-            "sub": "ptr2 = (int*)(ledger+1) → ledger প্রথম element-এর address; +1 মানে মাত্র ১টা int এগোনো — index 1।"
-          },
-          {
-            "sub": "ptr1-1 → index 5-1 = index 4 = 50 (array-এর শেষ element)। ptr2+2 → index 1+2 = index 3 = 40।"
-          },
-          {
-            "sub": "→ Output: 50, 40"
-          },
-          "── Memory Management — Leak বনাম Dangling Pointer গুলিয়ে ফেলো না ──",
-          {
-            "sub": "Memory Leak: allocate করা memory-র address হারিয়ে ফেলা — memory-টা valid ও reserved থেকে যায়, কিন্তু কেউ আর তাকে free করতে পারে না।"
-          },
-          {
-            "sub": "Dangling Pointer: এমন address ব্যবহার করা যেটা ইতিমধ্যে invalid হয়ে গেছে — হয় free() করার পরে, নয়তো function শেষ হয়ে local variable বিলুপ্ত হওয়ার পরে।"
-          },
-          "১০ — malloc করা pointer-কে আবার নতুন malloc() দিয়ে reassign করলে কী সমস্যা হয়?",
-          {
-            "code": "int *p = malloc(4);\np = malloc(4);\n\nfree(p);",
-            "codeLang": "c",
-            "label": "মেমরি সমস্যা ১ — Leak"
-          },
-          {
-            "sub": "প্রথম malloc(4) একটা 4-byte block বানায়, তার address p-তে থাকে।"
-          },
-          {
-            "sub": "p = malloc(4) — p-কে এখন নতুন block-এর address দেওয়া হলো।"
-          },
-          {
-            "sub": "পুরনো address কোথাও copy না করেই হারিয়ে গেল।"
-          },
-          {
-            "sub": "প্রথম block এখনো allocated, কিন্তু কোনো variable তার address ধরে নেই।"
-          },
-          {
-            "sub": "address না থাকায় তাকে free() করার উপায়ও নেই — এটাই Memory Leak।"
-          },
-          {
-            "sub": "free(p) শুধু দ্বিতীয় (সর্বশেষ) block-কেই free করে।"
-          },
-          {
-            "sub": "→ ফলাফল: crash করে না, কিন্তু প্রথম 4 byte চিরতরে leak হয়ে যায়।"
-          },
-          "১১ — function-এর local variable-এর address return করে পরে dereference করলে কী হয়?",
-          {
-            "code": "int *fun() {\n    int x = 10;\n    return &x;\n}\n\nint main() {\n    int *p = fun();\n    printf(\"%d\", *p);\n}",
-            "codeLang": "c",
-            "label": "মেমরি সমস্যা ২ — Dangling Pointer"
-          },
-          {
-            "sub": "fun()-এর x একটা local variable — এটি stack memory-তে তৈরি হয়।"
-          },
-          {
-            "sub": "x শুধু fun() চলাকালীন সময়েই valid থাকে।"
-          },
-          {
-            "sub": "fun() return করার সাথে সাথে তার stack frame release হয়ে যায়।"
-          },
-          {
-            "sub": "main()-এ p সেই invalid address ধরে রাখে — একেই dangling pointer বলে।"
-          },
-          {
-            "sub": "*p দিয়ে সেটা dereference করা মানেই Undefined Behavior।"
-          },
-          {
-            "sub": "বাস্তবে অনেক সময় পুরনো মান (10) দেখাতে পারে, কিন্তু এটা guaranteed নয়।"
-          },
-          {
-            "sub": "→ Output: Undefined Behavior (compile হয়ে যায়, সমস্যাটা runtime-এ)"
-          }
-        ],
-        "diagram": "১) Pointer ও Array Address — মেমরি লেআউট\nধরি: int arr[4] = {10, 20, 30, 40};  arr শুরু হয় address 1000-এ (প্রতিটি int = 4 byte)\n\n  address:    1000    1004    1008    1012    1016\n  মান:      [ 10  ][ 20  ][ 30  ][ 40  ]|  ← array-এর বাইরে\n             arr[0]  arr[1]  arr[2]  arr[3]\n\n  arr, &arr[0]          ──────►  1000   (প্রথম element-এর ADDRESS)\n  *arr, *(arr+0)        ──────►  10     (প্রথম element-এর VALUE)\n  arr+1, &arr[1]        ──────►  1004   (দ্বিতীয় element-এর ADDRESS) ← মাত্র 1 int এগোলো\n  *(arr+1), arr[1]      ──────►  20     (দ্বিতীয় element-এর VALUE)\n  &arr                  ──────►  1000   (সংখ্যায় arr-এর সমান, কিন্তু TYPE আলাদা)\n  &arr+1                ──────►  1016   ⚠ পুরো array পার হয়ে গেল, array-এর বাইরে\n  (int*)(&arr+1) - 1    ──────►  1012   = &arr[3]  (শেষ element-এ ফেরার trick)\n\n──────── at-a-glance ────────\n  arr, &arr[0]         →  1000  (int*)      প্রথম element-এর address\n  arr+1, &arr[1]       →  1004  (int*)      দ্বিতীয় element-এর address\n  *(arr+1), arr[1]     →  20    (int)       দ্বিতীয় element-এর VALUE\n  &arr                 →  1000  (int(*)[4]) পুরো array-এর address\n  &arr+1               →  1016  (int(*)[4]) পুরো array পার হয়ে যাওয়া address\n\n\n২) প্রশ্ন ৯ (সবচেয়ে কঠিন) — &ledger+1 বনাম ledger+1\nledger:  [10][20][30][40][50]     index →   0    1    2    3    4      index 5 = বাইরে\n          ▲                                       ▲\n    &ledger, ledger                          ledger+1 = index 1\n\n  &ledger+1  ──► index 5 (বাইরে) ──(int*) cast──► ptr1\n  ptr1 - 1   ──► index 4 = 50   (array-এর শেষ element)\n\n  ledger+1   ──► index 1 ──(int*) cast──► ptr2\n  ptr2 + 2   ──► index 3 = 40",
-        "table": {
-          "headers": [
-            "Expression",
-            "মানে",
-            "Type",
-            "উদাহরণ (arr@1000)"
-          ],
-          "rows": [
-            [
-              "arr / &arr[0]",
-              "প্রথম element-এর address",
-              "int*",
-              "1000"
-            ],
-            [
-              "arr+1 / &arr[1]",
-              "দ্বিতীয় element-এর address",
-              "int*",
-              "1004"
-            ],
-            [
-              "*(arr+1) / arr[1]",
-              "দ্বিতীয় element-এর VALUE",
-              "int",
-              "20"
-            ],
-            [
-              "&arr",
-              "পুরো array-এর address",
-              "int(*)[4]",
-              "1000 (সংখ্যায় একই, type আলাদা)"
-            ],
-            [
-              "&arr+1",
-              "পুরো array পার হয়ে যাওয়া address",
-              "int(*)[4]",
-              "1016"
-            ],
-            [
-              "(int*)(&arr+1)-1",
-              "শেষ element-এর address (উল্টো দিক থেকে)",
-              "int*",
-              "1012"
-            ]
-          ]
-        },
-        "mistakes": [
-          [
-            "arr আর &arr একই জিনিস, তাই +1 করলে একই ফল দেবে",
-            "সংখ্যায় address একই হলেও TYPE আলাদা — arr+1 এক int (4 byte) এগোয়, &arr+1 পুরো array (n×4 byte) এগোয়।"
-          ],
-          [
-            "*(arr+i) আর &arr[i] একই জিনিস",
-            "না — *(arr+i) VALUE দেয় (তারকা আছে), &arr[i] ADDRESS দেয় (তারকা নেই)। ফলাফল সম্পূর্ণ ভিন্ন ধরনের জিনিস।"
-          ],
-          [
-            "postfix p++ এক্সপ্রেশনের মধ্যেই p-কে বাড়িয়ে ফেলে ভাবা (তাই p++ + 2 কে (p+1)+2 ধরা)",
-            "postfix ++ এক্সপ্রেশনে পুরনো মান দিয়ে ব্যবহার হয়; বাড়াটা side effect হিসেবে ঘটে, এক্সপ্রেশনের ফলাফলে প্রভাব ফেলে না।"
-          ],
-          [
-            "*(p++) + *p এ দুটো *p-ই পুরনো মান দেখাবে ভাবা",
-            "প্রথম *(p++) নিজেই p-কে বাড়িয়ে দেয় — তাই দ্বিতীয় *p নতুন (বদলে যাওয়া) p পড়ে।"
-          ],
-          [
-            "&arr+1 মানে দ্বিতীয় element-এর address",
-            "না — &arr+1 মানে পুরো array পার হয়ে যাওয়া address (array-এর বাইরে), একটা element নয়।"
-          ],
-          [
-            "Memory Leak আর Dangling Pointer একই সমস্যা",
-            "Leak-এ memory valid থাকে কিন্তু কেউ তার address ধরে নেই (free করা যায় না); Dangling-এ address invalid হয়ে গেছে (free হয়ে গেছে বা scope শেষ) অথচ সেটা ব্যবহার করা হচ্ছে।"
-          ]
-        ],
-        "mnemonic": "তারকা (*) = মান, & = ঠিকানা, &array = 'পুরোটা' লাফ (element নয়)। Leak = memory হারানো (আটকে থাকে, কেউ free করতে পারে না); Dangling = ইতিমধ্যে invalid জায়গা ব্যবহার করা।"
-      }
-    },
-    {
       "id": "c_022",
       "segment": "Program",
       "subsegment": "Number",
@@ -2974,6 +2286,1132 @@
           ]
         ],
         "mnemonic": "একটাই প্রশ্ন করো — ভেতরের loop কি বাইরের i-কে চেনে? না চিনলে গুণ, চিনলে যোগ। যোগের দুটি চেহারা: j += i হলে n/1 + n/2 + … = n log n (harmonic), আর j <= i হলে 1 + 2 + 4 + … = 2n (geometric)।"
+      }
+    },
+    {
+      "id": "c_059",
+      "q": "Recursion উদাহরণ ৩ (কঠিন) — n নিজেও যোগ হচ্ছে, static sum variable দিয়ে:",
+      "headerCode": "class Test {\n    static int sum = 0;\n\n    static int fun(int n) {\n        if (n == 0) {\n            return 0;\n        }\n        sum = sum + n;\n        return fun(n - 1) + sum;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
+      "headerCodeLang": "Java",
+      "tags": [
+        "recursion",
+        "static variable",
+        "parameter",
+        "local variable",
+        "call stack",
+        "java",
+        "output prediction",
+        "cheat sheet"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Recursion",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: base case-এ পৌঁছে variable আর আপডেট হয় কি না।"
+        ],
+        "points": [
+          {
+            "sub": "sum static, শুরুতে sum = 0।"
+          },
+          {
+            "sub": "নিচে নামা: fun(3) → sum = 0+3 = 3।"
+          },
+          {
+            "sub": "fun(2) → sum = 3+2 = 5।"
+          },
+          {
+            "sub": "fun(1) → sum = 5+1 = 6।"
+          },
+          {
+            "sub": "fun(0) → n == 0, সরাসরি return 0 (sum-এ হাত পড়ে না, sum = 6-ই থাকে)।"
+          },
+          {
+            "sub": "ফেরার সময় প্রতিটি call sum-এর সর্বশেষ মান (6) পড়ে, নিজের ধাপে বসানো মান নয়।"
+          },
+          {
+            "sub": "fun(1) = fun(0) + sum = 0 + 6 = 6।"
+          },
+          {
+            "sub": "fun(2) = fun(1) + sum = 6 + 6 = 12।"
+          },
+          {
+            "sub": "fun(3) = fun(2) + sum = 12 + 6 = 18।"
+          },
+          {
+            "sub": "→ Output: 18"
+          }
+        ],
+        "diagram": "static sum — নিচে নামা (going down)              উপরে ফেরা (coming back up)\n\n fun(3): sum = 0+3 = 3                fun(0) = 0\n    │ call fun(2)                          │\n    ▼                                       ▼\n fun(2): sum = 3+2 = 5                fun(1) = fun(0) + sum = 0 + 6 = 6\n    │ call fun(1)                          │\n    ▼                                       ▼\n fun(1): sum = 5+1 = 6                fun(2) = fun(1) + sum = 6 + 6 = 12\n    │ call fun(0)                          │\n    ▼                                       ▼\n fun(0): n==0 → return 0 (sum অপরিবর্তিত)  fun(3) = fun(2) + sum = 12 + 6 = 18\n\n                    Output: 18\n\n⚠ লক্ষ করো: প্রতিটি ধাপে sum পড়া হচ্ছে তার সর্বশেষ মান (6),\n   নিজের বসানো পুরনো মান নয় — কারণ sum static, আর ফেরার আগে\n   আর কেউ সেটা বদলায়নি।",
+        "table": {
+          "headers": [
+            "Call",
+            "n",
+            "sum = sum + n",
+            "নতুন sum"
+          ],
+          "rows": [
+            [
+              "fun(3)",
+              "3",
+              "0+3",
+              "3"
+            ],
+            [
+              "fun(2)",
+              "2",
+              "3+2",
+              "5"
+            ],
+            [
+              "fun(1)",
+              "1",
+              "5+1",
+              "6"
+            ],
+            [
+              "fun(0)",
+              "0",
+              "(base case — sum অপরিবর্তিত)",
+              "6"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "base case-এও variable আপডেট হয় ভাবা",
+            "base case (n<=1 বা n==0)-এ সরাসরি return হয়ে যায় — তার আগের update-লাইন (যেমন sum = sum+n) সেখানে চলে না।"
+          ]
+        ],
+        "mnemonic": "base case শুধু return করে — খাতায় আর কিছু লেখে না।"
+      }
+    },
+    {
+      "id": "c_058",
+      "q": "Recursion উদাহরণ ২ (তুলনা) — একই কোড, কিন্তু x যদি static না হয়ে parameter হতো:",
+      "headerCode": "class Test {\n    public static int fun(int n, int x) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1, x) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3, 5));\n    }\n}",
+      "headerCodeLang": "Java",
+      "tags": [
+        "recursion",
+        "static variable",
+        "parameter",
+        "local variable",
+        "call stack",
+        "java",
+        "output prediction",
+        "cheat sheet"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Recursion",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: একই কোডে static-এর বদলে parameter দিলে উত্তর কেন বদলে যায়।"
+        ],
+        "points": [
+          {
+            "sub": "এবার x কোনো static/shared variable না — এটা parameter।"
+          },
+          {
+            "sub": "parameter মানে প্রতিটি call-এর নিজস্ব আলাদা copy আছে।"
+          },
+          {
+            "sub": "তাই একটা call-এর x আরেকটা call-কে প্রভাবিত করে না।"
+          },
+          {
+            "sub": "fun(3,5): x = 5+2 = 7 (এই call-এর নিজস্ব x), তারপর কল করে fun(2,7)+7।"
+          },
+          {
+            "sub": "fun(2,7): x = 7+2 = 9 (এই call-এর নিজস্ব x), তারপর কল করে fun(1,9)+9।"
+          },
+          {
+            "sub": "fun(1,9): n ≤ 1, তাই সরাসরি return 1।"
+          },
+          {
+            "sub": "ফিরতি পথ: fun(2,7) = fun(1,9) + 9 = 1 + 9 = 10।"
+          },
+          {
+            "sub": "fun(3,5) = fun(2,7) + 7 = 10 + 7 = 17।"
+          },
+          {
+            "sub": "এখানে নিজের বসানো পুরনো 7-ই ব্যবহার হচ্ছে, কারণ এটা local copy — কেউ বদলে দেয়নি।"
+          },
+          {
+            "sub": "→ Output: 17 (static হলে ছিল 19 — শুধু static→parameter বদলেই উত্তর বদলে গেল)"
+          }
+        ],
+        "mistakes": [
+          [
+            "static ও local/parameter variable একই আচরণ করে ভাবা",
+            "static variable পুরো program-এ একটাই কপি — সব call ভাগাভাগি করে, তাই এক call-এর পরিবর্তন সবাই দেখে। local/parameter variable-এর প্রতিটি call-এর নিজস্ব আলাদা copy থাকে, একটা আরেকটাকে প্রভাবিত করে না।"
+          ]
+        ],
+        "mnemonic": "parameter = প্রতিটি call-এর নিজস্ব কপি; কেউ কারও মান বদলাতে পারে না।"
+      }
+    },
+    {
+      "id": "c_057",
+      "q": "Recursion উদাহরণ ১ (recap) — static variable হলে কী হয়:",
+      "headerCode": "class Test {\n    static int x = 5;\n\n    public static int fun(int n) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
+      "headerCodeLang": "Java",
+      "tags": [
+        "recursion",
+        "static variable",
+        "parameter",
+        "local variable",
+        "call stack",
+        "java",
+        "output prediction",
+        "cheat sheet"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Recursion",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: static variable ফেরার পথে কোন মান পড়ে — নিজের বসানো পুরনো মান, না সর্বশেষ মান।"
+        ],
+        "points": [
+          {
+            "sub": "x static — পুরো program-এ একটাই কপি, সব call সেটা ভাগাভাগি করে।"
+          },
+          {
+            "sub": "নিচে নামা (going down): fun(3) — n=3>1, তাই x = 5+2 = 7, তারপর কল করে fun(2)।"
+          },
+          {
+            "sub": "fun(2) — n=2>1, তাই x = 7+2 = 9, তারপর কল করে fun(1)।"
+          },
+          {
+            "sub": "fun(1) — n=1≤1, base case: সরাসরি return 1 (x আর বাড়ে না, x=9-ই থেকে যায়)।"
+          },
+          {
+            "sub": "উপরে ফেরা (coming back up): fun(1) থেকে 1 ফেরত পেল fun(2)।"
+          },
+          {
+            "sub": "fun(2) এখন x-এর সর্বশেষ মান (9) পড়ে — নিজের বসানো পুরনো মান 7 নয়।"
+          },
+          {
+            "sub": "fun(2) = 1 + 9 = 10।"
+          },
+          {
+            "sub": "fun(2)-এর ফলাফল (10) পেয়ে fun(3)-ও x-এর সর্বশেষ মান (9)-ই পড়ে — নিজের বসানো পুরনো মান 5 নয়।"
+          },
+          {
+            "sub": "fun(3) = 10 + 9 = 19।"
+          },
+          {
+            "sub": "→ Output: 19"
+          }
+        ],
+        "mistakes": [
+          [
+            "static variable ফেরার সময় নিজের বসানো পুরনো মান ব্যবহার করে ভাবা",
+            "static variable-এর জন্য সবসময় সর্বশেষ (সবচেয়ে ভেতরের/নিচের call-এ সেট করা) মানই ব্যবহৃত হয় — যে call নিজে যে মান বসিয়েছিল, ফেরার সময় সেটা আর ফিরে আসে না।"
+          ]
+        ],
+        "mnemonic": "static = একটাই খাতা; ফেরার সময় সবাই খাতার সর্বশেষ লেখাটাই পড়ে।"
+      }
+    },
+    {
+      "id": "c_056",
+      "q": "Recursion-এর output বের করার ৫ ধাপের কৌশল কী?",
+      "tags": [
+        "recursion",
+        "static variable",
+        "parameter",
+        "local variable",
+        "call stack",
+        "java",
+        "output prediction",
+        "cheat sheet"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Recursion",
+      "answer": {
+        "summary": [
+          "recursion-এর output-prediction প্রশ্নে সবচেয়ে বড় trap: variable static নাকি local/parameter, সেটা না ধরতে পারলে পুরো হিসাব ভুল হয়ে যায় — নিচে একটা ৫-ধাপের strategy, তারপর তিনটে ক্রমান্বয়ে কঠিন উদাহরণ।"
+        ],
+        "points": [
+          {
+            "sub": "১) প্রথমে চেক করো — variable-টা static (class-level, shared) নাকি local/parameter (প্রতি call-এর নিজস্ব আলাদা copy)।"
+          },
+          {
+            "sub": "এই একটা পার্থক্যই পুরো উত্তর বদলে দেয়, তাই সবার আগে এটি দেখো।"
+          },
+          {
+            "sub": "২) একটা টেবিল বানাও — প্রতিটা recursive call-এ (n যাওয়ার দিকে, অর্থাৎ 'going down') variable-টা কী মান পায়, সেটা লিখে ফেলো।"
+          },
+          {
+            "sub": "৩) Base case (n<=1, n==0 ইত্যাদি) কোথায় থামছে সেটা বের করো — ওটাই সবচেয়ে ভেতরের return।"
+          },
+          {
+            "sub": "৪) এবার উল্টো দিকে (return করার সময়, 'coming back up') হিসাব করো।"
+          },
+          {
+            "sub": "variable static হলে সবসময় সর্বশেষ (সবচেয়ে নিচের call-এ সেট করা) মানটাই ব্যবহার হবে।"
+          },
+          {
+            "sub": "প্রতিটি +x-এর জন্য সেই একই মান বসবে — নিজের বসানো পুরনো মান নয়।"
+          },
+          {
+            "sub": "৫) ধাপে ধাপে নিচ থেকে উপরে যোগ করে answer বের করো।"
+          }
+        ],
+        "mistakes": [
+          [
+            "static ও local/parameter variable একই আচরণ করে ভাবা",
+            "static variable পুরো program-এ একটাই কপি — সব call ভাগাভাগি করে, তাই এক call-এর পরিবর্তন সবাই দেখে। local/parameter variable-এর প্রতিটি call-এর নিজস্ব আলাদা copy থাকে, একটা আরেকটাকে প্রভাবিত করে না।"
+          ]
+        ],
+        "mnemonic": "static মানে 'একটাই খাতা, সবাই লেখে' — নিচে নামার সময় খাতায় লেখা চলতেই থাকে, উপরে ওঠার সময় সবাই খাতার সর্বশেষ লেখাটাই পড়ে। local/parameter মানে 'যার যার নিজের খাতা' — কেউ কারো খাতা দেখে না।"
+      }
+    },
+    {
+      "id": "c_055",
+      "q": "C++ output ১৩ — base class pointer দিয়ে derived object-কে point করে virtual function call করলে কার function চলে?",
+      "headerCode": "class A {\npublic:\n    virtual void show() { cout << \"A\"; }\n};\n\nclass B : public A {\npublic:\n    void show() { cout << \"B\"; }\n};\n\nint main() {\n    A *p = new B();\n    p->show();\n}",
+      "headerCodeLang": "cpp",
+      "tags": [
+        "c++",
+        "multiple inheritance",
+        "constructor order",
+        "virtual function",
+        "runtime polymorphism",
+        "oop",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Inheritance & Polymorphism",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: base class pointer দিয়ে virtual function ডাকলে কার সংস্করণ চলে।"
+        ],
+        "points": [
+          {
+            "sub": "virtual না থাকলে C++ compile-time-এই ঠিক করে ফেলত, শুধু pointer-এর ঘোষিত TYPE (A*) দেখে — তখন output হতো A।"
+          },
+          {
+            "sub": "virtual থাকায় সিদ্ধান্তটা runtime-এ নেওয়া হয়, pointer আসলে কোন object-কে point করছে তা দেখে।"
+          },
+          {
+            "sub": "এখানে p-এর টাইপ A* হলেও সে আসলে একটা B object (new B()) কে point করছে।"
+          },
+          {
+            "sub": "→ Output: B"
+          }
+        ],
+        "mistakes": [
+          [
+            "virtual function-এর ক্ষেত্রে pointer-এর ঘোষিত TYPE (A*) দেখে function বাছাই হয় ভাবা",
+            "virtual থাকলে আসল object-এর টাইপ (এখানে B) দেখে function বাছাই হয় — pointer-এর টাইপ শুধু virtual না থাকলেই প্রাসঙ্গিক।"
+          ]
+        ],
+        "mnemonic": "virtual থাকলে সিদ্ধান্ত আসল object দেখে, pointer-এর ঘোষিত TYPE দেখে নয়।"
+      }
+    },
+    {
+      "id": "c_054",
+      "q": "C++ output ১২ — multiple inheritance-এ class C : public A, public B হলে constructor-এর ক্রম কী হবে?",
+      "headerCode": "class A {\npublic:\n    A() { cout << \"A \"; }\n};\n\nclass B {\npublic:\n    B() { cout << \"B \"; }\n};\n\nclass C : public A, public B {\npublic:\n    C() { cout << \"C \"; }\n};\n\nint main() {\n    C obj;\n}",
+      "headerCodeLang": "cpp",
+      "tags": [
+        "c++",
+        "multiple inheritance",
+        "constructor order",
+        "virtual function",
+        "runtime polymorphism",
+        "oop",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Inheritance & Polymorphism",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: multiple inheritance-এ base constructor-গুলো কোন ক্রমে চলে।"
+        ],
+        "points": [
+          {
+            "sub": "C++ কম্পাইলার derived class-এর object বানানোর আগে সবগুলো base class-এর constructor call করে নেয়, ইনহেরিটেন্স লিস্টের ক্রমে (বাম থেকে ডান) — এখানে আগে A, পরে B।"
+          },
+          {
+            "sub": "এরপর সবশেষে derived class (C)-এর নিজের constructor চলে।"
+          },
+          {
+            "sub": "constructor-এর ভেতরে initializer list কোন ক্রমে লেখা হলো, তাতে এই ক্রম বদলায় না।"
+          },
+          {
+            "sub": "→ Output: A B C"
+          }
+        ],
+        "mistakes": [
+          [
+            "multiple inheritance-এ constructor-এর ক্রম initializer list লেখার উপর নির্ভর করে ভাবা",
+            "ক্রম নির্ভর করে শুধু inheritance list-এ (class C : public A, public B) লেখা ক্রমের উপর, initializer list-এ ভিন্ন ক্রমে লিখলেও বদলায় না।"
+          ]
+        ],
+        "mnemonic": "inheritance list-এ যে ক্রমে লেখা, সেই ক্রমেই base constructor চলে; derived সবার শেষে।"
+      }
+    },
+    {
+      "id": "c_053",
+      "q": "C++ — constructor-এর ক্রম আর virtual function: কোনটা compile-time, কোনটা runtime-এ ঠিক হয়?",
+      "tags": [
+        "c++",
+        "multiple inheritance",
+        "constructor order",
+        "virtual function",
+        "runtime polymorphism",
+        "oop",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Inheritance & Polymorphism",
+      "answer": {
+        "summary": [
+          "এই দুটো output-prediction প্রশ্নে মূল বিষয়টাই হলো: constructor-এর ক্রম compile-time-এই ঠিক হয়ে যায় (inheritance list-এ লেখা ক্রম অনুযায়ী), কিন্তু virtual function কোনটা চলবে সেটা runtime-এ ঠিক হয় (আসল object দেখে)।"
+        ],
+        "points": [
+          {
+            "sub": "Constructor call-এর ক্রম compile-time-এই ঠিক হয়ে যায়।"
+          },
+          {
+            "sub": "base class-গুলো ঠিক যে ক্রমে inheritance list-এ লেখা (class C : public A, public B), সেই ক্রমেই call হয়।"
+          },
+          {
+            "sub": "সবার শেষে derived class-এর নিজের constructor চলে।"
+          },
+          {
+            "sub": "virtual function কোন class-এর সংস্করণ চলবে সেটা runtime-এ ঠিক হয় — pointer-এর ঘোষিত TYPE দেখে নয়, pointer আসলে কোন OBJECT-কে point করছে সেটা দেখে।"
+          }
+        ],
+        "mistakes": [
+          [
+            "virtual function-এর ক্ষেত্রে pointer-এর ঘোষিত TYPE (A*) দেখে function বাছাই হয় ভাবা",
+            "virtual থাকলে আসল object-এর টাইপ (এখানে B) দেখে function বাছাই হয় — pointer-এর টাইপ শুধু virtual না থাকলেই প্রাসঙ্গিক।"
+          ],
+          [
+            "multiple inheritance-এ constructor-এর ক্রম initializer list লেখার উপর নির্ভর করে ভাবা",
+            "ক্রম নির্ভর করে শুধু inheritance list-এ (class C : public A, public B) লেখা ক্রমের উপর, initializer list-এ ভিন্ন ক্রমে লিখলেও বদলায় না।"
+          ]
+        ],
+        "mnemonic": "Constructor-এর ক্রম লেখা-ক্রম অনুযায়ী (compile-time); virtual function-এর ক্রম আসল object অনুযায়ী (runtime)।"
+      }
+    },
+    {
+      "id": "c_052",
+      "q": "Memory ১১ — function-এর local variable-এর address return করে পরে dereference করলে কী হয়?",
+      "headerCode": "int *fun() {\n    int x = 10;\n    return &x;\n}\n\nint main() {\n    int *p = fun();\n    printf(\"%d\", *p);\n}",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Memory",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: function শেষ হয়ে গেলে তার local variable-এর address আর valid থাকে কি না।"
+        ],
+        "points": [
+          {
+            "sub": "fun()-এর x একটা local variable — এটি stack memory-তে তৈরি হয়।"
+          },
+          {
+            "sub": "x শুধু fun() চলাকালীন সময়েই valid থাকে।"
+          },
+          {
+            "sub": "fun() return করার সাথে সাথে তার stack frame release হয়ে যায়।"
+          },
+          {
+            "sub": "main()-এ p সেই invalid address ধরে রাখে — একেই dangling pointer বলে।"
+          },
+          {
+            "sub": "*p দিয়ে সেটা dereference করা মানেই Undefined Behavior।"
+          },
+          {
+            "sub": "বাস্তবে অনেক সময় পুরনো মান (10) দেখাতে পারে, কিন্তু এটা guaranteed নয়।"
+          },
+          {
+            "sub": "→ Output: Undefined Behavior (compile হয়ে যায়, সমস্যাটা runtime-এ)"
+          }
+        ],
+        "mistakes": [
+          [
+            "Memory Leak আর Dangling Pointer একই সমস্যা",
+            "Leak-এ memory valid থাকে কিন্তু কেউ তার address ধরে নেই (free করা যায় না); Dangling-এ address invalid হয়ে গেছে (free হয়ে গেছে বা scope শেষ) অথচ সেটা ব্যবহার করা হচ্ছে।"
+          ]
+        ],
+        "mnemonic": "stack frame চলে গেলে ঠিকানাটা থেকে যায়, জায়গাটা থাকে না।"
+      }
+    },
+    {
+      "id": "c_051",
+      "q": "Memory ১০ — malloc করা pointer-কে আবার নতুন malloc() দিয়ে reassign করলে কী সমস্যা হয়?",
+      "headerCode": "int *p = malloc(4);\np = malloc(4);\n\nfree(p);",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Memory",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: একই pointer আবার malloc দিয়ে reassign করলে পুরনো block-এর কী হয়।"
+        ],
+        "points": [
+          {
+            "sub": "প্রথম malloc(4) একটা 4-byte block বানায়, তার address p-তে থাকে।"
+          },
+          {
+            "sub": "p = malloc(4) — p-কে এখন নতুন block-এর address দেওয়া হলো।"
+          },
+          {
+            "sub": "পুরনো address কোথাও copy না করেই হারিয়ে গেল।"
+          },
+          {
+            "sub": "প্রথম block এখনো allocated, কিন্তু কোনো variable তার address ধরে নেই।"
+          },
+          {
+            "sub": "address না থাকায় তাকে free() করার উপায়ও নেই — এটাই Memory Leak।"
+          },
+          {
+            "sub": "free(p) শুধু দ্বিতীয় (সর্বশেষ) block-কেই free করে।"
+          },
+          {
+            "sub": "→ ফলাফল: crash করে না, কিন্তু প্রথম 4 byte চিরতরে leak হয়ে যায়।"
+          }
+        ],
+        "mistakes": [
+          [
+            "Memory Leak আর Dangling Pointer একই সমস্যা",
+            "Leak-এ memory valid থাকে কিন্তু কেউ তার address ধরে নেই (free করা যায় না); Dangling-এ address invalid হয়ে গেছে (free হয়ে গেছে বা scope শেষ) অথচ সেটা ব্যবহার করা হচ্ছে।"
+          ]
+        ],
+        "mnemonic": "পুরনো ঠিকানা কোথাও না রাখলে সেই block আর কখনো free হবে না।"
+      }
+    },
+    {
+      "id": "c_050",
+      "q": "Memory Leak আর Dangling Pointer — দুটো আলাদা সমস্যা কীভাবে চিনবে?",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Memory",
+      "answer": {
+        "summary": [
+          "Memory Leak: allocate করা memory valid আছে, কিন্তু তার address হারিয়ে যাওয়ায় আর free করা যায় না।",
+          "Dangling Pointer: address হাতে আছে, কিন্তু সেই memory ইতিমধ্যে invalid হয়ে গেছে।"
+        ],
+        "points": [
+          {
+            "sub": "Memory Leak: allocate করা memory-র address হারিয়ে ফেলা — memory-টা valid ও reserved থেকে যায়, কিন্তু কেউ আর তাকে free করতে পারে না।"
+          },
+          {
+            "sub": "Dangling Pointer: এমন address ব্যবহার করা যেটা ইতিমধ্যে invalid হয়ে গেছে — হয় free() করার পরে, নয়তো function শেষ হয়ে local variable বিলুপ্ত হওয়ার পরে।"
+          }
+        ],
+        "mistakes": [
+          [
+            "Memory Leak আর Dangling Pointer একই সমস্যা",
+            "Leak-এ memory valid থাকে কিন্তু কেউ তার address ধরে নেই (free করা যায় না); Dangling-এ address invalid হয়ে গেছে (free হয়ে গেছে বা scope শেষ) অথচ সেটা ব্যবহার করা হচ্ছে।"
+          ]
+        ],
+        "mnemonic": "Leak = ঠিকানা হারানো (memory আটকে থাকে); Dangling = ঠিকানা আছে, জায়গাটাই আর নেই।"
+      }
+    },
+    {
+      "id": "c_049",
+      "q": "Pointer output ৯ (সবচেয়ে কঠিন) — &ledger+1 বনাম ledger+1: দুই pointer কোন কোন জায়গা point করছে?",
+      "headerCode": "int ledger[5] = {10, 20, 30, 40, 50};\nint *ptr1 = (int*)(&ledger + 1);\nint *ptr2 = (int*)(ledger + 1);\n\nprintf(\"%d, %d\", *(ptr1 - 1), *(ptr2 + 2));",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: &array+1 আর array+1 — একই কোডে দুটো পাশাপাশি রাখলে পার্থক্যটা কোথায় দাঁড়ায়।"
+        ],
+        "points": [
+          {
+            "sub": "ptr1 = (int*)(&ledger+1) → &ledger পুরো array-এর address।"
+          },
+          {
+            "sub": "তাতে +1 মানে পুরো array (৫টা int) পার হয়ে যাওয়া — index 5, array-এর বাইরে।"
+          },
+          {
+            "sub": "int*-এ cast করার পর এক ধাপ = ১টা int।"
+          },
+          {
+            "sub": "ptr2 = (int*)(ledger+1) → ledger প্রথম element-এর address; +1 মানে মাত্র ১টা int এগোনো — index 1।"
+          },
+          {
+            "sub": "ptr1-1 → index 5-1 = index 4 = 50 (array-এর শেষ element)। ptr2+2 → index 1+2 = index 3 = 40।"
+          },
+          {
+            "sub": "→ Output: 50, 40"
+          }
+        ],
+        "mistakes": [
+          [
+            "arr আর &arr একই জিনিস, তাই +1 করলে একই ফল দেবে",
+            "সংখ্যায় address একই হলেও TYPE আলাদা — arr+1 এক int (4 byte) এগোয়, &arr+1 পুরো array (n×4 byte) এগোয়।"
+          ],
+          [
+            "&arr+1 মানে দ্বিতীয় element-এর address",
+            "না — &arr+1 মানে পুরো array পার হয়ে যাওয়া address (array-এর বাইরে), একটা element নয়।"
+          ]
+        ],
+        "mnemonic": "& থাকলে পুরো array-এর লাফ, না থাকলে এক element-এর ধাপ।"
+      }
+    },
+    {
+      "id": "c_048",
+      "q": "Pointer output ৮ (কঠিন) — &arr+1 করে int* এ cast করার পর -2 করলে কোন element পাওয়া যায়?",
+      "headerCode": "int arr[5] = {1, 2, 3, 4, 5};\n\nprintf(\"%d\", *((int*)(&arr + 1) - 2));",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: &arr+1 কত দূর লাফায় এবং int*-এ cast করার পর এক ধাপ কত হয়।"
+        ],
+        "points": [
+          {
+            "sub": "&arr মানে পুরো array-এর address।"
+          },
+          {
+            "sub": "&arr+1 মানে একটা 'সম্পূর্ণ array' (৫টা int) এগিয়ে যাওয়া।"
+          },
+          {
+            "sub": "সেটি index 5-এর ঠিক পরের address — array-এর বাইরে।"
+          },
+          {
+            "sub": "(int*) cast করে সেই address-কে আবার '১টা int-এর দিকে নির্দেশকারী' pointer বানানো হলো।"
+          },
+          {
+            "sub": "এখন +1/-1 মানে ১টা int (4 byte) করে নড়া।"
+          },
+          {
+            "sub": "-2 করলে index (5-2) = 3, যার মান 4।"
+          },
+          {
+            "sub": "→ Output: 4"
+          }
+        ],
+        "mistakes": [
+          [
+            "&arr+1 মানে দ্বিতীয় element-এর address",
+            "না — &arr+1 মানে পুরো array পার হয়ে যাওয়া address (array-এর বাইরে), একটা element নয়।"
+          ]
+        ],
+        "mnemonic": "&arr+1 = পুরো array পার; cast করলেই আবার এক-এক int করে নড়া।"
+      }
+    },
+    {
+      "id": "c_047",
+      "q": "Pointer output ৭ — *p-- + *--p এ postfix আর prefix decrement একসাথে থাকলে?",
+      "headerCode": "int a[4] = {3, 6, 9, 12};\nint *p = a + 3;\n\nprintf(\"%d\", *p-- + *--p);",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: prefix আর postfix decrement একসাথে থাকলে কে আগে কাজ করে।"
+        ],
+        "points": [
+          {
+            "sub": "p = a+3 → শুরুতে p index 3-এ (মান 12)।"
+          },
+          {
+            "sub": "*p-- (postfix): আগে *p পড়া হয় (12), তারপর p কমে index 2-এ যায়।"
+          },
+          {
+            "sub": "*--p (prefix): আগে p আরেক ধাপ কমে index 1-এ যায়, তারপর পড়া হয় (মান 6)। যোগফল = 12+6 = 18।"
+          },
+          {
+            "sub": "মনে রাখো: প্রতীক (--) p-এর আগে থাকলে কাজ আগে (prefix), পরে থাকলে কাজ পরে (postfix)।"
+          },
+          {
+            "sub": "→ Output: 18"
+          }
+        ],
+        "mistakes": [
+          [
+            "postfix p++ এক্সপ্রেশনের মধ্যেই p-কে বাড়িয়ে ফেলে ভাবা (তাই p++ + 2 কে (p+1)+2 ধরা)",
+            "postfix ++ এক্সপ্রেশনে পুরনো মান দিয়ে ব্যবহার হয়; বাড়াটা side effect হিসেবে ঘটে, এক্সপ্রেশনের ফলাফলে প্রভাব ফেলে না।"
+          ]
+        ],
+        "mnemonic": "চিহ্ন আগে থাকলে কাজ আগে, পরে থাকলে কাজ পরে।"
+      }
+    },
+    {
+      "id": "c_046",
+      "q": "Pointer output ৬ — pointer p = a+1 হলে *(p+2) - *(p-1) এর output কী?",
+      "headerCode": "int a[5] = {10, 20, 30, 40, 50};\nint *p = a + 1;\n\nprintf(\"%d\", *(p + 2) - *(p - 1));",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: offset সবসময় pointer-এর বর্তমান অবস্থান থেকে গোনা হয়, array-এর শুরু থেকে নয়।"
+        ],
+        "points": [
+          {
+            "sub": "p = a+1 → p শুরুতেই index 1-এ (মান 20), index 0-তে নয়।"
+          },
+          {
+            "sub": "+2/-1 এর হিসাব সবসময় p যেখানে বসে আছে সেখান থেকে হয়, array-এর শুরু থেকে নয়।"
+          },
+          {
+            "sub": "p+2 = index (1+2) = index 3 = 40।"
+          },
+          {
+            "sub": "p-1 = index (1-1) = index 0 = 10।"
+          },
+          {
+            "sub": "বিয়োগফল = 40 - 10 = 30।"
+          },
+          {
+            "sub": "→ Output: 30"
+          }
+        ],
+        "mistakes": [],
+        "mnemonic": "p যেখানে দাঁড়িয়ে, +2/−1 সেখান থেকেই — শুরু থেকে নয়।"
+      }
+    },
+    {
+      "id": "c_045",
+      "q": "Pointer output ৫ — *(p++) + *p এ একই statement-এ দুইবার pointer ব্যবহার করলে কী হয়?",
+      "headerCode": "int a[3] = {1, 2, 3};\nint *p = a;\n\nprintf(\"%d\", *(p++) + *p);",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: একই statement-এ দুইবার pointer ব্যবহার করলে কোন মান কখন পড়া হয়।"
+        ],
+        "points": [
+          {
+            "sub": "*(p++): প্রথমে *p পড়া হয় (মান a[0]=1), তারপর p বেড়ে index 1-এ চলে যায়। ফলাফল হিসেবে বসে 1।"
+          },
+          {
+            "sub": "এরপরের *p এখন p-এর নতুন (বেড়ে যাওয়া) মান দিয়ে পড়া হয় — index 1, মান 2। যোগফল = 1+2 = 3।"
+          },
+          {
+            "sub": "⚠ C স্ট্যান্ডার্ড অনুযায়ী + এর দুই operand কোন ক্রমে হিসাব হবে unspecified — বেশিরভাগ compiler বাম থেকে ডান ধরে বলে উত্তর 3 আসে, কিন্তু এটা সবসময় guaranteed না।"
+          },
+          {
+            "sub": "→ Output: 3 (বেশিরভাগ compiler-এ)"
+          }
+        ],
+        "mistakes": [
+          [
+            "*(p++) + *p এ দুটো *p-ই পুরনো মান দেখাবে ভাবা",
+            "প্রথম *(p++) নিজেই p-কে বাড়িয়ে দেয় — তাই দ্বিতীয় *p নতুন (বদলে যাওয়া) p পড়ে।"
+          ]
+        ],
+        "mnemonic": "*(p++) পুরনো ঘর পড়ে তারপর সরে; পরের *p নতুন ঘর পড়ে।"
+      }
+    },
+    {
+      "id": "c_044",
+      "q": "Pointer output ৪ — *(p++ + 2) এ p++ আর +2 কোন ক্রমে কাজ করে?",
+      "headerCode": "int arr[] = {10, 20, 30, 40};\nint *p = arr;\n\nprintf(\"%d\", *(p++ + 2));",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: postfix ++ কার সাথে বাঁধা — p-এর সাথে, না পুরো expression-এর সাথে।"
+        ],
+        "points": [
+          {
+            "sub": "postfix ++ শুধু p variable-এর সাথে বাঁধা — p++ + 2 মানে (p-এর বর্তমান/পুরনো মান) + 2, তারপর p নিজে এক ধাপ বাড়ে (side effect)।"
+          },
+          {
+            "sub": "p++ এর মান হিসেবে ব্যবহার হয় index 0-এর address।"
+          },
+          {
+            "sub": "তাতে +2 যোগ হয়ে দাঁড়ায় index 2-এর address (arr+2)।"
+          },
+          {
+            "sub": "*(...) দিয়ে সেই address-এর মান বের হয় — arr[2] = 30।"
+          },
+          {
+            "sub": "→ Output: 30"
+          }
+        ],
+        "mistakes": [
+          [
+            "postfix p++ এক্সপ্রেশনের মধ্যেই p-কে বাড়িয়ে ফেলে ভাবা (তাই p++ + 2 কে (p+1)+2 ধরা)",
+            "postfix ++ এক্সপ্রেশনে পুরনো মান দিয়ে ব্যবহার হয়; বাড়াটা side effect হিসেবে ঘটে, এক্সপ্রেশনের ফলাফলে প্রভাব ফেলে না।"
+          ]
+        ],
+        "mnemonic": "p++ + 2 মানে (পুরনো p) + 2 — ++ শুধু p-কেই স্পর্শ করে।"
+      }
+    },
+    {
+      "id": "c_043",
+      "q": "Pointer output ৩ — p++ করার পর *p দিয়ে output কী আসবে?",
+      "headerCode": "int a[3] = {3, 6, 9};\nint *p = a;\np++;\n\nprintf(\"%d\", *p);",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: p++ pointer-টাকে সরায়, না array-কে বদলায়।"
+        ],
+        "points": [
+          {
+            "sub": "p = a → p index 0-তে (মান 3)।"
+          },
+          {
+            "sub": "p++ → p নিজেই বদলে গিয়ে index 1-এ চলে যায় (মান 6)।"
+          },
+          {
+            "sub": "এখানে কোনো dereference হয়নি — শুধু pointer-টা নড়েছে।"
+          },
+          {
+            "sub": "printf-এ *p মানে এখন p যেখানে আছে (index 1) তার মান পড়া — 6। array-এর কোনো মান পাল্টায়নি।"
+          },
+          {
+            "sub": "→ Output: 6"
+          }
+        ],
+        "mistakes": [
+          [
+            "postfix p++ এক্সপ্রেশনের মধ্যেই p-কে বাড়িয়ে ফেলে ভাবা (তাই p++ + 2 কে (p+1)+2 ধরা)",
+            "postfix ++ এক্সপ্রেশনে পুরনো মান দিয়ে ব্যবহার হয়; বাড়াটা side effect হিসেবে ঘটে, এক্সপ্রেশনের ফলাফলে প্রভাব ফেলে না।"
+          ]
+        ],
+        "mnemonic": "p++ মানে pointer নড়ল; array যেমন ছিল তেমনই আছে।"
+      }
+    },
+    {
+      "id": "c_042",
+      "q": "Pointer output ২ (সহজ) — pointer p সরাসরি a+2 দিয়ে শুরু হলে *p দিয়ে কী পাওয়া যাবে?",
+      "headerCode": "int a[4] = {2, 4, 6, 8};\nint *p = a + 2;\n\nprintf(\"%d\", *p);",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: pointer সরাসরি a+2 দিয়ে শুরু হলে গণনা কোথা থেকে ধরতে হয়।"
+        ],
+        "points": [
+          {
+            "sub": "a+2 মানে array-এর শুরু থেকে ২ ধাপ এগোনো address — index 2 (a[2])।"
+          },
+          {
+            "sub": "p প্রথমেই সেই address দিয়ে initialize হয়েছে।"
+          },
+          {
+            "sub": "a[0]=2, a[1]=4, a[2]=6, a[3]=8 — index 2-এর মান 6। *p মানে সেই address-এর VALUE — 6।"
+          },
+          {
+            "sub": "→ Output: 6"
+          }
+        ],
+        "mistakes": [],
+        "mnemonic": "শুরুর বিন্দু কোথায়, সেটাই আগে ঠিক করো — index 0 ধরে নিও না।"
+      }
+    },
+    {
+      "id": "c_041",
+      "q": "Pointer output ১ (সহজ) — p array-এর শুরুতে থাকলে *(p+1) দিয়ে কোন element পাওয়া যায়?",
+      "headerCode": "int a[3] = {10, 20, 30};\nint *p = a;\n\nprintf(\"%d\", *(p + 1));",
+      "headerCodeLang": "c",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: pointer arithmetic-এর এক ধাপ = এক element, আর dereference কখন ঘটে।"
+        ],
+        "points": [
+          {
+            "sub": "p = a মানে p এখন a[0]-কে point করছে (index 0)।"
+          },
+          {
+            "sub": "p+1 মানে p থেকে ১টা int (4 byte) এগোনো — index 1, যেখানে মান 20।"
+          },
+          {
+            "sub": "*(p+1) মানে সেই address-এর VALUE পড়া — 20, ঠিকানা নয়।"
+          },
+          {
+            "sub": "→ Output: 20"
+          }
+        ],
+        "mistakes": [
+          [
+            "*(arr+i) আর &arr[i] একই জিনিস",
+            "না — *(arr+i) VALUE দেয় (তারকা আছে), &arr[i] ADDRESS দেয় (তারকা নেই)। ফলাফল সম্পূর্ণ ভিন্ন ধরনের জিনিস।"
+          ]
+        ],
+        "mnemonic": "p+1 pointer সরায়, তারকা বসালে তবেই ঘরের মান বেরোয়।"
+      }
+    },
+    {
+      "id": "c_040",
+      "q": "Pointer ও Array Address — arr, &arr, &arr[i] আর *(arr+i)-এর পার্থক্য কী?",
+      "tags": [
+        "pointer",
+        "array",
+        "pointer arithmetic",
+        "&array vs array",
+        "array decay",
+        "memory leak",
+        "dangling pointer",
+        "malloc",
+        "free",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Pointer",
+      "answer": {
+        "summary": [
+          "arr ও &arr[0] সংখ্যায় সমান, কিন্তু &arr পুরো array-এর address — TYPE আলাদা বলেই arithmetic আলাদা হয়।",
+          "তারকা (*) থাকলে VALUE, না থাকলে ADDRESS — এই একটি নিয়মেই বেশিরভাগ বিভ্রান্তি কেটে যায়।"
+        ],
+        "points": [
+          "🔑 Pointer ও Array Address — সবচেয়ে বড় বিভ্রান্তি আগে সাফ করো (arr, &arr, &arr[i], *(arr+i)):",
+          {
+            "sub": "arr — array-টা ব্যবহার করলে সে decay করে প্রথম element-এর address-এ পরিণত হয়।"
+          },
+          {
+            "sub": "তাই arr এবং &arr[0] সবসময় সমান।"
+          },
+          {
+            "sub": "&arr[i] বা (arr+i) — i-তম element-এর ADDRESS। তারকা নেই, তাই মান নয়, ঠিকানা।"
+          },
+          {
+            "sub": "*(arr+i) বা arr[i] — i-তম element-এর আসল VALUE। তারকা আছে, তাই এবার মান বেরিয়ে আসে।"
+          },
+          {
+            "sub": "&arr — পুরো array-টার address, single element-এর নয়।"
+          },
+          {
+            "sub": "সংখ্যায় এটি arr-এর সমান, কিন্তু TYPE ভিন্ন — int(*)[n]।"
+          },
+          {
+            "sub": "TYPE আলাদা বলেই এর উপর arithmetic করলে ফলাফল আলাদা আসে।"
+          },
+          "arr+1 বনাম &arr+1 — আসল পার্থক্য এখানেই:",
+          {
+            "sub": "arr+1 (বা &arr[0]+1): এক ধাপ = 1টা int = 4 byte এগোয়। এটা দ্বিতীয় element-এর address।"
+          },
+          {
+            "sub": "&arr+1: এক ধাপ = পুরো array = n × 4 byte এগোয়।"
+          },
+          {
+            "sub": "এটা array শেষ হওয়ার ঠিক পরের address — array-এর ভেতরে কোনো element নয়, বাইরে।"
+          },
+          {
+            "sub": "তাই (int*)(&arr+1) করে int* এ নামিয়ে এনে -1 করলে array-এর একদম শেষ element-এ ফেরা যায় — array-এর শেষ থেকে গোনার একটা কৌশল।"
+          },
+          "সংক্ষেপে চেনার উপায়:",
+          {
+            "sub": "তারকা (*) আছে? → VALUE। নেই? → ADDRESS।"
+          },
+          {
+            "sub": "&variable → ADDRESS (variable-টা যেকোনো টাইপের হতে পারে, এমনকি পুরো array-ও)।"
+          },
+          {
+            "sub": "+1 করার সময় ভাবো: pointer-টা কোন TYPE-এর দিকে নির্দেশ করছে? int* হলে 4 byte, int(*)[n] হলে n×4 byte এগোবে।"
+          }
+        ],
+        "diagram": "১) Pointer ও Array Address — মেমরি লেআউট\nধরি: int arr[4] = {10, 20, 30, 40};  arr শুরু হয় address 1000-এ (প্রতিটি int = 4 byte)\n\n  address:    1000    1004    1008    1012    1016\n  মান:      [ 10  ][ 20  ][ 30  ][ 40  ]|  ← array-এর বাইরে\n             arr[0]  arr[1]  arr[2]  arr[3]\n\n  arr, &arr[0]          ──────►  1000   (প্রথম element-এর ADDRESS)\n  *arr, *(arr+0)        ──────►  10     (প্রথম element-এর VALUE)\n  arr+1, &arr[1]        ──────►  1004   (দ্বিতীয় element-এর ADDRESS) ← মাত্র 1 int এগোলো\n  *(arr+1), arr[1]      ──────►  20     (দ্বিতীয় element-এর VALUE)\n  &arr                  ──────►  1000   (সংখ্যায় arr-এর সমান, কিন্তু TYPE আলাদা)\n  &arr+1                ──────►  1016   ⚠ পুরো array পার হয়ে গেল, array-এর বাইরে\n  (int*)(&arr+1) - 1    ──────►  1012   = &arr[3]  (শেষ element-এ ফেরার trick)\n\n──────── at-a-glance ────────\n  arr, &arr[0]         →  1000  (int*)      প্রথম element-এর address\n  arr+1, &arr[1]       →  1004  (int*)      দ্বিতীয় element-এর address\n  *(arr+1), arr[1]     →  20    (int)       দ্বিতীয় element-এর VALUE\n  &arr                 →  1000  (int(*)[4]) পুরো array-এর address\n  &arr+1               →  1016  (int(*)[4]) পুরো array পার হয়ে যাওয়া address\n\n\n২) প্রশ্ন ৯ (সবচেয়ে কঠিন) — &ledger+1 বনাম ledger+1\nledger:  [10][20][30][40][50]     index →   0    1    2    3    4      index 5 = বাইরে\n          ▲                                       ▲\n    &ledger, ledger                          ledger+1 = index 1\n\n  &ledger+1  ──► index 5 (বাইরে) ──(int*) cast──► ptr1\n  ptr1 - 1   ──► index 4 = 50   (array-এর শেষ element)\n\n  ledger+1   ──► index 1 ──(int*) cast──► ptr2\n  ptr2 + 2   ──► index 3 = 40",
+        "table": {
+          "headers": [
+            "Expression",
+            "মানে",
+            "Type",
+            "উদাহরণ (arr@1000)"
+          ],
+          "rows": [
+            [
+              "arr / &arr[0]",
+              "প্রথম element-এর address",
+              "int*",
+              "1000"
+            ],
+            [
+              "arr+1 / &arr[1]",
+              "দ্বিতীয় element-এর address",
+              "int*",
+              "1004"
+            ],
+            [
+              "*(arr+1) / arr[1]",
+              "দ্বিতীয় element-এর VALUE",
+              "int",
+              "20"
+            ],
+            [
+              "&arr",
+              "পুরো array-এর address",
+              "int(*)[4]",
+              "1000 (সংখ্যায় একই, type আলাদা)"
+            ],
+            [
+              "&arr+1",
+              "পুরো array পার হয়ে যাওয়া address",
+              "int(*)[4]",
+              "1016"
+            ],
+            [
+              "(int*)(&arr+1)-1",
+              "শেষ element-এর address (উল্টো দিক থেকে)",
+              "int*",
+              "1012"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "arr আর &arr একই জিনিস, তাই +1 করলে একই ফল দেবে",
+            "সংখ্যায় address একই হলেও TYPE আলাদা — arr+1 এক int (4 byte) এগোয়, &arr+1 পুরো array (n×4 byte) এগোয়।"
+          ],
+          [
+            "*(arr+i) আর &arr[i] একই জিনিস",
+            "না — *(arr+i) VALUE দেয় (তারকা আছে), &arr[i] ADDRESS দেয় (তারকা নেই)। ফলাফল সম্পূর্ণ ভিন্ন ধরনের জিনিস।"
+          ],
+          [
+            "&arr+1 মানে দ্বিতীয় element-এর address",
+            "না — &arr+1 মানে পুরো array পার হয়ে যাওয়া address (array-এর বাইরে), একটা element নয়।"
+          ]
+        ],
+        "mnemonic": "তারকা (*) = মান, & = ঠিকানা, &array = 'পুরোটা' লাফ — একটা element নয়।"
       }
     }
   ]
