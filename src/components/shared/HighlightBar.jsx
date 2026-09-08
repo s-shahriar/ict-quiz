@@ -1,10 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Trash2 } from 'lucide-react'
+import { Trash2, LogIn } from 'lucide-react'
 import { selectionToAnchors, markForSelection } from '../../lib/textAnchor.js'
 import { placeBar, clampX } from '../../lib/barPlacement.js'
 import { COLORS } from '../../lib/highlightSync.js'
 import { useHighlights } from '../../contexts/HighlightContext.jsx'
+import { useAuth } from '../../contexts/AuthContext.jsx'
+import LoginPrompt from '../auth/LoginPrompt.jsx'
 
 // Floating highlight bar, PDF-reader style: four colour dots, plus a bin when
 // the target is an existing mark. Nothing here touches the network — every
@@ -32,6 +34,8 @@ const TAP_GUARD_MS = 900       // ignore selectionchange right after a mark tap
 
 export default function HighlightBar() {
   const { add, remove, recolor, color, setColor, canHighlight } = useHighlights()
+  const { signInWithGoogle } = useAuth()
+  const [promptLogin, setPromptLogin] = useState(false)
   const [bar, setBar] = useState(null)   // { x, y, above, mode, uid, anchors|ids }
   const barRef = useRef(null)
   const timer = useRef(null)
@@ -129,7 +133,35 @@ export default function HighlightBar() {
     setBar(b => b && { ...b, w, x })
   }, [bar?.mode, bar?.x, bar?.w])
 
-  if (!bar || !canHighlight) return null
+  if (!bar && !promptLogin) return null
+
+  // Signed out, highlighting used to do nothing at all — you selected text and
+  // no bar appeared, with no way to tell whether the feature was broken or you
+  // were simply logged out. It now says so and offers the same Google sign-in
+  // the Nail It / Important buttons use.
+  if (bar && !canHighlight) {
+    return (
+      <>
+        {createPortal(
+          <div
+            ref={barRef}
+            className="hl-bar hl-bar-signin"
+            style={{ left: bar.x, top: bar.y, transform: `translate(-50%, ${bar.above ? '-100%' : '0'})` }}
+            onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); setPromptLogin(true) }}
+          >
+            <LogIn size={15} />
+            <span>Sign in to highlight</span>
+          </div>,
+          document.body,
+        )}
+        {promptLogin && createPortal(
+          <LoginPrompt onGoogle={signInWithGoogle} onClose={() => setPromptLogin(false)} />,
+          document.body,
+        )}
+      </>
+    )
+  }
+  if (!bar) return null
 
   const close = () => {
     window.getSelection()?.removeAllRanges()

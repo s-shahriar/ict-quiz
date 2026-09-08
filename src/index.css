@@ -3850,3 +3850,15 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   }
   .written-head-code { padding: 0 12px 12px; }
 }
+
+/* Signed-out highlight bar: one wide button rather than colour dots. */
+.hl-bar-signin {
+  gap: 8px;
+  padding: 0 14px;
+  height: 40px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.hl-bar-signin:active { background: var(--hover-bg); }
