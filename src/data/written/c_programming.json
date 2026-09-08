@@ -2291,8 +2291,6 @@
     {
       "id": "c_059",
       "q": "Recursion উদাহরণ ৩ (কঠিন) — n নিজেও যোগ হচ্ছে, static sum variable দিয়ে:",
-      "headerCode": "class Test {\n    static int sum = 0;\n\n    static int fun(int n) {\n        if (n == 0) {\n            return 0;\n        }\n        sum = sum + n;\n        return fun(n - 1) + sum;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
-      "headerCodeLang": "Java",
       "tags": [
         "recursion",
         "static variable",
@@ -2310,6 +2308,11 @@
           "যা পরীক্ষা করা হচ্ছে: base case-এ পৌঁছে variable আর আপডেট হয় কি না।"
         ],
         "points": [
+          {
+            "code": "class Test {\n    static int sum = 0;\n\n    static int fun(int n) {\n        if (n == 0) {\n            return 0;\n        }\n        sum = sum + n;\n        return fun(n - 1) + sum;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
+            "codeLang": "Java",
+            "label": "Recursion ৩ — static sum, n যোগ হচ্ছে"
+          },
           {
             "sub": "sum static, শুরুতে sum = 0।"
           },
@@ -2388,8 +2391,6 @@
     {
       "id": "c_058",
       "q": "Recursion উদাহরণ ২ (তুলনা) — একই কোড, কিন্তু x যদি static না হয়ে parameter হতো:",
-      "headerCode": "class Test {\n    public static int fun(int n, int x) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1, x) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3, 5));\n    }\n}",
-      "headerCodeLang": "Java",
       "tags": [
         "recursion",
         "static variable",
@@ -2407,6 +2408,11 @@
           "যা পরীক্ষা করা হচ্ছে: একই কোডে static-এর বদলে parameter দিলে উত্তর কেন বদলে যায়।"
         ],
         "points": [
+          {
+            "code": "class Test {\n    public static int fun(int n, int x) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1, x) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3, 5));\n    }\n}",
+            "codeLang": "Java",
+            "label": "Recursion ২ — x এখন parameter"
+          },
           {
             "sub": "এবার x কোনো static/shared variable না — এটা parameter।"
           },
@@ -2450,8 +2456,6 @@
     {
       "id": "c_057",
       "q": "Recursion উদাহরণ ১ (recap) — static variable হলে কী হয়:",
-      "headerCode": "class Test {\n    static int x = 5;\n\n    public static int fun(int n) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
-      "headerCodeLang": "Java",
       "tags": [
         "recursion",
         "static variable",
@@ -2469,6 +2473,11 @@
           "যা পরীক্ষা করা হচ্ছে: static variable ফেরার পথে কোন মান পড়ে — নিজের বসানো পুরনো মান, না সর্বশেষ মান।"
         ],
         "points": [
+          {
+            "code": "class Test {\n    static int x = 5;\n\n    public static int fun(int n) {\n        if (n <= 1) {\n            return 1;\n        }\n        x = x + 2;\n        return fun(n - 1) + x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fun(3));\n    }\n}",
+            "codeLang": "Java",
+            "label": "Recursion ১ — static variable"
+          },
           {
             "sub": "x static — পুরো program-এ একটাই কপি, সব call সেটা ভাগাভাগি করে।"
           },
@@ -2566,8 +2575,6 @@
     {
       "id": "c_055",
       "q": "C++ output ১৩ — base class pointer দিয়ে derived object-কে point করে virtual function call করলে কার function চলে?",
-      "headerCode": "class A {\npublic:\n    virtual void show() { cout << \"A\"; }\n};\n\nclass B : public A {\npublic:\n    void show() { cout << \"B\"; }\n};\n\nint main() {\n    A *p = new B();\n    p->show();\n}",
-      "headerCodeLang": "cpp",
       "tags": [
         "c++",
         "multiple inheritance",
@@ -2584,6 +2591,11 @@
           "যা পরীক্ষা করা হচ্ছে: base class pointer দিয়ে virtual function ডাকলে কার সংস্করণ চলে।"
         ],
         "points": [
+          {
+            "code": "class A {\npublic:\n    virtual void show() { cout << \"A\"; }\n};\n\nclass B : public A {\npublic:\n    void show() { cout << \"B\"; }\n};\n\nint main() {\n    A *p = new B();\n    p->show();\n}",
+            "codeLang": "cpp",
+            "label": "Inheritance ২ — Virtual Function"
+          },
           {
             "sub": "virtual না থাকলে C++ compile-time-এই ঠিক করে ফেলত, শুধু pointer-এর ঘোষিত TYPE (A*) দেখে — তখন output হতো A।"
           },
@@ -2609,8 +2621,6 @@
     {
       "id": "c_054",
       "q": "C++ output ১২ — multiple inheritance-এ class C : public A, public B হলে constructor-এর ক্রম কী হবে?",
-      "headerCode": "class A {\npublic:\n    A() { cout << \"A \"; }\n};\n\nclass B {\npublic:\n    B() { cout << \"B \"; }\n};\n\nclass C : public A, public B {\npublic:\n    C() { cout << \"C \"; }\n};\n\nint main() {\n    C obj;\n}",
-      "headerCodeLang": "cpp",
       "tags": [
         "c++",
         "multiple inheritance",
@@ -2627,6 +2637,11 @@
           "যা পরীক্ষা করা হচ্ছে: multiple inheritance-এ base constructor-গুলো কোন ক্রমে চলে।"
         ],
         "points": [
+          {
+            "code": "class A {\npublic:\n    A() { cout << \"A \"; }\n};\n\nclass B {\npublic:\n    B() { cout << \"B \"; }\n};\n\nclass C : public A, public B {\npublic:\n    C() { cout << \"C \"; }\n};\n\nint main() {\n    C obj;\n}",
+            "codeLang": "cpp",
+            "label": "Inheritance ১ — Constructor Order"
+          },
           {
             "sub": "C++ কম্পাইলার derived class-এর object বানানোর আগে সবগুলো base class-এর constructor call করে নেয়, ইনহেরিটেন্স লিস্টের ক্রমে (বাম থেকে ডান) — এখানে আগে A, পরে B।"
           },
@@ -2697,8 +2712,6 @@
     {
       "id": "c_052",
       "q": "Memory ১১ — function-এর local variable-এর address return করে পরে dereference করলে কী হয়?",
-      "headerCode": "int *fun() {\n    int x = 10;\n    return &x;\n}\n\nint main() {\n    int *p = fun();\n    printf(\"%d\", *p);\n}",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -2718,6 +2731,11 @@
           "যা পরীক্ষা করা হচ্ছে: function শেষ হয়ে গেলে তার local variable-এর address আর valid থাকে কি না।"
         ],
         "points": [
+          {
+            "code": "int *fun() {\n    int x = 10;\n    return &x;\n}\n\nint main() {\n    int *p = fun();\n    printf(\"%d\", *p);\n}",
+            "codeLang": "c",
+            "label": "মেমরি সমস্যা ২ — Dangling Pointer"
+          },
           {
             "sub": "fun()-এর x একটা local variable — এটি stack memory-তে তৈরি হয়।"
           },
@@ -2752,8 +2770,6 @@
     {
       "id": "c_051",
       "q": "Memory ১০ — malloc করা pointer-কে আবার নতুন malloc() দিয়ে reassign করলে কী সমস্যা হয়?",
-      "headerCode": "int *p = malloc(4);\np = malloc(4);\n\nfree(p);",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -2773,6 +2789,11 @@
           "যা পরীক্ষা করা হচ্ছে: একই pointer আবার malloc দিয়ে reassign করলে পুরনো block-এর কী হয়।"
         ],
         "points": [
+          {
+            "code": "int *p = malloc(4);\np = malloc(4);\n\nfree(p);",
+            "codeLang": "c",
+            "label": "মেমরি সমস্যা ১ — Leak"
+          },
           {
             "sub": "প্রথম malloc(4) একটা 4-byte block বানায়, তার address p-তে থাকে।"
           },
@@ -2846,8 +2867,6 @@
     {
       "id": "c_049",
       "q": "Pointer output ৯ (সবচেয়ে কঠিন) — &ledger+1 বনাম ledger+1: দুই pointer কোন কোন জায়গা point করছে?",
-      "headerCode": "int ledger[5] = {10, 20, 30, 40, 50};\nint *ptr1 = (int*)(&ledger + 1);\nint *ptr2 = (int*)(ledger + 1);\n\nprintf(\"%d, %d\", *(ptr1 - 1), *(ptr2 + 2));",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -2867,6 +2886,11 @@
           "যা পরীক্ষা করা হচ্ছে: &array+1 আর array+1 — একই কোডে দুটো পাশাপাশি রাখলে পার্থক্যটা কোথায় দাঁড়ায়।"
         ],
         "points": [
+          {
+            "code": "int ledger[5] = {10, 20, 30, 40, 50};\nint *ptr1 = (int*)(&ledger + 1);\nint *ptr2 = (int*)(ledger + 1);\n\nprintf(\"%d, %d\", *(ptr1 - 1), *(ptr2 + 2));",
+            "codeLang": "c",
+            "label": "প্রশ্ন ৯ (Combined Bank AP'26)"
+          },
           {
             "sub": "ptr1 = (int*)(&ledger+1) → &ledger পুরো array-এর address।"
           },
@@ -2902,8 +2926,6 @@
     {
       "id": "c_048",
       "q": "Pointer output ৮ (কঠিন) — &arr+1 করে int* এ cast করার পর -2 করলে কোন element পাওয়া যায়?",
-      "headerCode": "int arr[5] = {1, 2, 3, 4, 5};\n\nprintf(\"%d\", *((int*)(&arr + 1) - 2));",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -2923,6 +2945,11 @@
           "যা পরীক্ষা করা হচ্ছে: &arr+1 কত দূর লাফায় এবং int*-এ cast করার পর এক ধাপ কত হয়।"
         ],
         "points": [
+          {
+            "code": "int arr[5] = {1, 2, 3, 4, 5};\n\nprintf(\"%d\", *((int*)(&arr + 1) - 2));",
+            "codeLang": "c",
+            "label": "প্রশ্ন ৮"
+          },
           {
             "sub": "&arr মানে পুরো array-এর address।"
           },
@@ -2957,8 +2984,6 @@
     {
       "id": "c_047",
       "q": "Pointer output ৭ — *p-- + *--p এ postfix আর prefix decrement একসাথে থাকলে?",
-      "headerCode": "int a[4] = {3, 6, 9, 12};\nint *p = a + 3;\n\nprintf(\"%d\", *p-- + *--p);",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -2978,6 +3003,11 @@
           "যা পরীক্ষা করা হচ্ছে: prefix আর postfix decrement একসাথে থাকলে কে আগে কাজ করে।"
         ],
         "points": [
+          {
+            "code": "int a[4] = {3, 6, 9, 12};\nint *p = a + 3;\n\nprintf(\"%d\", *p-- + *--p);",
+            "codeLang": "c",
+            "label": "প্রশ্ন ৭"
+          },
           {
             "sub": "p = a+3 → শুরুতে p index 3-এ (মান 12)।"
           },
@@ -3006,8 +3036,6 @@
     {
       "id": "c_046",
       "q": "Pointer output ৬ — pointer p = a+1 হলে *(p+2) - *(p-1) এর output কী?",
-      "headerCode": "int a[5] = {10, 20, 30, 40, 50};\nint *p = a + 1;\n\nprintf(\"%d\", *(p + 2) - *(p - 1));",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -3027,6 +3055,11 @@
           "যা পরীক্ষা করা হচ্ছে: offset সবসময় pointer-এর বর্তমান অবস্থান থেকে গোনা হয়, array-এর শুরু থেকে নয়।"
         ],
         "points": [
+          {
+            "code": "int a[5] = {10, 20, 30, 40, 50};\nint *p = a + 1;\n\nprintf(\"%d\", *(p + 2) - *(p - 1));",
+            "codeLang": "c",
+            "label": "প্রশ্ন ৬"
+          },
           {
             "sub": "p = a+1 → p শুরুতেই index 1-এ (মান 20), index 0-তে নয়।"
           },
@@ -3053,8 +3086,6 @@
     {
       "id": "c_045",
       "q": "Pointer output ৫ — *(p++) + *p এ একই statement-এ দুইবার pointer ব্যবহার করলে কী হয়?",
-      "headerCode": "int a[3] = {1, 2, 3};\nint *p = a;\n\nprintf(\"%d\", *(p++) + *p);",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -3074,6 +3105,11 @@
           "যা পরীক্ষা করা হচ্ছে: একই statement-এ দুইবার pointer ব্যবহার করলে কোন মান কখন পড়া হয়।"
         ],
         "points": [
+          {
+            "code": "int a[3] = {1, 2, 3};\nint *p = a;\n\nprintf(\"%d\", *(p++) + *p);",
+            "codeLang": "c",
+            "label": "প্রশ্ন ৫"
+          },
           {
             "sub": "*(p++): প্রথমে *p পড়া হয় (মান a[0]=1), তারপর p বেড়ে index 1-এ চলে যায়। ফলাফল হিসেবে বসে 1।"
           },
@@ -3099,8 +3135,6 @@
     {
       "id": "c_044",
       "q": "Pointer output ৪ — *(p++ + 2) এ p++ আর +2 কোন ক্রমে কাজ করে?",
-      "headerCode": "int arr[] = {10, 20, 30, 40};\nint *p = arr;\n\nprintf(\"%d\", *(p++ + 2));",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -3120,6 +3154,11 @@
           "যা পরীক্ষা করা হচ্ছে: postfix ++ কার সাথে বাঁধা — p-এর সাথে, না পুরো expression-এর সাথে।"
         ],
         "points": [
+          {
+            "code": "int arr[] = {10, 20, 30, 40};\nint *p = arr;\n\nprintf(\"%d\", *(p++ + 2));",
+            "codeLang": "c",
+            "label": "প্রশ্ন ৪"
+          },
           {
             "sub": "postfix ++ শুধু p variable-এর সাথে বাঁধা — p++ + 2 মানে (p-এর বর্তমান/পুরনো মান) + 2, তারপর p নিজে এক ধাপ বাড়ে (side effect)।"
           },
@@ -3148,8 +3187,6 @@
     {
       "id": "c_043",
       "q": "Pointer output ৩ — p++ করার পর *p দিয়ে output কী আসবে?",
-      "headerCode": "int a[3] = {3, 6, 9};\nint *p = a;\np++;\n\nprintf(\"%d\", *p);",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -3169,6 +3206,11 @@
           "যা পরীক্ষা করা হচ্ছে: p++ pointer-টাকে সরায়, না array-কে বদলায়।"
         ],
         "points": [
+          {
+            "code": "int a[3] = {3, 6, 9};\nint *p = a;\np++;\n\nprintf(\"%d\", *p);",
+            "codeLang": "c",
+            "label": "প্রশ্ন ৩"
+          },
           {
             "sub": "p = a → p index 0-তে (মান 3)।"
           },
@@ -3197,8 +3239,6 @@
     {
       "id": "c_042",
       "q": "Pointer output ২ (সহজ) — pointer p সরাসরি a+2 দিয়ে শুরু হলে *p দিয়ে কী পাওয়া যাবে?",
-      "headerCode": "int a[4] = {2, 4, 6, 8};\nint *p = a + 2;\n\nprintf(\"%d\", *p);",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -3219,6 +3259,11 @@
         ],
         "points": [
           {
+            "code": "int a[4] = {2, 4, 6, 8};\nint *p = a + 2;\n\nprintf(\"%d\", *p);",
+            "codeLang": "c",
+            "label": "প্রশ্ন ২"
+          },
+          {
             "sub": "a+2 মানে array-এর শুরু থেকে ২ ধাপ এগোনো address — index 2 (a[2])।"
           },
           {
@@ -3238,8 +3283,6 @@
     {
       "id": "c_041",
       "q": "Pointer output ১ (সহজ) — p array-এর শুরুতে থাকলে *(p+1) দিয়ে কোন element পাওয়া যায়?",
-      "headerCode": "int a[3] = {10, 20, 30};\nint *p = a;\n\nprintf(\"%d\", *(p + 1));",
-      "headerCodeLang": "c",
       "tags": [
         "pointer",
         "array",
@@ -3259,6 +3302,11 @@
           "যা পরীক্ষা করা হচ্ছে: pointer arithmetic-এর এক ধাপ = এক element, আর dereference কখন ঘটে।"
         ],
         "points": [
+          {
+            "code": "int a[3] = {10, 20, 30};\nint *p = a;\n\nprintf(\"%d\", *(p + 1));",
+            "codeLang": "c",
+            "label": "প্রশ্ন ১"
+          },
           {
             "sub": "p = a মানে p এখন a[0]-কে point করছে (index 0)।"
           },
