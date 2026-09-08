@@ -12,6 +12,7 @@ import DeleteButton from './shared/DeleteButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import WrittenQuestionText from './shared/WrittenQuestionText.jsx'
+import CodeBlock from './shared/CodeBlock.jsx'
 
 export default function WrittenMode() {
   const navigate = useNavigate()
@@ -265,6 +266,12 @@ function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed,
         <div className="written-card-toggle">
           <span className="written-qnum" style={{ color: topicColor }}>Q{idx + 1}</span>
           <WrittenQuestionText text={q.q} className="written-qtext" />
+          {/* A complexity verdict sits in the header so the segment reads as a
+              reference sheet: pattern, code, answer — skimmable without opening
+              anything. The reasoning is still inside. */}
+          {q.verdict && (
+            <span className="written-verdict" style={{ '--c': topicColor }}>{q.verdict}</span>
+          )}
           <span className="written-chevron">
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </span>
@@ -285,6 +292,14 @@ function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed,
         </button>
         <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
       </div>
+
+      {/* The listing the card is ABOUT, shown collapsed. stopPropagation so
+          selecting a line of code does not fold the card shut under you. */}
+      {q.headerCode && (
+        <div className="written-head-code" onClick={e => e.stopPropagation()}>
+          <CodeBlock code={q.headerCode} lang={q.headerCodeLang} className="written-code-pre" />
+        </div>
+      )}
 
       {isOpen && (
         <div className="anim-slide">

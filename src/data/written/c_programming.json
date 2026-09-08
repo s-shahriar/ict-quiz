@@ -2488,7 +2488,10 @@
     },
     {
       "id": "c_037",
-      "q": "while loop — বাইরে i *= 2, ভেতরে j = n থেকে শুরু করে প্রতিবার অর্ধেক। জটিলতা O(log² n) কেন?",
+      "q": "while loop — j প্রতিবার n থেকে নতুন করে শুরু",
+      "headerCode": "i = 1;\nwhile (i < n) {          // বাইরের: log n বার (i = 1,2,4,…,n)\n    j = n;                // প্রতিবার j আবার n থেকে শুরু\n    while (j > i)          // ভেতরের: log(n/i) বার  <- log n নয়\n        j = j / 2;\n    i = i * 2;\n}\n// মোট = log n + (log n-1) + … + 1  ->  O(log² n)",
+      "headerCodeLang": "c",
+      "verdict": "O(log² n)",
       "tags": [
         "time complexity",
         "while loop",
@@ -2526,11 +2529,6 @@
             "sub": "মনে রাখলে মোট কাজ হতো মাত্র log n।"
           },
           {
-            "code": "i = 1;\nwhile (i < n) {          // বাইরের: log n বার (i = 1,2,4,…,n)\n    j = n;                // প্রতিবার j আবার n থেকে শুরু\n    while (j > i)          // ভেতরের: log(n/i) বার  <- log n নয়\n        j = j / 2;\n    i = i * 2;\n}\n// মোট = log n + (log n-1) + … + 1  ->  O(log² n)",
-            "codeLang": "c",
-            "label": "Pattern ৭ — মিশ্র উদাহরণ ২ (while loop)"
-          },
-          {
             "diagram": "━━━ ৭. মিশ্র উদাহরণ ২ — trace (log² n) ━━━\n n = 16 ধরে (log₂16 = 4):\n   i  |  j এর পথ (অর্ধেক হতে হতে)  |  ভেতরের বার\n -----+----------------------------+------------\n   1  |  16 → 8 → 4 → 2 → 1        |     4\n   2  |  16 → 8 → 4 → 2            |     3\n   4  |  16 → 8 → 4                |     2\n   8  |  16 → 8                    |     1\n -----+----------------------------+------------\n i = 2ᵗ হলে ভেতরের loop = log n − t বার\n যোগফল = log n + (log n −1) + … + 2 + 1 = log n(log n + 1)/2 → O(log² n)\n n = 16-এ মোট কাজ = 4+3+2+1 = 10 বার মাত্র",
             "label": "Diagram — মিশ্র ২ trace"
           }
@@ -2546,7 +2544,10 @@
     },
     {
       "id": "c_036",
-      "q": "তিনটি nested loop — বাইরে i *= 2, মাঝে j = i (j += i), ভেতরে k *= 2। জটিলতা O(n³) নয় কেন?",
+      "q": "তিন loop — i *= 2 বাইরে, j += i মাঝে, k *= 2 ভেতরে",
+      "headerCode": "for (i = 1; i <= n; i *= 2)          // log n বার\n    for (j = i; j <= n; j += i)      // n/i বার\n        for (k = 1; k <= n; k *= 2)  // log n বার (স্বাধীন)\n// মোট = 2n × log n  ->  O(n log n)",
+      "headerCodeLang": "c",
+      "verdict": "O(n log n)",
       "tags": [
         "time complexity",
         "geometric series",
@@ -2588,11 +2589,6 @@
             "sub": "তিনটি nested loop দেখে O(n³) বা O(n log²n) ধরে নেওয়া ভুল।"
           },
           {
-            "code": "for (i = 1; i <= n; i *= 2)          // log n বার\n    for (j = i; j <= n; j += i)      // n/i বার\n        for (k = 1; k <= n; k *= 2)  // log n বার (স্বাধীন)\n// মোট = 2n × log n  ->  O(n log n)",
-            "codeLang": "c",
-            "label": "Pattern ৬ — মিশ্র উদাহরণ ১"
-          },
-          {
             "diagram": "━━━━ ৬. মিশ্র উদাহরণ ১ — trace ━━━━\n   i   |  j = i, 2i, …, n  |  কতবার\n ------+-------------------+---------\n   1   |  1, 2, 3, …, n    |   n\n   2   |  2, 4, 6, …, n    |   n/2\n   4   |  4, 8, 12, …, n   |   n/4\n   …   |  …                |   …\n   n   |  n                |   1\n ------+-------------------+---------\n যোগফল = n + n/2 + n/4 + … + 1 = 2n − 1 ≈ 2n\n ⚠ এটি geometric, harmonic নয় — কারণ i দ্বিগুণ হচ্ছে (i++ হলে n ln n হতো)\n মোট = 2n × log n → O(n log n)  (তিন loop দেখে O(n³) ধরা ভুল)",
             "label": "Diagram — মিশ্র ১ trace"
           }
@@ -2612,7 +2608,10 @@
     },
     {
       "id": "c_035",
-      "q": "Fibonacci recursion-এর জটিলতা O(2ⁿ) কেন? call tree এঁকে দেখাও এবং কীভাবে O(n)-এ নামানো যায় তা বলো।",
+      "q": "Recursion — fib(n-1) + fib(n-2)",
+      "headerCode": "int fib(int n) {\n    if (n <= 1) return n;              // গভীরতা ≈ n\n    return fib(n - 1) + fib(n - 2);    // ১ call -> ২ call\n}                                      // মোট call ≈ 2^n",
+      "headerCodeLang": "c",
+      "verdict": "O(2ⁿ)",
       "tags": [
         "time complexity",
         "recursion",
@@ -2646,11 +2645,6 @@
             "sub": "Memoization/DP দিলে প্রতিটি n একবার হিসাব হয় ⇒ O(n)।"
           },
           {
-            "code": "int fib(int n) {\n    if (n <= 1) return n;              // গভীরতা ≈ n\n    return fib(n - 1) + fib(n - 2);    // ১ call -> ২ call\n}                                      // মোট call ≈ 2^n",
-            "codeLang": "c",
-            "label": "Pattern ৫ — Recursion (Fibonacci)"
-          },
-          {
             "diagram": "━━━━━━ ৫. Exponential recursion — call tree ━━━━━━\n              fib(5)\n            /        \\\n       fib(4)        fib(3)      প্রতি স্তরে node দ্বিগুণ\n      /    \\        /     \\      গভীরতা ≈ n\n    fib(3) fib(2) fib(2) fib(1)\n      …      …      …            →  O(2ⁿ)\n\n fib(2), fib(3) বারবার হিসাব হচ্ছে — এটাই খরচের কারণ।\n Memoization দিলে প্রতিটি n একবার → O(n)",
             "label": "Diagram — fib(5) call tree"
           }
@@ -2666,7 +2660,10 @@
     },
     {
       "id": "c_034",
-      "q": "বাইরে i *= 2 আর ভেতরে j <= i — এর জটিলতা O(n log n) নয় কেন? n = 16 ধরে হাতে গুনে দেখাও।",
+      "q": "নির্ভরশীল ভেতরের loop — j <= i",
+      "headerCode": "for (i = 1; i <= n; i *= 2)     // log n বার (i = 1,2,4,…,n)\n    for (j = 1; j <= i; j++)    // i বার  <- n বার নয়!\n// মোট = 1+2+4+…+n = 2n-1  ->  O(n)\n\nfor (i = 1; i * i <= n; i++)    // √n বার (i = 1,2,3,…,√n)\n    for (j = 1; j <= i; j++)    // i বার\n// মোট = 1+2+…+√n ≈ n/2  ->  O(n)",
+      "headerCodeLang": "c",
+      "verdict": "O(n)",
       "tags": [
         "time complexity",
         "dependent loop",
@@ -2692,11 +2689,6 @@
             "sub": "বাইরে i*i <= n হলে (i = 1..√n): কাজ = 1 + 2 + … + √n = (√n)²/2 ≈ n/2 ⇒ O(n)।"
           },
           {
-            "code": "for (i = 1; i <= n; i *= 2)     // log n বার (i = 1,2,4,…,n)\n    for (j = 1; j <= i; j++)    // i বার  <- n বার নয়!\n// মোট = 1+2+4+…+n = 2n-1  ->  O(n)\n\nfor (i = 1; i * i <= n; i++)    // √n বার (i = 1,2,3,…,√n)\n    for (j = 1; j <= i; j++)    // i বার\n// মোট = 1+2+…+√n ≈ n/2  ->  O(n)",
-            "codeLang": "c",
-            "label": "Pattern ৪ — নির্ভরশীল nested loop"
-          },
-          {
             "sub": "ভুলটা যেখানে হয়: log n × n গুণ করলে ধরে নেওয়া হয় প্রতিবার ভেতরে n বার চলে।"
           },
           {
@@ -2718,7 +2710,10 @@
     },
     {
       "id": "c_033",
-      "q": "Harmonic nested loop (j = i থেকে শুরু, j += i) — এর জটিলতা O(n²) নয় কেন? হাতে trace করে দেখাও।",
+      "q": "Harmonic nested loop — j = i, j += i",
+      "headerCode": "for (i = 1; i <= n; i++)        // n বার\n    for (j = i; j <= n; j += i) // n/i বার — n বার নয়\n// মোট = n × H(n) ≈ n ln n  ->  O(n log n)",
+      "headerCodeLang": "c",
+      "verdict": "O(n log n)",
       "tags": [
         "time complexity",
         "harmonic",
@@ -2743,11 +2738,6 @@
           },
           {
             "sub": "দুটি nested loop দেখে n × n = n² ধরে নেওয়াই এখানে সবচেয়ে বড় ভুল।"
-          },
-          {
-            "code": "for (i = 1; i <= n; i++)        // n বার\n    for (j = i; j <= n; j += i) // n/i বার — n বার নয়\n// মোট = n × H(n) ≈ n ln n  ->  O(n log n)",
-            "codeLang": "c",
-            "label": "Pattern ৩ — Harmonic nested loop"
           },
           {
             "sub": "এর সাথে আর একটি স্বাধীন loop জুড়লে সেটি শুধু গুণক হিসেবে বসে:"
@@ -2777,7 +2767,10 @@
     },
     {
       "id": "c_032",
-      "q": "স্বাধীন nested loop-এর জটিলতা কীভাবে বের করবে? ভেতরের সীমা যখন শুধু n, তখন কেন গুণ করা যায়?",
+      "q": "স্বাধীন nested loop — ভেতরের সীমা শুধু n",
+      "headerCode": "for (i = 1; i <= n; i++)            // n বার\n    for (j = 1; j <= n; j *= 2)     // log n বার\n// n × log n  ->  O(n log n)   (Merge Sort, Quick Sort, Heap Sort)\n\nfor (i = 1; i <= n; i++)            // n বার\n    for (j = 1; j * j <= n; j++)    // √n বার\n// n × √n  ->  O(n√n)\n\nfor (i = 1; i <= n; i++)            // n বার\n    for (j = 1; j <= n; j++)        // n বার\n        for (k = 1; k <= n; k *= 2) // log n বার\n// n × n × log n  ->  O(n² log n)",
+      "headerCodeLang": "c",
+      "verdict": "O(n log n) · O(n√n) · O(n² log n)",
       "tags": [
         "time complexity",
         "nested loop",
@@ -2807,11 +2800,6 @@
             "sub": "O(n log n) হলো তুলনা-ভিত্তিক sorting-এর সীমা — Merge Sort, Quick Sort (average), Heap Sort সবাই এখানে।"
           },
           {
-            "code": "for (i = 1; i <= n; i++)            // n বার\n    for (j = 1; j <= n; j *= 2)     // log n বার\n// n × log n  ->  O(n log n)   (Merge Sort, Quick Sort, Heap Sort)\n\nfor (i = 1; i <= n; i++)            // n বার\n    for (j = 1; j * j <= n; j++)    // √n বার\n// n × √n  ->  O(n√n)\n\nfor (i = 1; i <= n; i++)            // n বার\n    for (j = 1; j <= n; j++)        // n বার\n        for (k = 1; k <= n; k *= 2) // log n বার\n// n × n × log n  ->  O(n² log n)",
-            "codeLang": "c",
-            "label": "Pattern ২ — স্বাধীন nested loop"
-          },
-          {
             "label": "Shortcut — এই দুই pattern এক নজরে",
             "diagram": "inner loop i-এর উপর নির্ভর করে?  তাহলে গুণ কোরো না — যোগ করো।\n\n  ৩টা যোগফল মুখস্থ রাখলেই সব বেরিয়ে আসে:\n\n    1 + 2 + 3 + … + k           =  k^2 / 2\n    1 + 2 + 4 + 8 + … + k       =  2k          (i দ্বিগুণ হলে)\n    n/1 + n/2 + n/3 + … + n/n   =  n ln n      (harmonic)\n\n  inner দেখে চিনে ফেলো:\n    j <= n             ->  গুণ করো\n    j <= i  /  j += i  ->  যোগ করো"
           }
@@ -2827,7 +2815,10 @@
     },
     {
       "id": "c_031",
-      "q": "একটি মাত্র loop কতবার চলে? i++, i *= 2 এবং i * i <= n — তিনটির জটিলতা বের করো।",
+      "q": "একক loop — i++, i *= 2, i * i <= n",
+      "headerCode": "for (i = 1; i <= n; i++)        // i = 1, 2, 3, …, n        -> O(n)\n\nfor (i = 1; i <= n; i *= 2)     // i = 1, 2, 4, …, n         -> O(log n)\n\nfor (i = 1; i * i <= n; i++)    // i*i<=n  <=>  i<=sqrt(n)   -> O(sqrt(n))",
+      "headerCodeLang": "c",
+      "verdict": "O(n) · O(log n) · O(√n)",
       "tags": [
         "time complexity",
         "single loop",
@@ -2852,11 +2843,6 @@
           },
           {
             "sub": "i * i <= n → শর্তটি আসলে i <= √n, তাই i নেয় 1, 2, 3, …, √n; মোট √n বার — O(√n)।"
-          },
-          {
-            "code": "for (i = 1; i <= n; i++)        // i = 1, 2, 3, …, n        -> O(n)\n\nfor (i = 1; i <= n; i *= 2)     // i = 1, 2, 4, …, n         -> O(log n)\n\nfor (i = 1; i * i <= n; i++)    // i*i<=n  <=>  i<=sqrt(n)   -> O(sqrt(n))",
-            "codeLang": "c",
-            "label": "Pattern ১ — একক loop"
           }
         ],
         "mistakes": [
