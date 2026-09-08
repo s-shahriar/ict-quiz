@@ -1,4 +1,4 @@
-import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronUp, LayoutGrid, PenLine, Star, Zap } from 'lucide-react'
+import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, LayoutGrid, PenLine, Star, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -27,7 +27,15 @@ export default function WrittenMode() {
   const topic = WRITTEN_TOPICS.find(t => t.id === topicId) || WRITTEN_TOPICS[0]
   const writtenData = topic ? getWrittenData(topic.id) : { questions: [] }
 
-  const questions = writtenData?.questions || []
+  const allQuestions = writtenData?.questions || []
+
+  // `?segment=` turns this screen into that segment's own page. Segments hold
+  // 25 of c_programming's 28 questions, so showing them inline buried the plain
+  // list; they now sit behind entry cards and open on their own route.
+  const activeSeg = searchParams.get('segment')
+  const questions = activeSeg
+    ? allQuestions.filter(q => q.segment === activeSeg)
+    : allQuestions
   const [openIds, setOpenIds] = useState({})
   const [filterImportant, setFilterImportant] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -67,12 +75,25 @@ export default function WrittenMode() {
   }
 
   // Deep-link: ?q=<questionId> opens and scrolls to a specific written answer.
+  // A segmented question no longer appears on the category page, so a link from
+  // search (or a shared URL) has to be carried through to its segment first —
+  // otherwise the target simply would not be on screen.
   const focusQ = searchParams.get('q')
+  useEffect(() => {
+    if (!focusQ || activeSeg || !ready) return
+    const target = allQuestions.find(q => q.id === focusQ)
+    if (!target?.segment) return
+    navigate(
+      `/written?topic=${topicId}&segment=${encodeURIComponent(target.segment)}&q=${focusQ}`,
+      { replace: true, state: backTo ? { backTo } : undefined },
+    )
+  }, [focusQ, activeSeg, ready, topicId]) // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!focusQ) return
     setOpenIds(prev => prev[focusQ] ? prev : { ...prev, [focusQ]: true })
     return focusScroll(() => document.getElementById('written-q-' + focusQ))
-  }, [focusQ, topicId])
+  }, [focusQ, topicId, activeSeg])
 
   if (!topic) return null
   if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
@@ -80,12 +101,17 @@ export default function WrittenMode() {
   return (
     <div className="written-page anim-fade">
       <div className="written-topbar">
-        <button className="back-btn" onClick={() => backTo ? navigate(backTo) : navigate('/', { state: { module: 'written' } })}>
-          <ChevronLeft size={15} /> {backTo ? 'Back' : 'All Categories'}
+        <button
+          className="back-btn"
+          onClick={() => activeSeg
+            ? navigate('/written?topic=' + topic.id, { state: backTo ? { backTo } : undefined })
+            : backTo ? navigate(backTo) : navigate('/', { state: { module: 'written' } })}
+        >
+          <ChevronLeft size={15} /> {activeSeg ? topic.shortName : backTo ? 'Back' : 'All Categories'}
         </button>
         <div className="written-topic-pill" style={{ color: topic.color, borderColor: `${topic.color}55` }}>
-          <PenLine size={13} />
-          {topic.shortName} — Written Q&A
+          {activeSeg ? <Zap size={13} /> : <PenLine size={13} />}
+          {activeSeg || `${topic.shortName} — Written Q&A`}
         </div>
         <TopbarActions>
           <button className="cat-browse-btn" onClick={() => setSidebarOpen(true)} title="Browse categories">
@@ -131,12 +157,45 @@ export default function WrittenMode() {
         </div>
       ) : (
         <>
-          {segments.map(seg => (
+          {/* Category view: segments collapse to entry cards so the plain list
+              is not buried under 25 pinned questions. */}
+          {!activeSeg && segments.length > 0 && (
+            <div className="written-seg-nav">
+              {segments.map(seg => {
+                const count = seg.subgroups.reduce((n, g) => n + g.questions.length, 0)
+                return (
+                  <button
+                    key={seg.name}
+                    className="written-seg-card"
+                    style={{ '--c': topic.color }}
+                    onClick={() => navigate(
+                      `/written?topic=${topic.id}&segment=${encodeURIComponent(seg.name)}`,
+                      { state: backTo ? { backTo } : undefined },
+                    )}
+                  >
+                    <span className="written-seg-card-top">
+                      <Zap size={14} style={{ color: topic.color, flexShrink: 0 }} />
+                      <span className="written-seg-card-name">{seg.name}</span>
+                      <span className="written-seg-card-count">{count}</span>
+                      <ChevronRight size={15} className="written-seg-card-arrow" />
+                    </span>
+                    {seg.subgroups.some(g => g.name) && (
+                      <span className="written-seg-card-subs">
+                        {seg.subgroups.filter(g => g.name).map(g => (
+                          <span className="written-seg-chip" key={g.name}>
+                            {g.name} <b>{g.questions.length}</b>
+                          </span>
+                        ))}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          {activeSeg && segments.map(seg => (
             <div className="written-segment" key={seg.name}>
-              <div className="written-segment-header" style={{ color: topic.color, borderColor: `${topic.color}55` }}>
-                <Zap size={14} />
-                <span>{seg.name}</span>
-              </div>
               {seg.subgroups.map(sub => (
                 <div className="written-subsegment" key={sub.name || '_'}>
                   {sub.name && (
