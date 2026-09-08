@@ -138,3 +138,24 @@ export function selectionToAnchors(selection) {
   }
   return out
 }
+
+// The existing mark a selection sits inside, if any.
+//
+// Tapping a mark on Android also makes Android select the word under the
+// finger, which fires `selectionchange`. Without this the bar would flip from
+// "edit this highlight" (colours + bin) to "add a highlight" (colours only) a
+// moment after opening — the bin appearing and vanishing. Selecting text that
+// is already highlighted should offer remove/recolour, so the mark wins.
+//
+// Both ends must be in the SAME mark: a drag that starts inside a highlight and
+// runs past its end is a genuine new selection, not an edit.
+export function markForSelection(selection) {
+  if (!selection || selection.isCollapsed || selection.rangeCount === 0) return null
+  const range = selection.getRangeAt(0)
+  const markOf = (node) => {
+    let el = node?.nodeType === 3 ? node.parentElement : node
+    return el?.closest?.('.hl-mark') || null
+  }
+  const a = markOf(range.startContainer)
+  return a && a === markOf(range.endContainer) ? a : null
+}

@@ -1,53 +1,84 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Trash2 } from 'lucide-react'
-import { selectionToAnchors } from '../../lib/textAnchor.js'
-import { placeBar } from '../../lib/barPlacement.js'
+import { selectionToAnchors, markForSelection } from '../../lib/textAnchor.js'
+import { placeBar, clampX } from '../../lib/barPlacement.js'
 import { COLORS } from '../../lib/highlightSync.js'
 import { useHighlights } from '../../contexts/HighlightContext.jsx'
 
 // Floating highlight bar, PDF-reader style: four colour dots, plus a bin when
-// you tap an existing mark. Nothing here touches the network — every action
-// edits local state and waits for Save (see HighlightSaveBar).
+// the target is an existing mark. Nothing here touches the network — every
+// action edits local state and waits for Save (see HighlightSaveBar).
 //
-// Mobile is the primary case, which drives four decisions:
+// Mobile is the primary case, which drives these decisions:
 //  • `selectionchange` (not mouseup) is what fires when Android's selection
 //    handles are dragged, debounced past the drag so the bar does not chase
 //    the thumb.
+//  • Tapping a mark ALSO makes Android select the word under the finger. That
+//    fires selectionchange, which used to replace the edit bar with the add
+//    bar — the bin flashed up and vanished. Two guards stop that: a selection
+//    lying inside a mark opens edit mode, and a selectionchange arriving right
+//    after a deliberate tap on a mark is ignored outright.
 //  • Android draws its own Copy/Share bar ABOVE the selection, so ours goes
 //    BELOW by default and flips above only when there is no room.
 //  • Scrolling repositions the bar rather than hiding it — Android nudges the
 //    page while selecting, and hiding would make it vanish as it appeared.
-//  • The bar is dots-only, so it fits a 360px screen with room to spare, and
-//    every dot is a 34px touch target.
+//  • The bar is MEASURED after render and re-clamped horizontally. Its width
+//    depends on the mode, so a guessed width let the bin hang off the edge of
+//    a phone when the selected text sat near the left or right margin.
 
 const SETTLE_MS = 320          // let Android's handles settle before showing
+const TAP_GUARD_MS = 900       // ignore selectionchange right after a mark tap
 
 export default function HighlightBar() {
   const { add, remove, recolor, color, setColor, canHighlight } = useHighlights()
   const [bar, setBar] = useState(null)   // { x, y, above, mode, uid, anchors|ids }
   const barRef = useRef(null)
   const timer = useRef(null)
-  // How to re-measure what the bar points at, so a scroll can reposition it.
-  const measure = useRef(null)
+  const measure = useRef(null)           // how to re-measure the target on scroll
+  const tappedAt = useRef(0)             // when a mark was last deliberately tapped
 
   useEffect(() => {
     const hide = () => { measure.current = null; setBar(null) }
 
     const place = (rect, payload) =>
-      setBar({ ...placeBar(rect, window.innerWidth, window.innerHeight), ...payload })
+      setBar(b => ({
+        ...placeBar(rect, window.innerWidth, window.innerHeight, b?.w || 0),
+        w: b?.w || 0, ...payload,
+      }))
+
+    const editFor = (mark) => {
+      const root = mark.closest('[data-hl-root]')
+      if (!root) return
+      measure.current = () => mark.isConnected ? mark.getBoundingClientRect() : null
+      place(mark.getBoundingClientRect(), {
+        mode: 'edit',
+        uid: root.getAttribute('data-hl-root'),
+        ids: mark.getAttribute('data-hl-ids').split(','),
+        current: mark.getAttribute('data-hl-color'),
+      })
+    }
 
     const reposition = () => {
       const rect = measure.current?.()
       if (!rect) return hide()
-      setBar(b => b && { ...b, ...placeBar(rect, window.innerWidth, window.innerHeight) })
+      setBar(b => b && { ...b, ...placeBar(rect, window.innerWidth, window.innerHeight, b.w) })
     }
 
     const onSelectionChange = () => {
       window.clearTimeout(timer.current)
       timer.current = window.setTimeout(() => {
+        // A tap on a mark just opened edit mode; Android's own word-selection
+        // is a side effect of that tap, not a new intent.
+        if (Date.now() - tappedAt.current < TAP_GUARD_MS) return
+
         const sel = window.getSelection()
         if (!sel || sel.isCollapsed || !sel.rangeCount) return hide()
+
+        // Selection sitting inside an existing highlight -> edit it.
+        const mark = markForSelection(sel)
+        if (mark) return editFor(mark)
+
         const root = (sel.anchorNode?.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode)
           ?.closest?.('[data-hl-root]')
         if (!root) return hide()
@@ -64,23 +95,15 @@ export default function HighlightBar() {
       }, SETTLE_MS)
     }
 
-    // Tap/click straight on an existing mark → recolour or remove it.
     const onPointerDown = (e) => {
       const mark = e.target.closest?.('.hl-mark')
       if (!mark) {
         if (!barRef.current?.contains(e.target)) hide()
         return
       }
-      const root = mark.closest('[data-hl-root]')
-      if (!root) return
       window.clearTimeout(timer.current)
-      measure.current = () => mark.isConnected ? mark.getBoundingClientRect() : null
-      place(mark.getBoundingClientRect(), {
-        mode: 'edit',
-        uid: root.getAttribute('data-hl-root'),
-        ids: mark.getAttribute('data-hl-ids').split(','),
-        current: mark.getAttribute('data-hl-color'),
-      })
+      tappedAt.current = Date.now()
+      editFor(mark)
     }
 
     document.addEventListener('selectionchange', onSelectionChange)
@@ -95,6 +118,16 @@ export default function HighlightBar() {
       window.removeEventListener('resize', reposition)
     }
   }, [])
+
+  // Re-clamp with the bar's REAL width once it is in the DOM. The add and edit
+  // bars are different widths, so this runs whenever the mode changes.
+  useLayoutEffect(() => {
+    if (!bar || !barRef.current) return
+    const w = barRef.current.offsetWidth
+    if (!w || w === bar.w) return
+    const x = clampX(bar.x, w, window.innerWidth)
+    setBar(b => b && { ...b, w, x })
+  }, [bar?.mode, bar?.x, bar?.w])
 
   if (!bar || !canHighlight) return null
 
@@ -126,7 +159,14 @@ export default function HighlightBar() {
     <div
       ref={barRef}
       className="hl-bar"
-      style={{ left: bar.x, top: bar.y, transform: `translate(-50%, ${bar.above ? '-100%' : '0'})` }}
+      style={{
+        left: bar.x,
+        top: bar.y,
+        transform: `translate(-50%, ${bar.above ? '-100%' : '0'})`,
+        // Hide the first paint until the real width has been measured and
+        // clamped, so the bar never appears off-screen and then jump.
+        visibility: bar.w ? 'visible' : 'hidden',
+      }}
       onPointerDown={(e) => e.stopPropagation()}
     >
       {COLORS.map(c => (
