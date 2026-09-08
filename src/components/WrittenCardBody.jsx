@@ -22,6 +22,9 @@ import { useHighlights } from '../contexts/HighlightContext.jsx'
 // diagram right after the section it illustrates, instead of one combined
 // diagram dumped at the end of a multi-topic answer.
 function renderPoints(points, topicColor, hl) {
+  // An answer may carry no `points` at all — a short one where a single
+  // diagram does the whole job, for instance.
+  if (!Array.isArray(points) || points.length === 0) return null
   const blocks = []
   let currentList = []
   const flushList = () => {
