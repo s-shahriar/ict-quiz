@@ -1126,7 +1126,7 @@
           "তবু deadlock নেই — R2-এর ২টি instance, আর cycle-এর বাইরের P3 কিছু না চেয়ে শেষ করে একটি instance ছেড়ে দেয়।",
           "P3 → R1 request যোগ করলে সেই পথটাই বন্ধ হয়ে যায়, তখন deadlock।"
         ],
-        "diagram": "  চিহ্ন\n\n    [R2 ● ●]   resource, ভেতরের ● = instance\n    ( P1 )     process\n    R -> P     allocation, resource টি process ধরে আছে\n    P -> R     request, process টি resource চাইছে\n\n\n  (a) RAG\n\n        [R1 ●]                [R2 ● ●]\n           |                      | |\n     alloc |                alloc | +--- alloc ---> ( P3 )\n           v                      v\n        ( P1 )                 ( P2 )\n\n        P1 --- req ---> R2     P2 --- req ---> R1\n\n\n  (b) cycle আছে কি — তীর ধরে হাঁটো\n\n    ( P1 ) --req--> [R2] --alloc--> ( P2 ) --req--> [R1] --alloc--> ( P1 )\n\n    হ্যাঁ, একটি cycle আছে:  P1 -> R2 -> P2 -> R1 -> P1\n\n\n  (c) deadlock হয়েছে কি — কে শেষ করতে পারে দেখো\n\n    P3  ->  wants nothing        কিছুই চায় না, তাই শেষ করে R2 এর একটি ● ছাড়ে\n    P1  ->  takes that free ●    R2 পেয়ে শেষ করে, R1 ছেড়ে দেয়\n    P2  ->  takes R1             R1 পেয়ে শেষ করে\n\n    cycle ছিল, তবু কেউ আটকে থাকেনি  ->  NO DEADLOCK\n    কারণ R2 multi instance, আর cycle এর বাইরের P3 রাস্তা খুলে দিয়েছে\n\n\n  (d) এখন P3 -> R1 request যোগ করলে\n\n    ( P1 ) --req--> [R2] --alloc--> ( P3 ) --req--> [R1] --alloc--> ( P1 )\n\n    আগের cycle টি তো ছিলই, P3 ঢুকে পড়ায় আরও একটি cycle তৈরি হলো\n\n    P1  ->  needs R2   both ● held by P2, P3    blocked\n    P2  ->  needs R1   held by P1               blocked\n    P3  ->  needs R1   held by P1               blocked\n\n    কেউ শেষ করতে পারছে না  ->  DEADLOCK\n    P3 ও চাইতে শুরু করায় R2 ছাড়ার আর কেউ রইল না",
+        "diagram": "  চিহ্ন\n\n    [R2 ● ●]   resource, ভেতরের ● = instance\n    ( P1 )     process\n    R -> P     allocation, resource টি process ধরে আছে\n    P -> R     request, process টি resource চাইছে\n\n\n  (a) RAG\n\n        [R1 ●]                     [R2 ● ●]\n            |                         /   \\\n      alloc |                 alloc  /     \\ alloc\n            v                       v       v\n         ( P1 )                  ( P2 )  ( P3 )\n\n        P1 --- req ---> R2       P2 --- req ---> R1\n\n    R2 এর দুটি instance আলাদা আলাদা — একটি P2 এর কাছে, অন্যটি P3 এর কাছে\n    P3 কেবল ধরে আছে, নতুন কিছু চাইছে না\n\n\n  (b) cycle আছে কি — তীর ধরে ঘুরে দেখো\n\n                      req\n        ( P1 ) ------------------> [R2]\n          ^                         |\n    alloc |                         | alloc\n          |                         v\n         [R1] <------------------ ( P2 )\n                      req\n\n    চারটি তীরই একই দিকে ঘুরছে, বৃত্ত সম্পূর্ণ — তাই cycle আছে\n    cycle: P1 -> R2 -> P2 -> R1 -> P1\n    P3 এই বৃত্তের বাইরে, সে কিছু চাইছে না\n\n\n  (c) deadlock হয়েছে কি — একজন একজন করে শেষ করিয়ে দেখা\n\n\n    নিয়ম\n\n      1. যে process যা চায় তা এই মুহূর্তে ফাঁকা থাকলে সে শেষ করতে পারে\n      2. সে আগে ঐ instance নিয়ে নেয়, কাজ শেষ করে, তারপর ধরে রাখা সব একসাথে ছাড়ে\n      3. এভাবে সবাইকে শেষ করানো গেলে deadlock নেই; একজনও আটকে থাকলে deadlock\n\n\n    শুরুর অবস্থা\n\n      process   holds      wants\n      -------   --------   --------\n      P1        R1 x 1     R2 x 1\n      P2        R2 x 1     R1 x 1\n      P3        R2 x 1     -\n\n      মোট R1 = 1, R2 = 2 — সবগুলোই দখলে, তাই ফাঁকা R1 = 0, R2 = 0\n\n\n    Round 1        ফাঁকা:  R1 = 0,  R2 = 0\n\n      process   wants     free?   কী হলো\n      -------   -------   -----   -----------------------------------\n      P1        R2 x 1    no      R2 ফাঁকা নেই, আটকে গেল\n      P2        R1 x 1    no      R1 ফাঁকা নেই, আটকে গেল\n      P3        -         yes     কিছুই চায় না, তাই শেষ করতে পারবে\n\n      take      -                             কিছু চায় না, তাই নেওয়ার কিছু নেই\n      release   R2 : 0 -> 1                   ধরে রাখা R2 টি ছেড়ে দিল\n\n      এখন ফাঁকা:  R1 = 0,  R2 = 1\n\n\n    Round 2        ফাঁকা:  R1 = 0,  R2 = 1\n\n      process   wants     free?   কী হলো\n      -------   -------   -----   -----------------------------------\n      P1        R2 x 1    yes     ফাঁকা R2 আছে, তাই শেষ করতে পারবে\n\n      take      R2 : 1 -> 0                   ফাঁকা R2 টি P1 নিয়ে নিল\n      release   R1 : 0 -> 1,  R2 : 0 -> 1     শেষ করে ধরে রাখা দুটোই ছাড়ল\n\n      এখন ফাঁকা:  R1 = 1,  R2 = 1\n\n\n    Round 3        ফাঁকা:  R1 = 1,  R2 = 1\n\n      process   wants     free?   কী হলো\n      -------   -------   -----   -----------------------------------\n      P2        R1 x 1    yes     ফাঁকা R1 আছে, তাই শেষ করতে পারবে\n\n      take      R1 : 1 -> 0                   ফাঁকা R1 টি P2 নিয়ে নিল\n      release   R1 : 0 -> 1,  R2 : 1 -> 2     শেষ করে ধরে রাখা দুটোই ছাড়ল\n\n      এখন ফাঁকা:  R1 = 1,  R2 = 2  — মোট যা ছিল, সবই ফেরত এল\n\n\n    তিনজনই শেষ করতে পারল  ->  NO DEADLOCK\n    cycle ছিল ঠিকই, কিন্তু cycle এর বাইরের P3 প্রথম চাকাটা ঘুরিয়ে দিল\n\n\n  (d) এখন P3 -> R1 request যোগ করলে\n\n    একটাই বদল — P3 আর খালি হাতে বসে নেই, সেও R1 চাইছে\n\n      process   holds      wants\n      -------   --------   --------\n      P1        R1 x 1     R2 x 1\n      P2        R2 x 1     R1 x 1\n      P3        R2 x 1     R1 x 1\n\n\n    Round 1        ফাঁকা:  R1 = 0,  R2 = 0\n\n      process   wants     free?   কী হলো\n      -------   -------   -----   -----------------------------------\n      P1        R2 x 1    no      R2 এর দুটোই দখলে (P2, P3)\n      P2        R1 x 1    no      R1 দখলে (P1)\n      P3        R1 x 1    no      R1 দখলে (P1)\n\n      কেউ শেষ করতে পারল না, তাই কেউ কিছু ছাড়লও না — ফাঁকা আগের মতোই 0, 0\n\n\n    ->  DEADLOCK\n    আগে P3 কিছু না চাওয়ায় সে-ই প্রথম R2 ছেড়ে চাকা ঘুরিয়েছিল\n    এখন সেও চাওয়ায় সেই একমাত্র পথটাই বন্ধ হয়ে গেল",
         "mistakes": [
           [
             "RAG-এ cycle পেলেই deadlock",
@@ -1142,6 +1142,369 @@
           ]
         ],
         "mnemonic": "Cycle পেয়ে থেমো না — দেখো কেউ কিছু না চেয়ে শেষ করতে পারে কিনা। পারলে সে instance ছেড়ে cycle ভেঙে দেয়।"
+      }
+    },
+    {
+      "id": "os_014",
+      "q": "Context Switching কী? কীভাবে ঘটে — ধাপে ধাপে লেখো।",
+      "tags": [
+        "context switching",
+        "PCB",
+        "scheduler",
+        "process state",
+        "preemption",
+        "overhead"
+      ],
+      "answer": {
+        "summary": [
+          "Context switch = CPU এক process ছেড়ে আরেকটি ধরা — পুরনোটির context তার PCB-তে save, নতুনটির context তার PCB থেকে restore।",
+          "Trigger: timer interrupt, IO wait, বেশি priority-র process, বা system call।",
+          "এই সময়টুকু pure overhead — CPU তখন কারও কাজ করে না।"
+        ],
+        "points": [
+          "ধাপগুলো",
+          {
+            "sub": "১. একটা চলতি process-কে interrupt করার call আসে — timer interrupt, IO, preempt বা system call।"
+          },
+          {
+            "sub": "২. চলমান P1-এর context (PC, register, stack pointer, state) তার PCB-তে save হয়।"
+          },
+          {
+            "sub": "৩. P1-এর state বদলে সে ready বা waiting queue-তে যায়।"
+          },
+          {
+            "sub": "৪. Scheduler ready queue থেকে পরের process P2 বেছে নেয়।"
+          },
+          {
+            "sub": "৫. P2-এর PCB থেকে context restore হয়।"
+          },
+          {
+            "sub": "৬. P2-এর state running, CPU তার থেমে যাওয়া instruction থেকেই আবার শুরু করে।"
+          },
+          "PCB-তে কী কী থাকে",
+          {
+            "sub": "Process ID, state, Program Counter, CPU register, stack pointer।"
+          },
+          {
+            "sub": "Memory map (page table), open file table, priority, accounting তথ্য।"
+          }
+        ],
+        "diagram": "  ধাপে ধাপে\n\n    ( P1 )  running                                 CPU এখন P1 চালাচ্ছে\n       |\n       |  interrupt / IO / preempt                  ১. trigger আসে\n       v\n    save context  -->  [ PCB of P1 ]                ২. PC, register, SP, state জমা\n       |\n       v\n    P1  -->  ready queue or waiting queue           ৩. P1 এর state বদলায়\n       |\n       v\n    scheduler picks P2                              ৪. ready queue থেকে বাছাই\n       |\n       v\n    load context  <--  [ PCB of P2 ]                ৫. P2 এর জমানো context ফেরত\n       |\n       v\n    ( P2 )  running                                 ৬. P2 যেখানে থেমেছিল সেখান থেকেই চলে\n\n\n  state এর চলাচল\n\n    ready  -->  running  -->  ready                 preempt — সময় শেষ বা বড় priority এল\n    ready  -->  running  -->  waiting  -->  ready   IO চাইল, শেষ হলে আবার ready\n\n\n  খরচ\n\n    save + load এর পুরো সময়টায় CPU কোনো process এর কাজ করে না\n    তাই context switch যত ঘন ঘন, throughput তত কম",
+        "mistakes": [
+          [
+            "Context switch আর mode switch এক",
+            "না — mode switch শুধু user↔kernel যাওয়া। Context switch process বদলায়। প্রতিটি context switch-এ mode switch হয়, উল্টোটা নয়।"
+          ],
+          [
+            "Context switch-এর সময়েও কাজ এগোয়",
+            "না — এটি pure overhead, CPU তখন কোনো process-এর কাজ করে না।"
+          ],
+          [
+            "শুধু register save হয়",
+            "না — PC, stack pointer, memory map, open file table সহ পুরো PCB।"
+          ]
+        ],
+        "mnemonic": "Save → Queue → Schedule → Load → Run। যা save করলে ঠিক তাই restore, নইলে process ভুল জায়গা থেকে চলবে।"
+      }
+    },
+    {
+      "id": "os_015",
+      "q": "Race Condition কী? এটি দূর করার উপায় কী কী?",
+      "tags": [
+        "race condition",
+        "critical section",
+        "mutual exclusion",
+        "mutex",
+        "semaphore",
+        "atomic"
+      ],
+      "answer": {
+        "summary": [
+          "Race condition = দুই বা তার বেশি process/thread একই shared data একসাথে বদলাচ্ছে, আর ফলাফল নির্ভর করছে কে আগে চলল তার উপর।",
+          "মূল কারণ: balance += 50 এক ধাপ নয় — read, add, write তিন ধাপ। মাঝখানে অন্যজন ঢুকলে একটি update হারিয়ে যায়।",
+          "সমাধান একটাই ধারণা — mutual exclusion: critical section-এ একসাথে একজনই ঢুকবে।"
+        ],
+        "points": [
+          "কেন হয়",
+          {
+            "sub": "Shared data একাধিক thread একসাথে লিখছে।"
+          },
+          {
+            "sub": "কাজটি অবিভাজ্য নয় — মাঝপথে scheduler অন্য thread-কে CPU দিয়ে দেয়।"
+          },
+          {
+            "sub": "ফল প্রতিবার একই হয় না, তাই bug অনিয়মিতভাবে ধরা পড়ে।"
+          },
+          "দূর করার উপায়",
+          {
+            "sub": "Lock / Mutex — critical section-এর আগে lock, পরে unlock। সবচেয়ে সরাসরি উপায়।"
+          },
+          {
+            "sub": "Semaphore — wait() ও signal() দিয়ে, একাধিক instance থাকলেও চলে।"
+          },
+          {
+            "sub": "Atomic operation — read-modify-write একটিমাত্র অবিভাজ্য ধাপে (compare-and-swap)।"
+          },
+          {
+            "sub": "Monitor — ভাষার দেওয়া মোড়ক, lock নিজে থেকেই হয় (Java-র synchronized)।"
+          },
+          {
+            "sub": "ভাগাভাগি না করা — প্রতিটি thread নিজের copy রাখলে race-ই থাকে না।"
+          },
+          {
+            "sub": "একক CPU-তে interrupt বন্ধ রাখা — কাজ চলে, কিন্তু বিপজ্জনক ও multi-core-এ অচল।"
+          }
+        ],
+        "diagram": "  balance = 100, T1 আর T2 দুজনেই 50 করে জমা করছে\n\n\n  race condition — lock ছাড়া\n\n    time  T1                       T2                       balance\n    ----  ---------------------    ---------------------    -------\n     1    read   -> 100                                         100\n     2                             read   -> 100                100\n     3    add    -> 150                                         100\n     4                             add    -> 150                100\n     5    write  150                                            150\n     6                             write  150                   150\n\n    হওয়ার কথা ছিল 200, হলো 150 — একটি update হারিয়ে গেল\n\n\n  সমাধান — critical section lock দিয়ে ঘেরা\n\n    time  T1                       T2                       balance\n    ----  ---------------------    ---------------------    -------\n     1    lock                                                  100\n     2                             lock  -> blocked             100\n     3    read, add, write                                      150\n     4    unlock                                                150\n     5                             lock  -> ok                  150\n     6                             read, add, write             200\n\n    একসাথে নয়, একজনের পর একজন — তাই সঠিক 200",
+        "mistakes": [
+          [
+            "balance += 50 একটিমাত্র ধাপ",
+            "না — read, add, write তিন ধাপ। মাঝখানে অন্য thread ঢুকতে পারে।"
+          ],
+          [
+            "Race condition মানে কোনো লাইনে ভুল আছে",
+            "না — প্রতিটি লাইন আলাদা করে ঠিক। ভুলটা কেবল চালানোর ক্রমে, তাই বহুবারে একবার দেখা দেয়।"
+          ],
+          [
+            "sleep বা delay দিলে সমস্যা মিটে যায়",
+            "না — সম্ভাবনা কমে মাত্র। নিশ্চয়তা আসে কেবল mutual exclusion থেকে।"
+          ]
+        ],
+        "mnemonic": "read-modify-write তিন ধাপ — মাঝখানে কেউ ঢুকলেই update হারায়। তিনটিকে একসাথে lock দিয়ে বাঁধো।"
+      }
+    },
+    {
+      "id": "os_016",
+      "q": "Critical Section কাকে বলে? এর গঠন এবং সঠিক সমাধানের শর্তগুলো লেখো।",
+      "tags": [
+        "critical section",
+        "entry section",
+        "exit section",
+        "mutual exclusion",
+        "progress",
+        "bounded wait"
+      ],
+      "answer": {
+        "summary": [
+          "Critical Section হলো একটি process-এর কোডের সেই অংশ, যেখানে অন্য process-এর সাথে ভাগ করা (shared) data-এর উপর operation করা হয়।",
+          "গঠন: Entry Section → Critical Section → Exit Section → Remainder Section।",
+          "সঠিক সমাধানের তিনটি শর্ত: Mutual Exclusion, Progress, Bounded Wait।"
+        ],
+        "points": [
+          "গঠন — চারটি অংশ",
+          {
+            "sub": "Entry Section — ঢোকার অনুমতি চাওয়া হয়, অর্থাৎ lock নেওয়া।"
+          },
+          {
+            "sub": "Critical Section — shared data ছোঁয়ার লাইনগুলো; এখানে একসাথে একজনই থাকতে পারে।"
+          },
+          {
+            "sub": "Exit Section — অনুমতি ছেড়ে দেওয়া হয়, অর্থাৎ lock ছাড়া।"
+          },
+          {
+            "sub": "Remainder Section — বাকি কাজ; shared কিছু নেই বলে সবাই একসাথে চলতে পারে।"
+          },
+          "উদাহরণ — C = 5, P1 আর P2 দুজনেই c++ করছে",
+          {
+            "sub": "read(c); c++; write(c); — এই তিন লাইনই critical section।"
+          },
+          {
+            "sub": "তিনটি একসাথে না চললে একজনের গণনা হারিয়ে যায়, 7-এর জায়গায় 6 হয়।"
+          },
+          "তিনটি শর্ত",
+          {
+            "sub": "Mutual Exclusion — একটি Process যদি Critical Section-এ কাজ করতে থাকে, তবে অন্য কোনো Process সে সময় সেখানে ঢুকতে পারবে না। তাকে বাইরে অপেক্ষা করতে হবে।"
+          },
+          {
+            "sub": "Progress — critical section খালি থাকলে, যারা ঢুকতে চায় তাদের মধ্য থেকেই একজনকে বেছে নিতে হবে। সিদ্ধান্ত ফেলে রাখা যাবে না।"
+          },
+          {
+            "sub": "Bounded Wait — অপেক্ষায় থাকা process-কে অনন্তকাল বসিয়ে রাখা যাবে না (no starvation)। তার আগে অন্য process গুলো সর্বোচ্চ কতবার ঢুকতে পারবে, তার একটা limit থাকতে হবে।"
+          }
+        ],
+        "diagram": "  shared variable:  C = 5\n\n\n    P1( )                          P2( )\n\n    entry section                  entry section                ঢোকার অনুমতি চাওয়া — lock নেওয়া\n      |                              |\n      v                              v\n    +--------------------+         +--------------------+\n    | read(c);           |         | read(c);           |\n    | c++;               |         | c++;               |       critical section — এখানে একসাথে একজনই\n    | write(c);          |         | write(c);          |\n    +--------------------+         +--------------------+\n      |                              |\n      v                              v\n    exit section                   exit section                 অনুমতি ছেড়ে দেওয়া — lock ছাড়া\n\n    remainder section              remainder section            shared কিছু নেই, তাই সবাই একসাথে\n\n\n  দুজন একসাথে ঢুকে পড়লে\n\n    C = 5, দুজনেই c++ করল  ->  হওয়ার কথা 7, হলো 6\n\n\n  সঠিক সমাধানের তিনটি শর্ত\n\n    1  Mutual Exclusion    একজন ভেতরে থাকলে একই data নিয়ে অন্য কেউ ঢুকতে পারবে না\n    2  Progress            খালি থাকলে যারা ঢুকতে চায় তাদের একজন ঢুকবেই, দেরি নয়\n    3  Bounded Wait        অপেক্ষায় থাকা process এর পালা আসবেই, অনন্তকাল আটকাবে না",
+        "mistakes": [
+          [
+            "Critical section মানে পুরো function",
+            "না — কেবল shared data ছোঁয়ার লাইনগুলো। যত ছোট রাখা যায় তত ভালো, নইলে বাকিরা অকারণে অপেক্ষা করে।"
+          ],
+          [
+            "Mutual Exclusion থাকলেই সমাধান সম্পূর্ণ",
+            "না — Progress না থাকলে deadlock, Bounded Wait না থাকলে starvation। তিনটিই লাগে।"
+          ],
+          [
+            "Remainder section-এও একজন একজন করে ঢুকতে হয়",
+            "না — সেখানে shared কিছু নেই, তাই সবাই একসাথে চলতে পারে।"
+          ]
+        ],
+        "mnemonic": "Entry → Critical → Exit → Remainder। শর্ত: একজনই ঢুকবে, খালি থাকলে আটকাবে না, আর অপেক্ষার সীমা থাকবে।"
+      }
+    },
+    {
+      "id": "os_017",
+      "q": "Semaphore কাকে বলে? এর ধাপগুলো লেখো, এবং উদাহরণ দিয়ে দেখাও দুটি process কীভাবে semaphore ব্যবহার করে।",
+      "tags": [
+        "semaphore",
+        "wait",
+        "signal",
+        "process synchronization",
+        "critical section",
+        "binary semaphore"
+      ],
+      "answer": {
+        "summary": [
+          "Semaphore হলো একটি integer variable, যা process synchronization-এ ব্যবহার হয় — মূলত critical section সমস্যার সমাধানে।",
+          "এর উপর কেবল দুটি atomic operation চলে: wait(S) আর signal(S)।",
+          "wait() বসে entry section-এ, signal() বসে exit section-এ। S = 1 রাখলে একসাথে একজনই critical section-এ ঢুকতে পারে।"
+        ],
+        "points": [
+          "Semaphore কী",
+          {
+            "sub": "একটি integer variable, সাধারণত নাম S।"
+          },
+          {
+            "sub": "কাজ: process synchronization — কে কখন critical section-এ ঢুকবে তা নিয়ন্ত্রণ করা।"
+          },
+          {
+            "sub": "এর মানে সরাসরি হাত দেওয়া যায় না, কেবল দুটি operation দিয়ে বদলানো যায়।"
+          },
+          "দুটি atomic operation",
+          {
+            "sub": "wait(S) — যতক্ষণ S ≤ 0 ততক্ষণ অপেক্ষা, তারপর S-কে ১ কমায়।"
+          },
+          {
+            "sub": "signal(S) — S-কে ১ বাড়ায়, অর্থাৎ পরেরজনের জন্য lock ছেড়ে দেয়।"
+          },
+          {
+            "sub": "দুটোই atomic — একটি চলার মাঝপথে অন্য process ঢুকতে পারে না, নইলে semaphore নিজেই race condition-এ পড়ত।"
+          },
+          "ধাপ",
+          {
+            "sub": "১. S-এর প্রাথমিক মান ঠিক করা — একসাথে কতজন ঢুকতে পারবে। একজন হলে S = 1।"
+          },
+          {
+            "sub": "২. Entry section-এ wait(S) — S > 0 হলে ঢুকবে এবং S কমাবে, নাহলে অপেক্ষা করবে।"
+          },
+          {
+            "sub": "৩. Critical section — shared data-র উপর কাজ।"
+          },
+          {
+            "sub": "৪. Exit section-এ signal(S) — S বাড়িয়ে lock ছেড়ে দেয়।"
+          },
+          {
+            "code": "S = 1;                   // semaphore variable\n\n// ---- entry section ----\nwait(S) {\n    while (S <= 0);      // locked, spin here\n    S = S - 1;           // take the lock\n}\n\n// ---- critical section ----\nread(c);\nc++;\nwrite(c);\n\n// ---- exit section ----\nsignal(S) {\n    S = S + 1;           // release the lock\n}",
+            "codeLang": "c",
+            "label": "Semaphore — গঠন"
+          },
+          "দুই রকম",
+          {
+            "sub": "Binary semaphore — মান কেবল 0 বা 1, তাই কাজে mutex-এর মতো।"
+          },
+          {
+            "sub": "Counting semaphore — resource-এর n টি copy থাকলে S = n, একসাথে n জন ঢুকতে পারে।"
+          }
+        ],
+        "diagram": "  shared data:  C = 5\n\n\n    P1( )                          P2( )\n    +--------------------+         +--------------------+\n    | read(c);           |         | read(c);           |\n    | c++;               |         | c++;               |     <-- critical section\n    | write(c);          |         | write(c);          |         দুজনেই একই c ছুঁচ্ছে\n    +--------------------+         +--------------------+\n\n    এই তিন লাইনই critical section — তাই এখানেই semaphore এর পাহারা দরকার\n\n\n  ধাপ ১ — P1 কোডের ভেতর দিয়ে হাঁটছে   (শুরুতে S = 1, C = 5)\n\n    section    code line               S   C   কী ঘটল\n    ---------  --------------------    --  --  ------------------------------\n    entry      wait(S) {               1   5\n                 while (S <= 0);       1   5   S = 1, শর্ত মিথ্যা, তাই skip\n                 S = S - 1;            0   5   lock নিল, critical section এখন বন্ধ\n               }\n\n    critical   read(c);                0   5   c পড়ল, মান 5\n               c++;                    0   5   হাতে 6\n               write(c);               0   6   c তে 6 লেখা হলো\n\n    exit       signal(S) {\n                 S = S + 1;            1   6   lock ছাড়ল, critical section খুলল\n               }\n\n\n  ধাপ ২ — P1 ভেতরে থাকতে P2 এলে কী হয়   (তখন S = 0)\n\n    section    code line               S   C   কী ঘটল\n    ---------  --------------------    --  --  ------------------------------\n    entry      wait(S) {               0   5\n                 while (S <= 0);       0   5   S = 0, শর্ত সত্য — এখানেই ঘুরতে থাকে\n                                               P1 signal(S) না দেওয়া পর্যন্ত এগোতে পারে না\n\n\n  ধাপ ৩ — lock ছাড়া পাওয়ার পর P2 হাঁটছে   (S = 1, C = 6)\n\n    section    code line               S   C   কী ঘটল\n    ---------  --------------------    --  --  ------------------------------\n    entry      wait(S) {               1   6\n                 while (S <= 0);       1   6   S = 1, শর্ত মিথ্যা, তাই skip\n                 S = S - 1;            0   6   lock নিল\n               }\n\n    critical   read(c);                0   6   c পড়ল, মান 6\n               c++;                    0   6   হাতে 7\n               write(c);               0   7   c তে 7 লেখা হলো\n\n    exit       signal(S) {\n                 S = S + 1;            1   7   lock ছাড়ল\n               }\n\n\n  ফল\n\n    C = 7 — দুটি c++ ই গোনা হলো, একটিও হারায়নি\n    semaphore না থাকলে দুজনেই 5 পড়ত, দুজনেই 6 লিখত  ->  C = 6",
+        "mistakes": [
+          [
+            "wait() মানে process ঘুমিয়ে পড়ে",
+            "while (S <= 0); এই রূপে সে ঘুরতেই থাকে — busy waiting বা spinlock। বাস্তব OS একে block করে queue-তে রাখে, তাতে CPU নষ্ট হয় না।"
+          ],
+          [
+            "signal() না দিলেও চলে",
+            "না — signal() ছাড়া S আর কখনো বাড়ে না, বাকিরা চিরকাল আটকে থাকে।"
+          ],
+          [
+            "wait() আর signal() সাধারণ function",
+            "না — এদের atomic হতেই হবে, নইলে semaphore নিজেই race condition-এ পড়ে যায়।"
+          ]
+        ],
+        "mnemonic": "wait মানে lock নেওয়া (S কমে), signal মানে lock ছাড়া (S বাড়ে)। S = 1 হলে lock একটাই, তাই ভেতরে একজনই।"
+      }
+    },
+    {
+      "id": "os_018",
+      "q": "Mutex কাকে বলে? উদাহরণ দিয়ে দেখাও দুটি process কীভাবে mutex ব্যবহার করে, এবং semaphore-এর সাথে এর পার্থক্য কী।",
+      "tags": [
+        "mutex",
+        "mutual exclusion",
+        "lock",
+        "unlock",
+        "critical section",
+        "semaphore"
+      ],
+      "answer": {
+        "summary": [
+          "Mutex (mutual exclusion lock) হলো একটি lock, যার অবস্থা দুটোই — free অথবা held। এক সময়ে একটি process-ই একে ধরে রাখতে পারে।",
+          "দুটি operation: acquire বা lock, আর release বা unlock। দুটোই atomic।",
+          "Semaphore-এর সাথে মূল পার্থক্য ownership — যে process lock করেছে কেবল সেই unlock করতে পারে।"
+        ],
+        "points": [
+          "Mutex কী",
+          {
+            "sub": "নামটি এসেছে mutual exclusion থেকে — একসাথে একজনই।"
+          },
+          {
+            "sub": "অবস্থা মাত্র দুটি: free (কেউ ধরেনি) অথবা held (কেউ ধরে আছে)।"
+          },
+          {
+            "sub": "কাজ একটাই — critical section-এ একসাথে একজনকেই ঢুকতে দেওয়া।"
+          },
+          "দুটি operation",
+          {
+            "sub": "acquire / lock — free থাকলে নিয়ে নেয়, না থাকলে অপেক্ষা করে।"
+          },
+          {
+            "sub": "release / unlock — lock ছেড়ে দেয়, পরেরজন ঢুকতে পারে।"
+          },
+          {
+            "sub": "দুটোই atomic, নইলে দুই process একসাথে lock নিয়ে ফেলতে পারত।"
+          },
+          "ধাপ",
+          {
+            "sub": "১. শুরুতে lock = false, অর্থাৎ কেউ ধরে নেই।"
+          },
+          {
+            "sub": "২. Entry section-এ acquire() — free থাকলে ধরে নেয়, নইলে অপেক্ষা।"
+          },
+          {
+            "sub": "৩. Critical section — shared data-র উপর কাজ।"
+          },
+          {
+            "sub": "৪. Exit section-এ release() — lock ছেড়ে দেয়।"
+          },
+          {
+            "code": "lock = false;               // false = free, true = held\n\n// ---- entry section ----\nacquire() {                 // this whole block is atomic\n    while (lock == true);   // held by someone, spin here\n    lock = true;            // take the lock\n}\n\n// ---- critical section ----\nread(c);\nc++;\nwrite(c);\n\n// ---- exit section ----\nrelease() {\n    lock = false;           // only the owner releases it\n}",
+            "codeLang": "c",
+            "label": "Mutex — গঠন"
+          },
+          "Semaphore-এর সাথে পার্থক্য",
+          {
+            "sub": "Ownership — mutex যে নিয়েছে সেই ছাড়তে পারে; semaphore-এ যে কেউ signal দিতে পারে।"
+          },
+          {
+            "sub": "মান — mutex-এর অবস্থা দুটি; semaphore একটি integer, তাই n টি instance ও সামলাতে পারে।"
+          },
+          {
+            "sub": "কাজ — mutex কেবল mutual exclusion; semaphore দিয়ে ordering বা signalling-ও করা যায়।"
+          }
+        ],
+        "diagram": "  shared data:  C = 5\n\n\n    P1( )                          P2( )\n    +--------------------+         +--------------------+\n    | read(c);           |         | read(c);           |\n    | c++;               |         | c++;               |     <-- critical section\n    | write(c);          |         | write(c);          |         দুজনেই একই c ছুঁচ্ছে\n    +--------------------+         +--------------------+\n\n    এই তিন লাইনই critical section — এখানেই mutex এর পাহারা দরকার\n\n\n  ধাপ ১ — P1 কোডের ভেতর দিয়ে হাঁটছে   (শুরুতে lock = false, C = 5)\n\n    section    code line                  lock    C   কী ঘটল\n    ---------  -----------------------    -----   --  ------------------------------\n    entry      acquire() {                false   5\n                 while (lock == true);    false   5   lock খালি, শর্ত মিথ্যা, তাই skip\n                 lock = true;             true    5   lock নিল, critical section এখন বন্ধ\n               }\n\n    critical   read(c);                   true    5   c পড়ল, মান 5\n               c++;                       true    5   হাতে 6\n               write(c);                  true    6   c তে 6 লেখা হলো\n\n    exit       release() {\n                 lock = false;            false   6   lock ছাড়ল, critical section খুলল\n               }\n\n\n  ধাপ ২ — P1 ভেতরে থাকতে P2 এলে কী হয়   (তখন lock = true)\n\n    section    code line                  lock    C   কী ঘটল\n    ---------  -----------------------    -----   --  ------------------------------\n    entry      acquire() {                true    5\n                 while (lock == true);    true    5   শর্ত সত্য — এখানেই ঘুরতে থাকে\n                                                      P1 release() না করা পর্যন্ত এগোতে পারে না\n\n\n  ধাপ ৩ — lock ছাড়া পাওয়ার পর P2 হাঁটছে   (lock = false, C = 6)\n\n    section    code line                  lock    C   কী ঘটল\n    ---------  -----------------------    -----   --  ------------------------------\n    entry      acquire() {                false   6\n                 while (lock == true);    false   6   lock খালি, শর্ত মিথ্যা, তাই skip\n                 lock = true;             true    6   lock নিল\n               }\n\n    critical   read(c);                   true    6   c পড়ল, মান 6\n               c++;                       true    6   হাতে 7\n               write(c);                  true    7   c তে 7 লেখা হলো\n\n    exit       release() {\n                 lock = false;            false   7   lock ছাড়ল\n               }\n\n\n  ফল\n\n    C = 7 — দুটি c++ ই গোনা হলো, একটিও হারায়নি\n    mutex না থাকলে দুজনেই 5 পড়ত, দুজনেই 6 লিখত  ->  C = 6\n\n\n  mutex আর semaphore\n\n    mutex       lock / unlock, অবস্থা দুটোই — free অথবা held\n                যে lock করেছে কেবল সেই unlock করতে পারে (ownership)\n                কাজ একটাই — mutual exclusion\n\n    semaphore   wait / signal, মান একটি integer\n                ownership নেই, যে কেউ signal দিতে পারে\n                counting semaphore দিয়ে n টি instance ও সামলানো যায়",
+        "mistakes": [
+          [
+            "Mutex আর binary semaphore একই জিনিস",
+            "কাছাকাছি, কিন্তু এক নয়। Mutex-এর ownership আছে — অন্য process সেটি unlock করতে পারে না; binary semaphore-এ পারে।"
+          ],
+          [
+            "যে process lock করেনি সেও unlock করতে পারে",
+            "না — mutex-এ কেবল owner-ই release করতে পারে। এই নিয়মটিই ভুল করে অন্যের lock ছেড়ে দেওয়া ঠেকায়।"
+          ],
+          [
+            "acquire() এর ভেতরের দুই লাইন আলাদা করে চললেই হলো",
+            "না — পুরো block atomic না হলে দুই process একসাথে while পেরিয়ে দুজনেই lock = true করে ফেলবে।"
+          ]
+        ],
+        "mnemonic": "Mutex = একটাই lock, আর যে নিয়েছে সেই ফেরত দেবে। Semaphore গোনে, mutex কেবল পাহারা দেয়।"
       }
     }
   ]
