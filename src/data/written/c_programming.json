@@ -155,9 +155,14 @@
           },
           {
             "sub": "System programming এ network packet ও file header পড়ার সময় nested struct দিয়ে হুবহু byte layout map করা হয় (যেমন IP header এর ভেতরের address field গুলো)।"
+          },
+          {
+            "code": "// Separate definition (recommended)\nstruct Date {\n    int day, month, year;\n};\n\nstruct Student {\n    char name[50];\n    int  roll;\n    struct Date dob;   // nested struct\n};\n\nint main() {\n    struct Student s;\n    s.roll        = 101;\n    s.dob.day     = 15;   // nested access\n    s.dob.month   = 8;\n    s.dob.year    = 2000;\n\n    printf(\"%d/%d/%d\\n\",\n           s.dob.day, s.dob.month, s.dob.year);\n    // Output: 15/8/2000\n    return 0;\n}",
+            "codeLang": "C",
+            "label": "Nested structure — কোড"
           }
         ],
-        "diagram": "// Separate definition (recommended)\nstruct Date {\n    int day, month, year;\n};\n\nstruct Student {\n    char name[50];\n    int  roll;\n    struct Date dob;   // nested struct\n};\n\nint main() {\n    struct Student s;\n    s.roll        = 101;\n    s.dob.day     = 15;   // nested access\n    s.dob.month   = 8;\n    s.dob.year    = 2000;\n\n    printf(\"%d/%d/%d\\n\",\n           s.dob.day, s.dob.month, s.dob.year);\n    // Output: 15/8/2000\n    return 0;\n}\n\nMemory layout:\n  Student s:\n  [name(50B)][roll(4B)][dob.day(4B)][dob.month(4B)][dob.year(4B)]",
+        "diagram": "Memory layout:\n  Student s:\n  [name(50B)][roll(4B)][dob.day(4B)][dob.month(4B)][dob.year(4B)]",
         "mnemonic": "Nested struct = ঠিকানার মতো — বাড়ি এর ভেতরে ঘর, ঘরের ভেতরে জিনিস। s.dob.year = Student এর জন্মতারিখের বছর — ধাপে ধাপে access।"
       }
     },

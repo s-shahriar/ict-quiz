@@ -24,9 +24,13 @@
           "deposit(): balance += amount — শুধু positive amount accept করে",
           "withdraw(): balance >= amount চেক করে তারপর বাদ দেয় — insufficient হলে error message",
           "display(): account এর সব info দেখায় — getter method এর বিকল্প",
-          "main() এ object তৈরি করে সব method call করে demonstrate করা হয়"
+          "main() এ object তৈরি করে সব method call করে demonstrate করা হয়",
+          {
+            "code": "class BankAccount {\n    // Private data members (Encapsulation)\n    private String  name;\n    private String  accountNumber;\n    private double  balance;\n\n    // Constructor\n    public BankAccount(String name, String accountNumber, double balance) {\n        this.name          = name;\n        this.accountNumber = accountNumber;\n        this.balance       = balance;\n    }\n\n    // Deposit method\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance += amount;\n            System.out.println(amount + \" deposited. New balance: \" + balance);\n        } else {\n            System.out.println(\"Invalid deposit amount.\");\n        }\n    }\n\n    // Withdraw method (with balance check)\n    public void withdraw(double amount) {\n        if (amount > balance) {\n            System.out.println(\"Insufficient balance!\");\n        } else if (amount <= 0) {\n            System.out.println(\"Invalid withdrawal amount.\");\n        } else {\n            balance -= amount;\n            System.out.println(amount + \" withdrawn. New balance: \" + balance);\n        }\n    }\n\n    // Display account details\n    public void display() {\n        System.out.println(\"--- Account Details ---\");\n        System.out.println(\"Name    : \" + name);\n        System.out.println(\"Acc No  : \" + accountNumber);\n        System.out.println(\"Balance : \" + balance);\n    }\n\n    // Main method\n    public static void main(String[] args) {\n        BankAccount acc = new BankAccount(\"Rahim\", \"BD-1001\", 5000);\n        acc.display();\n        acc.deposit(2000);\n        acc.withdraw(1000);\n        acc.withdraw(9000);  // Should show: Insufficient balance!\n        acc.display();\n    }\n}",
+            "codeLang": "Java",
+            "label": "BankAccount — সম্পূর্ণ কোড"
+          }
         ],
-        "diagram": "class BankAccount {\n    // Private data members (Encapsulation)\n    private String  name;\n    private String  accountNumber;\n    private double  balance;\n\n    // Constructor\n    public BankAccount(String name, String accountNumber, double balance) {\n        this.name          = name;\n        this.accountNumber = accountNumber;\n        this.balance       = balance;\n    }\n\n    // Deposit method\n    public void deposit(double amount) {\n        if (amount > 0) {\n            balance += amount;\n            System.out.println(amount + \" deposited. New balance: \" + balance);\n        } else {\n            System.out.println(\"Invalid deposit amount.\");\n        }\n    }\n\n    // Withdraw method (with balance check)\n    public void withdraw(double amount) {\n        if (amount > balance) {\n            System.out.println(\"Insufficient balance!\");\n        } else if (amount <= 0) {\n            System.out.println(\"Invalid withdrawal amount.\");\n        } else {\n            balance -= amount;\n            System.out.println(amount + \" withdrawn. New balance: \" + balance);\n        }\n    }\n\n    // Display account details\n    public void display() {\n        System.out.println(\"--- Account Details ---\");\n        System.out.println(\"Name    : \" + name);\n        System.out.println(\"Acc No  : \" + accountNumber);\n        System.out.println(\"Balance : \" + balance);\n    }\n\n    // Main method\n    public static void main(String[] args) {\n        BankAccount acc = new BankAccount(\"Rahim\", \"BD-1001\", 5000);\n        acc.display();\n        acc.deposit(2000);\n        acc.withdraw(1000);\n        acc.withdraw(9000);  // Should show: Insufficient balance!\n        acc.display();\n    }\n}",
         "mistakes": [
           [
             "balance কে public রাখা",
@@ -176,11 +180,6 @@
         "Java"
       ],
       "answer": {
-        "summary": [
-          "Exception Handling = program এ unexpected runtime error কে gracefully handle করার mechanism।",
-          "Java তে 5টি keyword: try, catch, finally, throw, throws।",
-          "Program crash না করে error message দেখিয়ে চলতে পারে।"
-        ],
         "points": [
           "try block: যে code এ exception হতে পারে সেটা এখানে রাখো।",
           "catch block: exception ধরে handle করো — message দেখাও বা recovery করো। Multiple catch হতে পারে।",
@@ -205,9 +204,28 @@
           },
           {
             "sub": "একই সাথে log রাখা হয়, যাতে পুরো application crash না করে।"
+          },
+          {
+            "code": "try {\n    // risky code\n    int result = 10 / 0;  // ArithmeticException!\n} catch (ArithmeticException e) {\n    System.out.println(\"Error: \" + e.getMessage());\n} finally {\n    System.out.println(\"Always runs\");\n}\n// Output:\n// Error: / by zero\n// Always runs",
+            "codeLang": "Java",
+            "label": "Basic structure"
+          },
+          {
+            "code": "try {\n    int[] arr = new int[3];\n    arr[5] = 10;  // ArrayIndexOutOfBoundsException\n} catch (ArrayIndexOutOfBoundsException e) {\n    System.out.println(\"Index error: \" + e.getMessage());\n} catch (Exception e) {\n    System.out.println(\"General error\");\n} finally {\n    System.out.println(\"Done\");\n}",
+            "codeLang": "Java",
+            "label": "Multiple catch"
+          },
+          {
+            "code": "void checkAge(int age) {\n    if (age < 18)\n        throw new IllegalArgumentException(\"Age < 18!\");\n}",
+            "codeLang": "Java",
+            "label": "throw example"
           }
         ],
-        "diagram": "Basic structure:\n  try {\n      // risky code\n      int result = 10 / 0;  // ArithmeticException!\n  } catch (ArithmeticException e) {\n      System.out.println(\"Error: \" + e.getMessage());\n  } finally {\n      System.out.println(\"Always runs\");\n  }\n  // Output:\n  // Error: / by zero\n  // Always runs\n\nMultiple catch:\n  try {\n      int[] arr = new int[3];\n      arr[5] = 10;  // ArrayIndexOutOfBoundsException\n  } catch (ArrayIndexOutOfBoundsException e) {\n      System.out.println(\"Index error: \" + e.getMessage());\n  } catch (Exception e) {\n      System.out.println(\"General error\");\n  } finally {\n      System.out.println(\"Done\");\n  }\n\nthrow example:\n  void checkAge(int age) {\n      if (age < 18)\n          throw new IllegalArgumentException(\"Age < 18!\");\n  }",
+        "summary": [
+          "Exception Handling = program এ unexpected runtime error কে gracefully handle করার mechanism।",
+          "Java তে 5টি keyword: try, catch, finally, throw, throws।",
+          "Program crash না করে error message দেখিয়ে চলতে পারে।"
+        ],
         "mnemonic": "Try = চেষ্টা করো, Catch = সমস্যা ধরো, Finally = যাই হোক শেষ কাজ করো। Throw = নিজে ছুঁড়ে দাও, Throws = সাবধান করে দাও। T-C-F-T-T।"
       }
     },
