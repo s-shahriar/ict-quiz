@@ -8,16 +8,41 @@
 // Listeners are delegated from the document, so this works for every diagram in
 // the app — including ones rendered later — without touching a render site.
 //
-// Two things are deliberately left alone:
-//   • Touch. A phone already pans an overflowing block natively, and taking
-//     that over would also break the long-press that starts a selection.
-//   • Shift-drag, and a drag that starts on an existing highlight. Diagram text
-//     is highlightable, so there has to be a way to select inside one; holding
-//     Shift selects exactly as before, and a press on a mark still opens the
-//     highlight bar.
+// Panning must not cost you text selection: diagram text is highlightable, and
+// taking the plain drag for panning made every letter unselectable. So the
+// press point decides which gesture you get.
+//
+//   pressed on a character  ->  select, exactly as before
+//   pressed on blank space  ->  pan
+//
+// These diagrams are mostly blank — wide gaps between columns, a long right
+// margin, empty lines between steps — so there is always somewhere to grab.
+// The test is biased towards selection: the character on EITHER side of the
+// caret has to be blank before a drag counts as a pan.
+//
+// Touch is left alone. A phone already pans an overflowing block natively, and
+// taking that over would break the long-press that starts a selection.
 
 const SELECTOR = '.written-diagram-pre'
 const THRESHOLD = 6            // px of movement before a click becomes a drag
+
+// Is there a visible character under (x, y)? The caret lands on a boundary
+// between two characters, so both neighbours are checked — a press anywhere on
+// a glyph then counts as being on it, whichever half was hit.
+function onGlyph(x, y) {
+  let node, offset
+  const pos = document.caretPositionFromPoint?.(x, y)
+  if (pos) { node = pos.offsetNode; offset = pos.offset }
+  else {
+    const range = document.caretRangeFromPoint?.(x, y)
+    if (!range) return true            // cannot tell -> leave selection alone
+    node = range.startContainer; offset = range.startOffset
+  }
+  if (!node || node.nodeType !== 3) return true
+  const here = node.data[offset] || ''
+  const before = offset > 0 ? node.data[offset - 1] : ''
+  return (here !== '' && !/\s/.test(here)) || (before !== '' && !/\s/.test(before))
+}
 
 export function initDragScroll() {
   let el = null, startX = 0, startScroll = 0, panning = false, pointer = null
@@ -35,6 +60,7 @@ export function initDragScroll() {
     const pre = e.target.closest?.(SELECTOR)
     if (!pre || pre.scrollWidth <= pre.clientWidth) return   // nothing to pan
     if (e.target.closest?.('.hl-mark')) return               // let the highlight bar have it
+    if (onGlyph(e.clientX, e.clientY)) return                // pressed on text -> selecting
     el = pre; startX = e.clientX; startScroll = pre.scrollLeft
     panning = false; pointer = e.pointerId
   }
