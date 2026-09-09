@@ -1108,6 +1108,41 @@
         },
         "mnemonic": "Compulsory = নতুন মেহমান, ঘর যত বড়ই হোক প্রথমবার দরজা খুলতেই হবে। Capacity = ঘর ছোট বলে পুরোনো মেহমানকে বের করে দিতে হলো, সে ফিরে এসে দেখে জায়গা নেই।"
       }
+    },
+    {
+      "id": "os_013",
+      "q": "Resource Allocation Graph — deadlock হয়েছে কিনা নির্ণয় করো\n\n    দেওয়া আছে:\n        R1 — ১টি instance\n        R2 — ২টি instance\n        Process: P1, P2, P3\n\n    Allocation:\n        R1 -> P1\n        R2 -> P2\n        R2 -> P3\n\n    Request:\n        P1 -> R2\n        P2 -> R1\n\n    নির্ণয় করো:\n        (a) RAG আঁকো\n        (b) কোনো cycle আছে কি\n        (c) Deadlock হয়েছে কি, কারণসহ\n        (d) এর পর P3 -> R1 request যোগ হলে উত্তর বদলায় কি",
+      "tags": [
+        "resource allocation graph",
+        "RAG",
+        "deadlock",
+        "cycle",
+        "single instance",
+        "multiple instance"
+      ],
+      "answer": {
+        "summary": [
+          "Cycle আছে: P1 → R2 → P2 → R1 → P1।",
+          "তবু deadlock নেই — R2-এর ২টি instance, আর cycle-এর বাইরের P3 কিছু না চেয়ে শেষ করে একটি instance ছেড়ে দেয়।",
+          "P3 → R1 request যোগ করলে সেই পথটাই বন্ধ হয়ে যায়, তখন deadlock।"
+        ],
+        "diagram": "  চিহ্ন\n\n    [R2 ● ●]   resource, ভেতরের ● = instance\n    ( P1 )     process\n    R -> P     allocation, resource টি process ধরে আছে\n    P -> R     request, process টি resource চাইছে\n\n\n  (a) RAG\n\n        [R1 ●]                [R2 ● ●]\n           |                      | |\n     alloc |                alloc | +--- alloc ---> ( P3 )\n           v                      v\n        ( P1 )                 ( P2 )\n\n        P1 --- req ---> R2     P2 --- req ---> R1\n\n\n  (b) cycle আছে কি — তীর ধরে হাঁটো\n\n    ( P1 ) --req--> [R2] --alloc--> ( P2 ) --req--> [R1] --alloc--> ( P1 )\n\n    হ্যাঁ, একটি cycle আছে:  P1 -> R2 -> P2 -> R1 -> P1\n\n\n  (c) deadlock হয়েছে কি — কে শেষ করতে পারে দেখো\n\n    P3  ->  wants nothing        কিছুই চায় না, তাই শেষ করে R2 এর একটি ● ছাড়ে\n    P1  ->  takes that free ●    R2 পেয়ে শেষ করে, R1 ছেড়ে দেয়\n    P2  ->  takes R1             R1 পেয়ে শেষ করে\n\n    cycle ছিল, তবু কেউ আটকে থাকেনি  ->  NO DEADLOCK\n    কারণ R2 multi instance, আর cycle এর বাইরের P3 রাস্তা খুলে দিয়েছে\n\n\n  (d) এখন P3 -> R1 request যোগ করলে\n\n    ( P1 ) --req--> [R2] --alloc--> ( P3 ) --req--> [R1] --alloc--> ( P1 )\n\n    আগের cycle টি তো ছিলই, P3 ঢুকে পড়ায় আরও একটি cycle তৈরি হলো\n\n    P1  ->  needs R2   both ● held by P2, P3    blocked\n    P2  ->  needs R1   held by P1               blocked\n    P3  ->  needs R1   held by P1               blocked\n\n    কেউ শেষ করতে পারছে না  ->  DEADLOCK\n    P3 ও চাইতে শুরু করায় R2 ছাড়ার আর কেউ রইল না",
+        "mistakes": [
+          [
+            "RAG-এ cycle পেলেই deadlock",
+            "না — single instance হলে নিশ্চিত, multi instance হলে নয়। এখানে cycle থেকেও deadlock নেই।"
+          ],
+          [
+            "P3 cycle-এ নেই, তাই সে অপ্রাসঙ্গিক",
+            "উল্টো — P3-ই নির্ণায়ক। সে কিছু না চেয়ে শেষ করে R2 ছাড়ে বলেই বাকিরা এগোতে পারে।"
+          ],
+          [
+            "Request edge আঁকা হয় resource থেকে process-এ",
+            "না — request যায় process থেকে resource-এ, আর allocation আসে resource থেকে process-এ।"
+          ]
+        ],
+        "mnemonic": "Cycle পেয়ে থেমো না — দেখো কেউ কিছু না চেয়ে শেষ করতে পারে কিনা। পারলে সে instance ছেড়ে cycle ভেঙে দেয়।"
+      }
     }
   ]
 }
