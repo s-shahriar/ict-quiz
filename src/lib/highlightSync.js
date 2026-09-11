@@ -11,20 +11,31 @@ export const COLORS = ['mint', 'amber', 'rose', 'violet']
 export const DEFAULT_COLOR = 'mint'
 
 const COLS = 'id, uid, block, start_off, end_off, quote, color'
+const PAGE_SIZE = 1000
 
 const fromRow = (r) => ({
   id: r.id, uid: r.uid, block: r.block,
   start: r.start_off, end: r.end_off, quote: r.quote, color: r.color,
 })
 
-// Every highlight the user has, grouped by question uid. One request at session
-// start — the volume is small and it means expanding a card costs nothing.
+// Every highlight the user has, grouped by question uid, fetched at session
+// start so expanding a card costs nothing.
+//
+// Paged on the unique `id` for the same reason as fetchProgress: PostgREST
+// truncates a response at max-rows without erroring, so an unpaged read starts
+// dropping highlights once the user has more than one page of them. Each uid's
+// list is sorted by offset afterwards, since the page order is by id.
 export async function fetchHighlights() {
-  const { data, error } = await supabase
-    .from('user_highlights').select(COLS).order('start_off')
-  if (error) throw error
+  const rows = []
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from('user_highlights').select(COLS).order('id').range(from, from + PAGE_SIZE - 1)
+    if (error) throw error
+    rows.push(...data)
+    if (data.length < PAGE_SIZE) break
+  }
   const byUid = new Map()
-  for (const r of data) {
+  for (const r of rows) {
     const h = fromRow(r)
     if (!byUid.has(h.uid)) byUid.set(h.uid, [])
     byUid.get(h.uid).push(h)
