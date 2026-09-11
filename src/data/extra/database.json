@@ -397,7 +397,7 @@
             "sub": "GROUP BY-তে ViewerID রাখা ভালো, কারণ দুজন viewer-এর নাম এক হলে Name দিয়ে group করলে তারা মিশে যেত।"
           }
         ],
-        "code": "-- (a) যারা \"Inception\" দেখেছে\nSELECT DISTINCT v.Name\nFROM   Viewer v\nJOIN   WatchHistory w ON v.ViewerID = w.ViewerID\nJOIN   Movie m        ON w.MovieID  = m.MovieID\nWHERE  m.Title = 'Inception';\n\n\n-- (b) viewer-এর নাম + যে movie দেখেছে\nSELECT v.Name, m.Title, w.WatchDate\nFROM   Viewer v\nJOIN   WatchHistory w ON v.ViewerID = w.ViewerID\nJOIN   Movie m        ON w.MovieID  = m.MovieID;\n\n\n-- (c) যেসব movie কেউ দেখেনি\nSELECT m.MovieID, m.Title\nFROM   Movie m\nLEFT JOIN WatchHistory w ON m.MovieID = w.MovieID\nWHERE  w.MovieID IS NULL;\n\n-- একই কাজ, NOT EXISTS দিয়ে\nSELECT m.MovieID, m.Title\nFROM   Movie m\nWHERE  NOT EXISTS (SELECT 1 FROM WatchHistory w WHERE w.MovieID = m.MovieID);\n\n\n-- (d) যারা পাঁচটির বেশি movie দেখেছে\nSELECT   v.ViewerID, v.Name, COUNT(DISTINCT w.MovieID) AS MoviesWatched\nFROM     Viewer v\nJOIN     WatchHistory w ON v.ViewerID = w.ViewerID\nGROUP BY v.ViewerID, v.Name\nHAVING   COUNT(DISTINCT w.MovieID) > 5;",
+        "code": "-- (a) যারা \"Inception\" দেখেছে\nSELECT DISTINCT v.Name\nFROM   Viewer v\nJOIN   WatchHistory w ON v.ViewerID = w.ViewerID\nJOIN   Movie m        ON w.MovieID  = m.MovieID\nWHERE  m.Title = 'Inception';\n\n\n-- (b) viewer-এর নাম + যে movie দেখেছে\nSELECT v.Name, m.Title, w.WatchDate\nFROM   Viewer v\nJOIN   WatchHistory w ON v.ViewerID = w.ViewerID\nJOIN   Movie m        ON w.MovieID  = m.MovieID;\n\n\n-- (c) যেসব movie কেউ দেখেনি\nSELECT m.MovieID, m.Title\nFROM   Movie m\nLEFT JOIN WatchHistory w ON m.MovieID = w.MovieID\nWHERE  w.MovieID IS NULL;\n\n\n-- (d) যারা পাঁচটির বেশি movie দেখেছে\nSELECT   v.ViewerID, v.Name, COUNT(DISTINCT w.MovieID) AS MoviesWatched\nFROM     Viewer v\nJOIN     WatchHistory w ON v.ViewerID = w.ViewerID\nGROUP BY v.ViewerID, v.Name\nHAVING   COUNT(DISTINCT w.MovieID) > 5;",
         "codeLang": "sql",
         "diagram": "টেবিল তিনটির সম্পর্ক\n\n  ┌────────────┐        ┌──────────────────┐        ┌────────────┐\n  │   VIEWER   │   1    │  WATCHHISTORY    │   N    │   MOVIE    │\n  │ ViewerID PK├───────►│ ViewerID   FK    │◄───────┤ MovieID PK │\n  │ Name       │    N   │ MovieID    FK    │   1    │ Title      │\n  │ Country    │        │ WatchDate        │        │ Genre      │\n  └────────────┘        └──────────────────┘        └────────────┘\n\n  Viewer আর Movie সরাসরি যুক্ত নয় — WatchHistory সেতু হিসেবে কাজ করে\n\n\n(d) HAVING কেন, WHERE কেন নয়\n\n  WatchHistory\n  ViewerID  MovieID\n  --------  -------\n  V01       M1\n  V01       M2\n  V01       M3\n  V01       M4\n  V01       M5\n  V01       M6\n  V02       M1\n  V02       M2\n\n  GROUP BY ViewerID করার পর\n\n  ViewerID   COUNT(DISTINCT MovieID)\n  --------   -----------------------\n  V01        6\n  V02        2\n\n  HAVING COUNT(...) > 5  প্রয়োগ করলে থাকে\n\n  V01        6\n\n\n  চলার ক্রম:  FROM -> JOIN -> WHERE -> GROUP BY -> HAVING -> SELECT\n\n  WHERE চলে group হওয়ার আগে, তখন count বলে কিছু নেই\n  HAVING চলে group হওয়ার পরে, তাই count নিয়ে শর্ত এখানেই বসে",
         "mistakes": [
@@ -544,19 +544,19 @@
             "sub": "সেই NULL-ই প্রমাণ যে ঐ teacher-এর কোনো course নেই, তাই WHERE c.CourseID IS NULL লিখলেই তালিকা পাওয়া যায়।"
           },
           {
-            "sub": "NOT EXISTS দিয়েও হয় এবং অনেকের কাছে পড়তে সহজ লাগে; বড় data-তে গতিও ভালো হয়।"
+            "sub": "IS NULL পরীক্ষাটি Course-এর primary key CourseID-এর উপর করতে হয়, কারণ মিল পাওয়া row-তে সেটি কখনো NULL হয় না।"
           },
           {
-            "sub": "NOT IN এড়ানো ভালো — subquery-র ফলে একটিও NULL থাকলে NOT IN পুরো তালিকা ফাঁকা করে দেয়, যা নীরব ভুল তৈরি করে।"
+            "sub": "NOT IN দিয়ে এটি লেখা বিপজ্জনক — subquery-র ফলে একটিও NULL থাকলে NOT IN পুরো তালিকা ফাঁকা করে দেয়, অথচ কোনো error দেয় না।"
           }
         ],
-        "code": "-- (a) CSE department-এর teacher\nSELECT t.TeacherID, t.TeacherName\nFROM   Teacher t\nJOIN   Department d ON t.DeptID = d.DeptID\nWHERE  d.DeptName = 'CSE';\n\n\n-- (b) teacher-এর নাম + department-এর নাম\nSELECT t.TeacherName, d.DeptName\nFROM   Teacher t\nJOIN   Department d ON t.DeptID = d.DeptID;\n\n\n-- (c) যেসব teacher কোনো course পড়ান না\nSELECT t.TeacherID, t.TeacherName\nFROM   Teacher t\nLEFT JOIN Course c ON t.TeacherID = c.TeacherID\nWHERE  c.CourseID IS NULL;\n\n-- একই কাজ, NOT EXISTS দিয়ে\nSELECT t.TeacherID, t.TeacherName\nFROM   Teacher t\nWHERE  NOT EXISTS (SELECT 1 FROM Course c WHERE c.TeacherID = t.TeacherID);",
+        "code": "-- (a) CSE department-এর teacher\nSELECT t.TeacherID, t.TeacherName\nFROM   Teacher t\nJOIN   Department d ON t.DeptID = d.DeptID\nWHERE  d.DeptName = 'CSE';\n\n\n-- (b) teacher-এর নাম + department-এর নাম\nSELECT t.TeacherName, d.DeptName\nFROM   Teacher t\nJOIN   Department d ON t.DeptID = d.DeptID;\n\n\n-- (c) যেসব teacher কোনো course পড়ান না\nSELECT t.TeacherID, t.TeacherName\nFROM   Teacher t\nLEFT JOIN Course c ON t.TeacherID = c.TeacherID\nWHERE  c.CourseID IS NULL;",
         "codeLang": "sql",
         "diagram": "(c) কোন teacher-এর কোনো course নেই\n\n  Teacher                        Course\n  ┌──────┬─────────┬────────┐    ┌──────────┬───────────┐\n  │ T01  │ Rahim   │ CSE    │    │ C101     │ T01       │\n  │ T02  │ Karim   │ CSE    │    │ C102     │ T01       │\n  │ T03  │ Sufia   │ EEE    │    │ C103     │ T03       │\n  └──────┴─────────┴────────┘    └──────────┴───────────┘\n\n  LEFT JOIN Course ON Teacher.TeacherID = Course.TeacherID\n\n  TeacherID  TeacherName  CourseID\n  ---------  -----------  --------\n  T01        Rahim        C101\n  T01        Rahim        C102\n  T02        Karim        NULL      ◄ কোনো course নেই\n  T03        Sufia        C103\n\n  WHERE c.CourseID IS NULL  প্রয়োগ করলে থাকে\n\n  T02        Karim\n\n\n  কেন LEFT JOIN\n\n  INNER JOIN  শুধু মিল পাওয়া row রাখে  ->  T02 হারিয়ে যেত\n  LEFT JOIN   বাঁ পাশের সব row রাখে    ->  T02 থাকে, ডান পাশ NULL\n\n  NULL-ই প্রমাণ যে মিল পাওয়া যায়নি",
         "mistakes": [
           [
             "NOT IN দিয়ে (c) লেখা",
-            "subquery-তে একটি NULL থাকলেই NOT IN ফাঁকা ফল দেয়; NOT EXISTS নিরাপদ"
+            "subquery-তে একটি NULL থাকলেই NOT IN নীরবে ফাঁকা ফল দেয়; LEFT JOIN + IS NULL ব্যবহার করুন"
           ],
           [
             "(c)-তে INNER JOIN ব্যবহার",
@@ -889,7 +889,10 @@
             "sub": "শর্তটি অবশ্যই WHERE-এ বসবে, ON-এ নয় — ON-এ বসালে LEFT JOIN-এর অর্থই বদলে যায় এবং সব department ফিরে আসে।"
           },
           {
-            "sub": "NOT EXISTS দিয়েও একই কাজ হয় এবং পড়তে পরিষ্কার লাগে।"
+            "sub": "IS NULL পরীক্ষাটি child টেবিলের primary key-এর উপর করতে হয় — এখানে EmpID, কারণ মিল পাওয়া row-তে সেটি কখনো NULL হয় না।"
+          },
+          {
+            "sub": "Salary-এর মতো nullable column-এ পরীক্ষা করলে ভুল হতো — যে department-এর একমাত্র কর্মীর salary NULL, সেটিও \"কর্মী নেই\" তালিকায় ঢুকে পড়ত।"
           },
           "(d) প্রতিটি department-এ আলাদা করে সর্বোচ্চ বেতন মেলাতে হবে, তাই correlated subquery।",
           {
@@ -902,7 +905,7 @@
             "sub": "শুধু GROUP BY DeptID দিয়ে MAX(Salary) নিলে সর্বোচ্চ বেতনটা পাওয়া যায়, কিন্তু সেটা কার তা জানা যায় না — এটাই এখানকার প্রধান ফাঁদ।"
           }
         ],
-        "code": "-- (a) salary 60,000-এর বেশি\nSELECT EmpID, EmpName, DeptID, Salary\nFROM   Employee\nWHERE  Salary > 60000;\n\n\n-- (b) employee-এর নাম + department-এর নাম\nSELECT e.EmpName, d.DeptName\nFROM   Employee e\nJOIN   Department d ON e.DeptID = d.DeptID;\n\n\n-- (c) যেসব department-এ কোনো employee নেই\nSELECT d.DeptID, d.DeptName\nFROM   Department d\nLEFT JOIN Employee e ON d.DeptID = e.DeptID\nWHERE  e.EmpID IS NULL;          -- মিল না পেলে ডান পাশ NULL হয়\n\n-- একই কাজ, NOT EXISTS দিয়ে\nSELECT d.DeptID, d.DeptName\nFROM   Department d\nWHERE  NOT EXISTS (SELECT 1 FROM Employee e WHERE e.DeptID = d.DeptID);\n\n\n-- (d) প্রতিটি department-এর সর্বোচ্চ বেতনের employee\nSELECT e.EmpID, e.EmpName, e.DeptID, e.Salary\nFROM   Employee e\nWHERE  e.Salary = (SELECT MAX(x.Salary)\n                   FROM   Employee x\n                   WHERE  x.DeptID = e.DeptID);",
+        "code": "-- (a) salary 60,000-এর বেশি\nSELECT EmpID, EmpName, DeptID, Salary\nFROM   Employee\nWHERE  Salary > 60000;\n\n\n-- (b) employee-এর নাম + department-এর নাম\nSELECT e.EmpName, d.DeptName\nFROM   Employee e\nJOIN   Department d ON e.DeptID = d.DeptID;\n\n\n-- (c) যেসব department-এ কোনো employee নেই\nSELECT d.DeptID, d.DeptName\nFROM   Department d\nLEFT JOIN Employee e ON d.DeptID = e.DeptID\nWHERE  e.EmpID IS NULL;          -- মিল না পেলে ডান পাশ NULL হয়\n\n\n-- (d) প্রতিটি department-এর সর্বোচ্চ বেতনের employee\nSELECT e.EmpID, e.EmpName, e.DeptID, e.Salary\nFROM   Employee e\nWHERE  e.Salary = (SELECT MAX(x.Salary)\n                   FROM   Employee x\n                   WHERE  x.DeptID = e.DeptID);",
         "codeLang": "sql",
         "diagram": "(c) LEFT JOIN দিয়ে \"কিছু নেই\" খোঁজা\n\n  Department                Employee\n  ┌────────┬──────────┐     ┌───────┬─────────┬────────┐\n  │ D01    │ Sales    │     │ E01   │ Rahim   │ D01    │\n  │ D02    │ HR       │     │ E02   │ Karim   │ D01    │\n  │ D03    │ Research │     └───────┴─────────┴────────┘\n  └────────┴──────────┘\n\n  LEFT JOIN এর ফল\n\n  DeptID  DeptName   EmpID   EmpName\n  ------  ---------  ------  -------\n  D01     Sales      E01     Rahim\n  D01     Sales      E02     Karim\n  D02     HR         NULL    NULL      ◄ কোনো employee নেই\n  D03     Research   NULL    NULL      ◄ কোনো employee নেই\n\n  WHERE e.EmpID IS NULL  প্রয়োগ করলে থাকে\n\n  D02     HR\n  D03     Research\n\n\n(d) correlated subquery কীভাবে কাজ করে\n\n  Employee\n  EmpID  EmpName  DeptID  Salary\n  -----  -------  ------  ------\n  E01    Rahim    D01     50000\n  E02    Karim    D01     72000\n  E03    Jamal    D02     65000\n  E04    Sufia    D02     65000\n\n  প্রতিটি row-এর জন্য তার নিজের department-এর MAX বের হয়\n\n  E01  ->  MAX(D01) = 72000   50000 = 72000 ?  NO   -> বাদ পড়ল\n  E02  ->  MAX(D01) = 72000   72000 = 72000 ?  YES  -> থাকল\n  E03  ->  MAX(D02) = 65000   65000 = 65000 ?  YES  -> থাকল\n  E04  ->  MAX(D02) = 65000   65000 = 65000 ?  YES  -> থাকল\n\n  সমান বেতন হলে দুজনকেই দেখায়, একজনকে বেছে নেয় না",
         "mistakes": [
