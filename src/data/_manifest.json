@@ -33,16 +33,16 @@
     "theory_of_computation": 1
   },
   "extra": {
-    "computer_fundamental": 1,
-    "computer_network": 4,
-    "database": 4,
-    "dsa": 2,
-    "information_security": 3,
-    "linux": 2,
-    "oop": 3,
-    "operating_system": 4,
-    "server": 5,
-    "software_engineering": 2
+    "computer_fundamental": 0,
+    "computer_network": 0,
+    "database": 0,
+    "dsa": 0,
+    "information_security": 0,
+    "linux": 0,
+    "oop": 0,
+    "operating_system": 0,
+    "server": 0,
+    "software_engineering": 0
   },
   "viva": {
     "banking": 6,
