@@ -26,6 +26,74 @@
         },
         "mnemonic": "Database চালায় ব্যাংক, Warehouse বোঝায় ব্যাংক।"
       }
+    },
+    {
+      "id": "db_viva_002",
+      "q": "SQL-এ movie বা photo (image/video) save করতে কোন data type ব্যবহার করা হয়?",
+      "tags": [
+        "blob",
+        "binary",
+        "mysql",
+        "postgresql",
+        "sql-server",
+        "storage"
+      ],
+      "answer": {
+        "summary": [
+          "Image, video, movie ইত্যাদি binary file database-এ রাখতে BLOB (Binary Large Object) জাতীয় data type ব্যবহার করা হয় — যেমন MySQL-এ BLOB/LONGBLOB, PostgreSQL-এ bytea, SQL Server-এ VARBINARY(MAX)।"
+        ],
+        "points": [
+          "BLOB (Binary Large Object): ছবি, অডিও, ভিডিও, PDF-এর মতো বড় binary data জন্য বিশেষায়িত data type।",
+          "MySQL: TINYBLOB (২৫৫ B), BLOB (৬৪ KB), MEDIUMBLOB (১৬ MB), LONGBLOB (৪ GB) — movie-র মতো বড় file-এর জন্য LONGBLOB।",
+          "PostgreSQL: bytea; SQL Server: VARBINARY(MAX) বা FILESTREAM; Oracle: BLOB।",
+          "ছোট ছবি/thumbnail-এর জন্য TEXT নয় — সবসময় binary type (BLOB/bytea) ব্যবহার করতে হয়।",
+          "Best practice: বড় movie file database-এর বদলে file server/object storage-এ (S3) রেখে database-এ শুধু তার path/URL (VARCHAR) রাখা হয় — performance ভালো থাকে, backup সহজ হয়।"
+        ],
+        "mnemonic": "ছবি-সিনেমা ঢোকে BLOB-এ; বড় হলে LONGBLOB, নাকি path-টাই ভালো।"
+      }
+    },
+    {
+      "id": "db_viva_003",
+      "q": "Temporal data type কী? কোন কোন temporal data type আছে? Temporary table কী?",
+      "tags": [
+        "temporal",
+        "date",
+        "time",
+        "datetime",
+        "timestamp",
+        "temporary-table",
+        "mysql"
+      ],
+      "answer": {
+        "summary": [
+          "তারিখ ও সময় সংরক্ষণের জন্য যে data type ব্যবহার হয় সেগুলোই temporal data type — যেমন DATE, TIME, DATETIME, TIMESTAMP; আর Temporary table হলো session শেষ হলেই স্বয়ংক্রিয়ভাবে মুছে যাওয়া অস্থায়ী টেবিল।"
+        ],
+        "points": [
+          "MySQL-এর প্রধান temporal data type: DATE (yyyy-mm-dd), TIME (hh:mm:ss), DATETIME (তারিখ+সময়, ১০০১–৯৯৯৯ সাল), TIMESTAMP (Unix epoch থেকে, timezone-aware, ১৯৭০–২০৩৮), YEAR।",
+          "DATETIME কোনো timezone conversion করে না যেভাবে save করা হয় সেভাবেই থাকে; TIMESTAMP সবসময় UTC-তে store করে ও reading-এর সময় client-এর timezone-এ দেখায়।",
+          "ব্যবহার: birth_date → DATE, transaction_time → DATETIME/TIMESTAMP, exam duration → TIME।",
+          "Temporary table: CREATE TEMPORARY TABLE দিয়ে তৈরি; শুধু তৈরিকারী session/connection-এ দেখা যায়, session শেষ হলে বা DROP করলে auto-delete হয়।",
+          "Temporary table-এর ব্যবহার: জটিল report/query-র মাঝের intermediate result রাখা — main table-এর data নষ্ট না করে sort/group/filter করা।"
+        ],
+        "table": {
+          "headers": ["Data Type", "Format/Range", "ব্যবহার"],
+          "rows": [
+            ["DATE", "yyyy-mm-dd", "জন্মতারিখ"],
+            ["TIME", "hh:mm:ss", "সময়কাল/duration"],
+            [
+              "DATETIME",
+              "yyyy-mm-dd hh:mm:ss",
+              "লেনদেনের সময় (timezone নিরপেক্ষ)"
+            ],
+            [
+              "TIMESTAMP",
+              "১৯৭০–২০৩৮, UTC",
+              "created_at/updated_at (timezone-aware)"
+            ]
+          ]
+        },
+        "mnemonic": "তারিখ-সময়ের পরিবার = DATE, TIME, DATETIME, TIMESTAMP; Temporary table = session শেষ, টেবিল শেষ।"
+      }
     }
   ]
 }

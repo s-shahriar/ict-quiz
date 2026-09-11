@@ -237,6 +237,49 @@
         ],
         "mnemonic": "Switch MAC শেখে → সঠিক port-এ পাঠায়; একই subnet হলে router ছাড়াই data চলে।"
       }
+    },
+    {
+      "id": "cn_viva_013",
+      "q": "Intranet ও Extranet-এর পার্থক্য কী?",
+      "tags": ["intranet", "extranet", "internet", "private-network", "comparison"],
+      "answer": {
+        "summary": [
+          "Intranet হলো সংস্থার ভেতরের private network (শুধু নিজের কর্মীরা ব্যবহার করে); Extranet হলো intranet-এর একটি নিয়ন্ত্রিত অংশ বাইরের অনুমোদিত পার্টনার (ভেন্ডর/ডিলার/ক্লায়েন্ট)-কে খুলে দেওয়া।"
+        ],
+        "points": [
+          "Intranet: firewall-এর ভেতরে সংস্থার নিজস্ব LAN/WAN-এ চলে; ভেতরে থাকে internal portal, notice board, policy, mail, shared drive — বাইরের কেউ ঢুকতে পারে না।",
+          "Extranet: intranet-কে secure উপায়ে (authentication + VPN/firewall rule) বাইরের নির্দিষ্ট ব্যবহারকারীর সাথে share করা — যেমন সাপ্লায়ার order দেখে, ডিলার stock দেখে।",
+          "Internet: সবার জন্য খোলা public network — এই তিনটির তুলনাই প্রশ্নের পূর্ণ উত্তর।",
+          "উদাহরণ (ব্যাংক): কর্মীদের internal portal = intranet; ব্যাংক ও তার corporate client-এর shared cash-management portal = extranet।"
+        ],
+        "table": {
+          "headers": ["নেটওয়ার্ক", "কারা ব্যবহার করে", "অ্যাক্সেস", "উদাহরণ"],
+          "rows": [
+            ["Internet", "পৃথিবীর সবাই", "Public, খোলা", "Website, সার্চ ইঞ্জিন"],
+            ["Intranet", "শুধু সংস্থার কর্মীরা", "Private, ভেতরের সবাই", "Office portal, ভেতরের mail"],
+            ["Extranet", "কর্মী + অনুমোদিত বাইরের পার্টনার", "নিয়ন্ত্রিত, লগইন-ভিত্তিক", "Vendor/dealer portal"]
+          ]
+        },
+        "mnemonic": "Intranet ভেতরের ঘর, Extranet পার্টনারের জন্য খোলা জানালা, Internet পৃথিবী।"
+      }
+    },
+    {
+      "id": "cn_viva_014",
+      "q": "DWDM কী? কোন কাজে ব্যবহার করা হয়?",
+      "tags": ["dwdm", "wdm", "fiber-optic", "multiplexing", "wavelength", "backbone"],
+      "answer": {
+        "summary": [
+          "DWDM (Dense Wavelength Division Multiplexing) হলো একটি ফাইবার-অপটিক প্রযুক্তি, যেখানে একটাই ফাইবারে অনেকগুলো আলোর তরঙ্গদৈর্ঘ্য (wavelength/channel) দিয়ে একসাথে একাধিক data stream পাঠানো হয় — ক্যাপাসিটি শতগুণ বাড়ায়।"
+        ],
+        "points": [
+          "নীতি: এক ফাইবারে ভিন্ন তরঙ্গদৈর্ঘ্যের (আলোর রঙ) একাধিক signal multiplex করে পাঠানো হয়, প্রান্তে demultiplexer দিয়ে আবার আলাদা করা হয় — প্রতিটি λ = একটি স্বাধীন channel।",
+          "Dense কেন: channel spacing খুবই কম (0.8nm / 100GHz বা তার কম) — ৪০/৮০/১৬০+ channel সম্ভব; CWDM-এ spacing 20nm, channel কম কিন্তু সস্তা।",
+          "ক্যাপাসিটি: প্রতিটি channel-এ 10G/100G/400G — একটিমাত্র ফাইবারে একাধিক Tbps বহন সম্ভব।",
+          "ব্যবহার: ISP/টেলিকম-এর backbone network, সমুদ্রতলের submarine cable, ব্যাংক/data center-এর long-haul link; নতুন ফাইবার না টেনেই ব্যান্ডউইথ বহুগুণ বাড়ায়।",
+          "মূল উপাদান: DFB laser, Mux/Demux (grating/prism), EDFA optical amplifier — দূরত্বে সিগন্যাল বাড়িয়ে রাখে।"
+        ],
+        "mnemonic": "এক ফাইবার, শত রঙের আলো = DWDM — backbone-এর মহাসড়ক।"
+      }
     }
   ]
 }

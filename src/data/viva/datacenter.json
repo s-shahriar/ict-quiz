@@ -43,6 +43,24 @@
         ],
         "mnemonic": "ঠান্ডা রাখো (CRAC/HVAC, ১৮-২৭°C), পাহারা দাও (biometric/CCTV), আগুনে গ্যাস (FM-200/Novec), সব দেখো DCIM দিয়ে।"
       }
+    },
+    {
+      "id": "dc_viva_003",
+      "q": "Digital Twin কী? কোন কাজে ব্যবহার হয়?",
+      "tags": ["digital-twin", "iot", "simulation", "industry-4.0", "data-center"],
+      "answer": {
+        "summary": [
+          "Digital Twin হলো কোনো বাস্তব বস্তু, system বা process-এর ভার্চুয়াল (ডিজিটাল) কপি, যা real-time sensor data দিয়ে বাস্তব জগতের হুবহু অবস্থা প্রতিফলিত করে — ফলে বাস্তবে হাত না দিয়েই monitor, test ও ভবিষ্যদ্বাণী করা যায়।"
+        ],
+        "points": [
+          "কীভাবে কাজ করে: বাস্তব object-এর গায়ে লাগানো IoT sensor থেকে real-time data (তাপমাত্রা, pressure, load) সংগ্রহ করে digital model-টিকে সবসময় sync রাখা হয়।",
+          "Monitoring: বাস্তব system-এর বর্তমান অবস্থা দূর থেকে হুবহু দেখা যায়।",
+          "Simulation ও testing: নতুন change (যেমন cooling setup বদল) আগে digital twin-এ পরীক্ষা করে fail/success দেখে তারপর বাস্তবে প্রয়োগ করা হয় — ঝুঁকি ও খরচ কমে।",
+          "Prediction ও maintenance: data analysis করে কখন কোন machine নষ্ট হতে পারে তা আগে বলা যায় (predictive maintenance)।",
+          "ব্যবহারক্ষেত্র: Data Center (server/cooling/power simulation), Industry 4.0-র smart factory, Smart City (traffic-utility model), aircraft engine (GE), healthcare (রোগীর organ-এর digital twin)।"
+        ],
+        "mnemonic": "Digital Twin = বাস্তবের ডিজিটাল জুড়ি; sensor data-তে sync, আগে simulate, পরে বাস্তবে apply।"
+      }
     }
   ]
 }

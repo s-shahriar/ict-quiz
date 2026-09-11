@@ -7,10 +7,10 @@
 // page/note, tags, open-ended answers) so nothing is lost. uid matches the
 // browser's uidFor() exactly.
 
-import { readFileSync, existsSync, readdirSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
 import { createClient } from '@supabase/supabase-js'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { uidFor } from '../src/lib/qid.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -46,7 +46,7 @@ const MODULES = [
   { module: 'viva', dir: 'src/data/viva', type: 'written' },
   { module: 'code', dir: 'src/data/code', type: 'code' },
 ]
-const EXPECTED = { mcq: 646, written: 219, extra: 0, viva: 25, code: 19 }
+const EXPECTED = { mcq: 646, written: 219, extra: 12, viva: 39, code: 19 }
 
 function jsonFiles(dir) {
   return readdirSync(join(ROOT, dir))

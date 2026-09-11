@@ -36,7 +36,7 @@
     "computer_fundamental": 0,
     "computer_network": 0,
     "database": 0,
-    "dsa": 0,
+    "dsa": 12,
     "information_security": 0,
     "linux": 0,
     "oop": 0,
@@ -45,12 +45,13 @@
     "software_engineering": 0
   },
   "viva": {
-    "banking": 6,
-    "computer_network": 12,
-    "database": 1,
-    "datacenter": 2,
+    "banking": 8,
+    "computer_fundamental": 3,
+    "computer_network": 14,
+    "database": 3,
+    "datacenter": 3,
     "general_knowledge": 1,
-    "information_security": 1,
+    "information_security": 5,
     "machine_learning": 1,
     "software_engineering": 1
   },

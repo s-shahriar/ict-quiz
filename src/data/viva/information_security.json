@@ -4,7 +4,15 @@
     {
       "id": "is_viva_001",
       "q": "হেড অফিস থেকে ব্রাঞ্চের কানেকশনে কী কী ধরনের নেটওয়ার্ক সিকিউরিটি ব্যবহার করবে?",
-      "tags": ["network-security", "vpn", "firewall", "ips", "ids", "defense-in-depth", "head-office-branch"],
+      "tags": [
+        "network-security",
+        "vpn",
+        "firewall",
+        "ips",
+        "ids",
+        "defense-in-depth",
+        "head-office-branch"
+      ],
       "answer": {
         "summary": [
           "হেড অফিস ও ব্রাঞ্চের মধ্যে নিরাপদ যোগাযোগের মূল ভিত্তি হলো Site-to-Site VPN (internet-এর ওপর encrypted tunnel); তার সাথে স্তরে স্তরে Firewall, IPS, IDS, Antivirus ও access control বসানো হয় — একে বলে defense-in-depth (একাধিক স্তরের প্রতিরক্ষা)।"
@@ -23,10 +31,146 @@
           "rows": [
             ["কাজ", "শনাক্ত করে সতর্ক করে", "শনাক্ত করে block করে"],
             ["ভূমিকা", "নজরদার (passive)", "প্রহরী (active)"],
-            ["অবস্থান", "traffic-এর পাশে (copy দেখে)", "traffic-এর মাঝে (inline)"]
+            [
+              "অবস্থান",
+              "traffic-এর পাশে (copy দেখে)",
+              "traffic-এর মাঝে (inline)"
+            ]
           ]
         },
         "mnemonic": "VPN tunnel বানায়, Firewall দরজা পাহারা, IPS প্রহরী থামায়, IDS নজরদার সতর্ক করে, Antivirus ভেতরে পাহারা।"
+      }
+    },
+    {
+      "id": "is_viva_002",
+      "q": "IPS ও IDS-এর পার্থক্য কী?",
+      "tags": ["ips", "ids", "intrusion", "network-security", "comparison"],
+      "answer": {
+        "summary": [
+          "IDS (Intrusion Detection System) শুধু আক্রমণ শনাক্ত করে সতর্কবার্তা (alert) পাঠায় — নজরদার; IPS (Intrusion Prevention System) শনাক্ত করে সঙ্গে সঙ্গে traffic block করে — প্রহরী।"
+        ],
+        "points": [
+          "IDS: নেটওয়ার্ক traffic-এর একটি copy পর্যবেক্ষণ করে (out-of-band, switch-এর mirror port-এ); সন্দেহজনক কিছু পেলে admin-কে alert দেয়, নিজে আটকায় না (passive)।",
+          "IPS: মূল traffic-পথে inline বসে (সাধারণত firewall-এর পরে); সন্দেহজনক packet দেখলে সঙ্গে সঙ্গে drop/block করে (active)।",
+          "ঝুঁকির পার্থক্য: IDS-এ false alarm-এ ক্ষতি নেই; IPS-এ ভুল block করলে legitimate traffic-ও বন্ধ হয় — তাই IPS-এর rule আরও সাবধানে tune করতে হয়।",
+          "উভয়ই signature-based (পরিচিত attack pattern) ও anomaly-based (স্বাভাবিক আচরণ থেকে বিচ্যুতি) detection ব্যবহার করে।",
+          "সংক্ষেপ: IDS = Detect + Alert; IPS = Detect + Block।"
+        ],
+        "table": {
+          "headers": ["দিক", "IDS", "IPS"],
+          "rows": [
+            ["কাজ", "শনাক্ত করে সতর্ক করে", "শনাক্ত করে block করে"],
+            ["মোড", "Passive (out-of-band)", "Active (inline)"],
+            [
+              "অবস্থান",
+              "traffic-এর পাশে (mirror port)",
+              "traffic-এর মাঝে (firewall-এর পরে)"
+            ],
+            [
+              "False positive-এ ক্ষতি",
+              "শুধু বিরক্তিকর alert",
+              "বৈধ traffic-ও বন্ধ হতে পারে"
+            ]
+          ]
+        },
+        "mnemonic": "IDS = জানায় (detect + alert); IPS = থামায় (detect + block)।"
+      }
+    },
+    {
+      "id": "is_viva_003",
+      "q": "Firewall ও Chinese Wall-এর পার্থক্য কী?",
+      "tags": [
+        "firewall",
+        "chinese-wall",
+        "brewer-nash",
+        "access-control",
+        "conflict-of-interest"
+      ],
+      "answer": {
+        "summary": [
+          "Firewall হলো নেটওয়ার্ক traffic নিয়ন্ত্রণকারী হার্ডওয়্যার/সফটওয়্যার ব্যবস্থা; Chinese Wall (Brewer–Nash model) হলো একটি access-control নীতি, যা ব্যবহারকারীর আগের access-history দেখে conflict-of-interest ঠেকায় — এক কোম্পানির তথ্য দেখা ব্যক্তি প্রতিযোগী কোম্পানির তথ্য আর দেখতে পায় না।"
+        ],
+        "points": [
+          "Firewall: network-এর perimeter-এ বসে static rule (IP, port, protocol) অনুযায়ী কোন traffic ঢুকবে/বেরোবে ঠিক করে — প্রযুক্তি/যন্ত্র।",
+          "Chinese Wall (Brewer–Nash model, ১৯৮৯): access-control মডেল/নীতি; financial consulting firm-এ ব্যবহৃত — user একবার কোনো dataset access করলে সেই conflict-of-interest শ্রেণির (COI class) অন্য dataset তার জন্য dynamically বন্ধ হয়ে যায়।",
+          "মূল পার্থক্য: Firewall = network layer-এর নিয়ন্ত্রণ (কে কোন IP/port ছুঁবে); Chinese Wall = data/application layer-এর নীতি (কে কোন তথ্য দেখেছে, তার ভিত্তিতে পরেরটা বন্ধ)।",
+          "Dynamic বনাম Static: firewall rule স্থির; Chinese Wall-এর নিয়ম ব্যবহারকারীর access-history-র ওপর ভিত্তি করে বদলায়।",
+          "নামের উৎস: চীনের মহাপ্রাচীর — দুটি জিনিসকে সম্পূর্ণ আলাদা করে দেওয়ার প্রতীক; উদাহরণ: এক consultant Bank A-র তথ্য পড়লে আর প্রতিদ্বন্দ্বী Bank B-র তথ্য পড়তে পারে না।"
+        ],
+        "table": {
+          "headers": ["দিক", "Firewall", "Chinese Wall"],
+          "rows": [
+            [
+              "ধরন",
+              "হার্ডওয়্যার/সফটওয়্যার ব্যবস্থা",
+              "Access-control মডেল (নীতি)"
+            ],
+            ["স্তর", "Network layer", "Application/Data layer"],
+            [
+              "নিয়ম",
+              "Static (IP/port rule)",
+              "Dynamic (access-history ভিত্তিক)"
+            ],
+            [
+              "উদ্দেশ্য",
+              "অবাঞ্ছিত traffic আটকানো",
+              "Conflict-of-interest প্রতিরোধ"
+            ]
+          ]
+        },
+        "mnemonic": "Firewall traffic আটকায়, Chinese Wall স্বার্থ-দ্বন্দ্ব (conflict of interest) আটকায়।"
+      }
+    },
+    {
+      "id": "is_viva_004",
+      "q": "Where do hackers hit first in a web application? (হ্যাকাররা web application-এ প্রথম কোথায় আঘাত করে?)",
+      "tags": [
+        "web-security",
+        "input-validation",
+        "attack-surface",
+        "sql-injection",
+        "xss"
+      ],
+      "answer": {
+        "summary": [
+          "হ্যাকাররা সাধারণত প্রথম আঘাত হানে ব্যবহারকারীর input-এর জায়গায় — login form, search box, URL parameter, file upload — কারণ এগুলোই application-এর ভেতরে ঢোকার প্রবেশদ্বার; তার আগে reconnaissance করে খোলা endpoint ও error message খুঁজে।"
+        ],
+        "points": [
+          "আগে Reconnaissance: robots.txt, page source, comment, exposed API endpoint, HTTP header, error message — দুর্বলতার সুতো খোঁজে।",
+          "প্রথম টার্গেট = Input point: login form (SQL injection, brute force), search box ও URL query string (XSS, SQLi), file upload (malicious file/script)।",
+          "Authentication ও session: weak/default password, session token hijack, OTP bypass, forget-password logic-এর দুর্বলতা।",
+          "Client-side validation-এ বিশ্বাস করে না: browser-এর validation bypass করে সরাসরি API-তে crafted request পাঠায় (যেমন Postman/curl দিয়ে)।",
+          "কম পাহারাদার path: admin panel (/admin), hidden page, rate-limit নেই এমন API।",
+          "প্রতিরোধ: server-side validation, prepared statement, output encoding, WAF, rate limiting, least privilege।"
+        ],
+        "mnemonic": "হ্যাকারের প্রথম দরজা = input — form, URL, upload; তাই input-ই প্রথম দুর্গ।"
+      }
+    },
+    {
+      "id": "is_viva_005",
+      "q": "IoT device-এর দুর্বলতা (vulnerabilities) কী কী?",
+      "tags": [
+        "iot",
+        "vulnerability",
+        "default-password",
+        "firmware",
+        "botnet",
+        "mirai"
+      ],
+      "answer": {
+        "summary": [
+          "IoT device-এর প্রধান দুর্বলতা: default/weak password, firmware update-এর অভাব, অ-এনক্রিপ্টেড communication, খোলা অতিরিক্ত service ও সীমিত hardware নিরাপত্তা — এগুলোই botnet attack-এর সুযোগ তৈরি করে (যেমন Mirai)।"
+        ],
+        "points": [
+          "Default/weak credentials: factory password (admin/admin) বদলানো হয় না — Mirai botnet ঠিক এভাবেই লাখ লাখ ক্যামেরা/রাউটার দখল করেছিল।",
+          "Firmware update নেই: vendor দীর্ঘদিন patch দেয় না; পুরনো CVE-র সুযোগে খোলা থেকে যায়।",
+          "Unencrypted communication: HTTP/Telnet/plain MQTT ব্যবহার — traffic sniff করেই credential পাওয়া যায়।",
+          "অতিরিক্ত খোলা service: Telnet/SSH port, UPnP, debug interface — যেগুলো দরকার নেই সেগুলোও চালু থাকে।",
+          "দুর্বল cloud API/app: hard-coded API key, insecure cloud endpoint দিয়ে device নিয়ন্ত্রণ।",
+          "পরিণতি: দখল হওয়া device দিয়ে বিশাল DDoS (২০১৬-র Dyn attack), privacy leak, device hijack।",
+          "প্রতিরোধ: default password বদল, নিয়মিত firmware update, encryption (TLS), IoT device আলাদা network segment (VLAN)-এ রাখা, অব্যবহৃত service বন্ধ করা।"
+        ],
+        "mnemonic": "ডিফল্ট পাসওয়ার্ড + আপডেট নেই + এনক্রিপশন নেই = IoT-র তিন বড় দুর্বলতা।"
       }
     }
   ]

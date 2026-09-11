@@ -1,0 +1,59 @@
+{
+  "category": "computer_fundamental",
+  "questions": [
+    {
+      "id": "cf_viva_001",
+      "q": "Processor-এর সাথে North Bridge ও South Bridge কী?",
+      "tags": ["north-bridge", "south-bridge", "chipset", "motherboard", "cpu", "pch"],
+      "answer": {
+        "summary": [
+          "North Bridge ও South Bridge হলো মাদারবোর্ডের chipset-এর দুটি অংশ: North Bridge দ্রুতগতির যোগাযোগ (CPU ↔ RAM ↔ Graphics) সামলায়, South Bridge ধীরগতির I/O (USB, SATA, Audio, BIOS) সামলায়।"
+        ],
+        "points": [
+          "North Bridge (MCH/নর্থব্রিজ): CPU-র ঠিক পাশে heatsink-ওয়ালা বড় চিপ; যুক্ত করে CPU ↔ RAM (memory controller) ও CPU ↔ PCIe/AGP graphics card; FSB (Front Side Bus) সামলায় — high-speed connection।",
+          "South Bridge (ICH/সাউথব্রিজ): I/O Controller Hub — USB, SATA (HDD/SSD), LAN, Audio, BIOS/CMOS, PCI slot, keyboard/mouse-এর মতো ধীরগতির device যুক্ত করে।",
+          "উভয়ের মধ্যে যোগাযোগ হয় DMI (Direct Media Interface) bus দিয়ে।",
+          "আধুনিক CPU-তে (Intel Nehalem/AMD64 থেকে) memory controller ও PCIe controller CPU-র ভেতরেই ঢুকে গেছে — তাই আলাদা North Bridge আর নেই; অবশিষ্ট I/O কাজ এখন একটিমাত্র PCH (Platform Controller Hub) করে।"
+        ],
+        "diagram": "              ┌───────┐\n              │  CPU  │\n              └─┬───┬─┘\n          FSB ┌─┘   └─┐\n      ┌───────┴──┐  ┌─┴──────┐\n      │  North   │  │  RAM   │\n      │  Bridge  │  └────────┘\n      └┬───┬─────┘  PCIe x16 → Graphics Card\n   DMI │\n      ┌┴──────────┐\n      │  South    │──► USB, SATA (HDD/SSD)\n      │  Bridge   │──► LAN, Audio, BIOS\n      └───────────┘──► PCI, Keyboard/Mouse",
+        "mnemonic": "North = দ্রুত ও CPU-র কাছে (RAM/Graphics); South = ধীর I/O (USB/Disk/Audio)।"
+      }
+    },
+    {
+      "id": "cf_viva_002",
+      "q": "HDD কী? HDD-এর প্রয়োগ কোথায় হয়?",
+      "tags": ["hdd", "hard-disk", "storage", "magnetic", "backup", "cctv", "nas"],
+      "answer": {
+        "summary": [
+          "HDD (Hard Disk Drive) হলো ঘূর্ণায়মান magnetic platter-এ data লেখা-পড়া করা non-volatile storage; বড় capacity ও কম দামের কারণে ব্যাকআপ, আর্কাইভ ও বাল্ক স্টোরেজে এখনও ব্যাপক প্রয়োগ হয়।"
+        ],
+        "points": [
+          "কাজের ধরন: magnetic platter-এর ওপর read/write head দিয়ে data; RPM (৫৪০০/৭২০০/১০০০০/১৫০০০) বলে গতি নির্ধারিত হয়; বিদ্যুৎ গেলেও data থাকে (non-volatile)।",
+          "প্রয়োগ: PC/laptop-এ বড় storage, backup ও archive, CCTV/NVR রেকর্ডিং, NAS/SAN-এ বাল্ক storage, data center-এ সস্তা বড় ধারণক্ষমতার (cold) storage।",
+          "কেন এখনও প্রয়োগ হয়: প্রতি GB দাম SSD-র চেয়ে অনেক কম, ২০TB+ capacity সম্ভব, বারবার overwrite-এ write-cycle সমস্যা নেই।",
+          "সীমাবদ্ধতা: moving part থাকায় ধীর, কম্পন/শক-সংবেদনশীল, বিদ্যুৎ খরচ ও শব্দ বেশি — random read/write-এ SSD-র চেয়ে পিছিয়ে।",
+          "বাস্তব প্যাটার্ন: OS/boot drive-এ SSD + বাল্ক data-তে HDD — দুটোর মিলিত ব্যবহারই common।"
+        ],
+        "mnemonic": "HDD = ধীর কিন্তু বিশাল ও সস্তা — ব্যাকআপ/CCTV/archive-এর রাজা।"
+      }
+    },
+    {
+      "id": "cf_viva_003",
+      "q": "VRAM কী?",
+      "tags": ["vram", "video-ram", "gpu", "frame-buffer", "graphics", "gddr"],
+      "answer": {
+        "summary": [
+          "VRAM (Video RAM) হলো GPU-র জন্য বিশেষভাবে তৈরি dual-ported RAM — একসাথে read ও write দুটোই সম্ভব; স্ক্রিনে দেখানো ছবির frame buffer এখানেই থাকে।"
+        ],
+        "points": [
+          "Dual-ported: একই সময়ে GPU নতুন frame লিখতে পারে এবং display controller বর্তমান frame পড়তে পারে — সাধারণ RAM-এ একসাথে দুটো সম্ভব নয়।",
+          "কাজ: frame buffer (বর্তমান ফ্রেম দেখানো + পরের ফ্রেম আঁকা), texture, z-buffer, shader data — গেমিং/গ্রাফিক্স পারফরম্যান্সের বড় নির্ধারক।",
+          "ধরনের বিবর্তন: পুরনো VRAM → WRAM/SGRAM; আজকাল graphics card-এ GDDR (GDDR6/GDDR6X) ও হাই-এন্ডে HBM — এগুলোই আধুনিক VRAM।",
+          "ব্যবহার: graphics/video card, onboard video memory, গেমিং, 3D rendering, video editing।",
+          "Capacity-র মানে: যত বেশি VRAM, তত বেশি resolution/texture একসাথে সামলানো যায়।"
+        ],
+        "mnemonic": "VRAM = Video-র নিজস্ব RAM — dual-port, frame buffer-এর ঘর।"
+      }
+    }
+  ]
+}

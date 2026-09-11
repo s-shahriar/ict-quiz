@@ -141,6 +141,50 @@
         ],
         "mnemonic": "SWIFT = ব্যাংকে-ব্যাংকে নিরাপদ আন্তর্জাতিক message (টাকা নয়); Sonali-র code = BSONBDDH।"
       }
+    },
+    {
+      "id": "bank_viva_007",
+      "q": "MICR cheque-এ কয়টি number/ডিজিট থাকে?",
+      "tags": ["micr", "cheque", "routing-number", "bach", "clearing", "banking"],
+      "answer": {
+        "summary": [
+          "চেকের নিচের MICR line-এ তিনটি অংশ থাকে: ৬ ডিজিটের cheque number, ৯ ডিজিটের routing number (city ৩ + bank ৩ + branch ৩) এবং account number — viva-তে 'MICR number' বলতে সাধারণত ৯ ডিজিটের routing number-ই বোঝায়।"
+        ],
+        "points": [
+          "MICR = Magnetic Ink Character Recognition — চেকের নিচের কোডটি চুম্বকীয় কালি দিয়ে ছাপা হয়, যা MICR reader/OCR দিয়ে দ্রুত ও নির্ভুল পড়া যায়।",
+          "MICR routing number: ৯ ডিজিট = ৩ (city) + ৩ (bank) + ৩ (branch) — প্রতিটি শাখার unique পরিচয়।",
+          "MICR line-এর পূর্ণ গঠন: cheque number (৬ ডিজিট) + routing number (৯ ডিজিট) + account number — এই তিনটি অংশ একসাথে থাকে।",
+          "সুবিধা: forgery/কপি করা কঠিন, clearing-এ স্বয়ংক্রিয় প্রসেসিং দ্রুত ও নির্ভুল — বাংলাদেশে BACH (Bangladesh Automated Clearing House)-এর অধীনে MICR cheque বাধ্যতামূলক।",
+          "সংক্ষিপ্ত উত্তর viva-র জন্য: 'MICR routing number ৯ ডিজিটের (৩+৩+৩)।'"
+        ],
+        "mnemonic": "MICR line = ৬ (চেক) + ৯ (রাউটিং: ৩+৩+৩) + একাউন্ট নম্বর।"
+      }
+    },
+    {
+      "id": "bank_viva_008",
+      "q": "ATM card-এর লেনদেন NPSB-তে হয়, BEFTN-এ, নাকি অন্য কিছু?",
+      "tags": ["atm-card", "npsb", "beftn", "visa", "mastercard", "payment-switch", "banking"],
+      "answer": {
+        "summary": [
+          "ATM card-এর লেনদেন (বিশেষত অন্য ব্যাংকের ATM-এ টাকা তোলা) হয় NPSB (National Payment Switch Bangladesh) দিয়ে; BEFTN হলো অ্যাকাউন্ট-টু-অ্যাকাউন্ট fund transfer-এর নেটওয়ার্ক — কার্ড লেনদেনে BEFTN ব্যবহৃত হয় না; আন্তর্জাতিক কার্ডে Visa/Mastercard network।"
+        ],
+        "points": [
+          "NPSB: বাংলাদেশ ব্যাংকের অধীন জাতীয় payment switch; interbank ATM withdrawal, POS transaction, internet payment (ITX) ও mobile banking interconnection এখান দিয়ে চলে।",
+          "BEFTN: ব্যাংক অ্যাকাউন্টে electronic fund transfer (salary, bill, remittance-এর মতো batch credit/debit) — এটা অ্যাকাউন্ট-ভিত্তিক, কার্ড-ভিত্তিক নয়।",
+          "আন্তর্জাতিক: Visa/Mastercard-যুক্ত কার্ড বিদেশি ATM/POS-এ সেই card network-এর মাধ্যমে চলে (NPSB শুধু দেশের ভেতরে)।",
+          "ATM লেনদেনের ধাপ: card + PIN → ATM টার্মিনাল request পাঠায় → issuing bank authorization → NPSB/card network routing → টাকা ছাড়ে।",
+          "এক লাইনে: কার্ড দিয়ে টাকা তুললে NPSB (দেশে) / Visa-Mastercard (বিদেশে); অ্যাকাউন্টে টাকা পাঠালে BEFTN।"
+        ],
+        "table": {
+          "headers": ["নেটওয়ার্ক", "কাজ", "উদাহরণ"],
+          "rows": [
+            ["NPSB", "Interbank ATM/POS/ITX লেনদেন", "অন্য ব্যাংকের ATM-এ টাকা তোলা"],
+            ["BEFTN", "অ্যাকাউন্ট-টু-অ্যাকাউন্ট fund transfer", "salary, bill payment, remittance"],
+            ["Visa/Mastercard", "আন্তর্জাতিক কার্ড লেনদেন", "বিদেশি ATM/POS/e-commerce"]
+          ]
+        },
+        "mnemonic": "কার্ড তুললে NPSB, অ্যাকাউন্টে পাঠালে BEFTN; বিদেশে Visa/Master।"
+      }
     }
   ]
 }
