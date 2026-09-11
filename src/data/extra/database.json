@@ -1,4 +1,1076 @@
 {
   "category": "database",
-  "questions": []
+  "questions": [
+    {
+      "id": "db_ex_115",
+      "q": "Primary Key, Foreign Key এবং Candidate Key-এর মধ্যে পার্থক্য লিখুন।",
+      "tags": [
+        "keys",
+        "primary-key",
+        "foreign-key",
+        "candidate-key"
+      ],
+      "answer": {
+        "summary": [
+          "Candidate key হলো সেই সব column বা column-জোড়া যারা প্রত্যেকে একাই row-কে অনন্যভাবে চিনতে পারে।",
+          "তাদের মধ্য থেকে বেছে নেওয়া একটিই Primary key, আর Foreign key হলো অন্য টেবিলের সেই key-এর দিকে তাক করা একটি column।"
+        ],
+        "points": [
+          "সম্পর্কটা এক লাইনে: সব primary key আসলে candidate key, কিন্তু সব candidate key primary key নয়।",
+          "Candidate key-এর দুটি শর্ত — অনন্য হতে হবে, আর তার কোনো অংশ বাদ দিলে অনন্যতা টিকবে না, অর্থাৎ অপ্রয়োজনীয় column থাকতে পারবে না।",
+          {
+            "sub": "Student টেবিলে StudentID, Email আর NationalID — তিনটিই আলাদাভাবে অনন্য, তাই তিনটিই candidate key।"
+          },
+          "Primary key হলো candidate key-দের মধ্য থেকে বেছে নেওয়া একটি, যা টেবিলের সরকারি পরিচয় হিসেবে কাজ করে।",
+          {
+            "sub": "কখনো NULL হতে পারে না, কারণ পরিচয়হীন row রাখার অর্থ হয় না।"
+          },
+          {
+            "sub": "প্রতি টেবিলে একটিই থাকে, আর বাকি candidate key গুলোকে alternate key বলে।"
+          },
+          {
+            "sub": "বেছে নেওয়ার সময় ছোট, স্থির ও অর্থহীন মানকে অগ্রাধিকার দেওয়া হয় — Email বদলাতে পারে, StudentID বদলায় না।"
+          },
+          "Foreign key হলো এক টেবিলের column যা অন্য টেবিলের primary key-কে নির্দেশ করে, আর এটিই দুটি টেবিলকে যুক্ত করে।",
+          {
+            "sub": "NULL হতে পারে, যার অর্থ সম্পর্কটি এখনো নির্ধারিত হয়নি — যেমন যে কর্মী এখনো কোনো department পায়নি।"
+          },
+          {
+            "sub": "একই টেবিলে একাধিক foreign key থাকতে পারে, এমনকি একই টেবিলের দিকেও তাক করতে পারে, যেমন Employee-এর ManagerID।"
+          },
+          {
+            "sub": "এর কারণেই referential integrity রক্ষা পায় — অস্তিত্বহীন parent-এর দিকে দেখানো row বানানো যায় না।"
+          },
+          "Composite key মানে একাধিক column মিলে তৈরি key, আর Super key মানে অনন্য কিন্তু বাড়তি column থাকতেও পারে এমন সেট।"
+        ],
+        "table": {
+          "headers": [
+            "দিক",
+            "Candidate Key",
+            "Primary Key",
+            "Foreign Key"
+          ],
+          "rows": [
+            [
+              "কাজ",
+              "অনন্য চেনার যোগ্য প্রার্থী",
+              "বেছে নেওয়া সরকারি পরিচয়",
+              "অন্য টেবিলের সাথে যোগসূত্র"
+            ],
+            [
+              "সংখ্যা",
+              "একাধিক হতে পারে",
+              "টেবিলে একটিই",
+              "একাধিক হতে পারে"
+            ],
+            [
+              "NULL",
+              "অনুমোদিত নয়",
+              "অনুমোদিত নয়",
+              "অনুমোদিত"
+            ],
+            [
+              "পুনরাবৃত্তি",
+              "হয় না",
+              "হয় না",
+              "হতে পারে"
+            ],
+            [
+              "নিজের টেবিলে অনন্য",
+              "হ্যাঁ",
+              "হ্যাঁ",
+              "না"
+            ],
+            [
+              "Index",
+              "সাধারণত unique index",
+              "স্বয়ংক্রিয়ভাবে হয়",
+              "সাধারণত আলাদা করে দিতে হয়"
+            ],
+            [
+              "উদাহরণ",
+              "StudentID, Email, NationalID",
+              "StudentID",
+              "Enrollment.StudentID"
+            ]
+          ]
+        },
+        "diagram": "KEY গুলোর সম্পর্ক  —  বাইরের বৃত্ত ভেতরেরটিকে ধারণ করে\n\n  ┌────────────────────────────────────────────────┐\n  │  SUPER KEY                                     │\n  │                                                │\n  │   ┌──────────────────────────────────────┐     │\n  │   │  CANDIDATE KEY                       │     │\n  │   │                                      │     │\n  │   │   ┌───────────────┐  ┌────────────┐  │     │\n  │   │   │  PRIMARY KEY  │  │ ALTERNATE  │  │     │\n  │   │   └───────────────┘  └────────────┘  │     │\n  │   └──────────────────────────────────────┘     │\n  └────────────────────────────────────────────────┘\n\n  SUPER KEY      অনন্য, তবে বাড়তি column থাকতে পারে\n  CANDIDATE KEY  অনন্য এবং একটুও বাড়তি নয়\n  PRIMARY KEY    candidate-দের মধ্য থেকে বেছে নেওয়া একটি\n  ALTERNATE      বাকি candidate key গুলো\n\n\nউদাহরণ\n\n  ┌───────────┬───────┬────────────────┬────────────┐\n  │ StudentID │ Name  │ Email          │ NationalID │\n  ├───────────┼───────┼────────────────┼────────────┤\n  │ S01       │ Rahim │ rahim@mail.com │ 199012345  │\n  │ S02       │ Karim │ karim@mail.com │ 199054321  │\n  └───────────┴───────┴────────────────┴────────────┘\n\n  StudentID    candidate  ->  PRIMARY KEY হিসেবে বেছে নেওয়া হলো\n  Email        candidate  ->  alternate key\n  NationalID   candidate  ->  alternate key\n  Name         candidate নয়, কারণ দুজনের নাম এক হতেই পারে\n\n  ┌───────────┬──────────┬───────┐\n  │ StudentID │ CourseID │ Grade │\n  ├───────────┼──────────┼───────┤\n  │ S01       │ C101     │ A     │\n  │ S01       │ C102     │ B+    │\n  │ S02       │ C101     │ A-    │\n  └───────────┴──────────┴───────┘\n\n  StudentID    FOREIGN KEY -> Student.StudentID\n               বারবার আসে, কারণ একজন student অনেক course নেয়\n  PRIMARY KEY  (StudentID, CourseID) — composite key",
+        "mistakes": [
+          [
+            "Primary key আর candidate key-কে আলাদা জিনিস ভাবা",
+            "primary key candidate key-দেরই একজন, বেছে নেওয়া"
+          ],
+          [
+            "Foreign key অনন্য হতে হবে ভাবা",
+            "foreign key বারবার আসতে পারে, সেটাই 1:N সম্পর্ক তৈরি করে"
+          ]
+        ],
+        "mnemonic": "প্রার্থী অনেক, নির্বাচিত একজন, আর বাইরের দিকে তাক করে foreign।"
+      }
+    },
+    {
+      "id": "db_ex_114",
+      "q": "Shared Lock এবং Exclusive Lock-এর মধ্যে পার্থক্য লিখুন।",
+      "tags": [
+        "locking",
+        "concurrency-control",
+        "shared-lock",
+        "exclusive-lock"
+      ],
+      "answer": {
+        "summary": [
+          "Shared lock পড়ার জন্য, Exclusive lock লেখার জন্য।",
+          "মূল নিয়মটি সরল — পড়া অনেকে একসাথে করতে পারে, কিন্তু লেখা একজনই, আর কেউ লিখতে থাকলে পড়াও যায় না।"
+        ],
+        "points": [
+          "কারণটি যুক্তির: একসাথে অনেকে পড়লে কেউ কিছু বদলায় না, তাই কারও ক্ষতি হয় না।",
+          "কিন্তু কেউ লিখতে থাকলে data মাঝপথে অসম্পূর্ণ অবস্থায় থাকে, তাই তখন অন্যদের ঢুকতে দেওয়া যায় না।",
+          "Shared lock (S): একই সাথে একাধিক transaction নিতে পারে; সবাই পড়তে পারে, কেউ লিখতে পারে না।",
+          "Exclusive lock (X): একবারে একটিমাত্র transaction পায়; সে পড়তেও পারে, লিখতেও পারে, আর বাকিদের অপেক্ষা করতে হয়।",
+          "সামঞ্জস্যের নিয়ম মনে রাখার সহজ উপায় — শুধু S আর S একসাথে চলে, বাকি সব জোড়া সংঘর্ষ করে।",
+          "Lock দেওয়া হয় Two-Phase Locking (2PL) অনুসারে:",
+          {
+            "sub": "Growing phase-এ transaction কেবল lock নেয়, ছাড়ে না।"
+          },
+          {
+            "sub": "Shrinking phase-এ কেবল ছাড়ে, নতুন কোনো lock নেয় না।"
+          },
+          {
+            "sub": "Strict 2PL-এ সব exclusive lock commit পর্যন্ত ধরে রাখা হয়, যাতে অন্য কেউ commit না হওয়া মান পড়তে না পারে — এভাবেই dirty read ঠেকে।"
+          },
+          "Lock upgrade: পড়ে নিয়ে পরে লিখতে চাইলে S থেকে X-এ ওঠা লাগে, আর দুটি transaction একই সাথে এটি করতে চাইলে deadlock হয়।",
+          "Deadlock হলে database চক্র শনাক্ত করে একটি transaction-কে বাতিল করে, তাকে victim বলে।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Ticket বা seat booking — একই আসন দুজনকে দেওয়া ঠেকাতে exclusive lock লাগে।"
+          },
+          {
+            "sub": "Report তৈরি — বহু পাঠক একসাথে shared lock নিয়ে পড়তে পারে।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "দিক",
+            "Shared Lock (S)",
+            "Exclusive Lock (X)"
+          ],
+          "rows": [
+            [
+              "উদ্দেশ্য",
+              "পড়া",
+              "লেখা বা মোছা"
+            ],
+            [
+              "একসাথে কতজন",
+              "একাধিক",
+              "একজন"
+            ],
+            [
+              "ধারক কী পারে",
+              "শুধু পড়তে",
+              "পড়তে ও লিখতে"
+            ],
+            [
+              "অন্যরা পড়তে পারে",
+              "পারে",
+              "পারে না"
+            ],
+            [
+              "অন্যরা লিখতে পারে",
+              "পারে না",
+              "পারে না"
+            ],
+            [
+              "SQL",
+              "SELECT ... LOCK IN SHARE MODE",
+              "SELECT ... FOR UPDATE"
+            ],
+            [
+              "আরেক নাম",
+              "read lock",
+              "write lock"
+            ]
+          ]
+        },
+        "diagram": "LOCK COMPATIBILITY MATRIX\n\n                        requested\n                      S         X\n                 ┌─────────┬─────────┐\n  held      S    │   YES   │   NO    │\n                 ├─────────┼─────────┤\n            X    │   NO    │   NO    │\n                 └─────────┴─────────┘\n\n  শুধু S + S জোড়াই একসাথে চলে, বাকি তিনটিতেই অপেক্ষা করতে হয়\n\n\nদৃশ্য ১  —  দুজন একসাথে পড়ছে\n\n  T1 :  S-lock granted  ──────────────────►  reading\n  T2 :  S-lock granted  ──────────────────►  reading\n\n  দুজনেই চলছে, কেউ থামেনি\n\n\nদৃশ্য ২  —  একজন লিখছে, আরেকজন পড়তে চায়\n\n  T1 :  X-lock granted  ──────► writing ──────► COMMIT, lock released\n  T2 :  S-lock wanted   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓─►  now reading\n                        └──── waiting ────┘\n\n  T1 commit না করা পর্যন্ত T2 কিছুই দেখতে পায় না, তাই dirty read হয় না\n\n\nদৃশ্য ৩  —  deadlock\n\n  T1 :  holds X on A,  wants X on B\n  T2 :  holds X on B,  wants X on A\n\n        T1 ──── wants B ────► T2\n         ▲                     │\n         └──── wants A ────────┘\n\n  চক্র তৈরি হলো, তাই database একজনকে বাতিল করে দেয়",
+        "mnemonic": "পড়া ভাগ করা যায়, লেখা যায় না।"
+      }
+    },
+    {
+      "id": "db_ex_113",
+      "q": "একটি hotel system-এ নিশ্চিত করতে হবে যে একই room দুইজন ভিন্ন guest overlapping date range-এ book করতে না পারে। Database level-এ schema constraint দিয়ে এটি কীভাবে ঠেকানো যায়?",
+      "tags": [
+        "constraint",
+        "exclusion-constraint",
+        "range-overlap",
+        "concurrency"
+      ],
+      "answer": {
+        "summary": [
+          "এটি সমতার সমস্যা নয়, পরিসরের সমস্যা — তাই UNIQUE দিয়ে হয় না, কারণ UNIQUE কেবল হুবহু একই মান ঠেকাতে পারে।",
+          "PostgreSQL-এ সঠিক সমাধান EXCLUDE constraint; যেখানে তা নেই সেখানে serialisable lock সহ trigger ব্যবহার করতে হয়।"
+        ],
+        "points": [
+          "Overlap-এর শর্তটি আগে পরিষ্কার হওয়া দরকার: দুটি booking পরস্পরকে ছোঁয় যদি new.CheckIn < old.CheckOut এবং new.CheckOut > old.CheckIn।",
+          "CheckOut-এর দিনেই আরেকজন ঢুকতে পারে, তাই পরিসরটি half-open ধরা হয় — শুরু অন্তর্ভুক্ত, শেষ বাদ, অর্থাৎ [CheckIn, CheckOut)।",
+          "UNIQUE(RoomID, CheckIn) কাজ করে না, কারণ 5–10 আর 7–12 তারিখের booking-এ CheckIn আলাদা, অথচ মাঝের দিনগুলোতে দুটি একসাথে পড়ে যায়।",
+          "PostgreSQL-এর EXCLUDE constraint ঠিক এই কাজের জন্যই আছে:",
+          {
+            "sub": "RoomID WITH = অংশটি বলে একই ঘরের booking গুলোই কেবল তুলনা করতে হবে।"
+          },
+          {
+            "sub": "daterange(...) WITH && অংশটি বলে সেই ঘরের দুটি booking-এর তারিখ পরিসর যেন কখনো ছেদ না করে।"
+          },
+          {
+            "sub": "btree_gist extension লাগে, কারণ সাধারণ = এবং range-এর && একসাথে একই index-এ রাখতে হয়।"
+          },
+          "MySQL-এ EXCLUDE নেই, তাই BEFORE INSERT ও BEFORE UPDATE trigger দিয়ে overlap খুঁজে SIGNAL দিয়ে আটকাতে হয়।",
+          "Trigger-এ একটি গুরুত্বপূর্ণ ফাঁদ আছে — শুধু SELECT করে দেখে নেওয়া যথেষ্ট নয়:",
+          {
+            "sub": "দুটি transaction একই সময়ে যাচাই করলে দুজনেই \"কোনো overlap নেই\" দেখতে পারে, তারপর দুজনেই লিখে ফেলে।"
+          },
+          {
+            "sub": "এই race ঠেকাতে যাচাইয়ের সময় SELECT ... FOR UPDATE দিয়ে ঘরটিকে lock করতে হয়, অথবা SERIALIZABLE isolation চালাতে হয়।"
+          },
+          {
+            "sub": "EXCLUDE constraint-এ এই সমস্যা নেই, কারণ যাচাই ও লেখা একই index operation-এর ভেতরেই ঘটে।"
+          },
+          "সহায়ক constraint হিসেবে CHECK (CheckOut > CheckIn) রাখা উচিত, নইলে উল্টো বা শূন্যদৈর্ঘ্যের booking ঢুকে যেতে পারে।",
+          "Application-এর code-এ যাচাই করা যথেষ্ট নয়, কারণ একাধিক application, script বা সরাসরি চালানো SQL একই টেবিল ছুঁতে পারে।"
+        ],
+        "code": "-- ─── PostgreSQL: সঠিক ও সহজ সমাধান ───\nCREATE EXTENSION IF NOT EXISTS btree_gist;\n\nCREATE TABLE Booking (\n    BookingID SERIAL PRIMARY KEY,\n    RoomID    INT  NOT NULL,\n    GuestID   INT  NOT NULL,\n    CheckIn   DATE NOT NULL,\n    CheckOut  DATE NOT NULL,\n    CHECK (CheckOut > CheckIn),\n    EXCLUDE USING gist (\n        RoomID WITH =,                                 -- একই ঘর হলে\n        daterange(CheckIn, CheckOut, '[)') WITH &&     -- পরিসর ছেদ করা চলবে না\n    )\n);\n\nINSERT INTO Booking (RoomID, GuestID, CheckIn, CheckOut)\nVALUES (101, 1, '2026-10-05', '2026-10-10');           -- ঠিক আছে\n\nINSERT INTO Booking (RoomID, GuestID, CheckIn, CheckOut)\nVALUES (101, 2, '2026-10-07', '2026-10-12');\n-- ERROR: conflicting key value violates exclusion constraint\n\nINSERT INTO Booking (RoomID, GuestID, CheckIn, CheckOut)\nVALUES (101, 3, '2026-10-10', '2026-10-14');           -- ঠিক আছে, ছোঁয়া মাত্র\n\n\n-- ─── MySQL: EXCLUDE নেই, তাই trigger ───\nDELIMITER $$\nCREATE TRIGGER trg_booking_no_overlap\nBEFORE INSERT ON Booking\nFOR EACH ROW\nBEGIN\n    DECLARE clash INT;\n\n    SELECT COUNT(*) INTO clash\n    FROM   Booking\n    WHERE  RoomID    = NEW.RoomID\n      AND  NEW.CheckIn  < CheckOut        -- overlap এর শর্ত\n      AND  NEW.CheckOut > CheckIn\n    FOR UPDATE;                           -- race ঠেকাতে lock\n\n    IF clash > 0 THEN\n        SIGNAL SQLSTATE '45000'\n            SET MESSAGE_TEXT = 'Room already booked for these dates';\n    END IF;\nEND$$\nDELIMITER ;\n-- UPDATE-এর জন্যও একই যাচাই আলাদা trigger-এ দিতে হয়",
+        "codeLang": "sql",
+        "diagram": "OVERLAP কখন ঘটে\n\n  বিদ্যমান booking : room 101,  Oct 5 ──────────── Oct 10\n\n  October           5    6    7    8    9   10   11   12   13   14\n                    ├────┼────┼────┼────┼────┼────┼────┼────┼────┤\n  existing          ████████████████████\n\n  A  Oct 7 – Oct 12           ██████████████████        ছেদ করে   ✗\n  B  Oct 1 – Oct 5   █████████                          ছোঁয়া মাত্র ✓\n  C  Oct 10 – Oct 14                     ███████████    ছোঁয়া মাত্র ✓\n  D  Oct 6 – Oct 8        ██████████                    ভেতরে পড়ে  ✗\n  E  Oct 3 – Oct 20  ████████████████████████████████   ঘিরে ফেলে  ✗\n\n  শুধু B আর C বৈধ, কারণ তারা কেবল প্রান্ত ছুঁয়েছে, দিন ভাগ করেনি\n\n\n  একটিমাত্র শর্তেই পাঁচটি ক্ষেত্রই ধরা পড়ে\n\n      new.CheckIn < old.CheckOut   AND   new.CheckOut > old.CheckIn\n\n  A :  7 < 10  ✓   এবং  12 > 5   ✓   ->  overlap\n  B :  1 < 10  ✓   এবং   5 > 5   ✗   ->  overlap নেই\n  C : 10 < 10  ✗                      ->  overlap নেই\n  D :  6 < 10  ✓   এবং   8 > 5   ✓   ->  overlap\n  E :  3 < 10  ✓   এবং  20 > 5   ✓   ->  overlap\n\n\nকেন UNIQUE দিয়ে হয় না\n\n  UNIQUE (RoomID, CheckIn)\n\n  Oct 5 – Oct 10   এবং   Oct 7 – Oct 12\n  CheckIn ভিন্ন (5 বনাম 7), তাই UNIQUE কিছুই বলবে না\n  অথচ 7, 8, 9 — তিন দিন একই ঘর দুজনকে দেওয়া হয়ে গেল\n\n  UNIQUE সমতা দেখে, আর সমস্যাটা পরিসরের ছেদ নিয়ে",
+        "mistakes": [
+          [
+            "UNIQUE(RoomID, CheckIn, CheckOut) দেওয়া",
+            "হুবহু একই তারিখজোড়া ছাড়া কিছুই আটকায় না, আংশিক overlap পার পেয়ে যায়"
+          ],
+          [
+            "শুধু application-এ যাচাই করা",
+            "অন্য script বা সরাসরি SQL সেই যাচাই এড়িয়ে যায়; নিয়ম database-এ থাকতে হয়"
+          ]
+        ],
+        "mnemonic": "সমতা নয়, ছেদ ঠেকাতে হবে — তাই UNIQUE নয়, EXCLUDE।"
+      }
+    },
+    {
+      "id": "db_ex_112",
+      "q": "একটি school-এর Student টেবিলে ছাত্রছাত্রীদের তথ্য রাখা হয়। School policy অনুযায়ী 5 বছরের কম বয়সী কোনো student ভর্তি করা যাবে না। এমন একটি BEFORE INSERT trigger লিখুন যা 5 বছরের কম বয়সী student insert করা আটকে দেয়।",
+      "tags": [
+        "trigger",
+        "before-insert",
+        "validation",
+        "signal"
+      ],
+      "answer": {
+        "summary": [
+          "BEFORE INSERT trigger ব্যবহার হবে, কারণ row টেবিলে বসার আগেই যাচাই করে আটকাতে হবে।",
+          "শর্ত ভাঙলে SIGNAL SQLSTATE '45000' দিয়ে ইচ্ছাকৃত error তোলা হয়, আর তাতেই পুরো INSERT বাতিল হয়ে যায়।"
+        ],
+        "points": [
+          "BEFORE বেছে নেওয়ার কারণ: AFTER INSERT-এ row ততক্ষণে ঢুকে গেছে, তখন আটকানো মানে আবার মুছে ফেলা — বাড়তি কাজ ও ঝুঁকি।",
+          "SIGNAL হলো SQL-এর নিজস্ব error তোলার উপায়; SQLSTATE '45000' মানে ব্যবহারকারীর সংজ্ঞায়িত শর্ত ভাঙা।",
+          "Trigger-এর ভেতর error উঠলে database পুরো statement বাতিল করে, তাই আংশিকভাবে ভুল data ঢোকার সুযোগ থাকে না।",
+          "FOR EACH ROW জরুরি — একসাথে অনেক row insert করলে প্রতিটি আলাদাভাবে যাচাই হবে, আর একটিও অকৃতকার্য হলে পুরো statement ব্যর্থ হবে।",
+          "NEW দিয়ে যে row ঢুকতে যাচ্ছে তার মান পড়া যায়; BEFORE INSERT-এ OLD বলে কিছু নেই, কারণ আগের কোনো অবস্থাই ছিল না।",
+          "Age-এর বদলে DateOfBirth রাখা থাকলে তা থেকেই বয়স হিসাব করা উচিত, কারণ Age সময়ের সাথে পুরোনো হয়ে যায়।",
+          "UPDATE-ও আলাদা করে ঢাকতে হয় — শুধু INSERT trigger থাকলে কেউ পরে বয়স বদলে 3 করে দিতে পারবে।",
+          "CHECK constraint দিয়েও সরল সীমাটা করা যেত এবং সেটিই সহজ; trigger লাগে যখন বার্তা নিজের মতো দিতে হয় বা হিসাব জটিল হয়।"
+        ],
+        "code": "-- মূল trigger\nDELIMITER $$\n\nCREATE TRIGGER trg_student_min_age\nBEFORE INSERT ON Student           -- row বসার আগেই যাচাই\nFOR EACH ROW                       -- প্রতিটি row আলাদাভাবে\nBEGIN\n    IF NEW.Age < 5 THEN\n        SIGNAL SQLSTATE '45000'\n            SET MESSAGE_TEXT = 'Student must be at least 5 years old';\n    END IF;\nEND$$\n\nDELIMITER ;\n\n\n-- আচরণ\nINSERT INTO Student (StudentID, Name, Age) VALUES (1, 'Rahim', 7);   -- ঠিক আছে\n\nINSERT INTO Student (StudentID, Name, Age) VALUES (2, 'Karim', 4);\n-- ERROR 1644 (45000): Student must be at least 5 years old\n-- row ঢোকেনি\n\n\n-- Age না রেখে DateOfBirth রাখলে\nDELIMITER $$\nCREATE TRIGGER trg_student_min_age_dob\nBEFORE INSERT ON Student\nFOR EACH ROW\nBEGIN\n    IF TIMESTAMPDIFF(YEAR, NEW.DateOfBirth, CURDATE()) < 5 THEN\n        SIGNAL SQLSTATE '45000'\n            SET MESSAGE_TEXT = 'Student must be at least 5 years old';\n    END IF;\nEND$$\nDELIMITER ;\n\n\n-- UPDATE-ও ঢাকতে একই যাচাই আলাদা trigger-এ দিতে হয়\n-- সরল সীমা হলে CHECK constraint-ই যথেষ্ট\nALTER TABLE Student ADD CONSTRAINT chk_age CHECK (Age >= 5);",
+        "codeLang": "sql",
+        "diagram": "INSERT INTO Student VALUES (2, 'Karim', 4);\n\n        │\n        ▼\n  ┌─────────────────────────┐\n  │ BEFORE INSERT trigger   │   row এখনো টেবিলে বসেনি\n  └───────────┬─────────────┘\n              │\n              ▼\n        NEW.Age < 5 ?\n              │\n      ┌───────┴────────┐\n      │                │\n    TRUE             FALSE\n      │                │\n      ▼                ▼\n  SIGNAL '45000'   row টেবিলে বসল\n      │\n      ▼\n  ERROR 1644\n  পুরো INSERT বাতিল\n\n\nBEFORE বনাম AFTER\n\n  BEFORE INSERT   যাচাই ও সংশোধনের জায়গা, row তখনো বসেনি\n  AFTER INSERT    হিসাব রাখার জায়গা, row ইতিমধ্যে বসে গেছে\n\n  আটকাতে হলে BEFORE, কারণ AFTER-এ আটকানো মানে বসে যাওয়া row আবার তুলে ফেলা",
+        "mistakes": [
+          [
+            "AFTER INSERT ব্যবহার করা",
+            "তখন row বসে যায়, আটকাতে হলে BEFORE লাগে"
+          ],
+          [
+            "শুধু INSERT ঢাকা",
+            "UPDATE-এও একই যাচাই না দিলে পরে বয়স বদলে নিয়ম ভাঙা যায়"
+          ]
+        ],
+        "mnemonic": "আটকাতে হলে BEFORE, আর আটকানোর ভাষা SIGNAL।"
+      }
+    },
+    {
+      "id": "db_ex_111",
+      "q": "একটি employee management system-এ salary update করা যায়। Transaction T1 একজন employee-এর salary Tk. 50,000 থেকে Tk. 60,000 করল, কিন্তু এখনো commit করেনি। T1 commit করার আগেই Transaction T2 সেই updated salary পড়ে monthly payroll তৈরি করল। পরে T1 rollback হয়ে গেল।\n\nকোন concurrency problem ঘটল?",
+      "tags": [
+        "transaction",
+        "concurrency",
+        "dirty-read",
+        "isolation-level"
+      ],
+      "answer": {
+        "summary": [
+          "এটি Dirty Read, যার আরেক নাম uncommitted dependency।",
+          "T2 এমন একটি মান পড়েছে যা কখনো স্থায়ী হয়নি — rollback-এর পর 60,000 নামের মানটির কোনো অস্তিত্বই থাকে না, অথচ payroll ততক্ষণে সেটি ধরে তৈরি হয়ে গেছে।"
+        ],
+        "points": [
+          "Dirty read-এর সংজ্ঞা: একটি transaction অন্য transaction-এর এমন পরিবর্তন পড়ে ফেলে যা এখনো commit হয়নি।",
+          "এখানে ক্ষতিটা বাস্তব — payroll তৈরি হয়েছে 60,000 ধরে, অথচ database-এ বেতন 50,000-ই রয়ে গেল, ফলে হিসাব চিরতরে বেমানান হয়ে থাকল।",
+          "এটি ACID-এর Isolation ভাঙে; Atomicity ঠিকই ছিল, কারণ T1 সম্পূর্ণভাবেই rollback হয়েছে।",
+          "অন্য concurrency সমস্যাগুলোর সাথে গুলিয়ে ফেলা সহজ, তাই পার্থক্যটা স্পষ্ট থাকা দরকার:",
+          {
+            "sub": "Dirty read — commit না হওয়া মান পড়া, এখানে এটাই ঘটেছে।"
+          },
+          {
+            "sub": "Non-repeatable read — একই row দুবার পড়ে দুই রকম মান পাওয়া, কারণ মাঝখানে কেউ commit করে ফেলেছে।"
+          },
+          {
+            "sub": "Phantom read — একই শর্তে দুবার query করে ভিন্ন সংখ্যক row পাওয়া, কারণ মাঝখানে নতুন row ঢুকেছে।"
+          },
+          {
+            "sub": "Lost update — দুজন একই row বদলায় এবং একজনের পরিবর্তন চাপা পড়ে হারিয়ে যায়।"
+          },
+          "প্রতিকার — isolation level বাড়ানো:",
+          {
+            "sub": "READ UNCOMMITTED-এ dirty read ঘটতে পারে; এটাই একমাত্র level যেখানে এটি অনুমোদিত।"
+          },
+          {
+            "sub": "READ COMMITTED বা তার উপরে হলে T2-কে অপেক্ষা করতে হতো, অথবা পুরোনো committed মান 50,000 পেত।"
+          },
+          {
+            "sub": "ভেতরে কাজ করে lock — T1-এর exclusive lock ছাড়ার আগে T2 ঐ row পড়তে পারে না।"
+          },
+          {
+            "sub": "MVCC ব্যবহারকারী database-এ T2 অপেক্ষা না করে শেষ committed snapshot অর্থাৎ 50,000 পড়ে ফেলে।"
+          },
+          "একটি পার্শ্বপ্রতিক্রিয়াও আছে: T1 rollback হলে তার উপর নির্ভরশীল T2-কেও বাতিল করতে হয়, একে cascading rollback বলে।"
+        ],
+        "diagram": "TIMELINE\n\n  time      T1  (salary update)              T2  (payroll)\n  ────      ──────────────────────           ────────────────────────\n   t1       BEGIN\n   t2       read  Salary = 50000\n   t3       write Salary = 60000\n            (commit হয়নি)\n   t4                                        BEGIN\n   t5                                        read Salary  ->  60000\n                                             ▲\n                                             └─ DIRTY READ, মানটি এখনো\n                                                committed নয়\n   t6                                        payroll তৈরি (60000 ধরে)\n   t7                                        COMMIT\n   t8       ROLLBACK\n            Salary আবার 50000\n\n\n  শেষ অবস্থা\n\n  salary in database  :  50000\n  salary used in payroll :  60000\n                         অমিল, অথচ কোনো transaction ব্যর্থ হয়নি\n\n\nISOLATION LEVEL কী ঠেকায়\n\n  level               dirty read   non-repeatable   phantom\n  -----------------   ----------   --------------   -------\n  READ UNCOMMITTED       হয়            হয়            হয়\n  READ COMMITTED         না             হয়            হয়\n  REPEATABLE READ        না             না             হয়\n  SERIALIZABLE           না             না             না\n\n  READ COMMITTED হলেই এই সমস্যা ঘটত না",
+        "mistakes": [
+          [
+            "একে lost update বলা",
+            "lost update-এ একজনের লেখা চাপা পড়ে; এখানে সমস্যা পড়ায়, লেখায় নয়"
+          ],
+          [
+            "Atomicity ভেঙেছে বলা",
+            "T1 পুরোপুরি rollback হয়েছে, তাই Atomicity ঠিক; ভেঙেছে Isolation"
+          ]
+        ],
+        "mnemonic": "commit না হওয়া মান পড়া মানেই dirty read।"
+      }
+    },
+    {
+      "id": "db_ex_110",
+      "q": "নিচের টেবিলগুলোর জন্য SQL query লিখুন।\n\n  Viewer(ViewerID, Name, Country)\n  Movie(MovieID, Title, Genre)\n  WatchHistory(ViewerID, MovieID, WatchDate)\n\n  (a) যারা \"Inception\" দেখেছে তাদের নাম বের করুন।\n  (b) viewer-দের নাম এবং তারা যে movie দেখেছে তা দেখান।\n  (c) যেসব movie কেউ কখনো দেখেনি সেগুলোর নাম বের করুন।\n  (d) যারা পাঁচটির বেশি movie দেখেছে তাদের নাম বের করুন।",
+      "tags": [
+        "sql",
+        "three-table-join",
+        "outer-join",
+        "group-by",
+        "having"
+      ],
+      "answer": {
+        "summary": [
+          "WatchHistory হলো bridge table — Viewer আর Movie-এর M:N সম্পর্ক ধরে রাখে, তাই বেশিরভাগ query তিন টেবিলের join।",
+          "(c) অনুপস্থিতির প্রশ্ন, তাই LEFT JOIN; (d) গোনার প্রশ্ন, তাই GROUP BY-এর সাথে HAVING।"
+        ],
+        "points": [
+          "(a) Title আছে Movie-তে, নাম আছে Viewer-এ, আর দুটিকে মেলায় WatchHistory — তাই তিনটিই join করতে হয়।",
+          {
+            "sub": "DISTINCT দরকার, কারণ কেউ একই movie একাধিক দিন দেখলে WatchHistory-তে একাধিক row থাকবে এবং নাম বারবার আসবে।"
+          },
+          "(b) একই তিন টেবিলের join, শুধু filter নেই।",
+          {
+            "sub": "যে viewer কিছুই দেখেনি সে বাদ পড়বে, কারণ INNER JOIN মিলহীন row রাখে না।"
+          },
+          "(c) \"কেউ দেখেনি\" — Movie থেকে LEFT JOIN করে যেখানে WatchHistory-তে মিল নেই সেগুলো নিতে হয়।",
+          {
+            "sub": "মিল না পেলে WatchHistory-এর column NULL হয়, আর সেই NULL-ই প্রমাণ যে movie-টি কেউ দেখেনি।"
+          },
+          {
+            "sub": "Movie-কেই বাঁ পাশে রাখতে হবে, কারণ সব movie ধরে রাখাই উদ্দেশ্য।"
+          },
+          "(d) গোনার কাজ, তাই viewer অনুসারে group করে count নিতে হয়।",
+          {
+            "sub": "COUNT(DISTINCT w.MovieID) লেখা জরুরি — একই movie দুবার দেখলে সেটিকে দুটি movie গোনা হবে না।"
+          },
+          {
+            "sub": "শর্তটি HAVING-এ বসবে, WHERE-এ নয়; WHERE চলে group হওয়ার আগে, তখন count-ই তৈরি হয়নি।"
+          },
+          {
+            "sub": "GROUP BY-তে ViewerID রাখা ভালো, কারণ দুজন viewer-এর নাম এক হলে Name দিয়ে group করলে তারা মিশে যেত।"
+          }
+        ],
+        "code": "-- (a) যারা \"Inception\" দেখেছে\nSELECT DISTINCT v.Name\nFROM   Viewer v\nJOIN   WatchHistory w ON v.ViewerID = w.ViewerID\nJOIN   Movie m        ON w.MovieID  = m.MovieID\nWHERE  m.Title = 'Inception';\n\n\n-- (b) viewer-এর নাম + যে movie দেখেছে\nSELECT v.Name, m.Title, w.WatchDate\nFROM   Viewer v\nJOIN   WatchHistory w ON v.ViewerID = w.ViewerID\nJOIN   Movie m        ON w.MovieID  = m.MovieID;\n\n\n-- (c) যেসব movie কেউ দেখেনি\nSELECT m.MovieID, m.Title\nFROM   Movie m\nLEFT JOIN WatchHistory w ON m.MovieID = w.MovieID\nWHERE  w.MovieID IS NULL;\n\n-- একই কাজ, NOT EXISTS দিয়ে\nSELECT m.MovieID, m.Title\nFROM   Movie m\nWHERE  NOT EXISTS (SELECT 1 FROM WatchHistory w WHERE w.MovieID = m.MovieID);\n\n\n-- (d) যারা পাঁচটির বেশি movie দেখেছে\nSELECT   v.ViewerID, v.Name, COUNT(DISTINCT w.MovieID) AS MoviesWatched\nFROM     Viewer v\nJOIN     WatchHistory w ON v.ViewerID = w.ViewerID\nGROUP BY v.ViewerID, v.Name\nHAVING   COUNT(DISTINCT w.MovieID) > 5;",
+        "codeLang": "sql",
+        "diagram": "টেবিল তিনটির সম্পর্ক\n\n  ┌────────────┐        ┌──────────────────┐        ┌────────────┐\n  │   VIEWER   │   1    │  WATCHHISTORY    │   N    │   MOVIE    │\n  │ ViewerID PK├───────►│ ViewerID   FK    │◄───────┤ MovieID PK │\n  │ Name       │    N   │ MovieID    FK    │   1    │ Title      │\n  │ Country    │        │ WatchDate        │        │ Genre      │\n  └────────────┘        └──────────────────┘        └────────────┘\n\n  Viewer আর Movie সরাসরি যুক্ত নয় — WatchHistory সেতু হিসেবে কাজ করে\n\n\n(d) HAVING কেন, WHERE কেন নয়\n\n  WatchHistory\n  ViewerID  MovieID\n  --------  -------\n  V01       M1\n  V01       M2\n  V01       M3\n  V01       M4\n  V01       M5\n  V01       M6\n  V02       M1\n  V02       M2\n\n  GROUP BY ViewerID করার পর\n\n  ViewerID   COUNT(DISTINCT MovieID)\n  --------   -----------------------\n  V01        6\n  V02        2\n\n  HAVING COUNT(...) > 5  প্রয়োগ করলে থাকে\n\n  V01        6\n\n\n  চলার ক্রম:  FROM -> JOIN -> WHERE -> GROUP BY -> HAVING -> SELECT\n\n  WHERE চলে group হওয়ার আগে, তখন count বলে কিছু নেই\n  HAVING চলে group হওয়ার পরে, তাই count নিয়ে শর্ত এখানেই বসে",
+        "mistakes": [
+          [
+            "(d)-তে WHERE COUNT(...) > 5 লেখা",
+            "COUNT তৈরি হয় group-এর পরে, তাই শর্ত HAVING-এ বসাতে হয়"
+          ],
+          [
+            "(a)-তে DISTINCT বাদ দেওয়া",
+            "একই movie একাধিক দিন দেখলে নাম একাধিকবার আসবে"
+          ]
+        ],
+        "mnemonic": "সেতু টেবিল ধরে join করো, গোনার শর্ত HAVING-এ বসাও।"
+      }
+    },
+    {
+      "id": "db_ex_109",
+      "q": "একটি bank-এর file-এ 500,000টি customer record আছে, যা Account Number অনুসারে sorted। প্রতিটি data block-এ 40টি record রাখা যায়। DBA search performance বাড়াতে Dense Index অথবা Sparse Index-এর কথা ভাবছেন।\n\nদুই ধরনের index-এর জন্য কতগুলো index entry লাগবে নির্ণয় করুন এবং কোনটি কম storage নেয় ব্যাখ্যা করুন।",
+      "tags": [
+        "indexing",
+        "dense-index",
+        "sparse-index",
+        "calculation"
+      ],
+      "answer": {
+        "summary": [
+          "Dense index প্রতিটি record-এর জন্য একটি entry রাখে, তাই 500,000টি entry লাগে।",
+          "Sparse index প্রতি block-এ একটি entry রাখে, তাই 500,000 ÷ 40 = 12,500টি entry লাগে — অর্থাৎ 40 গুণ কম storage।"
+        ],
+        "points": [
+          "Block সংখ্যা বের করা: 500,000 ÷ 40 = 12,500টি block।",
+          "Dense index: প্রতিটি search key-এর জন্য একটি করে entry, অর্থাৎ 500,000টি entry।",
+          "Sparse index: প্রতিটি block-এর প্রথম record-এর জন্য একটি করে entry, অর্থাৎ 12,500টি entry।",
+          "Sparse কম জায়গা নেয় কারণ সে প্রতিটি record নয়, প্রতিটি block চেনে।",
+          "Sparse কাজ করতে পারে শুধু একটি শর্তে — file-টি search key অনুসারে sorted হতে হবে।",
+          {
+            "sub": "এখানে file Account Number অনুসারে sorted, তাই sparse index ব্যবহার করা সম্ভব।"
+          },
+          {
+            "sub": "Sorted না হলে কোনো block-এ কোন key আছে তা অনুমান করার উপায় থাকত না, তখন dense ছাড়া উপায় নেই।"
+          },
+          "খোঁজার পদ্ধতিতেও পার্থক্য:",
+          {
+            "sub": "Dense-এ index-এ key পেলেই সরাসরি record-এর ঠিকানা মেলে।"
+          },
+          {
+            "sub": "Sparse-এ খোঁজা key-এর চেয়ে ছোট বা সমান সবচেয়ে বড় entry বের করে সেই block-এ গিয়ে ভেতরে খুঁজতে হয়, অর্থাৎ একটি বাড়তি block পড়তে হয়।"
+          },
+          "বিনিময়টা তাই storage বনাম সামান্য বাড়তি কাজ — আর সাধারণত sparse-ই জেতে।",
+          {
+            "sub": "ছোট index বেশি সম্ভাবনায় পুরোটাই memory-তে আঁটে, ফলে disk read কমে।"
+          },
+          {
+            "sub": "একটি block যেহেতু একবারেই পড়া হয়, তার ভেতরে খোঁজা প্রায় বিনামূল্যে — কারণ আসল খরচ disk I/O, CPU নয়।"
+          },
+          "Dense-এর একটি সুবিধা আছে: কোনো key আছে কি না তা শুধু index দেখেই বলা যায়, data block না ছুঁয়েই।"
+        ],
+        "table": {
+          "headers": [
+            "দিক",
+            "Dense Index",
+            "Sparse Index"
+          ],
+          "rows": [
+            [
+              "Entry কিসের জন্য",
+              "প্রতিটি record",
+              "প্রতিটি block"
+            ],
+            [
+              "Entry সংখ্যা",
+              "500,000",
+              "12,500"
+            ],
+            [
+              "আপেক্ষিক আকার",
+              "40 গুণ বড়",
+              "40 গুণ ছোট"
+            ],
+            [
+              "File sorted হওয়া",
+              "লাগে না",
+              "অবশ্যই লাগে"
+            ],
+            [
+              "Search-এ block পড়া",
+              "সরাসরি record",
+              "block পড়ে ভেতরে খোঁজা"
+            ],
+            [
+              "Key আছে কি না",
+              "index দেখেই বলা যায়",
+              "block না পড়ে বলা যায় না"
+            ],
+            [
+              "Memory-তে আঁটা",
+              "কঠিন",
+              "সহজ"
+            ]
+          ]
+        },
+        "diagram": "হিসাব\n\n  total records         =  500,000\n  records per block     =       40\n  total blocks          =  500,000 / 40  =  12,500\n\n  dense index entries   =  500,000        (প্রতি record-এ একটি)\n  sparse index entries  =   12,500        (প্রতি block-এ একটি)\n\n  ratio                 =  500,000 / 12,500  =  40 গুণ\n\n\nDENSE INDEX\n\n  index                    data blocks\n  ┌──────┬─────┐\n  │ A001 │  ●──┼──────────►┌──────────────────────┐\n  ├──────┼─────┤           │ BLOCK 1              │\n  │ A002 │  ●──┼──────────►│  A001  A002 … A040   │\n  ├──────┼─────┤           │  (40 records)        │\n  │  …   │  …  │           └──────────────────────┘\n  ├──────┼─────┤\n  │ A040 │  ●──┼──────────►\n  ├──────┼─────┤\n  │ A041 │  ●──┼──────────►┌──────────────────────┐\n  ├──────┼─────┤           │ BLOCK 2              │\n  │  …   │  …  │           │  A041  A042 … A080   │\n  └──────┴─────┘           └──────────────────────┘\n\n  প্রতিটি record-এর জন্য একটি করে entry  ->  500,000\n\n\nSPARSE INDEX\n\n  index                    data blocks\n  ┌──────┬─────┐\n  │ A001 │  ●──┼──────────►┌──────────────────────┐\n  ├──────┼─────┤           │ BLOCK 1              │\n  │ A041 │  ●──┼───┐       │  A001  A002 … A040   │\n  ├──────┼─────┤   │       └──────────────────────┘\n  │ A081 │  ●──┼─┐ │\n  └──────┴─────┘ │ └──────►┌──────────────────────┐\n                 │         │ BLOCK 2              │\n                 │         │  A041  A042 … A080   │\n                 │         └──────────────────────┘\n                 │\n                 └────────►┌──────────────────────┐\n                           │ BLOCK 3              │\n                           │  A081  A082 … A120   │\n                           └──────────────────────┘\n\n  প্রতিটি block-এর প্রথম key-এর জন্য একটি entry  ->  12,500\n\n\n  A055 খুঁজতে হলে\n\n  Dense  :  index-এ A055 পাওয়া যায়  ->  সরাসরি record\n  Sparse :  A055-এর চেয়ে ছোট বড় entry = A041  ->  BLOCK 2 পড়ে ভেতরে খোঁজা\n\n  উত্তর  :  Sparse index কম storage নেয়, 12,500 vs 500,000 entry",
+        "mistakes": [
+          [
+            "Sparse entry = 500,000 / 2 ধরা",
+            "sparse entry হয় block-প্রতি একটি, তাই record ÷ blocking factor"
+          ],
+          [
+            "Dense সবসময় দ্রুত ভাবা",
+            "dense বড় বলে বেশি disk read লাগে; ছোট sparse memory-তে থাকায় প্রায়ই দ্রুত"
+          ]
+        ],
+        "mnemonic": "Dense প্রতিটি record চেনে, sparse প্রতিটি block — তাই sparse ছোট।"
+      }
+    },
+    {
+      "id": "db_ex_108",
+      "q": "নিচের টেবিলগুলোর জন্য SQL query লিখুন।\n\n  Teacher(TeacherID, TeacherName, DeptID)\n  Department(DeptID, DeptName)\n  Course(CourseID, TeacherID)\n\n  (a) CSE department-এর teacher-দের দেখান।\n  (b) teacher-দের নাম তাদের department-এর নামসহ দেখান।\n  (c) যেসব teacher কোনো course পড়ান না তাদের বের করুন।",
+      "tags": [
+        "sql",
+        "join",
+        "outer-join",
+        "not-exists"
+      ],
+      "answer": {
+        "summary": [
+          "(a) ও (b) সাধারণ INNER JOIN, কারণ দুই টেবিলের মিল খোঁজা হচ্ছে।",
+          "(c) অনুপস্থিতির প্রশ্ন — \"কোনো course পড়ান না\" — তাই LEFT JOIN করে যেখানে মিল পাওয়া যায়নি সেগুলো ছেঁকে নিতে হয়।"
+        ],
+        "points": [
+          "(a) DeptName টেবিলে নেই, আছে DeptID; তাই Department-এর সাথে join করে নাম দিয়ে filter করতে হয়।",
+          {
+            "sub": "DeptID সরাসরি জানা থাকলে join ছাড়াই WHERE DeptID = 'CSE' লেখা যেত, কিন্তু নাম দিয়ে খুঁজতে join দরকার।"
+          },
+          "(b) দুই টেবিলের সরল INNER JOIN, DeptID মিলিয়ে।",
+          {
+            "sub": "কোনো teacher-এর DeptID যদি NULL হয়, INNER JOIN তাকে বাদ দেবে; সবাইকে চাইলে LEFT JOIN লাগত।"
+          },
+          "(c) এখানেই আসল চিন্তা — যা \"নেই\" তা সরাসরি খোঁজা যায় না।",
+          {
+            "sub": "LEFT JOIN সব teacher রাখে, আর Course-এ মিল না পেলে Course-এর column গুলো NULL হয়ে যায়।"
+          },
+          {
+            "sub": "সেই NULL-ই প্রমাণ যে ঐ teacher-এর কোনো course নেই, তাই WHERE c.CourseID IS NULL লিখলেই তালিকা পাওয়া যায়।"
+          },
+          {
+            "sub": "NOT EXISTS দিয়েও হয় এবং অনেকের কাছে পড়তে সহজ লাগে; বড় data-তে গতিও ভালো হয়।"
+          },
+          {
+            "sub": "NOT IN এড়ানো ভালো — subquery-র ফলে একটিও NULL থাকলে NOT IN পুরো তালিকা ফাঁকা করে দেয়, যা নীরব ভুল তৈরি করে।"
+          }
+        ],
+        "code": "-- (a) CSE department-এর teacher\nSELECT t.TeacherID, t.TeacherName\nFROM   Teacher t\nJOIN   Department d ON t.DeptID = d.DeptID\nWHERE  d.DeptName = 'CSE';\n\n\n-- (b) teacher-এর নাম + department-এর নাম\nSELECT t.TeacherName, d.DeptName\nFROM   Teacher t\nJOIN   Department d ON t.DeptID = d.DeptID;\n\n\n-- (c) যেসব teacher কোনো course পড়ান না\nSELECT t.TeacherID, t.TeacherName\nFROM   Teacher t\nLEFT JOIN Course c ON t.TeacherID = c.TeacherID\nWHERE  c.CourseID IS NULL;\n\n-- একই কাজ, NOT EXISTS দিয়ে\nSELECT t.TeacherID, t.TeacherName\nFROM   Teacher t\nWHERE  NOT EXISTS (SELECT 1 FROM Course c WHERE c.TeacherID = t.TeacherID);",
+        "codeLang": "sql",
+        "diagram": "(c) কোন teacher-এর কোনো course নেই\n\n  Teacher                        Course\n  ┌──────┬─────────┬────────┐    ┌──────────┬───────────┐\n  │ T01  │ Rahim   │ CSE    │    │ C101     │ T01       │\n  │ T02  │ Karim   │ CSE    │    │ C102     │ T01       │\n  │ T03  │ Sufia   │ EEE    │    │ C103     │ T03       │\n  └──────┴─────────┴────────┘    └──────────┴───────────┘\n\n  LEFT JOIN Course ON Teacher.TeacherID = Course.TeacherID\n\n  TeacherID  TeacherName  CourseID\n  ---------  -----------  --------\n  T01        Rahim        C101\n  T01        Rahim        C102\n  T02        Karim        NULL      ◄ কোনো course নেই\n  T03        Sufia        C103\n\n  WHERE c.CourseID IS NULL  প্রয়োগ করলে থাকে\n\n  T02        Karim\n\n\n  কেন LEFT JOIN\n\n  INNER JOIN  শুধু মিল পাওয়া row রাখে  ->  T02 হারিয়ে যেত\n  LEFT JOIN   বাঁ পাশের সব row রাখে    ->  T02 থাকে, ডান পাশ NULL\n\n  NULL-ই প্রমাণ যে মিল পাওয়া যায়নি",
+        "mistakes": [
+          [
+            "NOT IN দিয়ে (c) লেখা",
+            "subquery-তে একটি NULL থাকলেই NOT IN ফাঁকা ফল দেয়; NOT EXISTS নিরাপদ"
+          ],
+          [
+            "(c)-তে INNER JOIN ব্যবহার",
+            "INNER JOIN মিলহীন row ফেলে দেয়, অথচ সেগুলোই খোঁজা হচ্ছে"
+          ]
+        ],
+        "mnemonic": "যা নেই তা খুঁজতে LEFT JOIN করে NULL ধরো।"
+      }
+    },
+    {
+      "id": "db_ex_107",
+      "q": "একটি bank database-এ কোনো account-এর balance −$500-এর নিচে নামা ঠেকাতে হবে। Update-এর সময় এই নিয়ম স্বয়ংক্রিয়ভাবে প্রয়োগ করতে কোন SQL constraint সবচেয়ে উপযুক্ত?",
+      "tags": [
+        "check-constraint",
+        "integrity",
+        "declarative"
+      ],
+      "answer": {
+        "summary": [
+          "CHECK constraint — এটিই একমাত্র constraint যা একটি column-এর মানের উপর শর্ত বসাতে পারে।",
+          "শর্তটি হবে CHECK (Balance >= -500), আর database প্রতিটি INSERT ও UPDATE-এ নিজেই তা যাচাই করবে।"
+        ],
+        "points": [
+          "অন্য constraint গুলো এই কাজ পারে না, তাই CHECK-ই বেছে নিতে হয়:",
+          {
+            "sub": "NOT NULL শুধু ফাঁকা থাকা ঠেকায়, মানের সীমা বেঁধে দেয় না।"
+          },
+          {
+            "sub": "UNIQUE একই মান দুবার আসা ঠেকায়, কত বড় বা ছোট তা দেখে না।"
+          },
+          {
+            "sub": "PRIMARY KEY ও FOREIGN KEY সারির পরিচয় ও সম্পর্ক নিয়ে কাজ করে, মানের পরিসর নিয়ে নয়।"
+          },
+          "CHECK declarative — নিয়মটি schema-তেই লেখা থাকে, তাই যেকোনো application, script বা সরাসরি চালানো SQL সবার ক্ষেত্রেই সমানভাবে খাটে।",
+          "শর্ত ভাঙলে database পুরো statement বাতিল করে, ফলে আংশিকভাবে ভুল অবস্থায় data পৌঁছাতেই পারে না।",
+          "Trigger দিয়েও একই নিয়ম করা যেত, কিন্তু CHECK-ই উপযুক্ত:",
+          {
+            "sub": "কম code, ভুলের সুযোগ কম, আর নিয়মটি টেবিলের সংজ্ঞা পড়লেই চোখে পড়ে।"
+          },
+          {
+            "sub": "Optimizer পর্যন্ত CHECK-কে কাজে লাগাতে পারে, trigger-কে পারে না।"
+          },
+          {
+            "sub": "Trigger তখনই লাগে যখন শর্ত যাচাই করতে অন্য row বা অন্য টেবিল দেখা প্রয়োজন — CHECK সাধারণত একই row-এর মধ্যেই সীমাবদ্ধ।"
+          },
+          "সংস্করণ সতর্কতা: MySQL 8.0.16-এর আগে CHECK লেখা যেত কিন্তু নীরবে উপেক্ষা করা হতো, তাই পুরোনো server-এ trigger ছাড়া উপায় ছিল না।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Overdraft limit, সর্বনিম্ন বয়স, শতাংশ 0 থেকে 100-এর মধ্যে রাখা — সবই CHECK-এর কাজ।"
+          }
+        ],
+        "code": "-- টেবিল বানানোর সময়\nCREATE TABLE Account (\n    AccountNo  VARCHAR(20) PRIMARY KEY,\n    HolderName VARCHAR(100) NOT NULL,\n    Balance    DECIMAL(12,2) NOT NULL,\n    CONSTRAINT chk_min_balance CHECK (Balance >= -500)\n);\n\n-- আগে থেকে টেবিল থাকলে\nALTER TABLE Account\n    ADD CONSTRAINT chk_min_balance CHECK (Balance >= -500);\n\n\n-- আচরণ\nUPDATE Account SET Balance = -400 WHERE AccountNo = 'A100';   -- ঠিক আছে\n\nUPDATE Account SET Balance = -600 WHERE AccountNo = 'A100';\n-- ERROR 3819: Check constraint 'chk_min_balance' is violated\n-- পুরো statement বাতিল, balance আগের মানেই রয়ে গেল",
+        "codeLang": "sql",
+        "diagram": "CHECK (Balance >= -500)\n\n  অনুমোদিত পরিসর\n\n   -1000     -500        0       500      1000\n  ────┼────────┼─────────┼────────┼────────┼────►\n      │        │                                \n      │        └──────── এখান থেকে উপরে সব বৈধ\n      │\n      └─ এর নিচে সব বাতিল\n\n      ✗ বাতিল          ✓ অনুমোদিত\n  ◄────────────┤├──────────────────────────────►\n            -500\n\n\n  প্রতিটি UPDATE-এ যা ঘটে\n\n  UPDATE ... SET Balance = -400\n        │\n        ▼\n   CHECK যাচাই :  -400 >= -500  ->  TRUE\n        │\n        ▼\n   row লেখা হলো\n\n\n  UPDATE ... SET Balance = -600\n        │\n        ▼\n   CHECK যাচাই :  -600 >= -500  ->  FALSE\n        │\n        ▼\n   ERROR, statement বাতিল, row অপরিবর্তিত",
+        "mnemonic": "মানের সীমা বাঁধতে CHECK, পরিচয় বাঁধতে KEY।"
+      }
+    },
+    {
+      "id": "db_ex_106",
+      "q": "একটি university-তে অনেকগুলো department আছে। প্রতিটি department অনেক course offer করে এবং অনেক teacher নিয়োগ করে। প্রতিটি student একটি department-এর অধীনে থাকে, কিন্তু অনেক course-এ enroll করতে পারে। প্রতিটি course একাধিক teacher পড়াতে পারেন। প্রতিটি enrollment-এর জন্য system Semester, Section, Attendance এবং Grade সংরক্ষণ করে।\n\nসম্পূর্ণ ER Diagram আঁকুন।",
+      "tags": [
+        "er-diagram",
+        "cardinality",
+        "associative-entity",
+        "data-modelling"
+      ],
+      "answer": {
+        "summary": [
+          "চারটি entity — Department, Teacher, Student, Course — আর তাদের মধ্যে চারটি সম্পর্ক।",
+          "মূল বিষয় দুটি: Enroll একটি M:N সম্পর্ক যার নিজস্ব attribute আছে (Semester, Section, Attendance, Grade), আর Teaches-ও M:N।"
+        ],
+        "points": [
+          "1:N সম্পর্ক তিনটি, সবগুলোই Department থেকে শুরু:",
+          {
+            "sub": "Department offers Course — একটি department অনেক course দেয়, প্রতিটি course একটি department-এর।"
+          },
+          {
+            "sub": "Department employs Teacher — একটি department অনেক teacher রাখে।"
+          },
+          {
+            "sub": "Department has Student — প্রশ্নে বলা আছে student একটি department-এই থাকে।"
+          },
+          "M:N সম্পর্ক দুটি:",
+          {
+            "sub": "Student enrolls Course — একজন student অনেক course নেয়, একটি course-এ অনেক student থাকে।"
+          },
+          {
+            "sub": "Teacher teaches Course — একটি course একাধিক teacher পড়াতে পারেন।"
+          },
+          "Semester, Section, Attendance ও Grade কোনো একক entity-র বৈশিষ্ট্য নয়।",
+          {
+            "sub": "Grade শুধু student-এর নয়, শুধু course-এরও নয় — এটি নির্দিষ্ট student ও নির্দিষ্ট course-এর জোড়ার বৈশিষ্ট্য।"
+          },
+          {
+            "sub": "তাই এগুলো Enroll সম্পর্কের উপর বসে, একে relationship attribute বলে।"
+          },
+          "টেবিলে রূপান্তরের নিয়ম:",
+          {
+            "sub": "1:N সম্পর্ক আলাদা টেবিল চায় না — N দিকের টেবিলে foreign key বসালেই হয়।"
+          },
+          {
+            "sub": "M:N সম্পর্ক অবশ্যই আলাদা টেবিল চায়, কারণ কোনো এক পাশে foreign key বসিয়ে বহু-বহু সম্পর্ক রাখা অসম্ভব।"
+          },
+          {
+            "sub": "Enrollment টেবিলের key (StudentID, CourseID, Semester) — Semester যোগ করতে হয়, নইলে একই course পরের semester-এ আবার নেওয়া যাবে না।"
+          },
+          "Weak entity এখানে নেই, কারণ প্রতিটি entity-রই নিজস্ব স্বাধীন key আছে।"
+        ],
+        "diagram": "ER DIAGRAM  —  entity, relationship, cardinality\n\n                          ┌──────────────┐\n                          │  DEPARTMENT  │\n                          └──────┬───────┘\n            ┌────────────────────┼────────────────────┐\n            │ 1                  │ 1                  │ 1\n        <employs>            <offers>              <has>\n            │ N                  │ N                  │ N\n     ┌──────┴──────┐      ┌──────┴──────┐      ┌──────┴──────┐\n     │   TEACHER   │      │   COURSE    │      │   STUDENT   │\n     └──────┬──────┘      └──┬───────┬──┘      └──────┬──────┘\n            │ M              │ N     │ M              │ M\n            └──<teaches>─────┘       └──<enrolls>─────┘\n\n  <teaches>  M:N   একটি course একাধিক teacher পড়াতে পারেন\n  <enrolls>  M:N   একজন student অনেক course নেয়\n\n  <enrolls> সম্পর্কের নিজস্ব attribute : Semester, Section, Attendance, Grade\n  এগুলো কোনো একক entity-র নয়, student ও course জোড়ার বৈশিষ্ট্য\n\n\nRELATIONAL SCHEMA\n\n  Department ( DeptID, DeptName )\n\n  Teacher    ( TeacherID, TeacherName, Designation, DeptID )\n  Course     ( CourseID,  CourseName,  Credit,      DeptID )\n  Student    ( StudentID, StudentName, Session,     DeptID )\n                                                    ^^^^^^\n                                                    FK -> Department\n\n  Teaches    ( TeacherID, CourseID )\n               PK = দুটি একসাথে, দুটিই FK\n\n  Enrollment ( StudentID, CourseID, Semester, Section, Attendance, Grade )\n               PK = (StudentID, CourseID, Semester)\n\n  1:N তিনটি সম্পর্ক কেবল DeptID foreign key হিসেবে বসেছে\n  M:N দুটি সম্পর্ক Teaches ও Enrollment নামে আলাদা টেবিল হয়েছে",
+        "code": "CREATE TABLE Department (\n    DeptID   VARCHAR(10) PRIMARY KEY,\n    DeptName VARCHAR(60) NOT NULL\n);\n\nCREATE TABLE Student (\n    StudentID   VARCHAR(15) PRIMARY KEY,\n    StudentName VARCHAR(100) NOT NULL,\n    Session     VARCHAR(15),\n    DeptID      VARCHAR(10) NOT NULL,          -- 1:N, তাই এখানেই FK\n    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)\n);\n\nCREATE TABLE Course (\n    CourseID   VARCHAR(15) PRIMARY KEY,\n    CourseName VARCHAR(100) NOT NULL,\n    Credit     DECIMAL(3,1),\n    DeptID     VARCHAR(10) NOT NULL,\n    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)\n);\n\nCREATE TABLE Teacher (\n    TeacherID   VARCHAR(15) PRIMARY KEY,\n    TeacherName VARCHAR(100) NOT NULL,\n    Designation VARCHAR(50),\n    DeptID      VARCHAR(10) NOT NULL,\n    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)\n);\n\n-- M:N — আলাদা টেবিল ছাড়া উপায় নেই\nCREATE TABLE Teaches (\n    TeacherID VARCHAR(15),\n    CourseID  VARCHAR(15),\n    PRIMARY KEY (TeacherID, CourseID),\n    FOREIGN KEY (TeacherID) REFERENCES Teacher(TeacherID),\n    FOREIGN KEY (CourseID)  REFERENCES Course(CourseID)\n);\n\n-- M:N + relationship attribute\nCREATE TABLE Enrollment (\n    StudentID  VARCHAR(15),\n    CourseID   VARCHAR(15),\n    Semester   VARCHAR(15),\n    Section    VARCHAR(5),\n    Attendance DECIMAL(5,2),\n    Grade      VARCHAR(3),\n    PRIMARY KEY (StudentID, CourseID, Semester),   -- Semester না দিলে retake আটকে যায়\n    FOREIGN KEY (StudentID) REFERENCES Student(StudentID),\n    FOREIGN KEY (CourseID)  REFERENCES Course(CourseID)\n);",
+        "codeLang": "sql",
+        "mistakes": [
+          [
+            "Grade-কে Student বা Course টেবিলে রাখা",
+            "Grade জোড়ার বৈশিষ্ট্য, তাই Enrollment-এ বসে"
+          ],
+          [
+            "Enrollment-এর key কেবল (StudentID, CourseID) রাখা",
+            "তাতে একই course পরের semester-এ আর নেওয়া যায় না; Semester যোগ করতে হয়"
+          ]
+        ],
+        "mnemonic": "1:N হলে foreign key, M:N হলে নতুন টেবিল — আর জোড়ার তথ্য সেই নতুন টেবিলেই।"
+      }
+    },
+    {
+      "id": "db_ex_105",
+      "q": "DELETE, DROP এবং TRUNCATE-এর মধ্যে পার্থক্য লিখুন। উদাহরণসহ referential integrity constraint আলোচনা করুন।",
+      "tags": [
+        "dml",
+        "ddl",
+        "delete",
+        "truncate",
+        "drop",
+        "referential-integrity"
+      ],
+      "answer": {
+        "summary": [
+          "DELETE সারি মোছে, TRUNCATE সব সারি একসাথে ফেলে দেয়, আর DROP টেবিলটাকেই মুছে দেয়।",
+          "মূল পার্থক্য একটাই — DELETE হলো DML, অর্থাৎ প্রতিটি row আলাদা করে লেখা হয় ও ফিরিয়ে আনা যায়; বাকি দুটি DDL, যারা structure নিয়ে কাজ করে।"
+        ],
+        "points": [
+          "DELETE প্রতিটি row আলাদাভাবে মোছে এবং প্রতিটির জন্য log লেখে।",
+          {
+            "sub": "এজন্যই WHERE দেওয়া যায়, trigger চলে, আর ROLLBACK দিয়ে ফেরত আনা যায়।"
+          },
+          {
+            "sub": "এই কারণেই এটি ধীর, আর বড় টেবিলে log অনেক বড় হয়ে যায়।"
+          },
+          "TRUNCATE row ধরে না গিয়ে টেবিলের data page গুলোই ছেড়ে দেয়।",
+          {
+            "sub": "তাই WHERE দেওয়া যায় না — অংশ বেছে নেওয়ার সুযোগই নেই, হয় সব যাবে নয় কিছুই না।"
+          },
+          {
+            "sub": "row-level trigger চলে না, কারণ কোনো row আলাদা করে ছোঁয়া হয়নি।"
+          },
+          {
+            "sub": "AUTO_INCREMENT বা IDENTITY কাউন্টার 1-এ ফিরে যায়, DELETE-এ যা হয় না।"
+          },
+          "DROP টেবিলের সংজ্ঞাটাই মুছে দেয় — data, index, constraint, permission সব একসাথে যায়।",
+          {
+            "sub": "DROP-এর পর SELECT চালালে \"table does not exist\" আসে, অথচ TRUNCATE-এর পর খালি টেবিল পাওয়া যায়।"
+          },
+          "Referential integrity constraint হলো foreign key, যা নিশ্চিত করে child row সবসময় বিদ্যমান parent-কেই দেখায়।",
+          {
+            "sub": "এই নিয়মের কারণেই কোনো Department-কে Employee থাকা অবস্থায় মুছতে গেলে database বাধা দেয়।"
+          },
+          {
+            "sub": "TRUNCATE-এ বাধা আরও কড়া: টেবিলটি অন্য টেবিলের foreign key দ্বারা রেফারেন্স করা থাকলে MySQL ও PostgreSQL সরাসরি TRUNCATE করতেই দেয় না, এমনকি টেবিলটি খালি হলেও।"
+          },
+          {
+            "sub": "কারণ TRUNCATE row ধরে যাচাই করে না, তাই সে নিশ্চিত হতে পারে না যে কোনো নিয়ম ভাঙছে কি না।"
+          },
+          {
+            "sub": "DROP-ও একইভাবে আটকায়; জোর করতে হলে CASCADE লিখতে হয়, যা নির্ভরশীল constraint বা টেবিলগুলোকেও ফেলে দেয়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "দিক",
+            "DELETE",
+            "TRUNCATE",
+            "DROP"
+          ],
+          "rows": [
+            [
+              "ধরন",
+              "DML",
+              "DDL",
+              "DDL"
+            ],
+            [
+              "কী মোছে",
+              "বেছে নেওয়া row",
+              "সব row",
+              "পুরো টেবিল"
+            ],
+            [
+              "WHERE",
+              "দেওয়া যায়",
+              "যায় না",
+              "প্রযোজ্য নয়"
+            ],
+            [
+              "Structure",
+              "থাকে",
+              "থাকে",
+              "থাকে না"
+            ],
+            [
+              "Rollback",
+              "যায়",
+              "সাধারণত যায় না",
+              "সাধারণত যায় না"
+            ],
+            [
+              "Row trigger",
+              "চলে",
+              "চলে না",
+              "চলে না"
+            ],
+            [
+              "Identity counter",
+              "অপরিবর্তিত",
+              "reset হয়",
+              "প্রশ্নই নেই"
+            ],
+            [
+              "গতি",
+              "ধীর",
+              "খুব দ্রুত",
+              "দ্রুত"
+            ],
+            [
+              "FK দ্বারা রেফারেন্সড হলে",
+              "নিয়ম মেনে চলে",
+              "আটকে দেয়",
+              "CASCADE ছাড়া আটকায়"
+            ]
+          ]
+        },
+        "code": "-- DELETE — বেছে নিয়ে মোছা, ফেরানো যায়\nSTART TRANSACTION;\nDELETE FROM Employee WHERE DeptID = 'D02';\nROLLBACK;                    -- row গুলো ফিরে এল\n\n-- TRUNCATE — সব যাবে, WHERE বসানোই যায় না\nTRUNCATE TABLE Employee;\n-- TRUNCATE TABLE Employee WHERE ...;   ← syntax error\n\n-- DROP — টেবিলটাই নেই\nDROP TABLE Employee;\nSELECT * FROM Employee;      -- ERROR 1146: Table doesn't exist\n\n\n-- referential integrity\nCREATE TABLE Department (\n    DeptID   VARCHAR(10) PRIMARY KEY,\n    DeptName VARCHAR(50)\n);\n\nCREATE TABLE Employee (\n    EmpID   INT PRIMARY KEY,\n    EmpName VARCHAR(100),\n    DeptID  VARCHAR(10),\n    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)\n);\n\n-- অস্তিত্বহীন department-এ কর্মী ঢোকানো যাবে না\nINSERT INTO Employee VALUES (1, 'Rahim', 'D99');\n-- ERROR 1452: a foreign key constraint fails\n\n-- কর্মী থাকা অবস্থায় department মোছা যাবে না\nDELETE FROM Department WHERE DeptID = 'D01';\n-- ERROR 1451: a foreign key constraint fails\n\n-- Employee রেফারেন্স করে, তাই Department TRUNCATE-ও করা যাবে না\nTRUNCATE TABLE Department;\n-- ERROR 1701: Cannot truncate a table referenced in a foreign key constraint",
+        "codeLang": "sql",
+        "mistakes": [
+          [
+            "TRUNCATE-কে দ্রুততর DELETE ভাবা",
+            "TRUNCATE DDL — rollback নেই, trigger চলে না, counter reset হয়"
+          ],
+          [
+            "TRUNCATE-এর পর টেবিল হারিয়ে গেছে ভাবা",
+            "টেবিল থাকে, শুধু খালি হয়; হারায় DROP-এ"
+          ]
+        ],
+        "mnemonic": "DELETE বেছে মোছে, TRUNCATE খালি করে, DROP মুছে ফেলে।"
+      }
+    },
+    {
+      "id": "db_ex_104",
+      "q": "একটি database trigger লিখুন যা কোনো employee-এর salary update হলে স্বয়ংক্রিয়ভাবে পুরোনো salary-টি AuditTable-এ লিখে রাখে।",
+      "tags": [
+        "trigger",
+        "audit",
+        "plsql"
+      ],
+      "answer": {
+        "summary": [
+          "Trigger হলো টেবিলের সাথে বেঁধে রাখা code, যা নির্দিষ্ট ঘটনায় database নিজেই চালায় — application-কে মনে রাখতে হয় না।",
+          "এখানে AFTER UPDATE ব্যবহার হবে, কারণ update সফল হওয়ার পরই কেবল তা লিখে রাখা অর্থবহ।"
+        ],
+        "points": [
+          "AFTER বনাম BEFORE: BEFORE ব্যবহার হয় যাচাই বা সংশোধনের জন্য, AFTER ব্যবহার হয় ইতিমধ্যে ঘটে যাওয়া ঘটনার হিসাব রাখতে।",
+          "BEFORE-এ লিখলে update পরে ব্যর্থ হলেও audit row থেকে যেত, অর্থাৎ যা ঘটেনি তারও রেকর্ড তৈরি হতো।",
+          "OLD আর NEW দুটি বিশেষ row: OLD-এ update-এর আগের মান, NEW-এ পরের মান।",
+          "FOR EACH ROW লেখা জরুরি — একটি UPDATE statement যদি দশটি row ছোঁয়, trigger দশবার চলবে এবং দশটি audit row হবে।",
+          "IF OLD.Salary <> NEW.Salary শর্তটি না দিলে salary অপরিবর্তিত রেখে শুধু ঠিকানা বদলালেও audit row তৈরি হতো, ফলে log অকারণে ভারী হতো।",
+          "NULL সতর্কতা: SQL-এ NULL <> NULL সত্য নয়, তাই salary nullable হলে শর্তটি এমনভাবে লিখতে হয় যাতে NULL-ও ধরা পড়ে।",
+          "Trigger মূল transaction-এরই অংশ, তাই update rollback হলে audit row-ও rollback হয় — হিসাব কখনো বেমানান থাকে না।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Banking ও HR system-এ কে কখন কী বদলেছে তার প্রমাণ রাখতে।"
+          },
+          {
+            "sub": "Compliance audit, যেখানে বেতন পরিবর্তনের পূর্ণ ইতিহাস দেখাতে হয়।"
+          }
+        ],
+        "code": "-- 1. যেখানে ইতিহাস জমবে\nCREATE TABLE AuditTable (\n    AuditID    INT AUTO_INCREMENT PRIMARY KEY,\n    EmpID      INT,\n    OldSalary  DECIMAL(10,2),\n    NewSalary  DECIMAL(10,2),\n    ChangedBy  VARCHAR(100),\n    ChangedAt  TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\n\n-- 2. trigger (MySQL)\nDELIMITER $$\n\nCREATE TRIGGER trg_salary_audit\nAFTER UPDATE ON Employee          -- update সফল হওয়ার পরেই কেবল\nFOR EACH ROW                      -- প্রতিটি প্রভাবিত row-এর জন্য একবার\nBEGIN\n    IF OLD.Salary <> NEW.Salary THEN      -- বেতন সত্যিই বদলালে তবেই\n        INSERT INTO AuditTable (EmpID, OldSalary, NewSalary, ChangedBy)\n        VALUES (OLD.EmpID, OLD.Salary, NEW.Salary, CURRENT_USER());\n    END IF;\nEND$$\n\nDELIMITER ;\n\n\n-- 3. পরীক্ষা\nUPDATE Employee SET Salary = 60000 WHERE EmpID = 101;   -- আগে ছিল 50000\nSELECT * FROM AuditTable;\n-- 1 | 101 | 50000.00 | 60000.00 | root@localhost | 2026-09-12 11:04:22",
+        "codeLang": "sql",
+        "diagram": "UPDATE Employee SET Salary = 60000 WHERE EmpID = 101;\n\n  ধাপে ধাপে যা ঘটে\n\n  1. row খুঁজে বের হয়        EmpID 101, Salary 50000\n\n  2. UPDATE প্রয়োগ হয়\n                              OLD.Salary = 50000\n                              NEW.Salary = 60000\n\n  3. AFTER UPDATE trigger চালু হয়\n\n         OLD.Salary <> NEW.Salary ?\n         50000 <> 60000  ->  TRUE\n                │\n                ▼\n         INSERT INTO AuditTable\n\n  4. দুটি টেবিলের শেষ অবস্থা\n\n  Employee\n  ┌───────┬─────────┬──────────┐\n  │ EmpID │ EmpName │ Salary   │\n  ├───────┼─────────┼──────────┤\n  │ 101   │ Rahim   │ 60000.00 │\n  └───────┴─────────┴──────────┘\n\n  AuditTable\n  ┌─────────┬───────┬───────────┬───────────┬─────────────────────┐\n  │ AuditID │ EmpID │ OldSalary │ NewSalary │ ChangedAt           │\n  ├─────────┼───────┼───────────┼───────────┼─────────────────────┤\n  │ 1       │ 101   │ 50000.00  │ 60000.00  │ 2026-09-12 11:04:22 │\n  └─────────┴───────┴───────────┴───────────┴─────────────────────┘\n\n  update আর audit একই transaction-এ, তাই rollback হলে দুটোই ফিরে যায়",
+        "mistakes": [
+          [
+            "BEFORE UPDATE ব্যবহার করা",
+            "update ব্যর্থ হলেও audit row থেকে যেত; হিসাব রাখতে AFTER লাগে"
+          ],
+          [
+            "FOR EACH ROW বাদ দেওয়া",
+            "তখন বহু row-এর update-এ একটিমাত্র entry হতো, বাকি পরিবর্তন হারিয়ে যেত"
+          ]
+        ],
+        "mnemonic": "ঘটে যাওয়ার পর লিখতে হলে AFTER, আর প্রতিটি row ধরতে FOR EACH ROW।"
+      }
+    },
+    {
+      "id": "db_ex_103",
+      "q": "নিচের টেবিলগুলোর জন্য SQL query লিখুন।\n\n  Employee(EmpID, EmpName, DeptID, Salary)\n  Department(DeptID, DeptName)\n  Project(ProjectID, DeptID, ProjectName)\n\n  (a) যেসব employee-এর salary 60,000-এর বেশি তাদের দেখান।\n  (b) employee-দের নাম তাদের department-এর নামসহ দেখান।\n  (c) যেসব department-এ কোনো employee নেই সেগুলো বের করুন।\n  (d) প্রতিটি department-এর সর্বোচ্চ বেতনের employee দেখান।",
+      "tags": [
+        "sql",
+        "join",
+        "outer-join",
+        "correlated-subquery",
+        "aggregate"
+      ],
+      "answer": {
+        "summary": [
+          "চারটি query চারটি আলাদা ধারণা চায়: সাধারণ filter, inner join, \"নেই\" খোঁজা, আর group-প্রতি সর্বোচ্চ।",
+          "সবচেয়ে জরুরি দুটি বিষয় — \"কিছু নেই\" খুঁজতে LEFT JOIN ব্যবহার হয়, আর group-প্রতি সর্বোচ্চ বের করতে correlated subquery লাগে।"
+        ],
+        "points": [
+          "(a) শুধু একটি শর্ত, তাই সরল WHERE যথেষ্ট।",
+          "(b) দুই টেবিলের মিল চাই, তাই DeptID ধরে INNER JOIN।",
+          {
+            "sub": "INNER JOIN বলেই যে employee-এর DeptID NULL, সে বাদ পড়বে।"
+          },
+          "(c) \"কোনো employee নেই\" — এটি অনুপস্থিতির প্রশ্ন, সাধারণ JOIN দিয়ে হয় না।",
+          {
+            "sub": "LEFT JOIN সব department রাখে, আর employee না থাকলে ডান পাশের column গুলো NULL হয়।"
+          },
+          {
+            "sub": "তাই WHERE e.EmpID IS NULL ঠিক সেই department গুলোই ছেঁকে আনে যাদের কোনো employee নেই।"
+          },
+          {
+            "sub": "শর্তটি অবশ্যই WHERE-এ বসবে, ON-এ নয় — ON-এ বসালে LEFT JOIN-এর অর্থই বদলে যায় এবং সব department ফিরে আসে।"
+          },
+          {
+            "sub": "NOT EXISTS দিয়েও একই কাজ হয় এবং পড়তে পরিষ্কার লাগে।"
+          },
+          "(d) প্রতিটি department-এ আলাদা করে সর্বোচ্চ বেতন মেলাতে হবে, তাই correlated subquery।",
+          {
+            "sub": "ভেতরের query বাইরের row-এর DeptID ব্যবহার করে, অর্থাৎ প্রতিটি row-এর জন্য তার নিজের department-এর সর্বোচ্চ বেতন হিসাব হয়।"
+          },
+          {
+            "sub": "সমান সর্বোচ্চ বেতনের একাধিক জন থাকলে সবাইকেই দেখাবে, যা সাধারণত কাম্য।"
+          },
+          {
+            "sub": "শুধু GROUP BY DeptID দিয়ে MAX(Salary) নিলে সর্বোচ্চ বেতনটা পাওয়া যায়, কিন্তু সেটা কার তা জানা যায় না — এটাই এখানকার প্রধান ফাঁদ।"
+          }
+        ],
+        "code": "-- (a) salary 60,000-এর বেশি\nSELECT EmpID, EmpName, DeptID, Salary\nFROM   Employee\nWHERE  Salary > 60000;\n\n\n-- (b) employee-এর নাম + department-এর নাম\nSELECT e.EmpName, d.DeptName\nFROM   Employee e\nJOIN   Department d ON e.DeptID = d.DeptID;\n\n\n-- (c) যেসব department-এ কোনো employee নেই\nSELECT d.DeptID, d.DeptName\nFROM   Department d\nLEFT JOIN Employee e ON d.DeptID = e.DeptID\nWHERE  e.EmpID IS NULL;          -- মিল না পেলে ডান পাশ NULL হয়\n\n-- একই কাজ, NOT EXISTS দিয়ে\nSELECT d.DeptID, d.DeptName\nFROM   Department d\nWHERE  NOT EXISTS (SELECT 1 FROM Employee e WHERE e.DeptID = d.DeptID);\n\n\n-- (d) প্রতিটি department-এর সর্বোচ্চ বেতনের employee\nSELECT e.EmpID, e.EmpName, e.DeptID, e.Salary\nFROM   Employee e\nWHERE  e.Salary = (SELECT MAX(x.Salary)\n                   FROM   Employee x\n                   WHERE  x.DeptID = e.DeptID);",
+        "codeLang": "sql",
+        "diagram": "(c) LEFT JOIN দিয়ে \"কিছু নেই\" খোঁজা\n\n  Department                Employee\n  ┌────────┬──────────┐     ┌───────┬─────────┬────────┐\n  │ D01    │ Sales    │     │ E01   │ Rahim   │ D01    │\n  │ D02    │ HR       │     │ E02   │ Karim   │ D01    │\n  │ D03    │ Research │     └───────┴─────────┴────────┘\n  └────────┴──────────┘\n\n  LEFT JOIN এর ফল\n\n  DeptID  DeptName   EmpID   EmpName\n  ------  ---------  ------  -------\n  D01     Sales      E01     Rahim\n  D01     Sales      E02     Karim\n  D02     HR         NULL    NULL      ◄ কোনো employee নেই\n  D03     Research   NULL    NULL      ◄ কোনো employee নেই\n\n  WHERE e.EmpID IS NULL  প্রয়োগ করলে থাকে\n\n  D02     HR\n  D03     Research\n\n\n(d) correlated subquery কীভাবে কাজ করে\n\n  Employee\n  EmpID  EmpName  DeptID  Salary\n  -----  -------  ------  ------\n  E01    Rahim    D01     50000\n  E02    Karim    D01     72000\n  E03    Jamal    D02     65000\n  E04    Sufia    D02     65000\n\n  প্রতিটি row-এর জন্য তার নিজের department-এর MAX বের হয়\n\n  E01  ->  MAX(D01) = 72000   50000 = 72000 ?  NO   -> বাদ পড়ল\n  E02  ->  MAX(D01) = 72000   72000 = 72000 ?  YES  -> থাকল\n  E03  ->  MAX(D02) = 65000   65000 = 65000 ?  YES  -> থাকল\n  E04  ->  MAX(D02) = 65000   65000 = 65000 ?  YES  -> থাকল\n\n  সমান বেতন হলে দুজনকেই দেখায়, একজনকে বেছে নেয় না",
+        "mistakes": [
+          [
+            "(c)-তে শর্তটি ON-এ বসানো",
+            "WHERE-এ বসাতে হয়; ON-এ বসালে সব department ফিরে আসে"
+          ],
+          [
+            "(d)-তে GROUP BY DeptID + MAX(Salary) দিয়ে নাম চাওয়া",
+            "তাতে সর্বোচ্চ বেতন মেলে কিন্তু কার তা মেলে না; correlated subquery লাগে"
+          ]
+        ],
+        "mnemonic": "নেই খুঁজতে LEFT JOIN + IS NULL, group-প্রতি সর্বোচ্চ খুঁজতে correlated subquery।"
+      }
+    },
+    {
+      "id": "db_ex_102",
+      "q": "ON DELETE CASCADE, ON DELETE SET NULL এবং ON DELETE RESTRICT — এই তিনটির কার্যগত পার্থক্য বিস্তারিত লিখুন।",
+      "tags": [
+        "foreign-key",
+        "referential-integrity",
+        "on-delete"
+      ],
+      "answer": {
+        "summary": [
+          "Foreign key-এর কাজ হলো নিশ্চিত করা যে child row সবসময় একটি বিদ্যমান parent row-কেই দেখায়।",
+          "Parent মুছে ফেলতে গেলে সেই নিয়ম ভাঙার আশঙ্কা তৈরি হয়, আর ON DELETE ঠিক করে দেয় তখন database কী করবে — child-ও মুছবে, নাকি সম্পর্ক ছিঁড়ে দেবে, নাকি মুছতেই দেবে না।"
+        ],
+        "points": [
+          "CASCADE: parent মুছলে তার সব child row-ও একসাথে মুছে যায়।",
+          {
+            "sub": "উপযুক্ত যখন child-এর নিজস্ব কোনো অস্তিত্ব নেই, যেমন Order মুছলে তার OrderItem রেখে লাভ নেই।"
+          },
+          {
+            "sub": "বিপদ: ভুল একটি DELETE অনেক টেবিলে ছড়িয়ে পড়তে পারে, আর chain থাকলে ধাপে ধাপে আরও গভীরে যায়।"
+          },
+          "SET NULL: parent মুছলে child থেকে যায়, কিন্তু তার foreign key column NULL হয়ে যায়।",
+          {
+            "sub": "উপযুক্ত যখন সম্পর্কটা ঐচ্ছিক, যেমন Department উঠে গেলেও Employee-কে রেখে দিতে হবে।"
+          },
+          {
+            "sub": "শর্ত: ঐ foreign key column NOT NULL হতে পারবে না, নইলে database নিজেই কাজটা করতে পারবে না।"
+          },
+          "RESTRICT: child থাকলে parent মোছাই যাবে না, DELETE সাথে সাথে error দিয়ে ব্যর্থ হয়।",
+          {
+            "sub": "উপযুক্ত যখন দুর্ঘটনাজনিত মুছে ফেলা ঠেকানোই মূল উদ্দেশ্য, যেমন যে Customer-এর invoice আছে তাকে মুছতে না দেওয়া।"
+          },
+          {
+            "sub": "এটাই সবচেয়ে নিরাপদ আচরণ, তাই বেশিরভাগ database-এ কিছু না লিখলে এটিই বা এর সমতুল্য NO ACTION প্রয়োগ হয়।"
+          },
+          "RESTRICT আর NO ACTION-এর পার্থক্য সময়ের: RESTRICT সাথে সাথেই আটকায়, NO ACTION statement শেষে যাচাই করে — তাই deferred constraint-এ NO ACTION-কে মাঝপথে ঠিক করে নেওয়া যায়।",
+          "একই আচরণগুলো ON UPDATE-এও প্রযোজ্য, যখন parent-এর key-এর মান বদলায়।"
+        ],
+        "table": {
+          "headers": [
+            "দিক",
+            "CASCADE",
+            "SET NULL",
+            "RESTRICT"
+          ],
+          "rows": [
+            [
+              "Parent DELETE",
+              "সফল হয়",
+              "সফল হয়",
+              "ব্যর্থ হয়, error"
+            ],
+            [
+              "Child row",
+              "মুছে যায়",
+              "থেকে যায়",
+              "অপরিবর্তিত"
+            ],
+            [
+              "Child-এর FK",
+              "প্রশ্নই ওঠে না",
+              "NULL হয়ে যায়",
+              "অপরিবর্তিত"
+            ],
+            [
+              "FK column NOT NULL হলে",
+              "চলে",
+              "চলে না",
+              "চলে"
+            ],
+            [
+              "Data হারানোর ঝুঁকি",
+              "বেশি",
+              "কম",
+              "নেই"
+            ],
+            [
+              "উপযুক্ত সম্পর্ক",
+              "মালিকানা (Order → OrderItem)",
+              "ঐচ্ছিক (Employee → Dept)",
+              "সুরক্ষা (Customer → Invoice)"
+            ]
+          ]
+        },
+        "diagram": "শুরুর অবস্থা\n\n  Department (parent)                   Employee (child)\n  ┌────────┬──────────┐        ┌───────┬─────────┬────────┐\n  │ DeptID │ DeptName │        │ EmpID │ EmpName │ DeptID │\n  ├────────┼──────────┤        ├───────┼─────────┼────────┤\n  │ D01    │ Sales    │        │ E01   │ Rahim   │ D01    │\n  └────────┴──────────┘        │ E02   │ Karim   │ D01    │\n                               └───────┴─────────┴────────┘\n\n  চালানো হলো :  DELETE FROM Department WHERE DeptID = 'D01';\n\n\nON DELETE CASCADE\n\n  ┌───────────┬──────────┐        ┌───────────┬─────────┬────────┐\n  │ DeptID    │ DeptName │        │ EmpID     │ EmpName │ DeptID │\n  ├───────────┼──────────┤        ├───────────┼─────────┼────────┤\n  │ (no rows) │          │        │ (no rows) │         │        │\n  └───────────┴──────────┘        └───────────┴─────────┴────────┘\n\n  parent গেল, তার সাথে দুটি child row-ও গেল\n\n\nON DELETE SET NULL\n\n  ┌───────────┬──────────┐        ┌───────┬─────────┬────────┐\n  │ DeptID    │ DeptName │        │ EmpID │ EmpName │ DeptID │\n  ├───────────┼──────────┤        ├───────┼─────────┼────────┤\n  │ (no rows) │          │        │ E01   │ Rahim   │ NULL   │\n  └───────────┴──────────┘        │ E02   │ Karim   │ NULL   │\n                                  └───────┴─────────┴────────┘\n\n  কর্মীরা রয়ে গেল, শুধু department-এর সাথে যোগসূত্র ছিঁড়ল\n\n\nON DELETE RESTRICT\n\n  ERROR:  cannot delete — rows in Employee still reference D01\n\n  ┌────────┬──────────┐        ┌───────┬─────────┬────────┐\n  │ DeptID │ DeptName │        │ EmpID │ EmpName │ DeptID │\n  ├────────┼──────────┤        ├───────┼─────────┼────────┤\n  │ D01    │ Sales    │        │ E01   │ Rahim   │ D01    │\n  └────────┴──────────┘        │ E02   │ Karim   │ D01    │\n                               └───────┴─────────┴────────┘\n\n  কিছুই বদলায়নি, DELETE-টাই হতে দেওয়া হয়নি",
+        "code": "-- child মুছে যাবে parent-এর সাথে\nFOREIGN KEY (OrderID)  REFERENCES Orders(OrderID)      ON DELETE CASCADE\n\n-- child থাকবে, সম্পর্ক NULL হবে  (DeptID অবশ্যই nullable)\nFOREIGN KEY (DeptID)   REFERENCES Department(DeptID)   ON DELETE SET NULL\n\n-- child থাকলে parent মোছাই যাবে না\nFOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID) ON DELETE RESTRICT",
+        "codeLang": "sql",
+        "mnemonic": "CASCADE সঙ্গে নেয়, SET NULL সম্পর্ক ছেঁড়ে, RESTRICT দরজা আটকায়।"
+      }
+    },
+    {
+      "id": "db_ex_101",
+      "q": "একটি school library register নিচের column গুলো দিয়ে data রাখে: StudentID, StudentName, BookID, BookTitle, ReturnDate। Primary key হলো composite pair (StudentID, BookID)।\n\nসমস্যা হলো, কোনো student এখনো বই না নিলে তার নাম system-এ ঢোকানো যায় না। আবার কোনো বইয়ের title বদলালে সেই বই যত row-তে আছে সবগুলোতে হাতে হাতে বদলাতে হয়।\n\nএই structure-কে 2nd Normal Form (2NF)-এ decompose করুন।",
+      "tags": [
+        "normalization",
+        "2nf",
+        "partial-dependency",
+        "decomposition"
+      ],
+      "answer": {
+        "summary": [
+          "টেবিলটি 1NF-এ আছে কিন্তু 2NF-এ নেই, কারণ কিছু column composite key-এর পুরোটার উপর নয়, কেবল একটি অংশের উপর নির্ভর করে — একে partial dependency বলে।",
+          "তিনটি টেবিলে ভাগ করলে সমস্যা মেটে: Student, Book আর Borrow।"
+        ],
+        "points": [
+          "2NF-এর শর্ত: টেবিল 1NF-এ থাকবে এবং কোনো non-key column primary key-এর কেবল একটি অংশের উপর নির্ভর করবে না।",
+          "এখানে key হলো (StudentID, BookID), তাই নির্ভরতা তিন রকম:",
+          {
+            "sub": "StudentID → StudentName — key-এর শুধু প্রথম অংশের উপর, তাই partial dependency।"
+          },
+          {
+            "sub": "BookID → BookTitle — key-এর শুধু দ্বিতীয় অংশের উপর, তাই partial dependency।"
+          },
+          {
+            "sub": "(StudentID, BookID) → ReturnDate — পুরো key লাগে, এটাই একমাত্র বৈধ নির্ভরতা।"
+          },
+          "প্রশ্নে বলা দুটি সমস্যা আসলে এই partial dependency-রই ফল:",
+          {
+            "sub": "Insertion anomaly — StudentName রাখা আছে borrow row-তে, তাই বই না নিলে ছাত্রের নামই বসানো যায় না।"
+          },
+          {
+            "sub": "Update anomaly — BookTitle প্রতিটি borrow row-তে আলাদা করে লেখা, তাই title বদলালে সব row বদলাতে হয়।"
+          },
+          "সমাধান: যে column যে key-এর উপর নির্ভর করে, তাকে সেই key-এর নিজের টেবিলে সরিয়ে নেওয়া।",
+          "Decomposition-এর পর:",
+          {
+            "sub": "Student(StudentID, StudentName) — বই না নিয়েও ছাত্র ঢোকানো যায়।"
+          },
+          {
+            "sub": "Book(BookID, BookTitle) — title একবারই লেখা, এক জায়গায় বদলালেই হলো।"
+          },
+          {
+            "sub": "Borrow(StudentID, BookID, ReturnDate) — শুধু ধার নেওয়ার ঘটনাটুকু রাখে।"
+          },
+          "Borrow-এর StudentID ও BookID এখন foreign key, তাই অস্তিত্বহীন ছাত্র বা বইয়ের নামে ধার তোলা যাবে না।",
+          "Decomposition lossless — Borrow-কে Student ও Book-এর সাথে join করলে হুবহু আগের টেবিলটাই ফিরে পাওয়া যায়, কোনো তথ্য হারায় না।",
+          "টেবিল তিনটি 3NF-এও আছে, কারণ কোনো non-key column অন্য non-key column-এর উপর নির্ভর করে না।"
+        ],
+        "diagram": "BEFORE  —  one table, two partial dependencies\n\n  LibraryRegister ( StudentID, BookID, StudentName, BookTitle, ReturnDate )\n\n  PK = (StudentID, BookID)\n\n  StudentID            -> StudentName     PARTIAL   key-এর অংশমাত্র\n  BookID               -> BookTitle       PARTIAL   key-এর অংশমাত্র\n  (StudentID, BookID)  -> ReturnDate      FULL      পুরো key লাগে\n\n  ┌───────────┬────────┬─────────────┬──────────────────┬────────────┐\n  │ StudentID │ BookID │ StudentName │ BookTitle        │ ReturnDate │\n  ├───────────┼────────┼─────────────┼──────────────────┼────────────┤\n  │ S01       │ B10    │ Rahim       │ Database Systems │ 2026-03-10 │\n  │ S01       │ B11    │ Rahim       │ Operating System │ 2026-03-12 │\n  │ S02       │ B10    │ Karim       │ Database Systems │ 2026-03-15 │\n  └───────────┴────────┴─────────────┴──────────────────┴────────────┘\n\n  Rahim তিনবারের মধ্যে দুবার, Database Systems দুবার লেখা হয়েছে\n\n\nAFTER  —  2NF, three tables\n\n  Student                          Book\n  ┌───────────┬─────────────┐      ┌────────┬──────────────────┐\n  │ StudentID │ StudentName │      │ BookID │ BookTitle        │\n  ├───────────┼─────────────┤      ├────────┼──────────────────┤\n  │ S01       │ Rahim       │      │ B10    │ Database Systems │\n  │ S02       │ Karim       │      │ B11    │ Operating System │\n  └───────────┴─────────────┘      └────────┴──────────────────┘\n\n  Borrow\n  ┌───────────┬────────┬────────────┐\n  │ StudentID │ BookID │ ReturnDate │\n  ├───────────┼────────┼────────────┤\n  │ S01       │ B10    │ 2026-03-10 │\n  │ S01       │ B11    │ 2026-03-12 │\n  │ S02       │ B10    │ 2026-03-15 │\n  └───────────┴────────┴────────────┘\n\n  PK = (StudentID, BookID)\n  FK   StudentID -> Student.StudentID\n  FK   BookID    -> Book.BookID\n\n  title এখন এক জায়গায়, তাই একবার বদলালেই সব জায়গায় বদলে যায়",
+        "code": "CREATE TABLE Student (\n    StudentID   VARCHAR(10) PRIMARY KEY,\n    StudentName VARCHAR(100) NOT NULL\n);\n\nCREATE TABLE Book (\n    BookID    VARCHAR(10) PRIMARY KEY,\n    BookTitle VARCHAR(200) NOT NULL\n);\n\nCREATE TABLE Borrow (\n    StudentID  VARCHAR(10),\n    BookID     VARCHAR(10),\n    ReturnDate DATE,\n    PRIMARY KEY (StudentID, BookID),\n    FOREIGN KEY (StudentID) REFERENCES Student(StudentID),\n    FOREIGN KEY (BookID)    REFERENCES Book(BookID)\n);",
+        "codeLang": "sql",
+        "mistakes": [
+          [
+            "ReturnDate-কেও আলাদা টেবিলে সরানো",
+            "ReturnDate পুরো key-এর উপর নির্ভরশীল, তাই Borrow-এ থাকাই ঠিক"
+          ],
+          [
+            "2NF মানেই সব repetition শেষ ধরা",
+            "2NF শুধু partial dependency সরায়; transitive dependency সরাতে 3NF লাগে"
+          ]
+        ],
+        "mnemonic": "Key-এর অংশের উপর ঝুলে থাকা column আলাদা টেবিলে যায়।"
+      }
+    }
+  ]
 }

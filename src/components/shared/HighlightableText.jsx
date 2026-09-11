@@ -11,7 +11,12 @@ export default function HighlightableText({ text, block, highlights, as: Tag = '
   const s = text == null ? '' : String(text)
   const segs = highlights?.length ? segmentsFor(s, highlights) : null
 
-  if (!segs || segs.length === 1) {
+  // One segment means either nothing is highlighted, or ONE highlight covers the
+  // whole block — so test for the mark, not the count. Testing the count dropped
+  // every whole-line highlight: it rendered as plain text, which left no <mark>
+  // to tap, so the highlight could not be removed or even seen, and each retry
+  // saved another invisible duplicate row.
+  if (!segs || (segs.length === 1 && !segs[0].ids)) {
     return <Tag data-hl-block={block} {...rest}>{s}</Tag>
   }
   return (

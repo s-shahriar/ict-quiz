@@ -35,14 +35,14 @@
   "extra": {
     "computer_fundamental": 0,
     "computer_network": 0,
-    "database": 0,
-    "dsa": 12,
+    "database": 15,
+    "dsa": 5,
     "information_security": 0,
     "linux": 0,
     "oop": 0,
     "operating_system": 0,
     "server": 0,
-    "software_engineering": 0
+    "software_engineering": 1
   },
   "viva": {
     "banking": 8,

@@ -1,4 +1,89 @@
 {
   "category": "software_engineering",
-  "questions": []
+  "questions": [
+    {
+      "id": "se_ex_101",
+      "q": "একটি E-Commerce Shop-এর জন্য Use Case Diagram design করুন।",
+      "tags": [
+        "uml",
+        "use-case-diagram",
+        "requirements",
+        "actors"
+      ],
+      "answer": {
+        "summary": [
+          "Use case diagram দেখায় কে system ব্যবহার করে (actor) এবং system তাদের জন্য কী কী করে (use case) — ভেতরে কীভাবে করে তা নয়।",
+          "E-commerce-এ প্রধান actor চারজন: Customer, Admin, Payment Gateway আর Delivery Service; শেষ দুটি বাইরের system, মানুষ নয়।"
+        ],
+        "points": [
+          "Actor হলো system-এর বাইরের যে কেউ বা যা কিছু system-এর সাথে কথা বলে; মানুষ হতেই হবে এমন নয়।",
+          {
+            "sub": "Payment Gateway ও Delivery Service বাইরের system, তাই এদেরও actor ধরা হয়।"
+          },
+          "Use case হলো ব্যবহারকারীর দৃষ্টিতে একটি সম্পূর্ণ ও অর্থবহ কাজ, যার শেষে সে দৃশ্যমান কিছু পায়।",
+          {
+            "sub": "\"Place Order\" একটি use case, কিন্তু \"Validate Address\" নয় — ওটি ভেতরের ধাপ, আলাদা করে কারও কাজে লাগে না।\""
+          },
+          "দুটি সম্পর্ক মনে রাখা জরুরি, এবং এদের দিক উল্টে ফেলাই সবচেয়ে সাধারণ ভুল:",
+          {
+            "sub": "include মানে বাধ্যতামূলক অংশ — Place Order সবসময় Make Payment ডাকে, তাই তীর Place Order থেকে Make Payment-এর দিকে।"
+          },
+          {
+            "sub": "extend মানে শর্তসাপেক্ষ বাড়তি আচরণ — Apply Coupon কখনো কখনো ঘটে, তাই তীর Apply Coupon থেকে Place Order-এর দিকে, অর্থাৎ উল্টো দিকে।"
+          },
+          {
+            "sub": "সহজ সূত্র: include-এর তীর মূল কাজ থেকে বেরোয়, extend-এর তীর মূল কাজের দিকে ঢোকে।"
+          },
+          "Generalization দিয়ে বোঝানো যায় যে Admin আসলে Registered User-এর একটি বিশেষ রূপ, তাই সে সাধারণ কাজগুলোও করতে পারে।",
+          "Diagram-এ যা থাকে না তাও মনে রাখা দরকার — কোনো ক্রম, কোনো শর্ত, কোনো database বা screen-এর নকশা এখানে দেখানো হয় না।",
+          {
+            "sub": "ক্রম দেখাতে হলে sequence বা activity diagram লাগে।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Requirement পর্যায়ে গ্রাহকের সাথে কথা বলার ভাষা হিসেবে, কারণ ছবিটি অ-প্রযুক্তিবিদও পড়তে পারেন।"
+          },
+          {
+            "sub": "প্রতিটি use case পরে এক বা একাধিক test case-এ রূপ নেয়।"
+          }
+        ],
+        "diagram": "USE CASE DIAGRAM  —  E-Commerce Shop\n\n  ┌──────────────────────── E-COMMERCE SYSTEM ───────────────────────┐\n  │                                                                  │\n  │   ( Browse / Search Products )      ( Manage Products )          │\n  │                                                                  │\n  │   ( View Product Details )          ( Manage Orders )            │\n  │                                                                  │\n  │   ( Register / Login )              ( Manage Users )             │\n  │                                                                  │\n  │   ( Add to Cart )                   ( View Reports )             │\n  │                                                                  │\n  │   ( Place Order )                   ( Update Shipping Status )   │\n  │                                                                  │\n  │   ( Make Payment )                                               │\n  │                                                                  │\n  │   ( Apply Coupon )                                               │\n  │                                                                  │\n  │   ( Track Order )                                                │\n  │                                                                  │\n  │   ( Cancel Order )                                               │\n  │                                                                  │\n  │   ( Write Review )                                               │\n  │                                                                  │\n  └──────────────────────────────────────────────────────────────────┘\n\n       O               O                 O                  O\n      /|\\             /|\\               /|\\                /|\\\n      / \\             / \\               / \\                / \\\n    Customer        Admin        Payment Gateway    Delivery Service\n\n\nACTOR অনুযায়ী ভাগ\n\n  Customer          বাঁ পাশের সবগুলো use case\n  Admin             ডান পাশের প্রথম চারটি\n  Payment Gateway   Make Payment\n  Delivery Service  Update Shipping Status\n\n\nRELATIONSHIPS\n\n  ( Add to Cart )   ──────────────────►  ( Place Order )\n\n  ( Place Order )   ─── «include» ────►  ( Make Payment )\n       base                                   included\n       order করলে payment হবেই, ব্যতিক্রম নেই\n\n  ( Place Order )   ─── «include» ────►  ( Generate Invoice )\n\n  ( Apply Coupon )  ─── «extend»  ────►  ( Place Order )\n     extending                                base\n     coupon থাকলে তবেই এই বাড়তি ধাপটি যুক্ত হয়\n\n\nINCLUDE বনাম EXTEND  —  তীরের দিকই আসল পার্থক্য\n\n  include :  base ─────────────►  included     সবসময় ঘটে\n  extend  :  base  ◄───────────── extending    কখনো কখনো ঘটে\n\n  দুটি তীর পরস্পরের উল্টো দিকে যায়\n  include মূল কাজ থেকে বেরোয়, extend মূল কাজের দিকে ঢোকে\n\n  O = actor        ( ) = use case        বাক্স = system boundary",
+        "table": {
+          "headers": [
+            "Actor",
+            "প্রধান use case"
+          ],
+          "rows": [
+            [
+              "Customer",
+              "Browse, Search, Register/Login, Add to Cart, Place Order, Track Order, Cancel Order, Write Review"
+            ],
+            [
+              "Admin",
+              "Manage Products, Manage Orders, Manage Users, View Reports"
+            ],
+            [
+              "Payment Gateway",
+              "Make Payment (বাইরের system)"
+            ],
+            [
+              "Delivery Service",
+              "Update Shipping Status (বাইরের system)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "extend-এর তীর base থেকে বের করা",
+            "extend-এর তীর extending use case থেকে base-এর দিকে যায়, include-এর উল্টো"
+          ],
+          [
+            "\"Validate Password\"-এর মতো ভেতরের ধাপকে use case বানানো",
+            "use case হবে ব্যবহারকারীর কাছে অর্থবহ সম্পূর্ণ কাজ"
+          ]
+        ],
+        "mnemonic": "কে ব্যবহার করে আর কী করতে পারে — কীভাবে করে তা নয়।"
+      }
+    }
+  ]
 }
