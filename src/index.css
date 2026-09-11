@@ -4011,9 +4011,11 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 /* Badge on the topbar cloud button: the count of changes still in flight.
    The container rules pin their buttons to `position: static`, so the badge
    needs an equally specific anchor or it escapes to the whole cluster. */
+/* `inset: auto` matters: .theme-toggle carries top/right for its fixed variant,
+   which would otherwise shift this button out of the row once it is relative. */
 .sync-btn,
 .home-float-actions .sync-btn,
-.topbar-right-actions .sync-btn { position: relative; }
+.topbar-right-actions .sync-btn { position: relative; inset: auto; }
 .sync-btn-dot {
   position: absolute; top: -3px; right: -3px;
   min-width: 15px; height: 15px; padding: 0 3px;

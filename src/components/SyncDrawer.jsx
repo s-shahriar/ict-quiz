@@ -156,7 +156,7 @@ export default function SyncDrawer({ open, onClose }) {
           {nothing && (
             <div className="syncq-empty">
               <Check size={26} />
-              <p>Everything is synced</p>
+              <p>Nothing waiting</p>
               <span>{snap.lastSavedAt ? `Last change saved ${ago(snap.lastSavedAt)}.` : 'Nail, important and delete changes show up here until they reach the server.'}</span>
             </div>
           )}
