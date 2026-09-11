@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AlertTriangle, Bookmark, Check, Clock, Cloud, CloudOff, RefreshCw, Star, Trash2, X } from 'lucide-react'
 import { subscribeQueue, flushNow } from '../lib/offlineQueue.js'
+import { closeSyncDrawer, subscribeSyncDrawer } from '../lib/syncDrawerState.js'
 
 // Right-hand drawer that shows the offline write queue, built on the same shell
 // as the category sidebar so it reads as part of the app rather than a debug panel.
@@ -78,20 +79,22 @@ function Section({ title, count, children }) {
   )
 }
 
-export default function SyncDrawer({ open, onClose }) {
+export default function SyncDrawer() {
   const [snap, setSnap] = useState(EMPTY_SNAP)
+  const [open, setOpen] = useState(false)
   const [, setTick] = useState(0)
 
   useEffect(() => subscribeQueue((s) => setSnap(s)), [])
+  useEffect(() => subscribeSyncDrawer(setOpen), [])
 
   // Relative times and the retry countdown only need to move while you're looking.
   useEffect(() => {
     if (!open) return
     const id = setInterval(() => setTick((t) => t + 1), 1000)
-    const esc = (e) => { if (e.key === 'Escape') onClose() }
+    const esc = (e) => { if (e.key === 'Escape') closeSyncDrawer() }
     window.addEventListener('keydown', esc)
     return () => { clearInterval(id); window.removeEventListener('keydown', esc) }
-  }, [open, onClose])
+  }, [open])
 
   const failed = snap.items.filter((i) => i.state === 'failed')
   const waiting = snap.items.filter((i) => i.state !== 'failed')
@@ -120,11 +123,11 @@ export default function SyncDrawer({ open, onClose }) {
 
   return (
     <>
-      {open && <div className="cat-sidebar-overlay sync-drawer-overlay" onClick={onClose} />}
+      {open && <div className="cat-sidebar-overlay sync-drawer-overlay" onClick={closeSyncDrawer} />}
       <aside className={`sync-drawer${open ? ' open' : ''}`} aria-hidden={!open}>
         <div className="sync-drawer-header">
           <span className="sync-drawer-title"><Cloud size={15} /> Sync queue</span>
-          <button className="cat-sidebar-close" onClick={onClose} title="Close"><X size={16} /></button>
+          <button className="cat-sidebar-close" onClick={closeSyncDrawer} title="Close"><X size={16} /></button>
         </div>
 
         <div className="sync-drawer-state">

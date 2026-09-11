@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { AlertTriangle, Check, Cloud, CloudOff, RefreshCw } from 'lucide-react'
 import { subscribeQueue } from '../lib/offlineQueue.js'
 import { getToastRail } from '../lib/toastRail.js'
+import { openSyncDrawer } from '../lib/syncDrawerState.js'
 
 // Top-right pill driven by the offline write queue, and the doorway into the
 // sync drawer.
@@ -21,7 +22,7 @@ const GRACE_MS = 1200
 
 let toastId = 0
 
-export default function SyncStatus({ onOpen }) {
+export default function SyncStatus() {
   const [snap, setSnap] = useState({ pendingCount: 0, status: 'idle', offline: false, items: [] })
   const [toasts, setToasts] = useState([])
   const [ripe, setRipe] = useState(false)
@@ -65,7 +66,7 @@ export default function SyncStatus({ onOpen }) {
   return createPortal(
     <div className="sync-status" aria-live="polite">
       {toasts.map((t) => (
-        <button key={t.id} className="sync-chip sync-chip-ok" onClick={onOpen} title="Open sync queue">
+        <button key={t.id} className="sync-chip sync-chip-ok" onClick={openSyncDrawer} title="Open sync queue">
           <Check size={13} />
           <span>{t.n} change{t.n > 1 ? 's' : ''} saved</span>
         </button>
@@ -73,7 +74,7 @@ export default function SyncStatus({ onOpen }) {
       {showTicker && (
         <button
           className={`sync-chip sync-chip-wait${failed ? ' sync-chip-bad' : ''}`}
-          onClick={onOpen}
+          onClick={openSyncDrawer}
           title="Open sync queue"
         >
           <Icon size={13} className={!snap.offline && !failed ? 'sync-spin' : undefined} />
@@ -88,12 +89,12 @@ export default function SyncStatus({ onOpen }) {
 // The pill only exists while something is queued, and the top nav is hidden in
 // quiz / study / written — so this button is the way back into the drawer once
 // everything has landed and you want to check what did.
-export function SyncButton({ className = 'theme-toggle-nav', onClick }) {
+export function SyncButton({ className = 'theme-toggle-nav', size = 17 }) {
   const [snap, setSnap] = useState({ pendingCount: 0, offline: false })
   useEffect(() => subscribeQueue((s) => setSnap(s)), [])
   return (
-    <button className={`${className} sync-btn`} onClick={onClick} title="Sync queue">
-      {snap.offline ? <CloudOff size={17} /> : <Cloud size={17} />}
+    <button className={`${className} sync-btn`} onClick={openSyncDrawer} title="Sync queue" aria-label="Sync queue">
+      {snap.offline ? <CloudOff size={size} /> : <Cloud size={size} />}
       {snap.pendingCount > 0 && (
         <span className="sync-btn-dot">{snap.pendingCount > 9 ? '9+' : snap.pendingCount}</span>
       )}

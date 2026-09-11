@@ -1,5 +1,5 @@
 import { Moon, Sun } from 'lucide-react'
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import HomeScreen from './components/HomeScreen.jsx'
 import AccountButton from './components/auth/AccountButton.jsx'
@@ -69,7 +69,6 @@ function AppRoutes() {
   const { loading: authLoading } = useAuth()
   const syncing = useProgressSyncing()
   const location = useLocation()
-  const [syncOpen, setSyncOpen] = useState(false)
 
   const isHome = location.pathname === '/'
 
@@ -82,7 +81,7 @@ function AppRoutes() {
 
       {isHome && (
         <div className="home-float-actions">
-          <SyncButton className="theme-toggle" onClick={() => setSyncOpen(true)} />
+          <SyncButton className="theme-toggle" />
           <AccountButton />
           <HandToggle className="theme-toggle" size={17} />
           <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme" style={{ position: 'static' }}>
@@ -122,8 +121,8 @@ function AppRoutes() {
       </Suspense>
 
       {(authLoading || syncing) && <SyncOverlay />}
-      <SyncStatus onOpen={() => setSyncOpen(true)} />
-      <SyncDrawer open={syncOpen} onClose={() => setSyncOpen(false)} />
+      <SyncStatus />
+      <SyncDrawer />
     </div>
   )
 }
