@@ -395,6 +395,15 @@
           },
           {
             "sub": "GROUP BY-তে ViewerID রাখা ভালো, কারণ দুজন viewer-এর নাম এক হলে Name দিয়ে group করলে তারা মিশে যেত।"
+          },
+          {
+            "sub": "SELECT-এ যে column aggregate নয়, তাকে GROUP BY-তেও থাকতে হয় — এই নিয়মেই v.Name এখানে লেখা হয়েছে।"
+          },
+          {
+            "sub": "PostgreSQL ও MySQL 5.7+ ব্যতিক্রম: ViewerID যেহেতু Viewer-এর primary key, একটি group-এ Name একটিই হতে পারে, তাই শুধু GROUP BY v.ViewerID লিখলেও চলে।"
+          },
+          {
+            "sub": "কিন্তু SQL Server ও Oracle এই নির্ভরতা ধরে না, সেখানে v.Name বাদ দিলে error হয় — তাই দুটোই লিখলে query সব database-এ চলে।"
           }
         ],
         "code": "-- (a) যারা \"Inception\" দেখেছে\nSELECT DISTINCT v.Name\nFROM   Viewer v\nJOIN   WatchHistory w ON v.ViewerID = w.ViewerID\nJOIN   Movie m        ON w.MovieID  = m.MovieID\nWHERE  m.Title = 'Inception';\n\n\n-- (b) viewer-এর নাম + যে movie দেখেছে\nSELECT v.Name, m.Title, w.WatchDate\nFROM   Viewer v\nJOIN   WatchHistory w ON v.ViewerID = w.ViewerID\nJOIN   Movie m        ON w.MovieID  = m.MovieID;\n\n\n-- (c) যেসব movie কেউ দেখেনি\nSELECT m.MovieID, m.Title\nFROM   Movie m\nLEFT JOIN WatchHistory w ON m.MovieID = w.MovieID\nWHERE  w.MovieID IS NULL;\n\n\n-- (d) যারা পাঁচটির বেশি movie দেখেছে\nSELECT   v.ViewerID, v.Name, COUNT(DISTINCT w.MovieID) AS MoviesWatched\nFROM     Viewer v\nJOIN     WatchHistory w ON v.ViewerID = w.ViewerID\nGROUP BY v.ViewerID, v.Name\nHAVING   COUNT(DISTINCT w.MovieID) > 5;",
