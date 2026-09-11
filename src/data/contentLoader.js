@@ -5,6 +5,7 @@ import { WRITTEN_DATA } from './written/index.js'
 import { EXTRA_DATA } from './extra/index.js'
 import { VIVA_DATA } from './viva/index.js'
 import { CODE_DATA } from './code/index.js'
+import { rememberQuestion } from '../lib/questionLabels.js'
 
 // On-demand content: Q&A items live in Supabase and are fetched per module the
 // first time that route needs them, then cached for the session and written
@@ -26,6 +27,13 @@ const loaded = new Set()
 const inflight = new Map()
 
 export function isModuleLoaded(moduleId) { return loaded.has(moduleId) }
+
+// "Data Structures & Algorithms · written" — the module matters here, since the
+// same category holds separate mcq / written / viva / code items.
+function catLabel(moduleId, slug) {
+  const name = TOPICS.find(t => t.id === slug)?.name || slug
+  return moduleId === 'mcq' ? name : `${name} · ${moduleId}`
+}
 
 // Drop a module's cache so it re-fetches next time (e.g. after restoring a
 // question from the recycle bin, so it reappears in that module).
@@ -55,6 +63,9 @@ export function loadModule(moduleId) {
       for (const r of data) {
         if (!bySlug.has(r.category_slug)) bySlug.set(r.category_slug, [])
         bySlug.get(r.category_slug).push({ ...r.payload, _uid: r.uid, _id: r.id, _sort: r.sort_order })
+        // A uid is a one-way hash of the item's text, so the sync drawer can
+        // only name a queued item if we remember its text as it lands.
+        rememberQuestion(r.uid, r.payload, catLabel(moduleId, r.category_slug))
       }
       if (data.length < pageSize) break
     }

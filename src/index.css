@@ -3877,3 +3877,155 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   cursor: pointer;
 }
 .hl-bar-signin:active { background: var(--hover-bg); }
+
+/* ══════════ Sync queue drawer ══════════ */
+
+/* The chips in the toast rail are now buttons into the drawer — the rail itself
+   is pointer-events:none, so they have to opt back in. */
+.sync-chip { pointer-events: auto; cursor: pointer; font-family: inherit; text-align: left; }
+.sync-chip-bad { border-color: rgba(239, 68, 68, 0.45); }
+.sync-chip-bad svg { color: #ef4444; }
+
+/* Same shell as .cat-sidebar, but it has to sit above the toast rail (z 2001)
+   since the pill that opens it lives there. */
+.sync-drawer-overlay { z-index: 2100; }
+.sync-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2101;
+  width: 340px;
+  max-width: 92vw;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-glass);
+  border-left: 1px solid var(--border-md);
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transform: translateX(100%);
+  /* visibility flips only after the slide-out finishes, so closing animates */
+  transition: transform 0.28s cubic-bezier(0.34, 1.1, 0.64, 1), visibility 0s linear 0.28s;
+  visibility: hidden;
+  overflow: hidden;
+}
+.sync-drawer.open {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform 0.28s cubic-bezier(0.34, 1.1, 0.64, 1), visibility 0s linear 0s;
+}
+
+.sync-drawer-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 14px 11px;
+  border-bottom: 1px solid var(--border);
+}
+.sync-drawer-title {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.76rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.sync-drawer-state {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.syncq-line {
+  display: inline-flex; align-items: center; gap: 7px; min-width: 0;
+  font-size: 0.79rem; font-weight: 700; color: var(--text-2);
+}
+.syncq-line svg { flex-shrink: 0; }
+.syncq-tone-ok svg { color: #22c55e; }
+.syncq-tone-wait svg { color: #f59e0b; }
+.syncq-tone-go svg { color: #3b82f6; }
+.syncq-tone-bad, .syncq-tone-bad svg { color: #ef4444; }
+
+.syncq-retry {
+  display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0;
+  padding: 6px 10px; border-radius: 999px;
+  border: 1px solid var(--border-md); background: transparent;
+  color: var(--text-2); font-family: inherit; font-size: 0.71rem; font-weight: 700;
+  cursor: pointer; transition: color .18s ease, border-color .18s ease, background .18s ease;
+}
+.syncq-retry:hover:not(:disabled) { color: var(--text); border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+.syncq-retry:disabled { opacity: 0.4; cursor: default; }
+
+.sync-drawer-list {
+  flex: 1; overflow-y: auto;
+  padding: 12px 10px 16px;
+  display: flex; flex-direction: column; gap: 15px;
+}
+.syncq-section { display: flex; flex-direction: column; gap: 6px; }
+.syncq-section-head {
+  display: flex; align-items: center; gap: 6px; padding: 0 4px 2px;
+  font-size: 0.66rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--text-3);
+}
+.syncq-count {
+  padding: 1px 6px; border-radius: 999px;
+  background: var(--border); color: var(--text-2); font-size: 0.64rem; letter-spacing: 0;
+}
+
+.syncq-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 10px; border-radius: 11px;
+  border: 1px solid var(--border); background: var(--card);
+}
+.syncq-row.syncq-synced { opacity: 0.6; }
+.syncq-row.syncq-failed { border-color: rgba(239, 68, 68, 0.45); }
+.syncq-row > svg { flex-shrink: 0; margin-top: 3px; }
+.syncq-icon {
+  width: 26px; height: 26px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; color: var(--qc);
+  background: color-mix(in srgb, var(--qc) 14%, transparent);
+}
+.syncq-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.syncq-text {
+  font-size: 0.79rem; font-weight: 600; color: var(--text); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.syncq-meta { font-size: 0.67rem; color: var(--text-3); line-height: 1.45; }
+.syncq-err { font-size: 0.67rem; color: #ef4444; line-height: 1.45; }
+.syncq-ic-ok { color: #22c55e; }
+.syncq-ic-go { color: #3b82f6; }
+.syncq-ic-bad { color: #ef4444; }
+.syncq-ic-wait { color: var(--text-3); }
+
+.syncq-empty {
+  margin: auto; padding: 30px 18px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.syncq-empty svg { color: #22c55e; }
+.syncq-empty p { margin: 0; font-size: 0.85rem; font-weight: 700; color: var(--text); }
+.syncq-empty span { max-width: 232px; font-size: 0.71rem; color: var(--text-3); line-height: 1.5; }
+
+.sync-drawer-foot {
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  font-size: 0.67rem; color: var(--text-3); text-align: center;
+}
+
+/* Badge on the topbar cloud button: the count of changes still in flight.
+   The container rules pin their buttons to `position: static`, so the badge
+   needs an equally specific anchor or it escapes to the whole cluster. */
+.sync-btn,
+.home-float-actions .sync-btn,
+.topbar-right-actions .sync-btn { position: relative; }
+.sync-btn-dot {
+  position: absolute; top: -3px; right: -3px;
+  min-width: 15px; height: 15px; padding: 0 3px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 999px; background: #f59e0b; color: #fff;
+  font-size: 0.58rem; font-weight: 800; line-height: 1;
+}
+
+@media (max-width: 520px) {
+  .sync-drawer { width: 90vw; }
+  .sync-drawer-list { padding: 12px 8px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sync-drawer { transition: none; }
+}
