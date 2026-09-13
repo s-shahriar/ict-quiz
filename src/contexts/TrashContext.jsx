@@ -55,10 +55,19 @@ export function TrashProvider({ children }) {
   }
   const purge = (q) => { enqueueBinAction(q, 'purge') }
 
+  // Undo from the sync drawer. It reverses a restore the user just made, so it
+  // goes straight back to the bin without the delete confirmation.
+  const moveToBin = (q) => {
+    if (!q?._id) return
+    enqueueDelete(q)
+    setTrashedIds(s => new Set(s).add(q._id))
+  }
+
   useEffect(() => onRestoreLanded((modules) => modules.forEach((m) => invalidateModule(m))), [])
 
   const value = {
     requestDelete, restore, purge,
+    moveToBin,
     trashedIds: user ? trashedIds : EMPTY,
     isTrashed: (id) => trashedIds.has(id),
   }

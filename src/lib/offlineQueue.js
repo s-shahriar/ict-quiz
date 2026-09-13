@@ -4,8 +4,9 @@
 // Every one of those actions is optimistic in the UI and flows through here.
 // Flag writes are coalesced per question uid on a LAST-ACTION-WINS basis: if you
 // nail then un-nail then mark important the same question while offline, only the
-// final state per column is kept ({ nailed:false, important:true }). Deletes get
-// their own entry per question, since they hit a different endpoint. A debounced
+// final state per column is kept ({ nailed:false, important:true }). A delete, a
+// restore and a delete-forever all decide whether one question is in the bin, so
+// they share one entry per question and the latest decision replaces the earlier. A debounced
 // flusher drains the queue: flags go out as one bulk upsert, deletes as one RPC
 // each, and a failure in either group cannot block the other.
 //
@@ -38,6 +39,15 @@ const BACKOFF_MS = [4000, 12000, 30000, 60000, 300000]
 const DONE_CAP = 50
 // Server call for each non-flag kind. A kind missing here is never sent.
 const RUN = { delete: trashQuestion, restore: restoreQuestion, purge: purgeQuestion }
+const trashKey = (id) => `trash:${id}`
+
+// The loader module a question lives in: its _module where the loader sets one,
+// otherwise the uid's prefix, since uids are module-scoped.
+function moduleOf(q, uid) {
+  if (q?._module) return q._module
+  const i = uid ? uid.indexOf(':') : -1
+  return i > 0 ? uid.slice(0, i) : null
+}
 
 let userId = null
 let pending = new Map()           // key -> entry (see makeEntry)
@@ -66,7 +76,7 @@ function view(e) {
   // and by the time the drawer is open the content usually has landed.
   const meta = (!e.label || !e.cat) && e.uid ? labelFor(e.uid) : null
   return {
-    key: e.key, kind: e.kind, uid: e.uid, patch: e.patch,
+    key: e.key, kind: e.kind, uid: e.uid, id: e.id, module: e.module, patch: e.patch,
     label: e.label || meta?.text || '', cat: e.cat || meta?.cat || '',
     at: e.at, attempts: e.attempts,
     err: e.err, syncedAt: e.syncedAt,
@@ -120,7 +130,11 @@ function restore(raw) {
       const [uid, patch] = row
       if (uid && patch) map.set(uid, makeEntry({ key: uid, kind: 'flag', uid, patch }))
     } else if (row?.key) {
-      map.set(row.key, makeEntry(row))
+      // Older builds kept a delete as del:<id> and a bin action as bin:<id>. Both
+      // are now the one trash:<id> entry, so the later decision replaces the earlier.
+      const key = /^(del|bin):/.test(row.key) && row.id ? trashKey(row.id) : row.key
+      map.delete(key)
+      map.set(key, makeEntry({ ...row, key }))
     }
   }
   return map
@@ -198,11 +212,11 @@ export function enqueue(uid, patch) {
 // both live on it, and a deleted question can no longer be looked up.
 export function enqueueDelete(q) {
   if (!userId || !q?._id) return
-  const key = `del:${q._id}`
-  if (pending.has(key)) return
+  const key = trashKey(q._id)
+  if (pending.get(key)?.kind === 'delete') return
   const uid = q.uid || q._uid || null
   pending.set(key, makeEntry({
-    key, kind: 'delete', id: q._id, uid,
+    key, kind: 'delete', id: q._id, uid, module: moduleOf(q, uid),
     label: textOf(q) || labelFor(uid)?.text || '',
     cat: q._catName || q._slug || labelFor(uid)?.cat || '',
   }))
@@ -213,11 +227,11 @@ export function enqueueDelete(q) {
 // restore then delete-forever while offline sends only the delete-forever.
 export function enqueueBinAction(q, action) {
   if (!userId || !q?._id || (action !== 'restore' && action !== 'purge')) return
-  const key = `bin:${q._id}`
+  const key = trashKey(q._id)
   const uid = q.uid || q._uid || null
   pending.set(key, makeEntry({
     ...(pending.get(key) || {}),
-    key, kind: action, id: q._id, uid, module: q._module || null,
+    key, kind: action, id: q._id, uid, module: moduleOf(q, uid),
     label: textOf(q) || labelFor(uid)?.text || '',
     cat: q._catName || q._slug || labelFor(uid)?.cat || '',
     at: Date.now(),

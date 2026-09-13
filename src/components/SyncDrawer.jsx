@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, Bookmark, BookmarkX, Check, Clock, Cloud, CloudOff, RefreshCw, RotateCcw, Star, StarOff, Trash2, X } from 'lucide-react'
+import { AlertTriangle, Bookmark, BookmarkX, Check, Clock, Cloud, CloudOff, RefreshCw, RotateCcw, Star, StarOff, Trash2, Undo2, X } from 'lucide-react'
 import { subscribeQueue, flushNow } from '../lib/offlineQueue.js'
+import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useMasteredContext } from '../contexts/MasteredContext.jsx'
+import { useTrash } from '../contexts/TrashContext.jsx'
 import { closeSyncDrawer, subscribeSyncDrawer } from '../lib/syncDrawerState.js'
 
 // Right-hand drawer that shows the offline write queue, built on the same shell
@@ -60,7 +63,7 @@ function StateIcon({ state }) {
   return <Clock size={14} className="syncq-ic-wait" />
 }
 
-function Row({ item }) {
+function Row({ item, undo }) {
   const { Icon, color, text, filled } = describe(item)
   const when = item.state === 'synced' ? `synced ${ago(item.syncedAt)}` : ago(item.at)
   return (
@@ -75,7 +78,20 @@ function Row({ item }) {
         </span>
         {item.err && <span className="syncq-err">{item.err}{item.attempts > 1 ? ` · ${item.attempts} attempts` : ''}</span>}
       </span>
-      <StateIcon state={item.state} />
+      <span className="syncq-side">
+        <StateIcon state={item.state} />
+        {undo && (
+          <button
+            type="button"
+            className="syncq-undo"
+            disabled={undo.blocked}
+            onClick={undo.run}
+            title={undo.blocked ? 'Deleted forever — this cannot be undone' : 'Undo this change'}
+          >
+            <Undo2 size={13} /> Undo
+          </button>
+        )}
+      </span>
     </div>
   )
 }
@@ -93,6 +109,9 @@ export default function SyncDrawer() {
   const [snap, setSnap] = useState(EMPTY_SNAP)
   const [open, setOpen] = useState(false)
   const [, setTick] = useState(0)
+  const nail = useMasteredContext()
+  const imp = useImportantContext()
+  const trash = useTrash()
 
   useEffect(() => subscribeQueue((s) => setSnap(s)), [])
   useEffect(() => subscribeSyncDrawer(setOpen), [])
@@ -109,6 +128,28 @@ export default function SyncDrawer() {
   const failed = snap.items.filter((i) => i.state === 'failed')
   const waiting = snap.items.filter((i) => i.state !== 'failed')
   const retrySecs = retryIn(snap.nextRetryAt)
+
+  // Undo applies the opposite action through the same code the on-page buttons
+  // use, so the card changes too and the reversal lands in this list as a row of
+  // its own. Only an action still in effect offers undo: once something later has
+  // reversed it — including an undo — its row stops offering one.
+  function undoFor(it) {
+    if (it.kind === 'purge') return { blocked: true }
+    const q = { _id: it.id, _uid: it.uid, _module: it.module, _catName: it.cat, question: it.label }
+    if (it.kind === 'delete') return it.id && trash.isTrashed(it.id) ? { run: () => trash.restore(q) } : null
+    if (it.kind === 'restore') return it.id && !trash.isTrashed(it.id) ? { run: () => trash.moveToBin(q) } : null
+    const { nailed, important } = it.patch || {}
+    if (!it.uid || (nailed === undefined && important === undefined)) return null
+    const inEffect = (nailed === undefined || nail.value.has(it.uid) === nailed)
+      && (important === undefined || imp.value.has(it.uid) === important)
+    if (!inEffect) return null
+    return {
+      run: () => {
+        if (nailed !== undefined) (nailed ? nail.remove : nail.add)(it.uid)
+        if (important !== undefined) (important ? imp.remove : imp.add)(it.uid)
+      },
+    }
+  }
 
   let tone = 'ok'
   let line = 'Everything is synced'
@@ -153,17 +194,17 @@ export default function SyncDrawer() {
         <div className="sync-drawer-list">
           {failed.length > 0 && (
             <Section title="Failed" count={failed.length}>
-              {failed.map((i) => <Row key={i.key} item={i} />)}
+              {failed.map((i) => <Row key={i.key} item={i} undo={undoFor(i)} />)}
             </Section>
           )}
           {waiting.length > 0 && (
             <Section title="Waiting" count={waiting.length}>
-              {waiting.map((i) => <Row key={i.key} item={i} />)}
+              {waiting.map((i) => <Row key={i.key} item={i} undo={undoFor(i)} />)}
             </Section>
           )}
           {snap.done.length > 0 && (
             <Section title="Synced" count={snap.done.length}>
-              {snap.done.map((i) => <Row key={`${i.key}-${i.syncedAt}`} item={i} />)}
+              {snap.done.map((i) => <Row key={`${i.key}-${i.syncedAt}`} item={i} undo={undoFor(i)} />)}
             </Section>
           )}
           {nothing && (
