@@ -1,10 +1,9 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Trash2, CloudOff, RotateCcw } from 'lucide-react'
 import { getToastRail } from '../lib/toastRail.js'
 import { useAuth } from './AuthContext.jsx'
-import { restoreQuestion, purgeQuestion } from '../lib/trashSync.js'
-import { enqueueDelete } from '../lib/offlineQueue.js'
+import { enqueueBinAction, enqueueDelete, onRestoreLanded } from '../lib/offlineQueue.js'
 import { invalidateModule } from '../data/contentLoader.js'
 import LoginPrompt from '../components/auth/LoginPrompt.jsx'
 
@@ -46,12 +45,17 @@ export function TrashProvider({ children }) {
     if (done) done()
   }
 
-  const restore = async (q) => {
-    await restoreQuestion(q._id)
+  // Recycle Bin actions go through the same queue as delete, so they show in the
+  // sync drawer and survive being offline. The module is re-fetched when the
+  // restore lands rather than now: re-fetching before the server has it would
+  // load the question still marked deleted.
+  const restore = (q) => {
+    enqueueBinAction(q, 'restore')
     setTrashedIds(s => { const n = new Set(s); n.delete(q._id); return n })
-    if (q._module) invalidateModule(q._module)
   }
-  const purge = async (q) => { await purgeQuestion(q._id) }
+  const purge = (q) => { enqueueBinAction(q, 'purge') }
+
+  useEffect(() => onRestoreLanded((modules) => modules.forEach((m) => invalidateModule(m))), [])
 
   const value = {
     requestDelete, restore, purge,

@@ -155,3 +155,13 @@ export function markForSelection(selection) {
   const a = markOf(range.startContainer)
   return a && a === markOf(range.endContainer) ? a : null
 }
+
+// A question can sit inside a clickable card header. Ending a drag-selection
+// there, or tapping one of its marks, also fires `click` on that header, which
+// would fold the card away under the colour bar. Swallow just those two clicks;
+// a plain tap still reaches the header.
+export function guardHighlightClick(e) {
+  if (e.target?.closest?.('.hl-mark')) { e.stopPropagation(); return }
+  const sel = window.getSelection()
+  if (sel && !sel.isCollapsed && e.currentTarget.contains(sel.anchorNode)) e.stopPropagation()
+}

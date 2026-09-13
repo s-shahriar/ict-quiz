@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, Bookmark, Check, Clock, Cloud, CloudOff, RefreshCw, Star, Trash2, X } from 'lucide-react'
+import { AlertTriangle, Bookmark, BookmarkX, Check, Clock, Cloud, CloudOff, RefreshCw, RotateCcw, Star, StarOff, Trash2, X } from 'lucide-react'
 import { subscribeQueue, flushNow } from '../lib/offlineQueue.js'
 import { closeSyncDrawer, subscribeSyncDrawer } from '../lib/syncDrawerState.js'
 
@@ -25,16 +25,26 @@ function ago(ts) {
 }
 
 // Icon + colour mirror the buttons the change came from, so a row is recognisable
-// before you read it: amber star for nail, red bookmark for important, trash for delete.
+// before you read it. Direction shows as well, because marking and unmarking are
+// opposite actions: a flag being set gets the filled icon in its colour, a flag
+// being cleared gets the struck-through icon in grey.
+const OFF = '#94a3b8'
 function describe(it) {
-  if (it.kind === 'delete') return { Icon: Trash2, color: '#f43f5e', text: 'Deleted' }
+  if (it.kind === 'delete') return { Icon: Trash2, color: '#f43f5e', text: 'Moved to Recycle Bin' }
+  if (it.kind === 'restore') return { Icon: RotateCcw, color: '#10b981', text: 'Restored from Recycle Bin' }
+  if (it.kind === 'purge') return { Icon: Trash2, color: '#b91c1c', text: 'Deleted forever', filled: true }
+  const { nailed, important } = it.patch || {}
   const parts = []
-  if (it.patch?.nailed !== undefined) parts.push(it.patch.nailed ? 'Nailed' : 'Un-nailed')
-  if (it.patch?.important !== undefined) parts.push(it.patch.important ? 'Marked important' : 'Unmarked important')
-  const primary = it.patch?.nailed !== undefined
-    ? { Icon: Star, color: '#f59e0b' }
-    : { Icon: Bookmark, color: '#ef4444' }
-  return { ...primary, text: parts.join(' · ') || 'Change' }
+  if (nailed !== undefined) parts.push(nailed ? 'Nailed' : 'Un-nailed')
+  if (important !== undefined) parts.push(important ? 'Marked important' : 'Unmarked important')
+  // When both columns changed, the nail leads — the same order as the text.
+  if (nailed !== undefined) {
+    return { Icon: nailed ? Star : StarOff, color: nailed ? '#f59e0b' : OFF, filled: nailed, text: parts.join(' · ') }
+  }
+  if (important !== undefined) {
+    return { Icon: important ? Bookmark : BookmarkX, color: important ? '#ef4444' : OFF, filled: important, text: parts.join(' · ') }
+  }
+  return { Icon: Bookmark, color: OFF, text: 'Change' }
 }
 
 // Seconds until the queue's next automatic attempt. Like ago(), it reads the
@@ -51,11 +61,11 @@ function StateIcon({ state }) {
 }
 
 function Row({ item }) {
-  const { Icon, color, text } = describe(item)
+  const { Icon, color, text, filled } = describe(item)
   const when = item.state === 'synced' ? `synced ${ago(item.syncedAt)}` : ago(item.at)
   return (
     <div className={`syncq-row syncq-${item.state}`}>
-      <span className="syncq-icon" style={{ '--qc': color }}><Icon size={14} /></span>
+      <span className="syncq-icon" style={{ '--qc': color }}><Icon size={14} fill={filled ? 'currentColor' : 'none'} /></span>
       <span className="syncq-main">
         <span className="syncq-text">{item.label || 'Saved item'}</span>
         <span className="syncq-meta">
@@ -160,7 +170,7 @@ export default function SyncDrawer() {
             <div className="syncq-empty">
               <Check size={26} />
               <p>Nothing waiting</p>
-              <span>{snap.lastSavedAt ? `Last change saved ${ago(snap.lastSavedAt)}.` : 'Nail, important and delete changes show up here until they reach the server.'}</span>
+              <span>{snap.lastSavedAt ? `Last change saved ${ago(snap.lastSavedAt)}.` : 'Nail, important, delete and Recycle Bin changes show up here until they reach the server.'}</span>
             </div>
           )}
         </div>

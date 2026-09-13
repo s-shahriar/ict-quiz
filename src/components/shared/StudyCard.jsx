@@ -80,7 +80,7 @@ export default function StudyCard({
         </div>
       </div>
 
-      <QuestionText text={q.question} className="study-question" />
+      <QuestionText text={q.question} uid={q._uid} className="study-question" />
 
       <div className="study-options">
         {opts.map(key => {

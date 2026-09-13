@@ -1,4 +1,5 @@
-// Offline-tolerant write queue for nail / important / delete.
+// Offline-tolerant write queue for nail / important / delete, and for the
+// Recycle Bin's restore / delete-forever.
 //
 // Every one of those actions is optimistic in the UI and flows through here.
 // Flag writes are coalesced per question uid on a LAST-ACTION-WINS basis: if you
@@ -27,7 +28,7 @@
 // backlog actually land after a reconnect, not as a permanent audit log.
 
 import { bulkUpsert } from './progressSync.js'
-import { trashQuestion } from './trashSync.js'
+import { trashQuestion, restoreQuestion, purgeQuestion } from './trashSync.js'
 import { labelFor, textOf } from './questionLabels.js'
 
 const LS_KEY = (uid) => `ict_pq_${uid}`
@@ -35,6 +36,8 @@ const DEBOUNCE_MS = 400
 // backoff schedule for server-reachable-but-failing; last value repeats.
 const BACKOFF_MS = [4000, 12000, 30000, 60000, 300000]
 const DONE_CAP = 50
+// Server call for each non-flag kind. A kind missing here is never sent.
+const RUN = { delete: trashQuestion, restore: restoreQuestion, purge: purgeQuestion }
 
 let userId = null
 let pending = new Map()           // key -> entry (see makeEntry)
@@ -49,6 +52,7 @@ let lastError = null
 let lastSavedAt = null
 
 const subscribers = new Set()
+const restoredListeners = new Set()
 
 function online() {
   return typeof navigator === 'undefined' || navigator.onLine !== false
@@ -94,7 +98,7 @@ function persist() {
     if (pending.size) {
       // Only the durable fields — `sending` / `err` / `syncedAt` describe one attempt.
       const rows = [...pending.values()].map((e) => ({
-        key: e.key, kind: e.kind, uid: e.uid, id: e.id, patch: e.patch,
+        key: e.key, kind: e.kind, uid: e.uid, id: e.id, module: e.module, patch: e.patch,
         label: e.label, cat: e.cat, at: e.at, attempts: e.attempts,
       }))
       localStorage.setItem(LS_KEY(userId), JSON.stringify(rows))
@@ -125,6 +129,7 @@ function restore(raw) {
 function makeEntry(e) {
   return {
     key: e.key, kind: e.kind, uid: e.uid || null, id: e.id || null,
+    module: e.module || null,
     patch: e.patch || null,
     label: e.label || '', cat: e.cat || '',
     at: e.at || Date.now(), attempts: e.attempts || 0,
@@ -204,6 +209,37 @@ export function enqueueDelete(q) {
   afterEnqueue()
 }
 
+// Record a Recycle Bin action. Keyed per question so the latest decision wins:
+// restore then delete-forever while offline sends only the delete-forever.
+export function enqueueBinAction(q, action) {
+  if (!userId || !q?._id || (action !== 'restore' && action !== 'purge')) return
+  const key = `bin:${q._id}`
+  const uid = q.uid || q._uid || null
+  pending.set(key, makeEntry({
+    ...(pending.get(key) || {}),
+    key, kind: action, id: q._id, uid, module: q._module || null,
+    label: textOf(q) || labelFor(uid)?.text || '',
+    cat: q._catName || q._slug || labelFor(uid)?.cat || '',
+    at: Date.now(),
+  }))
+  afterEnqueue()
+}
+
+// Ids whose Recycle Bin action has not landed yet. The bin re-reads the server,
+// which still lists them, so it hides these rather than offering them twice.
+export function pendingBinIds() {
+  const ids = new Set()
+  for (const e of pending.values()) if (e.kind === 'restore' || e.kind === 'purge') ids.add(e.id)
+  return ids
+}
+
+// A restored question only reappears once the server has it, so whoever loads
+// its module is told when the restore LANDS, not when it was queued.
+export function onRestoreLanded(fn) {
+  restoredListeners.add(fn)
+  return () => restoredListeners.delete(fn)
+}
+
 function afterEnqueue() {
   persist()
   if (!online()) {
@@ -257,6 +293,12 @@ function settle(entry, sentPatch) {
     cur.sending = false
     return false
   }
+  // A Recycle Bin decision changed mid-flight (restore became delete-forever):
+  // the newer one still has to go out.
+  if (cur.kind !== 'flag' && cur.kind !== entry.kind) {
+    cur.sending = false
+    return false
+  }
   pending.delete(cur.key)
   cur.sending = false
   cur.err = null
@@ -292,7 +334,9 @@ async function flush() {
   emit()
 
   const flags = batch.filter((e) => e.kind === 'flag')
-  const deletes = batch.filter((e) => e.kind === 'delete')
+  // Deletes and Recycle Bin actions, replayed in the order they were made.
+  const ops = batch.filter((e) => RUN[e.kind])
+  const restored = []
   let landed = 0
   let failed = false
 
@@ -306,12 +350,15 @@ async function flush() {
     }
   }
 
-  // Sequential, and independent of each other: one rejected delete (already
+  // Sequential, and independent of each other: one rejected write (already
   // gone, permission changed) must not strand the rest of the queue.
-  for (const d of deletes) {
+  for (const d of ops) {
     try {
-      await trashQuestion(d.id)
-      if (settle(d)) landed++
+      await RUN[d.kind](d.id)
+      if (settle(d)) {
+        landed++
+        if (d.kind === 'restore' && d.module) restored.push(d.module)
+      }
     } catch (e) {
       failed = true
       fail(d, e)
@@ -321,6 +368,10 @@ async function flush() {
   inFlight = false
   persist()
   if (landed) lastSavedAt = Date.now()
+  if (restored.length) {
+    const modules = [...new Set(restored)]
+    restoredListeners.forEach((fn) => fn(modules))
+  }
 
   if (!pending.size) {
     const recovered = notified

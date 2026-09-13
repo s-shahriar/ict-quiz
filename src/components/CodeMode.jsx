@@ -150,7 +150,7 @@ function CodeCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, on
       <div className="written-card-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="written-card-toggle">
           <span className="written-qnum" style={{ color: topicColor }}>P{idx + 1}</span>
-          <WrittenQuestionText text={q.q} className="written-qtext" />
+          <WrittenQuestionText uid={q._uid} text={q.q} className="written-qtext" />
           <span className="written-chevron">
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </span>

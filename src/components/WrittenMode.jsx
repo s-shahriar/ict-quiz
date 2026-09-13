@@ -254,7 +254,7 @@ function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed,
       <div className="written-card-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="written-card-toggle">
           <span className="written-qnum" style={{ color: topicColor }}>Q{idx + 1}</span>
-          <WrittenQuestionText text={q.q} className="written-qtext" />
+          <WrittenQuestionText uid={q._uid} text={q.q} className="written-qtext" />
           {/* A complexity verdict sits in the header so the segment reads as a
               reference sheet: pattern, code, answer — skimmable without opening
               anything. The reasoning is still inside. */}

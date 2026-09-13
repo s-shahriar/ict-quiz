@@ -106,7 +106,7 @@ function WrittenNailedCard({ q, qid, topicColor, onUnnail }) {
     <div className="written-card open" style={{ '--c': topicColor }}>
       <div className="written-card-header">
         <div className="written-card-toggle" style={{ cursor: 'default' }}>
-          <WrittenQuestionText text={q.q} className="written-qtext" style={{ paddingTop: 2 }} />
+          <WrittenQuestionText uid={q._uid} text={q.q} className="written-qtext" style={{ paddingTop: 2 }} />
         </div>
         <button
           className="nailed-unnail-btn"

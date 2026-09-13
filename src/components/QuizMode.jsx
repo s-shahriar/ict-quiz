@@ -105,7 +105,7 @@ export default function QuizMode() {
       </div>
 
       <div className="quiz-card anim-slide">
-        <QuestionText text={q.question} className="quiz-question" />
+        <QuestionText text={q.question} uid={qid} className="quiz-question" />
 
         <div className="quiz-options">
           {opts.map(key => {
