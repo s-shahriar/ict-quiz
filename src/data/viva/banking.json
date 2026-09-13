@@ -185,6 +185,73 @@
         },
         "mnemonic": "কার্ড তুললে NPSB, অ্যাকাউন্টে পাঠালে BEFTN; বিদেশে Visa/Master।"
       }
+    },
+    {
+      "id": "bank_viva_009",
+      "q": "TakaPay কী?",
+      "tags": [
+        "takapay",
+        "npsb",
+        "national-debit-card",
+        "bangladesh-bank",
+        "card-scheme",
+        "banking"
+      ],
+      "answer": {
+        "summary": [
+          "TakaPay হলো বাংলাদেশের প্রথম national debit card scheme, যা Bangladesh Bank চালু করে 1 নভেম্বর 2023-এ।",
+          "এর লেনদেন পুরোটাই দেশের ভেতরে NPSB দিয়ে প্রক্রিয়া হয়, তাই Visa বা Mastercard-এর network লাগে না।"
+        ],
+        "points": [
+          "কেন দরকার হলো:",
+          {
+            "sub": "দেশের ভেতরের card লেনদেনও এতদিন Visa বা Mastercard-এর network দিয়ে যেত।"
+          },
+          {
+            "sub": "এর জন্য ব্যাংকগুলোকে fee দিতে হতো বিদেশি মুদ্রায়, ফলে dollar দেশের বাইরে চলে যেত।"
+          },
+          {
+            "sub": "TakaPay লেনদেন দেশেই রাখে, তাই খরচ কমে এবং foreign currency বাঁচে।"
+          },
+          "চলে NPSB (National Payment Switch Bangladesh)-এর উপর, যা Bangladesh Bank পরিচালনা করে।",
+          "ব্যবহার করা যায় ATM-এ টাকা তোলা, POS-এ কেনাকাটা এবং e-commerce payment-এ।",
+          "সীমাবদ্ধতা: শুধু দেশের ভেতরে চলে, বিদেশে ব্যবহার করা যায় না।",
+          "উদ্বোধনে card ইস্যু করে তিনটি ব্যাংক — Sonali Bank, City Bank ও BRAC Bank; পরে NCC Bank, Midland Bank-সহ আরও ব্যাংক যুক্ত হয়।",
+          "India-তে ব্যবহারের জন্য RuPay-এর সাথে যুক্ত Taka-Rupee dual currency card চালুর পরিকল্পনা ঘোষণা করা হয়েছিল।",
+          "বাস্তব অবস্থা: চালুর দুই বছর পরেও ব্যবহার খুব কম — মাসে মোট card লেনদেনের 0.5%-এরও কম।",
+          "একই ধরনের national card scheme-এর উদাহরণ: India-র RuPay।"
+        ],
+        "table": {
+          "headers": [
+            "দিক",
+            "TakaPay",
+            "Visa / Mastercard"
+          ],
+          "rows": [
+            [
+              "মালিকানা",
+              "দেশীয়, Bangladesh Bank-এর উদ্যোগ",
+              "বিদেশি কোম্পানি"
+            ],
+            [
+              "লেনদেন প্রক্রিয়া",
+              "NPSB, দেশের ভেতরে",
+              "বিদেশি card network"
+            ],
+            [
+              "Fee",
+              "বিদেশি মুদ্রা লাগে না",
+              "বিদেশি মুদ্রায় দিতে হয়"
+            ],
+            [
+              "ব্যবহারের এলাকা",
+              "শুধু বাংলাদেশ",
+              "সারা বিশ্ব"
+            ]
+          ]
+        },
+        "mnemonic": "দেশের লেনদেন দেশের switch-এ — TakaPay মানে NPSB, dollar বাইরে যায় না।"
+      }
     }
   ]
 }
