@@ -1077,9 +1077,12 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   box-shadow: 0 0 8px rgba(239,68,68,0.4);
 }
 .study-opt-clickable.dim { opacity: 0.28; cursor: default; }
+/* The correct answer is always green and a wrong pick always red, whatever
+   the topic's accent. Taking the accent here made the two identical on red
+   and pink topics, so you could not tell which option was right. */
 .study-opt.correct {
-  border-color: var(--c, var(--accent));
-  background: color-mix(in srgb, var(--c, var(--accent)) 9%, transparent);
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.07);
   color: var(--text);
 }
 .study-opt-key {
@@ -1090,9 +1093,10 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   font-size: 0.67rem; font-weight: 700; flex-shrink: 0;
 }
 .study-opt.correct .study-opt-key {
-  background: var(--c, var(--accent));
-  border-color: var(--c, var(--accent)); color: #fff;
-  box-shadow: 0 0 8px color-mix(in srgb, var(--c, var(--accent)) 50%, transparent);
+  background: #10b981;
+  border-color: #10b981;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
 }
 .study-opt-text { flex: 1; min-width: 0; line-height: 1.5; }
 
