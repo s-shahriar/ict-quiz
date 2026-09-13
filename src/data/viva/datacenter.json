@@ -61,6 +61,100 @@
         ],
         "mnemonic": "Digital Twin = বাস্তবের ডিজিটাল জুড়ি; sensor data-তে sync, আগে simulate, পরে বাস্তবে apply।"
       }
+    },
+    {
+      "id": "dc_viva_004",
+      "q": "Edge computing কী?",
+      "tags": [
+        "edge-computing",
+        "cloud",
+        "fog-computing",
+        "iot",
+        "latency",
+        "data-center"
+      ],
+      "answer": {
+        "summary": [
+          "Edge computing হলো data যেখানে তৈরি হয় তার কাছেই processing করা — device-এ বা কাছের ছোট server-এ — দূরের cloud বা central data center-এ না পাঠিয়ে।",
+          "মূল উদ্দেশ্য দূরত্ব কমানো: data যত কম পথ পাড়ি দেয়, latency তত কম এবং bandwidth খরচও তত কম।"
+        ],
+        "points": [
+          "কেন দরকার হলো:",
+          {
+            "sub": "IoT device, camera, sensor প্রতি সেকেন্ডে বিপুল data তৈরি করে; সবটা cloud-এ পাঠাতে bandwidth ও সময় দুটোই বেশি লাগে।"
+          },
+          {
+            "sub": "অনেক কাজে কয়েক millisecond-এর দেরিও চলে না — যেমন চালকবিহীন গাড়ি ব্রেক করবে কি না।"
+          },
+          "কীভাবে কাজ করে: কাছের edge node জরুরি সিদ্ধান্ত নিজেই নেয়, আর শুধু সারাংশ বা দরকারি অংশ cloud-এ পাঠায়।",
+          "সুবিধা:",
+          {
+            "sub": "Latency কম, তাই real-time সাড়া দেওয়া যায়।"
+          },
+          {
+            "sub": "Bandwidth বাঁচে, কারণ সব কাঁচা data পাঠাতে হয় না।"
+          },
+          {
+            "sub": "Internet বিচ্ছিন্ন হলেও স্থানীয়ভাবে কাজ চলতে থাকে।"
+          },
+          {
+            "sub": "সংবেদনশীল data স্থানীয়ভাবে থাকে, তাই privacy ভালো থাকে।"
+          },
+          "অসুবিধা:",
+          {
+            "sub": "ছড়ানো অসংখ্য device নিরাপদ ও আপডেট রাখা কঠিন, তাই attack surface বাড়ে।"
+          },
+          {
+            "sub": "Edge device-এর processing ও storage ক্ষমতা cloud-এর চেয়ে সীমিত।"
+          },
+          "Fog computing: edge আর cloud-এর মাঝের স্তর — যেমন local gateway — যা কয়েকটি edge device-এর data জড়ো করে প্রক্রিয়া করে।",
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "চালকবিহীন গাড়ি, smart traffic signal, কারখানার machine monitoring।"
+          },
+          {
+            "sub": "CDN — ভিডিও বা ওয়েবসাইট ব্যবহারকারীর কাছের server থেকে দেওয়া।"
+          },
+          {
+            "sub": "CCTV camera-তেই সরাসরি মুখ বা গতিবিধি শনাক্ত করা।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "দিক",
+            "Cloud computing",
+            "Edge computing"
+          ],
+          "rows": [
+            [
+              "Processing কোথায়",
+              "দূরের central data center",
+              "data-র উৎসের কাছে"
+            ],
+            [
+              "Latency",
+              "বেশি",
+              "খুব কম"
+            ],
+            [
+              "Bandwidth খরচ",
+              "বেশি, সব data যায়",
+              "কম, শুধু দরকারি অংশ যায়"
+            ],
+            [
+              "Computing ক্ষমতা",
+              "প্রায় অসীম, সহজে বাড়ানো যায়",
+              "সীমিত"
+            ],
+            [
+              "উপযুক্ত কাজ",
+              "বড় analysis, দীর্ঘমেয়াদি storage",
+              "real-time সিদ্ধান্ত"
+            ]
+          ]
+        },
+        "mnemonic": "দূরে না পাঠিয়ে কাছেই সেরে ফেলো — কাজ কাছে, সাড়া তাড়াতাড়ি।"
+      }
     }
   ]
 }

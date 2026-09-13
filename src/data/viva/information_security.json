@@ -172,6 +172,102 @@
         ],
         "mnemonic": "ডিফল্ট পাসওয়ার্ড + আপডেট নেই + এনক্রিপশন নেই = IoT-র তিন বড় দুর্বলতা।"
       }
+    },
+    {
+      "id": "is_viva_006",
+      "q": "ICT governance কী?",
+      "tags": [
+        "ict-governance",
+        "it-governance",
+        "cobit",
+        "iso-38500",
+        "bangladesh-bank",
+        "ict-security-guideline"
+      ],
+      "answer": {
+        "summary": [
+          "ICT governance হলো সেই কাঠামো যা নিশ্চিত করে প্রতিষ্ঠানের ICT ব্যবসার লক্ষ্যের সাথে মিলে চলছে, ঝুঁকি নিয়ন্ত্রণে আছে, আর বিনিয়োগ থেকে মূল্য আসছে।",
+          "এর দায় শেষ পর্যন্ত Board ও top management-এর — IT department একা এটা বহন করে না।"
+        ],
+        "points": [
+          "Governance আর management আলাদা:",
+          {
+            "sub": "Governance ঠিক করে কী করা হবে ও কেন — দিকনির্দেশ, অনুমোদন ও তদারকি; এটা Board-এর কাজ।"
+          },
+          {
+            "sub": "Management ঠিক করে কীভাবে করা হবে — পরিকল্পনা, বাস্তবায়ন ও দৈনন্দিন পরিচালনা; এটা executive-দের কাজ।"
+          },
+          "IT governance-এর পাঁচটি focus area:",
+          {
+            "sub": "Strategic alignment — ICT কৌশল ব্যবসার কৌশলের সাথে মেলানো।"
+          },
+          {
+            "sub": "Value delivery — ICT বিনিয়োগ থেকে প্রতিশ্রুত সুফল আদায় করা।"
+          },
+          {
+            "sub": "Risk management — ICT ঝুঁকি চিহ্নিত ও নিয়ন্ত্রণ করা।"
+          },
+          {
+            "sub": "Resource management — মানুষ, প্রযুক্তি ও অর্থ দক্ষভাবে ব্যবহার করা।"
+          },
+          {
+            "sub": "Performance measurement — লক্ষ্য কতটা পূরণ হলো তা মাপা।"
+          },
+          "প্রচলিত framework: ISACA-র COBIT এবং আন্তর্জাতিক standard ISO/IEC 38500।",
+          "Bangladesh Bank-এর Guideline on ICT Security, Version 4.0 (2023)-এর Chapter 2 হলো ICT Governance:",
+          {
+            "sub": "Stakeholder: Board, ICT Steering Committee, ICT Security Committee, CEO/MD, CIO, CTO, CITO, CISO, Risk Management Committee, CRO ও business executive।"
+          },
+          {
+            "sub": "Board ICT strategy ও ICT Security Policy অনুমোদন করে।"
+          },
+          {
+            "sub": "ICT Steering Committee গঠিত হয় ICT, Risk, HR, Cyber Security Unit, ICC/Audit, Legal ও সংশ্লিষ্ট business unit-এর প্রতিনিধি নিয়ে; IT-র কৌশলগত লক্ষ্যের অগ্রগতি তদারকি করে।"
+          },
+          {
+            "sub": "ICT Security Committee গঠিত হয় ICT, ICT/Cyber Security, Risk, ICC ও business unit-এর প্রতিনিধি নিয়ে; ICT security policy ও risk framework তৈরি ও বাস্তবায়ন নিশ্চিত করে।"
+          },
+          {
+            "sub": "ICT Security Policy Board-অনুমোদিত হতে হবে এবং periodically পর্যালোচনা করতে হবে।"
+          },
+          {
+            "sub": "Internal ও external Information System audit — দুটোই কমপক্ষে বছরে একবার।"
+          },
+          {
+            "sub": "ICT কাজে segregation of duties, আর ICT asset-এর জন্য insurance বা risk coverage fund রাখতে হয়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "দিক",
+            "Governance",
+            "Management"
+          ],
+          "rows": [
+            [
+              "মূল প্রশ্ন",
+              "কী ও কেন",
+              "কীভাবে"
+            ],
+            [
+              "দায়িত্বে",
+              "Board",
+              "CEO ও executive"
+            ],
+            [
+              "কাজ",
+              "Evaluate, Direct, Monitor",
+              "Plan, Build, Run, Monitor"
+            ],
+            [
+              "সময়দৃষ্টি",
+              "দীর্ঘমেয়াদি",
+              "দৈনন্দিন"
+            ]
+          ]
+        },
+        "mnemonic": "Governance ঠিক করে কী ও কেন, management ঠিক করে কীভাবে — দায় শেষ পর্যন্ত Board-এর।"
+      }
     }
   ]
 }
