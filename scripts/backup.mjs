@@ -1,4 +1,4 @@
-// Backup script — snapshots ALL content + the OWNER's cloud progress to
+// Backup script — snapshots ALL content + the OWNER's cloud progress & highlights to
 // /backups/*.json (committed to git as a safety net; never imported by the app,
 // so it adds nothing to the bundle).
 //
@@ -63,6 +63,28 @@ async function fetchAll(table, columns, order = 'id') {
   return rows
 }
 
+// Every row of `table` belonging to one user. Paginated — a single select is
+// capped at PostgREST's 1000-row limit and truncates silently — and checked
+// against an exact count, so a short read fails the backup instead of shipping.
+// `key` must be unique within the user's rows; it is also the page order.
+async function fetchOwnerRows(table, userId, key) {
+  const rows = []
+  const page = 1000
+  for (let from = 0; ; from += page) {
+    const { data, error } = await db.from(table).select('*').eq('user_id', userId).order(key).range(from, from + page - 1)
+    if (error) throw new Error(`${table}: ${error.message}`)
+    rows.push(...data)
+    if (data.length < page) break
+  }
+  const { count, error } = await db.from(table).select('*', { count: 'exact', head: true }).eq('user_id', userId)
+  if (error) throw new Error(`${table}: ${error.message}`)
+  const distinct = new Set(rows.map(r => r[key])).size
+  if (rows.length !== count || distinct !== rows.length) {
+    throw new Error(`integrity check failed — ${table} ${rows.length}/${distinct} distinct vs DB ${count}`)
+  }
+  return rows
+}
+
 async function main() {
   const dir = join(ROOT, 'backups')
   if (!existsSync(dir)) mkdirSync(dir)
@@ -104,12 +126,10 @@ async function main() {
   const { data: { users }, error: uErr } = await db.auth.admin.listUsers({ perPage: 1000 })
   if (uErr) throw uErr
   const owner = users.find(u => u.email === OWNER_EMAIL)
-  let progress = []
-  if (owner) {
-    const { data, error } = await db.from('user_progress').select('*').eq('user_id', owner.id)
-    if (error) throw error
-    progress = data
-  }
+  // (user_id, uid) is unique, so uid pages one user's progress stably. A single
+  // select would silently stop at 1000 rows (general-quiz hit this at 1666).
+  const progress = owner ? await fetchOwnerRows('user_progress', owner.id, 'uid') : []
+  const highlights = owner ? await fetchOwnerRows('user_highlights', owner.id, 'id') : []
   writeFileSync(join(dir, 'progress.json'), JSON.stringify({
     owner: OWNER_EMAIL,
     count: progress.length,
@@ -118,6 +138,14 @@ async function main() {
     progress,
   }, null, 2))
   console.log(`progress.json → ${progress.length} rows for ${OWNER_EMAIL}${owner ? '' : ' (owner not found)'}`)
+
+  // Saved highlights. No shrink guard: removing a highlight is ordinary use.
+  writeFileSync(join(dir, 'highlights.json'), JSON.stringify({
+    owner: OWNER_EMAIL,
+    count: highlights.length,
+    highlights,
+  }, null, 2))
+  console.log(`highlights.json → ${highlights.length} rows for ${OWNER_EMAIL}`)
 }
 
 main().catch(e => { console.error('✖ Backup failed:', e.message); process.exit(1) })
