@@ -105,6 +105,37 @@
       ]
     },
     {
+      "id": "sort",
+      "name": "Sorting (sort)",
+      "info": {
+        "summary": [
+          "sort input-এর লাইনগুলো সাজিয়ে output-এ দেখায়। মূল file বদলায় না।",
+          "Default-এ প্রতিটি লাইনকে text ধরে বাঁ দিক থেকে অক্ষর ধরে ধরে তুলনা করে। তাই 10 আগে আসে 9-এর আগে, কারণ প্রথম অক্ষর '1' ছোট '9'-এর চেয়ে।",
+          "সংখ্যা হিসেবে তুলনা করতে -n লাগে। 512K, 20M, 1G-এর মতো size-এর জন্য -h লাগে, কারণ -n শুধু সামনের সংখ্যাটা দেখে (1G-কে 1 ধরে)।",
+          "বাস্তবে sort সাধারণত pipe-এর মাঝখানে বসে: command | sort | head মানে \"top N\"।"
+        ],
+        "table": {
+          "headers": ["Option", "মানে"],
+          "rows": [
+            ["sort (option ছাড়া)", "text order (A থেকে Z, অক্ষর ধরে)"],
+            ["-r", "reverse — উল্টো ক্রম (বড় আগে)"],
+            ["-n", "numeric — সংখ্যা হিসেবে (2 < 9 < 10)"],
+            ["-h", "human-readable size (512K < 20M < 1G)"]
+          ]
+        }
+      },
+      "commands": [
+        { "cmd": "ps aux --sort=-%mem | head", "desc": "সবচেয়ে বেশি memory নেওয়া process (ps-এর নিজস্ব --sort)" }
+      ],
+      "practice": [
+        { "prompt": "names.txt file-এর লাইনগুলো A থেকে Z সাজিয়ে দেখাও", "accept": ["sort names.txt"], "explain": "option ছাড়া sort = text order, অক্ষর ধরে তুলনা" },
+        { "prompt": "names.txt-এর লাইনগুলো উল্টো ক্রমে (Z থেকে A) সাজাও", "accept": ["sort -r names.txt"], "explain": "-r = reverse" },
+        { "prompt": "marks.txt-এ প্রতি লাইনে একটি সংখ্যা আছে। সংখ্যা হিসেবে ছোট থেকে বড় সাজাও", "accept": ["sort -n marks.txt"], "explain": "-n = numeric। -n ছাড়া 10, 100, 2, 9 আসত, কারণ text হিসেবে '1' ছোট '2'-এর চেয়ে। -n দিলে 2, 9, 10, 100।" },
+        { "prompt": "marks.txt-এর সংখ্যাগুলো বড় থেকে ছোট সাজাও", "accept": ["sort -nr marks.txt", "sort -rn marks.txt", "sort -n -r marks.txt", "sort -r -n marks.txt"], "explain": "-n = সংখ্যা হিসেবে, -r = উল্টো, তাই বড় আগে। দুটো flag একসাথে -nr লেখা যায়।" },
+        { "prompt": "ips.txt-এ প্রতি লাইনে একটি IP আছে। কোন IP কতবার এসেছে গুনে, বেশি থেকে কম সাজাও", "accept": ["sort ips.txt | uniq -c | sort -nr", "sort ips.txt | uniq -c | sort -rn", "sort ips.txt | uniq -c | sort -n -r"], "explain": "sort = একই IP পাশাপাশি আনে  |  uniq -c = পাশাপাশি duplicate গুনে সামনে count বসায়  |  sort -nr = count অনুযায়ী বড় আগে। প্রথম sort না দিলে uniq ছড়ানো duplicate আলাদা ভাবে গুনত।" }
+      ]
+    },
+    {
       "id": "users",
       "name": "User & Group Management",
       "info": {
@@ -233,7 +264,9 @@
         { "prompt": "system-এর block device ও partition গুলো tree আকারে দেখাও", "accept": ["lsblk"], "explain": "lsblk = list block devices" },
         { "prompt": "বর্তমানে mounted filesystem গুলো দেখাও", "accept": ["mount"], "explain": "mount (argument ছাড়া) = mounted list" },
         { "prompt": "current directory-র প্রতিটি item-এর size দেখিয়ে ছোট থেকে বড় sort করো (du + sort pipe)", "accept": ["du -sh * | sort -h"], "explain": "sort -h = human-readable size অনুযায়ী sort" },
-        { "prompt": "df output থেকে শুধু /dev দিয়ে শুরু হওয়া filesystem গুলো দেখাও", "accept": ["df -h | grep /dev", "df -h | grep dev", "df | grep /dev"], "explain": "df output পাইপ করে grep দিয়ে filter" }
+        { "prompt": "df output থেকে শুধু /dev দিয়ে শুরু হওয়া filesystem গুলো দেখাও", "accept": ["df -h | grep /dev", "df -h | grep dev", "df | grep /dev"], "explain": "df output পাইপ করে grep দিয়ে filter" },
+        { "prompt": "/home/user-এর ভেতরের সব file ও folder থেকে সবচেয়ে বড় 5টা দেখাও (du + sort + head)", "accept": ["du -ah /home/user | sort -rh | head -5", "du -ah /home/user | sort -hr | head -5", "du -ah /home/user | sort -rh | head -n 5", "du -ah /home/user | sort -hr | head -n 5", "du -ha /home/user | sort -rh | head -5", "du -ha /home/user | sort -hr | head -5"], "explain": "du -ah = প্রতিটি file ও folder-এর size (-a = all, শুধু folder না)  |  sort -rh = size অনুযায়ী, বড় আগে  |  head -5 = প্রথম 5 লাইন। -h ছাড়া শুধু -n দিলে 1G-কে 1 ধরে 512K-এর নিচে ফেলত।" },
+        { "prompt": "current directory-র সবচেয়ে বড় 10টা file/folder দেখাও (du + sort + head)", "accept": ["du -sh * | sort -rh | head -10", "du -sh * | sort -hr | head -10", "du -sh * | sort -rh | head -n 10", "du -sh * | sort -hr | head -n 10", "du -hs * | sort -rh | head -10", "du -hs * | sort -hr | head -10"], "explain": "du -sh * = current directory-র প্রতিটি item-এর মোট size (-s = ভেতরে না ঢুকে summary)  |  sort -rh = বড় আগে  |  head -10 = top 10" }
       ]
     },
     {
