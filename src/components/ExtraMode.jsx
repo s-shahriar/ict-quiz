@@ -189,7 +189,7 @@ function ExtraCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, o
 
       {isOpen && (
         <div className="anim-slide">
-          <WrittenCardBody a={a} topicColor={topicColor} uid={q._uid} />
+          <WrittenCardBody a={a} question={q.q} topicColor={topicColor} uid={q._uid} />
         </div>
       )}
     </div>

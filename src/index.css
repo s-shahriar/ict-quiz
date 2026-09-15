@@ -1753,7 +1753,9 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   border-left: 3px solid var(--c, var(--accent));
   border-radius: 16px;
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
+  /* clip, not hidden: `hidden` makes the card a scroll container, and the
+     question peek (shared/QuestionPeek.jsx) would stick to it, not the page. */
+  overflow: clip;
   transition: box-shadow 0.22s ease, border-color 0.22s ease;
 }
 .written-card.open {
@@ -1829,6 +1831,60 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   padding-top: 2px; transition: color 0.18s;
 }
 .written-card.open .written-chevron { color: var(--c, var(--accent)); }
+
+/* Question peek — the question pinned under the top bar while its answer is
+   read. See shared/QuestionPeek.jsx. The wrapper is zero-height so it adds no
+   layout; the negative margin cancels the body's 16px flex gap it would open. */
+.wpeek-sticky {
+  position: sticky; z-index: 50;
+  height: 0; margin-bottom: -16px;
+}
+.wpeek {
+  position: absolute; top: 6px; left: -10px; right: -10px;
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 8px 8px 9px 12px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--c, var(--accent)) 35%, var(--border));
+  border-left: 3px solid var(--c, var(--accent));
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+}
+.wpeek.show {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.wpeek-main {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.wpeek.clamped .wpeek-main,
+.wpeek.expanded .wpeek-main { cursor: pointer; }
+.wpeek-label {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--c, var(--accent));
+}
+/* Two lines by height, not line-clamp: structured questions render as several
+   block lines, which -webkit-line-clamp does not count reliably. */
+.wpeek-q { max-height: 3em; overflow: hidden; font-size: 0.84rem; line-height: 1.5; }
+.wpeek-q .written-qtext { font-size: inherit; line-height: inherit; display: block; }
+.wpeek.clamped:not(.expanded) .wpeek-q {
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent);
+}
+.wpeek.expanded .wpeek-q { max-height: 45vh; overflow-y: auto; }
+.wpeek-jump {
+  flex-shrink: 0;
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--border-md);
+  color: var(--text-2);
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.wpeek-jump:hover { color: var(--c, var(--accent)); border-color: var(--c, var(--accent)); }
 
 /* Card body */
 .written-card-body {
@@ -2751,7 +2807,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .nailed-group {
   background: var(--surface-glass);
   border: 1px solid var(--border-md);
-  border-radius: 16px; overflow: hidden;
+  border-radius: 16px; overflow: clip; /* see .written-card */
 }
 .nailed-group-headrow {
   display: flex; align-items: center; gap: 8px;
@@ -3560,6 +3616,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 [data-hand="left"] .nailed-row,
 [data-hand="left"] .nailed-row-btns,
 [data-hand="left"] .written-card-header,
+[data-hand="left"] .wpeek,
 [data-hand="left"] .practice-cmd-head,
 [data-hand="left"] .practice-prompt-row,
 [data-hand="left"] .back-btn {

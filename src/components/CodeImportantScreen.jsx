@@ -116,7 +116,7 @@ function CodeImportantCard({ q, qid, topicColor, onUnmark, weakOnly }) {
         </button>
         <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
       </div>
-      <WrittenCardBody a={q.answer} topicColor={topicColor} uid={q._uid} />
+      <WrittenCardBody a={q.answer} question={q.q} topicColor={topicColor} uid={q._uid} />
     </div>
   )
 }

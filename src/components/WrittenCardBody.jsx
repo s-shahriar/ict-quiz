@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Brain } from 'lucide-react'
 import CodeBlock from './shared/CodeBlock.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
+import QuestionPeek from './shared/QuestionPeek.jsx'
 import { useHighlights } from '../contexts/HighlightContext.jsx'
 
 // Every piece of answer prose is wrapped in <HighlightableText> with a stable
@@ -71,7 +72,7 @@ function renderPoints(points, topicColor, hl) {
   return blocks
 }
 
-export function WrittenCardBody({ a, topicColor, uid }) {
+export function WrittenCardBody({ a, question, topicColor, uid }) {
   const [extOpen, setExtOpen] = useState(false)
   const { getFor } = useHighlights()
 
@@ -82,6 +83,9 @@ export function WrittenCardBody({ a, topicColor, uid }) {
 
   return (
     <div className="written-card-body" data-hl-root={uid || undefined}>
+
+      {/* Keeps the question in view once its header scrolls away. */}
+      {question && <QuestionPeek text={question} topicColor={topicColor} />}
 
       {/* Code snippet the question refers to (if provided) — kept out of the
           question text itself so the collapsed header stays readable. */}
