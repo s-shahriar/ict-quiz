@@ -5776,6 +5776,192 @@
       },
       "segment": "Subnetting",
       "subsegment": "Subnet Creation"
+    },
+    {
+      "q": "Draw a Class diagram.\n\nA token ring based local area network (LAN) is a network consisting of nodes, in which network packets are sent around. Every node has a unique name within the network, and refers to its next node, different kinds of nodes exist: workstations are originators of messages; servers and printers are network nodes that can receive messages. Packets contain an originator, a destination and content, and are sent around on network. A LAN is a circular configuration of nodes.",
+      "id": "cn_057",
+      "tags": [
+        "class diagram",
+        "uml",
+        "token ring",
+        "lan",
+        "inheritance",
+        "aggregation",
+        "association",
+        "multiplicity"
+      ],
+      "answer": {
+        "summary": [
+          "Class diagram হলো UML-এর একটি diagram, যা system-এর class, তাদের attribute ও method, আর class-গুলোর relationship দেখায়।",
+          "এখানে Node একটি abstract class; Workstation, Server ও Printer তার child (inheritance)।",
+          "Node-এর next self-association দিয়ে ring তৈরি হয়, LAN ও Node-এর মধ্যে aggregation, আর Packet-এ originator, destination ও content থাকে।"
+        ],
+        "points": [
+          "Class diagram কী:",
+          {
+            "sub": "এটি system-এর static structure দেখায় — কী কী class আছে, আর তারা কীভাবে যুক্ত।"
+          },
+          {
+            "sub": "প্রতিটি class একটি box, যার তিনটি ভাগ: নাম, attribute, method।"
+          },
+          {
+            "sub": "Attribute হলো class-এর data, method হলো class যে কাজ করতে পারে।"
+          },
+          {
+            "sub": "Attribute লেখা হয় name : type আকারে, যেমন name : String।"
+          },
+          {
+            "sub": "আগের - মানে private, + মানে public।"
+          },
+          {
+            "label": "Diagram — একটি Class box-এর গঠন",
+            "diagram": "┌────────────────────┐\n│       Packet       │   ← ১. Class-এর নাম\n├────────────────────┤\n│ - content : String │   ← ২. Attribute\n├────────────────────┤\n│ + forward()        │   ← ৩. Method\n└────────────────────┘\n\n  -  private (বাইরে থেকে দেখা যায় না)\n  +  public\n  name : String  মানে attribute-এর নাম : type"
+          },
+          "Relationship-এর চিহ্ন:",
+          {
+            "sub": "Association: দুই class-এর সাধারণ সম্পর্ক, একটি সোজা রেখা দিয়ে আঁকা হয়।"
+          },
+          {
+            "sub": "Multiplicity: রেখার প্রান্তে লেখা সংখ্যা, ওই পাশের কয়টি object যুক্ত তা বোঝায়।"
+          },
+          {
+            "sub": "Inheritance: \"is a\" সম্পর্ক — child class parent-এর সব attribute ও method পায়।"
+          },
+          {
+            "sub": "Inheritance-এ খালি ত্রিভুজ সবসময় parent-এর দিকে থাকে।"
+          },
+          {
+            "sub": "Aggregation: \"has a\" সম্পর্ক, whole-এর দিকে খালি diamond।"
+          },
+          {
+            "sub": "Aggregation-এ whole না থাকলেও part নিজে থেকে যায়।"
+          },
+          {
+            "sub": "Composition: ভরা diamond — whole ধ্বংস হলে part-ও থাকে না।"
+          },
+          {
+            "sub": "Self-association: একটি class-এর object একই class-এর আরেকটি object-কে চেনে।"
+          },
+          {
+            "label": "Diagram — Relationship-এর চিহ্ন",
+            "diagram": "Association — সাধারণ সম্পর্ক, শুধু একটি রেখা\n   LAN ─────────── Packet\n\nMultiplicity — রেখার প্রান্তে লেখা সংখ্যা\n   1       ঠিক একটি\n   0..*    শূন্য বা অনেকগুলো\n   2..*    কমপক্ষে দুটি\n\nInheritance — \"is a\" সম্পর্ক\n      Node\n       △          ← খালি ত্রিভুজ, parent-এর দিকে\n       │\n     Server\n\nAggregation — \"has a\", part আলাদাও থাকতে পারে\n      LAN\n       ◇          ← খালি diamond, whole-এর দিকে\n       │\n      Node\n\nComposition — part, whole ছাড়া থাকতে পারে না\n     House\n       ◆          ← ভরা diamond, whole-এর দিকে\n       │\n     Room\n\nSelf-association — class নিজের সাথেই যুক্ত\n   ┌──────┐\n   │ Node │────┐\n   │      │    │ next\n   │      │────┘\n   └──────┘"
+          },
+          "ধাপ ১ — প্রশ্নের noun থেকে class:",
+          {
+            "sub": "প্রশ্নের গুরুত্বপূর্ণ noun সাধারণত একেকটি class হয়।"
+          },
+          {
+            "sub": "এখানে ৬টি class: LAN, Node, Workstation, Server, Printer, Packet।"
+          },
+          {
+            "sub": "\"different kinds of nodes exist\" মানে প্রতিটি node কোনো না কোনো নির্দিষ্ট ধরন।"
+          },
+          {
+            "sub": "তাই Node-কে abstract class ধরা হয় — সরাসরি শুধু \"Node\" object তৈরি হয় না।"
+          },
+          "ধাপ ২ — Attribute ও Method:",
+          {
+            "sub": "Node: name : String {unique}, কারণ network-এ প্রতিটি node-এর নাম আলাদা।"
+          },
+          {
+            "sub": "Node: forward(p: Packet), কারণ packet এক node থেকে পরের node-এ যায়।"
+          },
+          {
+            "sub": "Workstation: originate(), কারণ workstation message তৈরি করে পাঠায়।"
+          },
+          {
+            "sub": "Server ও Printer: receive(), কারণ এরা message গ্রহণ করে।"
+          },
+          {
+            "sub": "Packet: originator, destination ও content — প্রশ্নে সরাসরি বলা আছে।"
+          },
+          {
+            "sub": "originator-এর type Workstation, কারণ শুধু workstation-ই message শুরু করে।"
+          },
+          "ধাপ ৩ — Relationship:",
+          {
+            "sub": "Workstation, Server, Printer তিনটিই Node-এর ধরন, তাই Node-এর সাথে inheritance।"
+          },
+          {
+            "sub": "\"refers to its next node\" মানে Node-এর self-association, role name next, multiplicity 1।"
+          },
+          {
+            "sub": "শেষ node-এর next আবার প্রথম node — এভাবেই circular ring তৈরি হয়।"
+          },
+          {
+            "sub": "\"LAN is a circular configuration of nodes\" মানে LAN ও Node-এর aggregation।"
+          },
+          {
+            "sub": "Aggregation কারণ node LAN থেকে খুলে নিলেও যন্ত্রটি নিজে থেকে যায়।"
+          },
+          {
+            "sub": "Node-এর পাশে 2..*, কারণ ring বানাতে কমপক্ষে দুটি node লাগে।"
+          },
+          {
+            "sub": "\"Packets are sent around on network\" মানে LAN ও Packet-এর association — এক LAN-এ 0..* packet।"
+          }
+        ],
+        "diagram": "          ┌────────────────────────────┐\n          │           Packet           │\n          ├────────────────────────────┤\n          │ - originator : Workstation │\n          │ - destination : Node       │\n          │ - content : String         │\n          └──────────────┬─────────────┘\n                    0..* │\n                         │ sent around on\n                       1 │\n                  ┌──────┴──────┐\n                  │     LAN     │\n                  └─────────────┘\n                         ◇\n                       1 │\n                         │\n                    2..* │\n           ┌─────────────┴────────────┐\n           │       <<abstract>>       │\n           │           Node           │\n           ├──────────────────────────┤\n           │ - name : String {unique} │────┐ 1\n           ├──────────────────────────┤    │ next\n           │ + forward(p: Packet)     │────┘ 1\n           └─────────────┬────────────┘\n                         △\n                         │\n        ┌────────────────┼───────────────┐\n        │                │               │\n┌───────┴───────┐ ┌──────┴──────┐ ┌──────┴──────┐\n│  Workstation  │ │    Server   │ │   Printer   │\n├───────────────┤ ├─────────────┤ ├─────────────┤\n│ + originate() │ │ + receive() │ │ + receive() │\n└───────────────┘ └─────────────┘ └─────────────┘",
+        "table": {
+          "headers": [
+            "প্রশ্নের অংশ",
+            "Class diagram-এ"
+          ],
+          "rows": [
+            [
+              "nodes ... unique name",
+              "Node-এ - name : String {unique}"
+            ],
+            [
+              "refers to its next node",
+              "Node-এর self-association, next (1)"
+            ],
+            [
+              "different kinds of nodes exist",
+              "Node abstract, নিচে inheritance"
+            ],
+            [
+              "workstations are originators",
+              "Workstation-এ + originate()"
+            ],
+            [
+              "servers and printers can receive",
+              "Server ও Printer-এ + receive()"
+            ],
+            [
+              "originator, destination, content",
+              "Packet-এর ৩টি attribute"
+            ],
+            [
+              "packets sent around on network",
+              "LAN 1 ─── 0..* Packet"
+            ],
+            [
+              "circular configuration of nodes",
+              "LAN ◇─── 2..* Node"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Inheritance-এর ত্রিভুজ child-এর দিকে আঁকা",
+            "না — খালি ত্রিভুজ সবসময় parent (Node)-এর দিকে থাকে।"
+          ],
+          [
+            "Diamond Node-এর পাশে আঁকা",
+            "না — diamond থাকে whole (LAN)-এর পাশে, part (Node)-এর পাশে নয়।"
+          ],
+          [
+            "Circle বোঝাতে আলাদা Ring class বানানো",
+            "না — Node-এর next self-association দিয়েই circle তৈরি হয়।"
+          ],
+          [
+            "Server ও Printer-কে Workstation-এর child বানানো",
+            "না — তিনটিই সমান স্তরে, সরাসরি Node-এর child।"
+          ]
+        ],
+        "mnemonic": "Noun = class; \"is a\" = খালি ত্রিভুজ parent-এর দিকে; \"has a\" = diamond whole-এর দিকে; \"refers to next\" = নিজের দিকে ফেরা রেখা।"
+      }
     }
   ]
 }
