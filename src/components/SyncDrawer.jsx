@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, Bookmark, BookmarkX, Check, Clock, Cloud, CloudOff, RefreshCw, RotateCcw, Star, StarOff, Trash2, Undo2, X } from 'lucide-react'
+import { AlertTriangle, Bookmark, BookmarkX, Check, Clock, Cloud, CloudOff, Flame, RefreshCw, RotateCcw, Star, StarOff, Trash2, Undo2, X } from 'lucide-react'
 import { subscribeQueue, flushNow } from '../lib/offlineQueue.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import { closeSyncDrawer, subscribeSyncDrawer } from '../lib/syncDrawerState.js'
@@ -36,13 +37,17 @@ function describe(it) {
   if (it.kind === 'delete') return { Icon: Trash2, color: '#f43f5e', text: 'Moved to Recycle Bin' }
   if (it.kind === 'restore') return { Icon: RotateCcw, color: '#10b981', text: 'Restored from Recycle Bin' }
   if (it.kind === 'purge') return { Icon: Trash2, color: '#b91c1c', text: 'Deleted forever', filled: true }
-  const { nailed, important } = it.patch || {}
+  const { nailed, important, weak } = it.patch || {}
   const parts = []
   if (nailed !== undefined) parts.push(nailed ? 'Nailed' : 'Un-nailed')
   if (important !== undefined) parts.push(important ? 'Marked important' : 'Unmarked important')
-  // When both columns changed, the nail leads — the same order as the text.
+  if (weak !== undefined) parts.push(weak ? 'Marked weak' : 'Unmarked weak')
+  // When several columns changed, the nail leads, then weak (the narrower mark).
   if (nailed !== undefined) {
     return { Icon: nailed ? Star : StarOff, color: nailed ? '#f59e0b' : OFF, filled: nailed, text: parts.join(' · ') }
+  }
+  if (weak !== undefined) {
+    return { Icon: Flame, color: weak ? '#f97316' : OFF, filled: weak, text: parts.join(' · ') }
   }
   if (important !== undefined) {
     return { Icon: important ? Bookmark : BookmarkX, color: important ? '#ef4444' : OFF, filled: important, text: parts.join(' · ') }
@@ -111,6 +116,7 @@ export default function SyncDrawer() {
   const [, setTick] = useState(0)
   const nail = useMasteredContext()
   const imp = useImportantContext()
+  const wk = useWeakContext()
   const trash = useTrash()
 
   useEffect(() => subscribeQueue((s) => setSnap(s)), [])
@@ -138,15 +144,20 @@ export default function SyncDrawer() {
     const q = { _id: it.id, _uid: it.uid, _module: it.module, _catName: it.cat, question: it.label }
     if (it.kind === 'delete') return it.id && trash.isTrashed(it.id) ? { run: () => trash.restore(q) } : null
     if (it.kind === 'restore') return it.id && !trash.isTrashed(it.id) ? { run: () => trash.moveToBin(q) } : null
-    const { nailed, important } = it.patch || {}
-    if (!it.uid || (nailed === undefined && important === undefined)) return null
+    const { nailed, important, weak } = it.patch || {}
+    if (!it.uid || (nailed === undefined && important === undefined && weak === undefined)) return null
     const inEffect = (nailed === undefined || nail.value.has(it.uid) === nailed)
       && (important === undefined || imp.value.has(it.uid) === important)
+      && (weak === undefined || wk.value.has(it.uid) === weak)
     if (!inEffect) return null
     return {
       run: () => {
         if (nailed !== undefined) (nailed ? nail.remove : nail.add)(it.uid)
+        // Weak sits inside Important: clear Weak before Important, and restore
+        // Important before Weak.
+        if (weak === true) wk.remove(it.uid)
         if (important !== undefined) (important ? imp.remove : imp.add)(it.uid)
+        if (weak === false) wk.add(it.uid)
       },
     }
   }
@@ -211,7 +222,7 @@ export default function SyncDrawer() {
             <div className="syncq-empty">
               <Check size={26} />
               <p>Nothing waiting</p>
-              <span>{snap.lastSavedAt ? `Last change saved ${ago(snap.lastSavedAt)}.` : 'Nail, important, delete and Recycle Bin changes show up here until they reach the server.'}</span>
+              <span>{snap.lastSavedAt ? `Last change saved ${ago(snap.lastSavedAt)}.` : 'Nail, important, weak, delete and Recycle Bin changes show up here until they reach the server.'}</span>
             </div>
           )}
         </div>

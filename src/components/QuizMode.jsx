@@ -6,6 +6,7 @@ import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useModuleReady } from '../data/contentLoader.js'
 import DeleteButton from './shared/DeleteButton.jsx'
+import WeakButton from './shared/WeakButton.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
@@ -154,6 +155,7 @@ export default function QuizMode() {
                 <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />
                 <span className="qmark-label">{isImportant ? 'Saved!' : 'Important'}</span>
               </button>
+              <WeakButton uid={qid} className="quiz-weak-btn" size={16} label onLabel="Weak!" />
               <DeleteButton question={q} className="quiz-nail-btn" size={16} onDeleted={next} />
             </div>
             <button className="quiz-next-btn" onClick={next}>

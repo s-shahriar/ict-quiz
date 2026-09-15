@@ -1,9 +1,11 @@
-import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Lightbulb, Table2, Terminal, XCircle } from 'lucide-react'
+import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Flame, Lightbulb, Table2, Terminal, XCircle } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId } from '../data/practice/index.js'
 import TopbarActions from './shared/TopbarActions.jsx'
+import WeakButton from './shared/WeakButton.jsx'
 
 const TABS = [
   { id: 'info', label: 'Info', icon: BookOpen },
@@ -283,32 +285,45 @@ function SchemaBar({ data }) {
 
 function CommandsPanel({ commands, practice, important, makeId, onToggleImportant }) {
   const list = buildCommandList(commands, practice)
-  const [impOnly, setImpOnly] = useState(false)
+  const [filter, setFilter] = useState('all')   // 'all' | 'important' | 'weak'
+  const { value: weak } = useWeakContext()
   if (!list.length) return null
   const isImp = (c) => !!c.key && important?.has(makeId(c.key))
+  const isWeak = (c) => !!c.key && weak?.has(makeId(c.key))
   const importantCount = list.filter(isImp).length
-  const visible = impOnly ? list.filter(isImp) : list
+  const weakCount = list.filter(isWeak).length
+  const visible = filter === 'important' ? list.filter(isImp) : filter === 'weak' ? list.filter(isWeak) : list
   return (
     <div className="practice-commands">
       <div className="study-filter-bar">
         <button
-          className={`study-filter-btn${!impOnly ? ' active' : ''}`}
-          onClick={() => setImpOnly(false)}
-          style={!impOnly ? { borderColor: 'var(--accent)', color: 'var(--accent)', background: 'var(--accent-light)' } : {}}
+          className={`study-filter-btn${filter === 'all' ? ' active' : ''}`}
+          onClick={() => setFilter('all')}
+          style={filter === 'all' ? { borderColor: 'var(--accent)', color: 'var(--accent)', background: 'var(--accent-light)' } : {}}
         >
           সব ({list.length})
         </button>
         <button
-          className={`study-filter-btn${impOnly ? ' active' : ''}`}
-          onClick={() => setImpOnly(true)}
-          style={impOnly ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+          className={`study-filter-btn${filter === 'important' ? ' active' : ''}`}
+          onClick={() => setFilter('important')}
+          style={filter === 'important' ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
         >
-          <Bookmark size={11} fill={impOnly ? 'currentColor' : 'none'} />
+          <Bookmark size={11} fill={filter === 'important' ? 'currentColor' : 'none'} />
           Important ({importantCount})
+        </button>
+        <button
+          className={`study-filter-btn${filter === 'weak' ? ' active' : ''}`}
+          onClick={() => setFilter('weak')}
+          style={filter === 'weak' ? { borderColor: '#f97316', color: '#f97316', background: 'rgba(249,115,22,0.12)' } : {}}
+        >
+          <Flame size={11} fill={filter === 'weak' ? 'currentColor' : 'none'} />
+          Weak ({weakCount})
         </button>
       </div>
       {visible.length === 0 ? (
-        <p className="practice-info-line">কোনো important command নেই — 🔖 চিহ্নে ট্যাপ করে যোগ করো।</p>
+        <p className="practice-info-line">
+          {filter === 'weak' ? 'কোনো Weak command নেই।' : 'কোনো important command নেই — 🔖 চিহ্নে ট্যাপ করে যোগ করো।'}
+        </p>
       ) : visible.map((c, i) => (
         <div key={i} className="practice-cmd-row">
           {c.prompt && <div className="practice-cmd-q">{c.prompt}</div>}
@@ -323,6 +338,7 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
             >
               <Bookmark size={14} fill={isImp(c) ? 'currentColor' : 'none'} />
             </button>
+            <WeakButton uid={c.key ? makeId(c.key) : null} className="practice-imp-btn practice-weak-btn" />
           </div>
           {c.desc && <span className="practice-cmd-desc">{c.desc}</span>}
         </div>
@@ -332,7 +348,8 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
 }
 
 export function CommandPractice({ problems, important, onToggleImportant, idOf, ciOf = () => false, showFilter = true, showTopicTag = false, sampleData = null }) {
-  const [impOnly, setImpOnly] = useState(false)
+  const [filter, setFilterState] = useState('all')   // 'all' | 'important' | 'weak'
+  const { value: weak } = useWeakContext()
   const [idx, setIdx] = useState(0)
   const [input, setInput] = useState('')
   const [status, setStatus] = useState('idle') // idle | correct | wrong
@@ -345,11 +362,14 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
   // Commands tab uses — so marking it here also marks it there.
   const drillId = (p) => idOf(p)
   const isImp = (p) => { const id = idOf(p); return !!id && important?.has(id) }
+  const isWeak = (p) => { const id = idOf(p); return !!id && weak?.has(id) }
   const importantCount = all.filter(isImp).length
+  const weakCount = all.filter(isWeak).length
 
   // Pool the user is cycling through, carrying each item's original index so
   // the solved-set stays stable when the filter is toggled.
-  const pool = all.map((p, i) => ({ p, i })).filter(x => !impOnly || isImp(x.p))
+  const pool = all.map((p, i) => ({ p, i }))
+    .filter(x => filter === 'all' || (filter === 'weak' ? isWeak(x.p) : isImp(x.p)))
   const total = pool.length
   const viewIdx = total ? Math.min(idx, total - 1) : 0
   const current = pool[viewIdx]
@@ -358,7 +378,7 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
   const goTo = (ni) => { setIdx(ni); reset(); requestAnimationFrame(() => inputRef.current?.focus()) }
   const next = () => { if (total) goTo((viewIdx + 1) % total) }
   const prev = () => { if (total) goTo((viewIdx - 1 + total) % total) }
-  const setFilter = (v) => { setImpOnly(v); setIdx(0); reset() }
+  const setFilter = (v) => { setFilterState(v); setIdx(0); reset() }
 
   const submit = () => {
     if (!input.trim() || status === 'correct' || !current) return
@@ -389,19 +409,27 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
   const filterBar = showFilter ? (
     <div className="study-filter-bar">
       <button
-        className={`study-filter-btn${!impOnly ? ' active' : ''}`}
-        onClick={() => setFilter(false)}
-        style={!impOnly ? { borderColor: 'var(--accent)', color: 'var(--accent)', background: 'var(--accent-light)' } : {}}
+        className={`study-filter-btn${filter === 'all' ? ' active' : ''}`}
+        onClick={() => setFilter('all')}
+        style={filter === 'all' ? { borderColor: 'var(--accent)', color: 'var(--accent)', background: 'var(--accent-light)' } : {}}
       >
         সব ({all.length})
       </button>
       <button
-        className={`study-filter-btn${impOnly ? ' active' : ''}`}
-        onClick={() => setFilter(true)}
-        style={impOnly ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+        className={`study-filter-btn${filter === 'important' ? ' active' : ''}`}
+        onClick={() => setFilter('important')}
+        style={filter === 'important' ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
       >
-        <Bookmark size={11} fill={impOnly ? 'currentColor' : 'none'} />
+        <Bookmark size={11} fill={filter === 'important' ? 'currentColor' : 'none'} />
         Important ({importantCount})
+      </button>
+      <button
+        className={`study-filter-btn${filter === 'weak' ? ' active' : ''}`}
+        onClick={() => setFilter('weak')}
+        style={filter === 'weak' ? { borderColor: '#f97316', color: '#f97316', background: 'rgba(249,115,22,0.12)' } : {}}
+      >
+        <Flame size={11} fill={filter === 'weak' ? 'currentColor' : 'none'} />
+        Weak ({weakCount})
       </button>
     </div>
   ) : null
@@ -411,7 +439,9 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
       <div className="practice-drill">
         {filterBar}
         <p className="practice-info-line">
-          {impOnly ? 'কোনো important practice নেই — 🔖 চিহ্নে ট্যাপ করে যোগ করো।' : 'এই topic-এ এখনো practice নেই।'}
+          {filter === 'important' ? 'কোনো important practice নেই — 🔖 চিহ্নে ট্যাপ করে যোগ করো।'
+            : filter === 'weak' ? 'কোনো Weak practice নেই।'
+            : 'এই topic-এ এখনো practice নেই।'}
         </p>
       </div>
     )
@@ -442,6 +472,7 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
         >
           <Bookmark size={16} fill={isImp(current.p) ? 'currentColor' : 'none'} />
         </button>
+        <WeakButton uid={drillId(current.p)} className="practice-imp-btn practice-weak-btn" size={16} />
       </div>
 
       <div className={`practice-terminal status-${status}`}>

@@ -4,6 +4,7 @@ import { CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, OctagonX, St
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
+import WeakButton from './shared/WeakButton.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
@@ -148,6 +149,7 @@ export default function ExamMode() {
                   <Bookmark size={16} fill={isImportant ? 'currentColor' : 'none'} strokeWidth={1.8} />
                   <span className="qmark-label">{isImportant ? 'Saved!' : 'Important'}</span>
                 </button>
+                <WeakButton uid={qid} className="quiz-weak-btn" size={16} label onLabel="Weak!" />
                 <DeleteButton question={q} className="quiz-nail-btn" size={16} onDeleted={next} />
               </div>
             )}

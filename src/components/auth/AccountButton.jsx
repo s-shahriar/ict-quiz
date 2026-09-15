@@ -1,5 +1,5 @@
 import { useState, useRef, useLayoutEffect } from 'react'
-import { LogIn, LogOut, User, Check, CloudOff, Star, Bookmark, Trash2 } from 'lucide-react'
+import { LogIn, LogOut, User, Check, CloudOff, Star, Bookmark, Flame, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext.jsx'
 import { useProgressMeta } from '../../contexts/ProgressContext.jsx'
@@ -33,7 +33,7 @@ function timeAgo(date) {
 export default function AccountButton() {
   const navigate = useNavigate()
   const { configured, user, signInWithGoogle, signOut } = useAuth()
-  const { nailedCount, importantCount, lastSaved } = useProgressMeta()
+  const { nailedCount, importantCount, weakCount, lastSaved } = useProgressMeta()
   const [open, setOpen] = useState(false)
   const btnRef = useRef(null)
   const [panel, setPanel] = useState(null)
@@ -107,6 +107,8 @@ export default function AccountButton() {
                   <span style={stat}><Star size={13} style={{ color: '#f59e0b' }} /> {nailedCount} nailed</span>
                   <span style={statDivider} />
                   <span style={stat}><Bookmark size={13} style={{ color: '#ef4444' }} /> {importantCount} important</span>
+                  <span style={statDivider} />
+                  <span style={stat}><Flame size={13} style={{ color: '#f97316' }} /> {weakCount} weak</span>
                 </div>
 
                 <div style={syncNote}>

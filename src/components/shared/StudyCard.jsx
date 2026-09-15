@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Bookmark, CheckCircle, Lightbulb, Star, XCircle } from 'lucide-react'
 import QuestionText from './QuestionText.jsx'
 import DeleteButton from './DeleteButton.jsx'
+import WeakButton from './WeakButton.jsx'
 import HighlightableText from './HighlightableText.jsx'
 import { useHighlights } from '../../contexts/HighlightContext.jsx'
 
@@ -67,6 +68,14 @@ export default function StudyCard({
             <Bookmark size={12} fill={isImportant ? 'currentColor' : 'none'} />
             <span className="qmark-label">{isImportant ? 'Important ✓' : 'Important'}</span>
           </button>
+          <WeakButton
+            uid={q._uid}
+            className="nail-btn weak-study-btn"
+            onClass="nailed"
+            size={12}
+            label
+            style={{ color: '#f97316', borderColor: 'rgba(249,115,22,0.4)', background: 'rgba(249,115,22,0.1)' }}
+          />
           <DeleteButton question={q} className="nail-btn" size={12} />
           {shown && (
             <button

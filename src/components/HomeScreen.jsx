@@ -10,6 +10,7 @@ import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import GroupSearch from './GroupSearch.jsx'
 import WrittenSearch from './WrittenSearch.jsx'
 import ExtraSearch from './ExtraSearch.jsx'
@@ -21,6 +22,7 @@ export default function HomeScreen() {
   const location = useLocation()
   const { value: mastered } = useMasteredContext()
   const { value: important } = useImportantContext()
+  const { value: weak } = useWeakContext()
 
   const [searchParams] = useSearchParams()
   // Capture restore target once per mount (HomeScreen remounts on browser-back
@@ -68,6 +70,11 @@ export default function HomeScreen() {
   const totalCodeImportant    = countPrefix(important, 'code:')
   // Practice content is bundled; its important flags are keyed by command id.
   const totalPracticeImportant = countPrefix(important, 'practice')
+  // "N saved · M weak" on each Important card, the Weak part only once there is one.
+  const withWeak = (n, prefix) => {
+    const w = countPrefix(weak, prefix)
+    return w ? `${n} saved · ${w} weak` : `${n} saved`
+  }
 
   return (
     <div className="home anim-fade">
@@ -144,7 +151,7 @@ export default function HomeScreen() {
               </div>
               <div className="ac-body">
                 <div className="ac-label">Important</div>
-                <div className="ac-sub">{totalImportant} saved</div>
+                <div className="ac-sub">{withWeak(totalImportant, 'mcq:')}</div>
               </div>
               <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>
@@ -189,7 +196,7 @@ export default function HomeScreen() {
               </div>
               <div className="ac-body">
                 <div className="ac-label">Important</div>
-                <div className="ac-sub">{totalWrittenImportant} saved</div>
+                <div className="ac-sub">{withWeak(totalWrittenImportant, 'written:')}</div>
               </div>
               <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>
@@ -216,7 +223,7 @@ export default function HomeScreen() {
               </div>
               <div className="ac-body">
                 <div className="ac-label">Important</div>
-                <div className="ac-sub">{totalPracticeImportant} saved</div>
+                <div className="ac-sub">{withWeak(totalPracticeImportant, 'practice')}</div>
               </div>
               <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>
@@ -263,7 +270,7 @@ export default function HomeScreen() {
               </div>
               <div className="ac-body">
                 <div className="ac-label">Important</div>
-                <div className="ac-sub">{totalExtraImportant} saved</div>
+                <div className="ac-sub">{withWeak(totalExtraImportant, 'extra:')}</div>
               </div>
               <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>
@@ -310,7 +317,7 @@ export default function HomeScreen() {
               </div>
               <div className="ac-body">
                 <div className="ac-label">Important</div>
-                <div className="ac-sub">{totalCodeImportant} saved</div>
+                <div className="ac-sub">{withWeak(totalCodeImportant, 'code:')}</div>
               </div>
               <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>
@@ -357,7 +364,7 @@ export default function HomeScreen() {
               </div>
               <div className="ac-body">
                 <div className="ac-label">Important</div>
-                <div className="ac-sub">{totalVivaImportant} saved</div>
+                <div className="ac-sub">{withWeak(totalVivaImportant, 'viva:')}</div>
               </div>
               <div className="ac-footer ac-footer--important">
                 View <span className="ac-arrow">→</span>

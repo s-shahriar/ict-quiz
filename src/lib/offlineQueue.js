@@ -1,4 +1,4 @@
-// Offline-tolerant write queue for nail / important / delete, and for the
+// Offline-tolerant write queue for nail / important / weak / delete, and for the
 // Recycle Bin's restore / delete-forever.
 //
 // Every one of those actions is optimistic in the UI and flows through here.
@@ -152,7 +152,7 @@ function makeEntry(e) {
 }
 
 function patchEq(a, b) {
-  return a?.nailed === b?.nailed && a?.important === b?.important
+  return a?.nailed === b?.nailed && a?.important === b?.important && a?.weak === b?.weak
 }
 
 export function subscribeQueue(fn) {
@@ -188,7 +188,8 @@ export function setQueueUser(uid) {
   if (pending.size) scheduleFlush(0)
 }
 
-// Record one flag change. `patch` is { nailed?:bool } or { important?:bool }.
+// Record one flag change. `patch` holds the columns one action changed, from
+// { nailed, important, weak } — e.g. { weak:true, important:true }.
 // The readable label comes from the content loader's registry — the caller only
 // has a uid, and a uid is a one-way hash of the question text.
 export function enqueue(uid, patch) {

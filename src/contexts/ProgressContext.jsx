@@ -4,7 +4,8 @@ import { fetchProgress } from '../lib/progressSync.js'
 import { setQueueUser, enqueue, subscribeQueue } from '../lib/offlineQueue.js'
 import LoginPrompt from '../components/auth/LoginPrompt.jsx'
 
-// Progress = two Sets of stable question uids: `nailed` and `important`.
+// Progress = three Sets of stable question uids: `nailed`, `important` and
+// `weak` (an Important question you still can't answer — always inside important).
 // Cloud-only: you must be signed in to save. When logged out the sets are empty
 // and any nail/important tap opens a sign-in prompt instead of saving. When
 // logged in, the DB is the source of truth (pulled on open) and every change is
@@ -20,6 +21,7 @@ export function ProgressProvider({ children }) {
 
   const [nailed, setNailed] = useState(() => new Set())
   const [important, setImportant] = useState(() => new Set())
+  const [weak, setWeak] = useState(() => new Set())
   const [hydratedUserId, setHydratedUserId] = useState(null)
   const [lastSaved, setLastSaved] = useState(null)
   const [promptLogin, setPromptLogin] = useState(false)
@@ -47,6 +49,7 @@ export function ProgressProvider({ children }) {
         if (!active) return
         setNailed(remote.nailed)
         setImportant(remote.important)
+        setWeak(remote.weak)
         setLastSaved(remote.lastUpdated ? new Date(remote.lastUpdated) : null)
       } catch (e) {
         console.error('[progress] sync failed:', e.message)
@@ -65,29 +68,60 @@ export function ProgressProvider({ children }) {
     return false
   }
   // Queue the change (optimistic UI already applied by the caller). `lastSaved`
-  // updates when the queue actually lands the write, not here.
-  const write = (uid, column, value) => enqueue(uid, { [column]: value })
+  // updates when the queue actually lands the write, not here. One action is one
+  // write: its patch holds every column that action changed.
+  const write = (uid, patch) => enqueue(uid, patch)
+  const addTo = (setter, uid) => setter(p => new Set(p).add(uid))
+  const dropFrom = (setter, uids) => setter(p => { const n = new Set(p); uids.forEach(u => n.delete(u)); return n })
 
+  // Weak lives inside Important, and the rules that keep it there live here so no
+  // screen can break them: marking Weak also marks Important, un-marking
+  // Important also clears Weak, and nailing a question clears Weak.
   const nailApi = {
     value: user ? nailed : EMPTY,
-    add: (uid) => { if (!uid || !ensureAuthed()) return; setNailed(p => new Set(p).add(uid)); write(uid, 'nailed', true) },
-    remove: (uid) => { if (!ensureAuthed()) return; setNailed(p => { const n = new Set(p); n.delete(uid); return n }); write(uid, 'nailed', false) },
-    removeMany: (uids) => { if (!ensureAuthed()) return; setNailed(p => { const n = new Set(p); uids.forEach(u => n.delete(u)); return n }); uids.forEach(u => write(u, 'nailed', false)) },
+    add: (uid) => {
+      if (!uid || !ensureAuthed()) return
+      addTo(setNailed, uid)
+      if (weak.has(uid)) { dropFrom(setWeak, [uid]); write(uid, { nailed: true, weak: false }) }
+      else write(uid, { nailed: true })
+    },
+    remove: (uid) => { if (!ensureAuthed()) return; dropFrom(setNailed, [uid]); write(uid, { nailed: false }) },
+    removeMany: (uids) => { if (!ensureAuthed()) return; dropFrom(setNailed, uids); uids.forEach(u => write(u, { nailed: false })) },
+  }
+  const unmarkImportant = (uids) => {
+    dropFrom(setImportant, uids)
+    dropFrom(setWeak, uids)
+    uids.forEach(u => write(u, weak.has(u) ? { important: false, weak: false } : { important: false }))
   }
   const importantApi = {
     value: user ? important : EMPTY,
-    add: (uid) => { if (!uid || !ensureAuthed()) return; setImportant(p => new Set(p).add(uid)); write(uid, 'important', true) },
-    remove: (uid) => { if (!ensureAuthed()) return; setImportant(p => { const n = new Set(p); n.delete(uid); return n }); write(uid, 'important', false) },
-    removeMany: (uids) => { if (!ensureAuthed()) return; setImportant(p => { const n = new Set(p); uids.forEach(u => n.delete(u)); return n }); uids.forEach(u => write(u, 'important', false)) },
-    toggle: (uid) => { if (!uid || !ensureAuthed()) return; const on = important.has(uid); setImportant(p => { const n = new Set(p); if (on) n.delete(uid); else n.add(uid); return n }); write(uid, 'important', !on) },
+    add: (uid) => { if (!uid || !ensureAuthed()) return; addTo(setImportant, uid); write(uid, { important: true }) },
+    remove: (uid) => { if (!ensureAuthed()) return; unmarkImportant([uid]) },
+    removeMany: (uids) => { if (!ensureAuthed()) return; unmarkImportant(uids) },
+    toggle: (uid) => {
+      if (!uid || !ensureAuthed()) return
+      if (important.has(uid)) unmarkImportant([uid])
+      else { addTo(setImportant, uid); write(uid, { important: true }) }
+    },
+  }
+  const weakApi = {
+    value: user ? weak : EMPTY,
+    add: (uid) => {
+      if (!uid || !ensureAuthed()) return
+      addTo(setWeak, uid)
+      if (important.has(uid)) write(uid, { weak: true })
+      else { addTo(setImportant, uid); write(uid, { important: true, weak: true }) }
+    },
+    remove: (uid) => { if (!ensureAuthed()) return; dropFrom(setWeak, [uid]); write(uid, { weak: false }) },
+    removeMany: (uids) => { if (!ensureAuthed()) return; dropFrom(setWeak, uids); uids.forEach(u => write(u, { weak: false })) },
   }
 
   // True while a logged-in user's cloud progress is still being pulled on open.
   const syncing = !!user && hydratedUserId !== user.id
-  const meta = { nailedCount: user ? nailed.size : 0, importantCount: user ? important.size : 0, lastSaved: user ? lastSaved : null }
+  const meta = { nailedCount: user ? nailed.size : 0, importantCount: user ? important.size : 0, weakCount: user ? weak.size : 0, lastSaved: user ? lastSaved : null }
 
   return (
-    <ProgressContext.Provider value={{ nailApi, importantApi, syncing, meta }}>
+    <ProgressContext.Provider value={{ nailApi, importantApi, weakApi, syncing, meta }}>
       {children}
       {promptLogin && <LoginPrompt onGoogle={signInWithGoogle} onClose={() => setPromptLogin(false)} />}
     </ProgressContext.Provider>
@@ -102,5 +136,6 @@ function useProgress() {
 
 export const useMasteredContext = () => useProgress().nailApi
 export const useImportantContext = () => useProgress().importantApi
+export const useWeakContext = () => useProgress().weakApi
 export const useProgressSyncing = () => useProgress().syncing
 export const useProgressMeta = () => useProgress().meta

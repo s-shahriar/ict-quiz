@@ -5,8 +5,11 @@ import CategoryChipBar from './CategoryChipBar.jsx'
 import { getWrittenData, WRITTEN_TOPICS } from '../data/written/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
+import WeakButton from './shared/WeakButton.jsx'
+import WeakOnlyBar from './shared/WeakOnlyBar.jsx'
 import Pagination from './shared/Pagination'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
@@ -18,16 +21,29 @@ export default function WrittenImportantScreen() {
   const navigate = useNavigate()
   useModuleReady('written')
   const { value: important, remove: onUnmark } = useImportantContext()
+  const { value: weak, remove: onUnweak } = useWeakContext()
   const { trashedIds } = useTrash()
   const [activeId, setActiveId] = useState(null)
+  const [weakOnly, setWeakOnly] = useState(false)
 
   const importantByTopic = WRITTEN_TOPICS.map(t => {
     const data = getWrittenData(t.id)
     const items = (data.questions || [])
       .map(q => ({ q, qid: q._uid }))
-      .filter(({ q, qid }) => important.has(qid) && !trashedIds.has(q._id))
+      .filter(({ q, qid }) => important.has(qid) && !trashedIds.has(q._id) && (!weakOnly || weak.has(qid)))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
+
+  // Counts for the All / Weak switch, whichever of the two is showing.
+  let impTotal = 0
+  let weakTotal = 0
+  for (const t of WRITTEN_TOPICS) {
+    for (const q of getWrittenData(t.id).questions || []) {
+      if (!important.has(q._uid) || trashedIds.has(q._id)) continue
+      impTotal++
+      if (weak.has(q._uid)) weakTotal++
+    }
+  }
 
   const total = importantByTopic.reduce((s, g) => s + g.items.length, 0)
   const activeGroup = importantByTopic.find(g => g.topic.id === activeId) || importantByTopic[0]
@@ -52,7 +68,7 @@ export default function WrittenImportantScreen() {
         <TopbarActions />
       </div>
 
-      {total === 0 ? (
+      {impTotal === 0 ? (
         <div className="nailed-screen-empty">
           <Bookmark size={48} style={{ color: '#ef4444', opacity: 0.3 }} />
           <p>No important written questions yet.</p>
@@ -64,12 +80,14 @@ export default function WrittenImportantScreen() {
             <span className="nailed-screen-total important-total">{total}</span>
             <span className="nailed-screen-total-label">important written question{total !== 1 ? 's' : ''} across {importantByTopic.length} topic{importantByTopic.length !== 1 ? 's' : ''}</span>
           </div>
+          <WeakOnlyBar weakOnly={weakOnly} onChange={setWeakOnly} importantCount={impTotal} weakCount={weakTotal} />
+          {total === 0 && <div className="nailed-screen-hint">এখনো কোনো Weak প্রশ্ন নেই</div>}
           <CategoryChipBar groups={importantByTopic} activeId={activeGroup?.topic.id} onSelect={setActiveId} />
 
           {activeGroup && (
             <div className="nailed-screen-list anim-fade" style={{ gap: 10 }}>
               {pageItems.map(({ q, qid }) => (
-                <WrittenImportantCard key={qid} q={q} qid={qid} topicColor={activeGroup.topic.color} onUnmark={onUnmark} />
+                <WrittenImportantCard key={qid} q={q} qid={qid} topicColor={activeGroup.topic.color} onUnmark={weakOnly ? onUnweak : onUnmark} weakOnly={weakOnly} />
               ))}
               {totalPages > 1 && <Pagination page={curPage} totalPages={totalPages} onPageChange={setPage} />}
             </div>
@@ -80,17 +98,18 @@ export default function WrittenImportantScreen() {
   )
 }
 
-function WrittenImportantCard({ q, qid, topicColor, onUnmark }) {
+function WrittenImportantCard({ q, qid, topicColor, onUnmark, weakOnly }) {
   return (
     <div className="written-card open" style={{ '--c': topicColor }}>
       <div className="written-card-header">
         <div className="written-card-toggle" style={{ cursor: 'default' }}>
           <WrittenQuestionText uid={q._uid} text={q.q} className="written-qtext" style={{ paddingTop: 2 }} />
         </div>
+        <WeakButton uid={qid} className="nailed-unnail-btn nailed-weak-btn" size={13} />
         <button
           className="nailed-unnail-btn"
           onClick={() => onUnmark(qid)}
-          title="Remove from Important"
+          title={weakOnly ? 'Remove from Weak' : 'Remove from Important'}
           style={{ flexShrink: 0, marginTop: 2 }}
         >
           <X size={13} />

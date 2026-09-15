@@ -6,7 +6,9 @@ import { TOPICS } from '../data/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import Pagination from './shared/Pagination'
+import WeakOnlyBar from './shared/WeakOnlyBar.jsx'
 import StudyCard from './shared/StudyCard.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
@@ -24,10 +26,12 @@ export default function ImportantScreen() {
   const navigate = useNavigate()
   useModuleReady('mcq')
   const { value: important, add: onMarkImportant, remove: onUnmark, removeMany: onUnmarkMany } = useImportantContext()
+  const { value: weak, removeMany: onUnweakMany } = useWeakContext()
   const nailApi = useMasteredContext()
   const { trashedIds } = useTrash()
   const [activeId, setActiveId] = useState(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [weakOnly, setWeakOnly] = useState(false)
 
   const topics = TOPICS
 
@@ -35,9 +39,20 @@ export default function ImportantScreen() {
     const items = t.questions
       .map((q) => ({ q, qid: q._uid }))
       .filter(({ q }) => q.options && q.correct_answer)
-      .filter(({ q, qid }) => important.has(qid) && !trashedIds.has(q._id))
+      .filter(({ q, qid }) => important.has(qid) && !trashedIds.has(q._id) && (!weakOnly || weak.has(qid)))
     return { topic: t, items }
   }).filter(g => g.items.length > 0)
+
+  // Counts for the All / Weak switch, whichever of the two is showing.
+  let impTotal = 0
+  let weakTotal = 0
+  for (const t of topics) {
+    for (const q of t.questions) {
+      if (!q.options || !q.correct_answer || !important.has(q._uid) || trashedIds.has(q._id)) continue
+      impTotal++
+      if (weak.has(q._uid)) weakTotal++
+    }
+  }
 
   const total = importantByTopic.reduce((s, g) => s + g.items.length, 0)
   const multiTopic = importantByTopic.length > 1
@@ -76,7 +91,7 @@ export default function ImportantScreen() {
   const activeCount = activeItems.length
   const doRemoveActive = () => {
     const ids = (activeGroup?.items ?? []).map(({ qid }) => qid)
-    if (ids.length) onUnmarkMany(ids)
+    if (ids.length) (weakOnly ? onUnweakMany : onUnmarkMany)(ids)
     setConfirmOpen(false)
   }
 
@@ -95,7 +110,7 @@ export default function ImportantScreen() {
         <TopbarActions />
       </div>
 
-      {total === 0 ? (
+      {impTotal === 0 ? (
         <div className="nailed-screen-empty">
           <Bookmark size={48} style={{ color: '#ef4444', opacity: 0.3 }} />
           <p>No important questions yet.</p>
@@ -110,6 +125,9 @@ export default function ImportantScreen() {
           <div className="nailed-screen-hint">
             These questions still appear in Exam Mode. Tap an option to reveal the answer.
           </div>
+
+          <WeakOnlyBar weakOnly={weakOnly} onChange={setWeakOnly} importantCount={impTotal} weakCount={weakTotal} />
+          {total === 0 && <div className="nailed-screen-hint">এখনো কোনো Weak প্রশ্ন নেই</div>}
 
           <CategoryChipBar
             groups={importantByTopic}
@@ -163,7 +181,7 @@ export default function ImportantScreen() {
             </div>
             <h3 className="trash-modal-title">Remove all — {activeGroup.topic.name}?</h3>
             <p className="trash-modal-sub">
-              {activeCount} question{activeCount !== 1 ? 's' : ''} will be removed from Important. You can add them back anytime.
+              {activeCount} question{activeCount !== 1 ? 's' : ''} will be removed from {weakOnly ? 'Weak' : 'Important'}. You can add them back anytime.
             </p>
             <div className="trash-modal-actions">
               <button className="trash-btn-cancel" onClick={() => setConfirmOpen(false)}>Cancel</button>

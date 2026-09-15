@@ -1,11 +1,12 @@
-// Supabase read/write for per-user progress (nailed / important), keyed by the
+// Supabase read/write for per-user progress (nailed / important / weak), keyed by the
 // stable question `uid`. All calls are RLS-scoped to the logged-in user.
 import { supabase } from './supabase.js'
 
 const PAGE_SIZE = 1000
 
-// Load the user's full progress into two Sets of uids, plus the most recent
-// updated_at (for a "last saved" indicator).
+// Load the user's full progress into Sets of uids (nailed / important / weak),
+// plus the most recent updated_at (for a "last saved" indicator). Weak only
+// counts on a row that is also Important — it is a subset of Important.
 //
 // Paginated, and it has to be: PostgREST caps one response at the project's
 // max-rows (1000 by default) and reports no error when it truncates. A plain
@@ -16,31 +17,33 @@ const PAGE_SIZE = 1000
 export async function fetchProgress() {
   const nailed = new Set()
   const important = new Set()
+  const weak = new Set()
   let lastUpdated = null
   for (let from = 0; ; from += PAGE_SIZE) {
     const { data, error } = await supabase
       .from('user_progress')
-      .select('uid, nailed, important, updated_at')
+      .select('uid, nailed, important, weak, updated_at')
       .order('uid')
       .range(from, from + PAGE_SIZE - 1)
     if (error) throw error
     for (const r of data) {
       if (r.nailed) nailed.add(r.uid)
       if (r.important) important.add(r.uid)
+      if (r.weak && r.important) weak.add(r.uid)
       if (r.updated_at && (!lastUpdated || r.updated_at > lastUpdated)) lastUpdated = r.updated_at
     }
     if (data.length < PAGE_SIZE) break
   }
-  return { nailed, important, lastUpdated }
+  return { nailed, important, weak, lastUpdated }
 }
 
 // Bulk-upsert a coalesced batch of flag changes in as few requests as possible.
-// `batch` = [{ uid, patch: { nailed?, important? } }] where each patch holds only
+// `batch` = [{ uid, patch: { nailed?, important?, weak? } }] where each patch holds only
 // the columns that actually changed (so an untouched column is never clobbered).
 //
 // PostgREST bulk upsert derives its column list from the rows, so rows with
 // different key-sets can't share one request — we group by key signature
-// (nailed-only / important-only / both) and send one upsert per group.
+// (e.g. nailed-only / important-only / important+weak) and send one upsert per group.
 // Throws on the first error so the caller (offlineQueue) can keep the batch
 // queued and back off.
 export async function bulkUpsert(userId, batch) {

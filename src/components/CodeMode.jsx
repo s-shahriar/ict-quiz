@@ -1,7 +1,8 @@
-import { Bookmark, ChevronDown, ChevronLeft, ChevronUp, Code2, LayoutGrid, Star, Terminal } from 'lucide-react'
+import { Bookmark, ChevronDown, ChevronLeft, ChevronUp, Code2, Flame, LayoutGrid, Star, Terminal } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { useCodeMasteredContext } from '../contexts/CodeMasteredContext.jsx'
 import { CODE_TOPICS, getCodeData } from '../data/code/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
@@ -9,6 +10,7 @@ import { focusScroll } from '../lib/focusScroll.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import { WrittenCardBody } from './WrittenCardBody.jsx'
 import DeleteButton from './shared/DeleteButton.jsx'
+import WeakButton from './shared/WeakButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import WrittenQuestionText from './shared/WrittenQuestionText.jsx'
@@ -19,6 +21,7 @@ export default function CodeMode() {
   const location = useLocation()
   const backTo = location.state?.backTo  // set when arriving from search — return there
   const { value: important, add: onMarkImportant, remove: onUnmarkImportant } = useImportantContext()
+  const { value: weak } = useWeakContext()
   const { value: codeMastered, add: onNailCode, remove: onUnnailCode } = useCodeMasteredContext()
   const { trashedIds } = useTrash()
 
@@ -29,7 +32,7 @@ export default function CodeMode() {
 
   const questions = codeData?.questions || []
   const [openIds, setOpenIds] = useState({})
-  const [filterImportant, setFilterImportant] = useState(false)
+  const [filter, setFilter] = useState('all')   // 'all' | 'important' | 'weak'
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const qid = (q) => q._uid
@@ -46,8 +49,9 @@ export default function CodeMode() {
 
   const nonNailed        = questions.filter(q => !codeMastered?.has(qid(q)) && !trashedIds.has(q._id))
   const importantCount   = nonNailed.filter(q => important?.has(qid(q))).length
-  const visibleQuestions = filterImportant
-    ? nonNailed.filter(q => important?.has(qid(q)))
+  const weakCount        = nonNailed.filter(q => weak?.has(qid(q))).length
+  const visibleQuestions = filter === 'important' ? nonNailed.filter(q => important?.has(qid(q)))
+    : filter === 'weak' ? nonNailed.filter(q => weak?.has(qid(q)))
     : nonNailed
 
   // Deep-link: ?q=<questionId> opens and scrolls to a specific program.
@@ -88,19 +92,27 @@ export default function CodeMode() {
 
       <div className="study-filter-bar">
         <button
-          className={`study-filter-btn${!filterImportant ? ' active' : ''}`}
-          onClick={() => setFilterImportant(false)}
-          style={!filterImportant ? { borderColor: topic.color, color: topic.color, background: `${topic.color}15` } : {}}
+          className={`study-filter-btn${filter === 'all' ? ' active' : ''}`}
+          onClick={() => setFilter('all')}
+          style={filter === 'all' ? { borderColor: topic.color, color: topic.color, background: `${topic.color}15` } : {}}
         >
           সব ({nonNailed.length})
         </button>
         <button
-          className={`study-filter-btn${filterImportant ? ' active' : ''}`}
-          onClick={() => setFilterImportant(true)}
-          style={filterImportant ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+          className={`study-filter-btn${filter === 'important' ? ' active' : ''}`}
+          onClick={() => setFilter('important')}
+          style={filter === 'important' ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
         >
-          <Bookmark size={11} fill={filterImportant ? 'currentColor' : 'none'} />
+          <Bookmark size={11} fill={filter === 'important' ? 'currentColor' : 'none'} />
           Important ({importantCount})
+        </button>
+        <button
+          className={`study-filter-btn${filter === 'weak' ? ' active' : ''}`}
+          onClick={() => setFilter('weak')}
+          style={filter === 'weak' ? { borderColor: '#f97316', color: '#f97316', background: 'rgba(249,115,22,0.12)' } : {}}
+        >
+          <Flame size={11} fill={filter === 'weak' ? 'currentColor' : 'none'} />
+          Weak ({weakCount})
         </button>
       </div>
 
@@ -108,8 +120,10 @@ export default function CodeMode() {
         <div className="written-empty">
           <Code2 size={40} style={{ opacity: 0.25, marginBottom: 12 }} />
           <p>
-            {filterImportant
+            {filter === 'important'
               ? 'কোনো Important program নেই।'
+              : filter === 'weak'
+              ? 'কোনো Weak program নেই।'
               : questions.length > 0 ? 'সব program nailed! 🎉' : 'এই category-তে এখনো কোনো program নেই।'}
           </p>
         </div>
@@ -169,6 +183,7 @@ function CodeCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, on
         >
           <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
         </button>
+        <WeakButton uid={q._uid} className="written-imp-btn written-weak-btn" />
         <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
       </div>
 

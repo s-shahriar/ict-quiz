@@ -135,6 +135,7 @@ async function main() {
     count: progress.length,
     nailed: progress.filter(p => p.nailed).length,
     important: progress.filter(p => p.important).length,
+    weak: progress.filter(p => p.weak).length,
     progress,
   }, null, 2))
   console.log(`progress.json → ${progress.length} rows for ${OWNER_EMAIL}${owner ? '' : ' (owner not found)'}`)

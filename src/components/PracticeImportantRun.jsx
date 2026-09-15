@@ -1,6 +1,7 @@
-import { Bookmark, ChevronLeft } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Bookmark, ChevronLeft, Flame } from 'lucide-react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
 import { CommandPractice } from './PracticeMode.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
@@ -11,6 +12,11 @@ import TopbarActions from './shared/TopbarActions.jsx'
 export default function PracticeImportantRun() {
   const navigate = useNavigate()
   const { value: important, toggle: toggleImportant } = useImportantContext()
+  const { value: weak } = useWeakContext()
+  // ?weak=1 (from the Important screen's Weak switch) runs only the Weak items.
+  const [searchParams] = useSearchParams()
+  const weakOnly = searchParams.get('weak') === '1'
+  const marked = weakOnly ? weak : important
 
   const drills = []
   for (const cat of PRACTICE_CATEGORIES) {
@@ -24,13 +30,13 @@ export default function PracticeImportantRun() {
         const cmd = p.accept?.[0]
         if (!cmd) continue
         const id = practiceCmdId(cat.id, topic.id, cmd)
-        if (important.has(id)) { seen.add(id); drills.push({ ...p, _impId: id, ...meta }) }
+        if (marked.has(id)) { seen.add(id); drills.push({ ...p, _impId: id, ...meta }) }
       }
       // Reference-only commands marked important (no drill behind them) — turn
       // each into a drill: prompt = its description, answer = the command.
       for (const c of buildCommandList(topic.commands, topic.practice)) {
         const id = practiceCmdId(cat.id, topic.id, c.key)
-        if (important.has(id) && !seen.has(id)) {
+        if (marked.has(id) && !seen.has(id)) {
           seen.add(id)
           drills.push({ prompt: c.prompt || c.desc || 'এই command টি লেখো', accept: [c.key], answers: c.cmds, _impId: id, ...meta })
         }
@@ -45,7 +51,9 @@ export default function PracticeImportantRun() {
           <ChevronLeft size={15} /> Back
         </button>
         <div className="written-topic-pill practice-pill">
-          <Bookmark size={13} fill="currentColor" /> Important Practice
+          {weakOnly
+            ? <><Flame size={13} fill="currentColor" /> Weak Practice</>
+            : <><Bookmark size={13} fill="currentColor" /> Important Practice</>}
         </div>
         <TopbarActions />
       </div>
@@ -54,7 +62,9 @@ export default function PracticeImportantRun() {
         {drills.length === 0 ? (
           <div className="practice-placeholder">
             <Bookmark size={40} style={{ opacity: 0.25, marginBottom: 12 }} />
-            <p>কোনো important practice নেই — Practice বা Commands tab-এ 🔖 দিয়ে যোগ করো।</p>
+            <p>{weakOnly
+              ? 'কোনো Weak practice নেই।'
+              : 'কোনো important practice নেই — Practice বা Commands tab-এ 🔖 দিয়ে যোগ করো।'}</p>
           </div>
         ) : (
           <CommandPractice

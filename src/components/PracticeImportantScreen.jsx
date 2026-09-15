@@ -2,15 +2,21 @@ import { Bookmark, ChevronLeft, Dumbbell, Terminal, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
 import TopbarActions from './shared/TopbarActions.jsx'
+import WeakButton from './shared/WeakButton.jsx'
+import WeakOnlyBar from './shared/WeakOnlyBar.jsx'
 
 export default function PracticeImportantScreen() {
   const navigate = useNavigate()
   const { value: important, remove: onUnmark } = useImportantContext()
+  const { value: weak, remove: onUnweak } = useWeakContext()
   const [activeId, setActiveId] = useState(null)
+  const [weakOnly, setWeakOnly] = useState(false)
 
-  const groups = PRACTICE_CATEGORIES.map(cat => {
+  // Groups of items marked in `marked` — Important, or its Weak subset.
+  const collect = (marked) => PRACTICE_CATEGORIES.map(cat => {
     const data = getPracticeData(cat.id)
     if (!data) return null
     const items = []
@@ -20,14 +26,14 @@ export default function PracticeImportantScreen() {
       // that id is the same mark, so skip it to avoid listing it twice.
       ;(topic.practice || []).forEach(p => {
         const id = practiceCmdId(cat.id, topic.id, p.accept?.[0] || '')
-        if (p.accept?.[0] && important.has(id) && !seen.has(id)) {
+        if (p.accept?.[0] && marked.has(id) && !seen.has(id)) {
           seen.add(id)
           items.push({ kind: 'drill', id, topic, prompt: p.prompt, answer: p.accept[0], desc: p.explain })
         }
       })
       buildCommandList(topic.commands, topic.practice).forEach(c => {
         const id = practiceCmdId(cat.id, topic.id, c.key)
-        if (important.has(id) && !seen.has(id)) {
+        if (marked.has(id) && !seen.has(id)) {
           seen.add(id)
           items.push({ kind: 'cmd', id, topic, cmd: c.cmds[0], desc: c.desc })
         }
@@ -35,8 +41,12 @@ export default function PracticeImportantScreen() {
     }
     return { cat, items }
   }).filter(g => g && g.items.length > 0)
+  const count = (gs) => gs.reduce((s, g) => s + g.items.length, 0)
 
-  const total = groups.reduce((s, g) => s + g.items.length, 0)
+  const importantGroups = collect(important)
+  const weakGroups = collect(weak)
+  const groups = weakOnly ? weakGroups : importantGroups
+  const total = count(groups)
   const activeGroup = groups.find(g => g.cat.id === activeId) || groups[0]
 
   return (
@@ -52,7 +62,7 @@ export default function PracticeImportantScreen() {
         <TopbarActions />
       </div>
 
-      {total === 0 ? (
+      {importantGroups.length === 0 ? (
         <div className="nailed-screen-empty">
           <Bookmark size={48} style={{ color: '#ef4444', opacity: 0.3 }} />
           <p>No important practice items yet.</p>
@@ -64,9 +74,14 @@ export default function PracticeImportantScreen() {
             <span className="nailed-screen-total important-total">{total}</span>
             <span className="nailed-screen-total-label">important practice item{total !== 1 ? 's' : ''} across {groups.length} categor{groups.length !== 1 ? 'ies' : 'y'}</span>
           </div>
-          <button className="practice-runall-btn" onClick={() => navigate('/practice/important/run')}>
-            <Dumbbell size={16} /> সব Important practice করো ({total})
-          </button>
+          <WeakOnlyBar weakOnly={weakOnly} onChange={setWeakOnly} importantCount={count(importantGroups)} weakCount={count(weakGroups)} />
+          {total === 0
+            ? <div className="nailed-screen-hint">এখনো কোনো Weak প্রশ্ন নেই</div>
+            : (
+              <button className="practice-runall-btn" onClick={() => navigate('/practice/important/run' + (weakOnly ? '?weak=1' : ''))}>
+                <Dumbbell size={16} /> সব {weakOnly ? 'Weak' : 'Important'} practice করো ({total})
+              </button>
+            )}
 
           <div className="nailed-cat-bar">
             {groups.map(({ cat, items }) => {
@@ -100,10 +115,11 @@ export default function PracticeImportantScreen() {
                       {item.kind === 'drill' ? <Dumbbell size={11} /> : <Terminal size={11} />}
                       {item.topic.name}
                     </span>
+                    <WeakButton uid={item.id} className="nailed-unnail-btn nailed-weak-btn" size={13} />
                     <button
                       className="nailed-unnail-btn"
-                      onClick={e => { e.stopPropagation(); onUnmark(item.id) }}
-                      title="Remove from Important"
+                      onClick={e => { e.stopPropagation(); (weakOnly ? onUnweak : onUnmark)(item.id) }}
+                      title={weakOnly ? 'Remove from Weak' : 'Remove from Important'}
                     >
                       <X size={13} />
                     </button>
