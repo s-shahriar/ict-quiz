@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
-import { useParams, useNavigate, Navigate } from 'react-router-dom'
-import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, Star, Bookmark } from 'lucide-react'
+import { useParams, useNavigate, useSearchParams, Navigate } from 'react-router-dom'
+import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, Star, Bookmark, Flame } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
+import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { useModuleReady } from '../data/contentLoader.js'
 import DeleteButton from './shared/DeleteButton.jsx'
 import WeakButton from './shared/WeakButton.jsx'
@@ -21,6 +22,10 @@ function shuffle(arr) {
   return a
 }
 
+// `?set=important|weak|nailed` quizzes only the questions you've marked in this
+// topic (chosen on ModeSelect). No param = the whole topic.
+const POOL_LABEL = { important: 'Important', weak: 'Weak', nailed: 'Nailed' }
+
 export default function QuizMode() {
   const { topicId } = useParams()
   const navigate = useNavigate()
@@ -28,13 +33,24 @@ export default function QuizMode() {
   const ready = useModuleReady('mcq')
   const { value: mastered, add: nail, remove: unnail } = useMasteredContext()
   const { value: important, add: markImportant, remove: unmarkImportant } = useImportantContext()
+  const { value: weak } = useWeakContext()
+  const [searchParams] = useSearchParams()
+  const setParam = searchParams.get('set')
+  const set = POOL_LABEL[setParam] ? setParam : null
 
-  const questions = useMemo(
-    () => topic
-      ? shuffle(topic.questions.filter(q => q.options && q.correct_answer))
-      : [],
-    [topic, ready] // eslint-disable-line react-hooks/exhaustive-deps
-  )
+  // A marked-set quiz also tracks its set, so it fills in once cloud progress lands.
+  const liveQuestions = useMemo(() => {
+    if (!topic) return []
+    const base = topic.questions.filter(q => q.options && q.correct_answer)
+    const marked = set === 'important' ? important : set === 'weak' ? weak : set === 'nailed' ? mastered : null
+    return shuffle(marked ? base.filter(q => marked.has(q._uid)) : base)
+  }, [topic, ready, set, set === 'important' ? important : null, set === 'weak' ? weak : null, set === 'nailed' ? mastered : null]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Frozen at the first answer: un-marking a question mid-quiz must not
+  // reshuffle or shrink the quiz you're in the middle of.
+  const [frozen, setFrozen] = useState(null)   // { key, list }
+  const quizKey = `${topic?.id}|${set || 'all'}`
+  const questions = frozen?.key === quizKey ? frozen.list : liveQuestions
 
   const [idx, setIdx] = useState(0)
   const [selected, setSelected] = useState(null)
@@ -59,6 +75,7 @@ export default function QuizMode() {
 
   const pick = (key) => {
     if (revealed) return
+    if (frozen?.key !== quizKey) setFrozen({ key: quizKey, list: questions })
     setSelected(key)
     setRevealed(true)
     if (key === q.correct_answer) setScore(s => s + 1)
@@ -74,6 +91,24 @@ export default function QuizMode() {
   const retry = () => {
     setIdx(0); setSelected(null); setRevealed(false)
     setScore(0); setDone(false)
+  }
+
+  if (set && !questions.length) {
+    const PoolIcon = set === 'important' ? Bookmark : set === 'weak' ? Flame : Star
+    return (
+      <div className="quiz-page anim-fade">
+        <div className="quiz-topbar">
+          <button className="back-btn" onClick={() => navigate('/mcq/' + topic.id)}><ChevronLeft size={15} /> Back</button>
+          <span className="quiz-topic-pill" style={{ color: topic.color }}>{topic.shortName}</span>
+          <TopbarActions />
+        </div>
+        <div className="quiz-pool-empty">
+          <PoolIcon size={38} className={`quiz-pool-empty-icon ${set}`} fill="currentColor" />
+          <p>{topic.name}-এ এখনো কোনো {POOL_LABEL[set]} প্রশ্ন নেই।</p>
+          <button className="back-btn" onClick={() => navigate('/mcq/' + topic.id)}><ChevronLeft size={15} /> ফিরে যাও</button>
+        </div>
+      </div>
+    )
   }
 
   if (!q || done) {
@@ -97,7 +132,10 @@ export default function QuizMode() {
 
       <div className="quiz-progress-wrap">
         <div className="quiz-progress-header">
-          <span className="quiz-qnum">Question {idx + 1} of {questions.length}</span>
+          <span className="quiz-qnum">
+            Question {idx + 1} of {questions.length}
+            {set && <span className={`quiz-pool-tag ${set}`}>{POOL_LABEL[set]}</span>}
+          </span>
           <span className="quiz-pct">{Math.round(progress)}%</span>
         </div>
         <div className="quiz-progress-track">

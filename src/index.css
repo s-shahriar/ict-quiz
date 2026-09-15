@@ -3540,6 +3540,54 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .trash-btn-confirm:hover { background: #dc2626; }
 .trash-btn-confirm:disabled, .trash-btn-cancel:disabled { opacity: .6; cursor: default; }
 
+/* Quiz set chooser (ModeSelect) — reuses the trash-modal shell */
+.quiz-pool-modal { max-width: 400px; text-align: left; }
+.quiz-pool-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.quiz-pool-head .trash-modal-title { margin: 0; }
+.quiz-pool-list { display: flex; flex-direction: column; gap: 8px; }
+.quiz-pool-option {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--border); background: var(--elevated); color: var(--text); text-align: left; cursor: pointer;
+  transition: border-color .16s, background .16s, transform .16s;
+}
+.quiz-pool-option:hover:not(:disabled) {
+  border-color: var(--pc); background: color-mix(in srgb, var(--pc) 10%, var(--elevated)); transform: translateY(-1px);
+}
+.quiz-pool-option:disabled { opacity: .5; cursor: not-allowed; }
+.quiz-pool-icon {
+  width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  color: var(--pc); background: color-mix(in srgb, var(--pc) 14%, transparent);
+}
+.pool-important .quiz-pool-icon { color: #ef4444; background: rgba(239,68,68,.12); }
+.pool-weak .quiz-pool-icon { color: #f97316; background: rgba(249,115,22,.14); }
+.pool-nailed .quiz-pool-icon { color: #f59e0b; background: rgba(245,158,11,.14); }
+.quiz-pool-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.quiz-pool-title { font-size: .9rem; font-weight: 700; }
+.quiz-pool-sub { font-size: .74rem; color: var(--text-3); line-height: 1.35; }
+.quiz-pool-count {
+  flex-shrink: 0; min-width: 34px; padding: 3px 9px; border-radius: 20px; text-align: center;
+  font-size: .78rem; font-weight: 700; color: var(--text-2); background: var(--surface); border: 1px solid var(--border);
+}
+.quiz-pool-tag { margin-left: 8px; padding: 1px 8px; border-radius: 20px; font-size: .68rem; font-weight: 700; vertical-align: middle; }
+.quiz-pool-tag.important, .quiz-pool-empty-icon.important { color: #ef4444; }
+.quiz-pool-tag.important { background: rgba(239,68,68,.12); }
+.quiz-pool-tag.weak, .quiz-pool-empty-icon.weak { color: #f97316; }
+.quiz-pool-tag.weak { background: rgba(249,115,22,.14); }
+.quiz-pool-tag.nailed, .quiz-pool-empty-icon.nailed { color: #f59e0b; }
+.quiz-pool-tag.nailed { background: rgba(245,158,11,.14); }
+.quiz-pool-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+  padding: 64px 20px; color: var(--text-2); font-size: .9rem;
+}
+.quiz-pool-empty-icon { opacity: .55; }
+@media (max-width: 540px) {
+  .quiz-pool-backdrop { align-items: flex-end; padding: 0; }
+  .quiz-pool-modal {
+    max-width: none; border-radius: 18px 18px 0 0; border-bottom: none;
+    padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  }
+}
+
 /* Lives in .toast-rail — positioning comes from the rail, not from itself. */
 .trash-toast {
   display: inline-flex; align-items: center; gap: 7px; max-width: min(86vw, 320px);
