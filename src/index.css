@@ -4202,3 +4202,45 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 @media (prefers-reduced-motion: reduce) {
   .sync-drawer { transition: none; }
 }
+
+/* ── Quiz / Exam answer toolbar ────────────────────────────────────
+   Nail · Important · Weak · Topic · Delete as one row of equal-height
+   buttons beside Next. Topic/Delete borrow .quiz-nail-btn for shape, and
+   utility-kit.css (general-quiz) re-declares that class as a 66px column
+   tile, so everything here is scoped under .quiz-revealed-actions to win on
+   specificity. Marked state is a flat fill, not a glow. The row wraps, so a
+   wide label set drops Next onto its own line instead of overflowing. */
+.quiz-revealed-actions { flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.quiz-revealed-actions .quiz-mark-btns { display: flex; gap: 6px; flex: 0 1 auto; min-width: 0; }
+.quiz-revealed-actions .quiz-mark-btns > button {
+  flex: 0 0 auto;
+  flex-direction: row;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
+  min-width: 44px;
+  min-height: 46px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border-width: 1px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  box-shadow: none;
+}
+.quiz-revealed-actions .quiz-mark-btns > button:hover { transform: none; }
+.quiz-revealed-actions .quiz-mark-btns > button svg { filter: none; transform: none; }
+.quiz-revealed-actions .quiz-mark-btns > .nailed,
+.quiz-revealed-actions .quiz-mark-btns > .marked { font-weight: 700; }
+.quiz-revealed-actions .quiz-mark-btns > .quiz-nail-btn.nailed { background: rgba(245,158,11,0.2); border-color: #f59e0b; }
+.quiz-revealed-actions .quiz-mark-btns > .quiz-important-btn.marked { background: rgba(239,68,68,0.18); border-color: #ef4444; }
+.quiz-revealed-actions .quiz-mark-btns > .quiz-weak-btn.marked { background: rgba(249,115,22,0.18); border-color: #f97316; }
+.quiz-revealed-actions .quiz-next-btn { flex: 1 1 170px; min-height: 46px; padding: 0 16px; }
+
+/* Phones: the marks take a full row split evenly (icon-only), Next goes full
+   width underneath — five 44px buttons plus Next can't share ~300px. */
+@media (max-width: 540px) {
+  .quiz-revealed-actions .quiz-mark-btns { flex: 1 1 100%; }
+  .quiz-revealed-actions .quiz-mark-btns > button { flex: 1 1 0; min-width: 0; padding: 0; }
+  .quiz-revealed-actions .quiz-next-btn { flex-basis: 100%; min-height: 50px; }
+}
