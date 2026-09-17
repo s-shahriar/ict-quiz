@@ -1506,6 +1506,112 @@
         ],
         "mnemonic": "Mutex = একটাই lock, আর যে নিয়েছে সেই ফেরত দেবে। Semaphore গোনে, mutex কেবল পাহারা দেয়।"
       }
+    },
+    {
+      "id": "os_019",
+      "q": "TLB (Translation Lookaside Buffer) কী? TLB hit ও miss হলে address translation কীভাবে হয়, এবং Effective Access Time (EAT) এর সূত্র লেখো।",
+      "tags": [
+        "tlb",
+        "translation lookaside buffer",
+        "paging",
+        "page table",
+        "tlb hit",
+        "tlb miss",
+        "effective access time",
+        "eat",
+        "mmu"
+      ],
+      "answer": {
+        "summary": [
+          "TLB হলো page table-এর একটি ছোট, খুব দ্রুত hardware cache (associative memory), যেখানে সম্প্রতি ব্যবহৃত page number ও frame number এর জোড়া রাখা থাকে।",
+          "Paging এ page table নিজেই main memory তে থাকে, তাই TLB ছাড়া প্রতিটি access এ দুবার memory ছুঁতে হয় — সময় 2Tpm। TLB hit হলে page table lookup বাদ পড়ে।",
+          "EAT = hit × (Ttlb + Tpm) + miss × (Ttlb + 2Tpm)"
+        ],
+        "points": [
+          "TLB কেন দরকার",
+          {
+            "sub": "Page table main memory তে থাকে।"
+          },
+          {
+            "sub": "তাই একটি access এ প্রথমে page table থেকে frame number পড়তে হয় (Tpm)।"
+          },
+          {
+            "sub": "তারপর সেই frame থেকে আসল data পড়তে হয় (আরেক Tpm)।"
+          },
+          {
+            "sub": "মোট 2Tpm — paging না থাকলে যা লাগত তার দ্বিগুণ।"
+          },
+          {
+            "sub": "TLB এই page table lookup টা cache করে রাখে।"
+          },
+          "TLB এর গঠন",
+          {
+            "sub": "প্রতিটি entry তে page number (p) আর frame number (f)।"
+          },
+          {
+            "sub": "Associative memory — সব entry একসাথে parallel এ search হয়, তাই খুব দ্রুত।"
+          },
+          {
+            "sub": "Entry সংখ্যা কম, তাই সব page নয়, কেবল সম্প্রতি ব্যবহৃতগুলো থাকে।"
+          },
+          "ধাপ",
+          {
+            "sub": "১. CPU logical address দেয় — page number p আর offset d।"
+          },
+          {
+            "sub": "২. প্রথমে TLB তে p খোঁজা হয় (Ttlb)।"
+          },
+          {
+            "sub": "৩. TLB hit — f সরাসরি পাওয়া গেল, f + d দিয়ে data পড়া (Tpm)।"
+          },
+          {
+            "sub": "৪. TLB miss — page table থেকে f আনতে হয় (Tpm), তারপর data পড়া (Tpm)।"
+          },
+          {
+            "sub": "৫. Miss এর পর নতুন p-f জোড়া TLB তে রাখা হয়, যাতে পরের বার hit হয়।"
+          },
+          {
+            "diagram": "  p = page number,  d = offset,  f = frame number\n  2 = 7 মানে page 2 আছে frame 7 এ\n  TLB তে আছে শুধু 2 = 7;  page table এ আছে 1 = 9 ও 2 = 7\n\n\n  ১. TLB hit — CPU চাইল page 2, TLB তেই পাওয়া গেল\n\n    +--------+       +-------+       +--------+       +--------+\n    | p   d  |  -->  |  TLB  |  -->  | f   d  |  -->  | Memory |\n    | 2   30 |       | 2 = 7 |       | 7   30 |       |  data  |\n    +--------+       +-------+       +--------+       +--------+\n                        Ttlb                             Tpm\n\n    মোট = Ttlb + Tpm        memory ছোঁয়া হলো 1 বার\n\n\n  ২. TLB miss — CPU চাইল page 1, TLB তে নেই\n\n    +--------+       +-------+       +------------+       +--------+       +--------+\n    | p   d  |  -->  |  TLB  |  -->  | page table |  -->  | f   d  |  -->  | Memory |\n    | 1   30 |       | 1 = ? |       |   1 = 9    |       | 9   30 |       |  data  |\n    +--------+       +-------+       +------------+       +--------+       +--------+\n                        Ttlb              Tpm                                 Tpm\n\n    মোট = Ttlb + 2Tpm       memory ছোঁয়া হলো 2 বার\n    এরপর 1 = 9 TLB তে রেখে দেওয়া হয়, যাতে পরের বার hit হয়",
+            "label": "TLB — hit ও miss এর পথ"
+          },
+          "সময়ের হিসাব",
+          {
+            "sub": "Hit: Ttlb + Tpm"
+          },
+          {
+            "sub": "Miss: Ttlb + Tpm + Tpm = Ttlb + 2Tpm"
+          },
+          {
+            "sub": "Ttlb দুটো term এই আছে, কারণ hit বা miss জানতে হলে আগে TLB search করতেই হয়।"
+          },
+          {
+            "sub": "EAT = hit ratio × (Ttlb + Tpm) + miss ratio × (Ttlb + 2Tpm), যেখানে miss ratio = 1 − hit ratio।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "x86, ARM সহ প্রায় সব আধুনিক CPU এর MMU তে TLB থাকে।"
+          },
+          {
+            "sub": "Context switch এ TLB flush হয় (বা ASID দিয়ে আলাদা রাখা হয়), তাই switch এর পরপর miss বাড়ে।"
+          }
+        ],
+        "diagram": "  কোন ক্ষেত্রে কতবার memory ছুঁতে হয়\n\n    without TLB   page table + data              =  2Tpm\n    TLB hit       TLB + data                     =  Ttlb + Tpm\n    TLB miss      TLB + page table + data        =  Ttlb + 2Tpm\n\n\n  EAT = h × (Ttlb + Tpm)  +  (1 − h) × (Ttlb + 2Tpm)\n\n    h        = hit ratio\n    (1 − h)  = miss ratio\n\n\n  উদাহরণ\n\n  প্রশ্ন: একটি paging system এ TLB search করতে 20 ns এবং\n  main memory একবার access করতে 100 ns লাগে। TLB hit ratio 80%।\n  (ক) Effective Access Time (EAT) কত?\n  (খ) TLB না থাকলে access time কত হতো?\n\n  সমাধান:\n\n    দেওয়া আছে\n      Ttlb  =  20 ns\n      Tpm   =  100 ns\n      h     =  0.8        miss ratio  =  1 − 0.8  =  0.2\n\n    ধাপ ১ — hit হলে সময়\n      Ttlb + Tpm      =  20 + 100          =  120 ns\n\n    ধাপ ২ — miss হলে সময়\n      Ttlb + 2Tpm     =  20 + 2 × 100      =  220 ns\n\n    ধাপ ৩ — EAT (ক)\n      EAT  =  0.8 × 120  +  0.2 × 220\n           =  96 + 44\n           =  140 ns\n\n    ধাপ ৪ — TLB ছাড়া (খ)\n      2Tpm  =  2 × 100  =  200 ns\n\n    উত্তর: EAT = 140 ns, TLB ছাড়া 200 ns।\n    TLB থাকায় access time 60 ns কমেছে, অর্থাৎ 30% দ্রুত।",
+        "mistakes": [
+          [
+            "TLB miss হলে সময় 2Tpm",
+            "না — miss জানার আগেই TLB search হয়ে গেছে, তাই Ttlb + 2Tpm।"
+          ],
+          [
+            "TLB hit হলে memory access লাগে না",
+            "লাগে — data পড়তে একবার Tpm লাগেই; বাদ পড়ে শুধু page table lookup।"
+          ],
+          [
+            "TLB main memory তে থাকে",
+            "না — TLB CPU/MMU এর ভেতরের hardware cache; main memory তে থাকে page table।"
+          ]
+        ],
+        "mnemonic": "Hit = একবার memory, Miss = দুবার memory; TLB খোঁজা দুজনেরই লাগে।"
+      }
     }
   ]
 }
