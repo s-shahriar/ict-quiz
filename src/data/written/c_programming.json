@@ -2294,6 +2294,129 @@
       }
     },
     {
+      "id": "c_061",
+      "q": "Recursion উদাহরণ ৪ — local variable s, আর printf recursive call-এর পরে: function(y, 2) কী print করে?",
+      "tags": [
+        "recursion",
+        "local variable",
+        "call stack",
+        "printf order",
+        "array",
+        "c",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Recursion",
+      "answer": {
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: printf recursive call-এর পরে থাকলে print কোন ক্রমে হয়, আর local variable প্রতি call-এ আলাদা থাকে কি না।"
+        ],
+        "points": [
+          {
+            "code": "#include<stdio.h>\n\nint function(int x[], int i) {\n    int s = x[i];\n    if (i > 0) {\n        s += function(x, i - 1);\n    }\n    printf(\"%d\", s);\n    return s;\n}\n\nint main() {\n    int y[] = {1, 3, 2, 8};\n    function(y, 2);\n    return 0;\n}",
+            "codeLang": "c",
+            "label": "Recursion ৪ — local s, call-এর পরে printf"
+          },
+          "আগে দুটো জিনিস চেক করো:",
+          {
+            "sub": "s static নয়, local। তাই প্রতিটি call-এর নিজের আলাদা s থাকে।"
+          },
+          {
+            "sub": "printf আছে recursive call-এর পরে। তাই নিচে নামার সময় কিছু print হয় না।"
+          },
+          {
+            "sub": "print হয় ফেরার পথে, অর্থাৎ সবচেয়ে ভেতরের call আগে print করে।"
+          },
+          "নিচে নামা (going down):",
+          {
+            "sub": "function(y, 2): s = y[2] = 2। i > 0, তাই call function(y, 1)।"
+          },
+          {
+            "sub": "function(y, 1): s = y[1] = 3। i > 0, তাই call function(y, 0)।"
+          },
+          {
+            "sub": "function(y, 0): s = y[0] = 1। i = 0, তাই আর call নেই।"
+          },
+          "উপরে ফেরা (coming back up):",
+          {
+            "sub": "function(y, 0): print 1, return 1।"
+          },
+          {
+            "sub": "function(y, 1): নিজের s = 3, তার সাথে 1 যোগ, s = 4। print 4, return 4।"
+          },
+          {
+            "sub": "function(y, 2): নিজের s = 2, তার সাথে 4 যোগ, s = 6। print 6, return 6।"
+          },
+          {
+            "sub": "main return মানটা ব্যবহার করে না, তাই আর কিছু print হয় না।"
+          },
+          {
+            "diagram": "(f = function)\n\nনিচে নামা (call হচ্ছে, এখনো কিছু print হয়নি)\n\nf(y, 2)  -->      f(y, 1)  -->      f(y, 0)\ns = y[2] = 2      s = y[1] = 3      s = y[0] = 1\ni > 0, call       i > 0, call       i = 0, থামো\n\nউপরে ফেরা (return হচ্ছে, এখন print হয়)\n\nf(y, 0)  -->      f(y, 1)  -->      f(y, 2)\ns = 1             s = 3 + 1 = 4     s = 2 + 4 = 6\nprint 1           print 4           print 6\nreturn 1          return 4          return 6\n\nOutput: 146",
+            "label": "Dry run — নামা আর ফেরা"
+          },
+          "Output:",
+          {
+            "sub": "printf(\"%d\") এর পরে space বা \\n নেই, তাই তিনটা সংখ্যা গায়ে গায়ে বসে।"
+          },
+          {
+            "code": "146",
+            "label": "Output"
+          }
+        ],
+        "table": {
+          "headers": [
+            "Call",
+            "i",
+            "s = x[i]",
+            "নিচ থেকে ফেরত",
+            "নতুন s (print)"
+          ],
+          "rows": [
+            [
+              "function(y, 2)",
+              "2",
+              "2",
+              "4",
+              "6"
+            ],
+            [
+              "function(y, 1)",
+              "1",
+              "3",
+              "1",
+              "4"
+            ],
+            [
+              "function(y, 0)",
+              "0",
+              "1",
+              "— (base case)",
+              "1"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "নিচে নামার সময়েই print হয় ভেবে 6 4 1 বা 2 3 1 লেখা",
+            "printf recursive call-এর পরে, তাই call ফেরার পরেই print হয়। সবচেয়ে ভেতরের function(y, 0) আগে print করে: 1, তারপর 4, তারপর 6।"
+          ],
+          [
+            "Output হিসেবে 1 4 6 বা আলাদা লাইনে লেখা",
+            "\"%d\"-এ কোনো space বা \\n নেই, তাই output হুবহু 146।"
+          ],
+          [
+            "সব call একই s ভাগাভাগি করে ভাবা (static-এর মতো)",
+            "s local, তাই function(y, 1)-এর s = 3 বদলালেও function(y, 2)-এর s = 2 অক্ষত থাকে।"
+          ],
+          [
+            "y[3] = 8 হিসাবে ঢোকানো",
+            "শুরু i = 2 থেকে, আর i কমতে থাকে। তাই শুধু y[2], y[1], y[0] ব্যবহার হয়, 8 কখনো পড়াই হয় না।"
+          ]
+        ],
+        "mnemonic": "print যদি call-এর পরে থাকে, তবে ফেরার পথে print হয়: সবচেয়ে ভেতরের call আগে।"
+      }
+    },
+    {
       "id": "c_059",
       "q": "Recursion উদাহরণ ৩ (কঠিন) — n নিজেও যোগ হচ্ছে, static sum variable দিয়ে:",
       "tags": [
@@ -3465,6 +3588,166 @@
           ]
         ],
         "mnemonic": "তারকা (*) = মান, & = ঠিকানা, &array = 'পুরোটা' লাফ — একটা element নয়।"
+      }
+    },
+    {
+      "id": "c_060",
+      "q": "Java output — byte a, b দিয়ে new Test(a, b) করলে Test(int, int) আর Test(int, float) এর মধ্যে কোন constructor চলবে?",
+      "tags": [
+        "java",
+        "constructor overloading",
+        "widening",
+        "most specific method",
+        "byte",
+        "output prediction"
+      ],
+      "segment": "Program Output",
+      "subsegment": "Overloading",
+      "answer": {
+        "code": "public class Test {\n    Test(int a, int b) {\n        System.out.println(\"a = \" + a + \" b = \" + b);\n    }\n    Test(int a, float b) {\n        System.out.println(\"a = \" + a + \" b = \" + b);\n    }\n    public static void main(String args[]) {\n        byte a = 10;\n        byte b = 15;\n        Test test = new Test(a, b);\n    }\n}",
+        "codeLang": "java",
+        "summary": [
+          "যা পরীক্ষা করা হচ্ছে: argument-এর type-এর সাথে হুবহু মেলে এমন constructor না থাকলে Java কোনটা বাছাই করে।"
+        ],
+        "points": [
+          "ধাপ ১ — exact match আছে কি?",
+          {
+            "sub": "a আর b দুটোই byte।"
+          },
+          {
+            "sub": "Test(byte, byte) নামে কোনো constructor নেই, তাই exact match নেই।"
+          },
+          "ধাপ ২ — widening করে কোনগুলো খাটে?",
+          {
+            "diagram": "byte -> short -> int -> long -> float -> double",
+            "label": "Widening ক্রম (বাম থেকে ডানে automatic)"
+          },
+          {
+            "sub": "byte থেকে int-এ widening হয়, তাই Test(int, int) খাটে।"
+          },
+          {
+            "sub": "byte থেকে float-এও widening হয়, তাই Test(int, float)-ও খাটে।"
+          },
+          {
+            "sub": "দুটোই applicable, তাই Java এবার এদের মধ্যে তুলনা করে।"
+          },
+          "ধাপ ৩ — সবচেয়ে specific কোনটা?",
+          {
+            "sub": "একাধিক method খাটলে Java সবচেয়ে specific method বাছাই করে।"
+          },
+          {
+            "sub": "int থেকে float-এ widening হয়, কিন্তু float থেকে int-এ হয় না।"
+          },
+          {
+            "sub": "তাই (int, int) যা নিতে পারে, (int, float)-ও তা নিতে পারে, কিন্তু উল্টোটা সত্য নয়।"
+          },
+          {
+            "sub": "অর্থাৎ Test(int, int) বেশি specific, সেটাই চলে।"
+          },
+          {
+            "sub": "b int হিসেবেই থাকে, তাই 15.0 নয়, 15 print হয়।"
+          },
+          {
+            "code": "a = 10 b = 15",
+            "label": "Output"
+          },
+          "কখন compile error হতো?",
+          {
+            "sub": "যদি constructor দুটো হতো Test(int, float) আর Test(float, int)।"
+          },
+          {
+            "sub": "দুটোই খাটত, কিন্তু কোনোটাই অন্যটার চেয়ে specific না।"
+          },
+          {
+            "sub": "তখন \"reference to Test is ambiguous\" compile error আসত।"
+          }
+        ],
+        "mistakes": [
+          [
+            "দুটো constructor-ই খাটে, তাই ambiguous compile error হবে ভাবা",
+            "একটি অন্যটির চেয়ে specific হলে ambiguity হয় না; int থেকে float-এ widening হয়, তাই Test(int, int) জেতে।"
+          ],
+          [
+            "b float parameter-এ গিয়ে 15.0 print হবে ভাবা",
+            "চলে Test(int, int), তাই b int থাকে এবং 15 print হয়। Test(int, float) চললে তবেই b = 15.0 আসত।"
+          ]
+        ],
+        "mnemonic": "Exact match না পেলে widening; একাধিক খাটলে সবচেয়ে specific (সংকীর্ণ type-এর) method জেতে।"
+      }
+    },
+    {
+      "id": "c_062",
+      "q": "What is the basic difference between looping and branching? How can we pass the array to a function in C?",
+      "tags": [
+        "loop",
+        "branching",
+        "if-else",
+        "switch",
+        "array",
+        "function",
+        "pointer",
+        "array decay"
+      ],
+      "answer": {
+        "summary": [
+          "Looping: শর্ত true থাকা পর্যন্ত একই block বারবার চলে।",
+          "Branching: শর্ত দেখে কোন block চলবে সেটা একবার বাছাই হয়।",
+          "Array function-এ pass করলে পুরো array copy হয় না, প্রথম element-এর address যায়।"
+        ],
+        "points": [
+          "Looping বনাম Branching:",
+          {
+            "sub": "Looping: control আবার উপরে ফিরে যায়, তাই block বহুবার চলে।"
+          },
+          {
+            "sub": "Branching: control শুধু সামনে যায়, block সর্বোচ্চ একবার চলে।"
+          },
+          {
+            "sub": "Looping statement: for, while, do-while।"
+          },
+          {
+            "sub": "Branching statement: if, if-else, else-if ladder, switch।"
+          },
+          {
+            "code": "for (i = 1; i <= 3; i++)      // looping: 3 বার চলে\n    printf(\"%d \", i);           // 1 2 3\n\nif (n % 2 == 0)               // branching: একটা পথই চলে\n    printf(\"Even\");\nelse\n    printf(\"Odd\");",
+            "codeLang": "c",
+            "label": "Loop বনাম Branch"
+          },
+          "Array function-এ pass করা:",
+          {
+            "sub": "call করার সময় শুধু array-র নাম দাও: doubleIt(a, 3)।"
+          },
+          {
+            "sub": "নামটা প্রথম element-এর address হয়ে যায় (array decay)।"
+          },
+          {
+            "sub": "parameter তিনভাবে লেখা যায়: int arr[], int arr[3], int *arr। তিনটাই আসলে pointer।"
+          },
+          {
+            "sub": "size সাথে যায় না, তাই size আলাদা parameter হিসেবে পাঠাতে হয়।"
+          },
+          {
+            "sub": "copy হয় না, তাই function-এ element বদলালে main-এর array-ও বদলায়।"
+          },
+          {
+            "sub": "2D array-তে column সংখ্যা দিতেই হয়: int m[][3]।"
+          },
+          {
+            "code": "#include <stdio.h>\n\nvoid doubleIt(int *arr, int n) {\n    for (int i = 0; i < n; i++)\n        arr[i] *= 2;            // main-এর array-ই বদলায়\n}\n\nvoid printArray(int arr[], int n) {\n    for (int i = 0; i < n; i++)\n        printf(\"%d \", arr[i]);\n}\n\nint main() {\n    int a[] = {1, 2, 3};\n    doubleIt(a, 3);               // শুধু নাম, [] ছাড়া\n    printArray(a, 3);             // Output: 2 4 6\n    return 0;\n}",
+            "codeLang": "c",
+            "label": "Array pass করা"
+          }
+        ],
+        "mistakes": [
+          [
+            "call-এ doubleIt(a[], 3) বা doubleIt(a[3], 3) লেখা",
+            "শুধু নাম দিতে হয়: doubleIt(a, 3)। a[3] মানে একটা element, array নয়।"
+          ],
+          [
+            "function-এর ভেতরে sizeof(arr) দিয়ে size বের করা",
+            "ভেতরে arr একটা pointer, তাই sizeof pointer-এর size দেয়। size আলাদা parameter-এ পাঠাও।"
+          ]
+        ]
       }
     }
   ]

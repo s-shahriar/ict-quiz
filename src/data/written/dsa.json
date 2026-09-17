@@ -1898,7 +1898,7 @@
     },
     {
       "id": "dsa_018",
-      "q": "Explain Adjacency Matrix and Adjacency List representations of a graph.",
+      "q": "Explain Adjacency Matrix and Adjacency List representations of a graph. Which one is suitable for a sparse graph and which for a dense graph?",
       "tags": [
         "graph",
         "adjacency matrix",
@@ -1938,15 +1938,30 @@
           {
             "sub": "কিন্তু প্রতিবেশী ঘোরার খরচ ঠিক ততটুকুই, বাড়তি নয়।"
           },
-          "বাস্তবে কোনটা ব্যবহার হয়:",
+          "Sparse বনাম Dense graph — কোনটা লাগবে:",
           {
-            "sub": "অধিকাংশ graph sparse — E ≪ V²।"
+            "sub": "Sparse graph: E অনেক কম, V² এর ধারেকাছেও না (যেমন E ≈ V)।"
           },
           {
-            "sub": "তাই BFS, DFS ও Dijkstra-তে adjacency list ব্যবহার হয়।"
+            "sub": "Sparse graph-এ Adjacency List লাগবে।"
           },
           {
-            "sub": "তখন BFS/DFS-এর খরচ O(V + E); matrix-এ হলে হতো O(V²)।"
+            "sub": "কারণ matrix-এর প্রায় সব cell 0, জায়গা নষ্ট; list শুধু আসল edge রাখে।"
+          },
+          {
+            "sub": "BFS/DFS-ও list-এ O(V + E), matrix-এ হতো O(V²)।"
+          },
+          {
+            "sub": "Dense graph: E প্রায় V² এর সমান।"
+          },
+          {
+            "sub": "Dense graph-এ Adjacency Matrix লাগবে।"
+          },
+          {
+            "sub": "কারণ তখন V + E ≈ V², তাই list-এ জায়গা বাঁচে না।"
+          },
+          {
+            "sub": "উল্টো matrix-এ edge আছে কিনা check হয় O(1)-এ।"
           },
           "ব্যবহারিক প্রয়োগ:",
           {
@@ -1956,7 +1971,7 @@
             "sub": "ছোট ও ঘন graph, বা Floyd–Warshall-এর মতো matrix-ভিত্তিক algorithm — adjacency matrix।"
           }
         ],
-        "diagram": "EXAMPLE GRAPH   (undirected)\n\n            A\n           / \\\n          B---C\n           \\ /\n            D\n\n  Edges : A–B , A–C , B–C , B–D , C–D\n\n────────────────────────────────────────\n1. ADJACENCY MATRIX      (V × V = 4 × 4)\n\n        A   B   C   D\n    A [ 0   1   1   0 ]\n    B [ 1   0   1   1 ]\n    C [ 1   1   0   1 ]\n    D [ 0   1   1   0 ]\n\n  matrix[i][j] = 1 → edge আছে , 0 → নেই\n  undirected বলে matrix symmetric\n  weighted হলে 1 এর জায়গায় weight w বসে\n\n────────────────────────────────────────\n2. ADJACENCY LIST\n\n    A →  B → C\n    B →  A → C → D\n    C →  A → B → D\n    D →  B → C\n\n  প্রতিটি vertex এর পাশে শুধু তার প্রতিবেশীরা\n\n────────────────────────────────────────\n Space :  Matrix O(V²)   >   List O(V + E)\n Edge check :  Matrix O(1)  <  List O(degree)\n Dense graph → Matrix ,  Sparse graph → List",
+        "diagram": "EXAMPLE GRAPH   (undirected)\n\n            A\n           / \\\n          B---C\n           \\ /\n            D\n\n  V = 4 (vertex) , E = 5 (edge)\n  Edges : A–B , A–C , B–C , B–D , C–D\n\n────────────────────────────────────────\n1. ADJACENCY MATRIX      (V × V = 4 × 4)\n\n        A   B   C   D\n    A [ 0   1   1   0 ]\n    B [ 1   0   1   1 ]\n    C [ 1   1   0   1 ]\n    D [ 0   1   1   0 ]\n\n  matrix[i][j] = 1 → edge আছে , 0 → নেই\n  undirected বলে matrix symmetric\n  weighted হলে 1 এর জায়গায় weight w বসে\n\n  কেন O(V²) ?\n    rows    = V\n    columns = V\n    cells   = V × V = 4 × 4 = 16\n    প্রতি vertex এর একটা row, একটা column\n    edge 5টা, কিন্তু cell তবুও 16টা\n    edge না থাকলেও cell থাকে, শুধু 0 বসে\n    তাই memory edge এর উপর নয়, শুধু V এর উপর নির্ভর করে\n\n────────────────────────────────────────\n2. ADJACENCY LIST\n\n    A →  B → C           (2 node)\n    B →  A → C → D       (3 node)\n    C →  A → B → D       (3 node)\n    D →  B → C           (2 node)\n    |\n    V = 4 heads\n\n  প্রতিটি vertex এর পাশে শুধু তার প্রতিবেশীরা\n\n  কেন O(V + E) ?\n    heads      = V             = 4\n    list nodes = 2 + 3 + 3 + 2 = 10 = 2E\n    total      = V + 2E        = 4 + 10 = 14\n    প্রতিটি edge দুই মাথার list এ একবার করে বসে, তাই 2E\n    directed graph এ একবারই বসে, তাই E\n    Big-O তে 2 বাদ যায়, তাই O(V + E)\n    edge নেই মানে node নেই, 0 রাখার জায়গা লাগে না\n\n────────────────────────────────────────\n3. SPARSE vs DENSE — কোনটা কখন\n\n (ক) Sparse graph : edge খুব কম\n\n        A---B---C---D---E\n\n    V = 5 , E = 4\n    Matrix : 5 × 5     = 25 cells   (8টা 1, 17টা 0)\n    List   : 5 + 2 × 4 = 13         (head + node)\n\n    matrix এর বেশিরভাগ cell 0, শুধু জায়গা নষ্ট\n    list এ শুধু আসল edge থাকে\n\n    বড় হলে পার্থক্য আরও বেশি (V = 1000 , E = 3000):\n    Matrix : 1000 × 1000     = 1,000,000 cells\n    List   : 1000 + 2 × 3000 = 7,000\n\n    তাই Sparse graph → Adjacency List\n\n (খ) Dense graph : প্রায় সব vertex জোড়ায় edge\n\n        A-------B\n        | \\   / |\n        |  \\ /  |\n        |   X   |\n        |  / \\  |\n        | /   \\ |\n        C-------D\n\n    V = 4 , E = 6   (সম্ভাব্য সব edge)\n    Matrix : 4 × 4     = 16 cells   (12টা 1, 4টা 0)\n    List   : 4 + 2 × 6 = 16         (head + node)\n\n    জায়গা সমান, list এ কোনো লাভ নেই\n    কিন্তু edge check: Matrix O(1), List O(degree)\n\n    তাই Dense graph → Adjacency Matrix\n\n────────────────────────────────────────\n Space :  Matrix O(V²)   >   List O(V + E)\n Edge check :  Matrix O(1)  <  List O(degree)\n Dense graph → Matrix ,  Sparse graph → List",
         "table": {
           "headers": [
             "দিক",
