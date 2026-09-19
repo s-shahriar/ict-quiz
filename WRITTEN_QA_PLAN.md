@@ -152,6 +152,78 @@ per condition/action.
 
 ---
 
+## 3.2 Math, formulas and complexity — derive it, never just assert it
+
+Confirmed by direct user feedback (2026-09-19, on the `dsa_018` adjacency
+matrix vs list answer): the user called this way of writing the math
+**"excellent"** and asked that **every answer containing math follow it**.
+
+The rule: a formula (`O(V²)`, `O(V + E)`, EAT, height of a heap, RAID usable
+space…) is never written as a bare result. **Show where each term comes from by
+counting it on the small concrete example the answer already uses**, then
+generalize, then show what it means at scale.
+
+**The shape — 4 moves:**
+
+1. **Count the parts on the example**, one step per line, arithmetic visible.
+2. **Name the general term** each counted number corresponds to (`10 = 2E`).
+3. **Say what Big-O drops** and why (`2 বাদ যায় → O(V + E)`).
+4. **Scale it** with one bigger, realistic number pair so the difference is felt.
+
+**✅ GOOD — the `dsa_018` derivation (inside the diagram, next to the structure it explains):**
+
+```
+  কেন O(V²) ?
+    rows    = V
+    columns = V
+    cells   = V × V = 4 × 4 = 16
+    প্রতি vertex এর একটা row, একটা column
+    edge 5টা, কিন্তু cell তবুও 16টা
+    edge না থাকলেও cell থাকে, শুধু 0 বসে
+    তাই memory edge এর উপর নয়, শুধু V এর উপর নির্ভর করে
+
+  কেন O(V + E) ?
+    heads      = V             = 4
+    list nodes = 2 + 3 + 3 + 2 = 10 = 2E
+    total      = V + 2E        = 4 + 10 = 14
+    প্রতিটি edge দুই মাথার list এ একবার করে বসে, তাই 2E
+    directed graph এ একবারই বসে, তাই E
+    Big-O তে 2 বাদ যায়, তাই O(V + E)
+
+ বড় graph এ পার্থক্য  (V = 1000 , E = 3000)
+   Matrix : 1000 × 1000     = 1,000,000 cells
+   List   : 1000 + 2 × 3000 = 7,000
+```
+
+**❌ BAD:** `Matrix এর space O(V²) কারণ এটি V × V আকারের 2D array, আর list এর
+space O(V + E)` — true, but it only renames the formula. Nothing was counted,
+so nothing was understood.
+
+**Where it goes:** inside the `diagram`, directly under the structure it
+explains — not as a separate block at the end. Keep the counted lines **pure
+ASCII and column-aligned** (`=` signs under each other); Bengali may only
+trail after the last aligned character, never sit between two aligned columns
+(§7.1).
+
+**Exam-numeric topics get a worked problem too** (EAT, TLB hit ratio, heap
+height, RAID capacity, hash table load factor…). Shape:
+
+```
+প্রশ্ন: ... (ক) ... (খ) ...
+সমাধান:
+  দেওয়া আছে: ...
+  ধাপ ১: ...
+  ধাপ ২: ...
+  উত্তর: ...
+```
+
+**Never** collapse a calculation into one dense paragraph of summation — walk
+the parts one at a time on their own lines, show the values they actually take
+(`i = 1, 2, 4, …, n`) before naming the result (`log n বার`), and name the trap
+where one exists.
+
+---
+
 ## 4. UI — New Route / Screen Flow
 
 ### Where it fits in the app
