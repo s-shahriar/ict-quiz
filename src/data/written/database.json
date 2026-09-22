@@ -1177,6 +1177,161 @@
         ],
         "mnemonic": "ভাঙার পর মূল CK ধার কোরো না, আর তালিকার FD-তেই থেমো না — closure নিয়ে derived FD দেখো। LHS superkey না হলেই আবার ভাঙো।"
       }
+    },
+    {
+      "id": "db_012",
+      "q": "Draw ER diagram: Given a scenario about football Game (Game_no, game_time, game_name), Team (team-id, coach_id, team-name), Referee (Referee-id, Referee-name), Player (player-id, playername, player-position), Stadium information (stadium-id, stadium-name, stadium-loc), Match (match_id, match_date, match_result).",
+      "tags": [
+        "ER diagram",
+        "entity",
+        "relationship",
+        "cardinality",
+        "primary key",
+        "foreign key",
+        "schema design"
+      ],
+      "answer": {
+        "summary": [
+          "ER diagram আঁকা মানে তিনটা জিনিস বের করা: entity (কী কী জিনিস), attribute (প্রতিটার বৈশিষ্ট্য), relationship (কে কার সাথে যুক্ত এবং কত সংখ্যায়)।",
+          "এই scenario-তে entity ৬টা: GAME, TEAM, PLAYER, REFEREE, STADIUM, MATCH।",
+          "MATCH - TEAM ছাড়া বাকি সব relationship 1:N; MATCH - TEAM হলো M:N, তাই সেখানে junction table লাগে।"
+        ],
+        "points": [
+          "ধাপ ১ — Entity বের করো:",
+          {
+            "sub": "প্রশ্নে যেসব noun-এর নিজস্ব attribute দেওয়া আছে, সেগুলোই entity।"
+          },
+          {
+            "sub": "এখানে ব্র্যাকেটে attribute দেওয়া আছে এমন ৬টা: GAME, TEAM, PLAYER, REFEREE, STADIUM, MATCH।"
+          },
+          {
+            "sub": "প্রতিটা entity একটা rectangle।"
+          },
+          "ধাপ ২ — Attribute আর Primary Key বসাও:",
+          {
+            "sub": "প্রতিটা attribute একটা oval, entity-র সাথে লাইন দিয়ে যুক্ত।"
+          },
+          {
+            "sub": "যে attribute দিয়ে একটা row আলাদা করে চেনা যায়, সেটাই Primary Key — নিচে দাগ দাও।"
+          },
+          {
+            "sub": "সাধারণত id দিয়ে শেষ হওয়া attribute-ই PK: Game_no, team-id, player-id, Referee-id, stadium-id, match_id।"
+          },
+          {
+            "sub": "coach_id নিজে TEAM-এর attribute; প্রশ্নে Coach entity নেই, তাই আলাদা entity বানানোর দরকার নেই (চাইলে এক লাইনে assumption লিখে দিতে পারো)।"
+          },
+          {
+            "diagram": "━━━━ ধাপ ১+২ — Entity আর তার attribute, Chen notation ━━━━\n\n         (team-id)     (team-name)     (coach_id)\n              \\            |             /\n               \\           |            /\n                +------------------------+\n                |          TEAM          |\n                +------------------------+\n\n  [] box  = Entity        ( ) = Attribute        <> = Relationship\n  team-id এর নিচে দাগ (underline) = Primary Key\n\n  প্রশ্নের ৬টা entity আর তাদের attribute:\n\n    GAME     ( Game_no* , game_time , game_name )\n    TEAM     ( team-id* , team-name , coach_id )\n    PLAYER   ( player-id* , playername , player-position )\n    REFEREE  ( Referee-id* , Referee-name )\n    STADIUM  ( stadium-id* , stadium-name , stadium-loc )\n    MATCH    ( match_id* , match_date , match_result )\n\n    * = Primary Key",
+            "label": "ধাপ ১+২ — Entity, Attribute, PK"
+          },
+          "ধাপ ৩ — Relationship বের করো (verb খোঁজো):",
+          {
+            "sub": "Team has Player, Match played between Teams, Match held in Stadium, Match officiated by Referee, Game contains Match।"
+          },
+          {
+            "sub": "প্রতিটা relationship একটা diamond, দুই পাশে যুক্ত entity।"
+          },
+          "ধাপ ৪ — Cardinality ঠিক করো (এখানেই সবাই আটকায়):",
+          {
+            "sub": "একটাই নিয়ম: প্রতিটা জোড়ার জন্য দুই দিক থেকে দুটো প্রশ্ন করো।"
+          },
+          {
+            "sub": "প্রশ্ন: \"একটা X-এর সাথে কতটা Y?\" আর \"একটা Y-এর সাথে কতটা X?\""
+          },
+          {
+            "sub": "উত্তর \"একটা\" হলে সেই দিকে 1, \"অনেক\" হলে সেই দিকে N।"
+          },
+          {
+            "sub": "দুই দিকেই N হলে M:N, এক দিকে 1 হলে 1:N, দুই দিকেই 1 হলে 1:1।"
+          },
+          {
+            "diagram": "━━━━ ধাপ ৩+৪ — Relationship আর Cardinality ━━━━\n\n নিয়ম: প্রতিটা জোড়ার জন্য দুই দিক থেকে দুটো প্রশ্ন করো।\n উত্তর \"একটা\" হলে 1, \"অনেক\" হলে N।\n\n TEAM - PLAYER\n   Q1: একটা Team এ কতজন Player? => অনেক = N\n   Q2: একজন Player কতটা Team এ? => একটা = 1\n   ফল: TEAM 1 ---< PLAYER N (1 : N)\n\n MATCH - TEAM\n   Q1: একটা Match এ কতটা Team? => ২টা, একাধিক = N\n   Q2: একটা Team কতটা Match খেলে? => অনেক = N\n   ফল: MATCH M >--- plays ---< TEAM N (M : N)\n\n MATCH - STADIUM\n   Q1: একটা Match কতটা Stadium এ হয়? => একটা = 1\n   Q2: একটা Stadium এ কতটা Match হয়? => অনেক = N\n   ফল: STADIUM 1 ---< MATCH N (1 : N)\n\n MATCH - REFEREE\n   Q1: একটা Match এ প্রধান Referee কতজন? => একজন = 1\n   Q2: একজন Referee কতটা Match চালান? => অনেক = N\n   ফল: REFEREE 1 ---< MATCH N (1 : N)\n\n GAME - MATCH\n   Q1: একটা Game এ কতটা Match? => অনেক = N\n   Q2: একটা Match কতটা Game এর অংশ? => একটা = 1\n   ফল: GAME 1 ---< MATCH N (1 : N)\n\n ধরে নেওয়া হয়েছে: Game মানে পুরো tournament বা খেলার আসর,\n আর Match মানে তার ভেতরের একেকটা খেলা। উত্তরপত্রে এই\n assumption টা এক লাইনে লিখে দেবে।",
+            "label": "ধাপ ৩+৪ — Relationship ও Cardinality"
+          },
+          "ধাপ ৫ — পুরো diagram আঁকো:",
+          {
+            "sub": "MATCH-কে মাঝখানে রাখো, কারণ সবচেয়ে বেশি relationship তার সাথেই।"
+          },
+          {
+            "sub": "প্রতিটা লাইনের দুই মাথায় 1 বা N লিখে দাও — নম্বর মূলত এখানেই।"
+          },
+          {
+            "diagram": "━━━━ ধাপ ৫ — পূর্ণ ER Diagram ━━━━\n\n                   +-----------+\n                   |  STADIUM  |\n                   +-----+-----+\n                         | 1\n                      held_in\n                         | N\n  +------+ 1       N +---+---+ M       N +------+ 1       N +--------+\n  | GAME |-----------| MATCH |-----------| TEAM |-----------| PLAYER |\n  +------+  contains +---+---+   plays   +------+    has    +--------+\n                         | N\n                   officiated_by\n                         | 1\n                   +-----+-----+\n                   |  REFEREE  |\n                   +-----------+\n\n  পড়ার নিয়ম: যে পাশে N, সে পাশের entity অনেকগুলো হতে পারে।\n  MATCH - TEAM ছাড়া বাকি সব 1:N; ওটাই একমাত্র M:N।",
+            "label": "ধাপ ৫ — পূর্ণ ER Diagram"
+          },
+          "ধাপ ৬ — ER থেকে table-এ নামাও (চাইলে বাড়তি নম্বর):",
+          {
+            "sub": "1:N হলে N দিকের table-এ FK বসে — যেমন PLAYER-এ team-id।"
+          },
+          {
+            "sub": "M:N হলে আলাদা junction table লাগে — MATCH_TEAM(match_id, team-id)।"
+          },
+          {
+            "diagram": "━━━━ ধাপ ৬ — ER থেকে Table (schema) ━━━━\n\n নিয়ম:\n   1 : N  -> N দিকের table এ FK বসে\n   M : N  -> আলাদা junction table লাগে\n\n   GAME    ( Game_no* , game_time , game_name )\n   TEAM    ( team-id* , team-name , coach_id )\n   PLAYER  ( player-id* , playername , player-position , team-id# )\n   REFEREE ( Referee-id* , Referee-name )\n   STADIUM ( stadium-id* , stadium-name , stadium-loc )\n   MATCH   ( match_id* , match_date , match_result ,\n             Game_no# , stadium-id# , Referee-id# )\n\n   MATCH_TEAM ( match_id* , team-id* , home_or_away )\n\n   * = Primary Key        # = Foreign Key\n\n MATCH_TEAM কেন লাগে: একটা match এ 2টা team, আবার একটা team\n অনেক match খেলে -- M:N, তাই মাঝখানে junction table।",
+            "label": "ধাপ ৬ — Table schema"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "যেকোনো tournament বা booking system-এর database এভাবেই ডিজাইন শুরু হয়।"
+          },
+          {
+            "sub": "ER diagram ঠিক থাকলে normalization ও SQL table লেখা সহজ হয়ে যায়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "Relationship",
+            "Cardinality",
+            "কীভাবে বুঝলাম"
+          ],
+          "rows": [
+            [
+              "GAME contains MATCH",
+              "1 : N",
+              "একটা Game-এ অনেক Match, একটা Match এক Game-এর"
+            ],
+            [
+              "MATCH held_in STADIUM",
+              "N : 1",
+              "একটা Match এক Stadium-এ, এক Stadium-এ অনেক Match"
+            ],
+            [
+              "MATCH officiated_by REFEREE",
+              "N : 1",
+              "একটা Match-এ একজন প্রধান Referee, একজন Referee অনেক Match"
+            ],
+            [
+              "MATCH plays TEAM",
+              "M : N",
+              "একটা Match-এ ২টা Team, একটা Team অনেক Match"
+            ],
+            [
+              "TEAM has PLAYER",
+              "1 : N",
+              "একটা Team-এ অনেক Player, একজন Player এক Team-এ"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "সব relationship-কে 1:N ধরে নেওয়া",
+            "প্রতিটা জোড়ায় দুই দিক থেকেই প্রশ্ন করতে হয়। MATCH - TEAM দুই দিকেই \"অনেক\", তাই এটি M:N।"
+          ],
+          [
+            "M:N relationship সরাসরি FK দিয়ে সমাধান করা",
+            "M:N-এ FK বসানোর জায়গা নেই (এক ঘরে অনেক মান রাখা যায় না), তাই junction table লাগে।"
+          ],
+          [
+            "attribute-কে entity বানিয়ে ফেলা",
+            "coach_id শুধু TEAM-এর একটা attribute; Coach-এর নিজস্ব attribute না থাকলে আলাদা entity লাগে না।"
+          ],
+          [
+            "Primary key underline না করা",
+            "ER diagram-এ PK চেনার একমাত্র চিহ্নই হলো underline — বাদ দিলে নম্বর কাটা যায়।"
+          ]
+        ],
+        "mnemonic": "EARC: Entity → Attribute (PK underline) → Relationship (verb) → Cardinality (দুই দিক থেকে দুটো প্রশ্ন)। দুই দিকেই \"অনেক\" হলে M:N, junction table।"
+      }
     }
   ]
 }
