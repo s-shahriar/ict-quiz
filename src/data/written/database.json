@@ -1180,7 +1180,7 @@
     },
     {
       "id": "db_012",
-      "q": "Draw ER diagram: Given a scenario about football Game (Game_no, game_time, game_name), Team (team-id, coach_id, team-name), Referee (Referee-id, Referee-name), Player (player-id, playername, player-position), Stadium information (stadium-id, stadium-name, stadium-loc), Match (match_id, match_date, match_result).",
+      "q": "Draw ER diagram: Given a scenario about football\n\n  Game (Game_no, game_time, game_name),\n  Team (team-id, coach_id, team-name),\n  Referee (Referee-id, Referee-name),\n  Player (player-id, playername, player-position),\n  Stadium information (stadium-id, stadium-name, stadium-loc),\n  Match (match_id, match_date, match_result).",
       "tags": [
         "ER diagram",
         "entity",
