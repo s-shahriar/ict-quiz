@@ -32,11 +32,11 @@ function ago(ts) {
 // before you read it. Direction shows as well, because marking and unmarking are
 // opposite actions: a flag being set gets the filled icon in its colour, a flag
 // being cleared gets the struck-through icon in grey.
-const OFF = '#94a3b8'
+const OFF = 'var(--text-3)'
 function describe(it) {
-  if (it.kind === 'delete') return { Icon: Trash2, color: '#f43f5e', text: 'Moved to Recycle Bin' }
-  if (it.kind === 'restore') return { Icon: RotateCcw, color: '#10b981', text: 'Restored from Recycle Bin' }
-  if (it.kind === 'purge') return { Icon: Trash2, color: '#b91c1c', text: 'Deleted forever', filled: true }
+  if (it.kind === 'delete') return { Icon: Trash2, color: 'var(--bad)', text: 'Moved to Recycle Bin' }
+  if (it.kind === 'restore') return { Icon: RotateCcw, color: 'var(--ok)', text: 'Restored from Recycle Bin' }
+  if (it.kind === 'purge') return { Icon: Trash2, color: 'var(--bad)', text: 'Deleted forever', filled: true }
   const { nailed, important, weak } = it.patch || {}
   const parts = []
   if (nailed !== undefined) parts.push(nailed ? 'Nailed' : 'Un-nailed')
@@ -44,13 +44,13 @@ function describe(it) {
   if (weak !== undefined) parts.push(weak ? 'Marked weak' : 'Unmarked weak')
   // When several columns changed, the nail leads, then weak (the narrower mark).
   if (nailed !== undefined) {
-    return { Icon: nailed ? Star : StarOff, color: nailed ? '#f59e0b' : OFF, filled: nailed, text: parts.join(' · ') }
+    return { Icon: nailed ? Star : StarOff, color: nailed ? 'var(--nail)' : OFF, filled: nailed, text: parts.join(' · ') }
   }
   if (weak !== undefined) {
-    return { Icon: Flame, color: weak ? '#f97316' : OFF, filled: weak, text: parts.join(' · ') }
+    return { Icon: Flame, color: weak ? 'var(--weak)' : OFF, filled: weak, text: parts.join(' · ') }
   }
   if (important !== undefined) {
-    return { Icon: important ? Bookmark : BookmarkX, color: important ? '#ef4444' : OFF, filled: important, text: parts.join(' · ') }
+    return { Icon: important ? Bookmark : BookmarkX, color: important ? 'var(--imp)' : OFF, filled: important, text: parts.join(' · ') }
   }
   return { Icon: Bookmark, color: OFF, text: 'Change' }
 }

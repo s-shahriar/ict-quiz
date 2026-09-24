@@ -103,7 +103,7 @@ export function WrittenCardBody({ a, question, topicColor, uid }) {
         </div>
       )}
 
-      <div className="written-summary" style={{ borderColor: `${topicColor}40`, background: `color-mix(in srgb, ${topicColor} 7%, var(--elevated))` }}>
+      <div className="written-summary" style={{ borderColor: `color-mix(in srgb, ${topicColor} 25%, transparent)`, background: `color-mix(in srgb, ${topicColor} 7%, var(--elevated))` }}>
         <span className="written-summary-label" style={{ color: topicColor }}>সংক্ষেপ</span>
         {Array.isArray(a.summary)
           ? <div className="written-summary-lines">
@@ -158,7 +158,7 @@ export function WrittenCardBody({ a, question, topicColor, uid }) {
         </div>
       )}
 
-      <div className="written-mnemonic" style={{ borderColor: `${topicColor}35`, background: `color-mix(in srgb, ${topicColor} 9%, var(--elevated))` }}>
+      <div className="written-mnemonic" style={{ borderColor: `color-mix(in srgb, ${topicColor} 21%, transparent)`, background: `color-mix(in srgb, ${topicColor} 9%, var(--elevated))` }}>
         <Brain size={15} style={{ color: topicColor, flexShrink: 0 }} />
         <HighlightableText block="mnemonic" text={a.mnemonic} highlights={hl('mnemonic')} />
       </div>
@@ -168,7 +168,7 @@ export function WrittenCardBody({ a, question, topicColor, uid }) {
           <button
             className={`written-ext-toggle${extOpen ? ' open' : ''}`}
             onClick={() => setExtOpen(v => !v)}
-            style={{ color: topicColor, borderColor: `${topicColor}40` }}
+            style={{ color: topicColor, borderColor: `color-mix(in srgb, ${topicColor} 25%, transparent)` }}
           >
             <span>{extOpen ? '▲' : '▼'}</span>
             <span>{a.extended.title}</span>

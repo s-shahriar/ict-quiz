@@ -87,10 +87,10 @@ export default function HomeScreen() {
 
         <div className="module-toggle">
           <button className={`module-btn${module === 'mcq' ? ' active' : ''}`} onClick={() => setModule('mcq')}>
-            <Brain size={15} /> MCQ Module
+            <Brain size={15} /> MCQ
           </button>
           <button className={`module-btn${module === 'written' ? ' active' : ''}`} onClick={() => setModule('written')}>
-            <PenLine size={15} /> Written Module
+            <PenLine size={15} /> Written
           </button>
           <button className={`module-btn${module === 'practice' ? ' active' : ''}`} onClick={() => setModule('practice')}>
             <Dumbbell size={15} /> Practice
@@ -415,7 +415,7 @@ function WrittenCategoryCard({ topic, onClick }) {
         <span className="tc-name">{topic.name}</span>
         <span className="tc-count">{topic.writtenCount} written answers</span>
       </div>
-      <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
+      <span className="tc-badge" style={{ background: `color-mix(in srgb, ${topic.color} 12%, transparent)`, color: topic.color }}>
         <PenLine size={11} />
         {topic.writtenCount}
       </span>
@@ -432,7 +432,7 @@ function ExtraCategoryCard({ topic, onClick }) {
         <span className="tc-name">{topic.name}</span>
         <span className="tc-count">{topic.extraCount} scenario answers</span>
       </div>
-      <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
+      <span className="tc-badge" style={{ background: `color-mix(in srgb, ${topic.color} 12%, transparent)`, color: topic.color }}>
         <Sparkles size={11} />
         {topic.extraCount}
       </span>
@@ -449,7 +449,7 @@ function CodeCategoryCard({ topic, onClick }) {
         <span className="tc-name">{topic.name}</span>
         <span className="tc-count">{topic.codeCount} Java program{topic.codeCount !== 1 ? 's' : ''}</span>
       </div>
-      <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
+      <span className="tc-badge" style={{ background: `color-mix(in srgb, ${topic.color} 12%, transparent)`, color: topic.color }}>
         <Code2 size={11} />
         {topic.codeCount}
       </span>
@@ -466,7 +466,7 @@ function VivaCategoryCard({ topic, onClick }) {
         <span className="tc-name">{topic.name}</span>
         <span className="tc-count">{topic.vivaCount} viva answers</span>
       </div>
-      <span className="tc-badge" style={{ background: `${topic.color}20`, color: topic.color }}>
+      <span className="tc-badge" style={{ background: `color-mix(in srgb, ${topic.color} 12%, transparent)`, color: topic.color }}>
         <Mic size={11} />
         {topic.vivaCount}
       </span>
@@ -483,7 +483,7 @@ function PracticeCategoryCard({ category, onClick }) {
         <span className="tc-name">{category.name}</span>
         <span className="tc-count">{category.topicCount} topics</span>
       </div>
-      <span className="tc-badge" style={{ background: `${category.color}20`, color: category.color }}>
+      <span className="tc-badge" style={{ background: `color-mix(in srgb, ${category.color} 12%, transparent)`, color: category.color }}>
         <Dumbbell size={11} />
         {category.topicCount}
       </span>

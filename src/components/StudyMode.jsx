@@ -78,14 +78,14 @@ export default function StudyMode() {
         <button
           className={`study-filter-btn${filter === 'all' ? ' active' : ''}`}
           onClick={() => setFilter('all')}
-          style={filter === 'all' ? { borderColor: topic.color, color: topic.color, background: `${topic.color}15` } : {}}
+          style={filter === 'all' ? { borderColor: topic.color, color: topic.color, background: `color-mix(in srgb, ${topic.color} 8%, transparent)` } : {}}
         >
           সব ({nonNailed.length})
         </button>
         <button
           className={`study-filter-btn${filter === 'important' ? ' active' : ''}`}
           onClick={() => setFilter('important')}
-          style={filter === 'important' ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+          style={filter === 'important' ? { borderColor: 'var(--imp)', color: 'var(--imp)', background: 'var(--imp-tint)' } : {}}
         >
           <Bookmark size={11} fill={filter === 'important' ? 'currentColor' : 'none'} />
           Important ({importantCount})
@@ -93,7 +93,7 @@ export default function StudyMode() {
         <button
           className={`study-filter-btn${filter === 'weak' ? ' active' : ''}`}
           onClick={() => setFilter('weak')}
-          style={filter === 'weak' ? { borderColor: '#f97316', color: '#f97316', background: 'rgba(249,115,22,0.12)' } : {}}
+          style={filter === 'weak' ? { borderColor: 'var(--weak)', color: 'var(--weak)', background: 'var(--weak-tint)' } : {}}
         >
           <Flame size={11} fill={filter === 'weak' ? 'currentColor' : 'none'} />
           Weak ({weakCount})
@@ -101,7 +101,7 @@ export default function StudyMode() {
       </div>
 
       {nailedCt > 0 && filter === 'all' && (
-        <div className="nailed-notice" style={{ borderColor: `${topic.color}40`, color: topic.color }}>
+        <div className="nailed-notice" style={{ borderColor: `color-mix(in srgb, ${topic.color} 25%, transparent)`, color: topic.color }}>
           <Star size={13} fill="currentColor" />
           <span>{nailedCt} টি question Nailed — <button onClick={() => navigate('/nailed')} className="nailed-notice-link">Nailed It</button> এ দেখো</span>
         </div>
@@ -110,9 +110,9 @@ export default function StudyMode() {
       {visible.length === 0 ? (
         <div className="study-all-nailed">
           {filter === 'important'
-            ? <Bookmark size={38} style={{ color: '#ef4444', opacity: 0.4, marginBottom: 12 }} fill="currentColor" />
+            ? <Bookmark size={38} style={{ color: 'var(--imp)', opacity: 0.4, marginBottom: 12 }} fill="currentColor" />
             : filter === 'weak'
-              ? <Flame size={38} style={{ color: '#f97316', opacity: 0.4, marginBottom: 12 }} fill="currentColor" />
+              ? <Flame size={38} style={{ color: 'var(--weak)', opacity: 0.4, marginBottom: 12 }} fill="currentColor" />
               : <Star size={38} style={{ color: topic.color, opacity: 0.5, marginBottom: 12 }} fill="currentColor" />
           }
           <p>{filter === 'important' ? 'কোনো Important প্রশ্ন নেই।' : filter === 'weak' ? 'কোনো Weak প্রশ্ন নেই।' : 'সব প্রশ্ন Nailed করা হয়েছে! 🎉'}</p>

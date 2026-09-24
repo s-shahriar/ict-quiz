@@ -104,15 +104,20 @@ export default function AccountButton() {
                 </div>
 
                 <div style={statsRow}>
-                  <span style={stat}><Star size={13} style={{ color: '#f59e0b' }} /> {nailedCount} nailed</span>
-                  <span style={statDivider} />
-                  <span style={stat}><Bookmark size={13} style={{ color: '#ef4444' }} /> {importantCount} important</span>
-                  <span style={statDivider} />
-                  <span style={stat}><Flame size={13} style={{ color: '#f97316' }} /> {weakCount} weak</span>
+                  {[
+                    { Icon: Star, n: nailedCount, label: 'Nailed', color: 'var(--nail)' },
+                    { Icon: Bookmark, n: importantCount, label: 'Important', color: 'var(--imp)' },
+                    { Icon: Flame, n: weakCount, label: 'Weak', color: 'var(--weak)' },
+                  ].map(({ Icon, n, label, color }) => (
+                    <div key={label} style={statTile}>
+                      <span style={{ ...statNum, color }}><Icon size={13} /> {n}</span>
+                      <span style={statLabel}>{label}</span>
+                    </div>
+                  ))}
                 </div>
 
                 <div style={syncNote}>
-                  <Check size={13} style={{ color: '#22c55e', flexShrink: 0 }} />
+                  <Check size={13} style={{ color: 'var(--ok)', flexShrink: 0 }} />
                   {lastSaved ? `Saved ${timeAgo(lastSaved)}` : 'Synced across your devices'}
                 </div>
 
@@ -141,12 +146,13 @@ export default function AccountButton() {
 
 const backdrop = { position: 'fixed', inset: 0, zIndex: 1000 }
 const idRow = { display: 'flex', alignItems: 'center', gap: 11, marginBottom: 12 }
-const fallbackAvatar = { width: 38, height: 38, borderRadius: '50%', background: 'rgba(99,102,241,0.15)', color: '#818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }
+const fallbackAvatar = { width: 38, height: 38, borderRadius: '50%', background: 'var(--accent-light)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }
 const nameText = { fontSize: '0.9rem', fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 const emailText = { fontSize: '0.78rem', color: 'var(--text-3)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
-const statsRow = { display: 'flex', alignItems: 'center', gap: 10, padding: '9px 11px', borderRadius: 10, background: 'var(--elevated)', marginBottom: 8 }
-const stat = { display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-2)' }
-const statDivider = { width: 1, alignSelf: 'stretch', background: 'var(--border)' }
+const statsRow = { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, marginBottom: 10 }
+const statTile = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '8px 4px', borderRadius: 10, background: 'var(--elevated)', minWidth: 0 }
+const statNum = { display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.95rem', fontWeight: 800, fontVariantNumeric: 'tabular-nums' }
+const statLabel = { fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-2)', whiteSpace: 'nowrap' }
 const syncNote = { display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.76rem', color: 'var(--text-3)', marginBottom: 12 }
 const signOutBtn = { width: '100%', padding: '9px 12px', borderRadius: 9, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text)', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }
 const signInHead = { fontSize: '0.82rem', color: 'var(--text-3)', lineHeight: 1.5, margin: '0 0 12px' }

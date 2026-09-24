@@ -13,11 +13,11 @@ export const CODE_DATA = Object.fromEntries(
 // Every Code category is its own thing — none of them map to an MCQ topic, so
 // the list is defined here in full rather than derived from TOPICS.
 const CODE_TOPICS_ALL = [
-  { id: 'array',             name: 'Array Programs',      shortName: 'Array',   icon: Brackets,    color: '#38bdf8', questions: [] },
-  { id: 'string',            name: 'String Programs',     shortName: 'String',  icon: Type,        color: '#f472b6', questions: [] },
-  { id: 'number',            name: 'Number Programs',     shortName: 'Number',  icon: Sigma,       color: '#fbbf24', questions: [] },
-  { id: 'matrix',            name: 'Matrix Programs',     shortName: 'Matrix',  icon: Grid3x3,     color: '#a78bfa', questions: [] },
-  { id: 'sorting_searching', name: 'Sorting & Searching', shortName: 'Sort',    icon: ArrowDownUp, color: '#4ade80', questions: [] },
+  { id: 'array',             name: 'Array Programs',      shortName: 'Array',   icon: Brackets,    color: 'var(--topic-8)', questions: [] },
+  { id: 'string',            name: 'String Programs',     shortName: 'String',  icon: Type,        color: 'var(--topic-12)', questions: [] },
+  { id: 'number',            name: 'Number Programs',     shortName: 'Number',  icon: Sigma,       color: 'var(--topic-3)', questions: [] },
+  { id: 'matrix',            name: 'Matrix Programs',     shortName: 'Matrix',  icon: Grid3x3,     color: 'var(--topic-10)', questions: [] },
+  { id: 'sorting_searching', name: 'Sorting & Searching', shortName: 'Sort',    icon: ArrowDownUp, color: 'var(--topic-5)', questions: [] },
 ]
 
 export const CODE_TOPICS = CODE_TOPICS_ALL

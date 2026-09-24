@@ -32,7 +32,7 @@ export default function LoginPrompt({ onGoogle, onClose }) {
 const overlay = { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(3px)', zIndex: 1200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }
 const sheet = { position: 'relative', width: '100%', maxWidth: 340, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '28px 24px 24px', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }
 const closeBtn = { position: 'absolute', top: 12, right: 12, background: 'transparent', border: 'none', color: 'var(--text-3)', cursor: 'pointer', padding: 4 }
-const icon = { width: 52, height: 52, borderRadius: '50%', background: 'rgba(245,158,11,0.15)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }
+const icon = { width: 52, height: 52, borderRadius: '50%', background: 'var(--accent-light)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }
 const title = { fontSize: '1.12rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 6px' }
 const sub = { fontSize: '0.84rem', color: 'var(--text-3)', lineHeight: 1.55, margin: '0 0 18px' }
 const googleBtn = { width: '100%', padding: '11px 16px', borderRadius: 10, border: '1px solid var(--border)', background: '#fff', color: '#1f2328', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9 }

@@ -13,9 +13,9 @@ export const VIVA_DATA = Object.fromEntries(
 
 // Categories that exist only in the Viva module (no MCQ counterpart).
 const VIVA_ONLY_TOPICS = [
-  { id: 'datacenter',        name: 'Data Center & DR', shortName: 'Data Center', icon: Server,        color: '#0ea5e9', questions: [] },
-  { id: 'banking',           name: 'Banking & Fintech', shortName: 'Banking',    icon: Landmark,      color: '#f59e0b', questions: [] },
-  { id: 'general_knowledge', name: 'General Knowledge', shortName: 'GK',          icon: GraduationCap, color: '#22c55e', questions: [] },
+  { id: 'datacenter',        name: 'Data Center & DR', shortName: 'Data Center', icon: Server,        color: 'var(--topic-8)', questions: [] },
+  { id: 'banking',           name: 'Banking & Fintech', shortName: 'Banking',    icon: Landmark,      color: 'var(--topic-3)', questions: [] },
+  { id: 'general_knowledge', name: 'General Knowledge', shortName: 'GK',          icon: GraduationCap, color: 'var(--topic-5)', questions: [] },
 ]
 
 export const VIVA_TOPICS = [...TOPICS, ...VIVA_ONLY_TOPICS]

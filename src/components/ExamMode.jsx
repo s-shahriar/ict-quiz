@@ -9,6 +9,7 @@ import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
 import { useHighlights } from '../contexts/HighlightContext.jsx'
+import { gradeColor } from '../lib/grade'
 
 export default function ExamMode() {
   const location = useLocation()
@@ -71,7 +72,7 @@ export default function ExamMode() {
 
   const progress  = ((idx + (revealed ? 1 : 0)) / questions.length) * 100
   const isCorrect = selected === q.correct_answer
-  const accent    = q._color ?? '#6366f1'
+  const accent    = q._color ?? 'var(--accent)'
 
   return (
     <div className="quiz-page anim-fade">
@@ -119,10 +120,10 @@ export default function ExamMode() {
                 <span className="opt-key">{key.toUpperCase()}</span>
                 <span className="opt-text">{q.options[key]}</span>
                 {revealed && key === q.correct_answer && (
-                  <CheckCircle size={15} className="opt-icon" style={{ color: '#10b981' }} />
+                  <CheckCircle size={15} className="opt-icon" style={{ color: 'var(--ok)' }} />
                 )}
                 {revealed && key === selected && key !== q.correct_answer && (
-                  <XCircle size={15} className="opt-icon" style={{ color: '#ef4444' }} />
+                  <XCircle size={15} className="opt-icon" style={{ color: 'var(--bad)' }} />
                 )}
               </button>
             )
@@ -187,13 +188,14 @@ function ExamScore({ score, total, label, onRetry, onHome }) {
                 'হাল ছেড়ো না, আবার চেষ্টা করো!'
 
   const r           = 54
+  const grade         = gradeColor(pct)
   const circumference = 2 * Math.PI * r
   const strokeOffset  = circumference - (pct / 100) * circumference
 
   return (
     <div className="score-page anim-fade">
       <div className="score-card">
-        <Trophy size={44} className="score-trophy" style={{ color: '#6366f1' }} />
+        <Trophy size={44} className="score-trophy" style={{ color: grade }} />
         <div className="score-title">Exam সম্পন্ন!</div>
         <div className="exam-score-label">{label}</div>
 
@@ -203,14 +205,13 @@ function ExamScore({ score, total, label, onRetry, onHome }) {
             <circle
               className="score-ring-fill"
               cx="69" cy="69" r={r}
-              stroke="#6366f1"
+              style={{ stroke: grade }}
               strokeDasharray={circumference}
               strokeDashoffset={strokeOffset}
-              style={{ filter: 'drop-shadow(0 0 8px #6366f1)' }}
             />
           </svg>
           <div className="score-ring-text">
-            <div className="score-fraction" style={{ color: '#6366f1' }}>
+            <div className="score-fraction" style={{ color: grade }}>
               {score}<span className="score-total">/{total}</span>
             </div>
             <div className="score-pct">{pct}%</div>
@@ -220,7 +221,7 @@ function ExamScore({ score, total, label, onRetry, onHome }) {
         <div className="score-msg">{msg}</div>
         <div className="score-actions">
           <button className="score-retry" onClick={onRetry}>আবার দাও</button>
-          <button className="score-home" style={{ background: '#6366f1' }} onClick={onHome}>
+          <button className="score-home" onClick={onHome}>
             <Home size={15} /> হোম
           </button>
         </div>

@@ -66,7 +66,7 @@ export default function ImportantScreen() {
     : (activeGroup?.items ?? []).map(it => ({ ...it, topic: activeGroup.topic }))
 
   const activeName  = isAll ? 'All topics' : activeGroup?.topic.name
-  const activeColor = isAll ? '#ef4444' : activeGroup?.topic.color
+  const activeColor = isAll ? 'var(--imp)' : activeGroup?.topic.color
 
   // Back to page 1 whenever the selected chip changes (adjust state during
   // render — avoids setState-in-effect cascading renders).
@@ -104,7 +104,7 @@ export default function ImportantScreen() {
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
-          <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
+          <Bookmark size={16} fill="currentColor" style={{ color: 'var(--imp)' }} />
           Important
         </div>
         <TopbarActions />
@@ -112,7 +112,7 @@ export default function ImportantScreen() {
 
       {impTotal === 0 ? (
         <div className="nailed-screen-empty">
-          <Bookmark size={48} style={{ color: '#ef4444', opacity: 0.3 }} />
+          <Bookmark size={48} style={{ color: 'var(--imp)', opacity: 0.3 }} />
           <p>No important questions yet.</p>
           <span>Answer questions in Quiz, Study, or Exam mode and tap <strong>Important</strong> to save them here. These will still appear in Exam Mode.</span>
         </div>
@@ -176,7 +176,7 @@ export default function ImportantScreen() {
       {confirmOpen && activeGroup && (
         <div className="trash-modal-backdrop" onClick={() => setConfirmOpen(false)}>
           <div className="trash-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
-            <div className="trash-modal-icon" style={{ color: '#ef4444', background: 'rgba(239,68,68,0.12)' }}>
+            <div className="trash-modal-icon" style={{ color: 'var(--bad)', background: 'var(--bad-tint)' }}>
               <Bookmark size={22} />
             </div>
             <h3 className="trash-modal-title">Remove all — {activeGroup.topic.name}?</h3>

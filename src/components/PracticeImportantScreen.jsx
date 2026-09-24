@@ -5,6 +5,7 @@ import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
 import TopbarActions from './shared/TopbarActions.jsx'
+import CategoryChipBar from './CategoryChipBar.jsx'
 import WeakButton from './shared/WeakButton.jsx'
 import WeakOnlyBar from './shared/WeakOnlyBar.jsx'
 
@@ -56,7 +57,7 @@ export default function PracticeImportantScreen() {
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
-          <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
+          <Bookmark size={16} fill="currentColor" style={{ color: 'var(--imp)' }} />
           Important — Practice
         </div>
         <TopbarActions />
@@ -64,7 +65,7 @@ export default function PracticeImportantScreen() {
 
       {importantGroups.length === 0 ? (
         <div className="nailed-screen-empty">
-          <Bookmark size={48} style={{ color: '#ef4444', opacity: 0.3 }} />
+          <Bookmark size={48} style={{ color: 'var(--imp)', opacity: 0.3 }} />
           <p>No important practice items yet.</p>
           <span>Open any Practice category and tap the <Bookmark size={12} style={{ display: 'inline', verticalAlign: 'middle' }} /> icon on a drill or command to save it here.</span>
         </div>
@@ -83,24 +84,11 @@ export default function PracticeImportantScreen() {
               </button>
             )}
 
-          <div className="nailed-cat-bar">
-            {groups.map(({ cat, items }) => {
-              const Icon = cat.icon || Terminal
-              const on = activeGroup?.cat.id === cat.id
-              return (
-                <button
-                  key={cat.id}
-                  className={`nailed-cat-chip${on ? ' active' : ''}`}
-                  style={{ '--c': cat.color }}
-                  onClick={() => setActiveId(cat.id)}
-                >
-                  <span className="nailed-cat-chip-ic"><Icon size={16} /></span>
-                  <span className="nailed-cat-chip-name">{cat.name}</span>
-                  <span className="nailed-cat-chip-count">{items.length}</span>
-                </button>
-              )
-            })}
-          </div>
+          <CategoryChipBar
+            groups={groups.map(({ cat, items }) => ({ topic: { ...cat, icon: cat.icon || Terminal }, items }))}
+            activeId={activeGroup?.cat.id}
+            onSelect={setActiveId}
+          />
 
           {activeGroup && (
             <div className="nailed-screen-list anim-fade" style={{ '--c': activeGroup.cat.color }}>

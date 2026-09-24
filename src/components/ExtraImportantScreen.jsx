@@ -62,7 +62,7 @@ export default function ExtraImportantScreen() {
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
-          <Bookmark size={16} fill="currentColor" style={{ color: '#ef4444' }} />
+          <Bookmark size={16} fill="currentColor" style={{ color: 'var(--imp)' }} />
           Important — Extra
         </div>
         <TopbarActions />
@@ -70,7 +70,7 @@ export default function ExtraImportantScreen() {
 
       {impTotal === 0 ? (
         <div className="nailed-screen-empty">
-          <Bookmark size={48} style={{ color: '#ef4444', opacity: 0.3 }} />
+          <Bookmark size={48} style={{ color: 'var(--imp)', opacity: 0.3 }} />
           <p>No important extra questions yet.</p>
           <span>Open any Extra topic and tap the <Bookmark size={12} style={{ display: 'inline', verticalAlign: 'middle' }} /> icon on a card to save it here.</span>
         </div>

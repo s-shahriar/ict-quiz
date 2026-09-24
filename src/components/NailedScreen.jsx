@@ -40,7 +40,7 @@ export default function NailedScreen() {
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
-          <Star size={16} fill="currentColor" style={{ color: '#f59e0b' }} />
+          <Star size={16} fill="currentColor" style={{ color: 'var(--nail)' }} />
           Nailed It
         </div>
         <TopbarActions />
@@ -48,7 +48,7 @@ export default function NailedScreen() {
 
       {total === 0 ? (
         <div className="nailed-screen-empty">
-          <Star size={48} style={{ color: '#f59e0b', opacity: 0.3 }} />
+          <Star size={48} style={{ color: 'var(--nail)', opacity: 0.3 }} />
           <p>No questions nailed yet.</p>
           <span>Answer questions in Quiz, Study, or Exam mode and tap <strong>Nail It</strong> to save them here.</span>
         </div>
@@ -95,7 +95,7 @@ function NailedTopicGroup({ topic: t, items, onUnnail, onUnnailMany, importantAp
           <div className="nailed-group-label">
             <span className="nailed-group-dot" style={{ background: t.color }} />
             <span style={{ color: t.color }}>{t.name}</span>
-            <span className="nailed-group-badge" style={{ background: `${t.color}20`, color: t.color }}>
+            <span className="nailed-group-badge" style={{ background: `color-mix(in srgb, ${t.color} 12%, transparent)`, color: t.color }}>
               {items.length}
             </span>
           </div>
@@ -129,7 +129,7 @@ function NailedTopicGroup({ topic: t, items, onUnnail, onUnnailMany, importantAp
       {confirmOpen && (
         <div className="trash-modal-backdrop" onClick={() => setConfirmOpen(false)}>
           <div className="trash-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
-            <div className="trash-modal-icon" style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.12)' }}>
+            <div className="trash-modal-icon" style={{ color: 'var(--nail)', background: 'var(--nail-tint)' }}>
               <Star size={22} />
             </div>
             <h3 className="trash-modal-title">Un-nail all — {t.name}?</h3>

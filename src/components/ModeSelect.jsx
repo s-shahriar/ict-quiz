@@ -51,9 +51,9 @@ export default function ModeSelect() {
         <div
           className="mode-icon-circle"
           style={{
-            background: `${topic.color}1a`,
+            background: `color-mix(in srgb, ${topic.color} 10%, transparent)`,
             color: topic.color,
-            boxShadow: `0 8px 40px ${topic.color}30, 0 0 0 1px ${topic.color}20`,
+            boxShadow: `0 8px 40px color-mix(in srgb, ${topic.color} 19%, transparent), 0 0 0 1px color-mix(in srgb, ${topic.color} 12%, transparent)`,
           }}
         >
           <Icon size={38} />
@@ -66,7 +66,7 @@ export default function ModeSelect() {
 
       <div className="mode-cards">
         <button className="mode-card" onClick={startQuiz}>
-          <div className="mode-card-icon" style={{ background: `${topic.color}1a`, color: topic.color }}>
+          <div className="mode-card-icon" style={{ background: `color-mix(in srgb, ${topic.color} 10%, transparent)`, color: topic.color }}>
             <Brain size={26} />
           </div>
           <h3>Quiz Mode</h3>
@@ -75,7 +75,7 @@ export default function ModeSelect() {
         </button>
 
         <button className="mode-card" onClick={() => navigate('study')}>
-          <div className="mode-card-icon" style={{ background: `${topic.color}1a`, color: topic.color }}>
+          <div className="mode-card-icon" style={{ background: `color-mix(in srgb, ${topic.color} 10%, transparent)`, color: topic.color }}>
             <BookOpen size={26} />
           </div>
           <h3>Study Mode</h3>

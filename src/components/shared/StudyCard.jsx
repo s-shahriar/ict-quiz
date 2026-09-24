@@ -44,7 +44,7 @@ export default function StudyCard({
         <span className="study-card-lead">
           <span className="study-qnum" style={{ color }}>Q{index + 1}</span>
           {topicLabel && (
-            <span className="study-topic-badge" style={{ color, borderColor: `${color}55`, background: `${color}14` }}>
+            <span className="study-topic-badge" style={{ color, borderColor: `color-mix(in srgb, ${color} 33%, transparent)`, background: `color-mix(in srgb, ${color} 8%, transparent)` }}>
               {topicLabel}
             </span>
           )}
@@ -54,7 +54,7 @@ export default function StudyCard({
             className={`nail-btn${nailed ? ' nailed' : ''}`}
             onClick={onNail}
             title={nailed ? 'Nailed It — click to un-nail' : 'Mark as Nailed It'}
-            style={nailed ? { color, borderColor: `${color}60`, background: `${color}15` } : {}}
+            style={nailed ? { color, borderColor: `color-mix(in srgb, ${color} 38%, transparent)`, background: `color-mix(in srgb, ${color} 8%, transparent)` } : {}}
           >
             <Star size={12} fill={nailed ? 'currentColor' : 'none'} />
             <span className="qmark-label">{nailed ? 'Nailed ✓' : 'Nail It'}</span>
@@ -63,7 +63,7 @@ export default function StudyCard({
             className={`nail-btn important-study-btn${isImportant ? ' nailed' : ''}`}
             onClick={isImportant ? onUnmarkImportant : onMarkImportant}
             title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
-            style={isImportant ? { color: '#ef4444', borderColor: 'rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.1)' } : {}}
+            style={isImportant ? { color: 'var(--imp)', borderColor: 'color-mix(in srgb, var(--imp) 40%, transparent)', background: 'var(--imp-tint)' } : {}}
           >
             <Bookmark size={12} fill={isImportant ? 'currentColor' : 'none'} />
             <span className="qmark-label">{isImportant ? 'Important ✓' : 'Important'}</span>
@@ -74,7 +74,7 @@ export default function StudyCard({
             onClass="nailed"
             size={12}
             label
-            style={{ color: '#f97316', borderColor: 'rgba(249,115,22,0.4)', background: 'rgba(249,115,22,0.1)' }}
+            style={{ color: 'var(--weak)', borderColor: 'color-mix(in srgb, var(--weak) 40%, transparent)', background: 'var(--weak-tint)' }}
           />
           <DeleteButton question={q} className="nail-btn" size={12} />
           {shown && (
@@ -105,8 +105,8 @@ export default function StudyCard({
             <button key={key} className={cls} onClick={() => pick(key)}>
               <span className="study-opt-key">{key.toUpperCase()}</span>
               <span className="study-opt-text">{q.options[key]}</span>
-              {shown && isCorrect && <CheckCircle size={13} style={{ color: '#10b981', marginLeft: 'auto', flexShrink: 0 }} />}
-              {shown && isWrong   && <XCircle size={13} style={{ color: '#ef4444', marginLeft: 'auto', flexShrink: 0 }} />}
+              {shown && isCorrect && <CheckCircle size={13} style={{ color: 'var(--ok)', marginLeft: 'auto', flexShrink: 0 }} />}
+              {shown && isWrong   && <XCircle size={13} style={{ color: 'var(--bad)', marginLeft: 'auto', flexShrink: 0 }} />}
             </button>
           )
         })}

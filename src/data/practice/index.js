@@ -9,8 +9,8 @@ const PRACTICE_DATA = {
 }
 
 const META = {
-  linux: { icon: Terminal, color: '#86efac' },
-  sql: { icon: Database, color: '#93c5fd' },
+  linux: { icon: Terminal, color: 'var(--topic-4)' },
+  sql: { icon: Database, color: 'var(--topic-8)' },
 }
 
 // Single source of truth for Practice categories.
@@ -19,7 +19,7 @@ export const PRACTICE_CATEGORIES = Object.values(PRACTICE_DATA).map(c => ({
   name: c.name,
   topicCount: c.topics?.length || 0,
   icon: META[c.category]?.icon || Terminal,
-  color: META[c.category]?.color || '#86efac',
+  color: META[c.category]?.color || 'var(--topic-4)',
 }))
 
 export function getPracticeData(categoryId) {

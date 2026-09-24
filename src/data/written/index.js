@@ -13,7 +13,7 @@ export const WRITTEN_DATA = Object.fromEntries(
 )
 
 const WRITTEN_ONLY_TOPICS = [
-  { id: 'server', name: 'Server', shortName: 'Server', icon: ServerCog, color: '#2dd4bf', questions: [] },
+  { id: 'server', name: 'Server', shortName: 'Server', icon: ServerCog, color: 'var(--topic-6)', questions: [] },
 ]
 
 export const WRITTEN_TOPICS = [...TOPICS, ...WRITTEN_ONLY_TOPICS]

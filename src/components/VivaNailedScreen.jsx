@@ -36,7 +36,7 @@ export default function VivaNailedScreen() {
           <ChevronLeft size={15} /> Back
         </button>
         <div className="nailed-screen-title">
-          <Star size={16} fill="currentColor" style={{ color: '#f59e0b' }} />
+          <Star size={16} fill="currentColor" style={{ color: 'var(--nail)' }} />
           Nailed It — Viva
         </div>
         <TopbarActions />
@@ -44,7 +44,7 @@ export default function VivaNailedScreen() {
 
       {total === 0 ? (
         <div className="nailed-screen-empty">
-          <Star size={48} style={{ color: '#f59e0b', opacity: 0.3 }} />
+          <Star size={48} style={{ color: 'var(--nail)', opacity: 0.3 }} />
           <p>No viva questions nailed yet.</p>
           <span>Open any Viva topic and tap the <Star size={12} style={{ display: 'inline', verticalAlign: 'middle' }} /> icon on a card to mark it as nailed.</span>
         </div>
@@ -82,7 +82,7 @@ function VivaNailedGroup({ topic: t, items, onUnnail }) {
         <div className="nailed-group-label">
           <span className="nailed-group-dot" style={{ background: t.color }} />
           <span style={{ color: t.color }}>{t.name}</span>
-          <span className="nailed-group-badge" style={{ background: `${t.color}20`, color: t.color }}>
+          <span className="nailed-group-badge" style={{ background: `color-mix(in srgb, ${t.color} 12%, transparent)`, color: t.color }}>
             {items.length}
           </span>
         </div>

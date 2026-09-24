@@ -306,7 +306,7 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
         <button
           className={`study-filter-btn${filter === 'important' ? ' active' : ''}`}
           onClick={() => setFilter('important')}
-          style={filter === 'important' ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+          style={filter === 'important' ? { borderColor: 'var(--imp)', color: 'var(--imp)', background: 'var(--imp-tint)' } : {}}
         >
           <Bookmark size={11} fill={filter === 'important' ? 'currentColor' : 'none'} />
           Important ({importantCount})
@@ -314,7 +314,7 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
         <button
           className={`study-filter-btn${filter === 'weak' ? ' active' : ''}`}
           onClick={() => setFilter('weak')}
-          style={filter === 'weak' ? { borderColor: '#f97316', color: '#f97316', background: 'rgba(249,115,22,0.12)' } : {}}
+          style={filter === 'weak' ? { borderColor: 'var(--weak)', color: 'var(--weak)', background: 'var(--weak-tint)' } : {}}
         >
           <Flame size={11} fill={filter === 'weak' ? 'currentColor' : 'none'} />
           Weak ({weakCount})
@@ -418,7 +418,7 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
       <button
         className={`study-filter-btn${filter === 'important' ? ' active' : ''}`}
         onClick={() => setFilter('important')}
-        style={filter === 'important' ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+        style={filter === 'important' ? { borderColor: 'var(--imp)', color: 'var(--imp)', background: 'var(--imp-tint)' } : {}}
       >
         <Bookmark size={11} fill={filter === 'important' ? 'currentColor' : 'none'} />
         Important ({importantCount})
@@ -426,7 +426,7 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
       <button
         className={`study-filter-btn${filter === 'weak' ? ' active' : ''}`}
         onClick={() => setFilter('weak')}
-        style={filter === 'weak' ? { borderColor: '#f97316', color: '#f97316', background: 'rgba(249,115,22,0.12)' } : {}}
+        style={filter === 'weak' ? { borderColor: 'var(--weak)', color: 'var(--weak)', background: 'var(--weak-tint)' } : {}}
       >
         <Flame size={11} fill={filter === 'weak' ? 'currentColor' : 'none'} />
         Weak ({weakCount})

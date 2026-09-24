@@ -114,7 +114,7 @@ export default function WrittenMode() {
         >
           <ChevronLeft size={15} /> {activeSeg ? topic.shortName : backTo ? 'Back' : 'All Categories'}
         </button>
-        <div className="written-topic-pill" style={{ color: topic.color, borderColor: `${topic.color}55` }}>
+        <div className="written-topic-pill" style={{ color: topic.color, borderColor: `color-mix(in srgb, ${topic.color} 33%, transparent)` }}>
           {activeSeg ? <Zap size={13} /> : <PenLine size={13} />}
           {activeSeg || `${topic.shortName} — Written Q&A`}
         </div>
@@ -137,14 +137,14 @@ export default function WrittenMode() {
         <button
           className={`study-filter-btn${filter === 'all' ? ' active' : ''}`}
           onClick={() => setFilter('all')}
-          style={filter === 'all' ? { borderColor: topic.color, color: topic.color, background: `${topic.color}15` } : {}}
+          style={filter === 'all' ? { borderColor: topic.color, color: topic.color, background: `color-mix(in srgb, ${topic.color} 8%, transparent)` } : {}}
         >
           সব ({nonNailed.length})
         </button>
         <button
           className={`study-filter-btn${filter === 'important' ? ' active' : ''}`}
           onClick={() => setFilter('important')}
-          style={filter === 'important' ? { borderColor: '#ef4444', color: '#ef4444', background: 'rgba(239,68,68,0.12)' } : {}}
+          style={filter === 'important' ? { borderColor: 'var(--imp)', color: 'var(--imp)', background: 'var(--imp-tint)' } : {}}
         >
           <Bookmark size={11} fill={filter === 'important' ? 'currentColor' : 'none'} />
           Important ({importantCount})
@@ -152,7 +152,7 @@ export default function WrittenMode() {
         <button
           className={`study-filter-btn${filter === 'weak' ? ' active' : ''}`}
           onClick={() => setFilter('weak')}
-          style={filter === 'weak' ? { borderColor: '#f97316', color: '#f97316', background: 'rgba(249,115,22,0.12)' } : {}}
+          style={filter === 'weak' ? { borderColor: 'var(--weak)', color: 'var(--weak)', background: 'var(--weak-tint)' } : {}}
         >
           <Flame size={11} fill={filter === 'weak' ? 'currentColor' : 'none'} />
           Weak ({weakCount})

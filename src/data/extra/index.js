@@ -11,7 +11,7 @@ export const EXTRA_DATA = Object.fromEntries(
 )
 
 const EXTRA_ONLY_TOPICS = [
-  { id: 'server', name: 'Server', shortName: 'Server', icon: ServerCog, color: '#2dd4bf', questions: [] },
+  { id: 'server', name: 'Server', shortName: 'Server', icon: ServerCog, color: 'var(--topic-6)', questions: [] },
 ]
 
 export const EXTRA_TOPICS = [...TOPICS, ...EXTRA_ONLY_TOPICS]
