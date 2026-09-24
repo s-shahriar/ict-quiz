@@ -4316,3 +4316,18 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 [data-theme="dark"] .written-mnemonic { font-weight: 450; }
 [data-theme="dark"] .opt-btn,
 [data-theme="dark"] .study-opt { font-weight: 520; }
+
+/* Exam topbar on narrow phones: pill + 3 icon buttons + score + Stop don't
+   fit at ~350px. The topic tag shrinks (then hides), gaps tighten, and Stop
+   goes icon-only until tapped — "Sure?" always shows its label. */
+.exam-mode-pill { min-width: 0; flex-shrink: 1; overflow: hidden; }
+.exam-topic-tag { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quiz-topbar .topbar-right-actions { flex-shrink: 0; }
+@media (max-width: 420px) {
+  .quiz-topbar { gap: 6px; padding-inline: 12px; }
+  .quiz-topbar .topbar-right-actions { gap: 5px !important; }
+  .exam-topic-tag { display: none; }
+  .quiz-score-pill { padding: 5px 9px; }
+  .exam-stop-btn { padding: 6px 8px; }
+  .exam-stop-btn:not(.confirm) .exam-stop-label { display: none; }
+}

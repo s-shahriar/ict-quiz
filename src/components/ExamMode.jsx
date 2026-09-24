@@ -89,7 +89,7 @@ export default function ExamMode() {
             title="Stop exam"
           >
             <OctagonX size={14} />
-            {stopConfirm ? 'Sure?' : 'Stop'}
+            <span className="exam-stop-label">{stopConfirm ? 'Sure?' : 'Stop'}</span>
           </button>
         </TopbarActions>
       </div>
