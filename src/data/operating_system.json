@@ -439,6 +439,328 @@
       "correct_answer": "c",
       "correct_answer_text": "Shortest Job First Scheduling",
       "explanation": "SJF (Shortest Job First) practically implement করা অসম্ভব কারণ আগে থেকে জানা সম্ভব নয় যে কোন job কত সময় নেবে। এটি theoretically optimal কিন্তু burst time আগে থেকে জানা যায় না বলে real system-এ implement করা যায় না।"
+    },
+    {
+      "id": 34,
+      "question": "Which state transition occurs because of a time quantum expiration in Round Robin?",
+      "options": {
+        "a": "Running → Ready",
+        "b": "Ready → Waiting",
+        "c": "Waiting → Running",
+        "d": "New → Waiting"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Running → Ready",
+      "page": "CPU Scheduling",
+      "explanation": "Round Robin-এ প্রতিটি process একটি নির্দিষ্ট time quantum পায়। Time quantum শেষ হয়ে গেলেও process-টির কাজ সম্পূর্ণ না হলে, CPU সেটিকে interrupt করে Running state থেকে Ready queue-এর শেষে পাঠিয়ে দেয় যাতে অন্য process CPU পায়। এটি I/O-এর জন্য অপেক্ষা নয় বলে Waiting state-এ যায় না।"
+    },
+    {
+      "id": 35,
+      "question": "If a process is ready but the CPU is currently executing another process, the first process is in:",
+      "options": {
+        "a": "Running",
+        "b": "Ready",
+        "c": "Waiting",
+        "d": "Terminated"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Ready",
+      "page": "CPU Scheduling",
+      "explanation": "যে process CPU পাওয়ার জন্য প্রস্তুত কিন্তু আপাতত CPU অন্য process execute করছে, সেই process Ready state-এ থাকে। Ready queue-তে থাকা সব process CPU allocate হওয়ার অপেক্ষায় থাকে; Waiting state শুধু I/O বা কোনো event-এর জন্য প্রযোজ্য, শুধু CPU-এর জন্য নয়।"
+    },
+    {
+      "id": 36,
+      "question": "Which kernel type keeps most OS services inside the kernel space?",
+      "options": {
+        "a": "Microkernel",
+        "b": "Monolithic kernel",
+        "c": "Exokernel only",
+        "d": "Nano kernel"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Monolithic kernel",
+      "page": "Kernel Design",
+      "explanation": "Monolithic kernel-এ process management, memory management, file system, device driver-এর মতো প্রায় সব OS service একই kernel space-এ (single address space) চলে, ফলে service-গুলোর মধ্যে function call সরাসরি ও দ্রুত হয়। বিপরীতে Microkernel শুধু essential service kernel-এ রাখে, বাকিগুলো user space-এ চালায়।"
+    },
+    {
+      "id": 37,
+      "question": "Which kernel design keeps only essential services in the kernel and moves many services to user space?",
+      "options": {
+        "a": "Monolithic kernel",
+        "b": "Microkernel",
+        "c": "Hybrid compiler",
+        "d": "Batch kernel"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Microkernel",
+      "page": "Kernel Design",
+      "explanation": "Microkernel শুধুমাত্র সবচেয়ে essential service — যেমন basic IPC (inter-process communication), low-level memory ও CPU scheduling — kernel space-এ রাখে; file system, device driver-এর মতো বাকি service user space-এ আলাদা process হিসেবে চলে। এতে kernel ছোট ও stable হয়, কিন্তু বারবার user-kernel message passing লাগে বলে overhead বেশি।"
+    },
+    {
+      "id": 38,
+      "question": "Which algorithm can suffer from the convoy effect?",
+      "options": {
+        "a": "FCFS",
+        "b": "Round Robin",
+        "c": "SRTF",
+        "d": "Priority only"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "FCFS",
+      "page": "CPU Scheduling",
+      "explanation": "FCFS-এ process-গুলো আসার ক্রম অনুযায়ী serve হয়, ordering পরিবর্তনের সুযোগ নেই। একটি বড় burst time-এর process আগে চলে এলে পরের ছোট process-গুলোকে তার শেষ হওয়া পর্যন্ত অপেক্ষা করতে হয় — এটাই convoy effect, যা average waiting time বাড়িয়ে দেয়। Preemptive algorithm (RR, SRTF) ছোট process-কে আগে সুযোগ দিতে পারে বলে এই সমস্যা এড়ায়।"
+    },
+    {
+      "id": 39,
+      "question": "Which scheduling algorithm generally minimizes average waiting time when CPU burst times are known in advance?",
+      "options": {
+        "a": "FCFS",
+        "b": "SJF",
+        "c": "Round Robin",
+        "d": "FIFO"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "SJF",
+      "page": "CPU Scheduling",
+      "explanation": "SJF (Shortest Job First) সবসময় সবচেয়ে কম burst time-এর process আগে চালায়, ফলে ছোট process-গুলো দ্রুত শেষ হয়ে বড় process-এর জন্য গড় অপেক্ষার সময় কমে যায়। Burst time আগে থেকে জানা থাকলে SJF প্রমাণিতভাবে optimal average waiting time দেয়, যদিও বাস্তবে burst time আগে থেকে জানা কঠিন।"
+    },
+    {
+      "id": 40,
+      "question": "A page is mapped to a:",
+      "options": {
+        "a": "Segment",
+        "b": "Frame",
+        "c": "Register",
+        "d": "Process"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Frame",
+      "page": "Memory Management",
+      "explanation": "Paging-এ logical memory-কে সমান আকারের page-এ এবং physical memory-কে সমান আকারের frame-এ ভাগ করা হয়। Page table প্রতিটি page number-কে একটি frame number-এর সাথে map করে, যাতে CPU logical address থেকে সঠিক physical address বের করতে পারে।"
+    },
+    {
+      "id": 41,
+      "question": "Paging mainly eliminates:",
+      "options": {
+        "a": "Internal fragmentation",
+        "b": "External fragmentation",
+        "c": "Deadlock",
+        "d": "Starvation"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "External fragmentation",
+      "page": "Memory Management",
+      "explanation": "Contiguous allocation-এ process-এর জন্য একটানা memory block দরকার হয় বলে ছোট ছোট ফাঁকা space তৈরি হয় যেগুলো একসাথে ব্যবহার করা যায় না — এটাই external fragmentation। Paging প্রতিটি process-কে সমান আকারের অ-contiguous page-এ ভাগ করে যেকোনো free frame-এ বসিয়ে দেয়, ফলে external fragmentation থাকে না।"
+    },
+    {
+      "id": 42,
+      "question": "Paging may cause:",
+      "options": {
+        "a": "External fragmentation only",
+        "b": "Internal fragmentation",
+        "c": "Deadlock only",
+        "d": "No fragmentation"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Internal fragmentation",
+      "page": "Memory Management",
+      "explanation": "Page-এর আকার ফিক্সড হওয়ায় একটি process-এর শেষ page সবসময় পুরোপুরি ভরে না; সেই page-এর অব্যবহৃত অংশ অপচয় হয় — এটাই internal fragmentation। Page size যত বড় হবে, গড়ে অপচয়ও তত বেশি হতে পারে।"
+    },
+    {
+      "id": 43,
+      "question": "Which page replacement algorithm replaces the page that has been in memory the longest?",
+      "options": {
+        "a": "LRU",
+        "b": "FIFO",
+        "c": "Optimal",
+        "d": "MRU"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "FIFO",
+      "page": "Memory Management",
+      "explanation": "FIFO (First-In-First-Out) page replacement শুধু page আসার ক্রম (arrival order) দেখে — যে page সবার আগে memory-তে এসেছে সেটিকেই আগে সরানো হয়, ব্যবহারের frequency বা recency বিবেচনা না করেই। Actual access pattern উপেক্ষা করে বলেই FIFO কখনো Belady's Anomaly-তে ভোগে।"
+    },
+    {
+      "id": 44,
+      "question": "Which page replacement algorithm replaces the page that has not been used for the longest time?",
+      "options": {
+        "a": "FIFO",
+        "b": "LRU",
+        "c": "FCFS",
+        "d": "SJF"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "LRU",
+      "page": "Memory Management",
+      "explanation": "LRU (Least Recently Used) ধরে নেয় যে সাম্প্রতিক অতীতে যে page ব্যবহার হয়নি, নিকট ভবিষ্যতেও তার দরকার পড়ার সম্ভাবনা কম। তাই সবচেয়ে বেশি সময় ধরে unused থাকা page-টিকে replace করে, যা practice-এ FIFO-এর চেয়ে ভালো performance দেয়।"
+    },
+    {
+      "id": 45,
+      "question": "TLB is generally implemented using:",
+      "options": {
+        "a": "Slow magnetic disk",
+        "b": "Fast associative memory",
+        "c": "Optical storage",
+        "d": "ROM only"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Fast associative memory",
+      "page": "Memory Management",
+      "explanation": "TLB (Translation Lookaside Buffer) page table lookup দ্রুত করার জন্য ব্যবহৃত হয়, তাই একে fast associative (content-addressable) memory দিয়ে বানানো হয় — এখানে সব entry একসাথে parallel-এ search করা যায় বলে matching page number প্রায় সাথে সাথে পাওয়া যায়। ধীরগতির disk বা storage দিয়ে বানালে TLB-এর মূল উদ্দেশ্যই (memory access দ্রুত করা) ব্যাহত হতো।"
+    },
+    {
+      "id": 46,
+      "question": "Which of the following is generally a stack algorithm?",
+      "options": {
+        "a": "FIFO",
+        "b": "LRU",
+        "c": "Random",
+        "d": "Second Chance"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "LRU",
+      "page": "Memory Management",
+      "explanation": "Stack algorithm হলো সেই page-replacement algorithm, যেখানে frame সংখ্যা n থেকে বাড়ালে n frame-এর page-সেট সবসময় বড় frame-সংখ্যার page-সেটের subset থাকে (frame বাড়ালে hit কমে না) — একে stack property বলে। LRU ও Optimal এই property মেনে চলে বলে এদের Belady's Anomaly হয় না, কিন্তু FIFO stack algorithm নয় বলেই তাতে Belady's Anomaly দেখা যায়।"
+    },
+    {
+      "id": 47,
+      "question": "Next Fit differs from First Fit mainly because it:",
+      "options": {
+        "a": "Always selects the largest block",
+        "b": "Continues searching from the last allocation position",
+        "c": "Selects the smallest block",
+        "d": "Uses fixed partitions"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "Continues searching from the last allocation position",
+      "page": "Memory Management",
+      "explanation": "First Fit প্রতিবার allocation request এলে memory-র শুরু থেকে খোঁজা শুরু করে প্রথম যথেষ্ট বড় free block বেছে নেয়। Next Fit একই কাজ করে, কিন্তু শুরু থেকে না খুঁজে আগের বার যেখানে allocation শেষ হয়েছিল সেখান থেকে খোঁজা শুরু করে — এতে memory-র শুরুর অংশে বারবার ছোট block তৈরি হওয়া কিছুটা কমে।"
+    },
+    {
+      "id": 48,
+      "question": "Which memory management technique does NOT require contiguous allocation of a process?",
+      "options": {
+        "a": "Fixed partitioning",
+        "b": "Variable partitioning",
+        "c": "Paging",
+        "d": "Contiguous allocation"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Paging",
+      "page": "Memory Management",
+      "explanation": "Fixed ও variable partitioning-এ পুরো process-কে memory-তে একটানা (contiguous) জায়গায় বসাতে হয়। Paging-এ process-কে ছোট ছোট page-এ ভেঙে ফেলা হয় এবং প্রতিটি page memory-র যেকোনো ফাঁকা frame-এ আলাদা আলাদা জায়গায় (non-contiguous) বসতে পারে — page table এই বিক্ষিপ্ত frame-গুলোকে ট্র্যাক করে।"
+    },
+    {
+      "id": 49,
+      "question": "Cache memory is generally made using:",
+      "options": {
+        "a": "SRAM",
+        "b": "DRAM",
+        "c": "Magnetic tape",
+        "d": "Flash disk"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "SRAM",
+      "page": "Memory",
+      "explanation": "SRAM (Static RAM) flip-flop দিয়ে data ধরে রাখে বলে DRAM-এর মতো বারবার refresh করার দরকার হয় না, ফলে access time অনেক কম। CPU-এর সাথে গতি মেলাতে cache memory-তে এই দ্রুতগতির SRAM ব্যবহার করা হয়, যদিও তা DRAM-এর চেয়ে ব্যয়বহুল ও কম density-র।"
+    },
+    {
+      "id": 50,
+      "question": "A 2-way set-associative cache means each set contains:",
+      "options": {
+        "a": "1 line",
+        "b": "2 lines",
+        "c": "4 lines",
+        "d": "8 lines"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "2 lines",
+      "page": "Memory",
+      "explanation": "N-way set-associative cache-এ memory-কে কয়েকটি set-এ ভাগ করা হয় এবং প্রতিটি set-এ N-টি cache line থাকে; একটি block সেই N-টি line-এর যেকোনো একটিতে বসতে পারে। তাই \"2-way\" মানে প্রতিটি set-এ ঠিক ২টি line থাকে — direct mapping (1-way) ও fully associative mapping-এর মাঝামাঝি একটি trade-off।"
+    },
+    {
+      "id": 51,
+      "question": "Which field identifies the specific block within a cache mapping?",
+      "options": {
+        "a": "Tag",
+        "b": "Offset",
+        "c": "Index",
+        "d": "Opcode"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "Tag",
+      "page": "Memory",
+      "explanation": "Cache address সাধারণত Tag, Index এবং Offset — এই তিন অংশে ভাগ করা হয়। Index দিয়ে কোন set/line-এ খোঁজা হবে তা ঠিক হয়, কিন্তু সেই line-এ সত্যিই কাঙ্ক্ষিত memory block আছে কিনা তা নিশ্চিত করতে stored Tag-এর সাথে incoming address-এর Tag অংশ মিলিয়ে দেখা হয়।"
+    },
+    {
+      "id": 52,
+      "question": "The offset field is used to identify:",
+      "options": {
+        "a": "The position of data within a cache block",
+        "b": "The cache set",
+        "c": "The memory block number",
+        "d": "The process ID"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "The position of data within a cache block",
+      "page": "Memory",
+      "explanation": "একটি cache block-এ একাধিক byte/word থাকে। Tag ও Index দিয়ে সঠিক block খুঁজে পাওয়ার পর, সেই block-এর ভেতরে ঠিক কোন byte/word দরকার তা নির্ধারণ করে Offset field — অর্থাৎ block-এর মধ্যেকার exact position এটি নির্দেশ করে।"
+    },
+    {
+      "id": 53,
+      "question": "In write-back cache, modified data is generally written to main memory:",
+      "options": {
+        "a": "Immediately after every write",
+        "b": "When the cache block is replaced",
+        "c": "Before every read",
+        "d": "Never"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "When the cache block is replaced",
+      "page": "Memory",
+      "explanation": "Write-back policy-তে CPU cache-এ write করলে সাথে সাথে main memory update হয় না, শুধু সেই cache block-কে \"dirty\" বলে চিহ্নিত করা হয়। ওই block replace হওয়ার সময়ই dirty data main memory-তে লেখা হয় — এতে বারবার memory access কমে গিয়ে performance বাড়ে, তুলনায় write-through-এ প্রতিটি write-এই memory update হয়।"
+    },
+    {
+      "id": 54,
+      "question": "Which cache organization generally provides the greatest placement flexibility?",
+      "options": {
+        "a": "Direct Mapping",
+        "b": "2-way Set Associative",
+        "c": "Fully Associative Mapping",
+        "d": "4-way Set Associative"
+      },
+      "correct_answer": "c",
+      "correct_answer_text": "Fully Associative Mapping",
+      "page": "Memory",
+      "explanation": "Direct mapping-এ একটি memory block শুধু একটিমাত্র নির্দিষ্ট cache line-এ বসতে পারে, N-way set associative-এ N-টি line-এর মধ্যে যেকোনো একটিতে। Fully associative mapping-এ কোনো fixed set/line নেই — একটি block cache-এর যেকোনো line-এ বসতে পারে, ফলে placement flexibility সর্বোচ্চ হয়, তবে সব line parallel-এ search করতে হয় বলে hardware জটিল ও ব্যয়বহুল।"
+    },
+    {
+      "id": 55,
+      "question": "Which storage device uses magnetic technology?",
+      "options": {
+        "a": "HDD",
+        "b": "SSD",
+        "c": "RAM",
+        "d": "ROM"
+      },
+      "correct_answer": "a",
+      "correct_answer_text": "HDD",
+      "page": "Storage",
+      "explanation": "HDD (Hard Disk Drive) ঘূর্ণায়মান platter-এর উপর magnetic material-এ data store করে এবং read/write head সেই magnetic charge পড়ে ও লেখে। SSD flash memory (electrical charge) ব্যবহার করে বলে এতে কোনো moving বা magnetic অংশ থাকে না।"
+    },
+    {
+      "id": 56,
+      "question": "Which of the following uses flash memory?",
+      "options": {
+        "a": "HDD",
+        "b": "SSD",
+        "c": "Magnetic tape",
+        "d": "Floppy disk"
+      },
+      "correct_answer": "b",
+      "correct_answer_text": "SSD",
+      "page": "Storage",
+      "explanation": "SSD (Solid State Drive) NAND flash memory ব্যবহার করে, যেখানে data electrical charge হিসেবে transistor cell-এ store হয় — কোনো moving part না থাকায় HDD-র চেয়ে দ্রুত ও শব্দহীন হয়। HDD, magnetic tape, floppy disk — এরা সবাই magnetic storage technology ব্যবহার করে।"
     }
   ]
 }

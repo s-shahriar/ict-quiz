@@ -1612,6 +1612,728 @@
         ],
         "mnemonic": "Hit = একবার memory, Miss = দুবার memory; TLB খোঁজা দুজনেরই লাগে।"
       }
+    },
+    {
+      "id": "os_020",
+      "q": "Differentiate between User Mode and Kernel Mode. Why is dual-mode operation necessary?",
+      "tags": [
+        "user mode",
+        "kernel mode",
+        "dual mode",
+        "privileged instruction",
+        "mode bit"
+      ],
+      "answer": {
+        "summary": [
+          "User Mode-এ application সীমিত অধিকার নিয়ে চলে, Kernel Mode-এ OS পূর্ণ hardware অধিকার নিয়ে চলে।",
+          "Dual-mode ছাড়া একটি buggy বা malicious program সরাসরি hardware বা অন্য process-এর memory নষ্ট করতে পারত।"
+        ],
+        "points": [
+          "Dual-mode operation কেন দরকার",
+          {
+            "sub": "CPU-তে একটি mode bit থাকে (0 = kernel, 1 = user)।"
+          },
+          {
+            "sub": "User mode-এ থেকে privileged instruction চালাতে গেলে CPU trap করে control OS-কে দিয়ে দেয়।"
+          },
+          {
+            "sub": "System call-ই একমাত্র নিয়ন্ত্রিত পথ, যেখান দিয়ে user mode থেকে kernel mode-এ যাওয়া যায়।"
+          },
+          {
+            "sub": "এভাবে OS প্রতিটি process-কে একে অপরের থেকে ও hardware থেকে আলাদা (isolate) রাখে।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "User Mode",
+            "Kernel Mode"
+          ],
+          "rows": [
+            [
+              "কে চলে",
+              "Application program (browser, editor)",
+              "OS kernel (process/memory management, driver)"
+            ],
+            [
+              "Resource access",
+              "সীমিত",
+              "সম্পূর্ণ"
+            ],
+            [
+              "Privileged instruction",
+              "চালাতে পারে না",
+              "চালাতে পারে"
+            ],
+            [
+              "Hardware access",
+              "সরাসরি না",
+              "সরাসরি"
+            ],
+            [
+              "Critical memory",
+              "ছুঁতে পারে না",
+              "ছুঁতে পারে"
+            ],
+            [
+              "একটি প্রোগ্রাম fail করলে",
+              "শুধু সেই প্রোগ্রাম",
+              "পুরো OS crash করতে পারে"
+            ],
+            [
+              "উদাহরণ",
+              "Browser, Text Editor",
+              "Process/Memory management, Device driver"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো: User = তালাবদ্ধ ঘর, Kernel = মাস্টার চাবি — mode bit ঠিক করে কে কোন ঘরে ঢুকতে পারবে।"
+      }
+    },
+    {
+      "id": "os_021",
+      "q": "Differentiate between Multiprogramming, Multitasking, Multiprocessing, and Multithreading.",
+      "tags": [
+        "multiprogramming",
+        "multitasking",
+        "multiprocessing",
+        "multithreading",
+        "CPU utilization",
+        "concurrency"
+      ],
+      "answer": {
+        "summary": [
+          "চারটিই concurrency বাড়ানোর কৌশল, কিন্তু স্তর আলাদা — memory, OS scheduling, hardware core, আর একটি process-এর ভেতর thread।"
+        ],
+        "points": [
+          {
+            "sub": "Multiprogramming — memory-স্তরে; CPU utilization বাড়ানোই লক্ষ্য।"
+          },
+          {
+            "sub": "Multitasking — OS scheduling-স্তরে; responsiveness বাড়ানোই লক্ষ্য।"
+          },
+          {
+            "sub": "Multiprocessing — hardware core-স্তরে; সত্যিকারের parallel execution।"
+          },
+          {
+            "sub": "Multithreading — একটি process-এর ভেতরের thread-স্তরে; process-এর মধ্যে concurrency।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Multiprogramming",
+            "Multitasking",
+            "Multiprocessing",
+            "Multithreading"
+          ],
+          "rows": [
+            [
+              "সংজ্ঞা",
+              "একাধিক program একসাথে memory-তে রাখা হয়",
+              "OS একাধিক task দ্রুত সুইচ করে চালায়",
+              "দুই+ CPU/core একসাথে process চালায়",
+              "একই process-এর একাধিক thread একসাথে চলে"
+            ],
+            [
+              "মূল লক্ষ্য",
+              "CPU utilization সর্বোচ্চ",
+              "Responsiveness বাড়ানো",
+              "Parallel processing",
+              "Process-এর ভেতর concurrency"
+            ],
+            [
+              "CPU সুইচ করে কখন",
+              "চলতি program I/O-তে আটকালে",
+              "Time-sharing দিয়ে দ্রুত সুইচ",
+              "আলাদা core-এ আলাদা process একসাথে",
+              "একই process-এর thread-গুলো concurrently"
+            ],
+            [
+              "Focus",
+              "Program",
+              "Task/Process",
+              "Processor/Core",
+              "Thread"
+            ],
+            [
+              "উদাহরণ",
+              "A program I/O-তে আটকালে B চলা শুরু করে",
+              "Browsing + music + document editing একসাথে",
+              "Quad-core-এ চারটি process সমান্তরালে",
+              "Browser-এর UI, networking, rendering আলাদা thread-এ"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো: Program জমা রাখা = Multiprogramming, পালা করে কাজ = Multitasking, একাধিক CPU = Multiprocessing, এক process-এর ভেতরে ভাগ = Multithreading।"
+      }
+    },
+    {
+      "id": "os_022",
+      "q": "What is a Process Control Block (PCB)? Explain its contents.",
+      "tags": [
+        "PCB",
+        "process control block",
+        "process table",
+        "context switching",
+        "process state"
+      ],
+      "answer": {
+        "summary": [
+          "PCB হলো OS-এর একটি data structure, যেখানে একটি process সম্পর্কে সব তথ্য থাকে — context switch-এর সময় এটাই save/restore হয়।"
+        ],
+        "points": [
+          {
+            "sub": "প্রতিটি process তৈরি হওয়ার সাথে সাথে OS তার একটি PCB বানিয়ে Process Table-এ রাখে।"
+          },
+          {
+            "sub": "Context switch-এর সময় চলতি process-এর register/PC তার PCB-তে save হয়, পরের process-এর PCB থেকে load হয়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "উপাদান",
+            "কী থাকে"
+          ],
+          "rows": [
+            [
+              "Process ID (PID)",
+              "Process-এর unique identifier"
+            ],
+            [
+              "Process State",
+              "New / Ready / Running / Waiting / Terminated"
+            ],
+            [
+              "Program Counter (PC)",
+              "পরের instruction-এর address"
+            ],
+            [
+              "CPU Registers",
+              "Interrupt হওয়ার সময়কার register value — পরে resume করতে লাগে"
+            ],
+            [
+              "CPU Scheduling Info",
+              "Priority, scheduling parameter, queue pointer"
+            ],
+            [
+              "Memory Management Info",
+              "Page table / segment table-এর তথ্য"
+            ],
+            [
+              "Accounting Info",
+              "CPU usage, time limit, owner"
+            ],
+            [
+              "I/O Status Info",
+              "বরাদ্দ করা I/O device, open file"
+            ],
+            [
+              "Parent/Child Info",
+              "Parent ও child process-এর সম্পর্ক"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো: PCB = process-এর পরিচয়পত্র — state, অবস্থান (PC), হিসাব (registers), আর কোথায় কী resource আছে সব লেখা থাকে।"
+      }
+    },
+    {
+      "id": "os_023",
+      "q": "Explain the Unix/Linux process creation mechanism using fork(), exec(), and wait() system calls.",
+      "tags": [
+        "fork",
+        "exec",
+        "wait",
+        "process creation",
+        "zombie process",
+        "linux",
+        "unix"
+      ],
+      "answer": {
+        "summary": [
+          "fork() parent-এর হুবহু কপি করে child process বানায়; exec() child-এর কোড বদলে নতুন program চালায়; wait() parent-কে child শেষ হওয়া পর্যন্ত থামিয়ে রাখে।"
+        ],
+        "points": [
+          "fork() — child তৈরি",
+          {
+            "sub": "Calling process-এর duplicate তৈরি হয় — মূলটি parent, নতুনটি child।"
+          },
+          {
+            "sub": "fork()-এর পরের instruction থেকে parent ও child দুজনেই আলাদাভাবে চলা শুরু করে।"
+          },
+          {
+            "sub": "Return value দিয়ে আলাদা করা হয়: parent-এ fork() > 0 (child-এর PID পায়), child-এ fork() == 0, ব্যর্থ হলে < 0।"
+          },
+          "exec() — নতুন program লোড",
+          {
+            "sub": "Process-এর code, data, stack নতুন program দিয়ে replace হয়ে যায়, কিন্তু PID একই থাকে।"
+          },
+          "wait() — parent-এর অপেক্ষা",
+          {
+            "sub": "Parent child শেষ হওয়া পর্যন্ত থেমে থাকে ও তার exit status সংগ্রহ করে।"
+          },
+          {
+            "sub": "Child শেষ হয়ে গেলেও parent wait() না করলে child কিছুক্ষণ zombie process হয়ে থেকে যায়।"
+          }
+        ],
+        "diagram": "                fork()\n               /      \\\n            child      parent\n              |           |\n       child program  main program\n              |           |\n            exit()     wait() ──► continue",
+        "mnemonic": "মনে রাখো: fork = কপি, exec = রূপ বদল, wait = parent-এর reunion পর্যন্ত অপেক্ষা।"
+      }
+    },
+    {
+      "id": "os_024",
+      "q": "What is a Page and a Frame? How are they related? What is a Page Table? Explain its structure.",
+      "tags": [
+        "page",
+        "frame",
+        "page table",
+        "page table entry",
+        "PTE",
+        "valid bit",
+        "dirty bit"
+      ],
+      "answer": {
+        "summary": [
+          "Page = logical memory-র fixed-size block, Frame = physical memory-র fixed-size block — দুটোর মাপ সমান।",
+          "Page Table এই দুইয়ের mapping রাখে; প্রতিটি entry-তে frame number ছাড়াও valid, protection ও dirty bit থাকে।"
+        ],
+        "points": [
+          {
+            "sub": "Page — process-এর logical address space সমান আকারের ভাগে ভাগ করলে প্রতিটি ভাগ একটি page।"
+          },
+          {
+            "sub": "Frame — physical memory (RAM) একই আকারের ভাগে ভাগ করলে প্রতিটি ভাগ একটি frame; frame size সবসময় page size-এর সমান।"
+          },
+          {
+            "sub": "Process-এর page-গুলো non-contiguous ভাবে যেকোনো ফাঁকা frame-এ বসতে পারে — Page Table এই page→frame mapping মনে রাখে।"
+          },
+          "Page Table Entry (PTE)-তে যা থাকে",
+          {
+            "sub": "Page Number — কোন page চিহ্নিত করছে।"
+          },
+          {
+            "sub": "Frame Number — page physical memory-র কোন frame-এ আছে।"
+          },
+          {
+            "sub": "Valid Bit — page এখন main memory-তে আছে কিনা।"
+          },
+          {
+            "sub": "Protection Bit — read/write/execute অনুমতি।"
+          },
+          {
+            "sub": "Dirty Bit — page load হওয়ার পর modify হয়েছে কিনা (swap-out-এর সময় লাগে)।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "Page No.",
+            "Frame No.",
+            "Valid",
+            "Protection",
+            "Dirty"
+          ],
+          "rows": [
+            [
+              "0",
+              "5",
+              "1",
+              "Read/Write",
+              "0"
+            ],
+            [
+              "1",
+              "2",
+              "1",
+              "Read Only",
+              "1"
+            ],
+            [
+              "2",
+              "8",
+              "1",
+              "Read/Write",
+              "0"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো PFVPD: Page, Frame, Valid, Protection, Dirty — Page Table Entry-র পাঁচ সদস্য।"
+      }
+    },
+    {
+      "id": "os_025",
+      "q": "Explain the difference between Static RAM (SRAM) and Dynamic RAM (DRAM).",
+      "tags": [
+        "SRAM",
+        "DRAM",
+        "cache memory",
+        "main memory",
+        "refresh"
+      ],
+      "answer": {
+        "summary": [
+          "SRAM flip-flop দিয়ে data ধরে রাখে বলে refresh লাগে না ও দ্রুত — cache memory-তে ব্যবহৃত হয়।",
+          "DRAM capacitor দিয়ে data রাখে, charge leak হয়ে যায় বলে বারবার refresh লাগে — main memory-তে ব্যবহৃত হয়।"
+        ],
+        "points": [
+          {
+            "sub": "Capacitor-এর charge কিছুক্ষণ পরই leak হয়ে যায়, তাই DRAM-কে বারবার refresh করে data ধরে রাখতে হয় — এই refresh-ই DRAM-কে ধীর করে।"
+          },
+          {
+            "sub": "SRAM flip-flop-এ data power থাকা পর্যন্ত স্থিরভাবে থাকে, refresh লাগে না — কিন্তু প্রতি bit-এ বেশি transistor লাগে বলে দাম ও জায়গা বেশি।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "SRAM",
+            "DRAM"
+          ],
+          "rows": [
+            [
+              "পূর্ণরূপ",
+              "Static RAM",
+              "Dynamic RAM"
+            ],
+            [
+              "Data রাখে কীভাবে",
+              "Flip-flop (transistor)",
+              "Capacitor + transistor"
+            ],
+            [
+              "Refresh লাগে কিনা",
+              "না",
+              "হ্যাঁ, বারবার"
+            ],
+            [
+              "গতি",
+              "দ্রুত",
+              "তুলনামূলক ধীর"
+            ],
+            [
+              "দাম",
+              "বেশি",
+              "কম"
+            ],
+            [
+              "Power খরচ",
+              "বেশি",
+              "কম"
+            ],
+            [
+              "Capacity",
+              "কম",
+              "বেশি"
+            ],
+            [
+              "Circuit",
+              "জটিল",
+              "সহজ"
+            ],
+            [
+              "ব্যবহার",
+              "Cache memory",
+              "Main memory (system RAM)"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো: SRAM = Speed-এর জন্য দামি cache, DRAM = Dense ও cheap main memory, বারবার Refresh লাগে।"
+      }
+    },
+    {
+      "id": "os_026",
+      "q": "Compare single-level paging and multilevel paging.",
+      "tags": [
+        "single-level paging",
+        "multilevel paging",
+        "page table",
+        "address space"
+      ],
+      "answer": {
+        "summary": [
+          "Single-level paging-এ একটিমাত্র বড় page table থাকে; Multilevel paging সেই page table-কেই আবার ছোট ছোট স্তরে ভাগ করে।"
+        ],
+        "points": [
+          {
+            "sub": "বড় address space-এ (32/64-bit) single page table নিজেই বিশাল হয়ে যায় — পুরোটা continuous memory-তে রাখা অপচয়।"
+          },
+          {
+            "sub": "Multilevel-এ page table-কেও pages-এ ভেঙে ফেলা হয়; যে অংশ দরকার নেই তা memory-তে আনাই হয় না।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Single-level Paging",
+            "Multilevel Paging"
+          ],
+          "rows": [
+            [
+              "Page table সংখ্যা",
+              "একটি",
+              "একাধিক স্তরে ভাগ করা"
+            ],
+            [
+              "Memory প্রয়োজন",
+              "পুরো table-এর জন্য continuous জায়গা লাগে",
+              "শুধু প্রয়োজনীয় অংশ থাকে, কম memory লাগে"
+            ],
+            [
+              "উপযুক্ত",
+              "ছোট address space",
+              "বড় (32/64-bit) address space"
+            ],
+            [
+              "Translation গতি",
+              "দ্রুত (এক lookup)",
+              "TLB ছাড়া ধীর (একাধিক lookup)"
+            ],
+            [
+              "গঠন",
+              "সহজ",
+              "তুলনামূলক জটিল"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো: বড় ঠিকানা-বই একবারে না রেখে অধ্যায় অনুযায়ী ভাগ করে রাখাই Multilevel Paging।"
+      }
+    },
+    {
+      "id": "os_027",
+      "q": "What is Demand Paging? Explain its working principle.",
+      "tags": [
+        "demand paging",
+        "page fault",
+        "virtual memory",
+        "lazy loading"
+      ],
+      "answer": {
+        "summary": [
+          "Demand Paging-এ পুরো process একসাথে memory-তে লোড না করে, যে page এখনই দরকার শুধু সেটাই RAM-এ আনা হয়।",
+          "দরকারি page RAM-এ না থাকলে Page Fault হয়, তখন OS সেটা secondary storage থেকে এনে দেয়।"
+        ],
+        "points": [
+          {
+            "sub": "আগে যেভাবে হতো: process চালানোর আগেই তার সব page একসাথে RAM-এ তোলা হতো — শুরু হতে দেরি হতো, আর অনেক page হয়তো কখনো ব্যবহারই হতো না।"
+          },
+          {
+            "sub": "Demand Paging-এ কোনো page RAM-এ আগে থেকে তোলা হয় না — CPU যখন কোনো page 'চায়' (demand করে), ঠিক তখনই সেটা আনা হয়।"
+          },
+          "এই 'চাওয়া'র মুহূর্তে কী ঘটে, ধাপে ধাপে:",
+          {
+            "sub": "CPU একটি logical address চায়।"
+          },
+          {
+            "sub": "Page Table চেক হয় — valid bit দেখে page memory-তে আছে কিনা।"
+          },
+          {
+            "sub": "থাকলে সরাসরি data access হয়।"
+          },
+          {
+            "sub": "না থাকলে Page Fault — OS secondary storage থেকে page এনে একটা free frame-এ বসায়।"
+          },
+          {
+            "sub": "Page table update হয়, তারপর process আবার চালু হয়।"
+          }
+        ],
+        "diagram": "CPU address ──► Page Table check\n                    │\n          ┌─────────┴─────────┐\n       page আছে             page নেই\n          │                    │\n     data access          Page Fault\n                                │\n                      disk থেকে page লোড\n                                │\n                      page table update\n                                │\n                          process resume",
+        "mnemonic": "মনে রাখো: Demand Paging = দরকার হলেই আনো, আগেভাগে না।"
+      }
+    },
+    {
+      "id": "os_028",
+      "q": "Compare Direct Mapping, Associative Mapping, and Set-Associative Mapping in cache memory.",
+      "tags": [
+        "cache mapping",
+        "direct mapping",
+        "associative mapping",
+        "set-associative mapping",
+        "conflict miss"
+      ],
+      "answer": {
+        "summary": [
+          "তিনটিই memory block কোথায় বসবে সেই সমস্যার সমাধান — পার্থক্য flexibility বনাম hardware খরচের trade-off-এ।"
+        ],
+        "points": [
+          {
+            "sub": "Direct mapping-এ flexibility নেই বলে conflict miss বেশি হয়।"
+          },
+          {
+            "sub": "Fully associative flexibility সর্বোচ্চ দেয় কিন্তু hardware জটিল ও দামি (সব line parallel-এ খুঁজতে হয়)।"
+          },
+          {
+            "sub": "Set-associative দুটোর মাঝামাঝি ভারসাম্য — moderate খরচে conflict miss কমায়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Direct Mapping",
+            "Associative Mapping",
+            "Set-Associative Mapping"
+          ],
+          "rows": [
+            [
+              "সংজ্ঞা",
+              "প্রতিটি block একটিমাত্র নির্দিষ্ট line-এ বসে",
+              "যেকোনো block যেকোনো line-এ বসতে পারে",
+              "block একটি নির্দিষ্ট set-এ বসে, সেই set-এর যেকোনো line-এ"
+            ],
+            [
+              "Mapping formula",
+              "Line = Block MOD Total lines",
+              "নির্দিষ্ট formula নেই",
+              "Set = Block MOD Total sets"
+            ],
+            [
+              "খোঁজার পদ্ধতি",
+              "শুধু একটি line",
+              "সব line একসাথে (parallel)",
+              "শুধু নির্বাচিত set-এর line-গুলো"
+            ],
+            [
+              "গতি",
+              "দ্রুত",
+              "জটিল খোঁজার কারণে ধীর",
+              "মাঝামাঝি"
+            ],
+            [
+              "Conflict miss",
+              "বেশি",
+              "খুব কম",
+              "Direct-এর চেয়ে কম"
+            ],
+            [
+              "Hardware খরচ",
+              "সবচেয়ে কম",
+              "সবচেয়ে বেশি",
+              "মাঝামাঝি"
+            ],
+            [
+              "Replacement policy",
+              "লাগে না (জায়গা fixed)",
+              "লাগে (LRU/FIFO)",
+              "লাগে, প্রতিটি set-এর ভেতরে"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো: Direct = একটাই সিট বরাদ্দ, Associative = পুরো হলে যেকোনো সিট, Set-Associative = নির্দিষ্ট সারিতে যেকোনো সিট।"
+      }
+    },
+    {
+      "id": "os_029",
+      "q": "Explain Simultaneous Access and Hierarchical Access in Cache Memory.",
+      "tags": [
+        "cache memory",
+        "simultaneous access",
+        "hierarchical access",
+        "multi-level cache",
+        "L1 cache",
+        "L2 cache"
+      ],
+      "answer": {
+        "summary": [
+          "Simultaneous Access-এ L1 ও L2 (একাধিক level) একসাথে parallel-এ চেক হয়।",
+          "Hierarchical Access-এ আগে L1, miss হলে তারপর L2 — ধাপে ধাপে চেক হয়।"
+        ],
+        "points": [
+          "Simultaneous Access",
+          {
+            "sub": "একাধিক cache level (L1, L2) একই সময়ে parallel-এ search হয়।"
+          },
+          {
+            "sub": "L1 hit হলেও L2 lookup আগে থেকেই শুরু হয়ে থাকে বলে access time কম।"
+          },
+          {
+            "sub": "প্রতিটি level-এর জন্য আলাদা lookup hardware লাগে বলে circuit জটিল, দাম ও power খরচ বেশি।"
+          },
+          "Hierarchical Access",
+          {
+            "sub": "প্রথমে শুধু L1 চেক হয়; miss হলে তবেই L2 চেক শুরু হয়, সেখানেও miss হলে main memory।"
+          },
+          {
+            "sub": "L1 hit হলে L2-কে ছোঁয়াই লাগে না — power ও hardware খরচ কম।"
+          },
+          {
+            "sub": "কিন্তু L1 miss হলে L1-এর সময় + L2-এর সময় যোগ হয়ে যায় — miss penalty বেশি।"
+          },
+          {
+            "sub": "বেশিরভাগ CPU-তে L1 hit ratio অনেক বেশি (৯০%+) বলে Hierarchical/Sequential access-ই বেশি ব্যবহৃত হয় — গড়ে সস্তা ও যথেষ্ট দ্রুত।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বিষয়",
+            "Simultaneous Access",
+            "Hierarchical Access"
+          ],
+          "rows": [
+            [
+              "পদ্ধতি",
+              "সব level একসাথে (parallel) চেক",
+              "একটার পর একটা (L1 → L2 → ...) চেক"
+            ],
+            [
+              "Best-case latency",
+              "কম, কারণ সব একসাথে শুরু হয়",
+              "বেশি, কারণ ধাপে ধাপে চলে"
+            ],
+            [
+              "Miss penalty",
+              "তুলনামূলক কম বাড়ে",
+              "L1 + L2 সময় যোগ হয়ে বাড়ে"
+            ],
+            [
+              "Hardware/Power খরচ",
+              "বেশি (একাধিক port/circuit)",
+              "কম (একসময় একটাই সক্রিয়)"
+            ],
+            [
+              "ব্যবহার",
+              "কম, বিশেষ high-performance design-এ",
+              "সাধারণ CPU cache hierarchy-তে বেশি প্রচলিত"
+            ]
+          ]
+        },
+        "mnemonic": "মনে রাখো: Simultaneous = সব দরজায় একসাথে টোকা, Hierarchical = একটায় না পেলে পরেরটায় — খরচ বনাম গতির trade-off।"
+      }
+    },
+    {
+      "id": "os_030",
+      "q": "What is Belady's Anomaly? Explain with a suitable example.",
+      "tags": [
+        "belady's anomaly",
+        "FIFO",
+        "page replacement",
+        "page fault"
+      ],
+      "answer": {
+        "summary": [
+          "Belady's Anomaly — frame সংখ্যা বাড়ালেও page fault কমার বদলে বেড়ে যেতে পারে, সাধারণত FIFO algorithm-এ দেখা যায়।"
+        ],
+        "points": [
+          {
+            "sub": "স্বাভাবিকভাবে বেশি frame মানে বেশি page মেমোরিতে রাখা যায়, তাই fault কমার কথা।"
+          },
+          {
+            "sub": "কিন্তু FIFO শুধু page কতদিন আগে এসেছে তা দেখে, কতটা ব্যবহার হচ্ছে তা দেখে না — তাই বেশি frame মাঝে মাঝে উল্টো ফল দেয়।"
+          },
+          {
+            "sub": "LRU ও Optimal-এর মতো stack algorithm-এ এটা হয় না, কারণ frame বাড়ালে আগের সব resident page নতুন সেটেও থেকে যায় — এখানে থাকে না।"
+          },
+          {
+            "diagram": "[৩টি frame দিয়ে]  reference string: 1 2 3 4 1 2 5 1 2 3 4 5\n\nref      1  2  3  4  1  2  5  1  2  3  4  5\noldest   1  1  1  2  3  4  1  1  1  2  5  5\nmid      .  2  2  3  4  1  2  2  2  5  3  3\nnewest   .  .  3  4  1  2  5  5  5  3  4  4\nfault    F  F  F  F  F  F  F  .  .  F  F  .\n\nমোট page fault (৩ frame) = 9",
+            "label": "FIFO — ৩ frame"
+          },
+          {
+            "diagram": "[৪টি frame দিয়ে]  একই reference string\n\nref      1  2  3  4  1  2  5  1  2  3  4  5\noldest   1  1  1  1  1  1  2  3  4  5  1  2\nmid1     .  2  2  2  2  2  3  4  5  1  2  3\nmid2     .  .  3  3  3  3  4  5  1  2  3  4\nnewest   .  .  .  4  4  4  5  1  2  3  4  5\nfault    F  F  F  F  .  .  F  F  F  F  F  F\n\nমোট page fault (৪ frame) = 10",
+            "label": "FIFO — ৪ frame"
+          },
+          {
+            "sub": "ফলাফল: frame ৩টা থেকে ৪টা করার পরেও fault ৯ থেকে বেড়ে ১০ হলো — এটাই Belady's Anomaly।"
+          }
+        ],
+        "mnemonic": "মনে রাখো: বেশি frame মানেই কম fault নয় — FIFO-তে মাঝে মাঝে উল্টো হয়, এটাই Belady's আজব নিয়ম (Anomaly)।"
+      }
     }
   ]
 }

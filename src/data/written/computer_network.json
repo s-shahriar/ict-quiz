@@ -2835,6 +2835,10 @@
             "label": "Diagram — 3-way Handshake (সংযোগ খোলা)",
             "diagram": "   Client                                    Server\n     │                                          │\n     │ ──── SYN, seq=100 ─────────────────────► │  ← \"কথা বলতে চাই\" + নিজের seq\n     │                                          │    (server: half-open queue-তে entry)\n     │ ◄─── SYN + ACK, seq=500, ack=101 ─────── │  ← এক segment-এ দুই কাজ:\n     │                                          │    নিজের seq + client-এর SYN গ্রহণ\n     │ ──── ACK, ack=501 ─────────────────────► │  ← server-এর seq গ্রহণ\n     │                                          │\n     ╞══════════ ESTABLISHED → DATA ════════════╡"
           },
+          {
+            "label": "উদাহরণ — Sequence/Ack Number হিসাব",
+            "diagram": "প্রশ্ন: client SYN পাঠাল seq=4200 দিয়ে, server SYN-ACK পাঠাল seq=8600 দিয়ে।\n(ক) server-এর ack number কত?  (খ) client-এর শেষ ACK segment-এর seq ও ack কত?\n\nসমাধান:\n  দেওয়া আছে: client seq = 4200, server seq = 8600\n  ধাপ ১ (ক): server-এর ack = client seq + 1 = 4200 + 1 = 4201\n  ধাপ ২ (খ): client-এর নতুন seq = নিজের আগের seq + 1 = 4200 + 1 = 4201\n  ধাপ ৩ (খ): client-এর ack = server seq + 1 = 8600 + 1 = 8601\n  উত্তর: (ক) ack = 4201        (খ) seq = 4201, ack = 8601\n\n   Client                                    Server\n     │                                          │\n     │ ──── SYN, seq=4200 ────────────────────► │  ← client-এর শুরুর seq\n     │                                          │\n     │ ◄─── SYN+ACK, seq=8600, ack=4201 ─────── │  ← ack = client seq + 1\n     │                                          │\n     │ ──── ACK, seq=4201, ack=8601 ──────────► │  ← seq = নিজের +1, ack = server seq+1\n     │                                          │\n     ╞══════════ ESTABLISHED ════════════════════╡"
+          },
           "4-way Handshake — সংযোগ বন্ধ (Connection Termination):",
           {
             "sub": "Client → Server: FIN, seq=1000 — \"আমার পাঠানো শেষ\"।"

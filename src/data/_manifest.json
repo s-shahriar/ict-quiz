@@ -11,7 +11,7 @@
     "machine_learning": 85,
     "microprocessor": 18,
     "oop": 20,
-    "operating_system": 33,
+    "operating_system": 56,
     "software_engineering": 33,
     "theory_of_computation": 2
   },
@@ -27,7 +27,7 @@
     "machine_learning": 5,
     "microprocessor": 1,
     "oop": 4,
-    "operating_system": 19,
+    "operating_system": 30,
     "server": 32,
     "software_engineering": 7,
     "theory_of_computation": 1
