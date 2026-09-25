@@ -1868,6 +1868,9 @@
           {
             "sub": "Process-এর code, data, stack নতুন program দিয়ে replace হয়ে যায়, কিন্তু PID একই থাকে।"
           },
+          {
+            "sub": "সাধারণত fork()-এর পরই child exec() ডাকে — shell (bash) এভাবেই command চালায়: fork দিয়ে child বানিয়ে সেই child-এ exec() দিয়ে নতুন program (যেমন ls) বসানো হয়, আর parent তার নিজের কাজ চালিয়ে যায়।"
+          },
           "wait() — parent-এর অপেক্ষা",
           {
             "sub": "Parent child শেষ হওয়া পর্যন্ত থেমে থাকে ও তার exit status সংগ্রহ করে।"
