@@ -82,7 +82,7 @@ export function TrashProvider({ children }) {
             <div className="trash-modal-icon"><Trash2 size={22} /></div>
             <h3 className="trash-modal-title">Delete this question?</h3>
             <p className="trash-modal-sub">It moves to the Recycle Bin — you can restore it later or delete it forever.</p>
-            <div className="trash-modal-preview">{pending.q.question}</div>
+            <div className="trash-modal-preview">{pending.q.question || pending.q.q}</div>
             <div className="trash-modal-actions">
               <button className="trash-btn-cancel" onClick={() => setPending(null)}>Cancel</button>
               <button className="trash-btn-confirm" onClick={confirmDelete}>
