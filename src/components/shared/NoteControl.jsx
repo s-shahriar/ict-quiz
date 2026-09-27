@@ -8,7 +8,11 @@ import NotePeek from './NotePeek.jsx'
 // near the icon rather than it sitting permanently in the card. No note yet
 // → nothing to peek at, so the badge goes straight to the editor.
 export default function NoteControl({ uid, noteEditor, className, size }) {
-  const { open, pos, btnRef, popRef, toggle, close } = useFloatingPopover()
+  // Left-aligned: the badge sits near the START of its row (next to the
+  // Q-number), so the peek should hang from its left edge and extend right —
+  // anchoring from the right (like MoreMenu's "⋮", which sits at the END of
+  // its row) pushed it the wrong way, off past the left edge of the card.
+  const { open, pos, btnRef, popRef, toggle, close } = useFloatingPopover({ align: 'left' })
   const hasNote = Boolean(noteEditor.note)
 
   return (
@@ -33,6 +37,7 @@ export default function NoteControl({ uid, noteEditor, className, size }) {
           pos={pos}
           popRef={popRef}
           onEdit={() => { close(); noteEditor.openEditor() }}
+          onRemove={() => { close(); noteEditor.remove() }}
         />
       )}
     </>

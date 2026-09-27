@@ -34,7 +34,7 @@ export default function MoreMenu({ className = '', size = 14, children }) {
           ref={popRef}
           className={`more-menu-pop${open ? '' : ' more-menu-pop-hidden'}`}
           role="menu"
-          style={{ top: pos.top, right: pos.right }}
+          style={{ top: pos.top, left: pos.left, right: pos.right }}
           onClickCapture={close}
         >
           {children}

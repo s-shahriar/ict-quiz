@@ -3481,16 +3481,28 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   border-radius: 12px;
   padding: 12px 14px;
 }
-/* Floating peek (NotePeek): same look as the inline callout, but positioned
-   and sized as a popover instead of sitting permanently in card flow. */
+/* Floating peek (NotePeek): the inline callout's tinted background is only
+   ~12% opaque, meant for sitting in normal card flow with nothing behind
+   it — floated on top of a question as a popover, that let the question
+   text ghost straight through it. Opaque here instead, like every other
+   popover in the app. */
 .note-peek {
   position: fixed; z-index: 2000; margin-bottom: 0;
   width: min(320px, calc(100vw - 32px));
+  background: var(--surface);
+  border-color: color-mix(in srgb, var(--info) 28%, transparent);
   box-shadow: 0 24px 60px rgba(0,0,0,0.3);
   animation: sync-chip-in .15s ease;
 }
 .note-callout-head { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; color: var(--info); }
 .note-callout-head span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em; flex: 1; }
+.note-peek-remove {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  color: var(--text-3); background: none; border: none; cursor: pointer;
+  transition: color .15s ease, background .15s ease;
+}
+.note-peek-remove:hover { color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
 .note-callout-edit {
   font-size: 0.68rem; font-weight: 600; color: var(--text-3);
   background: none; border: none; cursor: pointer; padding: 2px 4px;
