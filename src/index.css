@@ -1756,28 +1756,33 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   border-color: color-mix(in srgb, var(--c, var(--accent)) 40%, var(--border));
 }
 
-/* Card header */
+/* Card header — always two rows: the action icons first, the question below
+   (see .written-card-toggle's order). Icons sharing one row with a question
+   that can run to several lines either squeezed the question into a narrow
+   wrapped column (cramped on medium widths) or left a popover anchored to an
+   icon overlapping the question's own wrapped lines (the note peek bug) —
+   a dedicated row for each sidesteps both, at every width. */
 .written-card-header {
-  display: flex; align-items: flex-start; gap: 8px;
-  padding: 18px 16px 18px 20px;
+  display: flex; align-items: flex-start; flex-wrap: wrap;
+  gap: 8px; row-gap: 8px;
+  padding: 16px 16px 18px 20px;
   transition: background 0.18s ease;
 }
 .written-card-header:hover { background: var(--hover-bg); }
 
 .written-card-toggle {
   display: flex; align-items: flex-start; gap: 12px;
-  flex: 1; text-align: left; min-width: 0;
+  flex: 1 1 100%; order: 4; text-align: left; min-width: 0;
 }
 
 .written-imp-btn {
   flex-shrink: 0;
-  width: 30px; height: 30px;
+  width: 32px; height: 32px;
   border-radius: 8px;
   border: 1px solid transparent;
   color: var(--text-3);
   display: flex; align-items: center; justify-content: center;
   transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-  margin-top: 2px;
 }
 .written-imp-btn:hover { color: var(--imp); border-color: color-mix(in srgb, var(--imp) 30%, transparent); background: color-mix(in srgb, var(--imp) 8%, transparent); }
 .written-imp-btn.marked { color: var(--imp); border-color: color-mix(in srgb, var(--imp) 40%, transparent); background: color-mix(in srgb, var(--imp) 10%, transparent); }
@@ -3645,24 +3650,6 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 @media (max-width: 540px) {
   .qmark-label { display: none; }
   .quiz-nail-btn, .quiz-important-btn, .quiz-weak-btn, .nail-btn { padding-left: 10px; padding-right: 10px; }
-}
-
-/* Written/Viva/Extra card headers on phones.
-   The header packs Q-number + question + chevron + three 30px buttons on one
-   row. On a 360px screen that leaves the text ~90px, so it wraps to its longest
-   word and the card becomes a tall ribbon. Let the header wrap: the question
-   takes a full-width first row, the buttons drop to a second row.
-   `justify-content: flex-end` reads correctly for both hands — under
-   [data-hand="left"] the header is row-reverse, so flex-end lands on the left. */
-@media (max-width: 540px) {
-  .written-card-header {
-    flex-wrap: wrap;
-    row-gap: 2px;
-    justify-content: flex-end;
-    padding: 14px 14px 8px 16px;
-  }
-  .written-card-toggle { flex: 1 1 100%; gap: 10px; }
-  .written-imp-btn { width: 34px; height: 34px; margin-top: 0; }
 }
 
 /* ── Left-hand layout ──────────────────────────────────────────────
