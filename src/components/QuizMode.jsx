@@ -13,8 +13,7 @@ import QuestionText from './shared/QuestionText.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
 import { useHighlights } from '../contexts/HighlightContext.jsx'
 import MoreMenu from './shared/MoreMenu.jsx'
-import NoteButton from './shared/NoteButton.jsx'
-import NoteCallout from './shared/NoteCallout.jsx'
+import NoteControl from './shared/NoteControl.jsx'
 import NoteEditor from './shared/NoteEditor.jsx'
 import { useNoteEditor } from './shared/useNoteEditor.js'
 import { gradeColor } from '../lib/grade'
@@ -144,7 +143,7 @@ export default function QuizMode() {
         <div className="quiz-progress-header">
           <span className="quiz-qnum">
             Question {idx + 1} of {questions.length}
-            {qid && <NoteButton hasNote={Boolean(noteEditor.note)} onClick={noteEditor.openEditor} />}
+            {qid && <NoteControl uid={qid} noteEditor={noteEditor} />}
             {set && <span className={`quiz-pool-tag ${set}`}>{POOL_LABEL[set]}</span>}
           </span>
           <span className="quiz-pct">{Math.round(progress)}%</span>
@@ -155,8 +154,6 @@ export default function QuizMode() {
       </div>
 
       <div className="quiz-card anim-slide">
-        <NoteCallout uid={qid} text={noteEditor.note} onEdit={noteEditor.openEditor} />
-
         <QuestionText text={q.question} uid={qid} className="quiz-question" />
 
         <div className="quiz-options">

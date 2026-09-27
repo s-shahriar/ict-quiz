@@ -14,8 +14,7 @@ import WeakButton from './shared/WeakButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import WrittenQuestionText from './shared/WrittenQuestionText.jsx'
-import NoteButton from './shared/NoteButton.jsx'
-import NoteCallout from './shared/NoteCallout.jsx'
+import NoteControl from './shared/NoteControl.jsx'
 import NoteEditor from './shared/NoteEditor.jsx'
 import { useNoteEditor } from './shared/useNoteEditor.js'
 
@@ -189,16 +188,14 @@ function VivaCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, on
           <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
         </button>
         <WeakButton uid={q._uid} className="written-imp-btn written-weak-btn" />
-        <NoteButton
-          hasNote={Boolean(noteEditor.note)}
-          onClick={(e) => { e.stopPropagation(); noteEditor.openEditor() }}
+        <NoteControl
+          uid={q._uid}
+          noteEditor={noteEditor}
           size={14}
           className="written-imp-btn written-note-btn"
         />
         <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
       </div>
-
-      <NoteCallout uid={q._uid} text={noteEditor.note} onEdit={noteEditor.openEditor} />
 
       {isOpen && (
         <div className="anim-slide">

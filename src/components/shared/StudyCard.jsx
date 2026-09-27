@@ -6,8 +6,7 @@ import WeakButton from './WeakButton.jsx'
 import HighlightableText from './HighlightableText.jsx'
 import { useHighlights } from '../../contexts/HighlightContext.jsx'
 import MoreMenu from './MoreMenu.jsx'
-import NoteButton from './NoteButton.jsx'
-import NoteCallout from './NoteCallout.jsx'
+import NoteControl from './NoteControl.jsx'
 import NoteEditor from './NoteEditor.jsx'
 import { useNoteEditor } from './useNoteEditor.js'
 
@@ -49,7 +48,7 @@ export default function StudyCard({
       <div className="study-card-top">
         <span className="study-card-lead">
           <span className="study-qnum" style={{ color }}>Q{index + 1}</span>
-          {q._uid && <NoteButton hasNote={Boolean(noteEditor.note)} onClick={noteEditor.openEditor} />}
+          {q._uid && <NoteControl uid={q._uid} noteEditor={noteEditor} />}
           {topicLabel && (
             <span className="study-topic-badge" style={{ color, borderColor: `color-mix(in srgb, ${color} 33%, transparent)`, background: `color-mix(in srgb, ${color} 8%, transparent)` }}>
               {topicLabel}
@@ -99,8 +98,6 @@ export default function StudyCard({
           )}
         </div>
       </div>
-
-      <NoteCallout uid={q._uid} text={noteEditor.note} onEdit={noteEditor.openEditor} />
 
       <QuestionText text={q.question} uid={q._uid} className="study-question" />
 

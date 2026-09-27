@@ -3481,6 +3481,14 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   border-radius: 12px;
   padding: 12px 14px;
 }
+/* Floating peek (NotePeek): same look as the inline callout, but positioned
+   and sized as a popover instead of sitting permanently in card flow. */
+.note-peek {
+  position: fixed; z-index: 2000; margin-bottom: 0;
+  width: min(320px, calc(100vw - 32px));
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+  animation: sync-chip-in .15s ease;
+}
 .note-callout-head { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; color: var(--info); }
 .note-callout-head span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em; flex: 1; }
 .note-callout-edit {
@@ -3523,6 +3531,9 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   box-shadow: 0 24px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 2px;
   animation: sync-chip-in .15s ease;
 }
+/* Stays mounted after closing (so a child's own dialog state survives), just
+   visually hidden — see the "stay mounted" note in MoreMenu.jsx. */
+.more-menu-pop-hidden { display: none; }
 .more-menu-item {
   display: flex !important; align-items: center; gap: 8px; width: 100%;
   padding: 9px 10px !important; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
