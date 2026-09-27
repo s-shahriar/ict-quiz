@@ -12,6 +12,11 @@ import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
 import { useHighlights } from '../contexts/HighlightContext.jsx'
+import MoreMenu from './shared/MoreMenu.jsx'
+import NoteButton from './shared/NoteButton.jsx'
+import NoteCallout from './shared/NoteCallout.jsx'
+import NoteEditor from './shared/NoteEditor.jsx'
+import { useNoteEditor } from './shared/useNoteEditor.js'
 import { gradeColor } from '../lib/grade'
 
 function shuffle(arr) {
@@ -58,16 +63,20 @@ export default function QuizMode() {
   const [revealed, setRevealed] = useState(false)
   const [score, setScore] = useState(0)
   const [done, setDone] = useState(false)
-  // Saved highlights, read here with the rest of the hooks — it must run
-  // before the early returns below or the hook order changes between renders.
+  // Saved highlights and the note editor, read here with the rest of the
+  // hooks — they must run before the early returns below or the hook order
+  // changes between renders. `q`/`qid` move up with them for the same reason:
+  // useNoteEditor(qid) can't wait for the guards. `questions` is already
+  // guard-safe (empty array when there's no topic yet).
   const { getFor } = useHighlights()
+  const q = questions[idx]
+  const qid = q ? q._uid : null
+  const noteEditor = useNoteEditor(qid)
 
   if (!topic) return <Navigate to="/" replace />
   if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
 
-  const q = questions[idx]
   const opts = q ? ['a','b','c','d','e'].filter(k => q.options?.[k]) : []
-  const qid = q ? q._uid : null
   // Highlights for this question's explanation (block key 'explanation' —
   // an MCQ answer has one text block, so it needs no index).
   const hlExp = qid ? getFor(qid).filter(h => h.block === 'explanation') : undefined
@@ -135,6 +144,7 @@ export default function QuizMode() {
         <div className="quiz-progress-header">
           <span className="quiz-qnum">
             Question {idx + 1} of {questions.length}
+            {qid && <NoteButton hasNote={Boolean(noteEditor.note)} onClick={noteEditor.openEditor} />}
             {set && <span className={`quiz-pool-tag ${set}`}>{POOL_LABEL[set]}</span>}
           </span>
           <span className="quiz-pct">{Math.round(progress)}%</span>
@@ -145,6 +155,8 @@ export default function QuizMode() {
       </div>
 
       <div className="quiz-card anim-slide">
+        <NoteCallout uid={qid} text={noteEditor.note} onEdit={noteEditor.openEditor} />
+
         <QuestionText text={q.question} uid={qid} className="quiz-question" />
 
         <div className="quiz-options">
@@ -195,13 +207,26 @@ export default function QuizMode() {
                 <span className="qmark-label">{isImportant ? 'Saved!' : 'Important'}</span>
               </button>
               <WeakButton uid={qid} className="quiz-weak-btn" size={16} label onLabel="Weak!" />
-              <DeleteButton question={q} className="quiz-nail-btn" size={16} onDeleted={next} />
+              {q._id && (
+                <MoreMenu className="quiz-nail-btn">
+                  <DeleteButton question={q} className="more-menu-item" size={14} onDeleted={next} />
+                </MoreMenu>
+              )}
             </div>
             <button className="quiz-next-btn" onClick={next}>
               {idx + 1 >= questions.length ? 'ফলাফল দেখুন' : 'পরবর্তী প্রশ্ন'}
               <ArrowRight size={16} />
             </button>
           </div>
+        )}
+
+        {noteEditor.open && (
+          <NoteEditor
+            initial={noteEditor.note}
+            onSave={noteEditor.save}
+            onRemove={noteEditor.remove}
+            onClose={noteEditor.closeEditor}
+          />
         )}
 
         {revealed && q.explanation && (

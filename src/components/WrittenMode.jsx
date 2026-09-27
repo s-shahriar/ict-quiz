@@ -15,6 +15,10 @@ import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import WrittenQuestionText from './shared/WrittenQuestionText.jsx'
 import CodeBlock from './shared/CodeBlock.jsx'
+import NoteButton from './shared/NoteButton.jsx'
+import NoteCallout from './shared/NoteCallout.jsx'
+import NoteEditor from './shared/NoteEditor.jsx'
+import { useNoteEditor } from './shared/useNoteEditor.js'
 
 export default function WrittenMode() {
   const navigate = useNavigate()
@@ -261,6 +265,7 @@ export default function WrittenMode() {
 
 function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, onToggle, onToggleImportant, onToggleNailed }) {
   const a = q.answer
+  const noteEditor = useNoteEditor(q._uid)
 
   return (
     <div id={domId} className={`written-card${isOpen ? ' open' : ''}`} style={{ '--c': topicColor }}>
@@ -294,6 +299,12 @@ function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed,
           <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
         </button>
         <WeakButton uid={q._uid} className="written-imp-btn written-weak-btn" />
+        <NoteButton
+          hasNote={Boolean(noteEditor.note)}
+          onClick={(e) => { e.stopPropagation(); noteEditor.openEditor() }}
+          size={14}
+          className="written-imp-btn written-note-btn"
+        />
         <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
       </div>
 
@@ -305,10 +316,21 @@ function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed,
         </div>
       )}
 
+      <NoteCallout uid={q._uid} text={noteEditor.note} onEdit={noteEditor.openEditor} />
+
       {isOpen && (
         <div className="anim-slide">
           <WrittenCardBody a={a} question={q.q} topicColor={topicColor} uid={q._uid} />
         </div>
+      )}
+
+      {noteEditor.open && (
+        <NoteEditor
+          initial={noteEditor.note}
+          onSave={noteEditor.save}
+          onRemove={noteEditor.remove}
+          onClose={noteEditor.closeEditor}
+        />
       )}
     </div>
   )

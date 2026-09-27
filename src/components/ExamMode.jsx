@@ -9,6 +9,11 @@ import TopbarActions from './shared/TopbarActions.jsx'
 import QuestionText from './shared/QuestionText.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
 import { useHighlights } from '../contexts/HighlightContext.jsx'
+import MoreMenu from './shared/MoreMenu.jsx'
+import NoteButton from './shared/NoteButton.jsx'
+import NoteCallout from './shared/NoteCallout.jsx'
+import NoteEditor from './shared/NoteEditor.jsx'
+import { useNoteEditor } from './shared/useNoteEditor.js'
 import { gradeColor } from '../lib/grade'
 
 export default function ExamMode() {
@@ -25,9 +30,14 @@ export default function ExamMode() {
   const [done, setDone]         = useState(false)
   const [stopConfirm, setStopConfirm] = useState(false)
 
-  // Saved highlights, read here with the rest of the hooks — it must run
-  // before the early returns below or the hook order changes between renders.
+  // Saved highlights and the note editor, read here with the rest of the
+  // hooks — they must run before the early return below or the hook order
+  // changes between renders. `q`/`qid` are computed early (null-safe) for the
+  // same reason: useNoteEditor(qid) can't wait for the guard.
   const { getFor } = useHighlights()
+  const q    = questions?.[idx]
+  const qid  = q?._uid ?? null
+  const noteEditor = useNoteEditor(qid)
 
   if (!questions) return <Navigate to="/exam" replace />
 
@@ -39,9 +49,7 @@ export default function ExamMode() {
     setTimeout(() => setStopConfirm(false), 3000)
   }
 
-  const q    = questions[idx]
   const opts = q ? ['a','b','c','d','e'].filter(k => q.options?.[k]) : []
-  const qid  = q?._uid ?? null
   // Highlights for this question's explanation (block key 'explanation' —
   // an MCQ answer has one text block, so it needs no index).
   const hlExp = qid ? getFor(qid).filter(h => h.block === 'explanation') : undefined
@@ -96,7 +104,10 @@ export default function ExamMode() {
 
       <div className="quiz-progress-wrap">
         <div className="quiz-progress-header">
-          <span className="quiz-qnum">Question {idx + 1} of {questions.length}</span>
+          <span className="quiz-qnum">
+            Question {idx + 1} of {questions.length}
+            {qid && <NoteButton hasNote={Boolean(noteEditor.note)} onClick={noteEditor.openEditor} />}
+          </span>
           <span className="quiz-pct">{Math.round(progress)}%</span>
         </div>
         <div className="quiz-progress-track">
@@ -105,6 +116,8 @@ export default function ExamMode() {
       </div>
 
       <div className="quiz-card anim-slide">
+        <NoteCallout uid={qid} text={noteEditor.note} onEdit={noteEditor.openEditor} />
+
         <QuestionText text={q.question} uid={qid} className="quiz-question" />
 
         <div className="quiz-options">
@@ -151,7 +164,11 @@ export default function ExamMode() {
                   <span className="qmark-label">{isImportant ? 'Saved!' : 'Important'}</span>
                 </button>
                 <WeakButton uid={qid} className="quiz-weak-btn" size={16} label onLabel="Weak!" />
-                <DeleteButton question={q} className="quiz-nail-btn" size={16} onDeleted={next} />
+                {q._id && (
+                  <MoreMenu className="quiz-nail-btn">
+                    <DeleteButton question={q} className="more-menu-item" size={14} onDeleted={next} />
+                  </MoreMenu>
+                )}
               </div>
             )}
             <button className="quiz-next-btn" onClick={next} style={{ background: accent }}>
@@ -159,6 +176,15 @@ export default function ExamMode() {
               <ArrowRight size={16} />
             </button>
           </div>
+        )}
+
+        {noteEditor.open && (
+          <NoteEditor
+            initial={noteEditor.note}
+            onSave={noteEditor.save}
+            onRemove={noteEditor.remove}
+            onClose={noteEditor.closeEditor}
+          />
         )}
 
         {revealed && q.explanation && (

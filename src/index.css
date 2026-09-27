@@ -1787,6 +1787,8 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .written-imp-btn.nailed:hover { color: var(--nail); border-color: color-mix(in srgb, var(--nail) 40%, transparent); background: color-mix(in srgb, var(--nail) 15%, transparent); }
 .written-weak-btn:hover { color: var(--weak); border-color: color-mix(in srgb, var(--weak) 30%, transparent); background: color-mix(in srgb, var(--weak) 8%, transparent); }
 .written-weak-btn.marked { color: var(--weak); border-color: color-mix(in srgb, var(--weak) 40%, transparent); background: color-mix(in srgb, var(--weak) 10%, transparent); }
+.written-note-btn:hover { color: var(--info); border-color: color-mix(in srgb, var(--info) 30%, transparent); background: color-mix(in srgb, var(--info) 8%, transparent); }
+.written-note-btn.has-note { color: var(--info); border-color: color-mix(in srgb, var(--info) 40%, transparent); background: color-mix(in srgb, var(--info) 10%, transparent); }
 .written-weak-btn.marked svg { }
 /* Weak toggle beside the remove button on the Written/Extra/Viva/Code/Practice Important screens */
 .nailed-weak-btn { flex-shrink: 0; margin-top: 2px; }
@@ -3458,6 +3460,76 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .trash-btn-confirm { border: 1px solid transparent; background: var(--bad); color: var(--on-solid); }
 .trash-btn-confirm:hover { background: var(--bad); }
 .trash-btn-confirm:disabled, .trash-btn-cancel:disabled { opacity: .6; cursor: default; }
+
+/* ── Note (per-question free-text note) ──────────────────────────
+   Teal (--info) throughout, distinct from purple=Important, green=Nailed,
+   orange=Weak, red=Delete. */
+.note-badge-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  color: var(--text-dim, var(--text-3)); background: transparent; border: none; cursor: pointer;
+  transition: color .18s ease, background .18s ease;
+}
+.note-badge-btn:hover { color: var(--info); background: color-mix(in srgb, var(--info) 10%, transparent); }
+.note-badge-btn.has-note { color: var(--info); }
+.quiz-qnum .note-badge-btn { vertical-align: -6px; margin-left: 6px; }
+
+.note-callout {
+  margin-bottom: 14px;
+  background: var(--info-tint);
+  border: 1px solid color-mix(in srgb, var(--info) 28%, transparent);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.note-callout-head { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; color: var(--info); }
+.note-callout-head span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em; flex: 1; }
+.note-callout-edit {
+  font-size: 0.68rem; font-weight: 600; color: var(--text-3);
+  background: none; border: none; cursor: pointer; padding: 2px 4px;
+}
+.note-callout-edit:hover { color: var(--info); }
+.note-callout-text { font-size: 0.86rem; line-height: 1.6; color: var(--text-2); white-space: pre-wrap; margin: 0; }
+
+.note-modal { max-width: 420px; text-align: left; }
+.note-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.note-modal-title { margin: 0; display: flex; align-items: center; gap: 8px; }
+.note-modal-title svg { color: var(--info); flex-shrink: 0; }
+.note-textarea {
+  width: 100%; min-height: 110px; resize: vertical; margin: 10px 0 14px;
+  background: var(--elevated); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; font-family: inherit; font-size: 0.88rem; color: var(--text); line-height: 1.55;
+}
+.note-textarea:focus { outline: none; border-color: var(--info); }
+.note-save { background: var(--info) !important; color: var(--on-solid) !important; }
+.note-save:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-remove-note {
+  margin-right: auto; background: none; border: none; color: var(--bad);
+  font-size: 0.78rem; font-weight: 600; cursor: pointer; padding: 8px 4px;
+}
+.btn-remove-note:hover { text-decoration: underline; }
+@media (max-width: 540px) {
+  .note-backdrop { align-items: flex-end; padding: 0; }
+  .note-modal {
+    max-width: none; border-radius: 18px 18px 0 0; border-bottom: none;
+    padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ── More-actions overflow menu (Delete tucked behind "⋯") ── */
+.more-menu-btn { color: var(--text-3); }
+.more-menu-pop {
+  position: fixed; z-index: 2000; min-width: 168px; padding: 6px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 2px;
+  animation: sync-chip-in .15s ease;
+}
+.more-menu-item {
+  display: flex !important; align-items: center; gap: 8px; width: 100%;
+  padding: 9px 10px !important; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+  text-align: left; background: transparent;
+}
+.more-menu-item:hover { background: var(--elevated); }
+.more-menu-item .qmark-label { display: inline !important; }
 
 /* Quiz set chooser (ModeSelect) — reuses the trash-modal shell */
 .quiz-pool-modal { max-width: 400px; text-align: left; }

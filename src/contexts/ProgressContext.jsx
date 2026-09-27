@@ -15,6 +15,7 @@ import LoginPrompt from '../components/auth/LoginPrompt.jsx'
 
 const ProgressContext = createContext(null)
 const EMPTY = new Set()
+const EMPTY_MAP = new Map()
 
 export function ProgressProvider({ children }) {
   const { user, signInWithGoogle } = useAuth()
@@ -22,6 +23,7 @@ export function ProgressProvider({ children }) {
   const [nailed, setNailed] = useState(() => new Set())
   const [important, setImportant] = useState(() => new Set())
   const [weak, setWeak] = useState(() => new Set())
+  const [notes, setNotes] = useState(() => new Map())
   const [hydratedUserId, setHydratedUserId] = useState(null)
   const [lastSaved, setLastSaved] = useState(null)
   const [promptLogin, setPromptLogin] = useState(false)
@@ -50,6 +52,7 @@ export function ProgressProvider({ children }) {
         setNailed(remote.nailed)
         setImportant(remote.important)
         setWeak(remote.weak)
+        setNotes(remote.notes)
         setLastSaved(remote.lastUpdated ? new Date(remote.lastUpdated) : null)
       } catch (e) {
         console.error('[progress] sync failed:', e.message)
@@ -115,13 +118,31 @@ export function ProgressProvider({ children }) {
     remove: (uid) => { if (!ensureAuthed()) return; dropFrom(setWeak, [uid]); write(uid, { weak: false }) },
     removeMany: (uids) => { if (!ensureAuthed()) return; dropFrom(setWeak, uids); uids.forEach(u => write(u, { weak: false })) },
   }
+  // Free-text note per question. Stored as NULL (not '') when empty, so it never
+  // shows up as a stray row with every flag false.
+  const notesApi = {
+    value: user ? notes : EMPTY_MAP,
+    get: (uid) => (user && uid ? notes.get(uid) : '') || '',
+    set: (uid, text) => {
+      if (!uid || !ensureAuthed()) return
+      const trimmed = (text || '').trim()
+      setNotes(prev => {
+        const n = new Map(prev)
+        if (trimmed) n.set(uid, trimmed)
+        else n.delete(uid)
+        return n
+      })
+      write(uid, { note: trimmed || null })
+    },
+    remove: (uid) => notesApi.set(uid, ''),
+  }
 
   // True while a logged-in user's cloud progress is still being pulled on open.
   const syncing = !!user && hydratedUserId !== user.id
   const meta = { nailedCount: user ? nailed.size : 0, importantCount: user ? important.size : 0, weakCount: user ? weak.size : 0, lastSaved: user ? lastSaved : null }
 
   return (
-    <ProgressContext.Provider value={{ nailApi, importantApi, weakApi, syncing, meta }}>
+    <ProgressContext.Provider value={{ nailApi, importantApi, weakApi, notesApi, syncing, meta }}>
       {children}
       {promptLogin && <LoginPrompt onGoogle={signInWithGoogle} onClose={() => setPromptLogin(false)} />}
     </ProgressContext.Provider>
@@ -137,5 +158,6 @@ function useProgress() {
 export const useMasteredContext = () => useProgress().nailApi
 export const useImportantContext = () => useProgress().importantApi
 export const useWeakContext = () => useProgress().weakApi
+export const useNotesContext = () => useProgress().notesApi
 export const useProgressSyncing = () => useProgress().syncing
 export const useProgressMeta = () => useProgress().meta

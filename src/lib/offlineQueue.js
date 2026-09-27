@@ -152,7 +152,7 @@ function makeEntry(e) {
 }
 
 function patchEq(a, b) {
-  return a?.nailed === b?.nailed && a?.important === b?.important && a?.weak === b?.weak
+  return a?.nailed === b?.nailed && a?.important === b?.important && a?.weak === b?.weak && a?.note === b?.note
 }
 
 export function subscribeQueue(fn) {

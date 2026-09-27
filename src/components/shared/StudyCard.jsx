@@ -5,6 +5,11 @@ import DeleteButton from './DeleteButton.jsx'
 import WeakButton from './WeakButton.jsx'
 import HighlightableText from './HighlightableText.jsx'
 import { useHighlights } from '../../contexts/HighlightContext.jsx'
+import MoreMenu from './MoreMenu.jsx'
+import NoteButton from './NoteButton.jsx'
+import NoteCallout from './NoteCallout.jsx'
+import NoteEditor from './NoteEditor.jsx'
+import { useNoteEditor } from './useNoteEditor.js'
 
 // One study-mode question card: prompt, tappable options that reveal the answer,
 // and the explanation. Shared by StudyMode (single topic) and the Important
@@ -27,6 +32,7 @@ export default function StudyCard({
   // block, so it needs no index.
   const { getFor } = useHighlights()
   const hlExp = q._uid ? getFor(q._uid).filter(h => h.block === 'explanation') : undefined
+  const noteEditor = useNoteEditor(q._uid)
 
   const [shown, setShown]       = useState(false)
   const [selected, setSelected] = useState(null)
@@ -43,6 +49,7 @@ export default function StudyCard({
       <div className="study-card-top">
         <span className="study-card-lead">
           <span className="study-qnum" style={{ color }}>Q{index + 1}</span>
+          {q._uid && <NoteButton hasNote={Boolean(noteEditor.note)} onClick={noteEditor.openEditor} />}
           {topicLabel && (
             <span className="study-topic-badge" style={{ color, borderColor: `color-mix(in srgb, ${color} 33%, transparent)`, background: `color-mix(in srgb, ${color} 8%, transparent)` }}>
               {topicLabel}
@@ -76,7 +83,11 @@ export default function StudyCard({
             label
             style={{ color: 'var(--weak)', borderColor: 'color-mix(in srgb, var(--weak) 40%, transparent)', background: 'var(--weak-tint)' }}
           />
-          <DeleteButton question={q} className="nail-btn" size={12} />
+          {q._id && (
+            <MoreMenu className="nail-btn">
+              <DeleteButton question={q} className="more-menu-item" size={14} />
+            </MoreMenu>
+          )}
           {shown && (
             <button
               className="study-toggle"
@@ -88,6 +99,8 @@ export default function StudyCard({
           )}
         </div>
       </div>
+
+      <NoteCallout uid={q._uid} text={noteEditor.note} onEdit={noteEditor.openEditor} />
 
       <QuestionText text={q.question} uid={q._uid} className="study-question" />
 
@@ -121,6 +134,15 @@ export default function StudyCard({
           <HighlightableText as="p" className="explanation-text"
             block="explanation" text={q.explanation} highlights={hlExp} />
         </div>
+      )}
+
+      {noteEditor.open && (
+        <NoteEditor
+          initial={noteEditor.note}
+          onSave={noteEditor.save}
+          onRemove={noteEditor.remove}
+          onClose={noteEditor.closeEditor}
+        />
       )}
     </div>
   )
