@@ -7,6 +7,9 @@ import { StickyNote, X } from 'lucide-react'
 // Local textarea state only — nothing is written until Save.
 export default function NoteEditor({ initial, onSave, onRemove, onClose }) {
   const [text, setText] = useState(initial || '')
+  // Tap-again-to-confirm, same pattern as Stop Exam — a note can't be
+  // recovered once removed, so one accidental tap shouldn't be enough.
+  const [confirmRemove, setConfirmRemove] = useState(false)
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose() }
@@ -14,7 +17,18 @@ export default function NoteEditor({ initial, onSave, onRemove, onClose }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
+  useEffect(() => {
+    if (!confirmRemove) return
+    const t = setTimeout(() => setConfirmRemove(false), 3000)
+    return () => clearTimeout(t)
+  }, [confirmRemove])
+
   const changed = text.trim() !== (initial || '').trim()
+
+  const handleRemoveClick = () => {
+    if (confirmRemove) { onRemove(); onClose(); return }
+    setConfirmRemove(true)
+  }
 
   return createPortal(
     <div className="trash-modal-backdrop note-backdrop" onClick={onClose}>
@@ -36,8 +50,8 @@ export default function NoteEditor({ initial, onSave, onRemove, onClose }) {
 
         <div className="trash-modal-actions">
           {initial && (
-            <button className="btn-remove-note" onClick={() => { onRemove(); onClose() }}>
-              Remove note
+            <button className={`btn-remove-note${confirmRemove ? ' confirm' : ''}`} onClick={handleRemoveClick}>
+              {confirmRemove ? 'Tap again to remove' : 'Remove note'}
             </button>
           )}
           <button className="trash-btn-cancel" onClick={onClose}>Cancel</button>

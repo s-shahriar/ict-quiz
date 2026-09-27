@@ -7,7 +7,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 // under it while the popup stays put, so it ends up hovering, detached, over
 // unrelated content. Rather than fight that, we just close it, the same way
 // a native menu would.
-export function useFloatingPopover({ align = 'right', gap = 6 } = {}) {
+export function useFloatingPopover({ align = 'auto', gap = 6 } = {}) {
   const [open, setOpen] = useState(false)
   const [pos, setPos] = useState(null)
   const btnRef = useRef(null)
@@ -57,9 +57,25 @@ export function useFloatingPopover({ align = 'right', gap = 6 } = {}) {
   const toggle = () => {
     if (!open && btnRef.current) {
       const r = btnRef.current.getBoundingClientRect()
-      setPos(align === 'left'
-        ? { top: r.bottom + gap, left: r.left }
-        : { top: r.bottom + gap, right: Math.max(8, window.innerWidth - r.right) })
+      // Some rows pair a small icon button with a taller sibling — e.g. a
+      // note badge sharing a row with a question that wraps to two lines.
+      // Anchoring purely to the button's own (short) height then drops the
+      // popover right on top of that sibling's second line. Anchor below
+      // the whole row instead, so a taller neighbour is cleared too.
+      const rowBottom = btnRef.current.parentElement?.getBoundingClientRect().bottom
+      const top = Math.max(r.bottom, rowBottom ?? 0) + gap
+      // Where the trigger button sits inside its own row varies by screen
+      // (some put "⋯" last, some — reversed rows, RTL-ish icon groups —
+      // end up with it near the row's start), so a fixed left/right
+      // preference anchored the popover off the edge of the card on
+      // whichever screens didn't match the guess. Instead, extend toward
+      // whichever side actually has more room.
+      const spaceRight = window.innerWidth - r.left
+      const spaceLeft = r.right
+      const anchorLeft = align === 'left' || (align === 'auto' && spaceRight >= spaceLeft)
+      setPos(anchorLeft
+        ? { top, left: r.left }
+        : { top, right: Math.max(8, window.innerWidth - r.right) })
     }
     setOpen(o => !o)
   }

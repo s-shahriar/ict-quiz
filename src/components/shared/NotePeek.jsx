@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { StickyNote, Trash2 } from 'lucide-react'
 import HighlightableText from './HighlightableText.jsx'
@@ -12,6 +13,20 @@ export default function NotePeek({ uid, text, pos, popRef, onEdit, onRemove }) {
   const { getFor } = useHighlights()
   const hl = uid ? getFor(uid).filter(h => h.block === 'note') : undefined
 
+  // Tap-again-to-confirm, same pattern as Stop Exam — a note can't be
+  // recovered once removed, so one accidental tap shouldn't be enough.
+  const [confirmRemove, setConfirmRemove] = useState(false)
+  useEffect(() => {
+    if (!confirmRemove) return
+    const t = setTimeout(() => setConfirmRemove(false), 3000)
+    return () => clearTimeout(t)
+  }, [confirmRemove])
+
+  const handleRemoveClick = () => {
+    if (confirmRemove) { onRemove(); return }
+    setConfirmRemove(true)
+  }
+
   return createPortal(
     <div
       ref={popRef}
@@ -25,7 +40,13 @@ export default function NotePeek({ uid, text, pos, popRef, onEdit, onRemove }) {
         <StickyNote size={14} />
         <span>Your note</span>
         <button type="button" className="note-callout-edit" onClick={onEdit}>Edit</button>
-        <button type="button" className="note-peek-remove" onClick={onRemove} title="Remove note" aria-label="Remove note">
+        <button
+          type="button"
+          className={`note-peek-remove${confirmRemove ? ' confirm' : ''}`}
+          onClick={handleRemoveClick}
+          title={confirmRemove ? 'Tap again to remove' : 'Remove note'}
+          aria-label={confirmRemove ? 'Tap again to remove note' : 'Remove note'}
+        >
           <Trash2 size={13} />
         </button>
       </div>

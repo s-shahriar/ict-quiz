@@ -3503,6 +3503,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   transition: color .15s ease, background .15s ease;
 }
 .note-peek-remove:hover { color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+.note-peek-remove.confirm { color: var(--bad); background: color-mix(in srgb, var(--bad) 16%, transparent); animation: pulse-red 0.6s ease; }
 .note-callout-edit {
   font-size: 0.68rem; font-weight: 600; color: var(--text-3);
   background: none; border: none; cursor: pointer; padding: 2px 4px;
@@ -3527,6 +3528,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   font-size: 0.78rem; font-weight: 600; cursor: pointer; padding: 8px 4px;
 }
 .btn-remove-note:hover { text-decoration: underline; }
+.btn-remove-note.confirm { text-decoration: none; font-weight: 700; animation: pulse-red 0.6s ease; }
 @media (max-width: 540px) {
   .note-backdrop { align-items: flex-end; padding: 0; }
   .note-modal {
