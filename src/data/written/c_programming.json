@@ -3826,105 +3826,88 @@
     },
     {
       "id": "c_064",
-      "q": "Write a C program that takes a string as input and shifts every alphanumeric character to the next character, leaving non-alphanumeric characters unchanged. The shift must be case-sensitive.",
+      "segment": "Program",
+      "subsegment": "String",
+      "q": "Java — Character Shift: change each alphabetic character in a string to the next one, case-sensitive, leaving non-alphabetic characters unchanged. Dry run.",
       "tags": [
+        "java",
         "string",
         "character shift",
-        "isalnum",
+        "isLetter",
         "ascii",
         "wrap around",
-        "cipher"
+        "dry run"
       ],
       "answer": {
-        "code": "#include <stdio.h>\n#include <ctype.h>\n#include <string.h>\n\nvoid shiftToNextChar(char *str) {\n    for (int i = 0; str[i] != '\\0'; i++) {\n        char c = str[i];\n        if (isalnum((unsigned char)c)) {\n            if (c == 'z')      str[i] = 'a';\n            else if (c == 'Z') str[i] = 'A';\n            else if (c == '9') str[i] = '0';\n            else               str[i] = c + 1;\n        }\n        // non-alphanumeric characters are left untouched\n    }\n}\n\nint main() {\n    char str[100];\n\n    printf(\"Enter a string: \");\n    fgets(str, sizeof(str), stdin);\n    str[strcspn(str, \"\\n\")] = '\\0';   // drop the trailing newline fgets keeps\n\n    shiftToNextChar(str);\n\n    printf(\"Modified string: %s\\n\", str);\n    return 0;\n}\n",
-        "codeLang": "c",
+        "code": "public class CharacterShift {\n\n    public static void main(String[] args) {\n\n        String text = \"az9Z!\";\n        String result = \"\";\n\n        for (int i = 0; i < text.length(); i++) {\n            char c = text.charAt(i);\n\n            if (Character.isLetter(c)) {\n                if (c == 'z')      c = 'a';\n                else if (c == 'Z') c = 'A';\n                else               c = (char) (c + 1);\n            }\n\n            result = result + c;\n        }\n\n        System.out.println(\"Original : \" + text);\n        System.out.println(\"Shifted  : \" + result);\n    }\n}",
+        "codeLang": "Java",
         "summary": [
-          "প্রতিটি character-এ isalnum() দিয়ে চেক করা হয় সেটা letter/digit কিনা — হলে তবেই এক ধাপ এগিয়ে দেওয়া হয়, নইলে অপরিবর্তিত রাখা হয়।",
-          "সীমানায় (z, Z, 9) পৌঁছালে wrap around করে শুরুতে ফিরে যায় (a, A, 0), সাধারণ +1 নয়।"
+          "Output: Original : az9Z!, Shifted : ba9A!",
+          "প্রতিটি letter-কে Character.isLetter() দিয়ে চেনা হয়, তারপর এক ধাপ এগোনো হয়; digit বা অন্য কোনো character অপরিবর্তিত থাকে। সীমানায় (z, Z) পৌঁছালে আবার শুরুতে ফেরে।"
         ],
         "points": [
+          "\"az9Z!\" — পাঁচটি character, একে একে দেখা হচ্ছে:",
           {
-            "sub": "isalnum((unsigned char)c) দিয়ে যাচাই করা হয় character-টা A-Z, a-z বা 0-9 এর মধ্যে পড়ে কিনা।"
+            "sub": "a → b (সাধারণ letter, শুধু +1)।"
           },
           {
-            "sub": "unsigned char-এ cast করা জরুরি — signed char negative হলে isalnum()-এ undefined behaviour হতে পারে।"
+            "sub": "z → a (lowercase-এর শেষ, wrap around করে শুরুতে ফেরে)।"
           },
           {
-            "sub": "না হলে (space, punctuation, ইত্যাদি) character অপরিবর্তিত থাকে — কোনো if-condition-ই match করে না।"
+            "sub": "9 অপরিবর্তিত থাকে — letter নয়, digit।"
           },
           {
-            "sub": "Case sensitivity আপনাআপনি বজায় থাকে — 'z' আর 'Z' আলাদাভাবে ধরা হয় বলে lowercase সবসময় lowercase-এই wrap করে, uppercase uppercase-এই।"
+            "sub": "Z → A (uppercase-এর শেষ, wrap around করে শুরুতে ফেরে)।"
           },
           {
-            "sub": "সীমানার character (z, Z, 9) না হলে সরাসরি c + 1 — ASCII-তে পাশের character-ই পরের অক্ষর।"
-          },
-          {
-            "sub": "সীমানায় পৌঁছালে (z, Z, 9) wrap around করে প্রথম character-এ ফেরত যায় (a, A, 0), যাতে ASCII table-এর বাইরে গিয়ে ভুল character না ছাপা হয়।"
+            "sub": "! অপরিবর্তিত থাকে — letter নয়।"
           }
         ],
         "table": {
           "headers": [
-            "Input",
+            "Character",
             "ধরন",
-            "Output",
-            "কারণ"
+            "Shifted"
           ],
           "rows": [
             [
-              "H",
-              "সাধারণ uppercase",
-              "I",
-              "H + 1"
+              "a",
+              "সাধারণ letter",
+              "b"
             ],
             [
               "z",
-              "lowercase-এর শেষ",
-              "a",
-              "wrap around — z-এর পর আবার a"
-            ],
-            [
-              "Z",
-              "uppercase-এর শেষ",
-              "A",
-              "wrap around — Z-এর পর আবার A"
+              "wrap (lowercase-এর শেষ)",
+              "a"
             ],
             [
               "9",
-              "digit-এর শেষ",
-              "0",
-              "wrap around — 9-এর পর আবার 0"
+              "non-alphabetic (digit)",
+              "9"
             ],
             [
-              "5",
-              "সাধারণ digit",
-              "6",
-              "5 + 1"
+              "Z",
+              "wrap (uppercase-এর শেষ)",
+              "A"
             ],
             [
               "!",
-              "special character",
-              "!",
-              "অপরিবর্তিত — alnum নয়"
-            ],
-            [
-              " ",
-              "space",
-              " ",
-              "অপরিবর্তিত — alnum নয়"
+              "non-alphabetic",
+              "!"
             ]
           ]
         },
         "mistakes": [
           [
-            "শুধু c + 1 লিখলেই যথেষ্ট",
-            "না — 'z' + 1 হলো '{' (ASCII 123), যা কোনো বৈধ letter নয়। সীমানার character আলাদা করে ধরে wrap around করাতে হয়।"
+            "সবসময় c + 1 করলেই হবে",
+            "না — 'z' + 1 হলে '{' আসবে, যেটা কোনো বৈধ অক্ষর না। তাই z আর Z-কে আলাদাভাবে ধরে শুরুতে ফিরিয়ে দিতে হয়।"
           ],
           [
-            "isalpha() দিয়ে চেক করলেই হবে",
-            "isalpha() শুধু letter ধরে, digit ধরে না — digit-ও shift করতে হলে isalnum() লাগবে।"
+            "Character.isLetterOrDigit() ব্যবহার করলেই হবে",
+            "না — এতে digit-ও ভুলবশত shift হয়ে যাবে, কিন্তু প্রশ্নে শুধু alphabetic character-এর কথা বলা আছে। তাই শুধু Character.isLetter() ব্যবহার করতে হবে।"
           ]
         ],
-        "mnemonic": "মনে রাখো: শুধু A-Z, a-z, 0-9 নড়বে, বাকি সব জায়গায় থাকবে; আর z→a, Z→A, 9→0 — সীমানা পার হলেই আবার শুরু থেকে।"
+        "mnemonic": "মনে রাখো: শুধু A-Z, a-z নড়বে, digit-সহ বাকি সব জায়গায় থাকবে; z→a, Z→A — সীমানা পার হলেই আবার শুরু থেকে।"
       }
     }
   ]
