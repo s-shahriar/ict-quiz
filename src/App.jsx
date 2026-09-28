@@ -33,9 +33,6 @@ const WrittenNailedScreen = lazy(() => import('./components/WrittenNailedScreen.
 const ExtraImportantScreen = lazy(() => import('./components/ExtraImportantScreen.jsx'))
 const ExtraMode = lazy(() => import('./components/ExtraMode.jsx'))
 const ExtraNailedScreen = lazy(() => import('./components/ExtraNailedScreen.jsx'))
-const CodeImportantScreen = lazy(() => import('./components/CodeImportantScreen.jsx'))
-const CodeMode = lazy(() => import('./components/CodeMode.jsx'))
-const CodeNailedScreen = lazy(() => import('./components/CodeNailedScreen.jsx'))
 const VivaImportantScreen = lazy(() => import('./components/VivaImportantScreen.jsx'))
 const VivaMode = lazy(() => import('./components/VivaMode.jsx'))
 const VivaNailedScreen = lazy(() => import('./components/VivaNailedScreen.jsx'))
@@ -109,9 +106,6 @@ function AppRoutes() {
           <Route path="/extra" element={<ExtraMode />} />
           <Route path="/extra/nailed" element={<ExtraNailedScreen />} />
           <Route path="/extra/important" element={<ExtraImportantScreen />} />
-          <Route path="/code" element={<CodeMode />} />
-          <Route path="/code/nailed" element={<CodeNailedScreen />} />
-          <Route path="/code/important" element={<CodeImportantScreen />} />
           <Route path="/viva" element={<VivaMode />} />
           <Route path="/viva/nailed" element={<VivaNailedScreen />} />
           <Route path="/viva/important" element={<VivaImportantScreen />} />

@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import { splitQuestion } from './shared/QuestionText.jsx'
 
-const MODULE_LABEL = { mcq: 'MCQ', written: 'Written', extra: 'Extra', viva: 'Viva', code: 'Code', practice: 'Practice' }
+const MODULE_LABEL = { mcq: 'MCQ', written: 'Written', extra: 'Extra', viva: 'Viva', practice: 'Practice' }
 
 // Recycle Bin: everything soft-deleted across modules, newest first. Restore puts
 // a question back into its module; Delete forever removes it permanently (two-tap

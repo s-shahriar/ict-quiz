@@ -4,7 +4,6 @@ import { TOPICS } from './index.js'
 import { WRITTEN_DATA } from './written/index.js'
 import { EXTRA_DATA } from './extra/index.js'
 import { VIVA_DATA } from './viva/index.js'
-import { CODE_DATA } from './code/index.js'
 import { rememberQuestion } from '../lib/questionLabels.js'
 
 // On-demand content: Q&A items live in Supabase and are fetched per module the
@@ -19,7 +18,6 @@ const STORE = {
   written: (slug) => WRITTEN_DATA[slug],
   extra: (slug) => EXTRA_DATA[slug],
   viva: (slug) => VIVA_DATA[slug],
-  code: (slug) => CODE_DATA[slug],
 }
 export const CONTENT_MODULES = Object.keys(STORE)
 
@@ -29,7 +27,7 @@ const inflight = new Map()
 export function isModuleLoaded(moduleId) { return loaded.has(moduleId) }
 
 // "Data Structures & Algorithms · written" — the module matters here, since the
-// same category holds separate mcq / written / viva / code items.
+// same category holds separate mcq / written / viva items.
 function catLabel(moduleId, slug) {
   const name = TOPICS.find(t => t.id === slug)?.name || slug
   return moduleId === 'mcq' ? name : `${name} · ${moduleId}`

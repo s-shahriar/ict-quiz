@@ -16,7 +16,7 @@
     "theory_of_computation": 2
   },
   "written": {
-    "c_programming": 56,
+    "c_programming": 57,
     "computer_fundamental": 1,
     "computer_network": 57,
     "database": 11,
@@ -54,12 +54,5 @@
     "information_security": 6,
     "machine_learning": 1,
     "software_engineering": 1
-  },
-  "code": {
-    "array": 6,
-    "matrix": 2,
-    "number": 5,
-    "sorting_searching": 2,
-    "string": 4
   }
 }
