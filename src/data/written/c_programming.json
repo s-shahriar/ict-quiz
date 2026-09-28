@@ -3823,6 +3823,109 @@
           ]
         ]
       }
+    },
+    {
+      "id": "c_064",
+      "q": "Write a C program that takes a string as input and shifts every alphanumeric character to the next character, leaving non-alphanumeric characters unchanged. The shift must be case-sensitive.",
+      "tags": [
+        "string",
+        "character shift",
+        "isalnum",
+        "ascii",
+        "wrap around",
+        "cipher"
+      ],
+      "answer": {
+        "code": "#include <stdio.h>\n#include <ctype.h>\n#include <string.h>\n\nvoid shiftToNextChar(char *str) {\n    for (int i = 0; str[i] != '\\0'; i++) {\n        char c = str[i];\n        if (isalnum((unsigned char)c)) {\n            if (c == 'z')      str[i] = 'a';\n            else if (c == 'Z') str[i] = 'A';\n            else if (c == '9') str[i] = '0';\n            else               str[i] = c + 1;\n        }\n        // non-alphanumeric characters are left untouched\n    }\n}\n\nint main() {\n    char str[100];\n\n    printf(\"Enter a string: \");\n    fgets(str, sizeof(str), stdin);\n    str[strcspn(str, \"\\n\")] = '\\0';   // drop the trailing newline fgets keeps\n\n    shiftToNextChar(str);\n\n    printf(\"Modified string: %s\\n\", str);\n    return 0;\n}\n",
+        "codeLang": "c",
+        "summary": [
+          "প্রতিটি character-এ isalnum() দিয়ে চেক করা হয় সেটা letter/digit কিনা — হলে তবেই এক ধাপ এগিয়ে দেওয়া হয়, নইলে অপরিবর্তিত রাখা হয়।",
+          "সীমানায় (z, Z, 9) পৌঁছালে wrap around করে শুরুতে ফিরে যায় (a, A, 0), সাধারণ +1 নয়।"
+        ],
+        "points": [
+          {
+            "sub": "isalnum((unsigned char)c) দিয়ে যাচাই করা হয় character-টা A-Z, a-z বা 0-9 এর মধ্যে পড়ে কিনা।"
+          },
+          {
+            "sub": "unsigned char-এ cast করা জরুরি — signed char negative হলে isalnum()-এ undefined behaviour হতে পারে।"
+          },
+          {
+            "sub": "না হলে (space, punctuation, ইত্যাদি) character অপরিবর্তিত থাকে — কোনো if-condition-ই match করে না।"
+          },
+          {
+            "sub": "Case sensitivity আপনাআপনি বজায় থাকে — 'z' আর 'Z' আলাদাভাবে ধরা হয় বলে lowercase সবসময় lowercase-এই wrap করে, uppercase uppercase-এই।"
+          },
+          {
+            "sub": "সীমানার character (z, Z, 9) না হলে সরাসরি c + 1 — ASCII-তে পাশের character-ই পরের অক্ষর।"
+          },
+          {
+            "sub": "সীমানায় পৌঁছালে (z, Z, 9) wrap around করে প্রথম character-এ ফেরত যায় (a, A, 0), যাতে ASCII table-এর বাইরে গিয়ে ভুল character না ছাপা হয়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "Input",
+            "ধরন",
+            "Output",
+            "কারণ"
+          ],
+          "rows": [
+            [
+              "H",
+              "সাধারণ uppercase",
+              "I",
+              "H + 1"
+            ],
+            [
+              "z",
+              "lowercase-এর শেষ",
+              "a",
+              "wrap around — z-এর পর আবার a"
+            ],
+            [
+              "Z",
+              "uppercase-এর শেষ",
+              "A",
+              "wrap around — Z-এর পর আবার A"
+            ],
+            [
+              "9",
+              "digit-এর শেষ",
+              "0",
+              "wrap around — 9-এর পর আবার 0"
+            ],
+            [
+              "5",
+              "সাধারণ digit",
+              "6",
+              "5 + 1"
+            ],
+            [
+              "!",
+              "special character",
+              "!",
+              "অপরিবর্তিত — alnum নয়"
+            ],
+            [
+              " ",
+              "space",
+              " ",
+              "অপরিবর্তিত — alnum নয়"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "শুধু c + 1 লিখলেই যথেষ্ট",
+            "না — 'z' + 1 হলো '{' (ASCII 123), যা কোনো বৈধ letter নয়। সীমানার character আলাদা করে ধরে wrap around করাতে হয়।"
+          ],
+          [
+            "isalpha() দিয়ে চেক করলেই হবে",
+            "isalpha() শুধু letter ধরে, digit ধরে না — digit-ও shift করতে হলে isalnum() লাগবে।"
+          ]
+        ],
+        "mnemonic": "মনে রাখো: শুধু A-Z, a-z, 0-9 নড়বে, বাকি সব জায়গায় থাকবে; আর z→a, Z→A, 9→0 — সীমানা পার হলেই আবার শুরু থেকে।"
+      }
     }
   ]
 }
