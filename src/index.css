@@ -3471,13 +3471,14 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
    orange=Weak, red=Delete. */
 .note-badge-btn {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-  color: var(--text-dim, var(--text-3)); background: transparent; border: none; cursor: pointer;
-  transition: color .18s ease, background .18s ease;
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  color: var(--text-3); background: transparent;
+  border: 1px solid var(--border); cursor: pointer;
+  transition: color .18s ease, background .18s ease, border-color .18s ease;
 }
-.note-badge-btn:hover { color: var(--info); background: color-mix(in srgb, var(--info) 10%, transparent); }
-.note-badge-btn.has-note { color: var(--info); }
-.quiz-qnum .note-badge-btn { vertical-align: -6px; margin-left: 6px; }
+.note-badge-btn:hover { color: var(--info); border-color: color-mix(in srgb, var(--info) 30%, transparent); background: color-mix(in srgb, var(--info) 8%, transparent); }
+.note-badge-btn.has-note { color: var(--info); border-color: color-mix(in srgb, var(--info) 40%, transparent); background: color-mix(in srgb, var(--info) 10%, transparent); }
+.quiz-qnum .note-badge-btn { vertical-align: -8px; margin-left: 6px; }
 
 .note-callout {
   margin-bottom: 14px;
