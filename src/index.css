@@ -3478,7 +3478,10 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 .note-badge-btn:hover { color: var(--info); border-color: color-mix(in srgb, var(--info) 30%, transparent); background: color-mix(in srgb, var(--info) 8%, transparent); }
 .note-badge-btn.has-note { color: var(--info); border-color: color-mix(in srgb, var(--info) 40%, transparent); background: color-mix(in srgb, var(--info) 10%, transparent); }
-.quiz-qnum .note-badge-btn { vertical-align: -8px; margin-left: 6px; }
+/* Own first row at the top of a quiz card (above the question text), so the
+   26px chip never has to share a text baseline with the "Question X of Y"
+   progress label. */
+.quiz-note-row { display: flex; margin-bottom: 12px; }
 
 .note-callout {
   margin-bottom: 14px;

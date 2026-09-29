@@ -105,7 +105,6 @@ export default function ExamMode() {
         <div className="quiz-progress-header">
           <span className="quiz-qnum">
             Question {idx + 1} of {questions.length}
-            {qid && <NoteControl uid={qid} noteEditor={noteEditor} />}
           </span>
           <span className="quiz-pct">{Math.round(progress)}%</span>
         </div>
@@ -115,6 +114,11 @@ export default function ExamMode() {
       </div>
 
       <div className="quiz-card anim-slide">
+        {qid && (
+          <div className="quiz-note-row">
+            <NoteControl uid={qid} noteEditor={noteEditor} />
+          </div>
+        )}
         <QuestionText text={q.question} uid={qid} className="quiz-question" />
 
         <div className="quiz-options">
