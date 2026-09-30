@@ -1,0 +1,258 @@
+// Operating System equations. Same shape as computer_network.js — see
+// EQUATION_PLAN.md §4. No worked examples: each diagram carries the numbers.
+
+const r = String.raw
+
+export default {
+  category: 'operating_system',
+  groups: [
+    {
+      id: 'paging-translate',
+      title: 'Paging: Logical → Physical Address',
+      sub: 'Page Number · Offset · Frame Number · Base Address',
+      diagram: 'os-paging-translate',
+      caption: 'Page size 1024 হলে memory প্রতি 1024 byte-এ দাগ কাটা একটি ruler। 2500-এর আগে 2 টি পুরো page, তারপর 452 — এটাই Page Number আর Offset। RAM-এ একই 452 বসে Frame 5-এর শুরু থেকে।',
+      symbols: [
+        [r`\text{Logical Address}`, 'CPU / program যে address দেখে'],
+        [r`\text{Physical Address}`, 'RAM-এর আসল address'],
+        [r`\text{Page}`, 'logical memory-র সমান মাপের টুকরা'],
+        [r`\text{Frame}`, 'RAM-এর একই মাপের টুকরা; একটি page একটি frame-এ বসে'],
+        [r`\text{Offset}`, 'page (বা frame)-এর শুরু থেকে কত byte দূরে'],
+      ],
+      equations: [
+        {
+          name: 'Page Number',
+          lhs: r`\text{Page Number}`,
+          rhs: r`\left\lfloor \dfrac{\text{Logical Address}}{\text{Page size}} \right\rfloor`,
+          note: 'প্রতি Page size byte পরপর নতুন page শুরু হয়, তাই ভাগফলের পূর্ণ অংশ = কয়টি পুরো page পার হয়েছে।',
+        },
+        {
+          name: 'Logical Address (উল্টো দিক)',
+          lhs: r`\text{Logical Address}`,
+          rhs: r`\text{Offset} + (\text{Page Number} \times \text{Page size})`,
+          note: 'Page-এর শুরুর address (Page Number × Page size), তার সাথে Offset যোগ।',
+        },
+        {
+          name: 'Physical Address',
+          lhs: r`\text{Physical Address}`,
+          rhs: r`\text{Offset} + (\text{Frame Number} \times \text{Page size})`,
+          note: 'একই formula, শুধু Page Number-এর জায়গায় page table থেকে পাওয়া Frame Number; Offset বদলায় না।',
+        },
+        {
+          name: 'Physical Address (Base Address দিয়ে)',
+          lhs: r`\text{Physical Address}`,
+          rhs: r`\text{Base Address} + \text{Offset}`,
+          note: 'Base Address মানে frame-এর শুরুর address, অর্থাৎ Frame Number × Page size।',
+        },
+      ],
+      mnemonic: 'কয়টি পুরো page পার হলো = Page Number, বাকিটা Offset; Page Number বদলে Frame Number বসাও, Offset রেখে দাও।',
+    },
+    {
+      id: 'page-table',
+      title: 'Address Bits ও Page Table Size',
+      sub: 'Offset bits · Page/Frame Number bits · Address bits · Page table',
+      diagram: 'os-page-table',
+      caption: 'Offset মানে page-এর ভেতরে byte-এর নম্বর, আর সেগুলো লিখতে যত bit লাগে সেটাই Offset bits। Address-এর মানে গুণ হয়, কিন্তু bit-এ যোগ: 2⁹ × 2¹¹ = 2⁹⁺¹¹।',
+      symbols: [
+        [r`\text{Logical Address space}`, 'মোট কত logical address আছে, যেমন 32 bit হলে 2³² byte'],
+        [r`\text{Page table entry}`, 'page table-এর এক সারি: একটি page কোন frame-এ আছে'],
+        [r`\text{Number of frames}`, 'RAM-এ মোট কয়টি frame'],
+      ],
+      equations: [
+        {
+          name: 'Offset bits',
+          lhs: r`\text{Offset bits}`,
+          rhs: r`\log_2(\text{Page size})`,
+          note: 'Page-এ Page size টি byte, তাই Page size টি আলাদা Offset; n bit দিয়ে 2ⁿ টি নম্বর লেখা যায়, তাই Page size 2¹² হলে 12 bit।',
+        },
+        {
+          name: 'Page Number bits',
+          lhs: r`\text{Page Number bits}`,
+          rhs: r`\log_2(\text{Number of pages})`,
+          note: '512 page হলে log₂ 512 = 9 bit, কারণ 2⁹ = 512।',
+        },
+        {
+          name: 'Logical Address bits',
+          lhs: r`\text{Logical Address bits}`,
+          rhs: r`\text{Page Number bits} + \text{Offset bits}`,
+          note: 'মানে গুণ, bit-এ যোগ: 512 × 2048 = 2⁹ × 2¹¹ = 2²⁰, তাই 9 + 11 = 20 bit। 9 × 11 করলে ভুল।',
+        },
+        {
+          name: 'Frame Number bits',
+          lhs: r`\text{Frame Number bits}`,
+          rhs: r`\log_2(\text{Number of frames})`,
+          note: '128 frame হলে log₂ 128 = 7 bit।',
+        },
+        {
+          name: 'Physical Address bits',
+          lhs: r`\text{Physical Address bits}`,
+          rhs: r`\text{Frame Number bits} + \text{Offset bits}`,
+          note: 'Frame size = Page size, তাই Offset bits একই: 7 + 11 = 18 bit।',
+        },
+        {
+          name: 'Number of pages',
+          lhs: r`\text{Number of pages}`,
+          rhs: r`\dfrac{\text{Logical Address space}}{\text{Page size}} = 2^{\text{Page Number bits}}`,
+          note: 'Page Number যত bit, তত রকম page থাকা সম্ভব।',
+        },
+        {
+          name: 'Page table size',
+          lhs: r`\text{Page table size}`,
+          rhs: r`\text{Number of pages} \times \text{Size of Page Table Entry}`,
+          note: 'প্রতিটি page-এর জন্য page table-এ এক সারি।',
+        },
+      ],
+      mnemonic: 'মানে গুণ, bit-এ যোগ: Page Number bits + Offset bits; Offset bits logical আর physical-এ একই।',
+    },
+    {
+      id: 'tlb',
+      title: 'TLB Access Time',
+      sub: 'TLB hit · TLB miss · Effective Access Time',
+      diagram: 'os-tlb',
+      caption: 'উপরে TLB hit-এর পথ, নিচে TLB miss-এর পথ; বাক্সের দৈর্ঘ্য মানে সময়। Page table নিজেও memory-তে থাকে।',
+      symbols: [
+        [r`\text{TLB}`, 'page → frame mapping-এর ছোট, দ্রুত cache'],
+        [r`\text{Hit ratio}`, 'কত ভাগ access-এ mapping TLB-তেই পাওয়া যায়'],
+        [r`\text{Hit time}`, 'TLB hit হলে মোট Access time'],
+        [r`\text{Miss time}`, 'TLB miss হলে মোট Access time'],
+      ],
+      equations: [
+        {
+          name: 'TLB hit',
+          lhs: r`\text{Access time}`,
+          rhs: r`\text{TLB access time} + \text{Memory access time}`,
+          note: 'Frame Number TLB-তেই পাওয়া গেছে, তাই এরপর শুধু data আনতে একবার memory।',
+        },
+        {
+          name: 'TLB miss',
+          lhs: r`\text{Access time}`,
+          rhs: r`\text{TLB access time} + \text{Page table access time} + \text{Memory access time}`,
+          note: 'TLB-তে নেই, তাই আগে memory-র page table থেকে Frame Number, তারপর data।',
+        },
+        {
+          name: 'TLB miss (সরল রূপ)',
+          lhs: r`\text{Access time}`,
+          rhs: r`\text{TLB access time} + 2 \times \text{Memory access time}`,
+          note: 'Page table memory-তেই থাকে, তাই Page table access time = Memory access time।',
+        },
+        {
+          name: 'Effective Access Time',
+          lhs: r`\text{EAT}`,
+          rhs: r`\text{Hit ratio} \times \text{Hit time} + (1 - \text{Hit ratio}) \times \text{Miss time}`,
+          note: 'দুই পথের গড়, যে পথ যত বেশি ঘটে তার ওজন তত বেশি।',
+        },
+      ],
+      mnemonic: 'Hit হলে memory একবার, miss হলে দুবার; TLB সবসময় একবার।',
+    },
+    {
+      id: 'hdd',
+      title: 'Hard Disk (HDD)',
+      sub: 'Seek · Rotation · Transfer · Capacity',
+      diagram: 'os-hdd',
+      caption: 'বাঁয়ে platter ওপর থেকে দেখা; ডানে একটি sector পড়তে যে তিন ধাপে সময় লাগে।',
+      symbols: [
+        [r`\text{RPM}`, 'প্রতি মিনিটে কতবার ঘোরে'],
+        [r`\text{Track}`, 'platter-এর একটি বৃত্ত'],
+        [r`\text{Sector}`, 'track-এর একটি টুকরা; এক sector-এ Bytes per sector byte'],
+        [r`\text{Overhead}`, 'sector-এর header, gap, ECC — data নয় কিন্তু জায়গা নেয়'],
+      ],
+      equations: [
+        {
+          name: 'Disk access time',
+          lhs: r`\text{Disk access time}`,
+          rhs: r`\text{Seek time} + \text{Avg Rotational time} + \text{Data transfer time}`,
+          note: 'head ঠিক track-এ যায়, sector ঘুরে head-এর নিচে আসে, তারপর পড়া হয়।',
+        },
+        {
+          name: 'Avg Rotational time',
+          lhs: r`\text{Avg Rotational time}`,
+          rhs: r`\dfrac{60 / \text{RPM}}{2}`,
+          note: '60/RPM হলো এক ঘূর্ণনের সময় (second); চাওয়া sector গড়ে অর্ধেক ঘূর্ণন দূরে থাকে।',
+        },
+        {
+          name: 'Data transfer rate',
+          lhs: r`\text{Data transfer rate}`,
+          rhs: r`\text{Sectors per track} \times \text{Bytes per sector} \times \dfrac{\text{RPM}}{60}`,
+          note: 'এক ঘূর্ণনে পুরো এক track head-এর নিচ দিয়ে যায়, আর RPM/60 হলো প্রতি সেকেন্ডে ঘূর্ণন; তাই unit byte/second।',
+        },
+        {
+          name: 'Transfer time',
+          lhs: r`\text{Transfer time}`,
+          rhs: r`\dfrac{\text{Sector size}}{\text{Transfer rate}}`,
+          note: 'যত byte পড়তে হবে, তাকে প্রতি সেকেন্ডে পড়া byte দিয়ে ভাগ।',
+        },
+        {
+          name: 'Total capacity',
+          lhs: r`\text{Total capacity}`,
+          rhs: r`\text{Tracks} \times \text{Sectors per track} \times (\text{Data} + \text{Overhead})`,
+          note: 'Tracks মানে সব surface মিলিয়ে মোট track; Data + Overhead হলো এক sector-এর মোট byte।',
+        },
+      ],
+      mnemonic: 'Seek, Rotate, Transfer — আর Rotation সবসময় অর্ধেক ঘূর্ণন।',
+    },
+    {
+      id: 'cache-mapping',
+      title: 'Cache Mapping',
+      sub: 'Direct · Fully Associative · Set Associative',
+      diagram: 'os-cache-mapping',
+      caption: 'একই 32 bit address তিন mapping-এ তিনভাবে ভাগ হয়; Offset সবসময় একই। বাক্সের দৈর্ঘ্য bit সংখ্যার সমানুপাতিক।',
+      symbols: [
+        [r`\text{Cache line}`, 'cache-এর এক সারি; একটি block রাখে'],
+        [r`\text{Block size}`, 'এক line-এ কত byte'],
+        [r`\text{Tag}`, 'line-এ কোন memory block বসে আছে তা চেনার bit'],
+        [r`k\text{-way}`, 'Set Associative-এ প্রতি set-এ k টি line'],
+      ],
+      equations: [
+        {
+          name: 'Direct Mapping',
+          lhs: r`\text{Address bits}`,
+          rhs: r`\text{Tag bits} + \text{Index bits} + \text{Offset bits}`,
+          note: 'Index ঠিক করে কোন line, Offset ঠিক করে line-এর কোন byte, Tag মিলিয়ে দেখা হয় ঠিক block কিনা।',
+        },
+        {
+          name: 'Index bits',
+          lhs: r`\text{Index bits}`,
+          rhs: r`\log_2(\text{No. of cache lines})`,
+          note: 'প্রতিটি line আলাদা করে চিনতে এতগুলো bit লাগে।',
+        },
+        {
+          name: 'Offset bits',
+          lhs: r`\text{Offset bits}`,
+          rhs: r`\log_2(\text{Block size})`,
+          note: 'Block-এর প্রতিটি byte আলাদা করতে এতগুলো bit লাগে; তিন mapping-এই একই।',
+        },
+        {
+          name: 'Cache size',
+          lhs: r`\text{Cache size}`,
+          rhs: r`\text{No. of cache lines} \times \text{Block size}`,
+          note: 'প্রতিটি line-এ একটি block।',
+        },
+        {
+          name: 'Fully Associative Mapping',
+          lhs: r`\text{Address bits}`,
+          rhs: r`\text{Tag} + \text{Offset}`,
+          note: 'Block যেকোনো line-এ বসতে পারে, তাই Index নেই; বাকি সব bit Tag।',
+        },
+        {
+          name: 'Set Associative Mapping',
+          lhs: r`\text{Address bits}`,
+          rhs: r`\text{Tag} + \text{Set offset} + \text{Word offset}`,
+          note: 'Set offset ঠিক করে কোন set (অনেক বইয়ে Set index); Word offset আর Offset bits একই জিনিস।',
+        },
+        {
+          name: 'Number of sets',
+          lhs: r`\text{Number of sets}`,
+          rhs: r`\dfrac{\text{No. of cache lines}}{k}`,
+          note: 'k-way মানে প্রতি set-এ k টি line।',
+        },
+        {
+          name: 'Set offset bits',
+          lhs: r`\text{Set offset bits}`,
+          rhs: r`\log_2(\text{Number of sets})`,
+          note: 'Index bits-এর মতোই, শুধু line-এর বদলে set গোনা হয়।',
+        },
+      ],
+      mnemonic: 'Offset সবার একই; Index যত কমে, Tag তত বাড়ে — Fully-তে Index শূন্য।',
+    },
+  ],
+}

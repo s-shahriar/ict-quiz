@@ -1,5 +1,6 @@
 import { TOPICS } from '../index.js'
 import computer_network from './computer_network.js'
+import operating_system from './operating_system.js'
 
 // Equation module. Content is bundled (like Practice), not served from Supabase:
 // each category is a JS file of formula groups, keyed by the MCQ topic id so it
@@ -7,6 +8,7 @@ import computer_network from './computer_network.js'
 
 const EQUATION_DATA = {
   computer_network,
+  operating_system,
 }
 
 const countEquations = (data) =>

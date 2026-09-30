@@ -24,7 +24,9 @@ export function Tex({ children }) {
 //
 // A formula is KaTeX markup, not a plain string, so character offsets mean
 // nothing inside it: any highlight on the formula block marks the whole formula.
-export function EqRow({ eq, hl }) {
+// One tap target that covers part of itself in cover mode. Returns whether it
+// is hidden now, plus the props that make the element a reveal/re-cover toggle.
+function useCoverToggle() {
   const covered = useCover()
   const [revealed, setRevealed] = useState(false)
   // Re-hide on each (re)entry to cover mode for a fresh recall pass.
@@ -37,6 +39,20 @@ export function EqRow({ eq, hl }) {
     if (!hide && sel && !sel.isCollapsed && e?.currentTarget?.contains(sel.anchorNode)) return
     setRevealed(v => !v)
   }
+  const props = covered ? {
+    onClick: flip,
+    onKeyDown: (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRevealed(v => !v) }
+    },
+    role: 'button',
+    tabIndex: 0,
+    title: hide ? 'দেখতে ট্যাপ করুন' : 'আবার ঢাকতে ট্যাপ করুন',
+  } : {}
+  return { hide, props }
+}
+
+export function EqRow({ eq, hl }) {
+  const { hide, props } = useCoverToggle()
 
   const key = `eq:${eq.name}`
   const marks = hl(`${key}.formula`)
@@ -48,16 +64,7 @@ export function EqRow({ eq, hl }) {
   )
 
   return (
-    <div
-      className={`eq-row${hide ? ' eq-covered' : ''}`}
-      onClick={covered ? flip : undefined}
-      onKeyDown={covered ? (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRevealed(v => !v) }
-      } : undefined}
-      role={covered ? 'button' : undefined}
-      tabIndex={covered ? 0 : undefined}
-      title={covered ? (hide ? 'দেখতে ট্যাপ করুন' : 'আবার ঢাকতে ট্যাপ করুন') : undefined}
-    >
+    <div className={`eq-row${hide ? ' eq-covered' : ''}`} {...props}>
       <HighlightableText className="eq-row-name" block={`${key}.name`} text={eq.name} highlights={hl(`${key}.name`)} />
       <span className="eq-row-formula" data-hl-block={`${key}.formula`}>
         {marks?.length ? (

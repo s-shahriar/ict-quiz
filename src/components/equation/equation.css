@@ -207,8 +207,7 @@
    hidden text can't be highlighted and a tap on a mark still reveals the row.
    (The `*` is needed — the app re-enables selection on every highlightable
    descendant.) */
-.eq-row.eq-covered,
-.eq-row.eq-covered * {
+.eq-row.eq-covered, .eq-row.eq-covered * {
   user-select: none;
   -webkit-user-select: none;
 }

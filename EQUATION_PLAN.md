@@ -37,6 +37,7 @@ What this means in practice:
 |---|---|
 | `src/data/equation/<slug>.js` | One category: its groups and equations (plain data) |
 | `src/data/equation/index.js` | Registry. `<slug>` must be an MCQ topic id (name/icon/colour come from it) |
+| `src/components/equation/diagrams/parts.jsx` | Shared SVG helpers (`Cell`, `Dim`, `VDim`, `Arrow`, …) and colours |
 | `src/components/equation/diagrams/<category>.jsx` | The SVG diagram components for that category |
 | `src/components/equation/diagrams/index.js` | Merges every category's diagrams into `DIAGRAMS` |
 | `src/components/equation/EquationHelpers.jsx` | `Tex`, `EqRow`, `Symbols`, `Mem`, cover context |
@@ -70,6 +71,10 @@ They usually arrive as photos of handwritten notes.
   mnemonic: '…',               // one line
 }
 ```
+
+**No worked examples (প্রশ্ন → ধাপ → উত্তর).** They were built once and the user removed
+every one of them: the numbers belong in the diagram instead (§5.2), not in a separate
+problem block under the equations. Do not add them back unless the user asks.
 
 - `lhs` / `rhs` are KaTeX, written with `String.raw`. `rel` defaults to `=`.
 - **Use the user's words in the formula** (`\text{Window size}`, `\text{RTT}`), not
@@ -127,12 +132,30 @@ A limit is written on the measure line in a quieter tone: `Total packet · স�
 When a ratio needs concrete numbers to draw (a = 2 → five slots, three filled), pick
 small ones and say so in the label (`এখানে 3`).
 
+**Show where a formula comes from, when that is the hard part.** If the user finds a
+formula hard to *understand* (not just to remember), the diagram shows its derivation on
+the picture, even though that reveals the formula in cover mode. The paging group is the
+reference: memory drawn as a ruler marked every Page size (0, 1024, 2048, …), so
+`2500 ÷ 1024 = 2.44` visibly means "2 whole pages passed", and measure lines under it
+read `2 × 1024 = 2048` (labelled `Page Number × Page size`) plus `Offset 452`. The same
+ruler for RAM shows `5 × 1024 = 5120 = Base Address` plus the same 452. A ruler with
+numbered boundaries is the default way to explain any "divide by a size" formula.
+
+**Put one set of concrete numbers in the diagram.** Pick small round values that divide
+cleanly (Page size 1024, 6000 RPM, 16 KB / 64 B) and draw them on the picture (Logical
+Address 2500 → Page 2 + Offset 452 → Frame 5 → 5572), so a value can be followed from
+start to finish. Values are fine in cover mode. Where widths encode size, keep them to
+scale (address bits 18 | 8 | 6; 20 ns vs 100 ns). If one part is far too small to see at
+scale (a 0.02 ms transfer next to 5 ms), give it its own readable cell instead of a
+hairline, with its label inside — never a label squeezed above a sliver.
+
 ### 5.3 Visual vocabulary (helpers in the diagram file)
 
 | Helper | Meaning |
 |---|---|
 | `Cell` | a tinted box: one physical part (a header, a packet, a slot) |
-| `Dim` | a measure line with end ticks and a label: a quantity spanning parts |
+| `Dim` / `VDim` | a horizontal / vertical measure line with end ticks and a label: a quantity spanning parts |
+| `Arrow` | a routed line with a head at its last point — any arrow that turns a corner |
 | `Limit` | the cap on a measured quantity, appended to a `Dim` label |
 | `Step` | a numbered badge: order in time |
 | `Head` | an arrowhead: direction of travel |
@@ -154,7 +177,9 @@ small ones and say so in the label (`এখানে 3`).
 
 - Pass coordinates as **numbers** (`y={60}`), not strings: a helper doing `y + 4` on
   `"60"` yields `"604"` and the text silently disappears.
-- No SVG `<marker>` with `context-stroke` — draw arrowheads with `Head`.
+- No SVG `<marker>` with `context-stroke` — draw arrowheads with `Head` / `Arrow`.
+- KaTeX only wraps after a top-level `+`, `=`, etc. Braced `{+}` never wraps, so a long
+  answer written that way overflows a phone row.
 - A `<tspan>` subscript shifts everything after it; use it only at the end of a `<text>`.
 - Never put `overflow` on an equation row or its formula: a fraction is taller than its
   line, so it grows scrollbars on desktop. Long formulas wrap instead.
@@ -179,6 +204,7 @@ small ones and say so in the label (`এখানে 3`).
 - [ ] Coverage rule (§5.1): each term of each equation is labelled in the diagram.
 - [ ] No formula / right-hand side is printed in the diagram.
 - [ ] Units that matter are inside the formula.
+- [ ] The diagram carries one set of concrete numbers; no separate worked-example block.
 - [ ] Looked at each new group in a real browser: dark and light, desktop and ~390px.
 - [ ] No `.katex-error`, no page-level horizontal overflow, no scrollbars in rows.
 - [ ] Cover mode: only `rhs` + `note` blur, and the diagram gives nothing away.

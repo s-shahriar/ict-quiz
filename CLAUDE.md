@@ -89,6 +89,8 @@ followed in every chat. The short version:
   object and both notes use the same numeric example.
 - Formulas use the user's own words (`\text{Window size}`); a unit that matters goes
   inside the formula. Notes are Bengali with technical terms in English.
+- No worked-example (প্রশ্ন → ধাপ → উত্তর) blocks — the user removed them all. Put one
+  set of concrete numbers in the diagram instead, so a value can be followed through it.
 - Report anything unclear in the user's notes and every interpretation or addition.
 - Renaming a group `id` or an equation `name` orphans saved highlights on it (§6).
 - Check each new group in a real browser (dark + light, desktop + phone) before done.
