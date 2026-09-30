@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
-import { Zap, Brain, PenLine, Star, Bookmark, Dumbbell, Sparkles, Mic } from 'lucide-react'
+import { Zap, Brain, PenLine, Star, Bookmark, Dumbbell, Sparkles, Mic, Sigma } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
 import { WRITTEN_TOPICS } from '../data/written/index.js'
 import { EXTRA_TOPICS } from '../data/extra/index.js'
 import { VIVA_TOPICS } from '../data/viva/index.js'
 import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
+import { EQUATION_TOPICS } from '../data/equation/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -30,7 +31,7 @@ export default function HomeScreen() {
     search: searchParams.get('search') || '',
   }))
   const [module, setModule] = useState(
-    ['written', 'practice', 'extra', 'viva'].includes(restored.module) ? restored.module : 'mcq'
+    ['written', 'practice', 'extra', 'viva', 'equation'].includes(restored.module) ? restored.module : 'mcq'
   )
   const [mcqSearching, setMcqSearching] = useState(false)
   const [writtenSearching, setWrittenSearching] = useState(false)
@@ -94,6 +95,9 @@ export default function HomeScreen() {
           </button>
           <button className={`module-btn${module === 'viva' ? ' active' : ''}`} onClick={() => setModule('viva')}>
             <Mic size={15} /> Viva
+          </button>
+          <button className={`module-btn${module === 'equation' ? ' active' : ''}`} onClick={() => setModule('equation')}>
+            <Sigma size={15} /> Equation
           </button>
         </div>
       </header>
@@ -331,6 +335,17 @@ export default function HomeScreen() {
           )}
         </>
       )}
+
+      {module === 'equation' && (
+        <>
+          <p className="section-label">Choose a Category</p>
+          <main className="topics-grid">
+            {EQUATION_TOPICS.map(t => (
+              <EquationCategoryCard key={t.id} topic={t} onClick={() => navigate('/equation?topic=' + t.id)} />
+            ))}
+          </main>
+        </>
+      )}
     </div>
   )
 }
@@ -396,6 +411,23 @@ function VivaCategoryCard({ topic, onClick }) {
       <span className="tc-badge" style={{ background: `color-mix(in srgb, ${topic.color} 12%, transparent)`, color: topic.color }}>
         <Mic size={11} />
         {topic.vivaCount}
+      </span>
+    </button>
+  )
+}
+
+function EquationCategoryCard({ topic, onClick }) {
+  const Icon = topic.icon
+  return (
+    <button className="topic-card written-category-card" onClick={onClick} style={{ '--c': topic.color }}>
+      <div className="tc-icon"><Icon size={20} /></div>
+      <div className="tc-body">
+        <span className="tc-name">{topic.name}</span>
+        <span className="tc-count">{topic.equationCount} equations · {topic.groupCount} {topic.groupCount === 1 ? 'group' : 'groups'}</span>
+      </div>
+      <span className="tc-badge" style={{ background: `color-mix(in srgb, ${topic.color} 12%, transparent)`, color: topic.color }}>
+        <Sigma size={11} />
+        {topic.equationCount}
       </span>
     </button>
   )

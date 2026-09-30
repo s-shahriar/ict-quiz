@@ -73,3 +73,22 @@ page goes blank. Push the frontend change before (or with) the payload that need
 
 Top-level `segment` (+ optional `subsegment`) pins a question into its own labelled
 section above the normal list.
+
+## Adding or editing an equation (Equation tab)
+
+**Read `EQUATION_PLAN.md` first** — it is the contract, and the user asked that it be
+followed in every chat. The short version:
+
+- Content is **frontend code, not Supabase** (same as general-quiz's math formulas):
+  `src/data/equation/<slug>.js` for the data, `src/components/equation/diagrams/` for the
+  SVG diagrams. No seed / sync / manifest step; it goes live with the frontend deploy.
+- Equations go in **groups**, one diagram per group. The diagram is a picture of the real
+  thing with **every term of every equation labelled on it, in the formula's own words**
+  (the coverage rule, §5.1) — and it never prints the formula itself.
+- If two equations differ only by unit or form, the diagram shows both forms on the same
+  object and both notes use the same numeric example.
+- Formulas use the user's own words (`\text{Window size}`); a unit that matters goes
+  inside the formula. Notes are Bengali with technical terms in English.
+- Report anything unclear in the user's notes and every interpretation or addition.
+- Renaming a group `id` or an equation `name` orphans saved highlights on it (§6).
+- Check each new group in a real browser (dark + light, desktop + phone) before done.

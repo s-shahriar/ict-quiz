@@ -36,6 +36,7 @@ const ExtraNailedScreen = lazy(() => import('./components/ExtraNailedScreen.jsx'
 const VivaImportantScreen = lazy(() => import('./components/VivaImportantScreen.jsx'))
 const VivaMode = lazy(() => import('./components/VivaMode.jsx'))
 const VivaNailedScreen = lazy(() => import('./components/VivaNailedScreen.jsx'))
+const EquationMode = lazy(() => import('./components/EquationMode.jsx'))
 const RecycleBinScreen = lazy(() => import('./components/RecycleBinScreen.jsx'))
 
 export default function App() {
@@ -109,6 +110,7 @@ function AppRoutes() {
           <Route path="/viva" element={<VivaMode />} />
           <Route path="/viva/nailed" element={<VivaNailedScreen />} />
           <Route path="/viva/important" element={<VivaImportantScreen />} />
+          <Route path="/equation" element={<EquationMode />} />
           <Route path="/recycle-bin" element={<RecycleBinScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
