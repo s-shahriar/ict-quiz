@@ -4242,8 +4242,8 @@
             "sub": "কারণ এখানে network-এর সীমা কাছাকাছি, তাই লাফিয়ে বাড়লে congestion হবে।"
           },
           {
-            "label": "Diagram — cwnd কীভাবে ওঠানামা করে (ssthresh = 8 ধরে)",
-            "diagram": "  Slow Start (দ্বিগুণ হয়)\n    RTT 1 :  cwnd =  1   ▇\n    RTT 2 :  cwnd =  2   ▇▇\n    RTT 3 :  cwnd =  4   ▇▇▇▇\n    RTT 4 :  cwnd =  8   ▇▇▇▇▇▇▇▇          ssthresh ছুঁলো\n\n  Congestion Avoidance (১ করে বাড়ে)\n    RTT 5 :  cwnd =  9   ▇▇▇▇▇▇▇▇▇\n    RTT 6 :  cwnd = 10   ▇▇▇▇▇▇▇▇▇▇\n    RTT 7 :  cwnd = 11   ▇▇▇▇▇▇▇▇▇▇▇\n\n  ৩টি duplicate ACK এলে (হালকা সমস্যা)\n    RTT 8 :  cwnd =  5   ▇▇▇▇▇                অর্ধেক — Fast Recovery\n\n  Timeout হলে (গুরুতর সমস্যা)\n    RTT 8 :  cwnd =  1   ▇                    একদম শুরু থেকে Slow Start"
+            "label": "Diagram — cwnd কীভাবে বাড়ে (ssthresh = 8 ধরে)",
+            "diagram": "  Slow Start (দ্বিগুণ হয়)\n    RTT 1  :  cwnd =  1   ▇\n    RTT 2  :  cwnd =  2   ▇▇\n    RTT 3  :  cwnd =  4   ▇▇▇▇\n    RTT 4  :  cwnd =  8   ▇▇▇▇▇▇▇▇           ssthresh ছুঁলো\n\n  Congestion Avoidance (১ করে বাড়ে)\n    RTT 5  :  cwnd =  9   ▇▇▇▇▇▇▇▇▇\n    RTT 6  :  cwnd = 10   ▇▇▇▇▇▇▇▇▇▇\n    RTT 7  :  cwnd = 11   ▇▇▇▇▇▇▇▇▇▇▇\n    RTT 8  :  cwnd = 12   ▇▇▇▇▇▇▇▇▇▇▇▇       এখানে loss ধরা পড়ল"
           },
           "৩. Fast Retransmit — timeout-এর অপেক্ষা না করা",
           {
@@ -4258,9 +4258,13 @@
           {
             "sub": "লাভ: timeout-এর দীর্ঘ অপেক্ষা বেঁচে যায়, throughput ধরে রাখা যায়।"
           },
+          {
+            "label": "Diagram — Fast Retransmit (seg 2 হারালো)",
+            "diagram": "  Sender                          Receiver\n    │──── seg 1 ──────────────────►│\n    │◄────────────────── ACK 2 ────│   পরের চাই seg 2\n    │──── seg 2 ────X              │   seg 2 হারালো\n    │──── seg 3 ──────────────────►│\n    │◄────────────────── ACK 2 ────│   duplicate ACK ১  (এখনো seg 2 চাই)\n    │──── seg 4 ──────────────────►│\n    │◄────────────────── ACK 2 ────│   duplicate ACK ২\n    │──── seg 5 ──────────────────►│\n    │◄────────────────── ACK 2 ────│   duplicate ACK ৩  → Fast Retransmit\n    │──── seg 2 resend ───────────►│   timeout-এর অপেক্ষা না করে সঙ্গে সঙ্গে\n    │◄────────────────── ACK 6 ────│   3, 4, 5 আগেই এসেছিল, তাই সোজা ACK 6\n    │                              │\n    │                              │   timeout এখানে হতো — তার অনেক আগেই কাজ শেষ"
+          },
           "৪. Fast Recovery — শূন্য থেকে শুরু না করা",
           {
-            "sub": "Fast retransmit-এর পর cwnd অর্ধেক করা হয়, ১-এ নামানো হয় না।"
+            "sub": "Fast retransmit-এর পর ssthresh = cwnd-এর অর্ধেক, আর cwnd-ও সেই অর্ধেকে নামে — ১-এ নয়।"
           },
           {
             "sub": "তারপর সরাসরি congestion avoidance-এ ফেরা হয়, slow start-এ নয়।"
@@ -4270,6 +4274,10 @@
           },
           {
             "sub": "Timeout সম্পূর্ণ আলাদা ব্যাপার — কোনো ACK-ই আসছে না, তাই cwnd ১-এ নামিয়ে slow start থেকেই শুরু করতে হয়।"
+          },
+          {
+            "label": "Diagram — loss-এর পর: Fast Recovery বনাম Timeout (loss-এর সময় cwnd = 12)",
+            "diagram": "  ৩টি duplicate ACK → Fast Recovery (হালকা সমস্যা)\n    ssthresh = 12 / 2 = 6,  cwnd = 6\n    RTT 9  :  cwnd =  6   ▇▇▇▇▇▇             অর্ধেক থেকে শুরু\n    RTT 10 :  cwnd =  7   ▇▇▇▇▇▇▇            +১ (linear)\n    RTT 11 :  cwnd =  8   ▇▇▇▇▇▇▇▇           +১\n\n  Timeout → আবার Slow Start (গুরুতর সমস্যা)\n    ssthresh = 12 / 2 = 6,  cwnd = 1\n    RTT 9  :  cwnd =  1   ▇                  একদম শুরু থেকে\n    RTT 10 :  cwnd =  2   ▇▇                 দ্বিগুণ\n    RTT 11 :  cwnd =  4   ▇▇▇▇               দ্বিগুণ\n    RTT 12 :  cwnd =  6   ▇▇▇▇▇▇             ssthresh-এ থামে\n    RTT 13 :  cwnd =  7   ▇▇▇▇▇▇▇            এবার linear\n\n  RTT 11-এ: Fast Recovery-তে cwnd 8, Timeout-এ মাত্র 4"
           },
           "loss-এর দুই রকম প্রতিক্রিয়া — এটাই আসল কথা",
           {
