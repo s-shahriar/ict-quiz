@@ -1091,6 +1091,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   font-family: var(--font-body);
   transition: all 0.18s ease;
 }
+.explanation-reveal { margin-top: 16px; }
 .study-toggle:hover {
   border-color: var(--border-bright);
   background: var(--hover-bg);

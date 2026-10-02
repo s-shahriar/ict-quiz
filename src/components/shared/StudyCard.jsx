@@ -35,12 +35,16 @@ export default function StudyCard({
 
   const [shown, setShown]       = useState(false)
   const [selected, setSelected] = useState(null)
+  // A wrong pick opens the explanation straight away; a correct one keeps it
+  // collapsed behind a button, so it's there only if you want it.
+  const [expOpen, setExpOpen]   = useState(false)
   const opts = ['a','b','c','d','e'].filter(k => q.options?.[k])
 
   const pick = (key) => {
     if (shown) return
     setSelected(key)
     setShown(true)
+    setExpOpen(key !== q.correct_answer)
   }
 
   return (
@@ -122,7 +126,14 @@ export default function StudyCard({
         })}
       </div>
 
-      {shown && q.explanation && (
+      {shown && q.explanation && selected === q.correct_answer && (
+        <button className="study-toggle explanation-reveal" onClick={() => setExpOpen(o => !o)} style={{ color }}>
+          <Lightbulb size={12} />
+          {expOpen ? 'ব্যাখ্যা লুকাও' : 'ব্যাখ্যা দেখাও'}
+        </button>
+      )}
+
+      {shown && expOpen && q.explanation && (
         <div className="explanation-box anim-slide" style={{ '--c': color }} data-hl-root={q._uid || undefined}>
           <div className="explanation-header">
             <Lightbulb size={14} style={{ color, flexShrink: 0 }} />
