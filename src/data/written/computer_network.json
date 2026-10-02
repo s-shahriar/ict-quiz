@@ -5974,6 +5974,103 @@
         ],
         "mnemonic": "Noun = class; \"is a\" = খালি ত্রিভুজ parent-এর দিকে; \"has a\" = diamond whole-এর দিকে; \"refers to next\" = নিজের দিকে ফেরা রেখা।"
       }
+    },
+    {
+      "id": "cn_058",
+      "q": "A network administrator added a redundant link between two switches. Soon after, users experienced severe network slowdown and broadcast traffic increased dramatically.\n\n    a) Identify the likely cause.\n    b) How does a Layer-2 switching loop occur?\n    c) What is a broadcast storm?\n    d) How does STP prevent switching loops?",
+      "tags": [
+        "STP",
+        "switching loop",
+        "broadcast storm",
+        "Layer 2",
+        "switch"
+      ],
+      "answer": {
+        "summary": [
+          "Redundant link দুই switch-এর মধ্যে Layer-2 loop বানিয়েছে, আর STP কাজ না করায় broadcast storm হচ্ছে।"
+        ],
+        "points": [
+          "a) সম্ভাব্য কারণ",
+          {
+            "sub": "দুই switch-এর মধ্যে এখন দুটি পথ, তাই Layer-2 loop তৈরি হয়েছে।"
+          },
+          {
+            "sub": "STP বন্ধ বা ভুল configure করা, তাই loop ভাঙা হয়নি।"
+          },
+          {
+            "sub": "ফল: broadcast storm — bandwidth আর switch CPU ভরে যায়।"
+          },
+          "b) Layer-2 switching loop কীভাবে ঘটে",
+          {
+            "sub": "PC একটি broadcast পাঠায় — মানে frame-টা সবার কাছে যাবে।"
+          },
+          {
+            "sub": "Switch broadcast পেলে যে port দিয়ে এসেছে সেটা ছাড়া বাকি সব port দিয়ে পাঠায় (flood)।"
+          },
+          {
+            "sub": "তাই SW1 frame-টা Link 1 আর Link 2 — দুই link দিয়েই SW2-তে পাঠায়।"
+          },
+          {
+            "sub": "SW2-ও একই কাজ করে: Link 1-এ আসা copy Link 2 দিয়ে SW1-এ ফেরত পাঠায়।"
+          },
+          {
+            "sub": "SW1 আবার পাঠায়, SW2 আবার ফেরত দেয় — এই চক্রই switching loop।"
+          },
+          {
+            "sub": "Ethernet frame-এ TTL নেই (কোনো মেয়াদ নেই), তাই চক্র নিজে থেকে থামে না।"
+          },
+          {
+            "sub": "একই PC-র frame কখনো Link 1, কখনো Link 2 দিয়ে আসে — তাই MAC table বারবার বদলায় (MAC flapping)।"
+          },
+          {
+            "label": "Diagram — দুই switch-এর মধ্যে frame-এর চক্র",
+            "diagram": "            PC\n            │ broadcast\n            ▼\n      ┌───────────┐                  ┌───────────┐\n      │           ├──── Link 1 ─────►┤           │\n      │    SW1    │                  │    SW2    │\n      │           ├◄──── Link 2 ─────┤           │\n      └───────────┘                  └───────────┘\n\n  1.  SW1 ── Link 1 ──► SW2     SW1 flood করল — SW2-তে গেল\n  2.  SW2 ── Link 2 ──► SW1     SW2-ও flood করল — SW1-এ ফেরত এল\n  3.  SW1 ── Link 1 ──► SW2     আবার পাঠাল\n  4.  SW2 ── Link 2 ──► SW1     আবার ফেরত\n  ...                           TTL নেই, তাই এই চক্র থামে না"
+          },
+          "c) Broadcast storm",
+          {
+            "sub": "Loop-এ আটকে থাকা broadcast frame বারবার flood হয়ে সংখ্যায় বাড়তে থাকে।"
+          },
+          {
+            "sub": "নতুন broadcast-ও একই loop-এ যোগ হয়, তাই traffic জমতেই থাকে।"
+          },
+          {
+            "sub": "ফল: bandwidth পুরো ভরে যায়, switch CPU 100%, network কার্যত বন্ধ।"
+          },
+          "d) STP কীভাবে loop প্রতিরোধ করে",
+          {
+            "sub": "STP-র কাজ: দুই পথ থাকলে একটা পথ বন্ধ (Block) রেখে loop ভাঙা।"
+          },
+          {
+            "sub": "Switch-গুলো BPDU message আদান-প্রদান করে।"
+          },
+          {
+            "sub": "যার Bridge ID (priority + MAC) সবচেয়ে ছোট, সে Root Bridge।"
+          },
+          {
+            "sub": "Root Bridge-এর port-গুলো খোলা থাকে — Designated Port (D)।"
+          },
+          {
+            "sub": "অন্য switch Root-এ যাওয়ার সবচেয়ে কম cost-এর port খোলা রাখে — Root Port (R)।"
+          },
+          {
+            "sub": "বাকি port Block (B) হয় — সেখান দিয়ে frame যায় না, তাই চক্র হয় না।"
+          },
+          {
+            "sub": "খোলা link নষ্ট হলে blocked port চালু হয়ে backup দেয়।"
+          },
+          {
+            "label": "Diagram — STP: Link 2-এ SW2-র port Block",
+            "diagram": "      ┌───────────┐                    ┌───────────┐\n      │    SW1    ├[D]─── Link 1 ───[R]┤    SW2    │     D, R: খোলা — frame যায়\n      │   Root    ├[D]─── Link 2 ──X[B]┤           │     B: Blocked — frame যায় না\n      └───────────┘                    └───────────┘\n\n  SW1 ── Link 1 ──► SW2     broadcast পৌঁছাল\n  SW2 ── Link 2 ──X         B বন্ধ — ফেরত আসে না, চক্র নেই"
+          }
+        ],
+        "mistakes": [
+          [
+            "Router-এর মতো TTL frame-কে একসময় বাদ দেবে",
+            "Ethernet frame-এ TTL নেই; TTL শুধু IP header-এ, Layer-2 switch সেটা দেখে না।"
+          ]
+        ],
+        "mnemonic": "দুই পথ = loop, TTL নেই = storm, STP = একটা পথ block।"
+      }
     }
   ]
 }

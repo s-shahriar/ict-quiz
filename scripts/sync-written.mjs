@@ -8,6 +8,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 import { uidFor } from '../src/lib/qid.js'
+import { pruneHighlights } from './prune-highlights.mjs'
 
 function loadEnv(file) {
   if (!existsSync(file)) return
@@ -91,6 +92,7 @@ if (moves.length) {
 if (DRY) {
   changed.filter(c => !c.patch.category_slug)
     .forEach(c => console.log(`    would update ${c.slug}/${c.id} [${Object.keys(c.patch).join(', ')}]`))
+  await pruneHighlights(supabase, { dry: true })
   process.exit(0)
 }
 
@@ -115,3 +117,6 @@ for (const c of changed) {
   if (++done % 20 === 0) console.log(`  ${done}/${changed.length}`)
 }
 console.log(`✓ updated ${done} rows`)
+
+// Edits can leave highlights whose text is gone; delete them so they never pile up.
+await pruneHighlights(supabase)

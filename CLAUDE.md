@@ -52,8 +52,15 @@ Supabase `questions` table. **Never run `scripts/seed.mjs`** — it wipes and re
    - answer-only edit → `node scripts/sync-written.mjs` (`--dry` first).
    - **question text changed** → the uid changes and would orphan the user's
      Important/Nailed/Weak flags. Migrate instead: update `questions.uid`, `.question`,
-     `.payload` on the row matched by the OLD uid, then `user_progress.uid` old → new.
+     `.payload` on the row matched by the OLD uid, then `user_progress.uid` and
+     `user_highlights.uid` old → new.
 4. Bump `EXPECTED.written` in `scripts/seed.mjs` to the new total.
+
+**Highlights after an edit:** losing a highlight because its text changed is fine, but
+dead highlight rows must not pile up in `user_highlights` (the user's rule). Any content
+edit → `node scripts/prune-highlights.mjs` deletes highlights whose text can no longer be
+placed. `sync-written.mjs` already runs it after every sync (and `--dry` previews it);
+run it by hand after editing equations or MCQs.
 
 Display order inside a segment is `sort_order` **DESC** (highest first). To place a new
 question *after* existing ones in a segment, insert it earlier in the array and renumber
@@ -92,5 +99,6 @@ followed in every chat. The short version:
 - No worked-example (প্রশ্ন → ধাপ → উত্তর) blocks — the user removed them all. Put one
   set of concrete numbers in the diagram instead, so a value can be followed through it.
 - Report anything unclear in the user's notes and every interpretation or addition.
-- Renaming a group `id` or an equation `name` orphans saved highlights on it (§6).
+- Renaming a group `id` or an equation `name` drops saved highlights on it (§6); after any
+  equation edit run `node scripts/prune-highlights.mjs` so the dead rows are deleted.
 - Check each new group in a real browser (dark + light, desktop + phone) before done.

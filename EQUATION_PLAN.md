@@ -195,6 +195,8 @@ hairline, with its label inside — never a label squeezed above a sliver.
   (`eq:<name>.name | .formula | .note`), the symbol (`sym:<tex>`), `caption`, `mnemonic`.
 - So **renaming a group `id` or an equation `name` orphans the user's saved highlights**
   on it. Edit notes, formulas and diagrams freely; rename only when it is really needed.
+- After any equation edit, run `node scripts/prune-highlights.mjs` (`--dry` first): it
+  deletes highlights whose text is gone, so dead rows never pile up in the database.
 - A formula is KaTeX markup, so a highlight on it always marks the whole formula.
 
 ## 7. Checklist before saying it is done
