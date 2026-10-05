@@ -4420,3 +4420,28 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   .exam-stop-btn { padding: 6px 8px; }
   .exam-stop-btn:not(.confirm) .exam-stop-label { display: none; }
 }
+
+/* ── Loader (ICT chip mark) ─────────────────────────────────────────────── */
+.ql-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 50vh; padding: 24px; }
+.ql-inline { display: inline-flex; align-items: center; gap: 8px; vertical-align: middle; }
+.ql-label { margin: 0; color: var(--text-3); font-size: 0.86rem; letter-spacing: .2px; }
+.ql-mark { flex: none; overflow: visible; }
+.ql-body { stroke: var(--accent); fill: var(--accent-light); }
+.ql-pins { stroke: var(--accent-soft); animation: ql-pins 1.4s ease-in-out infinite; }
+.ql-bolt { stroke: var(--accent); fill: var(--accent); fill-opacity: 0; stroke-dasharray: 1; stroke-dashoffset: 1; animation: ql-trace 1.4s ease-in-out infinite; }
+@keyframes ql-trace {
+  0%   { stroke-dashoffset: 1; fill-opacity: 0; }
+  45%  { stroke-dashoffset: 0; fill-opacity: 0; }
+  60%  { stroke-dashoffset: 0; fill-opacity: .85; }
+  80%  { stroke-dashoffset: 0; fill-opacity: .85; }
+  100% { stroke-dashoffset: -1; fill-opacity: 0; }
+}
+@keyframes ql-pins { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+.ql-bar { position: relative; height: 3px; width: 100%; overflow: hidden; border-radius: 3px; background: var(--accent-light); }
+.ql-bar > span { position: absolute; inset: 0 auto 0 0; width: 38%; border-radius: 3px; background: var(--accent-soft); animation: ql-slide 1.2s ease-in-out infinite; }
+@keyframes ql-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(270%); } }
+@media (prefers-reduced-motion: reduce) {
+  .ql-pins { animation: none; }
+  .ql-bolt { animation: none; stroke-dashoffset: 0; fill-opacity: .85; }
+  .ql-bar > span { animation: none; width: 100%; opacity: .6; }
+}

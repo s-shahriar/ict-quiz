@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Loader from './shared/Loader.jsx'
 import { useParams, useNavigate, Navigate, useSearchParams, useLocation } from 'react-router-dom'
 import { ChevronLeft, Star, Bookmark, Flame, LayoutGrid } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
@@ -36,7 +37,7 @@ export default function StudyMode() {
   }, [focusUid])
 
   if (!topic) return <Navigate to="/" replace />
-  if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
+  if (!ready) return <Loader />
 
   const allQ = topic.questions
     .map((q) => ({ q, qid: q._uid }))

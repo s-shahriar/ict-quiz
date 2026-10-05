@@ -1,4 +1,5 @@
 import { Moon, Sun } from 'lucide-react'
+import Loader from './components/shared/Loader.jsx'
 import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import HomeScreen from './components/HomeScreen.jsx'
@@ -88,7 +89,7 @@ function AppRoutes() {
         </div>
       )}
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<HomeScreen />} />
           <Route path="/mcq/:topicId" element={<ModeSelect />} />

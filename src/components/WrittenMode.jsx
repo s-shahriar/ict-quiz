@@ -1,4 +1,5 @@
 import { Bookmark, BookOpenText, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Flame, LayoutGrid, PenLine, Star, Zap } from 'lucide-react'
+import Loader from './shared/Loader.jsx'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -104,7 +105,7 @@ export default function WrittenMode() {
   }, [focusQ, topicId, activeSeg])
 
   if (!topic) return null
-  if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
+  if (!ready) return <Loader />
 
   return (
     <div className="written-page anim-fade">

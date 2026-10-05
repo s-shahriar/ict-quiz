@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Check, Loader2, Undo2, AlertCircle } from 'lucide-react'
+import { Check, Undo2, AlertCircle } from 'lucide-react'
+import Loader from './Loader.jsx'
 import { useHighlights } from '../../contexts/HighlightContext.jsx'
 
 // The Save pill for pending highlight edits.
@@ -46,7 +47,7 @@ export default function HighlightSaveBar() {
         <Undo2 size={15} />
       </button>
       <button type="button" className="hl-savebar-save" onClick={onSave} disabled={busy}>
-        {busy ? <Loader2 size={15} className="hl-spin" /> : <Check size={15} />}
+        {busy ? <Loader inline size={15} /> : <Check size={15} />}
         <span>{busy ? 'Saving' : status === 'error' ? 'Retry' : 'Save'}</span>
       </button>
     </div>,

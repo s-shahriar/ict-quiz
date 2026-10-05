@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import Loader from './shared/Loader.jsx'
 import { useParams, useNavigate, useSearchParams, Navigate } from 'react-router-dom'
 import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, Star, Bookmark, Flame } from 'lucide-react'
 import { TOPICS } from '../data/index.js'
@@ -73,7 +74,7 @@ export default function QuizMode() {
   const noteEditor = useNoteEditor(qid)
 
   if (!topic) return <Navigate to="/" replace />
-  if (!ready) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: 'var(--text-3)', fontSize: '0.85rem' }}>Loading…</div>
+  if (!ready) return <Loader />
 
   const opts = q ? ['a','b','c','d','e'].filter(k => q.options?.[k]) : []
   // Highlights for this question's explanation (block key 'explanation' —

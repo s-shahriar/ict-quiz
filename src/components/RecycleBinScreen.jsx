@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Loader from './shared/Loader.jsx'
 import { useNavigate } from 'react-router-dom'
 import { Trash2, RotateCcw, ChevronLeft, AlertTriangle } from 'lucide-react'
 import { fetchDeletedQuestions } from '../lib/trashSync.js'
@@ -63,7 +64,7 @@ export default function RecycleBinScreen() {
           <button className="recycle-restore-btn" onClick={() => signInWithGoogle()}>Continue with Google</button>
         </div>
       ) : items === null ? (
-        <div className="recycle-empty"><p>Loading…</p></div>
+        <div className="recycle-empty"><Loader label="Loading…" /></div>
       ) : items.length === 0 ? (
         <div className="recycle-empty">
           <Trash2 size={34} />

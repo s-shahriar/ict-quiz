@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import Loader from './shared/Loader.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, Zap, Minus, Plus } from 'lucide-react'
@@ -149,7 +150,7 @@ export default function ExamConfig() {
 
         <button className="exam-start-btn" onClick={handleStart} disabled={maxCount === 0 || !ready}>
           <Zap size={16} />
-          {ready ? `Start Exam — ${safeCount} Questions` : 'Loading…'}
+          {ready ? `Start Exam — ${safeCount} Questions` : <Loader inline label="Loading…" />}
         </button>
       </div>
     </div>

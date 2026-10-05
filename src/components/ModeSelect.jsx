@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Loader from './shared/Loader.jsx'
 import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import TopbarActions from './shared/TopbarActions.jsx'
 import { ChevronLeft, Brain, BookOpen, Bookmark, Flame, Star, ListChecks, X } from 'lucide-react'
@@ -61,7 +62,7 @@ export default function ModeSelect() {
         <div className="mode-topic-name" style={{ color: topic.color }}>
           {topic.name}
         </div>
-        <div className="mode-topic-meta">{ready ? `${topic.questions.length} questions available` : 'Loading…'}</div>
+        <div className="mode-topic-meta">{ready ? `${topic.questions.length} questions available` : <Loader inline label="Loading…" />}</div>
       </div>
 
       <div className="mode-cards">
