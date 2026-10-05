@@ -2,9 +2,10 @@
 // question `uid` plus a block key inside that answer. RLS-scoped to the user,
 // same as user_progress.
 //
-// Nothing here is called directly as you highlight: every add / remove / recolour
-// is queued in lib/offlineQueue.js, which flushes these in batches (and retries
-// them offline). See contexts/HighlightContext.jsx.
+// Nothing here is called as you highlight, and not by Save either: highlighting
+// is local until you press Save (contexts/HighlightContext.jsx), and Save hands the
+// changes to lib/offlineQueue.js, which flushes them through these functions in
+// batches (and retries them while offline).
 
 import { supabase } from './supabase.js'
 

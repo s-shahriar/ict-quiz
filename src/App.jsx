@@ -16,6 +16,7 @@ import { HandProvider } from './contexts/HandContext.jsx'
 import { HighlightProvider } from './contexts/HighlightContext.jsx'
 import { initDragScroll } from './lib/dragScroll.js'
 import HighlightBar from './components/shared/HighlightBar.jsx'
+import HighlightSaveBar from './components/shared/HighlightSaveBar.jsx'
 
 const ExamConfig = lazy(() => import('./components/ExamConfig.jsx'))
 const ExamMode = lazy(() => import('./components/ExamMode.jsx'))
@@ -52,6 +53,7 @@ export default function App() {
               <HighlightProvider>
                 <AppRoutes />
                 <HighlightBar />
+                <HighlightSaveBar />
               </HighlightProvider>
             </TrashProvider>
           </ProgressProvider>

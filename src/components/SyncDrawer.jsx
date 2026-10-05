@@ -147,11 +147,11 @@ export default function SyncDrawer() {
   // reversed it — including an undo — its row stops offering one.
   function undoFor(it) {
     if (it.kind === 'purge') return { blocked: true }
-    // Highlights: undo is the opposite edit, offered only while the row's effect still stands
-    // (a later change to the same highlight, including an undo, retires it).
-    if (it.kind === 'hl_add') return hls.find(it.hl.id) ? { run: () => hls.remove(it.hl.uid, [it.hl.id]) } : null
-    if (it.kind === 'hl_del') return hls.find(it.hl.id) ? null : { run: () => hls.restore(it.hl) }
-    if (it.kind === 'hl_color') return hls.find(it.hl.id)?.color === it.hl.color && it.prev ? { run: () => hls.recolor(it.hl.uid, [it.hl.id], it.prev) } : null
+    // Highlights: these rows are SAVED changes, so undo queues the opposite edit directly (no Save step), offered only
+    // while the row's effect still stands (a later change to the same highlight, including an undo, retires it).
+    if (it.kind === 'hl_add') return hls.find(it.hl.id) ? { run: () => hls.queueRemove(it.hl) } : null
+    if (it.kind === 'hl_del') return hls.find(it.hl.id) ? null : { run: () => hls.queueRestore(it.hl) }
+    if (it.kind === 'hl_color') return hls.find(it.hl.id)?.color === it.hl.color && it.prev ? { run: () => hls.queueRecolor(it.hl, it.prev) } : null
     const q = { _id: it.id, _uid: it.uid, _module: it.module, _catName: it.cat, question: it.label }
     if (it.kind === 'delete') return it.id && trash.isTrashed(it.id) ? { run: () => trash.restore(q) } : null
     if (it.kind === 'restore') return it.id && !trash.isTrashed(it.id) ? { run: () => trash.moveToBin(q) } : null

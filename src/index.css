@@ -3885,6 +3885,53 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 .hl-bar-del:active { background: var(--hover-bg); color: var(--bad); }
 
+/* ── The Save pill ───────────────────────────────────────────────────────
+   Bottom centre: every other fixed element in the app is anchored to the top,
+   so nothing collides, and the bottom edge is the easiest place to reach with
+   a thumb. The safe-area inset clears the Android gesture bar. */
+.hl-savebar {
+  position: fixed;
+  z-index: 3900;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: calc(100vw - 24px);
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px 7px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--text-2);
+  animation: hlSaveIn 0.18s ease-out;
+}
+@keyframes hlSaveIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.hl-savebar.has-error { border-color: color-mix(in srgb, var(--bad) 55%, transparent); color: var(--bad); }
+.hl-savebar.saved { color: var(--text-2); padding: 9px 16px; }
+.hl-savebar-msg {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 44vw;
+}
+.hl-savebar-undo {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3); background: none; flex-shrink: 0;
+}
+.hl-savebar-undo:active { background: var(--hover-bg); }
+.hl-savebar-save {
+  display: flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 15px;
+  border-radius: 999px;
+  background: var(--accent-2); color: var(--on-accent);
+  font-size: 0.82rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.hl-savebar-save:disabled { opacity: 0.65; }
+.hl-spin { animation: hlSpin 0.9s linear infinite; }
+@keyframes hlSpin { to { transform: rotate(360deg); } }
 
 /* Selection must stay enabled everywhere inside an answer or a highlightable
    question, including on touch devices where some resets disable it. Controls

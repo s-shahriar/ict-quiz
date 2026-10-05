@@ -1,7 +1,10 @@
 // Offline-tolerant write queue for nail / important / weak / delete, for the
 // Recycle Bin's restore / delete-forever, and for text highlights.
 //
-// Every one of those actions is optimistic in the UI and flows through here.
+// Every one of those actions is optimistic in the UI and flows through here. (Highlights
+// are the one exception to "at once": they stay local until the user presses Save, which
+// is what enqueues them — see contexts/HighlightContext.jsx. From then on they behave
+// like everything else here.)
 // Flag writes are coalesced per question uid on a LAST-ACTION-WINS basis: if you
 // nail then un-nail then mark important the same question while offline, only the
 // final state per column is kept ({ nailed:false, important:true }). A delete, a
@@ -267,6 +270,10 @@ function hlEntry(key, kind, hl, extra) {
 
 // A new highlight (`hl` carries its uuid). Re-adding one whose removal has not
 // been sent yet just cancels the removal: the row is still on the server.
+// Whether highlight changes can be queued yet (the queue is keyed to the signed-in user). Save checks this first, so it never
+// clears pending highlights that the queue would then silently ignore.
+export function highlightQueueReady() { return Boolean(userId) }
+
 export function enqueueHighlightAdd(hl) {
   if (!userId || !hl?.id) return
   const key = hlKey(hl.id)
