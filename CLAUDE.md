@@ -86,9 +86,12 @@ section above the normal list.
 **Read `EQUATION_PLAN.md` first** — it is the contract, and the user asked that it be
 followed in every chat. The short version:
 
-- Content is **frontend code, not Supabase** (same as general-quiz's math formulas):
-  `src/data/equation/<slug>.js` for the data, `src/components/equation/diagrams/` for the
-  SVG diagrams. No seed / sync / manifest step; it goes live with the frontend deploy.
+- The equation **data** (`src/data/equation/<slug>.js`) is the authoring source, and the app reads it from Supabase
+  (`content_blobs`, kind `equation`). After editing run `node scripts/sync-static.mjs` (`--dry` first), then
+  `node ~/Projects/Self/Quiz/slate/tools/prerender/build.mjs` so Slate gets the rendered page (`web/equation_<slug>`).
+  The SVG **diagrams** (`src/components/equation/diagrams/`) are frontend code and go live with the Vercel deploy;
+  a new `diagram` key must be deployed before its data is synced (same ordering rule as written payloads).
+  Practice (`src/data/practice/*.json`) works the same way: edit, then `node scripts/sync-static.mjs`.
 - Equations go in **groups**, one diagram per group. The diagram is a picture of the real
   thing with **every term of every equation labelled on it, in the formula's own words**
   (the coverage rule, §5.1) — and it never prints the formula itself.

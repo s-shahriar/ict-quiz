@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWeakContext } from '../contexts/WeakContext.jsx'
-import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
+import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId, usePracticeReady } from '../data/practice/index.js'
 import TopbarActions from './shared/TopbarActions.jsx'
 import CategoryChipBar from './CategoryChipBar.jsx'
 import WeakButton from './shared/WeakButton.jsx'
@@ -11,6 +11,7 @@ import WeakOnlyBar from './shared/WeakOnlyBar.jsx'
 
 export default function PracticeImportantScreen() {
   const navigate = useNavigate()
+  usePracticeReady()
   const { value: important, remove: onUnmark } = useImportantContext()
   const { value: weak, remove: onUnweak } = useWeakContext()
   const [activeId, setActiveId] = useState(null)

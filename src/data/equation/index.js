@@ -1,27 +1,36 @@
 import { TOPICS } from '../index.js'
-import computer_network from './computer_network.js'
-import operating_system from './operating_system.js'
+import { useBlobsReady } from '../blobs.js'
 
-// Equation module. Content is bundled (like Practice), not served from Supabase:
-// each category is a JS file of formula groups, keyed by the MCQ topic id so it
-// inherits that topic's name, icon and colour.
+// Equation module. Content lives in Supabase (`content_blobs`, kind 'equation'),
+// one row per category keyed by the MCQ topic id, so each inherits that topic's
+// name, icon and colour. The store is filled in place by `useEquationReady`
+// (the diagram components themselves are still bundled).
 
-const EQUATION_DATA = {
-  computer_network,
-  operating_system,
-}
+const EQUATION_DATA = {}
 
 const countEquations = (data) =>
   data.groups.reduce((n, g) => n + g.equations.length, 0)
 
-export const EQUATION_TOPICS = TOPICS
-  .filter(t => EQUATION_DATA[t.id])
-  .map(t => ({
-    ...t,
-    module: 'equation',
-    groupCount: EQUATION_DATA[t.id].groups.length,
-    equationCount: countEquations(EQUATION_DATA[t.id]),
-  }))
+// Emptied until loaded; mutated in place so importers keep the same array.
+export const EQUATION_TOPICS = []
+
+function applyEquation(rows) {
+  for (const r of rows) EQUATION_DATA[r.key] = r.payload
+  EQUATION_TOPICS.length = 0
+  for (const t of TOPICS.filter(t => EQUATION_DATA[t.id])) {
+    EQUATION_TOPICS.push({
+      ...t,
+      module: 'equation',
+      groupCount: EQUATION_DATA[t.id].groups.length,
+      equationCount: countEquations(EQUATION_DATA[t.id]),
+    })
+  }
+}
+
+// Ensure Equation content is loaded; the caller re-renders once it is ready.
+export function useEquationReady() {
+  return useBlobsReady('equation', applyEquation)
+}
 
 export function getEquationData(topicId) {
   return EQUATION_DATA[topicId] || null

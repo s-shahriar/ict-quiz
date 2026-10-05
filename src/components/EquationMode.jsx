@@ -3,7 +3,7 @@ import { ChevronLeft, Eye, EyeOff, LayoutGrid, Sigma } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useHighlights } from '../contexts/HighlightContext.jsx'
-import { EQUATION_TOPICS, getEquationData } from '../data/equation/index.js'
+import { EQUATION_TOPICS, getEquationData, useEquationReady } from '../data/equation/index.js'
 import { uidFor } from '../lib/qid.js'
 import CategorySidebar from './CategorySidebar.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
@@ -27,8 +27,17 @@ export default function EquationMode() {
     try { localStorage.setItem(COVER_KEY, cover ? '1' : '0') } catch { /* ignore */ }
   }, [cover])
 
+  const ready = useEquationReady()
   const topic = EQUATION_TOPICS.find(t => t.id === searchParams.get('topic')) || EQUATION_TOPICS[0]
   const data = topic && getEquationData(topic.id)
+
+  if (!ready) {
+    return (
+      <div className="eq-page anim-fade">
+        <div className="written-empty"><p>লোড হচ্ছে…</p></div>
+      </div>
+    )
+  }
 
   if (!data) {
     return (

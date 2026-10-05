@@ -1,26 +1,37 @@
 import { Terminal, Database } from 'lucide-react'
+import { useBlobsReady } from '../blobs.js'
 
-import linux from './linux.json'
-import sql from './sql.json'
-
-const PRACTICE_DATA = {
-  linux: linux,
-  sql: sql,
-}
+// Practice content lives in Supabase (`content_blobs`, kind 'practice'), one row
+// per category. The store below is filled in place by `usePracticeReady`, so the
+// helpers keep their synchronous shape.
+const PRACTICE_DATA = {}
 
 const META = {
   linux: { icon: Terminal, color: 'var(--topic-4)' },
   sql: { icon: Database, color: 'var(--topic-8)' },
 }
 
-// Single source of truth for Practice categories.
-export const PRACTICE_CATEGORIES = Object.values(PRACTICE_DATA).map(c => ({
-  id: c.category,
-  name: c.name,
-  topicCount: c.topics?.length || 0,
-  icon: META[c.category]?.icon || Terminal,
-  color: META[c.category]?.color || 'var(--topic-4)',
-}))
+// Single source of truth for Practice categories (emptied until loaded).
+export const PRACTICE_CATEGORIES = []
+
+function applyPractice(rows) {
+  for (const r of rows) PRACTICE_DATA[r.key] = r.payload
+  PRACTICE_CATEGORIES.length = 0
+  for (const c of Object.values(PRACTICE_DATA)) {
+    PRACTICE_CATEGORIES.push({
+      id: c.category,
+      name: c.name,
+      topicCount: c.topics?.length || 0,
+      icon: META[c.category]?.icon || Terminal,
+      color: META[c.category]?.color || 'var(--topic-4)',
+    })
+  }
+}
+
+// Ensure Practice is loaded; the caller re-renders once it is ready.
+export function usePracticeReady() {
+  return useBlobsReady('practice', applyPractice)
+}
 
 export function getPracticeData(categoryId) {
   return PRACTICE_DATA[categoryId] || null

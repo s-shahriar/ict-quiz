@@ -5,8 +5,8 @@ import { TOPICS } from '../data/index.js'
 import { WRITTEN_TOPICS } from '../data/written/index.js'
 import { EXTRA_TOPICS } from '../data/extra/index.js'
 import { VIVA_TOPICS } from '../data/viva/index.js'
-import { PRACTICE_CATEGORIES } from '../data/practice/index.js'
-import { EQUATION_TOPICS } from '../data/equation/index.js'
+import { PRACTICE_CATEGORIES, usePracticeReady } from '../data/practice/index.js'
+import { EQUATION_TOPICS, useEquationReady } from '../data/equation/index.js'
 import { useModuleReady } from '../data/contentLoader.js'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -46,6 +46,8 @@ export default function HomeScreen() {
   // Load ONLY the active tab's module (for its search) — never all modules.
   const contentModule = ['mcq', 'written', 'extra', 'viva'].includes(module) ? module : null
   useModuleReady(contentModule)
+  usePracticeReady()
+  useEquationReady()
 
   // Counts come straight from the progress sets by uid prefix — uids are
   // module-scoped (mcq:/written:/extra:/viva:), so no content needs loading and

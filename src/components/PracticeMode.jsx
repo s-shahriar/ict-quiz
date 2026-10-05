@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWeakContext } from '../contexts/WeakContext.jsx'
-import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId } from '../data/practice/index.js'
+import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId, usePracticeReady } from '../data/practice/index.js'
 import TopbarActions from './shared/TopbarActions.jsx'
 import WeakButton from './shared/WeakButton.jsx'
 
@@ -15,6 +15,7 @@ const TABS = [
 
 export default function PracticeMode() {
   const navigate = useNavigate()
+  const ready = usePracticeReady()
   const { value: important, toggle: toggleImportant } = useImportantContext()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -45,6 +46,14 @@ export default function PracticeMode() {
   // is marked in both the Practice and Commands tabs. A drill keys off its
   // primary command (accept[0]).
   const cmdImpId = (cmd) => practiceCmdId(categoryId, topic?.id, cmd)
+
+  if (!ready) {
+    return (
+      <div className="practice-page anim-fade">
+        <div className="practice-placeholder"><p>লোড হচ্ছে…</p></div>
+      </div>
+    )
+  }
 
   if (!data || !topic) {
     return (

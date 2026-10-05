@@ -2,7 +2,7 @@ import { Bookmark, ChevronLeft, Flame } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWeakContext } from '../contexts/WeakContext.jsx'
-import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId } from '../data/practice/index.js'
+import { PRACTICE_CATEGORIES, buildCommandList, getPracticeData, practiceCmdId, usePracticeReady } from '../data/practice/index.js'
 import { CommandPractice } from './PracticeMode.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 
@@ -11,6 +11,7 @@ import TopbarActions from './shared/TopbarActions.jsx'
 // ids and case-insensitivity resolve correctly in the shared CommandPractice.
 export default function PracticeImportantRun() {
   const navigate = useNavigate()
+  usePracticeReady()
   const { value: important, toggle: toggleImportant } = useImportantContext()
   const { value: weak } = useWeakContext()
   // ?weak=1 (from the Important screen's Weak switch) runs only the Weak items.
