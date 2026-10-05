@@ -1,5 +1,25 @@
 # ict-quiz — working notes for Claude
 
+## ⚠️ SINGLE-SOURCE RULE — never skip (web app AND Slate must both see every addition)
+
+Slate (the Android app, `~/Projects/Self/Quiz/slate`) and this web app read the **same Supabase project**. Any new or
+edited content — a question, written answer, equation, practice drill, viva/extra item, image, topic — must be saved
+**in Supabase**, so it shows up in both without being re-entered. Content that lives only in a repo file, a JS/JSON bundle
+or Slate's `assets/` is invisible to the other app and is a bug. Do this **every time**, and tell the user it is done:
+
+| Content | Where it must end up | How |
+|---|---|---|
+| MCQ | `questions` (`module:'mcq'`) | insert straight into the DB (no `src/data/*.json` step) |
+| Written / Extra / Viva | `questions` (`module` = written/extra/viva) | edit the JSON, then the written-Q&A steps below (`sync-written.mjs`) |
+| Equation data, Practice (Linux/SQL) | `content_blobs` (`equation`, `practice`) | edit `src/data/{equation,practice}`, then `node scripts/sync-static.mjs` |
+| Equation page for Slate | `content_blobs` (`web/equation_<slug>`) | then `node ~/Projects/Self/Quiz/slate/tools/prerender/build.mjs` |
+| Written images | `public/written-images` (served by Vercel; Slate downloads by URL) | deploy the web app |
+
+Finish every content change with a check: query the DB (or reload the web app) and confirm the new row is **live**, and for
+equations confirm the prerender publish ran. A repo-only edit is not done. Known exceptions (still hardcoded in the web
+bundle AND Slate until moved into the DB): topic names/colours/icons and `src/data/_manifest.json` counts — change both when
+you add a category.
+
 ## Before writing or editing ANY written Q&A answer
 
 Read `WRITTEN_QA_PLAN.md` first — §3 (answer format), §3.1 (one idea per line),

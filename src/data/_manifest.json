@@ -18,7 +18,7 @@
   "written": {
     "c_programming": 57,
     "computer_fundamental": 1,
-    "computer_network": 58,
+    "computer_network": 56,
     "database": 11,
     "digital_logic": 2,
     "dsa": 21,
@@ -27,15 +27,15 @@
     "machine_learning": 5,
     "microprocessor": 1,
     "oop": 4,
-    "operating_system": 30,
-    "server": 32,
+    "operating_system": 27,
+    "server": 31,
     "software_engineering": 7,
     "theory_of_computation": 1
   },
   "extra": {
     "computer_fundamental": 0,
     "computer_network": 0,
-    "database": 15,
+    "database": 11,
     "dsa": 5,
     "information_security": 0,
     "linux": 0,
