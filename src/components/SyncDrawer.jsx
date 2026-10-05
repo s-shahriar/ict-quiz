@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, Bookmark, BookmarkX, Check, Clock, Cloud, CloudOff, Flame, RefreshCw, RotateCcw, Star, StarOff, Trash2, Undo2, X } from 'lucide-react'
+import { AlertTriangle, Bookmark, BookmarkX, Check, Clock, Cloud, CloudOff, Eraser, Flame, Highlighter, RefreshCw, RotateCcw, Star, StarOff, Trash2, Undo2, X } from 'lucide-react'
 import { subscribeQueue, flushNow } from '../lib/offlineQueue.js'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { useMasteredContext } from '../contexts/MasteredContext.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
+import { useHighlights } from '../contexts/HighlightContext.jsx'
 import { closeSyncDrawer, subscribeSyncDrawer } from '../lib/syncDrawerState.js'
 
 // Right-hand drawer that shows the offline write queue, built on the same shell
@@ -37,6 +38,10 @@ function describe(it) {
   if (it.kind === 'delete') return { Icon: Trash2, color: 'var(--bad)', text: 'Moved to Recycle Bin' }
   if (it.kind === 'restore') return { Icon: RotateCcw, color: 'var(--ok)', text: 'Restored from Recycle Bin' }
   if (it.kind === 'purge') return { Icon: Trash2, color: 'var(--bad)', text: 'Deleted forever', filled: true }
+  // A highlight row wears the colour it was made in; a removal is grey, like an un-mark.
+  if (it.kind === 'hl_add') return { Icon: Highlighter, color: `var(--hl-${it.hl?.color || 'mint'}-e)`, text: 'Highlight added' }
+  if (it.kind === 'hl_del') return { Icon: Eraser, color: OFF, text: 'Highlight removed' }
+  if (it.kind === 'hl_color') return { Icon: Highlighter, color: `var(--hl-${it.hl?.color || 'mint'}-e)`, text: `Highlight changed to ${it.hl?.color}` }
   const { nailed, important, weak } = it.patch || {}
   const parts = []
   if (nailed !== undefined) parts.push(nailed ? 'Nailed' : 'Un-nailed')
@@ -118,6 +123,7 @@ export default function SyncDrawer() {
   const imp = useImportantContext()
   const wk = useWeakContext()
   const trash = useTrash()
+  const hls = useHighlights()
 
   useEffect(() => subscribeQueue((s) => setSnap(s)), [])
   useEffect(() => subscribeSyncDrawer(setOpen), [])
@@ -141,6 +147,11 @@ export default function SyncDrawer() {
   // reversed it — including an undo — its row stops offering one.
   function undoFor(it) {
     if (it.kind === 'purge') return { blocked: true }
+    // Highlights: undo is the opposite edit, offered only while the row's effect still stands
+    // (a later change to the same highlight, including an undo, retires it).
+    if (it.kind === 'hl_add') return hls.find(it.hl.id) ? { run: () => hls.remove(it.hl.uid, [it.hl.id]) } : null
+    if (it.kind === 'hl_del') return hls.find(it.hl.id) ? null : { run: () => hls.restore(it.hl) }
+    if (it.kind === 'hl_color') return hls.find(it.hl.id)?.color === it.hl.color && it.prev ? { run: () => hls.recolor(it.hl.uid, [it.hl.id], it.prev) } : null
     const q = { _id: it.id, _uid: it.uid, _module: it.module, _catName: it.cat, question: it.label }
     if (it.kind === 'delete') return it.id && trash.isTrashed(it.id) ? { run: () => trash.restore(q) } : null
     if (it.kind === 'restore') return it.id && !trash.isTrashed(it.id) ? { run: () => trash.moveToBin(q) } : null
@@ -222,7 +233,7 @@ export default function SyncDrawer() {
             <div className="syncq-empty">
               <Check size={26} />
               <p>Nothing waiting</p>
-              <span>{snap.lastSavedAt ? `Last change saved ${ago(snap.lastSavedAt)}.` : 'Nail, important, weak, delete and Recycle Bin changes show up here until they reach the server.'}</span>
+              <span>{snap.lastSavedAt ? `Last change saved ${ago(snap.lastSavedAt)}.` : 'Nail, important, weak, highlight, delete and Recycle Bin changes show up here until they reach the server.'}</span>
             </div>
           )}
         </div>

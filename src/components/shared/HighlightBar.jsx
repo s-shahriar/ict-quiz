@@ -9,8 +9,8 @@ import { useAuth } from '../../contexts/AuthContext.jsx'
 import LoginPrompt from '../auth/LoginPrompt.jsx'
 
 // Floating highlight bar, PDF-reader style: four colour dots, plus a bin when
-// the target is an existing mark. Nothing here touches the network — every
-// action edits local state and waits for Save (see HighlightSaveBar).
+// the target is an existing mark. Every action applies at once and is queued for
+// saving in the background (see contexts/HighlightContext.jsx) — there is no Save.
 //
 // Mobile is the primary case, which drives these decisions:
 //  • `selectionchange` (not mouseup) is what fires when Android's selection

@@ -1,172 +1,170 @@
 import { createContext, useContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAuth } from './AuthContext.jsx'
+import { fetchHighlights, DEFAULT_COLOR } from '../lib/highlightSync.js'
 import {
-  fetchHighlights, insertHighlights, deleteHighlights, recolorHighlights, DEFAULT_COLOR,
-} from '../lib/highlightSync.js'
+  subscribeQueue, onHighlightLanded,
+  enqueueHighlightAdd, enqueueHighlightRemove, enqueueHighlightColor,
+} from '../lib/offlineQueue.js'
 
-// PDF-style text highlights across the Written / Extra / Viva / Code answers.
+// PDF-style text highlights across the Written / Extra / Viva / Code answers and
+// the Equation sheets.
 //
-// EDITING IS LOCAL. Highlighting, removing and recolouring only change memory —
-// no request is made until you press Save. That keeps a reading session at zero
-// network traffic and makes the whole thing work with no connection.
+// EDITING SAVES ITSELF. Highlighting, removing and recolouring update what is on
+// screen at once and are handed to the offline write queue (lib/offlineQueue.js),
+// the same one nail / important use: it sends them in the background, keeps them
+// on this device while offline, retries, and lists them in the Sync queue drawer
+// with an Undo. There is no Save button.
 //
-// Three pending sets describe the unsaved work:
-//   adds    — new highlights, temporary ids
-//   deletes — ids of saved rows to drop
-//   edits   — id → new colour, for saved rows
-// The rendered set is `saved − deletes + adds`, with `edits` applied on top.
+// What is rendered is `saved − pending removes + pending adds`, with pending
+// recolours on top. `saved` is what the server has (fetched at login, and updated
+// as queued changes land); the pending part is read straight from the queue's
+// snapshot, so unsent work shows after a reload too, exactly as the queue restores it.
 //
-// Pending work is mirrored to localStorage per user, so closing the tab with
-// unsaved highlights does not lose them; they are still pending on return.
+// Highlight ids are uuids minted here, so an add keeps its id from the first tap
+// to the database row: nothing has to be swapped after the insert lands.
 
 const HighlightContext = createContext(null)
 const EMPTY = []
-const LS_KEY = (userId) => `ict_hl_pending_${userId}`
+const LEGACY_KEY = (userId) => `ict_hl_pending_${userId}`
 
-function loadPending(userId) {
+const newId = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`)
+
+// Unsaved work left by the old Save-button flow. It is replayed into the queue
+// once, after the saved set has loaded, then dropped.
+function takeLegacyPending(userId) {
   try {
-    const raw = localStorage.getItem(LS_KEY(userId))
+    const raw = localStorage.getItem(LEGACY_KEY(userId))
     if (!raw) return null
+    localStorage.removeItem(LEGACY_KEY(userId))
     const p = JSON.parse(raw)
     return {
       adds: Array.isArray(p.adds) ? p.adds : [],
-      deletes: new Set(Array.isArray(p.deletes) ? p.deletes : []),
-      edits: new Map(Array.isArray(p.edits) ? p.edits : []),
+      deletes: Array.isArray(p.deletes) ? p.deletes : [],
+      edits: Array.isArray(p.edits) ? p.edits : [],
     }
   } catch { return null }
 }
 
-function savePending(userId, adds, deletes, edits) {
-  try {
-    if (!adds.length && !deletes.size && !edits.size) localStorage.removeItem(LS_KEY(userId))
-    else localStorage.setItem(LS_KEY(userId), JSON.stringify({
-      adds, deletes: [...deletes], edits: [...edits],
-    }))
-  } catch { /* private mode / quota — pending work simply is not mirrored */ }
+const findIn = (map, id) => {
+  for (const list of map.values()) for (const h of list) if (h.id === id) return h
+  return null
+}
+
+// Fold one change that has reached the server into the saved set.
+function fold(prev, kind, hl) {
+  const next = new Map(prev)
+  const list = next.get(hl.uid) || []
+  if (kind === 'hl_add') {
+    if (!list.some(h => h.id === hl.id)) next.set(hl.uid, [...list, hl])
+  } else if (kind === 'hl_del') {
+    const kept = list.filter(h => h.id !== hl.id)
+    if (kept.length) next.set(hl.uid, kept); else next.delete(hl.uid)
+  } else if (kind === 'hl_color') {
+    next.set(hl.uid, list.map(h => h.id === hl.id ? { ...h, color: hl.color } : h))
+  }
+  return next
 }
 
 export function HighlightProvider({ children }) {
   const { user } = useAuth()
   const [saved, setSaved] = useState(() => new Map())
-  const [adds, setAdds] = useState([])
-  const [deletes, setDeletes] = useState(() => new Set())
-  const [edits, setEdits] = useState(() => new Map())
+  const [pending, setPending] = useState(EMPTY)      // the queue's highlight entries (anything not yet landed)
   const [color, setColor] = useState(DEFAULT_COLOR)
-  const [status, setStatus] = useState('idle')     // idle | saving | error
-  const [error, setError] = useState(null)
-  const seq = useRef(0)
+  const loading = useRef(false)
+  const landedWhileLoading = useRef([])
 
-  // Load saved highlights + any pending work left from a previous visit.
+  // The queue is the source of truth for unsent highlight work.
+  // Only highlight entries matter here, and only their identity / colour: a status tick or a flag
+  // landing must not re-render every highlighted answer on screen.
+  const sig = useRef('')
+  useEffect(() => subscribeQueue(snap => {
+    const items = snap.items.filter(i => i.hl)
+    const next = items.map(i => `${i.key}|${i.kind}|${i.hl.color}`).join(',')
+    if (next === sig.current) return
+    sig.current = next
+    setPending(items.length ? items : EMPTY)
+  }), [])
+
+  // A landed change joins the saved set. One that lands while the first fetch is
+  // still in flight is replayed on top of it, so the fetch cannot erase it.
+  useEffect(() => onHighlightLanded((kind, hl) => {
+    if (loading.current) landedWhileLoading.current.push([kind, hl])
+    setSaved(prev => fold(prev, kind, hl))
+  }), [])
+
+  // Load saved highlights; then replay anything the old Save flow left unsent.
   useEffect(() => {
-    if (!user) { setSaved(new Map()); setAdds([]); setDeletes(new Set()); setEdits(new Map()); return }
-    const p = loadPending(user.id)
-    if (p) { setAdds(p.adds); setDeletes(p.deletes); setEdits(p.edits) }
+    if (!user) { setSaved(new Map()); return }
     let cancelled = false
+    loading.current = true
+    landedWhileLoading.current = []
     fetchHighlights()
-      .then(m => { if (!cancelled) setSaved(m) })
-      .catch(e => { if (!cancelled) setError(e.message) })
+      .then(m => {
+        if (cancelled) return
+        let merged = m
+        for (const [kind, hl] of landedWhileLoading.current) merged = fold(merged, kind, hl)
+        setSaved(merged)
+        const legacy = takeLegacyPending(user.id)
+        if (!legacy) return
+        for (const a of legacy.adds) enqueueHighlightAdd({ ...a, id: newId() })
+        for (const id of legacy.deletes) { const h = findIn(merged, id); if (h) enqueueHighlightRemove(h) }
+        for (const [id, c] of legacy.edits) { const h = findIn(merged, id); if (h) enqueueHighlightColor({ ...h, color: c }, h.color) }
+      })
+      .catch(e => { if (!cancelled) console.error('[highlights] load failed:', e.message) })
+      .finally(() => { if (!cancelled) loading.current = false })
     return () => { cancelled = true }
   }, [user])
 
-  useEffect(() => { if (user) savePending(user.id, adds, deletes, edits) }, [user, adds, deletes, edits])
-
-  // Warn before losing unsaved highlights on a tab close / refresh.
-  const dirtyCount = adds.length + deletes.size + edits.size
-  useEffect(() => {
-    if (!dirtyCount) return
-    const onBeforeUnload = (e) => { e.preventDefault(); e.returnValue = '' }
-    window.addEventListener('beforeunload', onBeforeUnload)
-    return () => window.removeEventListener('beforeunload', onBeforeUnload)
-  }, [dirtyCount])
-
-  // What the renderer sees: saved rows minus pending deletes, with pending
-  // colour edits applied, plus pending adds.
+  // What the renderer sees: saved rows minus pending removes, pending recolours
+  // applied, plus pending adds.
   const byUid = useMemo(() => {
+    const dels = new Set(), recolours = new Map(), adds = []
+    for (const p of pending) {
+      if (p.kind === 'hl_del') dels.add(p.hl.id)
+      else if (p.kind === 'hl_color') recolours.set(p.hl.id, p.hl.color)
+      else if (p.kind === 'hl_add') adds.push(p.hl)
+    }
     const out = new Map()
     for (const [uid, list] of saved) {
       const kept = list
-        .filter(h => !deletes.has(h.id))
-        .map(h => edits.has(h.id) ? { ...h, color: edits.get(h.id) } : h)
+        .filter(h => !dels.has(h.id))
+        .map(h => recolours.has(h.id) ? { ...h, color: recolours.get(h.id) } : h)
       if (kept.length) out.set(uid, kept)
     }
     for (const a of adds) {
-      if (!out.has(a.uid)) out.set(a.uid, [])
-      out.set(a.uid, [...out.get(a.uid), a])
+      const list = out.get(a.uid) || []
+      if (!list.some(h => h.id === a.id)) out.set(a.uid, [...list, recolours.has(a.id) ? { ...a, color: recolours.get(a.id) } : a])
     }
     return out
-  }, [saved, adds, deletes, edits])
+  }, [saved, pending])
 
   const getFor = useCallback((uid) => byUid.get(uid) || EMPTY, [byUid])
+  const find = useCallback((id) => findIn(byUid, id), [byUid])
 
   const add = useCallback((uid, anchors, c) => {
-    if (!uid || !anchors?.length) return
+    if (!user || !uid || !anchors?.length) return
     const chosen = c || color
-    setAdds(list => [...list, ...anchors.map(a => ({
-      ...a, uid, color: chosen, id: `tmp-${Date.now()}-${seq.current++}`,
-    }))])
-  }, [color])
+    for (const a of anchors) enqueueHighlightAdd({ ...a, uid, color: chosen, id: newId() })
+  }, [user, color])
 
   const remove = useCallback((uid, ids) => {
-    if (!ids?.length) return
-    const gone = new Set(ids)
-    setAdds(list => list.filter(a => !gone.has(a.id)))        // pending ones just vanish
-    setDeletes(d => {
-      const n = new Set(d)
-      for (const id of ids) if (!String(id).startsWith('tmp-')) n.add(id)
-      return n
-    })
-    setEdits(e => {                                            // an edit on a deleted row is moot
-      if (!ids.some(id => e.has(id))) return e
-      const n = new Map(e); for (const id of ids) n.delete(id); return n
-    })
-  }, [])
+    for (const id of ids || []) { const h = findIn(byUid, id); if (h) enqueueHighlightRemove(h) }
+  }, [byUid])
 
   const recolor = useCallback((uid, ids, c) => {
     if (!ids?.length || !c) return
-    const set = new Set(ids)
-    setAdds(list => list.map(a => set.has(a.id) ? { ...a, color: c } : a))
-    setEdits(e => {
-      const n = new Map(e)
-      for (const id of ids) if (!String(id).startsWith('tmp-')) n.set(id, c)
-      return n
-    })
-  }, [])
-
-  const save = useCallback(async () => {
-    if (!user || !dirtyCount || status === 'saving') return false
-    setStatus('saving'); setError(null)
-    try {
-      const inserted = await insertHighlights(user.id, adds)
-      await deleteHighlights([...deletes])
-      await recolorHighlights([...edits])
-      setSaved(prev => {
-        const next = new Map()
-        for (const [uid, list] of prev) {
-          const kept = list
-            .filter(h => !deletes.has(h.id))
-            .map(h => edits.has(h.id) ? { ...h, color: edits.get(h.id) } : h)
-          if (kept.length) next.set(uid, kept)
-        }
-        for (const h of inserted) next.set(h.uid, [...(next.get(h.uid) || []), h])
-        return next
-      })
-      setAdds([]); setDeletes(new Set()); setEdits(new Map())
-      setStatus('idle')
-      return true
-    } catch (e) {
-      setError(e.message); setStatus('error')
-      return false                       // pending work is kept so Save can be retried
+    for (const id of ids) {
+      const h = findIn(byUid, id)
+      if (h && h.color !== c) enqueueHighlightColor({ ...h, color: c }, h.color)
     }
-  }, [user, adds, deletes, edits, dirtyCount, status])
+  }, [byUid])
 
-  const discard = useCallback(() => {
-    setAdds([]); setDeletes(new Set()); setEdits(new Map()); setError(null); setStatus('idle')
-  }, [])
+  // Put a removed highlight back (the sync drawer's Undo); it keeps its id.
+  const restore = useCallback((hl) => { if (user && hl) enqueueHighlightAdd(hl) }, [user])
 
   const value = {
-    getFor, add, remove, recolor, save, discard,
+    getFor, find, add, remove, recolor, restore,
     color, setColor,
-    dirtyCount, status, error,
     canHighlight: Boolean(user),
   }
   return <HighlightContext.Provider value={value}>{children}</HighlightContext.Provider>
@@ -174,9 +172,7 @@ export function HighlightProvider({ children }) {
 
 export function useHighlights() {
   return useContext(HighlightContext) || {
-    getFor: () => EMPTY, add: () => {}, remove: () => {}, recolor: () => {},
-    save: async () => false, discard: () => {},
-    color: DEFAULT_COLOR, setColor: () => {},
-    dirtyCount: 0, status: 'idle', error: null, canHighlight: false,
+    getFor: () => EMPTY, find: () => null, add: () => {}, remove: () => {}, recolor: () => {}, restore: () => {},
+    color: DEFAULT_COLOR, setColor: () => {}, canHighlight: false,
   }
 }

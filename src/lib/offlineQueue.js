@@ -1,14 +1,18 @@
-// Offline-tolerant write queue for nail / important / weak / delete, and for the
-// Recycle Bin's restore / delete-forever.
+// Offline-tolerant write queue for nail / important / weak / delete, for the
+// Recycle Bin's restore / delete-forever, and for text highlights.
 //
 // Every one of those actions is optimistic in the UI and flows through here.
 // Flag writes are coalesced per question uid on a LAST-ACTION-WINS basis: if you
 // nail then un-nail then mark important the same question while offline, only the
 // final state per column is kept ({ nailed:false, important:true }). A delete, a
 // restore and a delete-forever all decide whether one question is in the bin, so
-// they share one entry per question and the latest decision replaces the earlier. A debounced
-// flusher drains the queue: flags go out as one bulk upsert, deletes as one RPC
-// each, and a failure in either group cannot block the other.
+// they share one entry per question and the latest decision replaces the earlier.
+// A highlight is one entry per highlight (its uuid is minted by the client): adding
+// then removing it before it was sent sends nothing, a recolour of an unsent add
+// just edits that add, and an insert is an upsert so a retry never duplicates a row.
+// A debounced flusher drains the queue: flags go out as one bulk upsert, deletes as
+// one RPC each, highlights as one batch per kind, and a failure in one group cannot
+// block the others.
 //
 // Failure handling is deliberately un-aggressive:
 //   • offline (navigator.onLine === false) → do NOT poll; wait for the `online`
@@ -30,6 +34,7 @@
 
 import { bulkUpsert } from './progressSync.js'
 import { trashQuestion, restoreQuestion, purgeQuestion } from './trashSync.js'
+import { upsertHighlights, deleteHighlights, recolorHighlights } from './highlightSync.js'
 import { labelFor, textOf } from './questionLabels.js'
 
 const LS_KEY = (uid) => `ict_pq_${uid}`
@@ -40,6 +45,11 @@ const DONE_CAP = 50
 // Server call for each non-flag kind. A kind missing here is never sent.
 const RUN = { delete: trashQuestion, restore: restoreQuestion, purge: purgeQuestion }
 const trashKey = (id) => `trash:${id}`
+// A highlight's add / remove share one entry (the latest decision wins); its colour change is separate, so a
+// recolour can queue behind an add that is already in flight.
+const hlKey = (id) => `hl:${id}`
+const hlColorKey = (id) => `hlc:${id}`
+const isHl = (kind) => kind === 'hl_add' || kind === 'hl_del' || kind === 'hl_color'
 
 // The loader module a question lives in: its _module where the loader sets one,
 // otherwise the uid's prefix, since uids are module-scoped.
@@ -63,6 +73,7 @@ let lastSavedAt = null
 
 const subscribers = new Set()
 const restoredListeners = new Set()
+const highlightListeners = new Set()
 
 function online() {
   return typeof navigator === 'undefined' || navigator.onLine !== false
@@ -77,7 +88,9 @@ function view(e) {
   const meta = (!e.label || !e.cat) && e.uid ? labelFor(e.uid) : null
   return {
     key: e.key, kind: e.kind, uid: e.uid, id: e.id, module: e.module, patch: e.patch,
-    label: e.label || meta?.text || '', cat: e.cat || meta?.cat || '',
+    hl: e.hl, prev: e.prev,
+    // A highlight row is named by its quote, not by the question it sits in.
+    label: e.label || (isHl(e.kind) ? '' : meta?.text) || '', cat: e.cat || meta?.cat || '',
     at: e.at, attempts: e.attempts,
     err: e.err, syncedAt: e.syncedAt,
     state: e.syncedAt ? 'synced' : e.sending ? 'sending' : e.err ? 'failed' : 'queued',
@@ -109,7 +122,7 @@ function persist() {
       // Only the durable fields — `sending` / `err` / `syncedAt` describe one attempt.
       const rows = [...pending.values()].map((e) => ({
         key: e.key, kind: e.kind, uid: e.uid, id: e.id, module: e.module, patch: e.patch,
-        label: e.label, cat: e.cat, at: e.at, attempts: e.attempts,
+        hl: e.hl, prev: e.prev, label: e.label, cat: e.cat, at: e.at, attempts: e.attempts,
       }))
       localStorage.setItem(LS_KEY(userId), JSON.stringify(rows))
     } else {
@@ -145,6 +158,7 @@ function makeEntry(e) {
     key: e.key, kind: e.kind, uid: e.uid || null, id: e.id || null,
     module: e.module || null,
     patch: e.patch || null,
+    hl: e.hl || null, prev: e.prev || null,
     label: e.label || '', cat: e.cat || '',
     at: e.at || Date.now(), attempts: e.attempts || 0,
     sending: false, err: null, syncedAt: null,
@@ -240,6 +254,61 @@ export function enqueueBinAction(q, action) {
   afterEnqueue()
 }
 
+// What a highlight row says about itself: its quote, and the section it sits in.
+function hlMeta(hl) {
+  const q = String(hl.quote || '').replace(/\s+/g, ' ').trim()
+  const section = hl.uid?.startsWith('equation:') ? 'Equation' : labelFor(hl.uid)?.cat || ''
+  return { label: q ? `“${q.length > 90 ? `${q.slice(0, 89)}…` : q}”` : 'Highlight', cat: section }
+}
+
+function hlEntry(key, kind, hl, extra) {
+  return makeEntry({ key, kind, uid: hl.uid, hl: { ...hl }, ...hlMeta(hl), ...extra })
+}
+
+// A new highlight (`hl` carries its uuid). Re-adding one whose removal has not
+// been sent yet just cancels the removal: the row is still on the server.
+export function enqueueHighlightAdd(hl) {
+  if (!userId || !hl?.id) return
+  const key = hlKey(hl.id)
+  const cur = pending.get(key)
+  if (cur?.kind === 'hl_del' && !cur.sending) pending.delete(key)
+  else pending.set(key, hlEntry(key, 'hl_add', hl))
+  afterEnqueue()
+}
+
+// A removed highlight. `hl` is the full row, so the drawer can name it and undo can put it back.
+export function enqueueHighlightRemove(hl) {
+  if (!userId || !hl?.id) return
+  const key = hlKey(hl.id)
+  const cur = pending.get(key)
+  pending.delete(hlColorKey(hl.id))              // a colour change on a row that is going away is moot
+  if (cur?.kind === 'hl_add' && !cur.sending) pending.delete(key)   // never sent: nothing to undo on the server
+  else pending.set(key, hlEntry(key, 'hl_del', hl))
+  afterEnqueue()
+}
+
+// A recolour; `hl` already carries the NEW colour and `prev` is the colour before it.
+export function enqueueHighlightColor(hl, prev) {
+  if (!userId || !hl?.id) return
+  const addKey = hlKey(hl.id)
+  const add = pending.get(addKey)
+  if (add?.kind === 'hl_add' && !add.sending) {
+    pending.set(addKey, hlEntry(addKey, 'hl_add', hl, { at: add.at }))   // fold into the unsent add
+  } else {
+    const key = hlColorKey(hl.id)
+    const cur = pending.get(key)
+    const was = cur && !cur.sending ? cur.prev : prev   // undo goes back to the colour before the whole run
+    pending.set(key, hlEntry(key, 'hl_color', hl, { prev: was, at: cur?.at }))
+  }
+  afterEnqueue()
+}
+
+// Fired once a highlight change has reached the server, so whoever mirrors the saved set can fold it in.
+export function onHighlightLanded(fn) {
+  highlightListeners.add(fn)
+  return () => highlightListeners.delete(fn)
+}
+
 // Ids whose Recycle Bin action has not landed yet. The bin re-reads the server,
 // which still lists them, so it hides these rather than offering them twice.
 export function pendingBinIds() {
@@ -301,10 +370,15 @@ function scheduleBackoff() {
 
 // One entry landed. A flag whose value changed mid-flight stays queued so the
 // newer value is written on the next pass.
-function settle(entry, sentPatch) {
+function settle(entry, sent) {
   const cur = pending.get(entry.key)
   if (!cur) return false
-  if (cur.kind === 'flag' && !patchEq(cur.patch, sentPatch)) {
+  if (cur.kind === 'flag' && !patchEq(cur.patch, sent)) {
+    cur.sending = false
+    return false
+  }
+  // Recoloured again while the first colour was in flight: the newer one still has to go out.
+  if (cur.kind === 'hl_color' && cur.hl.color !== sent) {
     cur.sending = false
     return false
   }
@@ -344,7 +418,7 @@ async function flush() {
   // Snapshot the exact patches we're sending; anything the user changes mid-flight
   // stays queued and flushes on the next pass.
   const batch = [...pending.values()]
-  const sent = new Map(batch.map((e) => [e.key, e.patch ? { ...e.patch } : null]))
+  const sent = new Map(batch.map((e) => [e.key, e.kind === 'hl_color' ? e.hl.color : e.patch ? { ...e.patch } : null]))
   batch.forEach((e) => { e.sending = true })
   emit()
 
@@ -377,6 +451,29 @@ async function flush() {
     } catch (e) {
       failed = true
       fail(d, e)
+    }
+  }
+
+  // Highlights, one batch per kind, in the order that keeps a row consistent (insert, then remove, then recolour).
+  const hlGroups = [
+    ['hl_add', (list) => upsertHighlights(userId, list.map((e) => e.hl))],
+    ['hl_del', (list) => deleteHighlights(list.map((e) => e.hl.id))],
+    ['hl_color', (list) => recolorHighlights(list.map((e) => [e.hl.id, e.hl.color]))],
+  ]
+  for (const [kind, run] of hlGroups) {
+    const list = batch.filter((e) => e.kind === kind)
+    if (!list.length) continue
+    try {
+      await run(list)
+      for (const e of list) {
+        if (settle(e, sent.get(e.key))) {
+          landed++
+          highlightListeners.forEach((fn) => fn(e.kind, e.hl))
+        }
+      }
+    } catch (err) {
+      failed = true
+      for (const e of list) fail(e, err)
     }
   }
 
