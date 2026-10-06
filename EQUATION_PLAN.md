@@ -142,10 +142,10 @@ ruler for RAM shows `5 × 1024 = 5120 = Base Address` plus the same 452. A ruler
 numbered boundaries is the default way to explain any "divide by a size" formula.
 
 **Put one set of concrete numbers in the diagram.** Pick small round values that divide
-cleanly (Page size 1024, 6000 RPM, 16 KB / 64 B) and draw them on the picture (Logical
+cleanly (Page size 1024, 6000 RPM, 16 KB / 4-word blocks) and draw them on the picture (Logical
 Address 2500 → Page 2 + Offset 452 → Frame 5 → 5572), so a value can be followed from
 start to finish. Values are fine in cover mode. Where widths encode size, keep them to
-scale (address bits 18 | 8 | 6; 20 ns vs 100 ns). If one part is far too small to see at
+scale (address bits 18 | 10 | 4; 20 ns vs 100 ns). If one part is far too small to see at
 scale (a 0.02 ms transfer next to 5 ms), give it its own readable cell instead of a
 hairline, with its label inside — never a label squeezed above a sliver.
 

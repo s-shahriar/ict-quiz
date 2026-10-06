@@ -52,7 +52,7 @@ export default {
       title: 'Address Bits ও Page Table Size',
       sub: 'Offset bits · Page/Frame Number bits · Address bits · Page table',
       diagram: 'os-page-table',
-      caption: 'Offset মানে page-এর ভেতরে byte-এর নম্বর, আর সেগুলো লিখতে যত bit লাগে সেটাই Offset bits। Address-এর মানে গুণ হয়, কিন্তু bit-এ যোগ: 2⁹ × 2¹¹ = 2⁹⁺¹¹।',
+      caption: 'একটি address (4548) bit ধরে: শেষের 11 bit Offset, তার আগের 9 bit Page Number। Page table Page 2-কে Frame 5 বানায়, আর Offset-এর 11 bit হুবহু physical address-এ নামে।',
       symbols: [
         [r`\text{Logical Address space}`, 'মোট কত logical address আছে, যেমন 32 bit হলে 2³² byte'],
         [r`\text{Page table entry}`, 'page table-এর এক সারি: একটি page কোন frame-এ আছে'],
@@ -63,7 +63,7 @@ export default {
           name: 'Offset bits',
           lhs: r`\text{Offset bits}`,
           rhs: r`\log_2(\text{Page size})`,
-          note: 'Page-এ Page size টি byte, তাই Page size টি আলাদা Offset; n bit দিয়ে 2ⁿ টি নম্বর লেখা যায়, তাই Page size 2¹² হলে 12 bit।',
+          note: 'Page-এ Page size টি byte, তাই Page size টি আলাদা Offset; n bit দিয়ে 2ⁿ টি নম্বর লেখা যায়, তাই Page size 2 KB = 2¹¹ হলে 11 bit।',
         },
         {
           name: 'Page Number bits',
@@ -195,12 +195,14 @@ export default {
       title: 'Cache Mapping',
       sub: 'Direct · Fully Associative · Set Associative',
       diagram: 'os-cache-mapping',
-      caption: 'একই 32 bit address তিন mapping-এ তিনভাবে ভাগ হয়; Offset সবসময় একই। বাক্সের দৈর্ঘ্য bit সংখ্যার সমানুপাতিক।',
+      caption: '16 KB cache, 4 word block, 32-bit architecture: একই 32 bit address তিন mapping-এ তিনভাবে ভাগ হয়; Offset সবসময় একই। বাক্সের দৈর্ঘ্য bit সংখ্যার সমানুপাতিক। নিচে এক block-এর ভেতরে word আর byte।',
       symbols: [
         [r`\text{Cache line}`, 'cache-এর এক সারি; একটি block রাখে'],
         [r`\text{Block size}`, 'এক line-এ কত byte'],
         [r`\text{Tag}`, 'line-এ কোন memory block বসে আছে তা চেনার bit'],
         [r`k\text{-way}`, 'Set Associative-এ প্রতি set-এ k টি line'],
+        [r`\text{Word}`, 'CPU একবারে যত bit নিয়ে কাজ করে; 32-bit architecture-এ 1 word = 32 bit = 4 byte'],
+        [r`\text{32-bit architecture}`, 'address 32 bit লম্বা, আর 1 word = 32 bit'],
       ],
       equations: [
         {
@@ -219,13 +221,31 @@ export default {
           name: 'Offset bits',
           lhs: r`\text{Offset bits}`,
           rhs: r`\log_2(\text{Block size})`,
-          note: 'Block-এর প্রতিটি byte আলাদা করতে এতগুলো bit লাগে; তিন mapping-এই একই।',
+          note: 'Block-এর প্রতিটি byte আলাদা করতে এতগুলো bit লাগে; তিন mapping-এই একই। 16 byte block হলে log₂ 16 = 4 bit।',
+        },
+        {
+          name: 'Word size',
+          lhs: r`\text{Word size (byte)}`,
+          rhs: r`\dfrac{\text{Architecture bits}}{8}`,
+          note: '32-bit architecture মানে 1 word = 32 bit; 8 bit-এ 1 byte, তাই 32 / 8 = 4 byte।',
+        },
+        {
+          name: 'Block size (word-এ দেওয়া থাকলে)',
+          lhs: r`\text{Block size (byte)}`,
+          rhs: r`\text{Words per block} \times \text{Word size (byte)}`,
+          note: 'Offset bits বের করতে block-কে byte-এ নিতে হয়: 4 word × 4 byte = 16 byte, তাই Offset 4 bit।',
         },
         {
           name: 'Cache size',
           lhs: r`\text{Cache size}`,
           rhs: r`\text{No. of cache lines} \times \text{Block size}`,
-          note: 'প্রতিটি line-এ একটি block।',
+          note: 'প্রতিটি line-এ একটি block: 16 KB / 16 byte = 2¹⁴ / 2⁴ = 2¹⁰ = 1024 line।',
+        },
+        {
+          name: 'Index + Offset (Direct)',
+          lhs: r`\text{Index bits} + \text{Offset bits}`,
+          rhs: r`\log_2(\text{Cache size})`,
+          note: 'Cache size = lines × Block size, আর log-এ গুণ হয় যোগ: 16 KB = 2¹⁴ → 14 = 10 + 4। তাই 14 পুরোটা Index নয়।',
         },
         {
           name: 'Fully Associative Mapping',
@@ -243,7 +263,7 @@ export default {
           name: 'Number of sets',
           lhs: r`\text{Number of sets}`,
           rhs: r`\dfrac{\text{No. of cache lines}}{k}`,
-          note: 'k-way মানে প্রতি set-এ k টি line।',
+          note: 'k-way মানে প্রতি set-এ k টি line: 1024 / 4 = 256 set।',
         },
         {
           name: 'Set offset bits',

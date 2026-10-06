@@ -1,6 +1,6 @@
 // Diagrams for the Operating System equation groups (see EQUATION_PLAN.md §5).
 // Each diagram carries one set of concrete numbers (2500 → Page 2 + 452 → 5572,
-// 6000 RPM, 16 KB / 64 B), so a value can be followed through the picture.
+// 6000 RPM, 16 KB / 4-word blocks), so a value can be followed through the picture.
 
 import { Arrow, C1, C2, C3, C4, Cell, Dim, Limit, Step, VDim, tint } from './parts.jsx'
 
@@ -116,98 +116,91 @@ function PagingTranslateDiagram() {
 
 const MONO = "'JetBrains Mono', monospace"
 
-// Why Offset bits = log₂(Page size): an offset is just the byte's number inside
-// the page, so a page of N bytes needs N different offsets, and n bits can write
-// exactly 2ⁿ different numbers. Then the same idea on the real 2500 example:
-// dividing by 1024 = 2¹⁰ is the same as cutting off the last 10 bits.
-function OffsetBitsExplained() {
-  const bin = (n, w) => n.toString(2).padStart(w, '0')
-  const bits2500 = bin(2500, 12).split('')      // 1001 1100 0100
+// One address, followed bit by bit (Q25: 512 page, Page size 2 KB, 128 frame).
+// Logical 4548 = Page 2 + Offset 452. Its 20 real bits are split into Page Number
+// bits | Offset bits, each with its place value, so "n bit → 2ⁿ" and "Offset =
+// the low bits" are read straight off the same picture. The page table swaps
+// Page 2 for Frame 5, and the physical address keeps the very same 11 Offset bits.
+const BIT = 26, RIGHT = 610                         // px per bit; both rows right-aligned
+const bin = (n, w) => n.toString(2).padStart(w, '0').split('')
+
+function BitRow({ y, parts, places }) {
+  let x = RIGHT - parts.reduce((n, p) => n + p.bits.length, 0) * BIT
   return (
     <g>
-      <Label x={20} y={20} color="var(--text)">ছোট উদাহরণ: Page size 8 byte<Limit>প্রতিটি byte-এর নম্বরই তার Offset</Limit></Label>
-      {Array.from({ length: 8 }, (_, k) => (
-        <g key={k}>
-          <rect x={60 + k * 65} y={32} width={65} height={40} rx="3" fill={tint(C2, 16)} stroke={C2} />
-          <text x={92 + k * 65} y={50} textAnchor="middle" fontSize="11" fill={MUTED}>byte</text>
-          <text x={92 + k * 65} y={66} textAnchor="middle" fontSize="13" fontWeight="700" fill={C2}>{k}</text>
-          <text x={92 + k * 65} y={92} textAnchor="middle" fontSize="13" fontWeight="700" fill="var(--text)" fontFamily={MONO}>{bin(k, 3)}</text>
-        </g>
-      ))}
-      <Label x={52} y={92} anchor="end" sub>binary</Label>
-      <Dim x1={60} x2={580} y={108} color={C2} label="Page size = 8 byte, তাই Offset 0 থেকে 7: মোট 8 টি আলাদা Offset" below />
-      <Label x={320} y={154} anchor="middle" color="var(--text)">8 টি নম্বর লিখতে 3 bit লাগে (000 থেকে 111), কারণ 2³ = 8<Limit>Offset bits = log₂ 8 = 3</Limit></Label>
-
-      <Label x={320} y={174} anchor="middle" sub>1 bit → 2 টি · 2 bit → 4 টি · 3 bit → 8 টি · … · 10 bit → 1024 টি · 12 bit → 4096 টি নম্বর</Label>
-
-
-      <Label x={20} y={214} color="var(--text)">একই কথা 2500-এ<Limit>Page size 1024 = 2¹⁰, তাই Offset bits 10</Limit></Label>
-      {/* Each part is read on its own: a bit's place value doubles from the right
-          (1, 2, 4, …), and the number is the sum of the places holding a 1. */}
-      <Label x={72} y={236} anchor="end" sub>ঘরের মান</Label>
-      {bits2500.map((b, k) => {
-        const page = k < 2, x = 80 + k * 40
-        const place = 2 ** (page ? 1 - k : 11 - k)
-        const color = page ? C3 : C2
+      {parts.map(p => p.bits.map((b, k) => {
+        const bx = x
+        x += BIT
+        const place = 2 ** (p.bits.length - 1 - k)
         return (
-          <g key={k}>
-            <text x={x + 20} y={236} textAnchor="middle" fontSize="11" fontWeight={b === '1' ? 700 : 400}
-              fill={b === '1' ? color : MUTED}>{place}</text>
-            <rect x={x} y={244} width={40} height={34} rx="3" fill={tint(color, 18)} stroke={color} />
-            <text x={x + 20} y={266} textAnchor="middle" fontSize="15" fontWeight="700" fill={color} fontFamily={MONO}>{b}</text>
+          <g key={p.key + k}>
+            {places && <text x={bx + BIT / 2} y={y - 6} textAnchor="middle" fontSize="9" fontWeight={b === '1' ? 700 : 400}
+              fill={b === '1' ? p.color : MUTED}>{place}</text>}
+            <rect x={bx} y={y} width={BIT} height={32} rx="3" fill={tint(p.color, b === '1' ? 30 : 14)} stroke={p.color} />
+            <text x={bx + BIT / 2} y={y + 21} textAnchor="middle" fontSize="14" fontWeight="700" fill={p.color} fontFamily={MONO}>{b}</text>
           </g>
         )
-      })}
-      <Label x={72} y={266} anchor="end" sub>2500 =</Label>
-      <Dim x1={80} x2={160} y={294} color={C3} label="Page Number" below />
-      <Label x={120} y={334} anchor="middle" color={C3}>1×2 + 0×1 = 2</Label>
-      <Dim x1={160} x2={560} y={294} color={C2} label="Offset: শেষের 10 bit" below />
-      <Label x={360} y={334} anchor="middle" color={C2}>1 যেখানে: 256 + 128 + 64 + 4 = 452</Label>
-      <Label x={320} y={360} anchor="middle" sub>1024 দিয়ে ভাগ করা মানে শেষের 10 bit কেটে আলাদা করা: ভাগফল উপরের bit, ভাগশেষ নিচের bit</Label>
+      }))}
     </g>
   )
 }
 
 function PageTableDiagram() {
   const rows = ['Page 0', 'Page 1', 'Page 2', '⋮', 'Page 511']
-  const T = 256, H = 20
-  const B = 28                                    // px per bit, same for both bars
-  const offX = 600 - 11 * B                       // Offset is right-aligned in both
+  const T = 196, H = 20
+  const offX = RIGHT - 11 * BIT, pgX = offX - 9 * BIT, frX = offX - 7 * BIT
   return (
-    <svg viewBox="0 0 640 814" role="img" aria-label="Offset bits কেন log₂(Page size), address bits যোগ আর page table-এর মাপ">
-      <OffsetBitsExplained />
-      <line x1={20} y1={380} x2={620} y2={380} stroke="var(--border-md)" strokeDasharray="4 4" />
-      <Label x={20} y={402} color="var(--text)">Q25-এর মাপে<Limit>512 page, Page size 2 KB, 128 frame</Limit></Label>
-      <g transform="translate(0, 400)">
-        {/* Logical: page number bits, then offset bits. Widths are to scale. */}
-        <Dim x1={offX - 9 * B} x2={600} y={34} color={C3} label={<>Logical Address bits<Limit>9 + 11 = 20</Limit></>} />
-        <Cell x={offX - 9 * B} y={50} w={9 * B} h={44} color={C3} title="Page Number bits" sub="9 bit · 512 = 2⁹ page" />
-        <Cell x={offX} y={50} w={11 * B} h={44} color={C2} title="Offset bits" sub="11 bit · Page size 2 KB = 2¹¹" />
+    <svg viewBox="0 0 640 556" role="img" aria-label="একটি address-এর bit: Page Number bits আর Offset bits, page table, তারপর Frame Number bits আর একই Offset bits">
+      <Label x={20} y={18} color="var(--text)">Q25<Limit>512 page, Page size 2 KB = 2¹¹, 128 frame · Logical Address 4548</Limit></Label>
 
-        {/* Physical: frame number bits, then the SAME offset bits */}
-        <Dim x1={offX - 7 * B} x2={600} y={122} color={C1} label={<>Physical Address bits<Limit>7 + 11 = 18</Limit></>} />
-        <Cell x={offX - 7 * B} y={138} w={7 * B} h={44} color={C1} title="Frame Number bits" sub="7 bit · 128 = 2⁷ frame" />
-        <Cell x={offX} y={138} w={11 * B} h={44} color={C2} title="Offset bits" sub="11 bit · একই" />
+      <g transform="translate(0, 16)">
+      {/* Logical address: 9 Page Number bits | 11 Offset bits */}
+      <Dim x1={pgX} x2={RIGHT} y={44} color="var(--text-2)" label={<>Logical Address bits<Limit>9 + 11 = 20</Limit></>} />
+      <Label x={20} y={86} color="var(--text)">Logical</Label>
+      <Label x={20} y={102} sub>4548</Label>
+      <BitRow y={70} places parts={[
+        { key: 'p', bits: bin(2, 9), color: C3 },
+        { key: 'o', bits: bin(452, 11), color: C2 },
+      ]} />
+      <Dim x1={pgX} x2={offX} y={118} color={C3} label={<>Page Number bits<Limit>9</Limit></>} below />
+      <Label x={(pgX + offX) / 2} y={156} anchor="middle" sub>2⁹ = 512 page · মান 2</Label>
+      <Dim x1={offX} x2={RIGHT} y={118} color={C2} label={<>Offset bits<Limit>11</Limit></>} below />
+      <Label x={(offX + RIGHT) / 2} y={156} anchor="middle" sub>2¹¹ = 2048 = Page size · 256 + 128 + 64 + 4 = 452</Label>
 
-        <Label x={320} y={206} anchor="middle" color="var(--text)">bit-এ গুণ নয়, যোগ<Limit>512 × 2048 = 2⁹ × 2¹¹ = 2⁹⁺¹¹ = 2²⁰ টি address → 20 bit</Limit></Label>
+      {/* Page table: the Page Number picks a row, the row gives the Frame Number */}
+      <Arrow pts={[[pgX + 13, 102], [pgX + 13, 176], [345, 176], [345, T - 2]]} color={C3} />
+      <Label x={352} y={186} sub>Page Number দিয়ে সারি বাছাই</Label>
+      {rows.map((t, i) => {
+        const on = i === 2
+        return (
+          <g key={t}>
+            <rect x={250} y={T + i * H} width={190} height={H}
+              fill={on ? tint(C3, 22) : 'var(--surface)'} stroke={on ? C3 : 'var(--border-md)'} />
+            <text x={262} y={T + i * H + 14} fontSize="11.5" fontWeight={on ? 700 : 500} fill={on ? C3 : MUTED}>{t}</text>
+            {t !== '⋮' && <text x={428} y={T + i * H + 14} textAnchor="end" fontSize="11" fontWeight={on ? 700 : 500}
+              fill={on ? C1 : MUTED}>{on ? '→ Frame 5' : '→ Frame'}</text>}
+          </g>
+        )
+      })}
+      <VDim x={234} y1={T} y2={T + rows.length * H} color={C3} label={<>Number of pages<Limit>512</Limit></>} left />
+      <VDim x={456} y1={T} y2={T + rows.length * H} color={C4} label={<>Page table size<Limit>2 KB</Limit></>} />
+      <Dim x1={250} x2={440} y={T + rows.length * H + 14} color={C4} label={<>Size of Page Table Entry<Limit>4 byte</Limit></>} below />
 
-        {/* Page table: one row per page */}
-        <Arrow pts={[[60, 94], [60, 226], [345, 226], [345, T - 2]]} color={C3} />
-        <Label x={352} y={246} sub>Page Number দিয়ে সারি বাছাই</Label>
-        {rows.map((t, i) => {
-          const on = i === 2
-          return (
-            <g key={t}>
-              <rect x={250} y={T + i * H} width={190} height={H}
-                fill={on ? tint(C3, 22) : 'var(--surface)'} stroke={on ? C3 : 'var(--border-md)'} />
-              <text x={262} y={T + i * H + 14} fontSize="11.5" fontWeight={on ? 700 : 500} fill={on ? C3 : MUTED}>{t}</text>
-              {t !== '⋮' && <text x={428} y={T + i * H + 14} textAnchor="end" fontSize="11" fill={MUTED}>→ Frame</text>}
-            </g>
-          )
-        })}
-        <VDim x={234} y1={T} y2={T + rows.length * H} color={C3} label={<>Number of pages<Limit>512</Limit></>} left />
-        <VDim x={456} y1={T} y2={T + rows.length * H} color={C4} label="Page table size" />
-        <Dim x1={250} x2={440} y={T + rows.length * H + 16} color={C4} label={<>Size of Page Table Entry<Limit>4 byte</Limit></>} below />
+      {/* Physical address: 7 Frame Number bits | the same 11 Offset bits */}
+      <Dim x1={frX} x2={RIGHT} y={370} color="var(--text-2)" label={<>Physical Address bits<Limit>7 + 11 = 18</Limit></>} />
+      <Label x={20} y={402} color="var(--text)">Physical</Label>
+      <Label x={20} y={418} sub>10692</Label>
+      <BitRow y={386} parts={[
+        { key: 'f', bits: bin(5, 7), color: C1 },
+        { key: 'o', bits: bin(452, 11), color: C2 },
+      ]} />
+      <Dim x1={frX} x2={offX} y={432} color={C1} label={<>Frame Number bits<Limit>7</Limit></>} below />
+      <Label x={(frX + offX) / 2} y={470} anchor="middle" sub>2⁷ = 128 frame · মান 5</Label>
+      <Dim x1={offX} x2={RIGHT} y={432} color={C2} label={<>Offset bits<Limit>একই 11</Limit></>} below />
+      <Label x={(offX + RIGHT) / 2} y={470} anchor="middle" sub>উপরের 11 টি bit হুবহু নিচে নামে</Label>
+
+      <Label x={320} y={502} anchor="middle" color="var(--text)">n bit দিয়ে 2ⁿ টি নম্বর<Limit>7 bit → 128 · 9 bit → 512 · 11 bit → 2048</Limit></Label>
+      <Label x={320} y={524} anchor="middle" color="var(--text)">মানে গুণ, bit-এ যোগ<Limit>512 × 2048 = 2⁹ × 2¹¹ = 2²⁰ টি address → 20 bit</Limit></Label>
       </g>
     </svg>
   )
@@ -308,27 +301,31 @@ function HddDiagram() {
 }
 
 function CacheMappingDiagram() {
+  // The classic exam numbers: 16 KB cache, 4-word blocks, 32-bit architecture.
   const X0 = 170, PX = 440 / 32           // 32 address bits across 440 px
   const bx = (bits) => X0 + bits * PX     // x after `bits` bits from the left
-  const G = 118, H = 22                   // cache grid top, row height
-  const lines = ['line 0', 'line 1', 'line 2', '⋮', 'line 255']
-  const tagX = bx(18) - 78, idxX = bx(18), offX = bx(26), end = bx(32)
+  const G = 148, H = 22                   // cache grid top, row height
+  const lines = ['line 0', 'line 1', 'line 2', '⋮', 'line 1023']
+  const tagX = bx(18) - 78, idxX = bx(18), offX = bx(28), end = bx(32)
+  const WC = (end - offX) / 4             // one word cell in the grid's block column
+  const B0 = 130, BW = 30                 // block close-up: left edge, one byte
   return (
-    <svg viewBox="0 0 640 404" role="img" aria-label="Direct, Set Associative আর Fully Associative-এ address bit ভাগ">
-      <Dim x1={X0} x2={end} y={20} color="var(--text-2)" label={<>Address bits<Limit>32</Limit></>} />
+    <svg viewBox="0 0 640 700" role="img" aria-label="Direct, Set Associative আর Fully Associative-এ address bit ভাগ, আর এক block-এর ভেতরে word ও byte">
+      <Dim x1={X0} x2={end} y={20} color="var(--text-2)" label={<>Address bits<Limit>32 · 32-bit architecture</Limit></>} />
+      <Dim x1={idxX} x2={end} y={52} color={C3} label={<>Index + Offset<Limit>log₂(Cache size) = 14</Limit></>} />
 
       {/* Direct mapping, with the cache it indexes */}
-      <Label x={20} y={58} color="var(--text)">Direct</Label>
-      <Cell x={X0} y={34} w={18 * PX} h={40} color={C4} title="Tag" sub="18 bit" />
-      <Cell x={idxX} y={34} w={8 * PX} h={40} color={C1} title="Index" sub="8 bit" />
-      <Cell x={offX} y={34} w={6 * PX} h={40} color={C2} title="Offset" sub="6 bit" />
+      <Label x={20} y={88} color="var(--text)">Direct</Label>
+      <Cell x={X0} y={64} w={18 * PX} h={40} color={C4} title="Tag" sub="18 bit" />
+      <Cell x={idxX} y={64} w={10 * PX} h={40} color={C1} title="Index" sub="10 bit" />
+      <Cell x={offX} y={64} w={4 * PX} h={40} color={C2} title="Offset" sub="4 bit" />
 
-      <Arrow pts={[[tagX + 39, 74], [tagX + 39, G - 2]]} color={C4} />
-      <Label x={tagX + 33} y={100} anchor="end" color={C4} size={11}>Tag মিলিয়ে দেখা</Label>
-      <Arrow pts={[[idxX + 55, 74], [idxX + 55, G - 2]]} color={C1} />
-      <Label x={idxX + 61} y={100} color={C1} size={11}>কোন line</Label>
-      <Arrow pts={[[offX + 41, 74], [offX + 41, G - 2]]} color={C2} />
-      <Label x={offX + 47} y={100} color={C2} size={11}>কোন byte</Label>
+      <Arrow pts={[[tagX + 39, 104], [tagX + 39, G - 2]]} color={C4} />
+      <Label x={tagX + 33} y={130} anchor="end" color={C4} size={11}>Tag মিলিয়ে দেখা</Label>
+      <Arrow pts={[[idxX + 68, 104], [idxX + 68, G - 2]]} color={C1} />
+      <Label x={idxX + 74} y={130} color={C1} size={11}>কোন line</Label>
+      <Arrow pts={[[offX + 27, 104], [offX + 27, G - 2]]} color={C2} />
+      <Label x={offX + 33} y={130} color={C2} size={11}>কোন byte</Label>
 
       {lines.map((t, i) => {
         const y = G + i * H, on = i === 2, gap = t === '⋮'
@@ -339,30 +336,59 @@ function CacheMappingDiagram() {
             <line x1={idxX} y1={y} x2={idxX} y2={y + H} stroke="var(--border-md)" />
             <line x1={offX} y1={y} x2={offX} y2={y + H} stroke="var(--border-md)" />
             {!gap && <text x={tagX + 39} y={y + 15} textAnchor="middle" fontSize="11" fill={on ? C4 : MUTED}>tag</text>}
-            <text x={idxX + 55} y={y + 15} textAnchor="middle" fontSize="11" fontWeight={on ? 700 : 500} fill={on ? C1 : MUTED}>{t}</text>
-            {!gap && Array.from({ length: 7 }, (_, k) => (
-              <line key={k} x1={offX + (k + 1) * (end - offX) / 8} y1={y + 4} x2={offX + (k + 1) * (end - offX) / 8} y2={y + H - 4} stroke="var(--border-md)" />
+            <text x={idxX + 68} y={y + 15} textAnchor="middle" fontSize="11" fontWeight={on ? 700 : 500} fill={on ? C1 : MUTED}>{t}</text>
+            {!gap && [1, 2, 3].map(k => (
+              <line key={k} x1={offX + k * WC} y1={y + 4} x2={offX + k * WC} y2={y + H - 4} stroke="var(--border-md)" />
             ))}
-            {on && <rect x={offX + 3 * (end - offX) / 8} y={y + 3} width={(end - offX) / 8} height={H - 6} fill={C2} />}
+            {on && <rect x={offX + 2 * WC + 2} y={y + 3} width={WC - 4} height={H - 6} fill={C2} />}
           </g>
         )
       })}
-      <Label x={tagX - 30} y={G + 16} anchor="end" color="var(--text)">Cache size<Limit>16 KB</Limit></Label>
-      <VDim x={tagX - 16} y1={G + 26} y2={G + lines.length * H} color={C1} label={<>No. of cache lines<Limit>256</Limit></>} left />
-      <Dim x1={offX} x2={end} y={G + lines.length * H + 14} color={C2} label={<>Block size<Limit>64 byte</Limit></>} below />
+      <Label x={tagX - 30} y={G + 16} anchor="end" color="var(--text)">Cache size<Limit>16 KB = 2¹⁴ byte</Limit></Label>
+      <VDim x={tagX - 16} y1={G + 26} y2={G + lines.length * H} color={C1} label={<>No. of cache lines<Limit>1024</Limit></>} left />
+      <Dim x1={offX} x2={end} y={G + lines.length * H + 14} color={C2} label="" below />
+      <Label x={end} y={G + lines.length * H + 36} anchor="end" color={C2}>Block size<Limit>4 word = 16 byte</Limit></Label>
 
       {/* Set associative: fewer sets than lines, so fewer index bits and a longer tag */}
-      <Label x={20} y={296} color="var(--text)">Set Associative</Label>
-      <Label x={20} y={312} sub>4-way · Number of sets 64</Label>
-      <Cell x={X0} y={284} w={20 * PX} h={40} color={C4} title="Tag" sub="20 bit" />
-      <Cell x={bx(20)} y={284} w={6 * PX} h={40} color={C1} title="Set offset" sub="6 bit" />
-      <Cell x={offX} y={284} w={6 * PX} h={40} color={C2} title="Word offset" sub="6 bit" />
+      <Label x={20} y={340} color="var(--text)">Set Associative</Label>
+      <Label x={20} y={356} sub>4-way · Number of sets 256</Label>
+      <Cell x={X0} y={328} w={20 * PX} h={40} color={C4} title="Tag" sub="20 bit" />
+      <Cell x={bx(20)} y={328} w={8 * PX} h={40} color={C1} title="Set offset" sub="8 bit" />
+      <Cell x={offX} y={328} w={4 * PX} h={40} color={C2} title="Offset" sub="4 bit" />
+      <Label x={offX + 2 * PX} y={384} anchor="middle" color={C2} size={11}>Word offset</Label>
 
       {/* Fully associative: a block can sit in any line, so no index at all */}
-      <Label x={20} y={362} color="var(--text)">Fully Associative</Label>
-      <Label x={20} y={378} sub>যেকোনো line-এ বসে</Label>
-      <Cell x={X0} y={350} w={26 * PX} h={40} color={C4} title="Tag" sub="26 bit" />
-      <Cell x={offX} y={350} w={6 * PX} h={40} color={C2} title="Offset" sub="6 bit" />
+      <Label x={20} y={420} color="var(--text)">Fully Associative</Label>
+      <Label x={20} y={436} sub>যেকোনো line-এ বসে</Label>
+      <Cell x={X0} y={408} w={28 * PX} h={40} color={C4} title="Tag" sub="28 bit" />
+      <Cell x={offX} y={408} w={4 * PX} h={40} color={C2} title="Offset" sub="4 bit" />
+
+      {/* One block close up: 4 words, each word = 32 bit = 4 byte, so 16 byte and a 4-bit Offset */}
+      <Label x={20} y={500} color="var(--text)">এক block</Label>
+      <Label x={20} y={516} sub>32-bit architecture</Label>
+      {[0, 1, 2, 3].map(w => {
+        const x = B0 + w * 4 * BW, on = w === 2
+        return (
+          <g key={w}>
+            <text x={x + 2 * BW} y={482} textAnchor="middle" fontSize="11.5" fontWeight={on ? 700 : 500} fill={on ? C2 : MUTED}>word {w}</text>
+            {[0, 1, 2, 3].map(k => (
+              <g key={k}>
+                <rect x={x + k * BW} y={490} width={BW} height={34} fill={on ? tint(C2, k === 1 ? 60 : 24) : 'var(--surface)'} stroke="var(--border-md)" />
+                <text x={x + k * BW + BW / 2} y={511} textAnchor="middle" fontSize="10" fill={MUTED}>b{k}</text>
+              </g>
+            ))}
+            <rect x={x} y={490} width={4 * BW} height={34} rx="3" fill="none" stroke={on ? C2 : 'var(--text-3)'} strokeWidth="1.5" />
+          </g>
+        )
+      })}
+      <Dim x1={B0} x2={B0 + 4 * BW} y={540} color={C3} label={<>Word size<Limit>4 byte = 32 bit</Limit></>} below />
+      <Dim x1={B0} x2={B0 + 16 * BW} y={584} color={C2} label={<>Block size<Limit>Words per block 4 × Word size 4 = 16 byte</Limit></>} below />
+
+      <Label x={20} y={652} color="var(--text)">Offset</Label>
+      <Label x={20} y={668} sub>log₂ 16 = 4 bit</Label>
+      <Cell x={B0 + 60} y={632} w={170} h={40} color={C3} title="word select · 2 bit" sub="2² = 4 টি word" />
+      <Cell x={B0 + 240} y={632} w={170} h={40} color={C2} title="byte select · 2 bit" sub="2² = 4 টি byte" />
+      <Label x={B0 + 240} y={692} anchor="middle" sub>word 2-এর byte 1 → Offset = 10 01</Label>
     </svg>
   )
 }

@@ -2078,6 +2078,280 @@
         ],
         "mnemonic": "মনে রাখো: বেশি frame মানেই কম fault নয় — FIFO-তে মাঝে মাঝে উল্টো হয়, এটাই Belady's আজব নিয়ম (Anomaly)।"
       }
+    },
+    {
+      "id": "os_031",
+      "q": "How can you overcome starvation (any scheduling technique)? What is the relation between Page fault and CPU utilization?",
+      "tags": [
+        "starvation",
+        "aging",
+        "priority scheduling",
+        "page fault",
+        "CPU utilization",
+        "thrashing"
+      ],
+      "answer": {
+        "summary": [
+          "Starvation দূর করার মূল উপায় Aging — যত বেশি অপেক্ষা, তত বেশি priority।",
+          "Page fault rate বাড়লে CPU utilization কমে — চরম অবস্থার নাম thrashing।"
+        ],
+        "points": [
+          "(ক) Starvation কী:",
+          {
+            "sub": "Priority scheduling-এ high priority process আসতেই থাকলে low priority process কখনো CPU পায় না।"
+          },
+          {
+            "sub": "SJF-এ একই সমস্যা — ছোট job আসতেই থাকলে বড় job আটকে থাকে।"
+          },
+          "সমাধান — Aging:",
+          {
+            "sub": "নির্দিষ্ট সময় পরপর অপেক্ষমাণ process-এর priority একটু বাড়ানো হয়।"
+          },
+          {
+            "sub": "অপেক্ষা যত লম্বা, priority তত উঁচু।"
+          },
+          {
+            "sub": "একসময় সে সবার উপরে পৌঁছায় এবং CPU পায়।"
+          },
+          {
+            "diagram": "range: 0 = সর্বোচ্চ priority, 127 = সর্বনিম্ন\nনিয়ম: প্রতি 15 min অপেক্ষায় priority সংখ্যা 1 করে কমে\n\nwait    0 min     15 min    30 min    ...       1905 min\nprio    127   ->  126   ->  125   ->  ...   ->  0      <- এবার CPU পাবেই\n\nসর্বোচ্চ অপেক্ষা = 127 × 15 min = 1905 min ≈ 32 ঘণ্টা\nঅপেক্ষার একটা শেষ সীমা আছে, তাই starvation আর হয় না",
+            "label": "Aging — priority ধাপে ধাপে উঠছে"
+          },
+          "বিকল্প — Round Robin:",
+          {
+            "sub": "প্রত্যেক process পালা করে একটি time quantum (q) পায়।"
+          },
+          {
+            "sub": "n টি process থাকলে কেউ সর্বোচ্চ (n − 1) × q অপেক্ষা করে — তাই starvation হয় না।"
+          },
+          "(খ) Page fault ও CPU utilization-এর সম্পর্ক:",
+          {
+            "sub": "Degree of multiprogramming (memory-তে process সংখ্যা) বাড়ালে শুরুতে CPU utilization বাড়ে।"
+          },
+          {
+            "sub": "আরও বাড়ালে প্রতিটি process যথেষ্ট frame পায় না।"
+          },
+          {
+            "sub": "তখন page fault rate বেড়ে যায়।"
+          },
+          {
+            "sub": "Page fault হলে process disk I/O-র জন্য block হয়, CPU বসে থাকে।"
+          },
+          {
+            "sub": "OS কম utilization দেখে আরও process ঢোকায় — fault আরও বাড়ে।"
+          },
+          {
+            "sub": "এই অবস্থাকে thrashing বলে: CPU কাজের বদলে শুধু page swap-এর অপেক্ষা করে।"
+          },
+          {
+            "diagram": "CPU utilization\n  ^\n  |              * * *\n  |           *         *\n  |        *              *      <- thrashing শুরু\n  |      *                  *\n  |    *                      *\n  |  *                          *\n  +------------------------------------>  degree of multiprogramming\n                  ^\n                  best point\n\nবাঁ দিকে: process বাড়ছে, CPU idle কম, utilization বাড়ে\nডান দিকে: frame কম পড়ে, page fault বাড়ে, utilization ধসে পড়ে",
+            "label": "CPU utilization বনাম degree of multiprogramming"
+          },
+          {
+            "diagram": "[more processes] -> [fewer frames] -> [more page faults] -> [CPU waits for disk]\n        ^                                                          |\n        |                                                          v\n        +-------------- [OS adds processes] <-------------- [low CPU utilization]\n\nএই চক্রটাই thrashing\n\nকেন CPU বসে থাকে (EAT দিয়ে):\n  memory access = 200 ns,  page fault service = 8 ms = 8,000,000 ns\n  fault rate p = 1/1000\n  EAT = (1 - p) × 200 + p × 8,000,000\n      = 199.8 + 8,000\n      ≈ 8,200 ns\n  মাত্র 1000-এ 1টা fault-এই access প্রায় 40 গুণ ধীর",
+            "label": "Thrashing চক্র ও EAT"
+          },
+          "Thrashing ঠেকানো:",
+          {
+            "sub": "Working Set model বা Page Fault Frequency (PFF) দিয়ে প্রতিটি process-কে প্রয়োজনমতো frame দেওয়া।"
+          },
+          {
+            "sub": "Frame না থাকলে কিছু process swap out করা।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Linux CFS-এ যে task কম CPU পেয়েছে তার vruntime কম, তাই সে আগে সুযোগ পায় — aging-এর মতোই।"
+          },
+          {
+            "sub": "কম RAM-এর PC-তে অনেক app খুললে disk সারাক্ষণ ব্যস্ত, সিস্টেম প্রায় থেমে যায় — এটাই thrashing।"
+          }
+        ],
+        "mistakes": [
+          [
+            "Page fault বেশি মানে CPU বেশি ব্যস্ত",
+            "না — fault হলে process disk-এর অপেক্ষায় block থাকে, CPU idle থাকে, utilization কমে।"
+          ]
+        ],
+        "mnemonic": "Aging = যত পুরোনো, তত সম্মান। বেশি process মানেই বেশি কাজ নয় — fault বাড়লে CPU বসে থাকে।"
+      }
+    },
+    {
+      "id": "os_032",
+      "q": "How can you overcome Hold and Wait, Circular Wait, Mutual Exclusion and No Preemption problems in a deadlock?",
+      "tags": [
+        "deadlock",
+        "deadlock prevention",
+        "mutual exclusion",
+        "hold and wait",
+        "no preemption",
+        "circular wait",
+        "Coffman conditions"
+      ],
+      "answer": {
+        "summary": [
+          "Deadlock prevention: চারটি Coffman শর্তের যেকোনো একটি ভাঙলেই deadlock হতে পারে না।"
+        ],
+        "points": [
+          "১. Mutual Exclusion ভাঙা:",
+          {
+            "sub": "Resource-কে sharable করা — যেমন read-only file একসাথে অনেকে পড়তে পারে।"
+          },
+          {
+            "sub": "Printer-এর মতো resource-এ spooling: সবাই job জমা দেয়, printer ধরে শুধু spooler।"
+          },
+          {
+            "sub": "সব resource sharable করা যায় না (যেমন mutex lock), তাই এটা সবসময় সম্ভব নয়।"
+          },
+          {
+            "diagram": "P1 --job-->+---------+\nP2 --job-->| spooler |--> [printer]\nP3 --job-->+---------+\n\nprinter ধরে আছে শুধু spooler daemon\nprocess-গুলো printer-এর জন্য অপেক্ষা করে না",
+            "label": "Mutual Exclusion — spooling"
+          },
+          "২. Hold and Wait ভাঙা:",
+          {
+            "sub": "উপায় ক: শুরুতেই দরকারি সব resource একসাথে চাইতে হবে।"
+          },
+          {
+            "sub": "উপায় খ: নতুন resource চাওয়ার আগে হাতে থাকা সব resource ছেড়ে দিতে হবে।"
+          },
+          {
+            "sub": "ফলে কেউ কিছু ধরে রেখে অপেক্ষা করে না।"
+          },
+          {
+            "diagram": "আগে (hold and wait):\n  P1:  holds R1,  waits for R2\n\nপরে (all at once):\n  P1:  request(R1, R2)\n         -> দুটোই free হলে একসাথে পায়\n         -> একটাও busy হলে কিছুই না নিয়ে অপেক্ষা করে",
+            "label": "Hold and Wait — সব একসাথে"
+          },
+          "৩. No Preemption ভাঙা (preemption চালু করা):",
+          {
+            "sub": "Process R1 ধরে রেখে R2 না পেলে, OS তার হাতের R1 কেড়ে নেয়।"
+          },
+          {
+            "sub": "পরে পুরোনো ও নতুন সব resource একসাথে পেলে তবেই সে আবার চলে।"
+          },
+          {
+            "sub": "CPU register, memory-র মতো resource-এ কাজ করে, যাদের state save করে পরে ফেরানো যায়।"
+          },
+          {
+            "diagram": "[P1 holds R1] -> [asks R2: busy] -> [OS takes R1 back] -> [P1 waits for R1 + R2]\n\nR1 এখন free — অন্য process সেটা নিয়ে কাজ শেষ করতে পারে\nপরে R1 ও R2 দুটোই free হলে P1 আবার চলে",
+            "label": "No Preemption — resource কেড়ে নেওয়া"
+          },
+          "৪. Circular Wait ভাঙা (সবচেয়ে বাস্তবসম্মত):",
+          {
+            "sub": "প্রতিটি resource type-কে একটি নম্বর দেওয়া হয় (R1 = 1, R2 = 2 …)।"
+          },
+          {
+            "sub": "Process শুধু বাড়তি ক্রমে resource চাইতে পারে — ছোট নম্বর আগে, বড় নম্বর পরে।"
+          },
+          {
+            "sub": "Cycle হতে হলে কাউকে বড় নম্বর ধরে ছোট নম্বর চাইতে হতো — যা নিষেধ, তাই cycle অসম্ভব।"
+          },
+          {
+            "diagram": "ordering:  R1 = 1,  R2 = 2\n\nআগে (cycle):\n  P1:  holds R1  --wants-->  R2\n  P2:  holds R2  --wants-->  R1      <- বড় নম্বর ধরে ছোট চাইছে, নিষেধ\n\nপরে (ordering মেনে):\n  P1:  R1  ->  R2\n  P2:  R1  ->  R2                    <- P2-ও আগে R1 চায়, তাই অপেক্ষা\n\nP1 কাজ শেষে R1, R2 ছাড়ে, তারপর P2 চলে — কোনো cycle নেই",
+            "label": "Circular Wait — resource ordering"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Linux kernel-এ lock ordering নিয়ম মানা হয়; lockdep টুল ক্রম ভাঙলে সতর্ক করে।"
+          },
+          {
+            "sub": "Database-এ সব transaction একই ক্রমে row lock নিলে deadlock এড়ানো যায়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "শর্ত",
+            "কীভাবে ভাঙা হয়",
+            "অসুবিধা"
+          ],
+          "rows": [
+            [
+              "Mutual Exclusion",
+              "Resource sharable করা / spooling",
+              "সব resource sharable করা যায় না"
+            ],
+            [
+              "Hold and Wait",
+              "সব resource একসাথে চাওয়া",
+              "Resource অপচয়, starvation সম্ভব"
+            ],
+            [
+              "No Preemption",
+              "না পেলে হাতের resource কেড়ে নেওয়া",
+              "Printer-এর মতো resource-এ চলে না"
+            ],
+            [
+              "Circular Wait",
+              "Resource-এ নম্বর দিয়ে বাড়তি ক্রমে চাওয়া",
+              "ক্রম মেনে code লিখতে হয়"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Deadlock ঠেকাতে চারটি শর্তই ভাঙতে হবে",
+            "না — যেকোনো একটি ভাঙলেই যথেষ্ট; বাস্তবে সাধারণত Circular Wait ভাঙা হয়।"
+          ]
+        ],
+        "mnemonic": "ভাগ করো (Mutual Exclusion), সব একসাথে চাও (Hold and Wait), কেড়ে নাও (No Preemption), নম্বর ধরে চাও (Circular Wait)।"
+      }
+    },
+    {
+      "id": "os_033",
+      "q": "Suppose we have 16 KB of data in a direct mapped cache with 4 word blocks. Determine the size of the tag, index and offset fields if we are using a 32-bit architecture.",
+      "tags": [
+        "cache",
+        "direct mapping",
+        "tag",
+        "index",
+        "offset",
+        "word",
+        "32-bit architecture"
+      ],
+      "answer": {
+        "summary": [
+          "উত্তর: Tag = 18 bit, Index = 10 bit, Offset = 4 bit।"
+        ],
+        "points": [
+          "32-bit architecture মানে:",
+          {
+            "sub": "Address 32 bit লম্বা — তাই Tag + Index + Offset = 32।"
+          },
+          {
+            "sub": "1 word = 32 bit = 4 byte।"
+          },
+          "ধাপ ১ — Offset:",
+          {
+            "sub": "Block size = 4 word × 4 byte = 16 byte।"
+          },
+          {
+            "sub": "16 = 2⁴, তাই Offset = 4 bit।"
+          },
+          {
+            "sub": "এই 4 bit-এর 2 bit বলে কোন word (4 টি), বাকি 2 bit বলে word-এর কোন byte (4 টি)।"
+          },
+          "ধাপ ২ — Index:",
+          {
+            "sub": "Cache size = 16 KB = 2⁴ × 2¹⁰ = 2¹⁴ byte।"
+          },
+          {
+            "sub": "Lines = Cache size / Block size = 2¹⁴ / 2⁴ = 2¹⁰ = 1024।"
+          },
+          {
+            "sub": "Index = log₂ 1024 = 10 bit।"
+          },
+          "ধাপ ৩ — Tag:",
+          {
+            "sub": "Tag = 32 − 10 − 4 = 18 bit।"
+          }
+        ],
+        "diagram": "32-bit architecture:\n  address = 32 bit\n  1 word  = 32 bit = 4 byte\n\nএক block (4 word):\n  +-------------+-------------+-------------+-------------+\n  |   word 0    |   word 1    |   word 2    |   word 3    |\n  | b0 b1 b2 b3 | b0 b1 b2 b3 | b0 b1 b2 b3 | b0 b1 b2 b3 |\n  +-------------+-------------+-------------+-------------+\n  Block size = 4 word × 4 byte = 16 byte = 2^4\n  Offset     = log2(16) = 4 bit\n\nCache:\n  Cache size = 16 KB = 2^4 × 2^10 = 2^14 byte\n  lines      = 2^14 / 2^4 = 2^10 = 1024\n  Index      = log2(1024) = 10 bit\n\nAddress (32 bit):\n  +--------------------+--------------+---------+\n  |       Tag 18       |   Index 10   |  Off 4  |\n  +--------------------+--------------+---------+\n  Tag = 32 - 10 - 4 = 18 bit\n\n  Index + Offset = 10 + 4 = 14 = log2(16 KB)\n  তাই 14 পুরোটা Index নয়, এর ভেতরে Offset-ও আছে",
+        "mistakes": [
+          [
+            "Cache size 2¹⁴, তাই Index = 14 bit",
+            "14 = Index + Offset। Cache size = lines × Block size, তাই block-এর 4 bit বাদ দিলে Index = 10।"
+          ]
+        ],
+        "mnemonic": "Word থেকে byte, byte থেকে Offset; Cache থেকে Offset বাদ দিলে Index; 32 থেকে দুটো বাদ দিলে Tag।"
+      }
     }
   ]
 }
