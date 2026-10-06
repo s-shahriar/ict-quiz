@@ -66,6 +66,12 @@ export default {
           note: 'Page-এ Page size টি byte, তাই Page size টি আলাদা Offset; n bit দিয়ে 2ⁿ টি নম্বর লেখা যায়, তাই Page size 2 KB = 2¹¹ হলে 11 bit।',
         },
         {
+          name: 'Number of pages',
+          lhs: r`\text{Number of pages}`,
+          rhs: r`\dfrac{\text{Logical Address space}}{\text{Page size}} = 2^{\text{Page Number bits}}`,
+          note: 'Page Number যত bit, তত রকম page থাকা সম্ভব।',
+        },
+        {
           name: 'Page Number bits',
           lhs: r`\text{Page Number bits}`,
           rhs: r`\log_2(\text{Number of pages})`,
@@ -88,12 +94,6 @@ export default {
           lhs: r`\text{Physical Address bits}`,
           rhs: r`\text{Frame Number bits} + \text{Offset bits}`,
           note: 'Frame size = Page size, তাই Offset bits একই: 7 + 11 = 18 bit।',
-        },
-        {
-          name: 'Number of pages',
-          lhs: r`\text{Number of pages}`,
-          rhs: r`\dfrac{\text{Logical Address space}}{\text{Page size}} = 2^{\text{Page Number bits}}`,
-          note: 'Page Number যত bit, তত রকম page থাকা সম্ভব।',
         },
         {
           name: 'Page table size',
@@ -158,12 +158,6 @@ export default {
       ],
       equations: [
         {
-          name: 'Disk access time',
-          lhs: r`\text{Disk access time}`,
-          rhs: r`\text{Seek time} + \text{Avg Rotational time} + \text{Data transfer time}`,
-          note: 'head ঠিক track-এ যায়, sector ঘুরে head-এর নিচে আসে, তারপর পড়া হয়।',
-        },
-        {
           name: 'Avg Rotational time',
           lhs: r`\text{Avg Rotational time}`,
           rhs: r`\dfrac{60 / \text{RPM}}{2}`,
@@ -180,6 +174,12 @@ export default {
           lhs: r`\text{Transfer time}`,
           rhs: r`\dfrac{\text{Sector size}}{\text{Transfer rate}}`,
           note: 'যত byte পড়তে হবে, তাকে প্রতি সেকেন্ডে পড়া byte দিয়ে ভাগ।',
+        },
+        {
+          name: 'Disk access time',
+          lhs: r`\text{Disk access time}`,
+          rhs: r`\text{Seek time} + \text{Avg Rotational time} + \text{Data transfer time}`,
+          note: 'head ঠিক track-এ যায়, sector ঘুরে head-এর নিচে আসে, তারপর পড়া হয়।',
         },
         {
           name: 'Total capacity',
@@ -206,24 +206,6 @@ export default {
       ],
       equations: [
         {
-          name: 'Direct Mapping',
-          lhs: r`\text{Address bits}`,
-          rhs: r`\text{Tag bits} + \text{Index bits} + \text{Offset bits}`,
-          note: 'Index ঠিক করে কোন line, Offset ঠিক করে line-এর কোন byte, Tag মিলিয়ে দেখা হয় ঠিক block কিনা।',
-        },
-        {
-          name: 'Index bits',
-          lhs: r`\text{Index bits}`,
-          rhs: r`\log_2(\text{No. of cache lines})`,
-          note: 'প্রতিটি line আলাদা করে চিনতে এতগুলো bit লাগে।',
-        },
-        {
-          name: 'Offset bits',
-          lhs: r`\text{Offset bits}`,
-          rhs: r`\log_2(\text{Block size})`,
-          note: 'Block-এর প্রতিটি byte আলাদা করতে এতগুলো bit লাগে; তিন mapping-এই একই। 16 byte block হলে log₂ 16 = 4 bit।',
-        },
-        {
           name: 'Word size',
           lhs: r`\text{Word size (byte)}`,
           rhs: r`\dfrac{\text{Architecture bits}}{8}`,
@@ -236,10 +218,22 @@ export default {
           note: 'Offset bits বের করতে block-কে byte-এ নিতে হয়: 4 word × 4 byte = 16 byte, তাই Offset 4 bit।',
         },
         {
+          name: 'Offset bits',
+          lhs: r`\text{Offset bits}`,
+          rhs: r`\log_2(\text{Block size})`,
+          note: 'Block-এর প্রতিটি byte আলাদা করতে এতগুলো bit লাগে; তিন mapping-এই একই। 16 byte block হলে log₂ 16 = 4 bit।',
+        },
+        {
           name: 'Cache size',
           lhs: r`\text{Cache size}`,
           rhs: r`\text{No. of cache lines} \times \text{Block size}`,
           note: 'প্রতিটি line-এ একটি block: 16 KB / 16 byte = 2¹⁴ / 2⁴ = 2¹⁰ = 1024 line।',
+        },
+        {
+          name: 'Index bits',
+          lhs: r`\text{Index bits}`,
+          rhs: r`\log_2(\text{No. of cache lines})`,
+          note: 'প্রতিটি line আলাদা করে চিনতে এতগুলো bit লাগে।',
         },
         {
           name: 'Index + Offset (Direct)',
@@ -248,16 +242,16 @@ export default {
           note: 'Cache size = lines × Block size, আর log-এ গুণ হয় যোগ: 16 KB = 2¹⁴ → 14 = 10 + 4। তাই 14 পুরোটা Index নয়।',
         },
         {
+          name: 'Direct Mapping',
+          lhs: r`\text{Address bits}`,
+          rhs: r`\text{Tag bits} + \text{Index bits} + \text{Offset bits}`,
+          note: 'Index ঠিক করে কোন line, Offset ঠিক করে line-এর কোন byte, Tag মিলিয়ে দেখা হয় ঠিক block কিনা; বাকি সব bit Tag: 32 − 10 − 4 = 18 bit।',
+        },
+        {
           name: 'Fully Associative Mapping',
           lhs: r`\text{Address bits}`,
           rhs: r`\text{Tag} + \text{Offset}`,
           note: 'Block যেকোনো line-এ বসতে পারে, তাই Index নেই; বাকি সব bit Tag।',
-        },
-        {
-          name: 'Set Associative Mapping',
-          lhs: r`\text{Address bits}`,
-          rhs: r`\text{Tag} + \text{Set offset} + \text{Word offset}`,
-          note: 'Set offset ঠিক করে কোন set (অনেক বইয়ে Set index); Word offset আর Offset bits একই জিনিস।',
         },
         {
           name: 'Number of sets',
@@ -270,6 +264,12 @@ export default {
           lhs: r`\text{Set offset bits}`,
           rhs: r`\log_2(\text{Number of sets})`,
           note: 'Index bits-এর মতোই, শুধু line-এর বদলে set গোনা হয়।',
+        },
+        {
+          name: 'Set Associative Mapping',
+          lhs: r`\text{Address bits}`,
+          rhs: r`\text{Tag} + \text{Set offset} + \text{Word offset}`,
+          note: 'Set offset ঠিক করে কোন set (অনেক বইয়ে Set index); Word offset আর Offset bits একই জিনিস।',
         },
       ],
       mnemonic: 'Offset সবার একই; Index যত কমে, Tag তত বাড়ে — Fully-তে Index শূন্য।',

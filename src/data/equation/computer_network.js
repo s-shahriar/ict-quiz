@@ -29,16 +29,16 @@ export default {
           note: 'MTU-র ভেতর থেকে দুই header-এর জায়গা বাদ দিলে data-র জন্য যা থাকে।',
         },
         {
-          name: 'Total packet size',
-          lhs: r`\text{Total packet}`,
-          rhs: r`\text{Data} + \text{IP header} + \text{TCP header}`,
-          note: 'link-এ আসলে যত byte যায় — data আর তার দুই header।',
-        },
-        {
           name: 'Number of TCP segments',
           lhs: r`\text{Segments}`,
           rhs: r`\left\lceil \dfrac{\text{Total data}}{\text{MSS}} \right\rceil`,
           note: 'ভাগফল ভগ্নাংশ হলে উপরের পূর্ণসংখ্যা নিতে হয়, কারণ শেষের ছোট টুকরাটিও একটি segment।',
+        },
+        {
+          name: 'Total packet size',
+          lhs: r`\text{Total packet}`,
+          rhs: r`\text{Data} + \text{IP header} + \text{TCP header}`,
+          note: 'link-এ আসলে যত byte যায় — data আর তার দুই header।',
         },
         {
           name: 'TCP efficiency',
@@ -73,12 +73,6 @@ export default {
           note: 'প্রশ্নে Window size packet সংখ্যায় দেওয়া থাকলে। যেমন 8 packet, প্রতিটি 8000 bit হলে window আসলে 8 × 8000 = 64000 bit, তাই উত্তর একই 640000 bps।',
         },
         {
-          name: 'Bandwidth-Delay Product',
-          lhs: r`\text{BDP}`,
-          rhs: r`\text{TCP Window size} = \text{RTT} \times \text{BW}`,
-          note: 'এক RTT-তে link যত bit ধরে রাখতে পারে, Window size ততটাই লাগে; BW-এর জায়গায় Throughput দেওয়া থাকলে সেটি দিয়েই RTT-কে গুণ করা যায়।',
-        },
-        {
           name: 'Minimum file transfer time',
           lhs: r`\text{Time}`,
           rhs: r`\dfrac{\text{File size}}{\text{Throughput}}`,
@@ -89,6 +83,12 @@ export default {
           lhs: r`\text{Time}`,
           rhs: r`\dfrac{\text{Total size}}{\text{BW}}`,
           note: 'Throughput-এর জায়গায় link-এর পুরো BW বসালে একই সূত্র।',
+        },
+        {
+          name: 'Bandwidth-Delay Product',
+          lhs: r`\text{BDP}`,
+          rhs: r`\text{TCP Window size} = \text{RTT} \times \text{BW}`,
+          note: 'এক RTT-তে link যত bit ধরে রাখতে পারে, Window size ততটাই লাগে; BW-এর জায়গায় Throughput দেওয়া থাকলে সেটি দিয়েই RTT-কে গুণ করা যায়।',
         },
       ],
       mnemonic: 'Throughput মানে এক RTT-তে কত data; সময় মানে মোট data ভাগ Throughput।',
