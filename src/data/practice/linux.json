@@ -101,6 +101,7 @@
         { "prompt": "app.log-এ আস্ত শব্দ হিসেবে 'error' খোঁজো (\"errors\"/\"myerror\" বাদ)", "accept": ["grep -w error app.log", "grep -w 'error' app.log", "grep -w \"error\" app.log"], "explain": "-w = whole word match (শব্দের সীমানা মেলায়)" },
         { "prompt": "/var/log-এর সব file-এ recursive ও case-insensitive ভাবে 'error' খোঁজো", "accept": ["grep -ri error /var/log", "grep -ri 'error' /var/log", "grep -ir error /var/log", "grep -ir 'error' /var/log"], "explain": "-r = recursive, -i = case-insensitive" },
         { "prompt": "app.log-এ 'error' শব্দ কতবার আছে গুনে দেখাও (grep + wc pipe)", "accept": ["grep error app.log | wc -l", "grep 'error' app.log | wc -l"], "explain": "grep output পাইপ করে wc -l দিয়ে গণনা" },
+        { "prompt": "current directory-র সব .c ও .h file মিলিয়ে মোট কত line আছে বের করো", "accept": ["cat *.c *.h | wc -l", "cat *.h *.c | wc -l", "cat *.[ch] | wc -l", "wc -l *.c *.h | tail -1", "wc -l *.[ch] | tail -1"], "explain": "cat দিয়ে file গুলো এক stream বানিয়ে wc -l; সরাসরি wc -l *.c *.h দিলে প্রতি file-এর count ও শেষে total আসে" },
         { "prompt": "/data directory-কে backup.tar.gz নামে compress করো", "accept": ["tar -czf backup.tar.gz /data"], "explain": "-c create, -z gzip, -f filename" }
       ]
     },
