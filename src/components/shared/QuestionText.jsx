@@ -9,6 +9,7 @@
 import HighlightableText from './HighlightableText.jsx'
 import { useHighlights } from '../../contexts/HighlightContext.jsx'
 import { guardHighlightClick } from '../../lib/textAnchor.js'
+import { guessLang } from '../../lib/highlight.js'
 
 export function splitQuestion(text) {
   const s = (text ?? '').toString()
@@ -32,7 +33,7 @@ export default function QuestionText({ text, uid, className }) {
         block="q" text={prompt} highlights={hl('q')} />
       {code && (
         <pre className="q-code-pre">
-          <HighlightableText as="code" block="q.code" text={code} highlights={hl('q.code')} />
+          <HighlightableText as="code" className="code-tokens" block="q.code" text={code} lang={guessLang(code)} highlights={hl('q.code')} />
         </pre>
       )}
     </div>

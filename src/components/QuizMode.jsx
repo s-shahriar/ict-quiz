@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { clearSession, dedupeCopies, loadSession, newSeed, orderDeck, restoreDeck, saveSession } from '../lib/quizDeck.js'
 import Loader from './shared/Loader.jsx'
 import { useParams, useNavigate, useSearchParams, Navigate } from 'react-router-dom'
 import { ChevronLeft, CheckCircle, XCircle, ArrowRight, Home, Trophy, Lightbulb, Star, Bookmark, Flame } from 'lucide-react'
@@ -19,15 +20,6 @@ import NoteEditor from './shared/NoteEditor.jsx'
 import { useNoteEditor } from './shared/useNoteEditor.js'
 import { gradeColor } from '../lib/grade'
 
-function shuffle(arr) {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
-
 // `?set=important|weak|nailed` quizzes only the questions you've marked in this
 // topic (chosen on ModeSelect). No param = the whole topic.
 const POOL_LABEL = { important: 'Important', weak: 'Weak', nailed: 'Nailed' }
@@ -44,18 +36,25 @@ export default function QuizMode() {
   const setParam = searchParams.get('set')
   const set = POOL_LABEL[setParam] ? setParam : null
 
+  const quizKey = `${topic?.id}|${set || 'all'}`
+  // One seed per quiz, kept with the saved session (lib/quizDeck.js): every
+  // rebuild of the pool comes out in the same order, so nothing can reshuffle
+  // the deck under the question you're on.
+  const [seeds, setSeeds] = useState(() => ({ [quizKey]: loadSession(quizKey)?.seed || newSeed() }))
+  if (!seeds[quizKey]) setSeeds(s => ({ ...s, [quizKey]: loadSession(quizKey)?.seed || newSeed() }))
+  const seed = seeds[quizKey]
+
   // A marked-set quiz also tracks its set, so it fills in once cloud progress lands.
   const liveQuestions = useMemo(() => {
     if (!topic) return []
     const base = topic.questions.filter(q => q.options && q.correct_answer)
     const marked = set === 'important' ? important : set === 'weak' ? weak : set === 'nailed' ? mastered : null
-    return shuffle(marked ? base.filter(q => marked.has(q._uid)) : base)
-  }, [topic, ready, set, set === 'important' ? important : null, set === 'weak' ? weak : null, set === 'nailed' ? mastered : null]) // eslint-disable-line react-hooks/exhaustive-deps
+    return orderDeck(dedupeCopies(marked ? base.filter(q => marked.has(q._uid)) : base, q => q._uid), seed)
+  }, [topic, ready, set, seed, set === 'important' ? important : null, set === 'weak' ? weak : null, set === 'nailed' ? mastered : null]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Frozen at the first answer: un-marking a question mid-quiz must not
   // reshuffle or shrink the quiz you're in the middle of.
   const [frozen, setFrozen] = useState(null)   // { key, list }
-  const quizKey = `${topic?.id}|${set || 'all'}`
   const questions = frozen?.key === quizKey ? frozen.list : liveQuestions
 
   const [idx, setIdx] = useState(0)
@@ -63,6 +62,29 @@ export default function QuizMode() {
   const [revealed, setRevealed] = useState(false)
   const [score, setScore] = useState(0)
   const [done, setDone] = useState(false)
+
+  // Load the position once per quiz. Switching topic from the sidebar keeps
+  // this component mounted, so a new topic starts from its own first question
+  // instead of carrying the old position over; and a reload (or the phone
+  // discarding the tab) resumes the saved deck at the same question rather
+  // than starting a fresh shuffle.
+  const [activeKey, setActiveKey] = useState(null)
+  if (ready && topic && activeKey !== quizKey) {
+    setActiveKey(quizKey)
+    const saved = loadSession(quizKey)
+    const back = restoreDeck(saved, topic.questions)
+    // Answered but not moved on yet: its point is already in the score, so resume after it.
+    const at = back ? back.idx + (saved.revealed ? 1 : 0) : 0
+    setFrozen(back ? { key: quizKey, list: back.list } : null)
+    setIdx(back ? Math.min(at, back.list.length - 1) : 0); setScore(back ? saved.score || 0 : 0)
+    setDone(!!back && at >= back.list.length); setSelected(null); setRevealed(false)
+  }
+
+  useEffect(() => {
+    if (frozen?.key !== quizKey) return
+    if (done) { clearSession(quizKey); return }
+    saveSession(quizKey, { seed, ids: frozen.list.map(x => x._id), cur: frozen.list[idx]?._id, idx, score, revealed })
+  }, [frozen, idx, score, done, revealed]) // eslint-disable-line react-hooks/exhaustive-deps
   // Saved highlights and the note editor, read here with the rest of the
   // hooks — they must run before the early returns below or the hook order
   // changes between renders. `q`/`qid` move up with them for the same reason:
@@ -98,7 +120,22 @@ export default function QuizMode() {
     setRevealed(false)
   }
 
+  // Deleting a question mid-quiz takes it out of the run: the total drops by
+  // one, a point already scored on it is taken back, and the next question
+  // slides into place. Nothing else in the deck moves.
+  const dropCurrent = () => {
+    const list = questions.filter((_, i) => i !== idx)
+    if (revealed && selected === q.correct_answer) setScore(s => s - 1)
+    setFrozen({ key: quizKey, list })
+    setSelected(null); setRevealed(false)
+    if (idx >= list.length) { setIdx(Math.max(0, list.length - 1)); setDone(true) }
+  }
+
+  // Same questions, fresh order: a new seed reorders the deck you just finished.
   const retry = () => {
+    const fresh = newSeed()
+    setSeeds(s => ({ ...s, [quizKey]: fresh }))
+    setFrozen({ key: quizKey, list: orderDeck(questions, fresh) })
     setIdx(0); setSelected(null); setRevealed(false)
     setScore(0); setDone(false)
   }
@@ -211,7 +248,7 @@ export default function QuizMode() {
               <WeakButton uid={qid} className="quiz-weak-btn" size={16} label onLabel="Weak!" />
               {q._id && (
                 <MoreMenu className="quiz-nail-btn">
-                  <DeleteButton question={q} className="more-menu-item" size={14} onDeleted={next} />
+                  <DeleteButton question={q} className="more-menu-item" size={14} onDeleted={dropCurrent} />
                 </MoreMenu>
               )}
             </div>
