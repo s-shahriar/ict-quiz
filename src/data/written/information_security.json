@@ -588,12 +588,18 @@
         "summary": [
           "XSS = বিশ্বস্ত website এ attacker এর malicious client-side script (সাধারণত JavaScript) ঢুকিয়ে দেওয়ার দুর্বলতা।",
           "Victim পেজটি খুললে script তার browser এ চলে — cookie, session token, sensitive data চুরি হতে পারে।",
-          "Payload delivery দিয়ে ভাগ: Reflected = URL/request এর সাথে আসে (server bounce করে ফেরত দেয়), Stored = server এ জমা থাকে (প্রতিটি visitor কে দেওয়া হয়)।"
+          "Payload delivery দিয়ে ভাগ: Reflected = script link এর ভেতরে থাকে, server সেটি তখনই পেজে বসিয়ে ফেরত দেয় (কোথাও জমা রাখে না); Stored = script server এর database এ জমা থাকে, যে-ই পেজ খোলে সে-ই পায়।"
         ],
         "points": [
           "মূল কথা — XSS কেন ঘটে:",
           {
-            "sub": "XSS এ browser server এর পাঠানো script কে \"trusted\" ভেবে বিনা প্রশ্নে চালায়।"
+            "sub": "Payload = attacker এর পাঠানো malicious script (সাধারণত JavaScript)।"
+          },
+          {
+            "sub": "Browser এর নিয়ম: কোনো পেজের ভেতরের script সেই site এর অধিকার পায় — ওই site এর cookie পড়তে পারে।"
+          },
+          {
+            "sub": "তাই attacker এর script site.com এর পেজে ঢুকতে পারলে browser সেটিকে site.com এর নিজের code ভেবে চালায়।"
           },
           {
             "sub": "আসল দুর্বলতা — user input কে output এ দেওয়ার আগে validate বা encode করা হয় না।"
@@ -601,15 +607,30 @@
           {
             "sub": "ফলে input এর ভেতরের <script> ট্যাগ data নয়, কোড হিসেবে গণ্য হয়।"
           },
+          {
+            "sub": "নামের মানে: script আসে বাইরে থেকে (attacker), কিন্তু চলে victim এর বিশ্বস্ত site এর ভেতরে — তাই Cross-Site।"
+          },
           "Reflected XSS — payload delivery (কীভাবে পৌঁছায়):",
+          {
+            "sub": "আগে স্বাভাবিক অবস্থা: search box এ laptop লিখলে URL হয় site.com/search?q=laptop।"
+          },
+          {
+            "sub": "Server ফলাফলের পেজে লেখে \"You searched for: laptop\" — অর্থাৎ তোমার লেখাটাই পেজের HTML এ বসিয়ে দেয়।"
+          },
+          {
+            "sub": "একেই reflect বলে — আয়নার মতো, যা পাঠাও সেটাই পেজে ফিরে আসে।"
+          },
+          {
+            "sub": "Attacker laptop এর জায়গায় script বসায়: site.com/search?q=<script>steal(document.cookie)</script>"
+          },
           {
             "sub": "Script HTTP request এর অংশ হিসেবে যায় — URL parameter বা form input এ।"
           },
           {
-            "sub": "Server সেই input কে response পেজে হুবহু \"reflect\" করে ফেরত দেয়।"
+            "sub": "Server যাচাই না করে script টাই পেজের HTML এ বসিয়ে দেয়: \"You searched for: <script>…</script>\"।"
           },
           {
-            "sub": "Browser সেটি execute করে ফেলে।"
+            "sub": "Browser সেটি execute করে ফেলে — কারণ script টা site.com এর পেজের ভেতর থেকেই এসেছে।"
           },
           {
             "sub": "Server এ কিছু জমা থাকে না — তাই এটি non-persistent।"
@@ -619,16 +640,34 @@
             "sub": "Attacker কে আগে victim কে একটা crafted malicious link এ click করাতে হয়।"
           },
           {
+            "sub": "Script টা link এর ভেতরেই থাকে — victim click করলে তার নিজের browser ই script সহ request পাঠায়।"
+          },
+          {
+            "sub": "Link এর domain আসল site.com, তাই দেখে বিশ্বাসযোগ্য মনে হয়।"
+          },
+          {
+            "sub": "Script অংশটা প্রায়ই URL-encode করা থাকে (<script> → %3Cscript%3E), তাই চোখে পড়ে না।"
+          },
+          {
             "sub": "Link সাধারণত email বা message এ পাঠানো হয়।"
           },
           {
             "sub": "একটা click = এক victim, তাই scope সাধারণত নির্দিষ্ট একজন।"
           },
           {
-            "diagram": "REFLECTED XSS — non-persistent, server bounce করে ফেরত দেয়\n\n [1] Attacker crafted link পাঠায় (email / message):\n     site.com/search?q=<script>steal(document.cookie)</script>\n\n [2] Victim link এ click করে\n       │\n       ▼\n [3] Request server এ যায়\n       │\n       ▼\n     SERVER   ← input কোথাও জমা রাখে না\n       │\n       ▼\n [4] input হুবহু response পেজে reflect হয়ে ফেরত আসে\n       │\n       ▼\n [5] Victim এর browser এ script চলে    ← একজন victim",
+            "diagram": "REFLECTED XSS — non-persistent, server bounce করে ফেরত দেয়\n\n [1] Attacker crafted link পাঠায় (email / message):\n     site.com/search?q=<script>steal(document.cookie)</script>\n\n [2] Victim link এ click করে\n       │\n       ▼\n [3] Request server এ যায়\n       │\n       ▼\n     SERVER   ← input কোথাও জমা রাখে না\n       │\n       ▼\n [4] input হুবহু response পেজে reflect হয়ে ফেরত আসে\n     <p>You searched for: <script>steal(document.cookie)</script></p>\n       │\n       ▼\n [5] Victim এর browser এ script চলে    ← একজন victim",
             "label": "Diagram — Reflected XSS"
           },
           "Stored XSS — payload delivery (কীভাবে পৌঁছায়):",
+          {
+            "sub": "আগে স্বাভাবিক অবস্থা: comment box এ লেখা comment টি server database এ save করে।"
+          },
+          {
+            "sub": "পরে যে-ই পেজ খোলে, server database থেকে সব comment পড়ে পেজের HTML এ বসিয়ে পাঠায়।"
+          },
+          {
+            "sub": "Attacker comment এর জায়গায় script লিখে submit করে।"
+          },
           {
             "sub": "Script server এ স্থায়ীভাবে জমা থাকে — database, comment, profile field বা review তে।"
           },
@@ -649,6 +688,9 @@
             "sub": "কোনো আলাদা ফাঁদ বা link লাগে না।"
           },
           {
+            "sub": "Admin বা moderator পেজটি খুললে তার session ও চুরি হতে পারে — তখন পুরো site ঝুঁকিতে পড়ে।"
+          },
+          {
             "sub": "তাই attack scope অনেক বড় এবং Reflected এর চেয়ে গুরুতর।"
           },
           {
@@ -663,7 +705,17 @@
             "sub": "Output encoding — HTML escape করে দেখানো।"
           },
           {
+            "sub": "যেমন < কে &lt; করে পাঠালে browser সেটি শুধু লেখা হিসেবে দেখায়, script হিসেবে চালায় না।"
+          },
+          {
+            "diagram": "OUTPUT ENCODING — একই input, দুই ফল\n\n Encode ছাড়া server পাঠায়:\n   <script>steal(document.cookie)</script>\n     ✗ browser এটিকে code ভেবে চালায় — cookie চুরি\n\n Encode করে server পাঠায়:\n   &lt;script&gt;steal(document.cookie)&lt;/script&gt;\n     ✓ পেজে শুধু লেখাটা দেখা যায় — কিছুই চলে না",
+            "label": "Diagram — Output encoding"
+          },
+          {
             "sub": "Content-Security-Policy (CSP) header দেওয়া।"
+          },
+          {
+            "sub": "CSP দিয়ে browser কে বলে দেওয়া হয় কোন উৎসের script চালানো যাবে — পেজে ঢোকানো inline script চলে না।"
           },
           {
             "sub": "Cookie তে HttpOnly flag — script যেন cookie পড়তে না পারে।"
@@ -690,6 +742,10 @@
           [
             "XSS এ server এর data চুরি হয়",
             "না — XSS client-side আক্রমণ; victim এর browser এ script চলে cookie/session token চুরি করে, server এর DB সরাসরি নয়"
+          ],
+          [
+            "XSS এ attacker victim এর পুরো computer দখল করে",
+            "না — script চলে শুধু browser এর ভেতরে, ওই site এর অধিকার নিয়ে (cookie, session, পেজের data); পুরো computer নয়"
           ]
         ],
         "table": {
