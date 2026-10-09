@@ -5782,6 +5782,563 @@
         ],
         "mnemonic": "দুই পথ = loop, TTL নেই = storm, STP = একটা পথ block।"
       }
+    },
+    {
+      "id": "cn_059",
+      "q": "Consider a network-management scenario in the BSCPLC Network Operations Center (NOC) where the existing network is facing an addressing or connectivity problem.\n\nWould you recommend:\n\n    Updating the subnet mask, or\n    Installing a new network switch?\n\nAnalyze the scenario and justify your decision based on IP addressing, subnet capacity, network topology, port availability, and scalability.",
+      "tags": [
+        "subnet mask",
+        "subnetting",
+        "switch",
+        "port availability",
+        "scalability",
+        "VLAN",
+        "troubleshooting"
+      ],
+      "answer": {
+        "summary": [
+          "সিদ্ধান্ত নির্ভর করে সীমাটা কোন স্তরের: address শেষ হলে subnet mask update (Layer 3), physical port শেষ হলে নতুন switch (Layer 1/2)।",
+          "তাই আগে diagnosis — logical সীমা না physical সীমা, তারপর সমাধান।"
+        ],
+        "points": [
+          "প্রথমে সমস্যা চিহ্নিত করো:",
+          {
+            "sub": "Host IP পাচ্ছে না বা DHCP pool শেষ, অথচ switch-এ খালি port আছে → addressing-এর সমস্যা।"
+          },
+          {
+            "sub": "IP বাকি আছে কিন্তু নতুন device লাগানোর port নেই → port availability-র সমস্যা।"
+          },
+          {
+            "sub": "একই switch-এ থাকা দুই host ping করতে পারছে না, অথচ IP ঠিক → mask ভুল, তাই তারা একে অপরকে ভিন্ন network ভাবছে।"
+          },
+          "কখন subnet mask update করবে:",
+          {
+            "sub": "Subnet capacity শেষ — /26 দেয় usable 62 host, কিন্তু চাহিদা 80।"
+          },
+          {
+            "sub": "Mask ছোট করলে (/26 → /25) host সংখ্যা বাড়ে, নতুন কোনো hardware লাগে না।"
+          },
+          {
+            "sub": "একই broadcast domain-এ থাকা device-গুলো তখন আবার সরাসরি একে অপরকে দেখতে পায়।"
+          },
+          {
+            "sub": "খরচ: host আর gateway-র address পরিকল্পনা বদলাতে হয়, তাই পরিকল্পিত downtime লাগে।"
+          },
+          {
+            "label": "Mask বদলালে কত host পাওয়া যায় — গুনে দেখা",
+            "diagram": "  দেওয়া আছে : 192.168.10.0/26,   চাহিদা = 80 host\n\n  /26 :  host bit  = 32 - 26 = 6\n         মোট address = 2^6 = 64\n         usable      = 64 - 2 = 62        (network + broadcast বাদ)\n         62 < 80                          →  হবে না\n\n  /25 :  host bit  = 32 - 25 = 7\n         মোট address = 2^7 = 128\n         usable      = 128 - 2 = 126\n         126 >= 80                        →  হবে\n\n  সিদ্ধান্ত : mask 255.255.255.128 (/25) করলেই চাহিদা মেটে"
+          },
+          "কখন নতুন switch বসাবে:",
+          {
+            "sub": "Port availability শেষ — 24-port switch-এ 24টি device লাগানো, নতুন PC-র জায়গা নেই।"
+          },
+          {
+            "sub": "Address যত বাকিই থাকুক, port না থাকলে mask বদলে কোনো লাভ নেই।"
+          },
+          {
+            "sub": "নতুন switch uplink দিয়ে পুরোনো switch-এর সাথে যুক্ত হয়, topology flat থেকে hierarchical (access–distribution) হয়।"
+          },
+          {
+            "sub": "Redundant link রাখলে STP চালু রাখতে হবে, নইলে switching loop ও broadcast storm।"
+          },
+          {
+            "label": "দুই সমস্যা, দুই সমাধান",
+            "diagram": "  কেস 1 — address শেষ, port খালি আছে\n    নতুন PC ──► খালি port আছে ──► DHCP ──X\n    DHCP-র দেওয়ার মতো address নেই, তাই IP পায় না\n    সমাধান : /26 → /25   (Layer 3, নতুন hardware লাগে না)\n\n  কেস 2 — port শেষ, address বাকি আছে\n    নতুন PC ──X  খালি port নেই\n    cable লাগানোই যায় না, তাই mask বদলে কোনো লাভ নেই\n    সমাধান : নতুন switch + uplink   (Layer 1/2, address বদলায় না)"
+          },
+          "Scalability-র বিচার:",
+          {
+            "sub": "Mask বড় subnet বানায়, কিন্তু broadcast domain-ও বড় হয় — broadcast বাড়লে performance কমে।"
+          },
+          {
+            "sub": "তাই বড় নেটওয়ার্কে VLAN দিয়ে ভাগ করে প্রতিটি VLAN-এ ছোট subnet রাখা হয়।"
+          },
+          {
+            "sub": "ভবিষ্যতের জন্য VLSM দিয়ে বিভাগভিত্তিক subnet রাখলে পরে আবার re-addressing লাগে না।"
+          },
+          {
+            "sub": "Switch কেনার সময় port সংখ্যা আর uplink bandwidth — দুটোই ভবিষ্যতের চাহিদা ধরে নিতে হয়।"
+          },
+          "NOC-এর জন্য সুপারিশ:",
+          {
+            "sub": "আগে দেখো খালি port আছে কি না — থাকলে সমস্যা addressing, তাই subnet mask ও IP পরিকল্পনা ঠিক করো।"
+          },
+          {
+            "sub": "Port শূন্য হলে নতুন switch, কারণ কোনো IP পরিকল্পনাই নতুন port তৈরি করতে পারে না।"
+          },
+          {
+            "sub": "দুটোই শেষ হলে দুটোই — নতুন switch বসিয়ে VLAN ভাগ করে প্রতিটি VLAN-এ VLSM দিয়ে subnet দাও।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "লক্ষণ",
+            "আসল সীমা",
+            "সঠিক সমাধান"
+          ],
+          "rows": [
+            [
+              "DHCP pool শেষ, port খালি আছে",
+              "Subnet capacity (Layer 3)",
+              "Subnet mask update (/26 → /25)"
+            ],
+            [
+              "সব port ভর্তি, address বাকি আছে",
+              "Port availability (Layer 1)",
+              "নতুন switch + uplink"
+            ],
+            [
+              "একই switch-এ দুই host ping করে না",
+              "Mask mismatch",
+              "দুই পাশে একই mask বসানো"
+            ],
+            [
+              "Broadcast বেশি, network ধীর",
+              "Broadcast domain বড়",
+              "VLAN দিয়ে ভাগ, ছোট subnet"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Port শেষ হলে mask বড় করলেই আরও device লাগানো যাবে",
+            "না — mask শুধু address সংখ্যা বাড়ায়; physical port না থাকলে device লাগানোই যায় না।"
+          ]
+        ],
+        "mnemonic": "Address শেষ হলে mask, port শেষ হলে switch।"
+      }
+    },
+    {
+      "id": "cn_060",
+      "q": "How STP works? Explain congestion control algorithm.",
+      "tags": [
+        "STP",
+        "Spanning Tree",
+        "Root Bridge",
+        "BPDU",
+        "congestion control",
+        "Leaky Bucket",
+        "Token Bucket"
+      ],
+      "answer": {
+        "summary": [
+          "STP redundant link খুঁজে প্রতিটি destination এ একটাই পথ forwarding রাখে, বাকি redundant port blocking করে — তাই loop হয় না।",
+          "Congestion control: traffic এর চাপ সামলাতে packet পাঠানোর rate নিয়ন্ত্রণ করা — Leaky Bucket (constant rate) ও Token Bucket (burst সহ)।"
+        ],
+        "points": [
+          "STP কীভাবে কাজ করে:",
+          {
+            "sub": "Switch গুলো BPDU message আদান-প্রদান করে network এর redundant link খুঁজে বের করে।"
+          },
+          {
+            "sub": "সবচেয়ে কম Bridge ID (priority + MAC) যার, সে Root Bridge হয়।"
+          },
+          {
+            "sub": "বাকি প্রতিটি switch এ Root Bridge পর্যন্ত সবচেয়ে কম path cost এর port টি Root Port হয় — forwarding।"
+          },
+          {
+            "sub": "প্রতিটি link এ একটি Designated Port forwarding থাকে; বাকি redundant port blocking এ যায়।"
+          },
+          {
+            "sub": "ফলে এক destination এ একটাই পথ — STP একাধিক link এ load-sharing করে না।"
+          },
+          {
+            "sub": "Active link নষ্ট হলে blocking port forwarding এ চলে আসে (STP তে ~30–50 s, RSTP তে কয়েক second)।"
+          },
+          {
+            "label": "Diagram — STP",
+            "diagram": "STP — তিন switch এর loop, একটা port block হয়\n\n            [SW1]        ← Root Bridge (lowest Bridge ID)\n           DP   DP\n           /     \\\n         RP       RP\n       [SW2]DP----X[SW3]\n                  ^\n                  blocking port — loop ভাঙে\n\n RP = Root Port, DP = Designated Port   ← দুটোই forwarding"
+          },
+          "Congestion কী:",
+          {
+            "sub": "Network এ traffic এত বেশি যে router এর buffer ভরে যায় — response time বাড়ে, packet drop হয়।"
+          },
+          {
+            "sub": "Delay বাড়লে performance কমে।"
+          },
+          {
+            "sub": "Delay বাড়লে sender timeout হয়ে retransmit করে — traffic আরও বাড়ে, অবস্থা আরও খারাপ হয়।"
+          },
+          "Leaky Bucket Algorithm:",
+          {
+            "sub": "নিচে ছোট ফুটো ওয়ালা bucket — উপরে পানি যত জোরেই ঢুকুক, নিচ দিয়ে constant rate এ বের হয়।"
+          },
+          {
+            "sub": "Packet bucket (queue) এ জমে, network এ যায় fixed rate এ — burst মসৃণ হয়ে যায়।"
+          },
+          {
+            "sub": "Bucket ভরে গেলে নতুন packet drop হয়।"
+          },
+          {
+            "label": "Diagram — Leaky Bucket",
+            "diagram": "LEAKY BUCKET — যত জোরেই আসুক, বের হয় সমান হারে\n\n burst: ||||||| ──►  |  ####  |   ← bucket (queue)\n                     |  ####  |\n                     +---+----+\n                         |  constant rate\n                         ▼\n                  | . | . | . | . |  ──► network\n\n bucket ভরা থাকলে নতুন packet drop"
+          },
+          "Token Bucket Algorithm (Leaky Bucket এর উন্নত রূপ):",
+          {
+            "sub": "Bucket এ নির্দিষ্ট rate এ token জমা হয়; bucket ভরা থাকলে বাড়তি token ফেলে দেওয়া হয়।"
+          },
+          {
+            "sub": "প্রতিটি packet পাঠাতে একটা token খরচ হয়।"
+          },
+          {
+            "sub": "Idle সময়ে token জমে থাকে, তাই পরে একসাথে burst পাঠানো যায় — Leaky Bucket এ যা যায় না।"
+          },
+          {
+            "sub": "Token না থাকলে packet অপেক্ষা করে।"
+          },
+          {
+            "label": "Diagram — Token Bucket",
+            "diagram": "TOKEN BUCKET — token জমিয়ে burst পাঠানো যায়\n\n token আসে r/sec ──►  | o o o o |   ← জমা token (সর্বোচ্চ b টি)\n                      +----+----+\n                           | প্রতি packet = 1 token\n                           ▼\n packet queue ──► [gate] ──► network\n\n 4টি token জমা থাকলে 4টি packet একসাথে যেতে পারে"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "STP: অফিসে switch এর মধ্যে backup link রাখা যায় — loop ছাড়াই redundancy।"
+          },
+          {
+            "sub": "Token Bucket: ISP ও router এর rate limiting / traffic shaping (QoS)।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "",
+            "Leaky Bucket",
+            "Token Bucket"
+          ],
+          "rows": [
+            [
+              "Output rate",
+              "সবসময় constant",
+              "গড় rate নির্দিষ্ট, burst চলে"
+            ],
+            [
+              "Bucket ভরা হলে",
+              "packet drop",
+              "token ফেলে দেয়, packet নয়"
+            ],
+            [
+              "Idle সময়ে",
+              "কিছু জমে না",
+              "token জমে"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "STP redundant link সরিয়ে দেয়",
+            "না — link থাকে, শুধু port blocking এ থাকে; active link নষ্ট হলে সেটি forwarding হয়ে backup দেয়।"
+          ]
+        ],
+        "mnemonic": "STP: Root বাছো, কাছের পথ রাখো, বাকিটা block। Leaky = সমান ফোঁটায় বের হয়; Token = token জমিয়ে burst।"
+      }
+    },
+    {
+      "id": "cn_061",
+      "q": "What is the difference between stateful DHCPv6 and stateless DHCPv6?",
+      "tags": [
+        "DHCPv6",
+        "stateful",
+        "stateless",
+        "SLAAC",
+        "Router Advertisement",
+        "IPv6"
+      ],
+      "answer": {
+        "summary": [
+          "Stateful DHCPv6 = server IPv6 address ও other information দুটোই দেয় এবং প্রতিটি assignment এর হিসাব রাখে।",
+          "Stateless DHCPv6 = server কোনো address দেয় না, শুধু DNS ইত্যাদি দেয়; address host নিজে SLAAC দিয়ে বানায়, কোনো হিসাব থাকে না।"
+        ],
+        "points": [
+          "Stateless DHCPv6:",
+          {
+            "sub": "DHCPv6 server কোনো IPv6 address দেয় না।"
+          },
+          {
+            "sub": "শুধু \"other information\" দেয় — DNS server list, domain name।"
+          },
+          {
+            "sub": "Address host নিজেই বানায় SLAAC দিয়ে: router এর Router Advertisement (RA) থেকে prefix নেয়, সাথে নিজের interface ID জুড়ে দেয়।"
+          },
+          {
+            "sub": "Stateless মানে — কোন host কোন address পেল, কোনটা খালি, কেউ তার হিসাব রাখে না।"
+          },
+          {
+            "label": "Diagram — Stateless DHCPv6",
+            "diagram": "STATELESS DHCPv6 — address host নিজে বানায়\n\n Router --RA: prefix 2001:db8:1::/64, M=0 O=1──► Host\n Host: prefix + interface ID = 2001:db8:1::a1b2   ← SLAAC\n\n Host --Information-Request──► DHCPv6 server\n DHCPv6 server --DNS + domain name──► Host        ← address দেয় না"
+          },
+          "Stateful DHCPv6:",
+          {
+            "sub": "Server IPv6 address এবং other information দুটোই দেয় — DHCPv4 এর মতো।"
+          },
+          {
+            "sub": "প্রতিটি assignment এর state রাখে: address pool এর কোনটা দেওয়া, কোনটা খালি।"
+          },
+          {
+            "sub": "Duplicate address conflict সমাধান করে।"
+          },
+          {
+            "sub": "প্রতিটি assignment log করে এবং lease expiration time ট্র্যাক করে।"
+          },
+          {
+            "label": "Diagram — Stateful DHCPv6",
+            "diagram": "STATEFUL DHCPv6 — server address দেয় এবং হিসাব রাখে\n\n Router --RA: M=1──► Host\n Host --Request──► DHCPv6 server --IPv6 address + DNS──► Host\n\n Server এর binding table:\n   2001:db8:1::10   PC-A   lease 24h\n   2001:db8:1::11   PC-B   lease 24h\n   2001:db8:1::12   free"
+          },
+          "Host কীভাবে জানে কোনটা ব্যবহার করবে — RA এর দুটি flag:",
+          {
+            "sub": "M (Managed) = 1 → stateful DHCPv6 থেকে address নেয়।"
+          },
+          {
+            "sub": "M = 0, O (Other) = 1 → address SLAAC এ, DHCPv6 থেকে শুধু DNS ইত্যাদি (stateless)।"
+          },
+          {
+            "sub": "M = 0, O = 0 → শুধু SLAAC, DHCPv6 লাগেই না।"
+          },
+          "DHCPv4 এর সাথে বড় পার্থক্য:",
+          {
+            "sub": "DHCPv4 server host কে default gateway দেয়।"
+          },
+          {
+            "sub": "IPv6 এ default gateway আসে শুধু router এর Router Advertisement থেকে — DHCPv6 gateway দেয় না।"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Stateful: enterprise network, যেখানে কোন device কোন address পেল তা audit করতে হয়।"
+          },
+          {
+            "sub": "Stateless: সাধারণ office/home — SLAAC এ address, DHCPv6 থেকে শুধু DNS।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "",
+            "Stateful DHCPv6",
+            "Stateless DHCPv6"
+          ],
+          "rows": [
+            [
+              "IPv6 address",
+              "server দেয়",
+              "দেয় না, host SLAAC এ বানায়"
+            ],
+            [
+              "Other info (DNS, domain)",
+              "দেয়",
+              "দেয়"
+            ],
+            [
+              "Assignment এর হিসাব",
+              "রাখে (pool, lease, log)",
+              "রাখে না"
+            ],
+            [
+              "RA flag",
+              "M = 1",
+              "M = 0, O = 1"
+            ],
+            [
+              "Default gateway",
+              "RA থেকে",
+              "RA থেকে"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Stateless DHCPv6 address দেয়, শুধু হিসাব রাখে না",
+            "না — stateless DHCPv6 কোনো address-ই দেয় না; address host নিজে SLAAC দিয়ে বানায়, server শুধু DNS ইত্যাদি দেয়।"
+          ]
+        ],
+        "mnemonic": "Stateful = খাতা রাখা দোকানদার: address দেয়, হিসাব লেখে। Stateless = তথ্যকেন্দ্র: শুধু DNS বলে দেয়, address নিজে বানাও (SLAAC)।"
+      }
+    },
+    {
+      "id": "cn_062",
+      "q": "What is VLAN? Difference between static and dynamic VLAN.",
+      "tags": [
+        "VLAN",
+        "static VLAN",
+        "dynamic VLAN",
+        "VMPS",
+        "MAC address",
+        "port-based"
+      ],
+      "answer": {
+        "summary": [
+          "VLAN = একটা physical network কে logically ভাগ করা — device গুলো একই switch এ না থাকলেও এক group এ রাখা যায়।",
+          "Static VLAN ঠিক হয় port দেখে (admin হাতে set করে); Dynamic VLAN ঠিক হয় MAC দেখে (VMPS database থেকে)।"
+        ],
+        "points": [
+          "VLAN কী:",
+          {
+            "sub": "VLAN (Virtual LAN) — switch এর port গুলোকে software দিয়ে ভাগ করে একাধিক logical network বানানো।"
+          },
+          {
+            "sub": "Device physically একই switch এ না থাকলেও logically এক group এ রাখা যায়।"
+          },
+          {
+            "sub": "প্রতিটি VLAN আলাদা broadcast domain।"
+          },
+          "Static VLAN (port-based):",
+          {
+            "sub": "Admin হাতে configure করে — কোন port কোন VLAN এ।"
+          },
+          {
+            "sub": "VLAN টা port এর, device এর নয়: port 5 = VLAN 10 হলে যে device ই সেখানে লাগুক, VLAN 10 এ পড়বে।"
+          },
+          {
+            "sub": "Device অন্য port এ সরালে admin কে আবার configure করতে হয়।"
+          },
+          {
+            "label": "Diagram — Static VLAN",
+            "diagram": "STATIC VLAN — VLAN ঠিক হয় port দেখে\n\n +--------- Switch ----------+\n | P1  P2  P3  | P4  P5  P6  |\n |   VLAN 10   |   VLAN 20   |   ← admin এর config\n +-------------+-------------+\n\n PC-A কে P2 থেকে P5 এ সরালে সে VLAN 20 এ চলে যায়"
+          },
+          "Dynamic VLAN (MAC-based):",
+          {
+            "sub": "একটা database (VMPS server) এ VLAN-to-MAC mapping রাখা থাকে।"
+          },
+          {
+            "sub": "Device port এ লাগলে switch তার source MAC পড়ে VMPS কে জিজ্ঞেস করে।"
+          },
+          {
+            "sub": "VMPS যে VLAN বলে, switch ওই port কে সেই VLAN এ বসায়।"
+          },
+          {
+            "sub": "তাই device যেকোনো port এ সরালেও নিজের VLAN এ থাকে — flexibility বেশি।"
+          },
+          {
+            "sub": "অসুবিধা: শুরুতে সব MAC দিয়ে VMPS database বানাতে অনেক কাজ — তাই admin রা সাধারণত static VLAN পছন্দ করে।"
+          },
+          {
+            "label": "Diagram — Dynamic VLAN",
+            "diagram": "DYNAMIC VLAN — VLAN ঠিক হয় MAC দেখে\n\n PC (MAC aa:bb:11) --plug in──► Switch port 7\n Switch --query: aa:bb:11?──► VMPS\n\n VMPS database:\n   aa:bb:11   VLAN 10\n   aa:bb:22   VLAN 20\n\n VMPS --VLAN 10──► Switch: port 7 = VLAN 10\n\n যে port এই লাগুক, PC সবসময় VLAN 10 এ"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Hot-desking অফিস — কর্মীরা রোজ ভিন্ন desk এ বসলেও dynamic VLAN এ নিজের VLAN পায়।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "",
+            "Static VLAN",
+            "Dynamic VLAN"
+          ],
+          "rows": [
+            [
+              "VLAN ঠিক হয়",
+              "port দেখে",
+              "MAC address দেখে"
+            ],
+            [
+              "Configure",
+              "admin প্রতি port এ হাতে",
+              "VMPS database এ VLAN-to-MAC mapping"
+            ],
+            [
+              "Device সরালে",
+              "VLAN বদলে যায় (re-config লাগে)",
+              "একই VLAN থাকে"
+            ],
+            [
+              "শুরুর কাজ",
+              "কম, সহজ",
+              "বেশি (database বানাতে হয়)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Static VLAN এ device সরালেও তার VLAN একই থাকে",
+            "না — static VLAN port এর সাথে বাঁধা; device অন্য port এ গেলে সেই port এর VLAN এ পড়ে।"
+          ]
+        ],
+        "mnemonic": "Static = চেয়ারে নাম লেখা (port), Dynamic = মানুষের গায়ে নাম লেখা (MAC) — যেখানেই বসুক, নিজের দলে।"
+      }
+    },
+    {
+      "id": "cn_063",
+      "q": "What is the difference between Collision Domain and Broadcast Domain?",
+      "tags": [
+        "collision domain",
+        "broadcast domain",
+        "hub",
+        "switch",
+        "router",
+        "VLAN"
+      ],
+      "answer": {
+        "summary": [
+          "Collision domain = যেখানে দুই device একসাথে পাঠালে frame ধাক্কা খায়; Broadcast domain = একটা broadcast যতদূর পৌঁছায়।",
+          "Hub কোনোটাই ভাঙে না, switch ভাঙে collision domain, router ভাঙে দুটোই।"
+        ],
+        "points": [
+          "Collision Domain:",
+          {
+            "sub": "Network এর যে অংশে একসাথে দুই device frame পাঠালে collision হতে পারে।"
+          },
+          {
+            "sub": "Hub সব frame সব port এ পাঠায়, তাই hub এর সব port মিলে একটাই collision domain।"
+          },
+          {
+            "sub": "Switch প্রতিটি port কে আলাদা collision domain বানায় (full-duplex এ collision হয়ই না)।"
+          },
+          "Broadcast Domain:",
+          {
+            "sub": "যতগুলো device একটা broadcast frame (যেমন ARP request) পায়, তারা এক broadcast domain এ।"
+          },
+          {
+            "sub": "Hub ও switch broadcast সব port এ পাঠায় — তাই এরা broadcast domain ভাঙে না।"
+          },
+          {
+            "sub": "Router broadcast forward করে না — router এর প্রতিটি interface আলাদা broadcast domain।"
+          },
+          {
+            "sub": "সাধারণত এক broadcast domain = এক subnet; switch এ VLAN বানালে প্রতিটি VLAN আলাদা broadcast domain।"
+          },
+          {
+            "label": "Diagram — Domain গোনা",
+            "diagram": "একটা উদাহরণে domain গুনি\n\n         +--------+\n         | Router |\n         +-+----+-+\n      Fa0/0|    |Fa0/1\n      +----+-+ ++----+\n      |Switch| | Hub |\n      ++---+-+ ++---++\n       A   B    C   D\n\n Collision domain:\n   A, B, Router-Switch link = 3   ← switch এর প্রতি port আলাদা\n   C, D, Router-Hub link    = 1   ← hub এর সব port মিলে একটা\n   মোট = 3 + 1 = 4\n\n Broadcast domain:\n   Fa0/0 + Fa0/1            = 2   ← router এর প্রতি interface একটা"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "অফিস network ভাগ করা: switch দিয়ে collision কমানো, router বা VLAN দিয়ে broadcast domain ছোট রাখা।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "",
+            "Collision Domain",
+            "Broadcast Domain"
+          ],
+          "rows": [
+            [
+              "কী",
+              "যেখানে frame ধাক্কা খেতে পারে",
+              "যতদূর broadcast পৌঁছায়"
+            ],
+            [
+              "Hub",
+              "ভাঙে না (সব port এক)",
+              "ভাঙে না"
+            ],
+            [
+              "Switch",
+              "ভাঙে (প্রতি port আলাদা)",
+              "ভাঙে না (VLAN ছাড়া)"
+            ],
+            [
+              "Router",
+              "ভাঙে",
+              "ভাঙে (প্রতি interface আলাদা)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Switch broadcast domain ভাঙে",
+            "না — switch শুধু collision domain ভাঙে; broadcast সব port এ যায়। Broadcast domain ভাঙতে router বা VLAN লাগে।"
+          ]
+        ],
+        "mnemonic": "Hub কিছুই ভাঙে না, Switch ভাঙে Collision, Router ভাঙে দুটোই।"
+      }
     }
   ]
 }
