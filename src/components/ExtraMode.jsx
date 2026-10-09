@@ -163,6 +163,35 @@ function ExtraCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, o
   const a = q.answer
   const noteEditor = useNoteEditor(q._uid)
 
+  // The header controls, also shown in the pinned question bar (QuestionPeek)
+  // so they can be used without scrolling back up a long answer.
+  const actions = (
+    <>
+      <button
+        className={`written-imp-btn${isNailed ? ' nailed' : ''}`}
+        onClick={e => { e.stopPropagation(); onToggleNailed() }}
+        title={isNailed ? 'Un-nail' : 'Nail It — mark as mastered'}
+      >
+        <Star size={14} fill={isNailed ? 'currentColor' : 'none'} />
+      </button>
+      <button
+        className={`written-imp-btn${isImportant ? ' marked' : ''}`}
+        onClick={e => { e.stopPropagation(); onToggleImportant() }}
+        title={isImportant ? 'Remove from Important' : 'Mark as Important'}
+      >
+        <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
+      </button>
+      <WeakButton uid={q._uid} className="written-imp-btn written-weak-btn" />
+      <NoteControl
+        uid={q._uid}
+        noteEditor={noteEditor}
+        size={14}
+        className="written-imp-btn written-note-btn"
+      />
+      <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
+    </>
+  )
+
   return (
     <div id={domId} className={`written-card${isOpen ? ' open' : ''}`} style={{ '--c': topicColor }}>
 
@@ -174,33 +203,12 @@ function ExtraCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, o
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </span>
         </div>
-        <button
-          className={`written-imp-btn${isNailed ? ' nailed' : ''}`}
-          onClick={e => { e.stopPropagation(); onToggleNailed() }}
-          title={isNailed ? 'Un-nail' : 'Nail It — mark as mastered'}
-        >
-          <Star size={14} fill={isNailed ? 'currentColor' : 'none'} />
-        </button>
-        <button
-          className={`written-imp-btn${isImportant ? ' marked' : ''}`}
-          onClick={e => { e.stopPropagation(); onToggleImportant() }}
-          title={isImportant ? 'Remove from Important' : 'Mark as Important'}
-        >
-          <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
-        </button>
-        <WeakButton uid={q._uid} className="written-imp-btn written-weak-btn" />
-        <NoteControl
-          uid={q._uid}
-          noteEditor={noteEditor}
-          size={14}
-          className="written-imp-btn written-note-btn"
-        />
-        <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
+        {actions}
       </div>
 
       {isOpen && (
         <div className="anim-slide">
-          <WrittenCardBody a={a} question={q.q} topicColor={topicColor} uid={q._uid} />
+          <WrittenCardBody a={a} question={q.q} topicColor={topicColor} uid={q._uid} actions={actions} />
         </div>
       )}
 

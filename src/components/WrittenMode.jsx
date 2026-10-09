@@ -15,7 +15,9 @@ import WeakButton from './shared/WeakButton.jsx'
 import { useTrash } from '../contexts/TrashContext.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
 import WrittenQuestionText from './shared/WrittenQuestionText.jsx'
-import CodeBlock from './shared/CodeBlock.jsx'
+import HighlightableText from './shared/HighlightableText.jsx'
+import { useHighlights } from '../contexts/HighlightContext.jsx'
+import { guardHighlightClick } from '../lib/textAnchor.js'
 import NoteControl from './shared/NoteControl.jsx'
 import NoteEditor from './shared/NoteEditor.jsx'
 import { useNoteEditor } from './shared/useNoteEditor.js'
@@ -266,6 +268,37 @@ export default function WrittenMode() {
 function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed, onToggle, onToggleImportant, onToggleNailed }) {
   const a = q.answer
   const noteEditor = useNoteEditor(q._uid)
+  const { getFor } = useHighlights()
+  const hlHead = q.headerCode ? getFor(q._uid).filter(h => h.block === 'headerCode') : undefined
+
+  // The header controls, also shown in the pinned question bar (QuestionPeek)
+  // so they can be used without scrolling back up a long answer.
+  const actions = (
+    <>
+      <button
+        className={`written-imp-btn${isNailed ? ' nailed' : ''}`}
+        onClick={e => { e.stopPropagation(); onToggleNailed() }}
+        title={isNailed ? 'Un-nail' : 'Nail It — mark as mastered'}
+      >
+        <Star size={14} fill={isNailed ? 'currentColor' : 'none'} />
+      </button>
+      <button
+        className={`written-imp-btn${isImportant ? ' marked' : ''}`}
+        onClick={e => { e.stopPropagation(); onToggleImportant() }}
+        title={isImportant ? 'Remove from Important' : 'Mark as Important'}
+      >
+        <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
+      </button>
+      <WeakButton uid={q._uid} className="written-imp-btn written-weak-btn" />
+      <NoteControl
+        uid={q._uid}
+        noteEditor={noteEditor}
+        size={14}
+        className="written-imp-btn written-note-btn"
+      />
+      <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
+    </>
+  )
 
   return (
     <div id={domId} className={`written-card${isOpen ? ' open' : ''}`} style={{ '--c': topicColor }}>
@@ -284,41 +317,24 @@ function WrittenCard({ domId, q, idx, topicColor, isOpen, isImportant, isNailed,
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </span>
         </div>
-        <button
-          className={`written-imp-btn${isNailed ? ' nailed' : ''}`}
-          onClick={e => { e.stopPropagation(); onToggleNailed() }}
-          title={isNailed ? 'Un-nail' : 'Nail It — mark as mastered'}
-        >
-          <Star size={14} fill={isNailed ? 'currentColor' : 'none'} />
-        </button>
-        <button
-          className={`written-imp-btn${isImportant ? ' marked' : ''}`}
-          onClick={e => { e.stopPropagation(); onToggleImportant() }}
-          title={isImportant ? 'Remove from Important' : 'Mark as Important'}
-        >
-          <Bookmark size={14} fill={isImportant ? 'currentColor' : 'none'} />
-        </button>
-        <WeakButton uid={q._uid} className="written-imp-btn written-weak-btn" />
-        <NoteControl
-          uid={q._uid}
-          noteEditor={noteEditor}
-          size={14}
-          className="written-imp-btn written-note-btn"
-        />
-        <DeleteButton question={q} className="written-imp-btn" size={14} iconOnly />
+        {actions}
       </div>
 
       {/* The listing the card is ABOUT, shown collapsed. stopPropagation so
           selecting a line of code does not fold the card shut under you. */}
       {q.headerCode && (
-        <div className="written-head-code" onClick={e => e.stopPropagation()}>
-          <CodeBlock code={q.headerCode} lang={q.headerCodeLang} className="written-code-pre" />
+        <div className="written-head-code" data-hl-root={q._uid}
+          onClick={e => { e.stopPropagation(); guardHighlightClick(e) }}>
+          <pre className="written-code-pre">
+            <HighlightableText as="code" className="code-tokens" lang={q.headerCodeLang || 'c'}
+              block="headerCode" text={q.headerCode} highlights={hlHead} />
+          </pre>
         </div>
       )}
 
       {isOpen && (
         <div className="anim-slide">
-          <WrittenCardBody a={a} question={q.q} topicColor={topicColor} uid={q._uid} />
+          <WrittenCardBody a={a} question={q.q} topicColor={topicColor} uid={q._uid} actions={actions} />
         </div>
       )}
 

@@ -102,23 +102,31 @@ function WrittenNailedGroup({ topic: t, items, onUnnail }) {
 }
 
 function WrittenNailedCard({ q, qid, topicColor, onUnnail }) {
+  // The header controls, also shown in the pinned question bar (QuestionPeek)
+  // so they can be used without scrolling back up a long answer.
+  const actions = (
+    <>
+      <button
+        className="nailed-unnail-btn"
+        onClick={() => onUnnail(qid)}
+        title="Un-nail"
+        style={{ flexShrink: 0, marginTop: 2 }}
+      >
+        <X size={13} />
+      </button>
+      <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
+    </>
+  )
+
   return (
     <div className="written-card open" style={{ '--c': topicColor }}>
       <div className="written-card-header">
         <div className="written-card-toggle" style={{ cursor: 'default' }}>
           <WrittenQuestionText uid={q._uid} text={q.q} className="written-qtext" style={{ paddingTop: 2 }} />
         </div>
-        <button
-          className="nailed-unnail-btn"
-          onClick={() => onUnnail(qid)}
-          title="Un-nail"
-          style={{ flexShrink: 0, marginTop: 2 }}
-        >
-          <X size={13} />
-        </button>
-        <DeleteButton question={q} className="nailed-unnail-btn" iconOnly size={13} />
+        {actions}
       </div>
-      <WrittenCardBody a={q.answer} question={q.q} topicColor={topicColor} uid={q._uid} />
+      <WrittenCardBody a={q.answer} question={q.q} topicColor={topicColor} uid={q._uid} actions={actions} />
     </div>
   )
 }

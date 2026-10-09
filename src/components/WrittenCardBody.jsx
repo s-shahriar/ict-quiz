@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Brain } from 'lucide-react'
-import CodeBlock from './shared/CodeBlock.jsx'
 import HighlightableText from './shared/HighlightableText.jsx'
 import QuestionPeek from './shared/QuestionPeek.jsx'
 import { useHighlights } from '../contexts/HighlightContext.jsx'
@@ -11,9 +10,10 @@ import { useHighlights } from '../contexts/HighlightContext.jsx'
 // to, so it must stay the same in every browser and across renders — it is
 // derived from the payload's own structure, never from render order or the DOM.
 //
-// Code blocks are deliberately NOT highlightable: Prism splits them into nested
-// token spans, so character offsets there would not survive a re-render. ASCII
-// diagrams are plain text and are included.
+// Code blocks are highlightable too ('code', 'points.N.code'): HighlightableText
+// with `lang` paints the Prism token colours as plain spans INSIDE the highlight
+// segments, so textContent — and every saved offset — is exactly the code text.
+// ASCII diagrams are plain text and are included as well.
 
 // `points` is normally a flat bullet list, but an item can also be a
 // `{ code, codeLang, label }` block (e.g. a per-pattern loop snippet) or a
@@ -40,7 +40,10 @@ function renderPoints(points, topicColor, hl) {
       blocks.push(
         <div className="written-code-wrap" key={`code-${i}`}>
           <span className="written-block-label">{pt.label || pt.codeLang || 'Code'}</span>
-          <CodeBlock code={pt.code} lang={pt.codeLang} className="written-code-pre" />
+          <pre className="written-code-pre">
+            <HighlightableText as="code" className="code-tokens" lang={pt.codeLang || 'c'}
+              block={`points.${i}.code`} text={pt.code} highlights={hl(`points.${i}.code`)} />
+          </pre>
         </div>
       )
       return
@@ -72,7 +75,7 @@ function renderPoints(points, topicColor, hl) {
   return blocks
 }
 
-export function WrittenCardBody({ a, question, topicColor, uid }) {
+export function WrittenCardBody({ a, question, topicColor, uid, actions }) {
   const [extOpen, setExtOpen] = useState(false)
   const { getFor } = useHighlights()
 
@@ -85,14 +88,17 @@ export function WrittenCardBody({ a, question, topicColor, uid }) {
     <div className="written-card-body" data-hl-root={uid || undefined}>
 
       {/* Keeps the question in view once its header scrolls away. */}
-      {question && <QuestionPeek text={question} topicColor={topicColor} />}
+      {question && <QuestionPeek text={question} topicColor={topicColor} actions={actions} />}
 
       {/* Code snippet the question refers to (if provided) — kept out of the
           question text itself so the collapsed header stays readable. */}
       {a.code && (
         <div className="written-code-wrap">
           <span className="written-block-label">{a.codeLang || 'Code'}</span>
-          <CodeBlock code={a.code} lang={a.codeLang} className="written-code-pre" />
+          <pre className="written-code-pre">
+            <HighlightableText as="code" className="code-tokens" lang={a.codeLang || 'c'}
+              block="code" text={a.code} highlights={hl('code')} />
+          </pre>
         </div>
       )}
 

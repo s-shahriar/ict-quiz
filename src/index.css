@@ -1849,7 +1849,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 }
 .wpeek {
   position: absolute; top: 6px; left: -10px; right: -10px;
-  display: flex; align-items: flex-start; gap: 8px;
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px;
   padding: 8px 8px 9px 12px;
   background: var(--surface-glass);
   border: 1px solid color-mix(in srgb, var(--c, var(--accent)) 35%, var(--border));
@@ -1892,6 +1892,14 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   transition: color 0.18s ease, border-color 0.18s ease;
 }
 .wpeek-jump:hover { color: var(--c, var(--accent)); border-color: var(--c, var(--accent)); }
+/* The card's own header controls, repeated on a row of their own so they can be
+   used from anywhere in a long answer. Same buttons, same handlers. */
+.wpeek-actions {
+  flex-basis: 100%;
+  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+  padding-top: 7px; margin-top: 1px;
+  border-top: 1px solid var(--border);
+}
 
 /* Card body */
 .written-card-body {
@@ -3683,6 +3691,7 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 [data-hand="left"] .nailed-row-btns,
 [data-hand="left"] .written-card-header,
 [data-hand="left"] .wpeek,
+[data-hand="left"] .wpeek-actions,
 [data-hand="left"] .practice-cmd-head,
 [data-hand="left"] .practice-prompt-row,
 [data-hand="left"] .back-btn {
@@ -4454,4 +4463,12 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   .ql-pins { animation: none; }
   .ql-bolt { animation: none; stroke-dashoffset: 0; fill-opacity: .85; }
   .ql-bar > span { animation: none; width: 100%; opacity: .6; }
+}
+
+/* A tall open study card repeats its flag controls at the end (StudyCard), so a
+   long explanation doesn't mean scrolling back up to mark the question. */
+.study-card-actions-end {
+  justify-content: flex-end;
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px dashed var(--border);
 }

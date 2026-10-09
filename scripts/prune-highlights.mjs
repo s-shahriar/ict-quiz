@@ -51,6 +51,9 @@ function questionBlock(q, block) {
   if (block === 'summary') return typeof a.summary === 'string' ? a.summary : undefined
   if ((m = block.match(/^summary\.(\d+)$/))) return at(a.summary, +m[1])
   if ((m = block.match(/^points\.(\d+)\.diagram$/))) return at(a.points, +m[1])?.diagram
+  if ((m = block.match(/^points\.(\d+)\.code$/))) return at(a.points, +m[1])?.code
+  if (block === 'code') return a.code
+  if (block === 'headerCode') return q.payload?.headerCode
   if ((m = block.match(/^points\.(\d+)$/))) return line(at(a.points, +m[1]))
   if (block === 'diagram') return a.diagram
   if (block === 'mnemonic') return a.mnemonic

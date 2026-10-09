@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Bookmark, CheckCircle, Lightbulb, Star, XCircle } from 'lucide-react'
 import QuestionText from './QuestionText.jsx'
 import DeleteButton from './DeleteButton.jsx'
@@ -47,8 +47,55 @@ export default function StudyCard({
     setExpOpen(key !== q.correct_answer)
   }
 
+  // The flag controls. A tall open card (long explanation) repeats them at its
+  // end, so they can be used without scrolling back up to the card's top.
+  const actions = (
+    <>
+      <button
+        className={`nail-btn${nailed ? ' nailed' : ''}`}
+        onClick={onNail}
+        title={nailed ? 'Nailed It — click to un-nail' : 'Mark as Nailed It'}
+        style={nailed ? { color, borderColor: `color-mix(in srgb, ${color} 38%, transparent)`, background: `color-mix(in srgb, ${color} 8%, transparent)` } : {}}
+      >
+        <Star size={12} fill={nailed ? 'currentColor' : 'none'} />
+        <span className="qmark-label">{nailed ? 'Nailed ✓' : 'Nail It'}</span>
+      </button>
+      <button
+        className={`nail-btn important-study-btn${isImportant ? ' nailed' : ''}`}
+        onClick={isImportant ? onUnmarkImportant : onMarkImportant}
+        title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
+        style={isImportant ? { color: 'var(--imp)', borderColor: 'color-mix(in srgb, var(--imp) 40%, transparent)', background: 'var(--imp-tint)' } : {}}
+      >
+        <Bookmark size={12} fill={isImportant ? 'currentColor' : 'none'} />
+        <span className="qmark-label">{isImportant ? 'Important ✓' : 'Important'}</span>
+      </button>
+      <WeakButton
+        uid={q._uid}
+        className="nail-btn weak-study-btn"
+        onClass="nailed"
+        size={12}
+        label
+        style={{ color: 'var(--weak)', borderColor: 'color-mix(in srgb, var(--weak) 40%, transparent)', background: 'var(--weak-tint)' }}
+      />
+      {q._id && (
+        <MoreMenu className="nail-btn">
+          <DeleteButton question={q} className="more-menu-item" size={14} />
+        </MoreMenu>
+      )}
+    </>
+  )
+  const cardRef = useRef(null)
+  const [tall, setTall] = useState(false)
+  useEffect(() => {
+    const el = cardRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => setTall(el.offsetHeight > window.innerHeight * 0.75))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   return (
-    <div id={domId} className={`study-card${nailed ? ' study-card-nailed' : ''}`} style={{ '--c': color }}>
+    <div id={domId} ref={cardRef} className={`study-card${nailed ? ' study-card-nailed' : ''}`} style={{ '--c': color }}>
       <div className="study-card-top">
         <span className="study-card-lead">
           <span className="study-qnum" style={{ color }}>Q{index + 1}</span>
@@ -60,37 +107,7 @@ export default function StudyCard({
           )}
         </span>
         <div className="study-card-actions">
-          <button
-            className={`nail-btn${nailed ? ' nailed' : ''}`}
-            onClick={onNail}
-            title={nailed ? 'Nailed It — click to un-nail' : 'Mark as Nailed It'}
-            style={nailed ? { color, borderColor: `color-mix(in srgb, ${color} 38%, transparent)`, background: `color-mix(in srgb, ${color} 8%, transparent)` } : {}}
-          >
-            <Star size={12} fill={nailed ? 'currentColor' : 'none'} />
-            <span className="qmark-label">{nailed ? 'Nailed ✓' : 'Nail It'}</span>
-          </button>
-          <button
-            className={`nail-btn important-study-btn${isImportant ? ' nailed' : ''}`}
-            onClick={isImportant ? onUnmarkImportant : onMarkImportant}
-            title={isImportant ? 'Important — click to remove' : 'Mark as Important'}
-            style={isImportant ? { color: 'var(--imp)', borderColor: 'color-mix(in srgb, var(--imp) 40%, transparent)', background: 'var(--imp-tint)' } : {}}
-          >
-            <Bookmark size={12} fill={isImportant ? 'currentColor' : 'none'} />
-            <span className="qmark-label">{isImportant ? 'Important ✓' : 'Important'}</span>
-          </button>
-          <WeakButton
-            uid={q._uid}
-            className="nail-btn weak-study-btn"
-            onClass="nailed"
-            size={12}
-            label
-            style={{ color: 'var(--weak)', borderColor: 'color-mix(in srgb, var(--weak) 40%, transparent)', background: 'var(--weak-tint)' }}
-          />
-          {q._id && (
-            <MoreMenu className="nail-btn">
-              <DeleteButton question={q} className="more-menu-item" size={14} />
-            </MoreMenu>
-          )}
+          {actions}
           {shown && (
             <button
               className="study-toggle"
@@ -141,6 +158,13 @@ export default function StudyCard({
           </div>
           <HighlightableText as="p" className="explanation-text"
             block="explanation" text={q.explanation} highlights={hlExp} />
+        </div>
+      )}
+
+      {tall && shown && (
+        <div className="study-card-actions study-card-actions-end">
+          {q._uid && <NoteControl uid={q._uid} noteEditor={noteEditor} />}
+          {actions}
         </div>
       )}
 

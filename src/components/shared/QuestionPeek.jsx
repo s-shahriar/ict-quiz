@@ -12,6 +12,10 @@
 //
 // Long questions show two lines; tapping the text opens the whole question in
 // place. The arrow scrolls back to the real header.
+//
+// `actions` are the card's own header controls (Nail / Important / Weak / Note /
+// Delete), shown again in a row under the question so they can be used from
+// anywhere in a long answer instead of only from the scrolled-away header.
 
 import { ArrowUp, ChevronDown, ChevronUp } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -21,7 +25,7 @@ import WrittenQuestionText from './WrittenQuestionText.jsx'
 // scroll theirs away, so there the bar pins to the very top.
 const TOPBAR = '.written-topbar'
 
-export default function QuestionPeek({ text, topicColor }) {
+export default function QuestionPeek({ text, topicColor, actions }) {
   const wrapRef = useRef(null)
   const textRef = useRef(null)
   const [top, setTop] = useState(0)
@@ -97,6 +101,7 @@ export default function QuestionPeek({ text, topicColor }) {
         <button className="wpeek-jump" onClick={jumpToQuestion} tabIndex={shown ? 0 : -1} title="প্রশ্নে ফিরে যাও">
           <ArrowUp size={15} />
         </button>
+        {actions && <div className="wpeek-actions" inert={!shown || undefined}>{actions}</div>}
       </div>
     </div>
   )
