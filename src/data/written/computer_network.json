@@ -6339,6 +6339,105 @@
         ],
         "mnemonic": "Hub কিছুই ভাঙে না, Switch ভাঙে Collision, Router ভাঙে দুটোই।"
       }
+    },
+    {
+      "id": "cn_064",
+      "q": "IPv6 headers enable faster processing and resulting throughput across intermediates transit routers than the legacy IPv4. Explain the key reasons.",
+      "tags": [
+        "IPv6",
+        "IPv4",
+        "header",
+        "checksum",
+        "fragmentation",
+        "extension header",
+        "router"
+      ],
+      "answer": {
+        "summary": [
+          "IPv6 header ছোট, fixed ও সরল — প্রতি hop এ router এর কাজ কমে: checksum নেই, router fragmentation নেই, options পড়তে হয় না।"
+        ],
+        "points": [
+          "১. Fixed 40-byte header:",
+          {
+            "sub": "IPv4 header 20–60 byte (options এর জন্য), তাই router কে আগে IHL পড়ে length বুঝতে হয়।"
+          },
+          {
+            "sub": "IPv6 এ প্রতিটি field এর জায়গা নির্দিষ্ট — hardware সরাসরি পড়তে পারে।"
+          },
+          "২. Header checksum নেই:",
+          {
+            "sub": "IPv4 এ প্রতি hop এ TTL কমে, তাই প্রতিটি router কে checksum আবার হিসাব করতে হয়।"
+          },
+          {
+            "sub": "IPv6 এ এই কাজ নেই — error check করে Layer 2 (CRC) ও Layer 4 (TCP/UDP checksum)।"
+          },
+          "৩. Router fragmentation করে না:",
+          {
+            "sub": "IPv6 এ শুধু source fragment করে, Path MTU Discovery দিয়ে আগেই সঠিক size জেনে নেয়।"
+          },
+          {
+            "sub": "Packet বড় হলে router fragment না করে drop করে, ICMPv6 \"Packet Too Big\" পাঠায়।"
+          },
+          "৪. Options সরানো হয়েছে extension header এ:",
+          {
+            "sub": "Next Header field দিয়ে extension header গুলো chain হয়।"
+          },
+          {
+            "sub": "Transit router সাধারণত এগুলো পড়ে না (শুধু Hop-by-Hop header পড়ে)।"
+          },
+          "৫. কম ও aligned field:",
+          {
+            "sub": "IPv4 এর ১২টি field (options বাদে) এর জায়গায় IPv6 এ ৮টি, 64-bit aligned — parse দ্রুত।"
+          },
+          {
+            "sub": "Flow Label দিয়ে একই flow এর packet চেনা যায় — QoS দিতে ভেতরের TCP/UDP header খুলতে হয় না।"
+          },
+          {
+            "label": "Diagram — Header তুলনা",
+            "diagram": "IPv4 header — 20 থেকে 60 byte (variable)\n | Ver | IHL | ToS | Total Length          |\n | Identification | Flags | Frag Offset   |   ← fragmentation fields\n | TTL | Protocol | Header Checksum       |   ← প্রতি hop এ আবার হিসাব\n | Source Address (32 bit)                |\n | Destination Address (32 bit)           |\n | Options (0-40 byte)                    |   ← এর জন্য length বদলায়\n\nIPv6 header — সবসময় 40 byte (fixed)\n | Ver | Traffic Class | Flow Label       |\n | Payload Length | Next Header | Hop Lim |\n | Source Address (128 bit)               |\n | Destination Address (128 bit)          |\n   Next Header -> [Extension header] -> TCP/UDP   ← transit router পড়ে না"
+          },
+          {
+            "label": "Diagram — প্রতি hop এ router এর কাজ",
+            "diagram": "IPv4: read IHL -> TTL-1 -> recompute checksum -> fragment? -> forward\nIPv6: Hop Limit-1 -> forward\n\nপ্রতিটি router এ এই সাশ্রয় — পুরো পথে latency কমে, throughput বাড়ে"
+          }
+        ],
+        "table": {
+          "headers": [
+            "",
+            "IPv4",
+            "IPv6"
+          ],
+          "rows": [
+            [
+              "Header size",
+              "20–60 byte (variable)",
+              "40 byte (fixed)"
+            ],
+            [
+              "Header checksum",
+              "আছে, প্রতি hop এ হিসাব",
+              "নেই"
+            ],
+            [
+              "Fragmentation",
+              "source ও router",
+              "শুধু source"
+            ],
+            [
+              "Options",
+              "header এর ভেতরে",
+              "extension header এ"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "IPv6 header বড় (40 byte), তাই ধীর",
+            "না — address বড় হলেও header fixed ও সরল; প্রতি hop এ router এর কাজ IPv4 এর চেয়ে কম।"
+          ]
+        ],
+        "mnemonic": "IPv6 = \"Fixed, No sum, No frag\" — মাপ একই, checksum নেই, router ভাঙে না।"
+      }
     }
   ]
 }
