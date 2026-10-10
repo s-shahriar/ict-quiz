@@ -29,7 +29,7 @@ rows.push({ kind: 'practice', key: 'linux', sort_order: 0, payload: JSON.parse(r
 rows.push({ kind: 'practice', key: 'sql', sort_order: 1, payload: JSON.parse(readFileSync('src/data/practice/sql.json', 'utf8')) })
 
 // Equation: one row per category; the module default export is a plain object.
-const EQUATION = ['computer_network', 'operating_system']
+const EQUATION = ['computer_network', 'operating_system', 'telecommunication']
 for (const [i, slug] of EQUATION.entries()) {
   const mod = await import(pathToFileURL(join(ROOT, `src/data/equation/${slug}.js`)).href)
   rows.push({ kind: 'equation', key: slug, sort_order: i, payload: JSON.parse(JSON.stringify(mod.default)) })

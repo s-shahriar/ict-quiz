@@ -1,4 +1,4 @@
-import { Monitor, Wifi, Code2, Database, Cpu, GitBranch, Lock, Terminal, CircuitBoard, Package, Server, Layers, BrainCircuit } from 'lucide-react'
+import { Monitor, Wifi, Code2, Database, Cpu, GitBranch, Lock, Terminal, CircuitBoard, Package, Server, Layers, BrainCircuit, RadioTower } from 'lucide-react'
 
 // MCQ topic METADATA only. `questions` load from Supabase on demand
 // (see contentLoader.js), keyed by `id` == DB category_slug.
@@ -17,4 +17,5 @@ export const TOPICS = [
   { id: 'software_engineering',  module: 'mcq', name: 'Software Engineering',          shortName: 'Soft. Eng.',     icon: Layers,        color: 'var(--topic-5)', questions: [] },
   { id: 'machine_learning',      module: 'mcq', name: 'Machine Learning',              shortName: 'ML',             icon: BrainCircuit,  color: 'var(--topic-11)', questions: [] },
   { id: 'theory_of_computation', module: 'mcq', name: 'Theory of Computation',         shortName: 'ToC',            icon: Layers,        color: 'var(--topic-1)', questions: [] },
+  { id: 'telecommunication',     module: 'mcq', name: 'Telecommunication',            shortName: 'Telecom',        icon: RadioTower,    color: 'var(--topic-3)', questions: [] },
 ]
