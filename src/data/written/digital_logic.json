@@ -354,6 +354,497 @@
         },
         "mnemonic": "ভাবো ডাকঘর: MUX হলো বহু চিঠি এক ব্যাগে তোলা (many → one), DEMUX হলো ব্যাগ খুলে যার যার ঠিকানায় বিলি করা (one → many); select line টাই ঠিকানা। M = Merge, D = Distribute।"
       }
+    },
+    {
+      "id": "dl_003",
+      "q": "What is the difference between Latch and Flip-flop?",
+      "tags": [
+        "latch",
+        "flip-flop",
+        "level-triggered",
+        "edge-triggered",
+        "sequential circuit",
+        "clock"
+      ],
+      "answer": {
+        "summary": [
+          "Latch ও Flip-flop দুটোই 1 bit মনে রাখার সেকুয়েনশিয়াল element, পার্থক্য শুধু কখন output বদলাতে পারে তাতে।",
+          "Latch level-triggered: Enable যতক্ষণ active (1) থাকে, input বদলালেই output সাথে সাথে বদলায়।",
+          "Flip-flop edge-triggered: শুধু clock-এর rising বা falling edge-এর মুহূর্তে input পড়ে, বাকি সময় output স্থির।"
+        ],
+        "points": [
+          "Latch — level-triggered:",
+          {
+            "sub": "Enable = 1 থাকলে latch 'transparent' — input যা, output তা।"
+          },
+          {
+            "sub": "Enable = 0 হলে শেষ মানটি ধরে রাখে।"
+          },
+          {
+            "sub": "Enable-এর পুরো সময়টায় input-এর glitch output-এ চলে যেতে পারে।"
+          },
+          {
+            "sub": "উদাহরণ: SR latch, D latch।"
+          },
+          {
+            "label": "Diagram — D Latch (level-triggered)",
+            "diagram": "  Enable  ────┐        ┌────────────┐        ┌──\n              └────────┘            └────────┘\n\n  D       ──┐   ┌──┐    ┌─────┐      ┌─┐\n            └───┘  └────┘     └──────┘ └──────\n\n  Q       ────────┐    ┌─────┐     ┌─────────\n                  └────┘     └─────┘\n              ◄── transparent ──►   ◄─ hold ─►\n\n  Enable = 1: D বদলালেই Q সাথে সাথে বদলায়\n  Enable = 0: Q শেষ মান ধরে রাখে, D-কে পাত্তা দেয় না"
+          },
+          "Flip-flop — edge-triggered:",
+          {
+            "sub": "Clock-এর একটি edge (↑ বা ↓) এ ঠিক এক মুহূর্তে D পড়ে Q তে বসায়।"
+          },
+          {
+            "sub": "Edge-এর মাঝখানে D যতই বদলাক, Q বদলায় না।"
+          },
+          {
+            "sub": "তাই timing নিয়ন্ত্রিত ও নির্ভরযোগ্য — সব flip-flop একই edge-এ একসাথে বদলায়।"
+          },
+          {
+            "sub": "উদাহরণ: D, JK, T, SR flip-flop।"
+          },
+          {
+            "label": "Diagram — D Flip-flop (rising edge-triggered)",
+            "diagram": "  Clock   ──┐  ┌──┐  ┌──┐  ┌──┐  ┌──\n            └──┘  └──┘  └──┘  └──┘\n               ↑     ↑     ↑     ↑      ← শুধু এই edge গুলোতে D পড়ে\n\n  D       ────┐   ┌─────┐  ┌┐   ┌────\n              └───┘     └──┘└───┘\n\n  Q       ──────────┐     ┌─────┐\n                    └─────┘     └────\n\n  প্রতিটি ↑ এ D-এর মান Q তে copy হয়; edge-এর মাঝের glitch (┌┐) Q-তে যায়নি"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Latch: bus hold, address latch (8085-এর ALE দিয়ে low address ধরে রাখা)।"
+          },
+          {
+            "sub": "Flip-flop: register, counter, shift register — সব synchronous circuit।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Latch",
+            "Flip-flop"
+          ],
+          "rows": [
+            [
+              "Triggering",
+              "Level-triggered",
+              "Edge-triggered"
+            ],
+            [
+              "Output কখন বদলায়",
+              "Enable active থাকার পুরো সময়",
+              "শুধু clock edge-এ"
+            ],
+            [
+              "Control signal",
+              "Enable",
+              "Clock"
+            ],
+            [
+              "গঠন ও গতি",
+              "সরল, দ্রুত (কম gate)",
+              "জটিল (দুটি latch, master-slave), একটু ধীর"
+            ],
+            [
+              "নির্ভরযোগ্যতা",
+              "Glitch output-এ যেতে পারে",
+              "নিয়ন্ত্রিত, glitch-প্রতিরোধী"
+            ],
+            [
+              "উদাহরণ",
+              "SR latch, D latch",
+              "D, JK, T, SR flip-flop"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Latch আর flip-flop একই জিনিস, শুধু নাম আলাদা",
+            "না — latch Enable-এর level-এ কাজ করে, flip-flop clock-এর edge-এ। একটি edge-triggered D flip-flop আসলে দুটি D latch (master-slave) জোড়া দিয়ে বানানো।"
+          ]
+        ],
+        "mnemonic": "Latch = Level (দরজা খোলা থাকলে যা আসে তাই যায়), Flip-flop = Flank/edge (ঘণ্টা বাজার মুহূর্তেই শুধু ছবি তোলে)।"
+      }
+    },
+    {
+      "id": "dl_004",
+      "q": "What is the difference between synchronous and asynchronous counters?",
+      "tags": [
+        "synchronous counter",
+        "asynchronous counter",
+        "ripple counter",
+        "propagation delay",
+        "clock",
+        "flip-flop"
+      ],
+      "answer": {
+        "summary": [
+          "Counter হলো clock pulse গুনে রাখা flip-flop-এর দল; পার্থক্য হলো clock কোন flip-flop-এ কীভাবে পৌঁছায়।",
+          "Synchronous counter-এ সব flip-flop একই clock পায়, তাই সবাই একসাথে বদলায়।",
+          "Asynchronous (ripple) counter-এ শুধু প্রথম flip-flop clock পায়; বাকিরা আগের flip-flop-এর output-কে clock হিসেবে নেয়, তাই পরিবর্তন ধাপে ধাপে ripple করে।"
+        ],
+        "points": [
+          "Asynchronous (ripple) counter:",
+          {
+            "sub": "External clock শুধু FF0 তে যায়।"
+          },
+          {
+            "sub": "FF0-এর Q output FF1-এর clock, FF1-এর Q FF2-এর clock — এভাবে শিকল।"
+          },
+          {
+            "sub": "প্রতিটি flip-flop-এর নিজস্ব delay (t_pd) যোগ হয়ে মোট delay = n × t_pd।"
+          },
+          {
+            "sub": "গঠন সরল — কোনো extra logic gate লাগে না।"
+          },
+          {
+            "label": "Diagram — 3-bit Ripple Counter",
+            "diagram": "  CLK ──►┌─────┐  Q0  ┌─────┐  Q1  ┌─────┐  Q2\n          │ FF0 ├──┬──►│ FF1 ├──┬──►│ FF2 ├──┬──\n          └─────┘  │   └─────┘  │   └─────┘  │\n                   ▼            ▼            ▼\n                  bit0         bit1         bit2\n\n  আগের Q-ই পরের clock, তাই পরিবর্তন বাঁ থেকে ডানে ripple করে\n\n  delay:  FF0 বদলায়  t_pd পরে\n          FF1 বদলায়  2·t_pd পরে   (FF0 আগে বদলাতে হবে)\n          FF2 বদলায়  3·t_pd পরে\n          মোট = 3 × t_pd  →  n bit হলে n × t_pd"
+          },
+          "Synchronous counter:",
+          {
+            "sub": "একই clock line সব flip-flop-এ সরাসরি যায়।"
+          },
+          {
+            "sub": "কোন flip-flop toggle করবে তা AND gate দিয়ে আগেই ঠিক করা থাকে (J = K = Q0·Q1 …)।"
+          },
+          {
+            "sub": "Clock edge-এ সবাই একসাথে বদলায়, মোট delay = শুধু 1 × t_pd।"
+          },
+          {
+            "sub": "গঠন জটিল — extra gate লাগে, কিন্তু দ্রুত।"
+          },
+          {
+            "label": "Diagram — 3-bit Synchronous Counter",
+            "diagram": "  CLK ──┬────────────┬────────────┐\n        ▼            ▼            ▼\n     ┌──────┐     ┌──────┐     ┌──────┐\n     │ FF0  │ Q0  │ FF1  │ Q1  │ FF2  │ Q2\n     │ T=1  ├──┬─►│ T    ├──┬  │ T    ├───\n     └──────┘  │  └──────┘  │  └──▲───┘\n               │            │     │\n               └─────┐  ┌───┘     │\n                   ┌─▼──▼─┐       │\n                   │ AND  ├───────┘     T2 = Q0 · Q1\n                   └──────┘\n\n  একই clock সবাই পায়; AND gate ঠিক করে কে toggle করবে\n  delay: সব FF একসাথে  →  মোট = 1 × t_pd (bit বাড়লেও বাড়ে না)"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Ripple counter: সস্তা frequency divider, digital clock-এর ধীর ধাপ।"
+          },
+          {
+            "sub": "Synchronous counter: CPU-এর program counter, high-speed timer।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Synchronous Counter",
+            "Asynchronous (Ripple) Counter"
+          ],
+          "rows": [
+            [
+              "Clock",
+              "সব flip-flop একই clock পায়",
+              "শুধু প্রথমটি external clock পায়"
+            ],
+            [
+              "Output পরিবর্তন",
+              "সব flip-flop একসাথে বদলায়",
+              "এক flip-flop থেকে পরেরটিতে ripple করে"
+            ],
+            [
+              "Propagation delay",
+              "কম (1 × t_pd)",
+              "বেশি (n × t_pd)"
+            ],
+            [
+              "গতি",
+              "দ্রুত",
+              "ধীর"
+            ],
+            [
+              "Circuit",
+              "জটিল (extra logic gate)",
+              "সরল"
+            ],
+            [
+              "ব্যবহার",
+              "High-speed system",
+              "সরল, low-speed কাজ"
+            ]
+          ]
+        },
+        "mnemonic": "Sync = Same clock = Simultaneous = Speedy; Async = Ripple = Relay race (একজন শেষ করলে পরেরজন দৌড়ায়)।"
+      }
+    },
+    {
+      "id": "dl_005",
+      "q": "Why are synchronous counters faster than ripple counters?",
+      "tags": [
+        "synchronous counter",
+        "ripple counter",
+        "propagation delay",
+        "clock frequency",
+        "flip-flop"
+      ],
+      "answer": {
+        "summary": [
+          "Synchronous counter দ্রুত কারণ সব flip-flop একই clock pulse একই মুহূর্তে পায়, তাই সবাই একসাথে বদলায় — মোট delay একটি flip-flop-এর সমান।",
+          "Ripple counter-এ প্রতিটি flip-flop আগেরটির output-এর জন্য অপেক্ষা করে, তাই delay গুলো জমে cumulative হয়।"
+        ],
+        "points": [
+          "Ripple counter-এ delay কেন জমে:",
+          {
+            "sub": "শুধু প্রথম flip-flop external clock পায়।"
+          },
+          {
+            "sub": "দ্বিতীয়টির clock = প্রথমটির output; তৃতীয়টির clock = দ্বিতীয়টির output।"
+          },
+          {
+            "sub": "প্রতিটি flip-flop output বদলাতে t_pd সময় নেয়।"
+          },
+          {
+            "sub": "চতুর্থ flip-flop তাই প্রথম, দ্বিতীয় ও তৃতীয়টি বদলানোর আগে বদলাতে পারে না।"
+          },
+          {
+            "sub": "Flip-flop যত বাড়ে, মোট delay তত বাড়ে — n × t_pd।"
+          },
+          "Synchronous counter-এ delay কেন জমে না:",
+          {
+            "sub": "সব flip-flop common clock-এ সরাসরি যুক্ত।"
+          },
+          {
+            "sub": "Clock edge আসামাত্র যাদের বদলানোর কথা সবাই একসাথে বদলায়।"
+          },
+          {
+            "sub": "Signal-কে এক flip-flop থেকে আরেকটিতে ripple করতে হয় না।"
+          },
+          {
+            "sub": "মোট delay = 1 × t_pd (+ সামান্য gate delay), bit সংখ্যা বাড়লেও প্রায় একই থাকে।"
+          },
+          {
+            "label": "Diagram — একই clock edge-এর পর কে কখন বদলায় (4-bit, t_pd = 10 ns)",
+            "diagram": "Ripple:  clock edge ──► FF0 ──► FF1 ──► FF2 ──► FF3\n          0 ns        10 ns   20 ns   30 ns   40 ns\n          মোট = 4 × 10 = 40 ns  (সবগুলো ঠিক হওয়ার আগে count পড়া যাবে না)\n\n                        ┌► FF0  10 ns\n                        ├► FF1  10 ns\nSync:    clock edge ────┼► FF2  10 ns\n          0 ns          └► FF3  10 ns\n          মোট = 10 ns  (সবাই একসাথে)"
+          },
+          "সর্বোচ্চ clock frequency-তে এর প্রভাব:",
+          {
+            "sub": "পরের clock edge আসার আগে সব flip-flop-এর নতুন মান স্থির হতে হবে।"
+          },
+          {
+            "sub": "তাই f_max ≈ 1 / (মোট delay)।"
+          },
+          {
+            "sub": "Ripple: 1 / 40 ns = 25 MHz; Synchronous: 1 / 10 ns = 100 MHz — চার গুণ দ্রুত।"
+          },
+          {
+            "sub": "এজন্যই high-speed system-এ synchronous counter ব্যবহৃত হয়।"
+          }
+        ],
+        "mistakes": [
+          [
+            "Synchronous counter-এর flip-flop গুলো নিজেরাই দ্রুত",
+            "না — flip-flop একই, t_pd একই। পার্থক্য শুধু delay গুলো series-এ জমে (ripple) নাকি parallel-এ একসাথে ঘটে (synchronous)।"
+          ]
+        ],
+        "mnemonic": "Ripple = সিরিজে বাতি, একটার পর একটা জ্বলে (n × t_pd); Sync = এক সুইচে সব বাতি একসাথে (1 × t_pd)।"
+      }
+    },
+    {
+      "id": "dl_006",
+      "q": "What is the difference between PLA and PAL?",
+      "tags": [
+        "PLA",
+        "PAL",
+        "programmable logic device",
+        "AND array",
+        "OR array",
+        "sum of products"
+      ],
+      "answer": {
+        "summary": [
+          "PLA (Programmable Logic Array) ও PAL (Programmable Array Logic) দুটোই AND-OR গঠনের programmable logic device, যা sum-of-products আকারে boolean function বাস্তবায়ন করে।",
+          "PLA-তে AND array ও OR array দুটোই programmable; PAL-এ শুধু AND array programmable, OR array fixed।",
+          "ফলে PLA বেশি flexible কিন্তু ধীর, জটিল ও দামি; PAL কম flexible কিন্তু দ্রুত, সরল ও সস্তা।"
+        ],
+        "points": [
+          "PLA — দুটো array-ই programmable:",
+          {
+            "sub": "AND array-তে যেকোনো product term (যেমন AB̄, ĀC) বানানো যায়।"
+          },
+          {
+            "sub": "OR array-তে যেকোনো product term যেকোনো output-এ জোড়া যায়।"
+          },
+          {
+            "sub": "একই product term একাধিক output-এ share করা যায় — তাই কম gate-এ বেশি function।"
+          },
+          {
+            "sub": "দুই স্তরের programmable fuse signal-কে ধীর করে।"
+          },
+          {
+            "label": "Diagram — PLA (AND programmable + OR programmable)",
+            "diagram": "  A  B  C\n  │  │  │        AND array (programmable)        OR array (programmable)\n  ├──┼──┼──── × ──×───────── P1 = AB̄ ────── × ──── × ───\n  ├──┼──┼──── × ─────×────── P2 = ĀC ────── × ────────\n  ├──┼──┼───────×───×─────── P3 = BC ─────────── × ───\n                                              │       │\n                                              F1      F2\n\n  × = programmable connection (fuse)\n  F1 = P1 + P2 ,  F2 = P1 + P3   ← P1 দুই output-এ share হলো"
+          },
+          "PAL — শুধু AND array programmable:",
+          {
+            "sub": "AND array-তে product term বানানো যায়।"
+          },
+          {
+            "sub": "কিন্তু প্রতিটি OR gate-এ কোন কোন product term যাবে তা factory-তে fixed।"
+          },
+          {
+            "sub": "প্রতিটি output-এর নিজস্ব product term-এর দল, share করা যায় না।"
+          },
+          {
+            "sub": "এক স্তরের fuse — তাই দ্রুত, সরল ও সস্তা।"
+          },
+          {
+            "label": "Diagram — PAL (AND programmable + OR fixed)",
+            "diagram": "  A  B  C\n  │  │  │        AND array (programmable)        OR array (fixed)\n  ├──┼──┼──── × ──×───────── P1 ──────────── ● ───┐\n  ├──┼──┼──── × ─────×────── P2 ──────────── ● ───┴── F1\n  ├──┼──┼───────×───×─────── P3 ──────────── ● ───┐\n  ├──┼──┼────────×──×─────── P4 ──────────── ● ───┴── F2\n\n  × = programmable fuse ,  ● = fixed wire (বদলানো যায় না)\n  F1 সবসময় P1 + P2 ,  F2 সবসময় P3 + P4   ← term share করা যায় না"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "PLA: জটিল control logic, microcode decoder যেখানে term share করে gate বাঁচাতে হয়।"
+          },
+          {
+            "sub": "PAL: address decoder, glue logic — সরল, দ্রুত কাজে।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "PLA",
+            "PAL"
+          ],
+          "rows": [
+            [
+              "Full form",
+              "Programmable Logic Array",
+              "Programmable Array Logic"
+            ],
+            [
+              "AND array",
+              "Programmable",
+              "Programmable"
+            ],
+            [
+              "OR array",
+              "Programmable",
+              "Fixed"
+            ],
+            [
+              "Flexibility",
+              "বেশি",
+              "কম"
+            ],
+            [
+              "গতি",
+              "ধীর (দুই স্তরের fuse)",
+              "দ্রুত (এক স্তরের fuse)"
+            ],
+            [
+              "জটিলতা",
+              "বেশি",
+              "কম"
+            ],
+            [
+              "দাম",
+              "বেশি",
+              "কম"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "PAL-এ OR array programmable, AND fixed",
+            "উল্টো — PAL-এ AND programmable, OR fixed। (ROM-এ AND fixed, OR programmable; PLA-তে দুটোই programmable।)"
+          ]
+        ],
+        "mnemonic": "PLA = Both Programmable (L = Liberty, দুটোই খোলা); PAL = AND only (A-র পরে L = Locked OR)। ROM–PAL–PLA: OR খোলা–AND খোলা–দুটোই খোলা।"
+      }
+    },
+    {
+      "id": "dl_007",
+      "q": "What is the difference between Flip-flop and Register?",
+      "tags": [
+        "flip-flop",
+        "register",
+        "memory element",
+        "1 bit",
+        "n-bit",
+        "sequential circuit"
+      ],
+      "answer": {
+        "summary": [
+          "Flip-flop হলো 1 bit মনে রাখার মৌলিক memory element; Register হলো n টি flip-flop একই clock-এ জুড়ে বানানো n-bit storage।",
+          "অর্থাৎ flip-flop ইট, register সেই ইট দিয়ে গাঁথা দেয়াল — একটি বিট বনাম একটি পুরো binary word।"
+        ],
+        "points": [
+          "Flip-flop:",
+          {
+            "sub": "ঠিক 1 bit (0 বা 1) ধরে রাখে।"
+          },
+          {
+            "sub": "Input ধরন অনুযায়ী D, JK, T, SR flip-flop।"
+          },
+          {
+            "sub": "একটি clock input, একটি Q (ও Q̄) output।"
+          },
+          {
+            "sub": "Register, counter, shift register — সবকিছুর building block।"
+          },
+          {
+            "label": "Diagram — একটি D Flip-flop (1 bit)",
+            "diagram": "        ┌─────────┐\n  D ───►│ D     Q ├───► 1 bit (0 বা 1)\n        │         │\n  CLK ─►│>      Q̄ ├───\n        └─────────┘"
+          },
+          "Register:",
+          {
+            "sub": "n টি flip-flop পাশাপাশি, সবার clock একই line-এ।"
+          },
+          {
+            "sub": "একটি clock edge-এ n bit একসাথে load হয়।"
+          },
+          {
+            "sub": "n টি data input, n টি data output; প্রায়ই Load/Enable ও Clear signal থাকে।"
+          },
+          {
+            "sub": "একটি পুরো binary word (byte, address, instruction) ধরে রাখে।"
+          },
+          {
+            "label": "Diagram — 4-bit Register (4 টি D flip-flop)",
+            "diagram": "   D3        D2        D1        D0\n   │         │         │         │\n ┌─▼──┐    ┌─▼──┐    ┌─▼──┐    ┌─▼──┐\n │ FF3│    │ FF2│    │ FF1│    │ FF0│\n │>   │    │>   │    │>   │    │>   │\n └─┬──┘    └─┬──┘    └─┬──┘    └─┬──┘\n   │         │         │         │\n   Q3        Q2        Q1        Q0     ← একসাথে 4 bit = একটি word\n   ▲         ▲         ▲         ▲\n CLK ────────┴─────────┴─────────┘      ← একই clock সবাই পায়\n\n  উদাহরণ: 1011 load করলে Q3Q2Q1Q0 = 1 0 1 1"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Flip-flop: debounce switch, frequency divider, 1-bit flag/status।"
+          },
+          {
+            "sub": "Register: CPU-এর accumulator, program counter, instruction register।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "বৈশিষ্ট্য",
+            "Flip-flop",
+            "Register"
+          ],
+          "rows": [
+            [
+              "ধারণক্ষমতা",
+              "শুধু 1 bit",
+              "একাধিক bit (n bit)"
+            ],
+            [
+              "গঠন",
+              "মৌলিক memory element",
+              "কয়েকটি flip-flop-এর দল"
+            ],
+            [
+              "Input",
+              "D, J-K, T ইত্যাদি",
+              "সাধারণত n টি data input ও output"
+            ],
+            [
+              "উদাহরণ",
+              "একটি D flip-flop 0 বা 1 রাখে",
+              "চারটি D flip-flop = 4-bit register"
+            ],
+            [
+              "ভূমিকা",
+              "Building block",
+              "Binary word/data সংরক্ষণ"
+            ]
+          ]
+        },
+        "mnemonic": "Flip-flop = ১টি ইট (1 bit), Register = ইটের সারি (n bit) — এক clock-এ পুরো সারি একসাথে বসে।"
+      }
     }
   ]
 }

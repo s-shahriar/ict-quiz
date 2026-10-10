@@ -2386,6 +2386,127 @@
           ]
         ]
       }
+    },
+    {
+      "id": "dsa_022",
+      "q": "Write the best-case, average-case and worst-case time complexities of the following sorting algorithms:\n\n    Selection Sort\n    Insertion Sort\n    Merge Sort\n    Quick Sort\n    Heap Sort",
+      "tags": [
+        "sorting",
+        "time complexity",
+        "best case",
+        "average case",
+        "worst case",
+        "selection sort",
+        "insertion sort",
+        "merge sort",
+        "quick sort",
+        "heap sort"
+      ],
+      "answer": {
+        "summary": [
+          "১৫টি ঘর আলাদা করে মুখস্থ করার দরকার নেই — algorithm দুই দলে ভাগ করে নাও, তারপর মাত্র দুটি ব্যতিক্রম মনে রাখলেই পুরো table বেরিয়ে আসে।"
+        ],
+        "points": [
+          "ধাপ ১ — দুই দলে ভাগ করো:",
+          {
+            "sub": "সরল দল (Selection, Insertion): প্রতিটি element-কে বাকি প্রায় সবার সাথে মেলাতে হয় → O(n²)।"
+          },
+          {
+            "sub": "চালাক দল (Merge, Quick, Heap): প্রতিবার অর্ধেক ভাগ বা log n গভীর গাছ ব্যবহার করে → O(n log n)।"
+          },
+          {
+            "sub": "ডিফল্ট ধরে নাও — দলের গতিই তিন ঘরে (best, average, worst) বসে যাবে।"
+          },
+          "ধাপ ২ — মাত্র দুটি ব্যতিক্রম মনে রাখো:",
+          {
+            "sub": "Insertion Sort-এর best = O(n), কারণ array আগে থেকেই sorted হলে প্রতি element-এ একটিমাত্র তুলনা করেই থেমে যায়।"
+          },
+          {
+            "sub": "Quick Sort-এর worst = O(n²), কারণ pivot খারাপ হলে (sorted array + first element pivot) প্রতিবার এক পাশ খালি থাকে।"
+          },
+          {
+            "sub": "এই দুটি ঘর বাদে বাকি ১৩টিতে দলের গতিই বসে।"
+          },
+          {
+            "label": "মনে রাখার ছক — দলের গতি বসাও, তারপর দুই ঘর বদলাও",
+            "diagram": "  ধাপ 1 : দলের গতি তিন ঘরেই বসাও\n\n               Best        Average     Worst\n    Selection  n^2         n^2         n^2\n    Insertion  n^2         n^2         n^2\n    Merge      n log n     n log n     n log n\n    Quick      n log n     n log n     n log n\n    Heap       n log n     n log n     n log n\n\n  ধাপ 2 : শুধু এই দুই ঘর বদলাও\n\n    Insertion  n                               ◄── sorted হলে ১ তুলনাতেই শেষ\n    Quick                              n^2     ◄── খারাপ pivot, এক পাশ খালি\n\n  ফল :\n\n               Best        Average     Worst\n    Selection  n^2         n^2         n^2\n    Insertion  n           n^2         n^2\n    Merge      n log n     n log n     n log n\n    Quick      n log n     n log n     n^2\n    Heap       n log n     n log n     n log n"
+          },
+          "কেন কারো তিন ঘরই এক রকম:",
+          {
+            "sub": "Selection Sort input দেখেই না — sorted হোক বা না হোক, প্রতিবার বাকি অংশে minimum খুঁজতেই হয়।"
+          },
+          {
+            "sub": "Merge Sort সবসময় ঠিক মাঝখানে ভাগ করে, ভাগটা data-র উপর নির্ভর করে না।"
+          },
+          {
+            "sub": "Heap Sort প্রতিবার root সরিয়ে heapify করে, যা সবসময় log n গভীর।"
+          },
+          {
+            "sub": "Quick Sort-ই একমাত্র যার ভাগ pivot-এর উপর নির্ভর করে, তাই একমাত্র সে-ই worst-এ পড়ে যায়।"
+          },
+          {
+            "label": "কেন n², কেন n log n — n = 8 ধরে গুনে দেখা",
+            "diagram": "  Selection Sort (n = 8) — প্রতিবার বাকি অংশে minimum খোঁজা\n    ধাপ 1 : 7 তুলনা\n    ধাপ 2 : 6 তুলনা\n      ...\n    ধাপ 7 : 1 তুলনা\n    মোট = 7+6+5+4+3+2+1 = 28\n    n(n-1)/2 = 8 x 7 / 2 = 28   (সাধারণ রূপ)\n    ধ্রুবক 1/2 বাদ যায়  →  O(n^2)\n\n  Merge Sort (n = 8) — প্রতিবার অর্ধেক ভাগ\n    8 -> 4 -> 2 -> 1\n    স্তর সংখ্যা = log2 8 = 3\n    প্রতি স্তরে কাজ = 8   (প্রতিটি element একবার ছোঁয়া হয়)\n    মোট = 3 x 8 = 24 = n log2 n  →  O(n log n)\n\n  Quick Sort — একই algorithm, pivot-ভেদে দুই ফল\n    ভালো pivot (প্রায় মাঝখানে ভাগ) :\n      [8] -> [4][4] -> [2][2][2][2]\n      স্তর = 3,  মোট = 3 x 8 = 24  →  O(n log n)\n\n    খারাপ pivot (sorted array, first element pivot) :\n      [8] -> [0][7] -> [0][6] -> [0][5]\n      স্তর = 8,  মোট = 8 x 8 = 64  →  O(n^2)\n\n  বাস্তব মাপে (n = 1,000,000) :\n    n^2     = 1,000,000,000,000\n    n log n = 1,000,000 x 20 = 20,000,000"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "প্রায়-sorted ছোট data → Insertion Sort, কারণ best case O(n)।"
+          },
+          {
+            "sub": "Worst case-এর নিশ্চয়তা দরকার (database, external sort) → Merge Sort বা Heap Sort।"
+          },
+          {
+            "sub": "সাধারণ in-memory sort → Quick Sort, তবে random বা median-of-three pivot দিয়ে।"
+          }
+        ],
+        "table": {
+          "headers": [
+            "Algorithm",
+            "Best case",
+            "Average case",
+            "Worst case"
+          ],
+          "rows": [
+            [
+              "Selection Sort",
+              "O(n²)",
+              "O(n²)",
+              "O(n²)"
+            ],
+            [
+              "Insertion Sort",
+              "O(n)",
+              "O(n²)",
+              "O(n²)"
+            ],
+            [
+              "Merge Sort",
+              "O(n log n)",
+              "O(n log n)",
+              "O(n log n)"
+            ],
+            [
+              "Quick Sort",
+              "O(n log n)",
+              "O(n log n)",
+              "O(n²)"
+            ],
+            [
+              "Heap Sort",
+              "O(n log n)",
+              "O(n log n)",
+              "O(n log n)"
+            ]
+          ]
+        },
+        "mistakes": [
+          [
+            "Quick Sort সবসময় Merge Sort-এর চেয়ে দ্রুত",
+            "গড়ে দ্রুত (in-place, constant কম), কিন্তু worst case O(n²); Merge Sort-এর তিন ঘরই O(n log n)।"
+          ]
+        ],
+        "mnemonic": "দুই দল — সরল (Selection, Insertion) = n², চালাক (Merge, Quick, Heap) = n log n; দুই ব্যতিক্রম — Insertion best-এ n, Quick worst-এ n²।"
+      }
     }
   ]
 }

@@ -568,6 +568,90 @@
         },
         "mnemonic": "RL = শিশু হাঁটতে শেখে (পড়লে penalty, হাঁটলে reward)। DL = অনেক স্তরের মাথা ঘামানো (layer এ layer)। FL = পরীক্ষার নোট share না করে শুধু summary দেওয়া (privacy রক্ষা)।"
       }
+    },
+    {
+      "id": "ml_006",
+      "q": "Which Machine Learning algorithm is suitable for Market Basket Analysis? Explain the steps involved.",
+      "tags": [
+        "Apriori",
+        "Association Rule Learning",
+        "Market Basket Analysis",
+        "support",
+        "confidence",
+        "lift"
+      ],
+      "answer": {
+        "summary": [
+          "Market Basket Analysis-এর জন্য সবচেয়ে উপযুক্ত algorithm হলো Apriori Algorithm (Association Rule Learning)।",
+          "কাজ: transaction-এর তালিকা থেকে একসাথে কেনা item-এর দল বের করে If X → Y আকারের rule বানানো।"
+        ],
+        "points": [
+          "Apriori কেন উপযুক্ত:",
+          {
+            "sub": "Data-তে কোনো label নেই, শুধু কোন transaction-এ কী কেনা হয়েছে — তাই unsupervised।"
+          },
+          {
+            "sub": "প্রশ্নটা শ্রেণিবিভাগের নয়, প্রশ্নটা হলো কোন item গুলো একসাথে কেনা হয়।"
+          },
+          {
+            "sub": "Apriori property: কোনো itemset infrequent হলে তার যেকোনো superset-ও infrequent — এই নিয়মেই অসংখ্য combination না মেপেই বাদ যায়।"
+          },
+          "কর্মপদ্ধতি (Steps Involved):",
+          "ধাপ ১ — Support Calculation:",
+          {
+            "sub": "প্রতিটি item কত অংশ transaction-এ আছে তা বের করা।"
+          },
+          {
+            "sub": "Support(X) = X আছে এমন transaction সংখ্যা ÷ মোট transaction সংখ্যা।"
+          },
+          "ধাপ ২ — Filter by Minimum Support:",
+          {
+            "sub": "নির্ধারিত minimum support threshold পূরণ না করা itemset বাদ দেওয়া (pruning)।"
+          },
+          {
+            "sub": "যারা টিকে থাকে তারাই Frequent 1-itemset।"
+          },
+          "ধাপ ৩ — Generate Itemsets:",
+          {
+            "sub": "টিকে যাওয়া 1-itemset জোড়া লাগিয়ে candidate 2-itemset, তারপর 3-itemset — এভাবে স্তরে স্তরে এগোনো।"
+          },
+          {
+            "sub": "প্রতি স্তরে আবার support মেপে threshold-এর নিচে পড়লে বাদ।"
+          },
+          {
+            "sub": "নতুন কোনো frequent itemset না পাওয়া পর্যন্ত চলে।"
+          },
+          "ধাপ ৪ — Generate Association Rules:",
+          {
+            "sub": "বিজয়ী frequent itemset ভেঙে If X → Y আকারের rule বানানো, যেমন If Buy Bread → Buy Butter।"
+          },
+          "ধাপ ৫ — Evaluate Rules:",
+          {
+            "sub": "Confidence = X কিনলে Y-ও কেনার হার।"
+          },
+          {
+            "sub": "Lift = rule-টি এলোমেলো মিলের তুলনায় কতটা ভালো; Lift > 1 হলেই rule কার্যকর।"
+          },
+          {
+            "label": "ছোট উদাহরণে পুরো হিসাব (5টি transaction, minimum support = 0.4)",
+            "diagram": "  T1 : Bread, Butter\n  T2 : Bread, Butter, Milk\n  T3 : Bread, Butter\n  T4 : Milk, Egg\n  T5 : Bread, Milk\n\n  ধাপ 1-2 — 1-itemset-এর support  (মোট transaction = 5)\n    Bread  = 4 / 5 = 0.8    ≥ 0.4   রাখো\n    Butter = 3 / 5 = 0.6    ≥ 0.4   রাখো\n    Milk   = 3 / 5 = 0.6    ≥ 0.4   রাখো\n    Egg    = 1 / 5 = 0.2    < 0.4   বাদ\n\n  ধাপ 3 — টিকে যাওয়া তিনটি থেকেই 2-itemset\n    {Bread, Butter} = 3 / 5 = 0.6   রাখো\n    {Bread, Milk}   = 2 / 5 = 0.4   রাখো\n    {Butter, Milk}  = 1 / 5 = 0.2   বাদ\n\n    3-itemset {Bread, Butter, Milk} না মেপেই বাদ,\n    কারণ ভেতরের {Butter, Milk} ইতিমধ্যে infrequent  (Apriori property)\n\n  ধাপ 4-5 — rule বানাও ও যাচাই করো\n    Rule : Bread → Butter\n      Confidence = support(Bread, Butter) / support(Bread)\n                 = 0.6 / 0.8 = 0.75\n      Lift       = Confidence / support(Butter)\n                 = 0.75 / 0.6 = 1.25      > 1  →  কার্যকর rule\n\n    Rule : Bread → Milk\n      Confidence = 0.4 / 0.8 = 0.50\n      Lift       = 0.50 / 0.6 = 0.83      < 1  →  বাদ, Milk এমনিতেই কেনা হয়"
+          },
+          "ব্যবহারিক প্রয়োগ:",
+          {
+            "sub": "Supermarket-এ Bread আর Butter পাশাপাশি shelf-এ সাজানো।"
+          },
+          {
+            "sub": "E-commerce site-এর \"Frequently bought together\" suggestion।"
+          }
+        ],
+        "mistakes": [
+          [
+            "Confidence বেশি মানেই rule ভালো",
+            "না — Butter এমনিতেই প্রায় সবাই কিনলে confidence এমনিতেই বেশি দেখাবে; Lift > 1 না হলে rule-টির কোনো মানে নেই।"
+          ]
+        ],
+        "mnemonic": "Support দিয়ে ছাঁটো, Itemset বড় করো, Rule বানাও, Lift দিয়ে যাচাই করো।"
+      }
     }
   ]
 }
