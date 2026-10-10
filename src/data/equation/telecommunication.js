@@ -240,7 +240,7 @@ export default {
           name: 'Quantization SNR',
           lhs: r`\text{SNR}_{dB}`,
           rhs: r`1.76 + 6.02\,n`,
-          note: 'প্রতি বাড়তি bit প্রায় 6 dB যোগ করে; 50 dB চাইলে n = (50 − 1.76) / 6.02 ≈ 8.01, তাই n = 8 bit লাগে।',
+          note: 'প্রতি বাড়তি bit প্রায় 6 dB যোগ করে; 48 dB চাইলে n = (48 − 1.76) / 6.02 ≈ 7.68, উপরের পূর্ণসংখ্যা নিয়ে n = 8 bit।',
         },
         {
           name: 'PCM bit rate',

@@ -238,7 +238,7 @@ function PcmDiagram() {
         <Cell key={i} x={140 + i * 32} y={264} w={28} h={30} color={C4} title={b} />
       ))}
       <Dim x1={140} x2={396} y={308} color={C4} label="n · এখানে 8 bit per sample" below />
-      <text x="414" y="272" fontSize="11" fill="var(--text-3)">SNR_dB চাইলে 50 dB → n = 8</text>
+      <text x="414" y="272" fontSize="11" fill="var(--text-3)">SNR_dB চাইলে 48 dB → n = 8</text>
       <text x="414" y="292" fontSize="11" fontWeight="700" fill={C3}>Bit rate · এখানে 11200 kbps</text>
     </svg>
   )
