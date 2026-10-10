@@ -495,7 +495,9 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
         <div className="practice-topic-tag">{problem._catName ? problem._catName + ' · ' : ''}{problem._topicName}</div>
       )}
 
-      <SchemaBar data={sampleData} />
+      {/* The Important run mixes topics, so each drill carries its own tables;
+          inside one topic the screen-level schema serves them all. */}
+      <SchemaBar data={problem._sample || sampleData} />
 
       <div className="practice-prompt-row">
         <HighlightableText

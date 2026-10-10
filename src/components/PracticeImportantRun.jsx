@@ -27,7 +27,11 @@ export default function PracticeImportantRun() {
     if (!data) continue
     for (const topic of data.topics || []) {
       const seen = new Set()
-      const meta = { _ci: cat.id === 'sql', _topicName: topic.name, _catName: cat.name }
+      // Same resolution order as the Practice tab: the topic's own tables, then
+      // its set's, then the category default — without this the drill showed no
+      // Tables block at all once it left its own topic's screen.
+      const sample = topic.sampleData || (topic.set && data.sampleDataBySet?.[topic.set]) || data.sampleData
+      const meta = { _ci: cat.id === 'sql', _topicName: topic.name, _catName: cat.name, _sample: sample }
       // Real drills marked important.
       for (const p of topic.practice || []) {
         const cmd = p.accept?.[0]
