@@ -167,16 +167,16 @@ export default {
       ],
       equations: [
         {
-          name: 'Baud rate',
-          lhs: 'S',
-          rhs: r`\dfrac{C}{n} = \dfrac{R_b}{n}\ \text{baud}`,
-          note: 'n টি bit একসাথে এক element-এ যায়, তাই element-সংখ্যা bit-সংখ্যার n ভাগের এক; 100 kbps, n = 2 হলে 50 kbaud।',
-        },
-        {
           name: 'n কত, কোন scheme-এ',
           lhs: 'n',
           rhs: r`\log_2 L`,
           note: 'নামের সংখ্যাটাই L: 16-PSK → n = 4, 64-QAM → n = 6, 8-PSK → n = 3, 8-QAM → n = 3।',
+        },
+        {
+          name: 'Baud rate',
+          lhs: 'S',
+          rhs: r`\dfrac{C}{n} = \dfrac{R_b}{n}\ \text{baud}`,
+          note: 'n টি bit একসাথে এক element-এ যায়, তাই element-সংখ্যা bit-সংখ্যার n ভাগের এক; 100 kbps, n = 2 হলে 50 kbaud।',
         },
         {
           name: 'ASK / PSK bandwidth',
