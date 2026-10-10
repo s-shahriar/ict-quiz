@@ -1644,15 +1644,38 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
   transition: border-color .15s;
 }
 .practice-imp-item:hover { border-color: var(--border-bright); }
-.practice-imp-item-head { display: flex; align-items: center; gap: 8px; }
+.practice-imp-item-head { display: flex; align-items: center; gap: 6px; }
 .practice-imp-tag {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 0.74rem; font-weight: 600; color: var(--text-3);
   padding: 3px 9px; border-radius: 20px;
   border: 1px solid var(--border); background: var(--elevated);
 }
-.practice-imp-item-head .nailed-unnail-btn { margin-left: auto; flex-shrink: 0; }
+/* The tag takes the slack, so the two trailing buttons sit together on the
+   right. Putting `margin-left: auto` on `.nailed-unnail-btn` gave it to BOTH
+   of them and stranded the Weak button in the middle of the row. */
+.practice-imp-item-head .practice-imp-tag { margin-right: auto; }
+.practice-imp-item-head .nailed-unnail-btn { flex-shrink: 0; }
 .practice-imp-prompt { font-size: 0.92rem; font-weight: 600; color: var(--text); line-height: 1.5; }
+
+/* A saved drill is a question: showing its answer in the list spoils it, so the
+   card leads with "practise this one" and keeps the answer behind a toggle. */
+.practice-imp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.practice-imp-run-btn,
+.practice-imp-reveal-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: 9px; cursor: pointer;
+  font-size: 0.82rem; font-weight: 600; font-family: var(--font-body);
+  transition: border-color .15s, background .15s, color .15s;
+}
+.practice-imp-run-btn {
+  color: var(--on-accent); border: 1px solid transparent; background: var(--grad-brand);
+}
+.practice-imp-run-btn:hover { filter: brightness(1.06); }
+.practice-imp-reveal-btn {
+  color: var(--text-2); border: 1px solid var(--border); background: var(--surface-glass);
+}
+.practice-imp-reveal-btn:hover { color: var(--text); border-color: var(--border-bright); }
 
 .practice-terminal {
   display: flex; align-items: flex-start; gap: 8px;

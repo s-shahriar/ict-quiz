@@ -356,7 +356,7 @@ function CommandsPanel({ commands, practice, important, makeId, onToggleImportan
   )
 }
 
-export function CommandPractice({ problems, important, onToggleImportant, idOf, ciOf = () => false, showFilter = true, showTopicTag = false, sampleData = null }) {
+export function CommandPractice({ problems, important, onToggleImportant, idOf, ciOf = () => false, showFilter = true, showTopicTag = false, sampleData = null, startId = null }) {
   const [filter, setFilterState] = useState('all')   // 'all' | 'important' | 'weak'
   const { value: weak } = useWeakContext()
   const [idx, setIdx] = useState(0)
@@ -382,6 +382,17 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
   const total = pool.length
   const viewIdx = total ? Math.min(idx, total - 1) : 0
   const current = pool[viewIdx]
+
+  // `?at=<id>` from the Important list opens on that one drill instead of the
+  // first. The practice content loads async, so this waits for a non-empty pool
+  // and then fires once — never again, or paging away would snap back.
+  const jumped = useRef(false)
+  useEffect(() => {
+    if (jumped.current || !startId || !total) return
+    jumped.current = true
+    const at = pool.findIndex(x => idOf(x.p) === startId)
+    if (at >= 0) setIdx(at)
+  }, [startId, total])
 
   const reset = () => { setInput(''); setStatus('idle'); setRevealed(false) }
   const goTo = (ni) => { setIdx(ni); reset(); requestAnimationFrame(() => inputRef.current?.focus()) }

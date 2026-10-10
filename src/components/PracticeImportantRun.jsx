@@ -17,6 +17,8 @@ export default function PracticeImportantRun() {
   // ?weak=1 (from the Important screen's Weak switch) runs only the Weak items.
   const [searchParams] = useSearchParams()
   const weakOnly = searchParams.get('weak') === '1'
+  // `?at=<id>` — practise the one item tapped in the list, the rest still queued behind it.
+  const startId = searchParams.get('at')
   const marked = weakOnly ? weak : important
 
   const drills = []
@@ -76,6 +78,7 @@ export default function PracticeImportantRun() {
             ciOf={p => p._ci}
             showFilter={false}
             showTopicTag
+            startId={startId}
           />
         )}
       </div>

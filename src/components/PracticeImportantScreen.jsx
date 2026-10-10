@@ -1,4 +1,4 @@
-import { Bookmark, ChevronLeft, Dumbbell, Terminal, X } from 'lucide-react'
+import { Bookmark, ChevronLeft, Dumbbell, Eye, EyeOff, Terminal, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
@@ -94,36 +94,68 @@ export default function PracticeImportantScreen() {
           {activeGroup && (
             <div className="nailed-screen-list anim-fade" style={{ '--c': activeGroup.cat.color }}>
               {activeGroup.items.map(item => (
-                <div
+                <ImportantItem
                   key={item.id}
-                  className="practice-imp-item"
-                  onClick={() => navigate(`/practice?category=${activeGroup.cat.id}&topic=${item.topic.id}`)}
-                >
-                  <div className="practice-imp-item-head">
-                    <span className="practice-imp-tag">
-                      {item.kind === 'drill' ? <Dumbbell size={11} /> : <Terminal size={11} />}
-                      {item.topic.name}
-                    </span>
-                    <WeakButton uid={item.id} className="nailed-unnail-btn nailed-weak-btn" size={13} />
-                    <button
-                      className="nailed-unnail-btn"
-                      onClick={e => { e.stopPropagation(); (weakOnly ? onUnweak : onUnmark)(item.id) }}
-                      title={weakOnly ? 'Remove from Weak' : 'Remove from Important'}
-                    >
-                      <X size={13} />
-                    </button>
-                  </div>
-                  {item.kind === 'drill' && <div className="practice-imp-prompt">{item.prompt}</div>}
-                  {item.kind === 'drill'
-                    ? item.answer && <code className="practice-cmd">{item.answer}</code>
-                    : <code className="practice-cmd">{item.cmd}</code>}
-                  {item.desc && <span className="practice-cmd-desc">{item.desc}</span>}
-                </div>
+                  item={item}
+                  weakOnly={weakOnly}
+                  onRemove={() => (weakOnly ? onUnweak : onUnmark)(item.id)}
+                  onPractice={() => navigate(
+                    `/practice/important/run?at=${encodeURIComponent(item.id)}${weakOnly ? '&weak=1' : ''}`,
+                  )}
+                  onOpenTopic={() => navigate(`/practice?category=${activeGroup.cat.id}&topic=${item.topic.id}`)}
+                />
               ))}
             </div>
           )}
         </>
       )}
+    </div>
+  )
+}
+
+/**
+ * One saved item. A drill is a question, so the card never prints its answer —
+ * it offers the same typing practice the Practice tab gives, and keeps the
+ * answer behind a toggle for when it is being used as a reference. A saved
+ * reference command has no question to spoil, so its command stays visible.
+ */
+function ImportantItem({ item, weakOnly, onRemove, onPractice, onOpenTopic }) {
+  const [revealed, setRevealed] = useState(false)
+  const isDrill = item.kind === 'drill'
+  const stop = (fn) => (e) => { e.stopPropagation(); fn() }
+  return (
+    <div className="practice-imp-item" onClick={onOpenTopic}>
+      <div className="practice-imp-item-head">
+        <span className="practice-imp-tag">
+          {isDrill ? <Dumbbell size={11} /> : <Terminal size={11} />}
+          {item.topic.name}
+        </span>
+        <WeakButton uid={item.id} className="nailed-unnail-btn nailed-weak-btn" size={13} />
+        <button
+          className="nailed-unnail-btn"
+          onClick={stop(onRemove)}
+          title={weakOnly ? 'Remove from Weak' : 'Remove from Important'}
+        >
+          <X size={13} />
+        </button>
+      </div>
+
+      {isDrill && <div className="practice-imp-prompt">{item.prompt}</div>}
+
+      <div className="practice-imp-actions">
+        <button className="practice-imp-run-btn" onClick={stop(onPractice)}>
+          <Dumbbell size={13} /> এটি practice করো
+        </button>
+        {isDrill && (item.answer || item.desc) && (
+          <button className="practice-imp-reveal-btn" onClick={stop(() => setRevealed(v => !v))}>
+            {revealed ? <><EyeOff size={13} /> উত্তর লুকাও</> : <><Eye size={13} /> উত্তর দেখাও</>}
+          </button>
+        )}
+      </div>
+
+      {!isDrill && <code className="practice-cmd">{item.cmd}</code>}
+      {isDrill && revealed && item.answer && <code className="practice-cmd">{item.answer}</code>}
+      {item.desc && (!isDrill || revealed) && <span className="practice-cmd-desc">{item.desc}</span>}
     </div>
   )
 }
