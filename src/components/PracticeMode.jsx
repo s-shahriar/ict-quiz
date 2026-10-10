@@ -1,10 +1,15 @@
 import { Bookmark, BookOpen, Check, CheckCircle2, ChevronDown, ChevronLeft, CornerDownLeft, Dumbbell, Flame, Lightbulb, Table2, Terminal, XCircle } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useHighlights } from '../contexts/HighlightContext.jsx'
 import { useImportantContext } from '../contexts/ImportantContext.jsx'
 import { useWeakContext } from '../contexts/WeakContext.jsx'
 import { buildCommandList, checkAnswer, getPracticeData, practiceCmdId, usePracticeReady } from '../data/practice/index.js'
+import HighlightableText from './shared/HighlightableText.jsx'
+import NoteControl from './shared/NoteControl.jsx'
+import NoteEditor from './shared/NoteEditor.jsx'
 import TopbarActions from './shared/TopbarActions.jsx'
+import { useNoteEditor } from './shared/useNoteEditor.js'
 import WeakButton from './shared/WeakButton.jsx'
 
 const TABS = [
@@ -394,6 +399,15 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
     if (at >= 0) setIdx(at)
   }, [startId, total])
 
+  // A drill carries a note and highlights like any other question: its
+  // `practice__…` id is already the uid the flags are keyed by, so the same
+  // user_progress / user_highlights rows serve it.
+  const curId = current ? drillId(current.p) : null
+  const noteEditor = useNoteEditor(curId)
+  const { getFor } = useHighlights()
+  const marks = curId ? getFor(curId) : null
+  const hl = (key) => marks?.length ? marks.filter(h => h.block === key) : undefined
+
   const reset = () => { setInput(''); setStatus('idle'); setRevealed(false) }
   const goTo = (ni) => { setIdx(ni); reset(); requestAnimationFrame(() => inputRef.current?.focus()) }
   const next = () => { if (total) goTo((viewIdx + 1) % total) }
@@ -470,7 +484,7 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
   const problem = current.p
 
   return (
-    <div className="practice-drill">
+    <div className="practice-drill" data-hl-root={curId || undefined}>
       {filterBar}
       <div className="practice-progress">
         <span>প্রশ্ন {viewIdx + 1} / {total}</span>
@@ -484,15 +498,19 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
       <SchemaBar data={sampleData} />
 
       <div className="practice-prompt-row">
-        <div className="practice-prompt">{problem.prompt}</div>
+        <HighlightableText
+          as="div" className="practice-prompt"
+          block="prompt" text={problem.prompt} highlights={hl('prompt')}
+        />
         <button
           className={`practice-imp-btn${isImp(current.p) ? ' marked' : ''}`}
-          onClick={() => onToggleImportant(drillId(current.p))}
+          onClick={() => onToggleImportant(curId)}
           title={isImp(current.p) ? 'Remove from Important' : 'Mark as Important — পারি না, পরে practice করব'}
         >
           <Bookmark size={16} fill={isImp(current.p) ? 'currentColor' : 'none'} />
         </button>
-        <WeakButton uid={drillId(current.p)} className="practice-imp-btn practice-weak-btn" size={16} />
+        <WeakButton uid={curId} className="practice-imp-btn practice-weak-btn" size={16} />
+        <NoteControl uid={curId} noteEditor={noteEditor} size={16} className="practice-imp-btn practice-note-btn" />
       </div>
 
       <div className={`practice-terminal status-${status}`}>
@@ -516,7 +534,9 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
       {status === 'correct' && (
         <div className="practice-feedback correct">
           <CheckCircle2 size={16} /> সঠিক!
-          {problem.explain && <span className="practice-explain">{problem.explain}</span>}
+          {problem.explain && (
+            <HighlightableText className="practice-explain" block="explain" text={problem.explain} highlights={hl('explain')} />
+          )}
         </div>
       )}
       {status === 'wrong' && (
@@ -529,9 +549,11 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
         <div className="practice-answer">
           <span className="practice-answer-label"><Lightbulb size={14} /> উত্তর:</span>
           {(problem.answers?.length ? problem.answers : [problem.accept[0]]).map((a, i) => (
-            <code key={i}>{a}</code>
+            <HighlightableText key={i} as="code" block={`answer.${i}`} text={a} highlights={hl(`answer.${i}`)} />
           ))}
-          {problem.explain && <span className="practice-explain">{problem.explain}</span>}
+          {problem.explain && (
+            <HighlightableText className="practice-explain" block="explain" text={problem.explain} highlights={hl('explain')} />
+          )}
         </div>
       )}
 
@@ -553,6 +575,15 @@ export function CommandPractice({ problems, important, onToggleImportant, idOf, 
         </button>
         <button className="practice-btn ghost" onClick={next} disabled={total < 2}>Skip →</button>
       </div>
+
+      {noteEditor.open && (
+        <NoteEditor
+          initial={noteEditor.note}
+          onSave={noteEditor.save}
+          onRemove={noteEditor.remove}
+          onClose={noteEditor.closeEditor}
+        />
+      )}
     </div>
   )
 }

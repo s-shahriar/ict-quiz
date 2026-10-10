@@ -1629,6 +1629,9 @@ button { cursor: pointer; border: none; background: none; color: inherit; font-f
 .practice-weak-btn:hover { color: var(--weak); border-color: color-mix(in srgb, var(--weak) 30%, transparent); background: color-mix(in srgb, var(--weak) 8%, transparent); }
 .practice-weak-btn.marked { color: var(--weak); border-color: color-mix(in srgb, var(--weak) 40%, transparent); background: color-mix(in srgb, var(--weak) 10%, transparent); }
 .practice-weak-btn.marked svg { }
+/* Note badge beside Important/Weak on a drill — same vocabulary as the Written cards. */
+.practice-note-btn:hover { color: var(--info); border-color: color-mix(in srgb, var(--info) 30%, transparent); background: color-mix(in srgb, var(--info) 8%, transparent); }
+.practice-note-btn.has-note { color: var(--info); border-color: color-mix(in srgb, var(--info) 40%, transparent); background: color-mix(in srgb, var(--info) 10%, transparent); }
 
 /* command row: code grows, bookmark sits at the right */
 .practice-cmd-head { display: flex; align-items: stretch; gap: 8px; }
