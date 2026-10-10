@@ -61,7 +61,7 @@ export default {
     {
       id: 'bandwidth',
       title: 'Bandwidth ও সর্বোচ্চ Frequency',
-      sub: 'BW = f_H − f_L · যোগ/বিয়োগ · গুণ · Nyquist rate',
+      sub: 'Bandwidth · যোগ/বিয়োগ · গুণ · Nyquist rate',
       diagram: 'tc-bandwidth',
       caption: 'উপরে frequency অক্ষে component-গুলো; নিচে sin পদ থেকে frequency বের করে সর্বোচ্চটি, তারপর তার দ্বিগুণ Nyquist rate।',
       symbols: [
@@ -128,7 +128,7 @@ export default {
           name: 'Bit rate sampling rate দিয়ে',
           lhs: r`\text{Bit rate}`,
           rhs: r`n f_s \quad (\because f_s = 2\,\text{BW})`,
-          note: 'প্রতি sample-এ n bit, সেকেন্ডে f_s টি sample; BW 3000 Hz হলে f_s = 6000, তাই 2 × 6000 = 12000 bps — উপরের উত্তরই।',
+          note: 'প্রতি sample-এ n bit, আর সেকেন্ডে sampling rate সংখ্যক sample; BW 3000 Hz হলে sampling rate 6000, তাই 2 × 6000 = 12000 bps — উপরের উত্তরই।',
         },
         {
           name: 'Signalling level',
@@ -154,12 +154,12 @@ export default {
     {
       id: 'baud-modulation',
       title: 'Baud Rate ও Modulation Bandwidth',
-      sub: 'S = R_b / n · ASK/PSK · FSK · Carrier frequency',
+      sub: 'Baud rate · ASK/PSK · FSK · Carrier frequency',
       diagram: 'tc-baud',
       caption: 'উপরে bit-গুলো n টি করে ভাগ হয়ে signal element হয়; নিচে সেই element-গুলো band-এর কতটা জায়গা নেয় আর carrier কোথায় বসে।',
       symbols: [
         ['S', 'Baud rate বা Signalling rate — প্রতি সেকেন্ডে কতটি signal element (baud)'],
-        ['R_b', 'Bit rate (bps); noiseless সীমায় R_b = C'],
+        ['R_b', 'Bit rate (bps); noiseless সীমায় এটিই capacity C'],
         ['n', 'এক signal element কত bit বহন করে, n = log₂L'],
         ['d', 'Modulation factor — 0 থেকে 1, কত ছড়ানো modulation'],
         [r`\Delta f`, 'FSK-তে carrier-দুটি মাঝখান থেকে যত দূরে সরে'],
@@ -194,7 +194,7 @@ export default {
           name: 'Carrier frequency',
           lhs: 'f_c',
           rhs: r`\dfrac{f_H + f_L}{2}`,
-          note: 'carrier বসে band-এর ঠিক মাঝখানে; band 200 থেকে 300 kHz হলে f_c = 250 kHz।',
+          note: 'carrier বসে band-এর ঠিক মাঝখানে; band 200 থেকে 300 kHz হলে carrier frequency 250 kHz।',
         },
         {
           name: 'Band দেওয়া থাকলে baud rate',
@@ -228,13 +228,13 @@ export default {
           name: 'একাধিক source একসাথে sample হলে',
           lhs: 'f_s',
           rhs: r`2\,(\text{BW}_1 + \text{BW}_2)`,
-          note: 'একসাথে sample করলে প্রতিটির নিজের হার যোগ হয়; 500 kHz আর 200 kHz হলে BW 700 kHz, তাই f_s = 2 × 700 = 1400 kHz।',
+          note: 'একসাথে sample করলে প্রতিটির নিজের হার যোগ হয়; 500 kHz আর 200 kHz হলে BW 700 kHz, তাই sampling rate 2 × 700 = 1400 kHz।',
         },
         {
           name: 'Frame duration',
           lhs: r`\text{Frame duration}`,
           rhs: r`\dfrac{1}{\text{Sampling rate (Hz)}}`,
-          note: 'সেকেন্ডে f_s টি frame হলে একটির ভাগে পড়ে 1/f_s সেকেন্ড; f_s = 1400 kHz হলে ≈ 0.714 µs।',
+          note: 'সেকেন্ডে sampling rate সংখ্যক frame হলে একটির ভাগে পড়ে তার উল্টোটা; sampling rate 1400 kHz হলে ≈ 0.714 µs।',
         },
         {
           name: 'Quantization SNR',
@@ -249,7 +249,7 @@ export default {
           note: 'SNR থেকে পাওয়া n-কে sampling rate দিয়ে গুণ; 8 × 1400 kHz = 11200 kbps।',
         },
       ],
-      mnemonic: 'আগে f_s (BW-র দ্বিগুণ), তারপর n (SNR থেকে), শেষে গুণ — ওটাই PCM-এর bit rate।',
+      mnemonic: 'আগে sampling rate (BW-র দ্বিগুণ), তারপর n (SNR থেকে), শেষে গুণ — ওটাই PCM-এর bit rate।',
     },
   ],
 }

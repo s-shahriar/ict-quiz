@@ -2,7 +2,7 @@
 // physical picture behind a group — where every quantity lives — and leaves the
 // formulas themselves out, so it still works as a cue in cover mode.
 
-import { C1, C2, C3, C4, Cell, Dim, Head, Limit, VDim, Arrow, tint } from './parts.jsx'
+import { C1, C2, C3, C4, Cell, Dim, Head, Limit, Sym, VDim, Arrow, tint } from './parts.jsx'
 
 // A sine curve as a polyline, so the wave can carry sample ticks on it.
 function wavePoints({ x1, x2, y, amp, cycles, steps = 160 }) {
@@ -22,11 +22,11 @@ function PowerSnrDiagram() {
   return (
     <svg viewBox="0 0 640 310" role="img" aria-label="Power gain-এর চেইন এবং dB মাপকাঠিতে signal ও noise">
       <text x="20" y="20" fontSize="11.5" fontWeight="600" fill="var(--text-2)">Channel / Amplifier: power কতগুণ বাড়ল</text>
-      <Cell x={20} y={36} w={124} h={48} color={C1} title="P_in (W)" sub="এখানে 1 mW" />
+      <Cell x={20} y={36} w={124} h={48} color={C1} title={<Sym base="P" sub="in" after=" (W)" />} sub="এখানে 1 mW" />
       <Arrow pts={[[144, 60], [188, 60]]} color={C3} />
       <Cell x={192} y={36} w={124} h={48} color={C3} title="Gain" sub="dB-তে মাপা হয়" />
       <Arrow pts={[[316, 60], [360, 60]]} color={C3} />
-      <Cell x={364} y={36} w={124} h={48} color={C1} title="P_out (W)" sub="এখানে 100 mW" />
+      <Cell x={364} y={36} w={124} h={48} color={C1} title={<Sym base="P" sub="out" after=" (W)" />} sub="এখানে 100 mW" />
       <Dim x1={20} x2={488} y={104} color="var(--text-3)" label="দুইয়ের অনুপাত এখানে 100 গুণ" below />
 
       <text x="20" y="156" fontSize="11.5" fontWeight="600" fill="var(--text-2)">Receiver-এ একই সময়ে: signal আর noise</text>
@@ -42,16 +42,16 @@ function PowerSnrDiagram() {
       <text x="58" y="176" textAnchor="end" fontSize="11" fontWeight="700" fill="var(--text-3)">dB</text>
 
       <rect x={88} y={dbY(30)} width={112} height={zero - dbY(30)} rx="4" fill={tint(C2, 22)} stroke={C2} strokeWidth="1.5" />
-      <text x="144" y={dbY(30) - 8} textAnchor="middle" fontSize="12" fontWeight="700" fill={C2}>P_signal (dB) · 30</text>
+      <text x="144" y={dbY(30) - 8} textAnchor="middle" fontSize="12" fontWeight="700" fill={C2}><Sym base="P" sub="signal" after=" (dB) · 30" /></text>
 
       <rect x={214} y={dbY(5)} width={112} height={zero - dbY(5)} rx="4" fill={tint(C4, 22)} stroke={C4} strokeWidth="1.5" />
-      <text x="270" y={dbY(5) - 8} textAnchor="middle" fontSize="12" fontWeight="700" fill={C4}>P_noise (dB) · 5</text>
+      <text x="270" y={dbY(5) - 8} textAnchor="middle" fontSize="12" fontWeight="700" fill={C4}><Sym base="P" sub="noise" after=" (dB) · 5" /></text>
 
       <VDim x={356} y1={dbY(30)} y2={dbY(5)} color={C3} label="SNR (dB) · এখানে 25" />
 
       {/* The same two powers in watt — their ratio is SNR as a plain number. */}
-      <Cell x={476} y={186} w={148} h={40} color={C2} title="P_signal (W)" />
-      <Cell x={476} y={236} w={148} h={40} color={C4} title="P_noise (W)" />
+      <Cell x={476} y={186} w={148} h={40} color={C2} title={<Sym base="P" sub="signal" after=" (W)" />} />
+      <Cell x={476} y={236} w={148} h={40} color={C4} title={<Sym base="P" sub="noise" after=" (W)" />} />
       <text x="550" y="300" textAnchor="middle" fontSize="11.5" fontWeight="600" fill={C3}>অনুপাত এখানে ≈ 316</text>
     </svg>
   )
@@ -73,7 +73,8 @@ function BandwidthDiagram() {
       ))}
       <line x1={40} y1={90} x2={596} y2={90} stroke="var(--text-3)" strokeWidth="1.5" />
       <Head x={604} y={90} dir={1} color="var(--text-3)" />
-      {[[100, '100 · f_L'], [300, '300'], [500, '500'], [700, '700'], [900, '900 · f_H']].map(([f, lab]) => (
+      {[[100, <>100 · <Sym base="f" sub="L" /></>], [300, '300'], [500, '500'], [700, '700'],
+        [900, <>900 · <Sym base="f" sub="H" /></>]].map(([f, lab]) => (
         <text key={f} x={axisA(f)} y={106} textAnchor="middle" fontSize="11" fill="var(--text-3)">{lab}</text>
       ))}
       <text x="616" y="106" textAnchor="end" fontSize="11" fill="var(--text-3)">Hz</text>
@@ -82,7 +83,7 @@ function BandwidthDiagram() {
       <text x="20" y="146" fontSize="11.5" fontWeight="600" fill="var(--text-2)">
         যোগ / বিয়োগ: sin 800πt ± sin 400πt — পদ দুটোই নিজের জায়গায়
       </text>
-      <Dim x1={40} x2={axisB(400)} y={176} color={C2} label="f_max" />
+      <Dim x1={40} x2={axisB(400)} y={176} color={C2} label={<Sym base="f" sub="max" />} />
       {[200, 400].map(f => (
         <line key={f} x1={axisB(f)} y1={186} x2={axisB(f)} y2={224} stroke={C1} strokeWidth="2.5" />
       ))}
@@ -96,8 +97,8 @@ function BandwidthDiagram() {
       <text x="20" y="266" fontSize="11.5" fontWeight="600" fill="var(--text-2)">
         গুণ: sin 800πt × sin 400πt — component সরে যায়
       </text>
-      <Dim x1={40} x2={axisC(1200)} y={296} color={C3} label={<>f_s<Limit>Nyquist rate</Limit></>} />
-      <Dim x1={40} x2={axisC(600)} y={320} color={C2} label="f_max" />
+      <Dim x1={40} x2={axisC(1200)} y={296} color={C3} label={<><Sym base="f" sub="s" /><Limit>Nyquist rate</Limit></>} />
+      <Dim x1={40} x2={axisC(600)} y={320} color={C2} label={<Sym base="f" sub="max" />} />
       {[200, 600].map(f => (
         <line key={f} x1={axisC(f)} y1={330} x2={axisC(f)} y2={354} stroke={C1} strokeWidth="2.5" />
       ))}
@@ -122,8 +123,8 @@ function BitRateDiagram() {
       {['11', '10', '01', '00'].map((b, i) => (
         <Cell key={b} x={16} y={34 + i * 26} w={78} h={22} color={C2} title={b} />
       ))}
-      <VDim x={106} y1={34} y2={138} color={C2} label="L · 4" />
-      <text x="16" y="158" fontSize="11" fill="var(--text-3)">n · এখানে 2 bit / element</text>
+      <VDim x={106} y1={34} y2={138} color={C2} label={<><Sym base="L" /> · 4</>} />
+      <text x="16" y="158" fontSize="11" fill="var(--text-3)"><Sym base="n" /> · এখানে 2 bit / element</text>
       <Arrow pts={[[118, 46], [232, 96]]} color={C2} />
 
       {/* The channel itself: its width is the BW */}
@@ -131,14 +132,14 @@ function BitRateDiagram() {
       <VDim x={182} y1={100} y2={192} color={C1} label="BW" left />
       <text x="324" y="126" textAnchor="middle" fontSize="13" fontWeight="700" fill="var(--text)">Channel</text>
       <text x="324" y="148" textAnchor="middle" fontSize="11" fill="var(--text-3)">সেকেন্ডে 2 × BW টি signal element</text>
-      <text x="324" y="168" textAnchor="middle" fontSize="11" fill="var(--text-3)">f_s · এখানে 6000 sample/s</text>
-      <text x="372" y="88" textAnchor="middle" fontSize="11.5" fontWeight="700" fill={C2}>C · noiseless হলে 12000 bps</text>
-      <text x="324" y="212" textAnchor="middle" fontSize="11.5" fontWeight="700" fill={C4}>C · noisy হলে 6000 bps</text>
+      <text x="324" y="168" textAnchor="middle" fontSize="11" fill="var(--text-3)"><Sym base="f" sub="s" after=" · এখানে 6000 sample/s" /></text>
+      <text x="372" y="88" textAnchor="middle" fontSize="11.5" fontWeight="700" fill={C2}><Sym base="C" /> · noiseless হলে 12000 bps</text>
+      <text x="324" y="212" textAnchor="middle" fontSize="11.5" fontWeight="700" fill={C4}><Sym base="C" /> · noisy হলে 6000 bps</text>
 
       {/* Noisy input: two powers, their ratio is all the channel knows */}
       <text x="16" y="248" fontSize="11.5" fontWeight="600" fill="var(--text-2)">Noisy: level নয়, SNR</text>
-      <Cell x={16} y={258} w={78} h={30} color={C2} title="P_signal" />
-      <Cell x={16} y={292} w={78} h={26} color={C4} title="P_noise" />
+      <Cell x={16} y={258} w={78} h={30} color={C2} title={<Sym base="P" sub="signal" />} />
+      <Cell x={16} y={292} w={78} h={26} color={C4} title={<Sym base="P" sub="noise" />} />
       <VDim x={106} y1={258} y2={318} color={C4} label="SNR · 3" />
       <Arrow pts={[[172, 272], [196, 196]]} color={C4} />
 
@@ -174,15 +175,15 @@ function BaudDiagram() {
       {[0, 1, 2, 3].map(i => (
         <Cell key={i} x={20 + i * 68} y={96} w={64} h={32} color={C2} title="element" sub="n = 2 bit" />
       ))}
-      <Dim x1={20} x2={292} y={142} color={C2} label="Baud rate S · এখানে 50 kbaud" below />
+      <Dim x1={20} x2={292} y={142} color={C2} label={<>Baud rate <Sym base="S" /> · এখানে 50 kbaud</>} below />
       <text x="312" y="116" fontSize="11" fill="var(--text-3)">n = log₂L · 4-PSK হলে 2, 16-PSK হলে 4,</text>
       <text x="312" y="134" fontSize="11" fill="var(--text-3)">8-PSK ও 8-QAM হলে 3, 64-QAM হলে 6</text>
 
       <text x="20" y="190" fontSize="11.5" fontWeight="600" fill="var(--text-2)">band-এ সেই element-গুলোর জায়গা আর carrier</text>
       <Dim x1={fx(200)} x2={fx(300)} y={210} color={C3} label="BW · এখানে 100 kHz" />
       <rect x={fx(200)} y={222} width={fx(300) - fx(200)} height={44} rx="5" fill={tint(C3, 16)} stroke={C3} strokeWidth="1.5" />
-      <Dim x1={fx(200)} x2={fx(250)} y={244} color={C1} label="S" />
-      <text x={fx(300) + 14} y={248} fontSize="11" fill="var(--text-3)">d = 1 এখানে</text>
+      <Dim x1={fx(200)} x2={fx(250)} y={244} color={C1} label={<Sym base="S" />} />
+      <text x={fx(300) + 14} y={248} fontSize="11" fill="var(--text-3)"><Sym base="d" /> = 1 এখানে</text>
 
       {/* The carrier, and the pair FSK splits it into */}
       <line x1={fx(250)} y1={216} x2={fx(250)} y2={276} stroke={C4} strokeWidth="2" />
@@ -190,9 +191,9 @@ function BaudDiagram() {
         <line key={k} x1={fx(k)} y1={226} x2={fx(k)} y2={292} stroke={C4} strokeWidth="1.5" strokeDasharray="4 3" />
       ))}
       <line x1={40} y1={276} x2={610} y2={276} stroke="var(--text-3)" strokeWidth="1.5" />
-      <text x={fx(200)} y={292} textAnchor="middle" fontSize="11" fill="var(--text-3)">200 · f_L</text>
-      <text x={fx(250)} y={292} textAnchor="middle" fontSize="11" fontWeight="700" fill={C4}>250 · f_c</text>
-      <text x={fx(300)} y={292} textAnchor="middle" fontSize="11" fill="var(--text-3)">300 · f_H</text>
+      <text x={fx(200)} y={292} textAnchor="middle" fontSize="11" fill="var(--text-3)">200 · <Sym base="f" sub="L" /></text>
+      <text x={fx(250)} y={292} textAnchor="middle" fontSize="11" fontWeight="700" fill={C4}>250 · <Sym base="f" sub="c" /></text>
+      <text x={fx(300)} y={292} textAnchor="middle" fontSize="11" fill="var(--text-3)">300 · <Sym base="f" sub="H" /></text>
       <text x="616" y="292" textAnchor="end" fontSize="11" fill="var(--text-3)">kHz</text>
       <Dim x1={fx(230)} x2={fx(270)} y={308} color={C4} label="2Δf · FSK-এ carrier দুটির দূরত্ব" below />
     </svg>
@@ -206,14 +207,14 @@ function PcmDiagram() {
   return (
     <svg viewBox="0 0 640 344" role="img" aria-label="দুই source একসাথে sample, frame duration এবং প্রতি sample-এর bit">
       <text x="20" y="18" fontSize="11.5" fontWeight="600" fill="var(--text-2)">দুই source একসাথে: BW যোগ হয়, তারপর তার দ্বিগুণ হারে sample</text>
-      <Cell x={20} y={30} w={110} h={28} color={C1} title="BW₁ · 500 kHz" />
-      <Cell x={20} y={64} w={110} h={28} color={C1} title="BW₂ · 200 kHz" />
+      <Cell x={20} y={30} w={110} h={28} color={C1} title={<Sym base="BW" sub="1" roman after=" · 500 kHz" />} />
+      <Cell x={20} y={64} w={110} h={28} color={C1} title={<Sym base="BW" sub="2" roman after=" · 200 kHz" />} />
       <Arrow pts={[[130, 44], [160, 56]]} color={C1} />
       <Arrow pts={[[130, 78], [160, 66]]} color={C1} />
       <Cell x={164} y={46} w={120} h={32} color={C3} title="BW · 700 kHz" />
       <Arrow pts={[[284, 62], [312, 62]]} color={C3} />
       <text x={401} y={34} textAnchor="middle" fontSize="11" fill="var(--text-3)">Nyquist rate</text>
-      <Cell x={316} y={42} w={170} h={38} color={C2} title="f_s · 1400 kHz" sub="Sampling rate / frequency" />
+      <Cell x={316} y={42} w={170} h={38} color={C2} title={<Sym base="f" sub="s" after=" · 1400 kHz" />} sub="Sampling rate / frequency" />
 
       <text x="20" y="118" fontSize="11.5" fontWeight="600" fill="var(--text-2)">পরপর দুই sample-এর দূরত্বই Frame duration</text>
       <polyline points={wavePoints({ x1: 40, x2: 598, y: 160, amp: 22, cycles: 2.5 })}
@@ -237,8 +238,8 @@ function PcmDiagram() {
       {['1', '0', '0', '1', '1', '0', '1', '1'].map((b, i) => (
         <Cell key={i} x={140 + i * 32} y={264} w={28} h={30} color={C4} title={b} />
       ))}
-      <Dim x1={140} x2={396} y={308} color={C4} label="n · এখানে 8 bit per sample" below />
-      <text x="414" y="272" fontSize="11" fill="var(--text-3)">SNR_dB চাইলে 48 dB → n = 8</text>
+      <Dim x1={140} x2={396} y={308} color={C4} label={<><Sym base="n" /> · এখানে 8 bit per sample</>} below />
+      <text x="414" y="272" fontSize="11" fill="var(--text-3)"><Sym base="SNR" sub="dB" roman after=" চাইলে 48 dB → " /><Sym base="n" /> = 8</text>
       <text x="414" y="292" fontSize="11" fontWeight="700" fill={C3}>Bit rate · এখানে 11200 kbps</text>
     </svg>
   )

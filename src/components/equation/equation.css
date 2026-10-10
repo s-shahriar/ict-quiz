@@ -219,9 +219,22 @@
 }
 
 /* ── Highlights ───────────────────────────────────── */
+/* A mark is a translucent wash, so it is only readable when the text sitting on
+   it is full-contrast. The written module highlights body copy that is already
+   `var(--text)`; here the note is `var(--text-3)` at 0.78rem and the symbol
+   meaning is `var(--text-2)`, and a wash under that grey came out muddy in both
+   themes. Lift anything marked inside an equation card to the colour and
+   dark-mode weight the written points use, so a highlight reads the same in
+   both modules. */
+.eq-card .hl-mark { color: var(--text); }
+[data-theme='dark'] .eq-card .hl-mark { font-weight: 450; }
+
 /* A highlighted formula is marked as a whole; inline-block so the band covers a
-   fraction's full height instead of only the text line. */
+   fraction's full height instead of only the text line. The formula is drawn in
+   `--accent`, which disappears into a rose or violet wash — a marked formula
+   reads as text, like every other marked run. */
 .hl-mark.eq-hl-formula {
+  color: var(--text);
   display: inline-block;
   max-width: 100%;
   padding: 3px 8px;

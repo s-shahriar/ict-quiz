@@ -22,6 +22,8 @@ import NoteControl from './shared/NoteControl.jsx'
 import NoteEditor from './shared/NoteEditor.jsx'
 import { useNoteEditor } from './shared/useNoteEditor.js'
 
+const NOTES_GROUP = 'Notes'
+
 export default function WrittenMode() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -84,6 +86,13 @@ export default function WrittenMode() {
     if (!sub) { sub = { name: subKey, questions: [] }; seg.subgroups.push(sub) }
     sub.questions.push(q)
   }
+
+  // A "Notes" group is the cheat sheet for everything under it, so it is read
+  // first and must stay on top however many questions land above it later.
+  // Everything else keeps the order it appears in.
+  const notesFirst = (a, b) => (b.name === NOTES_GROUP) - (a.name === NOTES_GROUP)
+  segments.sort(notesFirst)
+  for (const seg of segments) seg.subgroups.sort(notesFirst)
 
   // Deep-link: ?q=<questionId> opens and scrolls to a specific written answer.
   // A segmented question no longer appears on the category page, so a link from

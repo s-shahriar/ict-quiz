@@ -92,3 +92,36 @@ export function VDim({ x, y1, y2, color, label, left }) {
     </g>
   )
 }
+
+// ── Symbols, drawn the way KaTeX sets them ──────────────────────────────
+// A diagram label naming a quantity must look like the same quantity inside the
+// formula, so "f_max" is wrong twice over: it prints an underscore instead of a
+// subscript, and it is set in the UI font next to an italic math f. KaTeX's own
+// faces ship with the page (EquationMode imports katex.min.css; the prerender
+// tool copies them into Slate), so the diagram can borrow them.
+const MATH  = "KaTeX_Math, Georgia, 'Times New Roman', serif"   // italic variables: f, P, n
+const ROMAN = "KaTeX_Main, Georgia, 'Times New Roman', serif"   // upright names: SNR, BW
+
+/**
+ * `<Sym base="f" sub="max" after=" · 1400 kHz" />` → f with a real subscript.
+ *
+ * `roman` for a multi-letter operator name, which KaTeX sets upright (\text{SNR}).
+ * `after` is whatever follows on the normal baseline: a <tspan dy> shifts every
+ * glyph after it too, so the subscript is always closed by a tspan that puts the
+ * baseline back (§5.5) — even when nothing follows, hence the zero-width space.
+ */
+export function Sym({ base, sub, after, roman }) {
+  const digits = sub != null && /^\d+$/.test(String(sub))
+  return (
+    <>
+      <tspan fontFamily={roman ? ROMAN : MATH} fontStyle={roman ? 'normal' : 'italic'}>{base}</tspan>
+      {sub != null && (
+        <tspan dy="3.2" fontSize="0.74em" fontFamily={digits ? ROMAN : MATH} fontStyle={digits ? 'normal' : 'italic'}>
+          {sub}
+        </tspan>
+      )}
+      {sub != null && <tspan dy="-3.2" fontSize="1em">{after ?? '​'}</tspan>}
+      {sub == null && after}
+    </>
+  )
+}
